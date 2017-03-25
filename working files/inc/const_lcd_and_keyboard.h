@@ -18,7 +18,7 @@
 #define LCD_BASE          Bank1_SRAM3_ADDR
 
 #define POWER_MAX_COL_LCD       4
-#define POWER_MAX_ROW_LCD       1
+#define POWER_MAX_ROW_LCD       2
 #define MAX_COL_LCD       (1<<POWER_MAX_COL_LCD)
 #define MAX_ROW_LCD       (1<<POWER_MAX_ROW_LCD)
 
