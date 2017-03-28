@@ -68,11 +68,11 @@ void make_ekran_list_registrators(void)
 /*****************************************************/
 void make_ekran_list_records_registrator(unsigned int type_registrator)
 {
-  unsigned char name_string[MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS][MAX_COL_LCD] =
+  unsigned char name_string[MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS][MAX_COL_LCD];
+  for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
   {
-    "                ",
-    "                "
-  };
+    for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++) name_string[index_1][index_2] = ' ';
+  }
 
   int index_language = index_language_in_array(current_settings.language);
   
@@ -109,10 +109,10 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
       }
     };
 
-    for(int index_1 = 0; index_1 < 2; index_1++)
+    for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
     {
       for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-        name_string[index_1][index_2] = information[index_language][index_1][index_2];
+        name_string[index_1][index_2] = (index_1 < 2) ? information[index_language][index_1][index_2] : ' ';
     }
 
     //Курсор не видимий
@@ -191,10 +191,10 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
       }
     };
 
-    for(int index_1 = 0; index_1 < 2; index_1++)
+    for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
     {
       for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-        name_string[index_1][index_2] = information[index_language][index_1][index_2];
+        name_string[index_1][index_2] = (index_1 < 2) ? information[index_language][index_1][index_2] : ' ';
     }
 
     //Курсор не видимий

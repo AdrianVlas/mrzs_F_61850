@@ -64,72 +64,74 @@ void make_ekran_timeout_apv(unsigned int group)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_TIMEOUT_APV<<1))//Множення на два константи MAX_ROW_FOR_TIMEOUT_APV потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_TIMEOUT_APV)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_TMOAPV1)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_TMOAPV1)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки 1 Циклу АПВ
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_1[group]; //у змінну value поміщаємо значення витримки 1 Циклу АПВ
+          if (view == true) value = current_settings.timeout_apv_1[group]; //у змінну value поміщаємо значення витримки 1 Циклу АПВ
           else value = edition_settings.timeout_apv_1[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV2)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOAPV2)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки 2 Циклу АПВ
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_2[group]; //у змінну value поміщаємо значення витримки 2 Циклу АПВ
+          if (view == true) value = current_settings.timeout_apv_2[group]; //у змінну value поміщаємо значення витримки 2 Циклу АПВ
           else value = edition_settings.timeout_apv_2[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV3)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOAPV3)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки 3 Циклу АПВ
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_3[group]; //у змінну value поміщаємо значення витримки 3 Циклу АПВ
+          if (view == true) value = current_settings.timeout_apv_3[group]; //у змінну value поміщаємо значення витримки 3 Циклу АПВ
           else value = edition_settings.timeout_apv_3[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV4)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOAPV4)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки 4 Циклу АПВ
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_4[group]; //у змінну value поміщаємо значення витримки 4 Циклу АПВ
+          if (view == true) value = current_settings.timeout_apv_4[group]; //у змінну value поміщаємо значення витримки 4 Циклу АПВ
           else value = edition_settings.timeout_apv_4[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_APV1)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_APV1)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки АПВ підготовки до повторної роботи
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_block_vid_apv1[group]; //у змінну value поміщаємо значення витримки АПВ підготовки до повторної роботи
+          if (view == true) value = current_settings.timeout_apv_block_vid_apv1[group]; //у змінну value поміщаємо значення витримки АПВ підготовки до повторної роботи
           else value = edition_settings.timeout_apv_block_vid_apv1[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_APV2)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_APV2)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки АПВ підготовки до повторної роботи
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_block_vid_apv2[group]; //у змінну value поміщаємо значення витримки АПВ підготовки до повторної роботи
+          if (view == true) value = current_settings.timeout_apv_block_vid_apv2[group]; //у змінну value поміщаємо значення витримки АПВ підготовки до повторної роботи
           else value = edition_settings.timeout_apv_block_vid_apv2[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_APV3)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_APV3)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки АПВ підготовки до повторної роботи
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_block_vid_apv3[group]; //у змінну value поміщаємо значення витримки АПВ підготовки до повторної роботи
+          if (view == true) value = current_settings.timeout_apv_block_vid_apv3[group]; //у змінну value поміщаємо значення витримки АПВ підготовки до повторної роботи
           else value = edition_settings.timeout_apv_block_vid_apv3[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_APV4)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_APV4)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки АПВ підготовки до повторної роботи
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_block_vid_apv4[group]; //у змінну value поміщаємо значення витримки АПВ підготовки до повторної роботи
+          if (view == true) value = current_settings.timeout_apv_block_vid_apv4[group]; //у змінну value поміщаємо значення витримки АПВ підготовки до повторної роботи
           else value = edition_settings.timeout_apv_block_vid_apv4[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_VV)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_VV)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки АПВ подачі вихідного сигналу
-          if (current_ekran.edition == 0) value = current_settings.timeout_apv_block_vid_VV[group]; //у змінну value поміщаємо значення итримки АПВ подачі вихідного сигналу
+          if (view == true) value = current_settings.timeout_apv_block_vid_VV[group]; //у змінну value поміщаємо значення итримки АПВ подачі вихідного сигналу
           else value = edition_settings.timeout_apv_block_vid_VV[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
@@ -139,7 +141,7 @@ void make_ekran_timeout_apv(unsigned int group)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_TMOAPV1)
+          if (index_of_ekran_tmp == INDEX_ML_TMOAPV1)
           {
             if (
                 ((j < COL_TMO_APV_1_BEGIN) ||  (j > COL_TMO_APV_1_END )) &&
@@ -148,9 +150,9 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_1_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_1_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_1_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_1_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV2)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOAPV2)
           {
             if (
                 ((j < COL_TMO_APV_2_BEGIN) ||  (j > COL_TMO_APV_2_END )) &&
@@ -159,9 +161,9 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_2_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_2_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_2_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_2_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV3)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOAPV3)
           {
             if (
                 ((j < COL_TMO_APV_3_BEGIN) ||  (j > COL_TMO_APV_3_END )) &&
@@ -170,9 +172,9 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_3_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_3_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_3_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_3_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV4)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOAPV4)
           {
             if (
                 ((j < COL_TMO_APV_4_BEGIN) ||  (j > COL_TMO_APV_4_END )) &&
@@ -181,9 +183,9 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_4_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_4_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_4_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_4_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_APV1)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_APV1)
           {
             if (
                 ((j < COL_TMO_APV_BLOCK_VID_APV1_BEGIN) ||  (j > COL_TMO_APV_BLOCK_VID_APV1_END )) &&
@@ -192,9 +194,9 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_BLOCK_VID_APV1_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_BLOCK_VID_APV1_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_APV1_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_APV1_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_APV2)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_APV2)
           {
             if (
                 ((j < COL_TMO_APV_BLOCK_VID_APV2_BEGIN) ||  (j > COL_TMO_APV_BLOCK_VID_APV2_END )) &&
@@ -203,9 +205,9 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_BLOCK_VID_APV2_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_BLOCK_VID_APV2_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_APV2_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_APV2_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_APV3)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_APV3)
           {
             if (
                 ((j < COL_TMO_APV_BLOCK_VID_APV3_BEGIN) ||  (j > COL_TMO_APV_BLOCK_VID_APV3_END )) &&
@@ -214,9 +216,9 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_BLOCK_VID_APV3_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_BLOCK_VID_APV3_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_APV3_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_APV3_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_APV4)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_APV4)
           {
             if (
                 ((j < COL_TMO_APV_BLOCK_VID_APV4_BEGIN) ||  (j > COL_TMO_APV_BLOCK_VID_APV4_END )) &&
@@ -225,9 +227,9 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_BLOCK_VID_APV4_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_BLOCK_VID_APV4_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_APV4_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_APV4_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOAPV_BLOCK_VID_VV)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOAPV_BLOCK_VID_VV)
           {
             if (
                 ((j < COL_TMO_APV_BLOCK_VID_VV_BEGIN) ||  (j > COL_TMO_APV_BLOCK_VID_VV_END )) &&
@@ -236,7 +238,7 @@ void make_ekran_timeout_apv(unsigned int group)
             else if (j == COL_TMO_APV_BLOCK_VID_VV_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_APV_BLOCK_VID_VV_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_VV_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_APV_BLOCK_VID_VV_COMMA, view, 0);
           }
         }
       }
@@ -409,12 +411,13 @@ void make_ekran_control_apv()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < ((MAX_ROW_FOR_CONTROL_APV - additional_current_mtz)<<1))//Множення на два константи MAX_ROW_FOR_CONTROL_APV потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < (MAX_ROW_FOR_CONTROL_APV - additional_current_mtz))
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran_tmp][j];
       }
       else
       {
@@ -434,7 +437,7 @@ void make_ekran_control_apv()
           {4, 4}
         };
         
-        unsigned int index_ctr = (index_of_ekran>>1);
+        unsigned int index_ctr = index_of_ekran_tmp;
 
         unsigned int temp_data;
           

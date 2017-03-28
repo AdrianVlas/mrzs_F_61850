@@ -429,7 +429,7 @@ void make_ekran_measurement_voltage_type(void)
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
     //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-    if (index_of_ekran < MAX_ROW_FOR_MEASURMENT)
+    if (index_of_ekran < MAX_ROW_FOR_MEASURMENT_VOLTAGE_TYPE)
       for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran][j];
     else
       for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
@@ -884,10 +884,10 @@ void make_ekran_angle(void)
       }
     };
 
-    for(int index_1 = 0; index_1 < 2; index_1++)
+    for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
     {
       for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-        working_ekran[index_1][index_2] = information[index_language][index_1][index_2];
+        working_ekran[index_1][index_2] = (index_1 < 2) ? information[index_language][index_1][index_2] : ' ';
     }
 
     //Відображення курору по вертикалі

@@ -95,11 +95,13 @@ void make_ekran_dopusk_dv()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (NUMBER_INPUTS<<1))//Множення на два константи NUMBER_INPUTS потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < NUMBER_INPUTS)
     {
       if ((i & 0x1) == 0)
       {
-        unsigned int number = (index_of_ekran >> 1) + 1;
+        unsigned int number = index_of_ekran_tmp + 1;
         unsigned int tmp_1 = (number / 10), tmp_2 = number - tmp_1*10;
         
         //У непарному номері рядку виводимо заголовок
@@ -125,8 +127,8 @@ void make_ekran_dopusk_dv()
           }
         }
         vaga = 10; //максимальний ваговий коефіцієнт для величини допуску дискретного входу
-        if (current_ekran.edition == 0) value = current_settings.dopusk_dv[index_of_ekran >> 1]; //у змінну value поміщаємо значення допуску дискретного входу
-        else value = edition_settings.dopusk_dv[index_of_ekran >> 1];
+        if (view == true) value = current_settings.dopusk_dv[index_of_ekran_tmp]; //у змінну value поміщаємо значення допуску дискретного входу
+        else value = edition_settings.dopusk_dv[index_of_ekran_tmp];
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
       }
       else
@@ -143,7 +145,7 @@ void make_ekran_dopusk_dv()
           else if ((j >= (COL_DOPUSK_DV_END + 2)) && (j <= (COL_DOPUSK_DV_END + 3))) 
             working_ekran[i][j] = ms[index_language][j - (COL_DOPUSK_DV_END + 2)];
           else
-            calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+            calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
         }
       }
     }

@@ -86,7 +86,8 @@ void make_ekran_type_df(void)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (NUMBER_DEFINED_FUNCTIONS<<1))//Множення на два константи NUMBER_DEFINED_FUNCTIONS потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < NUMBER_DEFINED_FUNCTIONS)
     {
       if ((i & 0x1) == 0)
       {
@@ -119,7 +120,7 @@ void make_ekran_type_df(void)
       else
       {
         //У парному номері рядку виводимо значення 
-        unsigned int index_ctr = (index_of_ekran>>1);
+        unsigned int index_ctr = index_of_ekran_tmp;
         unsigned int temp_data;
 
         const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
@@ -198,23 +199,25 @@ void make_ekran_timeout_df(unsigned int number_df)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_TIMEOUT_DF<<1))//Множення на два константи MAX_ROW_TIMEOUT_DF потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_TIMEOUT_DF)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_TMO_DF_PAUSE)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_TMO_DF_PAUSE)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для таймера павзи
-          if (current_ekran.edition == 0) value = current_settings.timeout_pause_df[number_df]; //у змінну value поміщаємо значення таймера павзи
+          if (view == true) value = current_settings.timeout_pause_df[number_df]; //у змінну value поміщаємо значення таймера павзи
           else value = edition_settings.timeout_pause_df[number_df];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMO_DF_WORK)
+        else if (index_of_ekran_tmp == INDEX_ML_TMO_DF_WORK)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для таймера роботи
-          if (current_ekran.edition == 0) value = current_settings.timeout_work_df[number_df]; //у змінну value поміщаємо значення таймера роботи
+          if (view == true) value = current_settings.timeout_work_df[number_df]; //у змінну value поміщаємо значення таймера роботи
           else value = edition_settings.timeout_work_df[number_df];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
@@ -224,7 +227,7 @@ void make_ekran_timeout_df(unsigned int number_df)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_TMO_DF_PAUSE)
+          if (index_of_ekran_tmp == INDEX_ML_TMO_DF_PAUSE)
           {
             if (
                 ((j < COL_TMO_DF_PAUSE_BEGIN) ||  (j > COL_TMO_DF_PAUSE_END )) &&
@@ -233,9 +236,9 @@ void make_ekran_timeout_df(unsigned int number_df)
             else if (j == COL_TMO_DF_PAUSE_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_DF_PAUSE_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_DF_PAUSE_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_DF_PAUSE_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMO_DF_WORK)
+          else if (index_of_ekran_tmp == INDEX_ML_TMO_DF_WORK)
           {
             if (
                 ((j < COL_TMO_DF_WORK_BEGIN) ||  (j > COL_TMO_DF_WORK_END )) &&
@@ -244,7 +247,7 @@ void make_ekran_timeout_df(unsigned int number_df)
             else if (j == COL_TMO_DF_WORK_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_DF_WORK_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_DF_WORK_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_DF_WORK_COMMA, view, 0);
           }
         }
       }

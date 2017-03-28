@@ -3,7 +3,7 @@
 /*****************************************************/
 //Вираховуваня символу і поміщення його в робочий екран
 /*****************************************************/
-void calc_symbol_and_put_into_working_ekran(unsigned char* point_in_working_ekran, void* point_value, void* point_vaga, unsigned int* point_first_symbol, unsigned int current_position_x, unsigned int position_comma, unsigned int v_32_64)
+void calc_symbol_and_put_into_working_ekran(unsigned char* point_in_working_ekran, void* point_value, void* point_vaga, unsigned int* point_first_symbol, unsigned int current_position_x, unsigned int position_comma, unsigned int view, unsigned int v_32_64)
 {
   unsigned int temp_data;
   if (v_32_64 == 0)
@@ -19,7 +19,7 @@ void calc_symbol_and_put_into_working_ekran(unsigned char* point_in_working_ekra
     *((unsigned long long*)point_vaga) /=10; //зменшуємо ваговий коефіцієнт в 10 разів
   }
   
-  if(current_ekran.edition != 0) *point_in_working_ekran = temp_data + 0x30;
+  if (view == false) *point_in_working_ekran = temp_data + 0x30;
   else
   {
     //У випадку, якщо ми не у режимі редагування, то нулі перед комою (за винятком останнього, якщо такий є) приховуємо
@@ -164,154 +164,156 @@ void make_ekran_setpoint_mtz(unsigned int group)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_SETPOINT_MTZ<<1))//Множення на два константи MAX_ROW_FOR_SETPOINT_MTZ потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_SETPOINT_MTZ)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_STPMTZ1)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_1[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_1[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_1[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_N_VPERED)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_N_VPERED)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_1_n_vpered[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_1_n_vpered[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_1_n_vpered[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_N_NAZAD)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_N_NAZAD)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_1_n_nazad[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_1_n_nazad[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_1_n_nazad[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_ANGLE)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_ANGLE)
         {
           vaga = 10; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_1_angle[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_1_angle[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_1_angle[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_PO_NAPRUZI)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_PO_NAPRUZI)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_1_po_napruzi[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_1_po_napruzi[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_1_po_napruzi[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_U)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_U)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_1_U[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_1_U[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_1_U[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_2[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_2[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_2[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_N_VPERED)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_N_VPERED)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_2_n_vpered[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_2_n_vpered[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_2_n_vpered[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_N_NAZAD)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_N_NAZAD)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_2_n_nazad[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_2_n_nazad[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_2_n_nazad[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_ANGLE)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_ANGLE)
         {
           vaga = 10; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_2_angle[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_2_angle[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_2_angle[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_PO_NAPRUZI)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_PO_NAPRUZI)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_2_po_napruzi[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_2_po_napruzi[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_2_po_napruzi[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_U)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_U)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_2_U[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_2_U[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_2_U[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_3[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_3[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_3[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_N_VPERED)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_N_VPERED)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_3_n_vpered[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_3_n_vpered[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_3_n_vpered[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_N_NAZAD)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_N_NAZAD)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_3_n_nazad[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_3_n_nazad[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_3_n_nazad[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_ANGLE)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_ANGLE)
         {
           vaga = 10; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_3_angle[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_3_angle[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_3_angle[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_PO_NAPRUZI)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_PO_NAPRUZI)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_3_po_napruzi[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_3_po_napruzi[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_3_po_napruzi[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_U)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_U)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_3_U[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_3_U[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_3_U[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_4[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_4[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_4[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_N_VPERED)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_N_VPERED)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_4_n_vpered[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_4_n_vpered[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_4_n_vpered[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_N_NAZAD)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_N_NAZAD)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_4_n_nazad[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_4_n_nazad[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_4_n_nazad[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_ANGLE)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_ANGLE)
         {
           vaga = 10; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_4_angle[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_4_angle[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_4_angle[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_PO_NAPRUZI)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_PO_NAPRUZI)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_4_po_napruzi[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_4_po_napruzi[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_4_po_napruzi[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_U)
+        else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_U)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.setpoint_mtz_4_U[group]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.setpoint_mtz_4_U[group]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.setpoint_mtz_4_U[group];
         }
         
@@ -322,7 +324,7 @@ void make_ekran_setpoint_mtz(unsigned int group)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1)
+          if (index_of_ekran_tmp == INDEX_ML_STPMTZ1)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_1_BEGIN) ||  (j > COL_SETPOINT_MTZ_1_END ))  &&
@@ -331,9 +333,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_1_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_1_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_N_VPERED)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_N_VPERED)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_1_N_VPERED_BEGIN) ||  (j > COL_SETPOINT_MTZ_1_N_VPERED_END ))  &&
@@ -342,9 +344,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_1_N_VPERED_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_1_N_VPERED_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_N_VPERED_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_N_VPERED_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_N_NAZAD)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_N_NAZAD)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_1_N_NAZAD_BEGIN) ||  (j > COL_SETPOINT_MTZ_1_N_NAZAD_END ))  &&
@@ -353,9 +355,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_1_N_NAZAD_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_1_N_NAZAD_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_N_NAZAD_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_N_NAZAD_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_ANGLE)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_ANGLE)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_1_ANGLE_BEGIN) ||  (j > COL_SETPOINT_MTZ_1_ANGLE_END ))  &&
@@ -363,9 +365,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
                )working_ekran[i][j] = ' ';
             else if (j == (COL_SETPOINT_MTZ_1_ANGLE_END + 2)) working_ekran[i][j] = '°';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_PO_NAPRUZI)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_PO_NAPRUZI)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_1_PO_NAPRUZI_BEGIN) ||  (j > COL_SETPOINT_MTZ_1_PO_NAPRUZI_END ))  &&
@@ -374,9 +376,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_1_PO_NAPRUZI_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_1_PO_NAPRUZI_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_PO_NAPRUZI_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_PO_NAPRUZI_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ1_U)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ1_U)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_1_U_BEGIN) ||  (j > COL_SETPOINT_MTZ_1_U_END ))  &&
@@ -385,9 +387,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_1_U_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_1_U_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_V];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_U_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_1_U_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_2_BEGIN) ||  (j > COL_SETPOINT_MTZ_2_END ))  &&
@@ -396,9 +398,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_2_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_2_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_N_VPERED)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_N_VPERED)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_2_N_VPERED_BEGIN) ||  (j > COL_SETPOINT_MTZ_2_N_VPERED_END ))  &&
@@ -407,9 +409,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_2_N_VPERED_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_2_N_VPERED_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_N_VPERED_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_N_VPERED_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_N_NAZAD)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_N_NAZAD)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_2_N_NAZAD_BEGIN) ||  (j > COL_SETPOINT_MTZ_2_N_NAZAD_END ))  &&
@@ -418,9 +420,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_2_N_NAZAD_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_2_N_NAZAD_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_N_NAZAD_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_N_NAZAD_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_ANGLE)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_ANGLE)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_2_ANGLE_BEGIN) ||  (j > COL_SETPOINT_MTZ_2_ANGLE_END ))  &&
@@ -428,9 +430,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
                )working_ekran[i][j] = ' ';
             else if (j == (COL_SETPOINT_MTZ_2_ANGLE_END + 2)) working_ekran[i][j] = '°';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_PO_NAPRUZI)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_PO_NAPRUZI)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_2_PO_NAPRUZI_BEGIN) ||  (j > COL_SETPOINT_MTZ_2_PO_NAPRUZI_END ))  &&
@@ -439,9 +441,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_2_PO_NAPRUZI_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_2_PO_NAPRUZI_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_PO_NAPRUZI_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_PO_NAPRUZI_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ2_U)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ2_U)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_2_U_BEGIN) ||  (j > COL_SETPOINT_MTZ_2_U_END ))  &&
@@ -450,9 +452,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_2_U_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_2_U_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_V];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_U_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_2_U_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_3_BEGIN) ||  (j > COL_SETPOINT_MTZ_3_END ))  &&
@@ -461,9 +463,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_3_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_3_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_N_VPERED)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_N_VPERED)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_3_N_VPERED_BEGIN) ||  (j > COL_SETPOINT_MTZ_3_N_VPERED_END ))  &&
@@ -472,9 +474,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_3_N_VPERED_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_3_N_VPERED_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_N_VPERED_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_N_VPERED_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_N_NAZAD)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_N_NAZAD)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_3_N_NAZAD_BEGIN) ||  (j > COL_SETPOINT_MTZ_3_N_NAZAD_END ))  &&
@@ -483,9 +485,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_3_N_NAZAD_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_3_N_NAZAD_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_N_NAZAD_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_N_NAZAD_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_ANGLE)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_ANGLE)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_3_ANGLE_BEGIN) ||  (j > COL_SETPOINT_MTZ_3_ANGLE_END ))  &&
@@ -493,9 +495,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
                )working_ekran[i][j] = ' ';
             else if (j == (COL_SETPOINT_MTZ_3_ANGLE_END + 2)) working_ekran[i][j] = '°';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_PO_NAPRUZI)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_PO_NAPRUZI)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_3_PO_NAPRUZI_BEGIN) ||  (j > COL_SETPOINT_MTZ_3_PO_NAPRUZI_END ))  &&
@@ -504,9 +506,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_3_PO_NAPRUZI_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_3_PO_NAPRUZI_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_PO_NAPRUZI_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_PO_NAPRUZI_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ3_U)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ3_U)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_3_U_BEGIN) ||  (j > COL_SETPOINT_MTZ_3_U_END ))  &&
@@ -515,9 +517,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_3_U_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_3_U_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_V];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_U_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_3_U_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_4_BEGIN) ||  (j > COL_SETPOINT_MTZ_4_END ))  &&
@@ -526,9 +528,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_4_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_4_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_N_VPERED)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_N_VPERED)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_4_N_VPERED_BEGIN) ||  (j > COL_SETPOINT_MTZ_4_N_VPERED_END ))  &&
@@ -537,9 +539,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_4_N_VPERED_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_4_N_VPERED_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_N_VPERED_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_N_VPERED_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_N_NAZAD)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_N_NAZAD)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_4_N_NAZAD_BEGIN) ||  (j > COL_SETPOINT_MTZ_4_N_NAZAD_END ))  &&
@@ -548,9 +550,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_4_N_NAZAD_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_4_N_NAZAD_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_N_NAZAD_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_N_NAZAD_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_ANGLE)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_ANGLE)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_4_ANGLE_BEGIN) ||  (j > COL_SETPOINT_MTZ_4_ANGLE_END ))  &&
@@ -558,9 +560,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
                )working_ekran[i][j] = ' ';
             else if (j == (COL_SETPOINT_MTZ_4_ANGLE_END + 2)) working_ekran[i][j] = '°';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_PO_NAPRUZI)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_PO_NAPRUZI)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_4_PO_NAPRUZI_BEGIN) ||  (j > COL_SETPOINT_MTZ_4_PO_NAPRUZI_END ))  &&
@@ -569,9 +571,9 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_4_PO_NAPRUZI_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_4_PO_NAPRUZI_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_PO_NAPRUZI_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_PO_NAPRUZI_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPMTZ4_U)
+          else if (index_of_ekran_tmp == INDEX_ML_STPMTZ4_U)
           {
             if (
                 ((j < COL_SETPOINT_MTZ_4_U_BEGIN) ||  (j > COL_SETPOINT_MTZ_4_U_END ))  &&
@@ -580,7 +582,7 @@ void make_ekran_setpoint_mtz(unsigned int group)
             else if (j == COL_SETPOINT_MTZ_4_U_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_MTZ_4_U_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_V];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_U_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_MTZ_4_U_COMMA, view, 0);
           }
         }
       }
@@ -849,136 +851,138 @@ void make_ekran_timeout_mtz(unsigned int group)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_TIMEOUT_MTZ<<1))//Множення на два константи MAX_ROW_FOR_TIMEOUT_MTZ потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_TIMEOUT_MTZ)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ1)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_TMOMTZ1)
         {
           vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_1[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_1[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_1[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ1_N_VPERED)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ1_N_VPERED)
         {
           vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_1_n_vpered[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_1_n_vpered[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_1_n_vpered[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ1_N_NAZAD)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ1_N_NAZAD)
         {
           vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_1_n_nazad[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_1_n_nazad[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_1_n_nazad[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ1_PO_NAPRUZI)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ1_PO_NAPRUZI)
         {
           vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_1_po_napruzi[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_1_po_napruzi[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_1_po_napruzi[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_PR)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_PR)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2_pr[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2_pr[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2_pr[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_N_VPERED)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_N_VPERED)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2_n_vpered[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2_n_vpered[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2_n_vpered[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_N_VPERED_PR)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_N_VPERED_PR)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2_n_vpered_pr[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2_n_vpered_pr[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2_n_vpered_pr[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_N_NAZAD)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_N_NAZAD)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2_n_nazad[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2_n_nazad[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2_n_nazad[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_N_NAZAD_PR)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_N_NAZAD_PR)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2_n_nazad_pr[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2_n_nazad_pr[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2_n_nazad_pr[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_PO_NAPRUZI)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_PO_NAPRUZI)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2_po_napruzi[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2_po_napruzi[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2_po_napruzi[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_PO_NAPRUZI_PR)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_PO_NAPRUZI_PR)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2_po_napruzi_pr[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2_po_napruzi_pr[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2_po_napruzi_pr[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_VVID_PR)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_VVID_PR)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_2_vvid_pr[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_2_vvid_pr[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_2_vvid_pr[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ3)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ3)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_3[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_3[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_3[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ3_N_VPERED)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ3_N_VPERED)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_3_n_vpered[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_3_n_vpered[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_3_n_vpered[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ3_N_NAZAD)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ3_N_NAZAD)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_3_n_nazad[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_3_n_nazad[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_3_n_nazad[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ3_PO_NAPRUZI)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ3_PO_NAPRUZI)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_3_po_napruzi[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_3_po_napruzi[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_3_po_napruzi[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ4)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ4)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_4[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_4[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_4[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ4_N_VPERED)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ4_N_VPERED)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_4_n_vpered[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_4_n_vpered[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_4_n_vpered[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ4_N_NAZAD)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ4_N_NAZAD)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_4_n_nazad[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_4_n_nazad[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_4_n_nazad[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ4_PO_NAPRUZI)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ4_PO_NAPRUZI)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_mtz_4_po_napruzi[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_mtz_4_po_napruzi[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_mtz_4_po_napruzi[group];
         }
 
@@ -989,7 +993,7 @@ void make_ekran_timeout_mtz(unsigned int group)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ1)
+          if (index_of_ekran_tmp == INDEX_ML_TMOMTZ1)
           {
             if (
                 ((j < COL_TMO_MTZ_1_BEGIN) ||  (j > COL_TMO_MTZ_1_END )) &&
@@ -998,9 +1002,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_1_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_1_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_1_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_1_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ1_N_VPERED)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ1_N_VPERED)
           {
             if (
                 ((j < COL_TMO_MTZ_1_N_VPERED_BEGIN) ||  (j > COL_TMO_MTZ_1_N_VPERED_END )) &&
@@ -1009,9 +1013,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_1_N_VPERED_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_1_N_VPERED_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_1_N_VPERED_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_1_N_VPERED_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ1_N_NAZAD)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ1_N_NAZAD)
           {
             if (
                 ((j < COL_TMO_MTZ_1_N_NAZAD_BEGIN) ||  (j > COL_TMO_MTZ_1_N_NAZAD_END )) &&
@@ -1020,9 +1024,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_1_N_NAZAD_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_1_N_NAZAD_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_1_N_NAZAD_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_1_N_NAZAD_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ1_PO_NAPRUZI)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ1_PO_NAPRUZI)
           {
             if (
                 ((j < COL_TMO_MTZ_1_PO_NAPRUZI_BEGIN) ||  (j > COL_TMO_MTZ_1_PO_NAPRUZI_END )) &&
@@ -1031,9 +1035,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_1_PO_NAPRUZI_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_1_PO_NAPRUZI_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_1_PO_NAPRUZI_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_1_PO_NAPRUZI_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2)
           {
             if (
                 ((j < COL_TMO_MTZ_2_BEGIN) ||  (j > COL_TMO_MTZ_2_END )) &&
@@ -1042,9 +1046,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_PR)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_PR)
           {
             if (
                 ((j < COL_TMO_MTZ_2_PR_BEGIN) ||  (j > COL_TMO_MTZ_2_PR_END )) &&
@@ -1053,9 +1057,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_PR_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_PR_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_PR_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_PR_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_N_VPERED)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_N_VPERED)
           {
             if (
                 ((j < COL_TMO_MTZ_2_N_VPERED_BEGIN) ||  (j > COL_TMO_MTZ_2_N_VPERED_END )) &&
@@ -1064,9 +1068,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_N_VPERED_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_N_VPERED_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_N_VPERED_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_N_VPERED_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_N_VPERED_PR)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_N_VPERED_PR)
           {
             if (
                 ((j < COL_TMO_MTZ_2_N_VPERED_PR_BEGIN) ||  (j > COL_TMO_MTZ_2_N_VPERED_PR_END )) &&
@@ -1075,9 +1079,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_N_VPERED_PR_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_N_VPERED_PR_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_N_VPERED_PR_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_N_VPERED_PR_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_N_NAZAD)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_N_NAZAD)
           {
             if (
                 ((j < COL_TMO_MTZ_2_N_NAZAD_BEGIN) ||  (j > COL_TMO_MTZ_2_N_NAZAD_END )) &&
@@ -1086,9 +1090,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_N_NAZAD_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_N_NAZAD_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_N_NAZAD_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_N_NAZAD_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_N_NAZAD_PR)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_N_NAZAD_PR)
           {
             if (
                 ((j < COL_TMO_MTZ_2_N_NAZAD_PR_BEGIN) ||  (j > COL_TMO_MTZ_2_N_NAZAD_PR_END )) &&
@@ -1097,9 +1101,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_N_NAZAD_PR_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_N_NAZAD_PR_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_N_NAZAD_PR_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_N_NAZAD_PR_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_PO_NAPRUZI)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_PO_NAPRUZI)
           {
             if (
                 ((j < COL_TMO_MTZ_2_PO_NAPRUZI_BEGIN) ||  (j > COL_TMO_MTZ_2_PO_NAPRUZI_END )) &&
@@ -1108,9 +1112,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_PO_NAPRUZI_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_PO_NAPRUZI_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_PO_NAPRUZI_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_PO_NAPRUZI_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_PO_NAPRUZI_PR)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_PO_NAPRUZI_PR)
           {
             if (
                 ((j < COL_TMO_MTZ_2_PO_NAPRUZI_PR_BEGIN) ||  (j > COL_TMO_MTZ_2_PO_NAPRUZI_PR_END )) &&
@@ -1119,9 +1123,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_PO_NAPRUZI_PR_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_PO_NAPRUZI_PR_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_PO_NAPRUZI_PR_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_PO_NAPRUZI_PR_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ2_VVID_PR)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ2_VVID_PR)
           {
             if (
                 ((j < COL_TMO_MTZ_2_VVID_PR_BEGIN) ||  (j > COL_TMO_MTZ_2_VVID_PR_END )) &&
@@ -1130,9 +1134,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_2_VVID_PR_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_2_VVID_PR_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_VVID_PR_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_2_VVID_PR_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ3)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ3)
           {
             if (
                 ((j < COL_TMO_MTZ_3_BEGIN) ||  (j > COL_TMO_MTZ_3_END )) &&
@@ -1141,9 +1145,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_3_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_3_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_3_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_3_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ3_N_VPERED)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ3_N_VPERED)
           {
             if (
                 ((j < COL_TMO_MTZ_3_N_VPERED_BEGIN) ||  (j > COL_TMO_MTZ_3_N_VPERED_END )) &&
@@ -1152,9 +1156,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_3_N_VPERED_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_3_N_VPERED_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_3_N_VPERED_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_3_N_VPERED_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ3_N_NAZAD)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ3_N_NAZAD)
           {
             if (
                 ((j < COL_TMO_MTZ_3_N_NAZAD_BEGIN) ||  (j > COL_TMO_MTZ_3_N_NAZAD_END )) &&
@@ -1163,9 +1167,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_3_N_NAZAD_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_3_N_NAZAD_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_3_N_NAZAD_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_3_N_NAZAD_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ3_PO_NAPRUZI)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ3_PO_NAPRUZI)
           {
             if (
                 ((j < COL_TMO_MTZ_3_PO_NAPRUZI_BEGIN) ||  (j > COL_TMO_MTZ_3_PO_NAPRUZI_END )) &&
@@ -1174,9 +1178,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_3_PO_NAPRUZI_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_3_PO_NAPRUZI_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_3_PO_NAPRUZI_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_3_PO_NAPRUZI_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ4)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ4)
           {
             if (
                 ((j < COL_TMO_MTZ_4_BEGIN) ||  (j > COL_TMO_MTZ_4_END )) &&
@@ -1185,9 +1189,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_4_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_4_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_4_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_4_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ4_N_VPERED)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ4_N_VPERED)
           {
             if (
                 ((j < COL_TMO_MTZ_4_N_VPERED_BEGIN) ||  (j > COL_TMO_MTZ_4_N_VPERED_END )) &&
@@ -1196,9 +1200,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_4_N_VPERED_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_4_N_VPERED_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_4_N_VPERED_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_4_N_VPERED_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ4_N_NAZAD)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ4_N_NAZAD)
           {
             if (
                 ((j < COL_TMO_MTZ_4_N_NAZAD_BEGIN) ||  (j > COL_TMO_MTZ_4_N_NAZAD_END )) &&
@@ -1207,9 +1211,9 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_4_N_NAZAD_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_4_N_NAZAD_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_4_N_NAZAD_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_4_N_NAZAD_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOMTZ4_PO_NAPRUZI)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOMTZ4_PO_NAPRUZI)
           {
             if (
                 ((j < COL_TMO_MTZ_4_PO_NAPRUZI_BEGIN) ||  (j > COL_TMO_MTZ_4_PO_NAPRUZI_END )) &&
@@ -1218,7 +1222,7 @@ void make_ekran_timeout_mtz(unsigned int group)
             else if (j == COL_TMO_MTZ_4_PO_NAPRUZI_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_MTZ_4_PO_NAPRUZI_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_4_PO_NAPRUZI_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_MTZ_4_PO_NAPRUZI_COMMA, view, 0);
           }
         }
       }
@@ -1463,17 +1467,18 @@ void make_ekran_control_mtz()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_CONTROL_MTZ<<1))//Множення на два константи MAX_ROW_FOR_CONTROL_MTZ потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_CONTROL_MTZ)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
         //У парному номері рядку виводимо значення уставки
-        unsigned int index_ctr = (index_of_ekran>>1);
+        unsigned int index_ctr = index_of_ekran_tmp;
 
         __SETTINGS *point;
           if(current_ekran.edition == 0) point = &current_settings;

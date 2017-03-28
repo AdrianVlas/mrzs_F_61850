@@ -29,20 +29,20 @@ void make_ekran_setpoint_zop(unsigned int group)
   
   //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-    if (index_of_ekran < (MAX_ROW_FOR_SETPOINT_ZOP<<1))//Множення на два константи MAX_ROW_FOR_SETPOINT_ZOP потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_SETPOINT_ZOP)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
 
         vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для уставки ЗТОП
-        if (current_ekran.edition == 0) value = current_settings.setpoint_zop[group]; //у змінну value поміщаємо значення уставки ЗТОП
+        if (view == true) value = current_settings.setpoint_zop[group]; //у змінну value поміщаємо значення уставки ЗТОП
         else value = edition_settings.setpoint_zop[group];
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
       }
@@ -61,7 +61,7 @@ void make_ekran_setpoint_zop(unsigned int group)
           else if ((j >= (COL_SETPOINT_ZOP_END + 2)) && (j <= (COL_SETPOINT_ZOP_END + 4)))
             working_ekran[i][j] = symbols[index_language][j - (COL_SETPOINT_ZOP_END + 2)];
           else
-            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_ZOP_COMMA, 0);
+            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_ZOP_COMMA, view, 0);
         }
       }
         
@@ -126,18 +126,19 @@ void make_ekran_timeout_zop(unsigned int group)
   
   //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_TIMEOUT_ZOP<<1))//Множення на два константи MAX_ROW_FOR_TIMEOUT_ZOP потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_TIMEOUT_ZOP)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
         vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки ЗОП(КОФ)
-        if (current_ekran.edition == 0) value = current_settings.timeout_zop[group]; //у змінну value поміщаємо значення витримки ЗОП(КОФ)
+        if (view == true) value = current_settings.timeout_zop[group]; //у змінну value поміщаємо значення витримки ЗОП(КОФ)
         else value = edition_settings.timeout_zop[group];
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
       }
@@ -153,7 +154,7 @@ void make_ekran_timeout_zop(unsigned int group)
           else if (j == COL_TMO_ZOP_COMMA )working_ekran[i][j] = ',';
           else if (j == (COL_TMO_ZOP_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
           else
-            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_ZOP_COMMA, 0);
+            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_ZOP_COMMA, view, 0);
         }
       }
         
@@ -217,16 +218,16 @@ void make_ekran_control_zop()
   
   //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_CONTROL_ZOP<<1))//Множення на два константи MAX_ROW_FOR_CONTROL_ZOP потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_CONTROL_ZOP)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
@@ -246,7 +247,7 @@ void make_ekran_control_zop()
          {4, 4}
         };
         
-        unsigned int index_ctr = (index_of_ekran>>1);
+        unsigned int index_ctr = index_of_ekran_tmp;
 
         unsigned int temp_data;
           

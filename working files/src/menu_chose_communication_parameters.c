@@ -128,14 +128,16 @@ void make_ekran_address()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_ADDRESS<<1))//Множення на два константи MAX_ROW_FOR_ADDRESS потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_ADDRESS)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
         vaga = 100; //максимальний ваговий коефіцієнт для адреси
-        if (current_ekran.edition == 0) value = current_settings.address; //у змінну value поміщаємо значення адреси
+        if (view == true) value = current_settings.address; //у змінну value поміщаємо значення адреси
         else value = edition_settings.address;
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
       }
@@ -146,7 +148,7 @@ void make_ekran_address()
         {
           if ((j < COL_ADDRESS_BEGIN) ||  (j > COL_ADDRESS_END ))working_ekran[i][j] = ' ';
           else
-            calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+            calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
         }
       }
         
@@ -274,12 +276,13 @@ void make_ekran_speed_interface()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_VIEW_SPEED_INTERFACE<<1))//Множення на два константи MAX_ROW_FOR_VIEW_SPEED_INTERFACE потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_VIEW_SPEED_INTERFACE)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
@@ -367,12 +370,13 @@ void make_ekran_pare_interface()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_VIEW_PARE_INTERFACE<<1))//Множення на два константи MAX_ROW_FOR_VIEW_PARE_INTERFACE потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_VIEW_PARE_INTERFACE)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
@@ -453,12 +457,13 @@ void make_ekran_stopbits_interface()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_VIEW_STOP_BITS_INTERFACE<<1))//Множення на два константи MAX_ROW_FOR_VIEW_STOP_BITS_INTERFACE потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_VIEW_STOP_BITS_INTERFACE)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
@@ -541,16 +546,18 @@ void make_ekran_timeout_interface()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-    if (index_of_ekran < (MAX_ROW_FOR_VIEW_TIMEOUT_INTERFACE<<1))//Множення на два константи MAX_ROW_FOR_VIEW_TIMEOUT_INTERFACE потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    //Наступні рядки треба перевірити, чи їх требе відображати у текучій кофігурації
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_VIEW_TIMEOUT_INTERFACE)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
 
         vaga = 100; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-        if (current_ekran.edition == 0) value = current_settings.time_out_1_RS485; //у змінну value поміщаємо значення time-out наступного символу 
+        if (view == true) value = current_settings.time_out_1_RS485; //у змінну value поміщаємо значення time-out наступного символу 
         else value = edition_settings.time_out_1_RS485;
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
       }
@@ -569,7 +576,7 @@ void make_ekran_timeout_interface()
           else if ((j >= (COL_TIMEOUT_INTERFACE_END + 2)) && (j <= (COL_TIMEOUT_INTERFACE_END + 6)))
             working_ekran[i][j] = symbols[index_language][j - (COL_TIMEOUT_INTERFACE_END + 2)];
           else
-            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TIMEOUT_INTERFACE_COMMA, 0);
+            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TIMEOUT_INTERFACE_COMMA, view, 0);
         }
       }
         

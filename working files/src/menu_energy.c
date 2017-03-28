@@ -58,7 +58,8 @@ void make_ekran_energy(unsigned int pervynna_vtorynna)
   unsigned int col_begin, col_end, col_comma;
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_EKRAN_ENERGY<<1))//Множення на два константи MAX_ROW_FOR_EKRAN_ENERGY потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_EKRAN_ENERGY)
     {
       if ((i & 0x1) == 0)
       {
@@ -123,7 +124,7 @@ void make_ekran_energy(unsigned int pervynna_vtorynna)
           if ((j < col_begin) ||  (j > col_end )) working_ekran[i][j] = ' ';
           else if (j == col_comma )working_ekran[i][j] = ',';
           else
-            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, col_comma, 1);
+            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, col_comma, 1, 1);
         }
       }
     }

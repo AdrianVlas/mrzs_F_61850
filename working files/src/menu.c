@@ -1656,6 +1656,7 @@ void main_manu_function(void)
             else if (current_ekran.current_level == EKRAN_ENERGY)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_ENERGY) current_ekran.index_position = 0;
+              current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
               position_in_current_level_menu[EKRAN_ENERGY] = current_ekran.index_position;
               //Формуємо екран відображення вікна технічного обліку електроенергії
               make_ekran_energy(pervynna_vtorynna);
@@ -3624,7 +3625,9 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_ENERGY)
               {
-                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_ENERGY - 1;
+                current_ekran.index_position -= (MAX_ROW_LCD >> 1);
+                if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_ENERGY - 1;
+                current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                 position_in_current_level_menu[EKRAN_ENERGY] = current_ekran.index_position;
                 //Формуємо екран відображення вікна технічного обліку келектроенергії
                 make_ekran_energy(pervynna_vtorynna);
@@ -4277,7 +4280,9 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_ENERGY)
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_ENERGY) current_ekran.index_position =  0;
+                current_ekran.index_position += (MAX_ROW_LCD >> 1);
+                if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_ENERGY) current_ekran.index_position =  0;
+                current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                 position_in_current_level_menu[EKRAN_ENERGY] = current_ekran.index_position;
                 //Формуємо екран відображення вікна технічного обліку келектроенергії
                 make_ekran_energy(pervynna_vtorynna);
@@ -16306,6 +16311,7 @@ void main_manu_function(void)
               if (current_ekran.current_level == EKRAN_RESURS)
               {
                 if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_RESURS) current_ekran.index_position = 0;
+                current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                 position_in_current_level_menu[EKRAN_RESURS] = current_ekran.index_position;
                 //Формуємо екран відображення лічильників ресурсу
                 make_ekran_resurs();
@@ -16394,7 +16400,9 @@ void main_manu_function(void)
               {
                 if(current_ekran.current_level == EKRAN_RESURS)
                 {
-                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_RESURS - 1;
+                  current_ekran.index_position -= (MAX_ROW_LCD >> 1);
+                  if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_RESURS - 1;
+                  current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                   position_in_current_level_menu[EKRAN_RESURS] = current_ekran.index_position;
                   //Формуємо екран відображення лічильників ресурсу
                   make_ekran_resurs();
@@ -16411,7 +16419,9 @@ void main_manu_function(void)
               {
                 if(current_ekran.current_level == EKRAN_RESURS)
                 {
-                  if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_RESURS) current_ekran.index_position =  0;
+                  current_ekran.index_position += (MAX_ROW_LCD >> 1);
+                  if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_RESURS) current_ekran.index_position =  0;
+                  current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                   position_in_current_level_menu[EKRAN_RESURS] = current_ekran.index_position;
                   //Формуємо екран відображення лічильників ресурсу
                   make_ekran_resurs();
@@ -19770,7 +19780,7 @@ void make_ekran_ask_rewrite(void)
   //Копіюємо  рядки у робочий екран
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+    for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = (i < 2) ? name_string[index_language][i][j] : ' ';
   }
   
   //Обновити повністю весь екран
@@ -19801,7 +19811,7 @@ void make_ekran_about_activation_command(unsigned int index, unsigned char infor
     }
     else
     {
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][j];
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = (i == 1) ? name_string[index_language][j] : ' ';
     }
   }
   
@@ -19838,7 +19848,7 @@ void make_ekran_about_error(const unsigned char information[][MAX_COL_LCD])
     }
     else
     {
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][j];
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = (i == 1) ? name_string[index_language][j] : ' ';
     }
   }
   

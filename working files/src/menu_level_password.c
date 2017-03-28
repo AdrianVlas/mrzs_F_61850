@@ -34,7 +34,7 @@ void make_ekran_level_password(unsigned int password, unsigned int view)
   unsigned char name_string_tmp[MAX_ROW_FOR_LEVEL_PASSWORD][MAX_COL_LCD];
 
   int index_language = index_language_in_array(current_settings.language);
-  for(int index_1 = 0; index_1 < MAX_ROW_FOR_LEVEL_PASSWORD; index_1++)
+  for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
   {
     for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
     {

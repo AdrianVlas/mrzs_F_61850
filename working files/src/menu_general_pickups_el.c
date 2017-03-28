@@ -52,57 +52,57 @@ void make_ekran_general_pickups_el()
   
   //Множення на два величини position_temp потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_GENERAL_PICKUPS_EL << 1))//Множення на два константи MAX_ROW_FOR_GENERAL_PICKUPS_EL потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_GENERAL_PICKUPS_EL)
     {
-      int index_of_ekran_shifted = index_of_ekran >> 1;
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_shifted][j];
-        if (index_of_ekran_shifted == INDEX_ML_NUMBER_INERATION)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_NUMBER_INERATION)
         {
           vaga = 10; //максимальний ваговий
-          if (current_ekran.edition == 0) value = current_settings.number_iteration_el; //у змінну value поміщаємо значення
+          if (view == true) value = current_settings.number_iteration_el; //у змінну value поміщаємо значення
           else value = edition_settings.number_iteration_el;
         }
-//        else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_FUNCTIONS)
+//        else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_FUNCTIONS)
 //        {
 //          vaga = 1; //максимальний ваговий
-//          if (current_ekran.edition == 0) value = current_settings.number_defined_df; //у змінну value поміщаємо значення
+//          if (view == true) value = current_settings.number_defined_df; //у змінну value поміщаємо значення
 //          else value = edition_settings.number_defined_df;
 //        }
-//        else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_TRIGGERS)
+//        else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_TRIGGERS)
 //        {
 //          vaga = 1; //максимальний ваговий
-//          if (current_ekran.edition == 0) value = current_settings.number_defined_dt; //у змінну value поміщаємо значення
+//          if (view == true) value = current_settings.number_defined_dt; //у змінну value поміщаємо значення
 //          else value = edition_settings.number_defined_dt;
 //        }
-//        else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_AND)
+//        else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_AND)
 //        {
 //          vaga = 1; //максимальний ваговий
-//          if (current_ekran.edition == 0) value = current_settings.number_defined_and; //у змінну value поміщаємо значення
+//          if (view == true) value = current_settings.number_defined_and; //у змінну value поміщаємо значення
 //          else value = edition_settings.number_defined_and;
 //        }
-//        else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_OR)
+//        else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_OR)
 //        {
 //          vaga = 1; //максимальний ваговий
-//          if (current_ekran.edition == 0) value = current_settings.number_defined_or; //у змінну value поміщаємо значення
+//          if (view == true) value = current_settings.number_defined_or; //у змінну value поміщаємо значення
 //          else value = edition_settings.number_defined_or;
 //        }
-//        else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_XOR)
+//        else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_XOR)
 //        {
 //          vaga = 1; //максимальний ваговий
-//          if (current_ekran.edition == 0) value = current_settings.number_defined_xor; //у змінну value поміщаємо значення
+//          if (view == true) value = current_settings.number_defined_xor; //у змінну value поміщаємо значення
 //          else value = edition_settings.number_defined_xor;
 //        }
-//        else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_NOT)
+//        else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_NOT)
 //        {
 //          vaga = 10; //максимальний ваговий
-//          if (current_ekran.edition == 0) value = current_settings.number_defined_not; //у змінну value поміщаємо значення
+//          if (view == true) value = current_settings.number_defined_not; //у змінну value поміщаємо значення
 //          else value = edition_settings.number_defined_not;
 //        }
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
@@ -112,47 +112,47 @@ void make_ekran_general_pickups_el()
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if (index_of_ekran_shifted == INDEX_ML_NUMBER_INERATION)
+          if (index_of_ekran_tmp == INDEX_ML_NUMBER_INERATION)
           {
             if ((j < COL_NUMBER_INERATION_BEGIN) ||  (j > COL_NUMBER_INERATION_END ))working_ekran[i][j] = ' ';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
-//          else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_FUNCTIONS)
+//          else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_FUNCTIONS)
 //          {
 //            if ((j < COL_NUMBER_DEFINED_FUNCTIONS_BEGIN) ||  (j > COL_NUMBER_DEFINED_FUNCTIONS_END ))working_ekran[i][j] = ' ';
 //            else
-//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
 //          }
-//          else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_TRIGGERS)
+//          else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_TRIGGERS)
 //          {
 //            if ((j < COL_NUMBER_DEFINED_TRIGGERS_BEGIN) ||  (j > COL_NUMBER_DEFINED_TRIGGERS_END ))working_ekran[i][j] = ' ';
 //            else
-//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
 //          }
-//          else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_AND)
+//          else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_AND)
 //          {
 //            if ((j < COL_NUMBER_DEFINED_AND_BEGIN) ||  (j > COL_NUMBER_DEFINED_AND_END ))working_ekran[i][j] = ' ';
 //            else
-//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
 //          }
-//          else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_OR)
+//          else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_OR)
 //          {
 //            if ((j < COL_NUMBER_DEFINED_OR_BEGIN) ||  (j > COL_NUMBER_DEFINED_OR_END ))working_ekran[i][j] = ' ';
 //            else
-//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
 //          }
-//          else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_XOR)
+//          else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_XOR)
 //          {
 //            if ((j < COL_NUMBER_DEFINED_XOR_BEGIN) ||  (j > COL_NUMBER_DEFINED_XOR_END ))working_ekran[i][j] = ' ';
 //            else
-//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
 //          }
-//          else if (index_of_ekran_shifted == INDEX_ML_NUMBER_DEFINED_NOT)
+//          else if (index_of_ekran_tmp == INDEX_ML_NUMBER_DEFINED_NOT)
 //          {
 //            if ((j < COL_NUMBER_DEFINED_NOT_BEGIN) ||  (j > COL_NUMBER_DEFINED_NOT_END ))working_ekran[i][j] = ' ';
 //            else
-//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+//              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
 //          }
         }
       }

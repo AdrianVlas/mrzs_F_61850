@@ -35,24 +35,25 @@ void make_ekran_setpoint_zz(unsigned int group)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-    if (index_of_ekran < (MAX_ROW_FOR_SETPOINT_ZZ<<1))/*Множення на два константи MAX_ROW_FOR_SETPOINT_ZZ потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)*/
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_SETPOINT_ZZ)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_STPZZ1_3I0)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_STPZZ1_3I0)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для уставки ЗЗ
-          if (current_ekran.edition == 0) value = current_settings.setpoint_zz_3I0[group]; //у змінну value поміщаємо значення уставки ЗЗ
+          if (view == true) value = current_settings.setpoint_zz_3I0[group]; //у змінну value поміщаємо значення уставки ЗЗ
           else value = edition_settings.setpoint_zz_3I0[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPZZ1_3U0)
+        else if (index_of_ekran_tmp == INDEX_ML_STPZZ1_3U0)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для уставки ЗЗ1/3U0
-          if (current_ekran.edition == 0) value = current_settings.setpoint_zz_3U0[group]; //у змінну value поміщаємо значення уставки ЗЗ1/3U0
+          if (view == true) value = current_settings.setpoint_zz_3U0[group]; //у змінну value поміщаємо значення уставки ЗЗ1/3U0
           else value = edition_settings.setpoint_zz_3U0[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
@@ -62,7 +63,7 @@ void make_ekran_setpoint_zz(unsigned int group)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_STPZZ1_3I0)
+          if (index_of_ekran_tmp == INDEX_ML_STPZZ1_3I0)
           {
             if (
                 ((j < COL_SETPOINT_ZZ1_3I0_BEGIN) ||  (j > COL_SETPOINT_ZZ1_3I0_END )) &&
@@ -71,9 +72,9 @@ void make_ekran_setpoint_zz(unsigned int group)
             else if (j == COL_SETPOINT_ZZ1_3I0_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_ZZ1_3I0_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_A];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_ZZ1_3I0_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_ZZ1_3I0_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPZZ1_3U0)
+          else if (index_of_ekran_tmp == INDEX_ML_STPZZ1_3U0)
           {
             if (
                 ((j < COL_SETPOINT_ZZ1_3U0_BEGIN) ||  (j > COL_SETPOINT_ZZ1_3U0_END )) &&
@@ -82,7 +83,7 @@ void make_ekran_setpoint_zz(unsigned int group)
             else if (j == COL_SETPOINT_ZZ1_3U0_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_ZZ1_3U0_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_V];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_ZZ1_3U0_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_ZZ1_3U0_COMMA, view, 0);
           }
         }
       }
@@ -165,42 +166,43 @@ void make_ekran_timeout_zz(unsigned int group)
   
   //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
     if (
         (
-         ((index_of_ekran>>1) <= INDEX_ML_TMOZZ1_3U0) || 
+         (index_of_ekran_tmp <= INDEX_ML_TMOZZ1_3U0) || 
          ((current_settings.control_zz & CTR_ZZ1_TYPE) == 0)  
         )   
         &&  
-        (index_of_ekran < (MAX_ROW_FOR_TIMEOUT_ZZ<<1))/*Множення на два константи MAX_ROW_FOR_TIMEOUT_ZZ потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)*/
+        (index_of_ekran_tmp < MAX_ROW_FOR_TIMEOUT_ZZ)
        )   
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
         
-        if ((index_of_ekran>>1) == INDEX_ML_TMOZZ1_3I0)
+        if (index_of_ekran_tmp == INDEX_ML_TMOZZ1_3I0)
         {
           vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_zz_3I0[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_zz_3I0[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_zz_3I0[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOZZ1_3U0)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOZZ1_3U0)
         {
           vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_zz_3U0[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_zz_3U0[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_zz_3U0[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOZZ1_NZZ)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOZZ1_NZZ)
         {
           vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки
-          if (current_ekran.edition == 0) value = current_settings.timeout_nzz[group]; //у змінну value поміщаємо значення витримки
+          if (view == true) value = current_settings.timeout_nzz[group]; //у змінну value поміщаємо значення витримки
           else value = edition_settings.timeout_nzz[group];
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
@@ -210,7 +212,7 @@ void make_ekran_timeout_zz(unsigned int group)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_TMOZZ1_3I0)
+          if (index_of_ekran_tmp == INDEX_ML_TMOZZ1_3I0)
           {
             if (
                 ((j < COL_TMO_ZZ1_3I0_BEGIN) ||  (j > COL_TMO_ZZ1_3I0_END )) &&
@@ -219,9 +221,9 @@ void make_ekran_timeout_zz(unsigned int group)
             else if (j == COL_TMO_ZZ1_3I0_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_ZZ1_3I0_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_ZZ1_3I0_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_ZZ1_3I0_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOZZ1_3U0)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOZZ1_3U0)
           {
             if (
                 ((j < COL_TMO_ZZ1_3U0_BEGIN) ||  (j > COL_TMO_ZZ1_3U0_END )) &&
@@ -230,9 +232,9 @@ void make_ekran_timeout_zz(unsigned int group)
             else if (j == COL_TMO_ZZ1_3U0_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_ZZ1_3U0_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_ZZ1_3U0_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_ZZ1_3U0_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOZZ1_NZZ)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOZZ1_NZZ)
           {
             if (
                 ((j < COL_TMO_ZZ1_NZZ_BEGIN) ||  (j > COL_TMO_ZZ1_NZZ_END )) &&
@@ -241,7 +243,7 @@ void make_ekran_timeout_zz(unsigned int group)
             else if (j == COL_TMO_ZZ1_NZZ_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_ZZ1_NZZ_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_ZZ1_NZZ_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_ZZ1_NZZ_COMMA, view, 0);
           }
         }
       }
@@ -429,7 +431,7 @@ void make_ekran_control_zz()
   int position_temp = current_ekran.index_position;
   int index_of_ekran;
 
-  for (int current_index = 0; current_index < (MAX_ROW_FOR_CONTROL_ZZ - additional_current); current_index++ )
+  for (int current_index = 0; current_index < MAX_ROW_FOR_CONTROL_ZZ; current_index++ )
   {
 
     if (
@@ -485,18 +487,19 @@ void make_ekran_control_zz()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < ((MAX_ROW_FOR_CONTROL_ZZ - additional_current)<<1))//Множення на два константи MAX_ROW_FOR_CONTROL_ZZ потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < (MAX_ROW_FOR_CONTROL_ZZ - additional_current))
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran_tmp][j];
       }
       else
       {
         //У парному номері рядку виводимо стан
         
-        unsigned int index_ctr = (index_of_ekran>>1);
+        unsigned int index_ctr = index_of_ekran_tmp;
 
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information_tmp[index_ctr][(temp_data >> index_ctr) & 0x1][j];
         current_ekran.position_cursor_x = cursor_x_tmp[index_ctr][(temp_data >> index_ctr) & 0x1];

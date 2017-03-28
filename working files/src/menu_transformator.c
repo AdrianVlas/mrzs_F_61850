@@ -3,13 +3,13 @@
 /*****************************************************/
 //Вираховуваня цілого символу і поміщення його в робочий екран
 /*****************************************************/
-void calc_int_symbol_and_put_into_working_ekran(unsigned char* point_in_working_ekran, unsigned int* point_value, unsigned int* point_vaga, unsigned int* point_first_symbol)
+void calc_int_symbol_and_put_into_working_ekran(unsigned char* point_in_working_ekran, unsigned int* point_value, unsigned int* point_vaga, unsigned int* point_first_symbol, unsigned int view)
 {
   unsigned int temp_data;
   temp_data = (*point_value) / (*point_vaga); //виділяємо число, яке треба перетворити у символ і помістити у дану позицію екрану
   *point_value %= *(point_vaga); //вираховуємо число без символа, який ми зараз будемо виводити на екран
   *point_vaga /=10; //зменшуємо ваговий коефіцієнт в 10 разів
-  if(current_ekran.edition != 0) *point_in_working_ekran = temp_data + 0x30;
+  if  (view == false) *point_in_working_ekran = temp_data + 0x30;
   else
   {
     //У випадку, якщо ми не у режимі редагування, то нулі перед найстаршим значущим числом приховуємо
@@ -76,17 +76,18 @@ void make_ekran_transformator()
   /******************************************/
   //Виключаємо поля, які не треба відображати
   /******************************************/
+  unsigned int shift[MAX_ROW_FOR_TRANSFORMATOR_INFO];
   int additional_current = 0;
   int position_temp = current_ekran.index_position;
   int index_of_ekran;
 
-  for (int current_index = 0; current_index < (MAX_ROW_FOR_TRANSFORMATOR_INFO - additional_current); current_index++ )
+  for (int current_index = 0; current_index < MAX_ROW_FOR_TRANSFORMATOR_INFO; current_index++ )
   {
 
     if (
         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
         &&
-        (current_ekran.index_position == INDEX_ML_TT04)
+        (current_index == INDEX_ML_TT04)
        )   
     {
       int i = current_index - additional_current;
@@ -104,6 +105,7 @@ void make_ekran_transformator()
       while (i< (MAX_ROW_FOR_TRANSFORMATOR_INFO - additional_current));
       additional_current++;
     }
+    shift[current_index] = additional_current;
   }
   /******************************************/
   
@@ -115,37 +117,39 @@ void make_ekran_transformator()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < ((MAX_ROW_FOR_TRANSFORMATOR_INFO - additional_current)<<1))//Множення на два константи MAX_ROW_FOR_TRANSFORMATOR_INFO потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < (MAX_ROW_FOR_TRANSFORMATOR_INFO - additional_current))
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_T0)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran_tmp][j];
+        if ((index_of_ekran_tmp + shift[index_of_ekran_tmp]) == INDEX_ML_T0)
         {
           vaga = 100; //максимальний ваговий коефіцієнт для коефіцієнта трансформації T0
-          if (current_ekran.edition == 0) value = current_settings.T0; //у змінну value поміщаємо значення коефіцієнта трансформації T0
+          if (view == true) value = current_settings.T0; //у змінну value поміщаємо значення коефіцієнта трансформації T0
           else value = edition_settings.T0;
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TT)
+        else if ((index_of_ekran_tmp + shift[index_of_ekran_tmp]) == INDEX_ML_TT)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для коефіцієнта трансформації TT
-          if (current_ekran.edition == 0) value = current_settings.TCurrent; //у змінну value поміщаємо значення коефіцієнта трансформації TT
+          if (view == true) value = current_settings.TCurrent; //у змінну value поміщаємо значення коефіцієнта трансформації TT
           else value = edition_settings.TCurrent;
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TT04)
+        else if ((index_of_ekran_tmp + shift[index_of_ekran_tmp]) == INDEX_ML_TT04)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для коефіцієнта трансформації TT сторони 0.4кВ
-          if (current_ekran.edition == 0) value = current_settings.TCurrent04; //у змінну value поміщаємо значення коефіцієнта трансформації TT сторони 0.4кВ
+          if (view == true) value = current_settings.TCurrent04; //у змінну value поміщаємо значення коефіцієнта трансформації TT сторони 0.4кВ
           else value = edition_settings.TCurrent04;
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TN)
+        else if ((index_of_ekran_tmp + shift[index_of_ekran_tmp]) == INDEX_ML_TN)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для коефіцієнта трансформації TН
-          if (current_ekran.edition == 0) value = current_settings.TVoltage; //у змінну value поміщаємо значення коефіцієнта трансформації TН
+          if (view == true) value = current_settings.TVoltage; //у змінну value поміщаємо значення коефіцієнта трансформації TН
           else value = edition_settings.TVoltage;
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
         }
@@ -155,29 +159,29 @@ void make_ekran_transformator()
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_T0)
+          if (index_of_ekran_tmp == INDEX_ML_T0)
           {
             if ((j < COL_T0_BEGIN) ||  (j > COL_T0_END ))working_ekran[i][j] = ' ';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TT)
+          else if (index_of_ekran_tmp == INDEX_ML_TT)
           {
             if ((j < COL_TT_BEGIN) ||  (j > COL_TT_END ))working_ekran[i][j] = ' ';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TT04)
+          else if (index_of_ekran_tmp == INDEX_ML_TT04)
           {
             if ((j < COL_TT04_BEGIN) ||  (j > COL_TT04_END ))working_ekran[i][j] = ' ';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TN)
+          else if (index_of_ekran_tmp == INDEX_ML_TN)
           {
             if ((j < COL_TN_BEGIN) ||  (j > COL_TN_END ))working_ekran[i][j] = ' ';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
         }
       }
