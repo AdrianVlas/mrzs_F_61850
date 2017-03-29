@@ -587,11 +587,11 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
 /*****************************************************/
 void make_ekran_title_analog_value_records_digital_registrator(void)
 {
-  unsigned char name_string[MAX_ROW_FOR_TITLE_EKRAN_ANALOG_VALUES_DR][MAX_COL_LCD] =
+  unsigned char name_string[MAX_ROW_FOR_TITLE_EKRAN_ANALOG_VALUES_DR][MAX_COL_LCD];
+  for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
   {
-    "                ",
-    "                "
-  };
+    for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++) name_string[index_1][index_2] = ' ';
+  }
   int index_language = index_language_in_array(current_settings.language);
   
   unsigned int position_temp = current_ekran.index_position;
@@ -2059,6 +2059,7 @@ void make_ekran_changing_signals_digital_registrator(void)
     //Перевіряємо, чи ми не вийшли за границі
     if (current_ekran.index_position < 0) current_ekran.index_position = max_number_changers_in_record - 1;
     else if (current_ekran.index_position >= ((int)max_number_changers_in_record)) current_ekran.index_position = 0;
+    current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
     position_in_current_level_menu[EKRAN_CHANGES_SIGNALS_DR] = current_ekran.index_position;
 
     position_temp = current_ekran.index_position;

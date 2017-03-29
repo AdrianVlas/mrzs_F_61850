@@ -4079,7 +4079,7 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_CHANGES_SIGNALS_DR)
               {
-                current_ekran.index_position--;
+                current_ekran.index_position -= (MAX_ROW_LCD >> 1);
                 //Формуємо екран відображення змін сигналів - записаних у дискретному реєстраторі
                 make_ekran_changing_signals_digital_registrator();
               }
@@ -4748,7 +4748,7 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_CHANGES_SIGNALS_DR)
               {
-                current_ekran.index_position++;
+                current_ekran.index_position += (MAX_ROW_LCD >> 1);
                 //Формуємо екран відображення змін сигналів - записаних у дискретному реєстраторі
                 make_ekran_changing_signals_digital_registrator();
               }
