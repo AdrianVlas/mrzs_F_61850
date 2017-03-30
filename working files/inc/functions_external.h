@@ -7,6 +7,7 @@ extern uint32_t USBD_OTG_EP1OUT_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 #endif
 
 extern CDC_IF_Prop_TypeDef  APP_FOPS;
+extern void _cbSendSystemDesc(void);
 
 extern void Configure_I2C(I2C_TypeDef*);
 extern void FSMC_SRAM_Init(void);

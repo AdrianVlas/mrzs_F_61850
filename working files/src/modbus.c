@@ -6891,6 +6891,11 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
             temp_value = ((*(point_to_buffer + 30))  << 8) | (*(point_to_buffer + 29));
             break;
           }
+        case 15:
+          {
+            temp_value = ((*(point_to_buffer + 32))  << 8) | (*(point_to_buffer + 31));
+            break;
+          }
         default:
           {
             //якщо немаЇ помилок, то сюди б програма не мала заходити
@@ -9125,8 +9130,10 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
       }
     case MA_UVV_TYPE_SIGNAL_INPUT:
       {
+#if NUMBER_INPUTS < 16
         if (data <= ((1 << NUMBER_INPUTS) - 1)) 
         {
+#endif
           target_label->type_of_input_signal = data;
           
           // оректуЇмо допуск вход≥в
@@ -9143,9 +9150,11 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
                 target_label->dopusk_dv[i] = KOEF_DOPUSK_DV_ZMIN_MIN;
             }
           }
+#if NUMBER_INPUTS < 16
         }
         else
           error = ERROR_ILLEGAL_DATA_VALUE;
+#endif
 
         break;
       }
@@ -9153,28 +9162,40 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
       {
         temp_value = ((~(unsigned int)data)) & ((1 << NUMBER_INPUTS) - 1);
 
+#if NUMBER_INPUTS < 16
         if (data <= ((1 << NUMBER_INPUTS) - 1)) 
+#endif
           target_label->type_of_input = temp_value;
+#if NUMBER_INPUTS < 16
         else
           error = ERROR_ILLEGAL_DATA_VALUE;
+#endif
 
         break;
       }
     case MA_UVV_TYPE_OUTPUT:
       {
+#if NUMBER_OUTPUTS < 16
         if (data <= ((1 << NUMBER_OUTPUTS) - 1)) 
+#endif
           target_label->type_of_output = data;
+#if NUMBER_OUTPUTS < 16
         else
           error = ERROR_ILLEGAL_DATA_VALUE;
+#endif
 
         break;
       }
     case MA_UVV_TYPE_OUTPUT_MODIF:
       {
+#if NUMBER_OUTPUTS < 16
         if (data <= ((1 << NUMBER_OUTPUTS) - 1)) 
+#endif
           target_label->type_of_output_modif = data;
+#if NUMBER_OUTPUTS < 16
         else
           error = ERROR_ILLEGAL_DATA_VALUE;
+#endif
 
         break;
       }

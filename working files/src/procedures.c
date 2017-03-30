@@ -2344,7 +2344,7 @@ void changing_diagnostyka_state(void)
   diagnostyka[2] &= (unsigned int)(~clear_diagnostyka_tmp[2]); 
   diagnostyka[2] |= set_diagnostyka_tmp[2]; 
   
-  diagnostyka[2] &= USED_BITS_IN_LAST_INDEX; 
+//  diagnostyka[2] &= USED_BITS_IN_LAST_INDEX; 
 
   clear_diagnostyka[0] &= (unsigned int)(~clear_diagnostyka_tmp[0]);
   clear_diagnostyka[1] &= (unsigned int)(~clear_diagnostyka_tmp[1]);
@@ -2517,19 +2517,21 @@ void changing_diagnostyka_state(void)
         buffer_pr_err_records[index_into_buffer_pr_err + 17] =  diagnostyka_before[2]        & 0xff;
         buffer_pr_err_records[index_into_buffer_pr_err + 18] = (diagnostyka_before[2] >> 8 ) & 0xff;
         buffer_pr_err_records[index_into_buffer_pr_err + 19] = (diagnostyka_before[2] >> 16) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 20] = (diagnostyka_before[2] >> 24) & 0xff;
 
         //Записуємо теперішній стан діагностики
-        buffer_pr_err_records[index_into_buffer_pr_err + 20] =  diagnostyka_now[0]        & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 21] = (diagnostyka_now[0] >> 8 ) & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 22] = (diagnostyka_now[0] >> 16) & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 23] = (diagnostyka_now[0] >> 24) & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 24] =  diagnostyka_now[1]        & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 25] = (diagnostyka_now[1] >> 8 ) & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 26] = (diagnostyka_now[1] >> 16) & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 27] = (diagnostyka_now[1] >> 24) & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 28] =  diagnostyka_now[2]        & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 29] = (diagnostyka_now[2] >> 8 ) & 0xff;
-        buffer_pr_err_records[index_into_buffer_pr_err + 30] = (diagnostyka_now[2] >> 16) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 21] =  diagnostyka_now[0]        & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 22] = (diagnostyka_now[0] >> 8 ) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 23] = (diagnostyka_now[0] >> 16) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 24] = (diagnostyka_now[0] >> 24) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 25] =  diagnostyka_now[1]        & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 26] = (diagnostyka_now[1] >> 8 ) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 27] = (diagnostyka_now[1] >> 16) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 28] = (diagnostyka_now[1] >> 24) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 29] =  diagnostyka_now[2]        & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 30] = (diagnostyka_now[2] >> 8 ) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 31] = (diagnostyka_now[2] >> 16) & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 32] = (diagnostyka_now[2] >> 24) & 0xff;
         
         /*
         У реєстраторі програмних подій має реєструватися тільки перехід з пасивного стану у активний

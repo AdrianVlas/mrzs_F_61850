@@ -49,7 +49,7 @@
 #define FIRST_INDEX_FIRST_BLOCK_DR            56
 #define FIRST_INDEX_FIRST_DATA_DR             1096
 
-#define VAGA_SIZE_ONE_RECORD_PR_ERR           5
+#define VAGA_SIZE_ONE_RECORD_PR_ERR           6
 #define SIZE_ONE_RECORD_PR_ERR                (1<<VAGA_SIZE_ONE_RECORD_PR_ERR)
 #define NUMBER_RECORDS_PR_ERR_INTO_PAGE       (SIZE_PAGE_DATAFLASH_1>>VAGA_SIZE_ONE_RECORD_PR_ERR) //кількість записів програмних подій у одній строрінці мікросхеми послідовної DataFlash
 #define MAX_NUMBER_RECORDS_PR_ERR_INTO_BUFFER 32 //максимальнакількість записів в буфері типу FIFO, які чекають на запису DataFlash
@@ -310,7 +310,7 @@ Built-in Erase" < 40,002(мс)
 
 */
 
-#define SIZE_BUFFER_FOR_AR    131054/*426604*/
+#define SIZE_BUFFER_FOR_AR    65527/*426604*/
 
 #define CLEAN_AR_BIT          0
 #define CLEAN_AR              (1 << CLEAN_AR_BIT)

@@ -22,11 +22,11 @@
 
 #define NUMBER_ANALOG_CANALES           8
 
-#define NUMBER_INPUTS_1                 5
-#define NUMBER_INPUTS_2                 5
+#define NUMBER_INPUTS_1                 8
+#define NUMBER_INPUTS_2                 8
 #define NUMBER_INPUTS                   (NUMBER_INPUTS_1 + NUMBER_INPUTS_2)
-#define NUMBER_OUTPUTS_1                6
-#define NUMBER_OUTPUTS_2                4
+#define NUMBER_OUTPUTS_1                9
+#define NUMBER_OUTPUTS_2                7
 #define NUMBER_OUTPUTS                  (NUMBER_OUTPUTS_1 + NUMBER_OUTPUTS_2)
 
 #define NUMBER_LEDS                     8

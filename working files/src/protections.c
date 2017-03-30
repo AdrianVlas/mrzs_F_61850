@@ -9231,7 +9231,7 @@ inline void main_protection(void)
   diagnostyka_tmp[2] &= (unsigned int)(~clear_diagnostyka[2]); 
   diagnostyka_tmp[2] |= set_diagnostyka[2]; 
   
-  diagnostyka_tmp[2] &= USED_BITS_IN_LAST_INDEX; 
+//  diagnostyka_tmp[2] &= USED_BITS_IN_LAST_INDEX; 
 
   _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
@@ -10083,10 +10083,6 @@ inline void main_protection(void)
 /*****************************************************/
 void TIM2_IRQHandler(void)
 {
-#ifdef SYSTEM_VIEWER_ENABLE
-  SEGGER_SYSVIEW_RecordEnterISR();
-#endif
-  
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
     /***********************************************************************************************/
@@ -10205,35 +10201,34 @@ void TIM2_IRQHandler(void)
     //Опрцювання функцій захистів
     /***********************************************************/
     //Діагностика вузлів, яку треба проводити кожен раз перед початком опрацьовуванням логіки пристрою
-    unsigned int control_state_outputs_1 = (( (~((unsigned int)(_DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1)))) >> 8) & ((1 << NUMBER_OUTPUTS_1) - 1));
-    unsigned int control_state_outputs_2 = (( (~((unsigned int)(_DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_2)))) >> 8) & ((1 << NUMBER_OUTPUTS_2) - 1));
-    unsigned int control_state_outputs = control_state_outputs_1 | (control_state_outputs_2 << NUMBER_OUTPUTS_1);
-    //Формуємо стани виходів у відповідності до зміненої нумерації
-    unsigned int temp_state_outputs = 0;
-    for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++)
-    {
-      if ((state_outputs_raw & (1 << index)) != 0) 
-      {
-        if (index < NUMBER_OUTPUTS_1)
-          temp_state_outputs |= 1 << (NUMBER_OUTPUTS_1 - index - 1);
-        else
-          temp_state_outputs |= 1 << index;
-      }
-    }
-    if (control_state_outputs != temp_state_outputs) 
-    {
-//      _SET_BIT(set_diagnostyka, ERROR_DIGITAL_OUTPUTS_BIT);
-      for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++)
-      {
-        uint32_t maska;
-        if (index < NUMBER_OUTPUTS_1)
-          maska = 1 << (NUMBER_OUTPUTS_1 - index - 1);
-        else
-          maska = 1 << index;
-        
-        if ((control_state_outputs & maska) != (temp_state_outputs & maska)) _SET_BIT(set_diagnostyka, (ERROR_DIGITAL_OUTPUT_1_BIT + index));
-      }
-    }
+//    unsigned int control_state_outputs_1 = (( (~((unsigned int)(_DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1)))) >> 8) & ((1 << NUMBER_OUTPUTS_1) - 1));
+//    unsigned int control_state_outputs_2 = (( (~((unsigned int)(_DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_2)))) >> 8) & ((1 << NUMBER_OUTPUTS_2) - 1));
+//    unsigned int control_state_outputs = control_state_outputs_1 | (control_state_outputs_2 << NUMBER_OUTPUTS_1);
+//    //Формуємо стани виходів у відповідності до зміненої нумерації
+//    unsigned int temp_state_outputs = 0;
+//    for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++)
+//    {
+//      if ((state_outputs_raw & (1 << index)) != 0) 
+//      {
+//        if (index < NUMBER_OUTPUTS_1)
+//          temp_state_outputs |= 1 << (NUMBER_OUTPUTS_1 - index - 1);
+//        else
+//          temp_state_outputs |= 1 << index;
+//      }
+//    }
+//    if (control_state_outputs != temp_state_outputs) 
+//    {
+//      for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++)
+//      {
+//        uint32_t maska;
+//        if (index < NUMBER_OUTPUTS_1)
+//          maska = 1 << (NUMBER_OUTPUTS_1 - index - 1);
+//        else
+//          maska = 1 << index;
+//        
+//        if ((control_state_outputs & maska) != (temp_state_outputs & maska)) _SET_BIT(set_diagnostyka, (ERROR_DIGITAL_OUTPUT_1_BIT + index));
+//      }
+//    }
     
     //Перевіряємо достовірність значень для аналогового реєстратора
     if (
@@ -10457,10 +10452,6 @@ void TIM2_IRQHandler(void)
   {
     total_error_sw_fixed(23);
   }
-  
-#ifdef SYSTEM_VIEWER_ENABLE
-  SEGGER_SYSVIEW_RecordExitISR();
-#endif
 }
 /*****************************************************/
 
