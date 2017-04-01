@@ -158,7 +158,15 @@ void OTG_HS_IRQHandler(void)
 void OTG_FS_IRQHandler(void)
 #endif
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+  
   USBD_OTG_ISR_Handler (&USB_OTG_dev);
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
 

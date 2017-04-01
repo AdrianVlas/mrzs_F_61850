@@ -1181,6 +1181,54 @@
     </group>
   </group>
   <group>
+    <name>SystemView</name>
+    <group>
+      <name>Config</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\Config\Global.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\Config\SEGGER_RTT_Conf.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\Config\SEGGER_SYSVIEW_Conf.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\Config\SEGGER_SYSVIEW_Config_NoOS.c</name>
+      </file>
+    </group>
+    <group>
+      <name>OS</name>
+    </group>
+    <group>
+      <name>SEGGER</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\SEGGER\SEGGER.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\SEGGER\SEGGER_RTT.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\SEGGER\SEGGER_RTT.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\SEGGER\SEGGER_SYSVIEW.c</name>
+        <configuration>
+          <name>Flash-Debug</name>
+        </configuration>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\SEGGER\SEGGER_SYSVIEW.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\SEGGER\SEGGER_SYSVIEW_ConfDefaults.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\SystemView\SEGGER\SEGGER_SYSVIEW_Int.h</name>
+      </file>
+    </group>
+  </group>
+  <group>
     <name>USB Device</name>
     <group>
       <name>Class</name>

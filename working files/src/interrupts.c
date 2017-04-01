@@ -49,6 +49,10 @@ inline void check_state_key(GPIO_TypeDef* GPIOx, uint16_t mask_bit, unsigned int
 /*****************************************************/
 void I2C_EV_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+  
   switch (I2C_GetLastEvent(I2C))
   {
   case I2C_EVENT_MASTER_MODE_SELECT:                 /* EV5 */
@@ -191,6 +195,10 @@ void I2C_EV_IRQHandler(void)
       break;
     }
   }
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -199,6 +207,10 @@ void I2C_EV_IRQHandler(void)
 /*****************************************************/
 void I2C_ER_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+  
   I2C->CR1 |= I2C_CR1_STOP;
   
   //Зупиняємо потоки DMA якщо вони запущені
@@ -209,6 +221,10 @@ void I2C_ER_IRQHandler(void)
   
   type_error_of_exchanging_via_i2c |= (1<<ERROR_FIX_ERRORS_BIT);
   driver_i2c.state_execution = 2;
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -218,6 +234,10 @@ void I2C_ER_IRQHandler(void)
 /*****************************************************/
 void DMA_StreamI2C_Tx_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+
   //Забороняємо генерацію переривань від потоку DMA_StreamI2C_Tx
   DMA_StreamI2C_Tx->CR &= ~DMA_IT_TC;
   
@@ -250,6 +270,10 @@ void DMA_StreamI2C_Tx_IRQHandler(void)
     //Повідомляємо, що запис завершився
     driver_i2c.state_execution = 1;
   }
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -258,6 +282,10 @@ void DMA_StreamI2C_Tx_IRQHandler(void)
 /*****************************************************/
 void DMA_StreamI2C_Rx_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+
   //Забороняємо генерацію переривань від потоку DMA_StreamI2C_Rx
   DMA_StreamI2C_Rx->CR &= ~DMA_IT_TC;
   
@@ -275,6 +303,10 @@ void DMA_StreamI2C_Rx_IRQHandler(void)
   I2C->CR1 |= I2C_CR1_STOP;
   //Повідомляємо, що читання завершився
   driver_i2c.state_execution = 1;
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -283,6 +315,10 @@ void DMA_StreamI2C_Rx_IRQHandler(void)
 /*****************************************************/
 void TIM5_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+  
   if (TIM_GetITStatus(TIM5, TIM_IT_CC1) != RESET)
   {
     /***********************************************************************************************/
@@ -476,6 +512,10 @@ void TIM5_IRQHandler(void)
     */
     control_reading_ADCs();
   }
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -484,6 +524,10 @@ void TIM5_IRQHandler(void)
 /*****************************************************/
 void TIM4_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+  
   if (TIM_GetITStatus(TIM4, TIM_IT_CC3) != RESET)
   {
     /***********************************************************************************************/
@@ -1183,6 +1227,10 @@ void TIM4_IRQHandler(void)
     /***********************************************************/
     /***********************************************************************************************/
   }
+
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -1191,6 +1239,10 @@ void TIM4_IRQHandler(void)
 /*****************************************************/
 void SPI_DF_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+
   /*
   Відбулася помилкова ситуація - треба повторно виконати попередньо виконувану трансакцію
   */
@@ -1376,6 +1428,10 @@ void SPI_DF_IRQHandler(void)
 
   //Дозволяємо переривання від помилок на SPI_DF
   SPI_I2S_ITConfig(SPI_DF, SPI_I2S_IT_ERR, ENABLE);
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
   
@@ -1384,6 +1440,10 @@ void SPI_DF_IRQHandler(void)
 /*****************************************************/
 void DMA_StreamSPI_DF_Rx_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+
   /*
   Очікуємо поки TXE=1 і BSY=0 - це ознака повногго завершення передачі даних,
   а ознакою завершення прийому дані - це є генерація цього переривання
@@ -1417,6 +1477,10 @@ void DMA_StreamSPI_DF_Rx_IRQHandler(void)
       
   //Обмін відбувся вдало - скидаємо повідомлення про попередньо можливу помилку обміну через SPI_DF
   _SET_BIT(clear_diagnostyka, ERROR_SPI_DF_BIT);
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -1425,6 +1489,10 @@ void DMA_StreamSPI_DF_Rx_IRQHandler(void)
 /*****************************************************/
 void USARTRS485_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+
   if (USART_GetITStatus(USART_RS485, USART_IT_TC) != RESET)
   {
     //Переводимо мікросхкму на прийом
@@ -1482,6 +1550,10 @@ void USARTRS485_IRQHandler(void)
     RxBuffer_RS485_count = 0;
     DMA_StreamRS485_Rx->CR |= (uint32_t)DMA_SxCR_EN;
   }
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -1490,6 +1562,10 @@ void USARTRS485_IRQHandler(void)
 /*****************************************************/
 void DMA_StreamRS485_Tx_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+
   //Дозволяємо генерацію переривань при завершенні передачі байту
   USART_ITConfig(USART_RS485, USART_IT_TC, ENABLE);
 
@@ -1502,6 +1578,10 @@ void DMA_StreamRS485_Tx_IRQHandler(void)
 
   //Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA1 по потоку RS-485_TX
   DMA_ClearFlag(DMA_StreamRS485_Tx, DMA_FLAG_TCRS485_Tx | DMA_FLAG_HTRS485_Tx | DMA_FLAG_TEIRS485_Tx | DMA_FLAG_DMEIRS485_Tx | DMA_FLAG_FEIRS485_Tx);
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 
@@ -1510,6 +1590,10 @@ void DMA_StreamRS485_Tx_IRQHandler(void)
 /*****************************************************/
 void EXITI_POWER_IRQHandler(void)
 {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+
   if(EXTI_GetITStatus(EXTI_Line_POWER) != RESET)
   {
     /* Clear the EXTI line 0 pending bit */
@@ -1534,6 +1618,10 @@ void EXITI_POWER_IRQHandler(void)
       number_minutes = 0;
     }
   }
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 /*****************************************************/
 

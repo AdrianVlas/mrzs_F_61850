@@ -529,6 +529,10 @@ void fapch(void)
 /*****************************************************/
 void SPI_ADC_IRQHandler(void)
 {
+//#ifdef SYSTEM_VIEWER_ENABLE
+//  SEGGER_SYSVIEW_RecordEnterISR();
+//#endif
+
   //Фіксуємо вхід у переривання обробки даних від АЦП
   semaphore_adc_irq  = true;
   
@@ -568,6 +572,10 @@ void SPI_ADC_IRQHandler(void)
   */
   if (state_reading_ADCs == STATE_READING_ADCs_NONE)
   {
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+  
     /*******************************************************/
     //Перевіряємо, чи відбувалися зміни юстування
     /*******************************************************/
@@ -1343,6 +1351,10 @@ void SPI_ADC_IRQHandler(void)
       }
       /**************************************************/
     }
+  
+#ifdef SYSTEM_VIEWER_ENABLE
+  SEGGER_SYSVIEW_RecordExitISR();
+#endif
   }
 
   if ((GPIO_SPI_ADC->ODR & GPIO_NSSPin_ADC) != 0)
@@ -1407,6 +1419,10 @@ void SPI_ADC_IRQHandler(void)
     */
     semaphore_adc_irq  = false;
   }
+  
+//#ifdef SYSTEM_VIEWER_ENABLE
+//  SEGGER_SYSVIEW_RecordExitISR();
+//#endif
 }
 /*****************************************************/
 
