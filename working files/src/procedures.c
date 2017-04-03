@@ -1954,7 +1954,7 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
   if ((target_label->control_zz & CTR_ZZ1_TYPE) != 0)
   {
     //Âèâîäèì ÍÇÇ ³ Ñåêòîð ÍÇÇ
-    target_label->control_zz &= (unsigned int)(~(CTR_ZZ1_NZZ_STATE | CTR_ZZ1_SECTOR));
+    target_label->control_zz &= (unsigned int)(~(CTR_ZZ1_NZZ_STATE/* | CTR_ZZ1_SECTOR*/));
     
     //Âèâîäèì ÍÇÇ ç ÓÐÎÂ
     target_label->control_urov &= (unsigned int)(~CTR_UROV_STARTED_FROM_NZZ);

@@ -9392,10 +9392,7 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
             (
              (((data >> (BIT_MA_CONTROL_NZZ_TYPE - BIT_MA_CONTROL_NZZ_BASE)) & 0x1) == 0)
              ||
-             (
-              (((data >> (BIT_MA_CONTROL_NZZ_SECTOR - BIT_MA_CONTROL_NZZ_BASE)) & 0x1) == 0) &&
-              (((data >> (BIT_MA_CONTROL_NZZ        - BIT_MA_CONTROL_NZZ_BASE)) & 0x1) == 0)
-             )   
+             (((data >> (BIT_MA_CONTROL_NZZ - BIT_MA_CONTROL_NZZ_BASE)) & 0x1) == 0)
             )
            )   
         {
