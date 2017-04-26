@@ -185,6 +185,7 @@ void operate_test_ADCs(void)
   unsigned int temp;
 
   //GND для АЦП1
+  _SET_BIT(clear_diagnostyka, ERROR_GND_ADC1_TEST_COARSE_BIT);
   unsigned int gnd_tmp = 0;
   for (unsigned int i = 0; i < NUMBER_GND_ADC1; i++)
   {
@@ -194,11 +195,11 @@ void operate_test_ADCs(void)
     gnd_adc1_moment_value[i][index_array_of_one_value] = temp;
     gnd_tmp += gnd_adc1_averange[i] = gnd_adc1_averange_sum[i] >> VAGA_NUMBER_POINT;
     if (temp > 0xA1) _SET_BIT(set_diagnostyka, ERROR_GND_ADC1_TEST_COARSE_BIT);
-    else _SET_BIT(clear_diagnostyka, ERROR_GND_ADC1_TEST_COARSE_BIT);
   }
   gnd_adc1 = gnd_tmp / NUMBER_GND_ADC1;
   
   //GND для АЦП2
+  _SET_BIT(clear_diagnostyka, ERROR_GND_ADC2_TEST_COARSE_BIT);
   gnd_tmp = 0;
   for (unsigned int i = 0; i < NUMBER_GND_ADC2; i++)
   {
@@ -208,20 +209,20 @@ void operate_test_ADCs(void)
     gnd_adc2_moment_value[i][index_array_of_one_value] = temp;
     gnd_tmp += gnd_adc2_averange[i] = gnd_adc2_averange_sum[i] >> VAGA_NUMBER_POINT;
     if (temp > 0xA1) _SET_BIT(set_diagnostyka, ERROR_GND_ADC2_TEST_COARSE_BIT);
-    else _SET_BIT(clear_diagnostyka, ERROR_GND_ADC2_TEST_COARSE_BIT);
   }
   gnd_adc2 = gnd_tmp / NUMBER_GND_ADC2;
   
   //VREF для АЦП1
+  _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC1_TEST_COARSE_BIT);
   temp = output_adc[C_VREF_ADC1].value;
   vref_adc1_averange_sum += temp;
   vref_adc1_averange_sum -= vref_adc1_moment_value[index_array_of_one_value];
   vref_adc1_moment_value[index_array_of_one_value] = temp;
   vref_adc1 = vref_adc1_averange_sum >> VAGA_NUMBER_POINT;
   if ((temp < 0x614) || (temp > 0x9EB)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC1_TEST_COARSE_BIT);
-  else _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC1_TEST_COARSE_BIT);
   
   //VREF для АЦП2
+  _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
   unsigned int vref_tmp = 0;
   for (unsigned int i = 0; i < NUMBER_VREF_ADC2; i++)
   {
@@ -231,27 +232,26 @@ void operate_test_ADCs(void)
     vref_adc2_moment_value[i][index_array_of_one_value] = temp;
     vref_tmp += vref_adc2_averange[i] = vref_adc2_averange_sum[i] >> VAGA_NUMBER_POINT;
     if ((temp < 0x614) || (temp > 0x9EB)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
-    else _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
   }
   vref_adc2 = vref_tmp / NUMBER_VREF_ADC2;
 
   //VDD для АЦП1
+  _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
   temp = output_adc[C_VDD_ADC1].value; 
   vdd_adc1_averange_sum += temp;
   vdd_adc1_averange_sum -= vdd_adc1_moment_value[index_array_of_one_value];
   vdd_adc1_moment_value[index_array_of_one_value] = temp;
   vdd_adc1 = vdd_adc1_averange_sum >> VAGA_NUMBER_POINT;
   if ((temp <0x6F2) || (temp > 0xD48)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
-  else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
 
   //VDD для АЦП2
+  _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
   temp = output_adc[C_VDD_ADC2].value; 
   vdd_adc2_averange_sum += temp;
   vdd_adc2_averange_sum -= vdd_adc2_moment_value[index_array_of_one_value];
   vdd_adc2_moment_value[index_array_of_one_value] = temp;
   vdd_adc2 = vdd_adc2_averange_sum >> VAGA_NUMBER_POINT;
   if ((temp <0x6F2) || (temp > 0xD48)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
-  else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
 
   //Всі масиви одної величини ми вже опрацювали  
   if((++index_array_of_one_value) == NUMBER_POINT)
