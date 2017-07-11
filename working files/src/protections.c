@@ -17,10 +17,10 @@ inline void diagnostyca_adc_execution(void)
   if ((vref_adc2 <0x709) || (vref_adc2 > 0x8f5)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC2_TEST_BIT);
   else _SET_BIT(clear_diagnostyka,ERROR_VREF_ADC2_TEST_BIT);
 
-  if ((vdd_adc1 <0x8F9) || (vdd_adc1 > 0xC24)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC1_TEST_BIT);
+  if ((vdd_adc1 <0x8F9) || (vdd_adc1 > 0xE13)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC1_TEST_BIT);
   else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC1_TEST_BIT);
 
-  if ((vdd_adc2 <0x8F9) || (vdd_adc2 > 0xC24)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_BIT);
+  if ((vdd_adc2 <0x8F9) || (vdd_adc2 > 0xE13)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_BIT);
   else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC2_TEST_BIT);
 }
 /*****************************************************/

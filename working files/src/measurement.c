@@ -242,7 +242,7 @@ void operate_test_ADCs(void)
   vdd_adc1_averange_sum -= vdd_adc1_moment_value[index_array_of_one_value];
   vdd_adc1_moment_value[index_array_of_one_value] = temp;
   vdd_adc1 = vdd_adc1_averange_sum >> VAGA_NUMBER_POINT;
-  if ((temp <0x6F2) || (temp > 0xD48)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
+  if ((temp <0x6F2) || (temp > 0xF5B)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
 
   //VDD для АЦП2
   _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
@@ -251,7 +251,7 @@ void operate_test_ADCs(void)
   vdd_adc2_averange_sum -= vdd_adc2_moment_value[index_array_of_one_value];
   vdd_adc2_moment_value[index_array_of_one_value] = temp;
   vdd_adc2 = vdd_adc2_averange_sum >> VAGA_NUMBER_POINT;
-  if ((temp <0x6F2) || (temp > 0xD48)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
+  if ((temp <0x6F2) || (temp > 0xF5B)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
 
   //Всі масиви одної величини ми вже опрацювали  
   if((++index_array_of_one_value) == NUMBER_POINT)
