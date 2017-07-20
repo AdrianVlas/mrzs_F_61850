@@ -161,6 +161,9 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
 #define C_VREF_ADC1             14
 #define C_VDD_ADC1              15
 #define C_GND_ADC2_1            (0  + NUMBER_CANALs_ADC)
+
+#ifdef BA1_VER2
+
 #define C_Ua_1                  (1  + NUMBER_CANALs_ADC)
 #define C_Ua_16                 (2  + NUMBER_CANALs_ADC)
 #define C_Ub_1                  (3  + NUMBER_CANALs_ADC)
@@ -175,6 +178,26 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
 #define C_GND_ADC2_2            (12 + NUMBER_CANALs_ADC)
 #define C_GND_ADC2_3            (13 + NUMBER_CANALs_ADC)
 #define C_VREF_ADC2_1           (14 + NUMBER_CANALs_ADC)
+
+#else
+
+#define C_3U0_1                 (1  + NUMBER_CANALs_ADC)
+#define C_3U0_16                (2  + NUMBER_CANALs_ADC)
+#define C_Uc_1                  (3  + NUMBER_CANALs_ADC)
+#define C_Uc_16                 (4  + NUMBER_CANALs_ADC)
+#define C_Ub_1                  (5  + NUMBER_CANALs_ADC)
+#define C_Ub_16                 (6  + NUMBER_CANALs_ADC)
+#define C_Ua_1                  (7  + NUMBER_CANALs_ADC)
+#define C_Ua_16                 (8  + NUMBER_CANALs_ADC)
+#define C_3U0_256               (9  + NUMBER_CANALs_ADC)
+#define C_GND_ADC2_2            (10 + NUMBER_CANALs_ADC)
+#define C_GND_ADC2_3            (11 + NUMBER_CANALs_ADC)
+#define C_GND_ADC2_4            (12 + NUMBER_CANALs_ADC)
+#define C_GND_ADC2_5            (13 + NUMBER_CANALs_ADC)
+#define C_VREF_ADC2             (14 + NUMBER_CANALs_ADC)
+
+#endif
+
 #define C_VDD_ADC2              (15 + NUMBER_CANALs_ADC)
 
 #define READ_3U0 (                    \
@@ -217,6 +240,7 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
                         READ_3U0  \
                       )
 
+#ifdef BA1_VER2
 #define READ_TEST_VAL  (                                  \
                         (1 << C_GND_ADC1_1)             | \
                         (1 << C_GND_ADC1_2)             | \
@@ -234,6 +258,25 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
                       /*(1 << C_VREF_ADC2_4)            |*/\
           (unsigned int)(1 << C_VDD_ADC2  )               \
                        )
+#else
+
+#define READ_TEST_VAL  (                                  \
+                        (1 << C_GND_ADC1_1)             | \
+                        (1 << C_GND_ADC1_2)             | \
+                        (1 << C_GND_ADC1_3)             | \
+                        (1 << C_GND_ADC1_4)             | \
+                        (1 << C_GND_ADC1_5)             | \
+                        (1 << C_VREF_ADC1 )             | \
+                        (1 << C_VDD_ADC1  )             | \
+                        (1 << C_GND_ADC2_1)             | \
+                        (1 << C_GND_ADC2_2)             | \
+                        (1 << C_GND_ADC2_3)             | \
+                        (1 << C_GND_ADC2_4)             | \
+                        (1 << C_GND_ADC2_5)             | \
+                        (1 << C_VREF_ADC2 )             | \
+          (unsigned int)(1 << C_VDD_ADC2  )               \
+                       )
+#endif
 
 #define DATA_VAL_READ_BIT       0
 #define DATA_VAL_READ           (1 << DATA_VAL_READ_BIT)
@@ -241,9 +284,18 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
 #define TEST_VAL_READ           (1 << TEST_VAL_READ_BIT)
 
 #define NUMBER_GND_ADC1         5
+
+#ifdef BA1_VER2
+
 #define NUMBER_GND_ADC2         3
 
 #define NUMBER_VREF_ADC2        1/*4*/
+
+#else
+
+#define NUMBER_GND_ADC2         5
+
+#endif
 
 #define N_VAL_1                 0
 
