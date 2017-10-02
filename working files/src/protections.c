@@ -10066,9 +10066,94 @@ inline void main_protection(void)
     //Виставляємо повідомлення про те, що в EEPROM треба записати нові значення сигнальних виходів і тригерних світлоіндикаторів
     _SET_BIT(control_i2c_taskes, TASK_START_WRITE_STATE_LEDS_OUTPUTS_EEPROM_BIT);
   }
+  
+  //Сервісні світлоіндикатори
+  /*Run_Error*/
+  if (_CHECK_SET_BIT(active_functions, RANG_AVAR_DEFECT) == 0) state_leds_ctrl |=  (1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E);
+  else state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E)));
+  if (
+      (_CHECK_SET_BIT(active_functions, RANG_DEFECT     ) != 0) ||
+      (_CHECK_SET_BIT(active_functions, RANG_AVAR_DEFECT) != 0)
+     ) state_leds_ctrl |=  (1 << LED_COLOR_RED_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E);
+  else state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_RED_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E)));
+  
+  static uint32_t current_LED_N_COL;
+  
+  //Очищаємо попередню інформацію
+  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_LEDS) = (0 << LED_N_COL) | ((uint32_t)(~(1 << current_LED_N_COL)) & ((1 << LED_N_COL) - 1));
+  //Переходимо на наступний стовбець
+  if (++current_LED_N_COL >= LED_N_COL) current_LED_N_COL = 0;
+  
+  uint32_t state_leds_tmp;
+  
+  switch (current_LED_N_COL)
+  {
+  case 0:
+    {
+      state_leds_tmp = (((state_leds >> (2*0)) & ((1 << 2) - 1)) << 0) |
+                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E)) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
+                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(6 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4) |
+                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 6);
+      break;
+    }
+  case 1:
+    {
+      state_leds_tmp = (((state_leds >> (2*1)) & ((1 << 2) - 1)) << 0) |
+                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_START)) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
+                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(1 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      break;
+    }
+  case 2:
+    {
+      state_leds_tmp = (((state_leds >> (2*2)) & ((1 << 2) - 1)) << 0) |
+                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_TRIP)) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
+                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(2 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      break;
+    }
+  case 3:
+    {
+      state_leds_tmp = (((state_leds >> (2*3)) & ((1 << 2) - 1)) << 0) |
+                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(1 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
+                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(3 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      break;
+    }
+  case 4:
+    {
+      state_leds_tmp = (((state_leds >> (2*4)) & ((1 << 2) - 1)) << 0) |
+                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(2 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
+                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(4 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      break;
+    }
+  case 5:
+    {
+      state_leds_tmp = (((state_leds >> (2*5)) & ((1 << 2) - 1)) << 0) |
+                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(3 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
+                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(5 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      break;
+    }
+  case 6:
+    {
+      state_leds_tmp = (((state_leds >> (2*6)) & ((1 << 2) - 1)) << 0) |
+                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(4 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
+                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(6 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      break;
+    }
+  case 7:
+    {
+      state_leds_tmp = (((state_leds >> (2*7)) & ((1 << 1) - 1)) << 0) |
+                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(5 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
+                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      break;
+    }
+  default:
+    {
+      //Теоретично цього ніколи не мало б бути
+      total_error_sw_fixed(22);
+    }
+  }
 
   //Виводимо інформацію по світлоіндикаторах на світлодіоди
-  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_LEDS) = state_leds;
+  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_LEDS) = (state_leds_tmp << LED_N_COL) | ((uint32_t)(~(1 << current_LED_N_COL)) & ((1 << LED_N_COL) - 1));
   /**************************/
 
   /**************************/

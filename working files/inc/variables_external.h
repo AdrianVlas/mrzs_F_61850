@@ -159,13 +159,17 @@ extern unsigned int sector_directional_tznp[3];
 
 extern unsigned int i1_bilshe_porogu, i2_bilshe_porogu;
 
+//Світлоіндикатори
+extern volatile unsigned int state_leds;
+extern volatile unsigned int state_trigger_leds;
+extern uint32_t state_leds_Fx[2];
+extern uint32_t state_leds_ctrl;
+
 extern volatile unsigned int state_inputs;
 extern volatile unsigned int active_inputs;
 extern unsigned int state_outputs;
 extern unsigned int state_outputs_raw;
 extern volatile unsigned int state_signal_outputs;
-extern volatile unsigned int state_leds;
-extern volatile unsigned int state_trigger_leds;
 extern volatile unsigned int active_functions[N_BIG];
 extern unsigned int misceve_dystancijne, misceve_dystancijne_ctrl;
 extern unsigned int trigger_active_functions[N_BIG], trigger_active_functions_ctrl[N_BIG];

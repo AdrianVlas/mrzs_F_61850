@@ -277,13 +277,17 @@ unsigned int sector_directional_tznp[3] = {0, 0, 0};
 
 unsigned int i1_bilshe_porogu = 0, i2_bilshe_porogu = 0;
 
+//Світлоіндикатори
+volatile unsigned int state_leds = 0;
+volatile unsigned int state_trigger_leds = 0;
+uint32_t state_leds_Fx[2] = {0, 0};
+uint32_t state_leds_ctrl = 0;
+
 volatile unsigned int state_inputs = 0; //"є сигнал " - відповідає встановленому біту (1); "немає сигналу" - відповідає скинутому біту (0)
 volatile unsigned int active_inputs = 0; //"вхід активний" - відповідає встановленому біту (1); "вхід пасивний" - відповідає скинутому біту (0)
 unsigned int state_outputs = 0;
 unsigned int state_outputs_raw = 0;
 volatile unsigned int state_signal_outputs = 0;
-volatile unsigned int state_leds = 0;
-volatile unsigned int state_trigger_leds = 0;
 volatile unsigned int active_functions[N_BIG]  = {0, 0, 0, 0, 0, 0, 0, 0};
 unsigned int misceve_dystancijne = 0, misceve_dystancijne_ctrl;
 unsigned int trigger_active_functions[N_BIG]  = {0, 0, 0, 0, 0, 0, 0, 0}, trigger_active_functions_ctrl[N_BIG];

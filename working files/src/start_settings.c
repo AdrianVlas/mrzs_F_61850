@@ -781,7 +781,9 @@ void start_settings_peripherals(void)
   FSMC_SRAM_Init();
   _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = 0;
   _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_2) = 0;
-  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_LEDS) = 0;
+//  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_LEDS) = 0;
+
+  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0;
   /**********************/
 
   /**********************/
@@ -2365,7 +2367,7 @@ void start_checking_dataflash(void)
     {
       {
         " Перезапустите  ",
-        "   устройство   "
+        "   устройство   ",
       },
       {
         " Перезапустіть  ",
@@ -2397,7 +2399,14 @@ void start_checking_dataflash(void)
     //Копіюємо  рядки у робочий екран
     for (unsigned int i=0; i< MAX_ROW_LCD; i++)
     {
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+      if (i < 2)
+      {
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+      }
+      else
+      {
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+      }
     }
   
     //Обновити повністю весь екран
