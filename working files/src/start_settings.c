@@ -1495,11 +1495,11 @@ void start_settings_peripherals(void)
   /* ЌастроюЇмо TIM2 */
   /* ---------------------------------------------------------------
   TIM2 Ќастроюванн€: Output Compare Timing Mode:
-  TIM2CLK = 30*2 ћ√ц, Prescaler = 2000, TIM2 counter clock = 30 к√ц
+  TIM2CLK = 30*2 ћ√ц, Prescaler = 60, TIM2 counter clock = 1 ћ√ц
   CC1 update rate = TIM2 counter clock / CCR1_Val = 1000 Hz
   --------------------------------------------------------------- */
   TIM_TimeBaseStructure.TIM_Period = 0xffffffff;
-  TIM_TimeBaseStructure.TIM_Prescaler = (2000-1);
+  TIM_TimeBaseStructure.TIM_Prescaler = (60-1);
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);

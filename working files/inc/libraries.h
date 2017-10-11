@@ -20,4 +20,8 @@
 
 #pragma section = "variables_RAM1"
 
+#ifdef SYSTEM_VIEWER_ENABLE
+#include "SEGGER_SYSVIEW.h"
+#endif
+
 #endif

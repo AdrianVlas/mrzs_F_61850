@@ -277,6 +277,8 @@ unsigned int sector_directional_tznp[3] = {0, 0, 0};
 
 unsigned int i1_bilshe_porogu = 0, i2_bilshe_porogu = 0;
 
+uint32_t TIM_PRT_write_tick;
+
 //Світлоіндикатори
 volatile unsigned int state_leds = 0;
 volatile unsigned int state_trigger_leds = 0;

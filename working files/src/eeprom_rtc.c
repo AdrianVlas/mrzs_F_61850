@@ -2021,6 +2021,7 @@ void main_routines_for_i2c(void)
         unsigned int temp_state_outputs_2 = (temp_state_outputs >> NUMBER_OUTPUTS_1) & ((1 << NUMBER_OUTPUTS_2) - 1);
         _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = temp_state_outputs_1;
         _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_2) = temp_state_outputs_2;
+        TIM_PRT_write_tick = TIM2->CNT;
         //Виставляємо пін CON-OUTPUTS-1, щоб можна було управляти виходами
         GPIO_SetBits(CON_OUTPUTS, CON_1_OUTPUTS_PIN);
         //Знімаємо пін CON-OUTPUTS-2, щоб можна було управляти виходамии
