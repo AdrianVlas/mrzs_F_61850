@@ -51,13 +51,13 @@ void control_reading_ADCs(void)
     command_word_adc |= READ_DATA_VAL;
   }
 
-  if (adc_TEST_VAL_read != 0) 
-  {
-    adc_TEST_VAL_read = false;
-    status_adc_read_work |= TEST_VAL_READ;
-      
-    command_word_adc |= READ_TEST_VAL;
-  }
+//  if (adc_TEST_VAL_read != 0) 
+//  {
+//    adc_TEST_VAL_read = false;
+//    status_adc_read_work |= TEST_VAL_READ;
+//      
+//    command_word_adc |= READ_TEST_VAL;
+//  }
   
   unsigned int command_word_adc_diff = command_word_adc ^ command_word_adc_work;
   if (command_word_adc_diff != 0)
@@ -179,6 +179,30 @@ void control_reading_ADCs(void)
  *************************************************************************/
 void operate_test_ADCs(void)
 {
+  //VREF для АЦП
+  static uint32_t index_canal[NUMBER_ANALOG_CANALES] = {C_3I0_16, C_Ia_1, C_Ib_1, C_Ic_1, C_Ua_1, C_Ub_1, C_Uc_1, C_3U0_1};
+  uint32_t vref_adc_general_tmp = 0;
+  for (size_t i = 0; i < NUMBER_ANALOG_CANALES; i++)
+  {
+    unsigned int temp = output_adc[index_canal[i]].value;
+    
+    vref_adc_averange_sum[i] += temp;
+    vref_adc_averange_sum[i] -= vref_adc_moment_value[i][index_array_of_one_value];
+    vref_adc_moment_value[i][index_array_of_one_value] = temp;
+    vref_adc_general_tmp += vref_adc[i] = vref_adc_averange_sum[i] >> VAGA_NUMBER_POINT;
+  }
+  vref_adc_general_tmp /=NUMBER_ANALOG_CANALES;
+  vref_adc_general = vref_adc_general_tmp;
+  
+  if ((vref_adc_general_tmp <0x709) || (vref_adc_general_tmp > 0x8f5)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC_TEST_BIT);
+  else _SET_BIT(clear_diagnostyka,ERROR_VREF_ADC_TEST_BIT);
+  
+//  temp = output_adc[C_VREF_ADC1].value;
+//  vref_adc1_averange_sum += temp;
+//  vref_adc1_averange_sum -= vref_adc1_moment_value[index_array_of_one_value];
+//  vref_adc1_moment_value[index_array_of_one_value] = temp;
+//  vref_adc1 = vref_adc1_averange_sum >> VAGA_NUMBER_POINT;
+
 //  /*******************************************************
 //  Вираховування середнього значення контрольних точок
 //  *******************************************************/
@@ -262,15 +286,15 @@ void operate_test_ADCs(void)
 //  vdd_adc2_moment_value[index_array_of_one_value] = temp;
 //  vdd_adc2 = vdd_adc2_averange_sum >> VAGA_NUMBER_POINT;
 //  if ((temp <0x6F2) || (temp > 0xF5B)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
-//
-//  //Всі масиви одної величини ми вже опрацювали  
-//  if((++index_array_of_one_value) == NUMBER_POINT)
-//    index_array_of_one_value = 0;
-//  else if (index_array_of_one_value > NUMBER_POINT)
-//  {
-//    //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
-//    total_error_sw_fixed(21);
-//  }
+
+  //Всі масиви одної величини ми вже опрацювали  
+  if((++index_array_of_one_value) == NUMBER_POINT)
+    index_array_of_one_value = 0;
+  else if (index_array_of_one_value > NUMBER_POINT)
+  {
+    //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+    total_error_sw_fixed(21);
+  }
   /*******************************************************/
 }
 /*************************************************************************/
@@ -565,8 +589,8 @@ void SPI_ADC_IRQHandler(void)
     unsigned int shift = ((GPIO_SELECT_ADC->ODR & GPIO_SELECTPin_ADC) == 0) ? 0 : NUMBER_CANALs_ADC;
     unsigned int number_canal = shift + ((read_value >> 12) & 0xf);
     
-//    if(channel_answer != number_canal) _SET_BIT(set_diagnostyka, ERROR_SPI_ADC_BIT);
-//    else _SET_BIT(clear_diagnostyka, ERROR_SPI_ADC_BIT);
+    if(channel_answer != number_canal) _SET_BIT(set_diagnostyka, ERROR_SPI_ADC_BIT);
+    else _SET_BIT(clear_diagnostyka, ERROR_SPI_ADC_BIT);
 
     output_adc[number_canal].tick = tick_output_adc_p;
     output_adc[number_canal].value = read_value & 0xfff;
@@ -619,8 +643,8 @@ void SPI_ADC_IRQHandler(void)
     int _y1, _y2;
     long long _y;
       
-    unsigned int gnd_adc  = gnd_adc1; 
-    unsigned int vref_adc = vref_adc1; 
+//    unsigned int gnd_adc  = gnd_adc1; 
+//    unsigned int vref_adc/* = vref_adc1*/; 
 
     uint32_t _x = previous_tick_DATA_VAL;
     /*****/
@@ -631,15 +655,15 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_3I0].tick;
       _y1 = ADCs_data_raw[I_3I0].value;
         
-      _y2 = output_adc[C_3I0_1].value - gnd_adc - vref_adc;
-      if (abs(_y2) > 87)
-      {
-        _x2 = output_adc[C_3I0_1].tick;
-        _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA - 2*4);
-      }
-      else
-      {
-        _y2 = output_adc[C_3I0_16].value - gnd_adc - vref_adc;
+//      _y2 = output_adc[C_3I0_1].value - gnd_adc - vref_adc;
+//      if (abs(_y2) > 87)
+//      {
+//        _x2 = output_adc[C_3I0_1].tick;
+//        _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA - 2*4);
+//      }
+//      else
+//      {
+        _y2 = output_adc[C_3I0_16].value - /*gnd_adc - */ vref_adc_general;
         if (abs(_y2) > 87)
         {
           _x2 = output_adc[C_3I0_16].tick;
@@ -647,12 +671,12 @@ void SPI_ADC_IRQHandler(void)
         }
         else
         {
-          _y2 = output_adc[C_3I0_256].value - gnd_adc - vref_adc;
+          _y2 = output_adc[C_3I0_256].value - /*gnd_adc - */ vref_adc_general;
 
           _x2 = output_adc[C_3I0_256].tick;
           _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA);
         }
-      }
+//      }
       
       if (_x2 > _x1) _DX = _x2 - _x1;
       else
@@ -683,7 +707,7 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ia].tick;
       _y1 = ADCs_data_raw[I_Ia].value;
         
-      _y2 = output_adc[C_Ia_1].value - gnd_adc - vref_adc;
+      _y2 = output_adc[C_Ia_1].value - /*gnd_adc - */ vref_adc_general;
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ia_1].tick;
@@ -691,7 +715,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ia_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ia_16].value - /*gnd_adc - */ vref_adc_general;
 
         _x2 = output_adc[C_Ia_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ia])>>(USTUVANNJA_VAGA);
@@ -726,7 +750,7 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ib_I04].tick;
       _y1 = ADCs_data_raw[I_Ib_I04].value;
         
-      _y2 = output_adc[C_Ib_1].value - gnd_adc - vref_adc;
+      _y2 = output_adc[C_Ib_1].value - /*gnd_adc - */ vref_adc_general;
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ib_1].tick;
@@ -734,7 +758,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ib_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ib_16].value - /*gnd_adc - */ vref_adc_general;
 
         _x2 = output_adc[C_Ib_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ib_I04])>>(USTUVANNJA_VAGA);
@@ -769,7 +793,7 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ic].tick;
       _y1 = ADCs_data_raw[I_Ic].value;
         
-      _y2 = output_adc[C_Ic_1].value - gnd_adc - vref_adc;
+      _y2 = output_adc[C_Ic_1].value - /*gnd_adc - */ vref_adc_general;
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ic_1].tick;
@@ -777,7 +801,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ic_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ic_16].value - /*gnd_adc - */ vref_adc_general;
 
         _x2 = output_adc[C_Ic_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ic])>>(USTUVANNJA_VAGA);
@@ -804,8 +828,8 @@ void SPI_ADC_IRQHandler(void)
     }
     /*****/
     
-    gnd_adc  = gnd_adc2; 
-    vref_adc = vref_adc2; 
+//    gnd_adc  = gnd_adc2; 
+//    vref_adc = vref_adc2; 
 
     /*****/
     //Формуємо значення 3U0
@@ -815,7 +839,7 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_3U0].tick;
       _y1 = ADCs_data_raw[I_3U0].value;
         
-      _y2 = output_adc[C_3U0_1].value - gnd_adc - vref_adc;
+      _y2 = output_adc[C_3U0_1].value - /*gnd_adc - */ vref_adc_general;
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_3U0_1].tick;
@@ -823,7 +847,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_3U0_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_3U0_16].value - /*gnd_adc - */ vref_adc_general;
 
         _x2 = output_adc[C_3U0_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_3U0])>>(USTUVANNJA_VAGA);
@@ -878,7 +902,7 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ua].tick;
       _y1 = ADCs_data_raw[I_Ua].value;
         
-      _y2 = output_adc[C_Ua_1].value - gnd_adc - vref_adc;
+      _y2 = output_adc[C_Ua_1].value - /*gnd_adc - */ vref_adc_general;
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ua_1].tick;
@@ -886,7 +910,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ua_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ua_16].value - /*gnd_adc - */ vref_adc_general;
 
         _x2 = output_adc[C_Ua_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ua])>>(USTUVANNJA_VAGA);
@@ -941,7 +965,7 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ub].tick;
       _y1 = ADCs_data_raw[I_Ub].value;
         
-      _y2 = output_adc[C_Ub_1].value - gnd_adc - vref_adc;
+      _y2 = output_adc[C_Ub_1].value - /*gnd_adc - */ vref_adc_general;
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ub_1].tick;
@@ -949,7 +973,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ub_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ub_16].value - /*gnd_adc - */ vref_adc_general;
 
         _x2 = output_adc[C_Ub_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ub])>>(USTUVANNJA_VAGA);
@@ -1004,7 +1028,7 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Uc].tick;
       _y1 = ADCs_data_raw[I_Uc].value;
         
-      _y2 = output_adc[C_Uc_1].value - gnd_adc - vref_adc;
+      _y2 = output_adc[C_Uc_1].value - /*gnd_adc - */ vref_adc_general;
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Uc_1].tick;
@@ -1012,7 +1036,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Uc_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Uc_16].value - /*gnd_adc - */ vref_adc_general;
 
         _x2 = output_adc[C_Uc_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Uc])>>(USTUVANNJA_VAGA);
@@ -1338,18 +1362,18 @@ void SPI_ADC_IRQHandler(void)
     }
     /*******************************************************/
     
-    if ((status_adc_read_work & TEST_VAL_READ) != 0)
+//    if ((status_adc_read_work & TEST_VAL_READ) != 0)
     {
       //Треба опрацювати інтегральні величини
       operate_test_ADCs();
     
-      status_adc_read_work &= (unsigned int)(~TEST_VAL_READ);
+//      status_adc_read_work &= (unsigned int)(~TEST_VAL_READ);
 
-      /**************************************************/
-      //Виставляємо повідомлення про завершення тестових величин
-      /**************************************************/
-      control_word_of_watchdog |= WATCHDOG_MEASURE_STOP_TEST_VAL;
-      /**************************************************/
+//      /**************************************************/
+//      //Виставляємо повідомлення про завершення тестових величин
+//      /**************************************************/
+//      control_word_of_watchdog |= WATCHDOG_MEASURE_STOP_TEST_VAL;
+//      /**************************************************/
       
       /**************************************************/
       //Якщо зараз стоїть блокування то його знімаємо
@@ -1388,8 +1412,8 @@ void SPI_ADC_IRQHandler(void)
     таймеру ( chip select виставлений у 1)
     */
     if (
-        (adc_DATA_VAL_read == false) &&
-        (adc_TEST_VAL_read == false)
+        (adc_DATA_VAL_read == false) /*&&
+        (adc_TEST_VAL_read == false)*/
        )
     {
       semaphore_adc_irq  = false;

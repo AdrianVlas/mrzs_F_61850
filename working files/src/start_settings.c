@@ -52,51 +52,56 @@ void global_vareiables_installation(void)
     output_adc[i].value = 0;
   }
   
-  for (unsigned int i = 0; i < NUMBER_GND_ADC1; i++)
+  for(size_t i = 0; i < NUMBER_ANALOG_CANALES; i++)
   {
-    for(unsigned int j = 0; j < NUMBER_POINT; j++)
+    for(size_t j = 0; j < NUMBER_POINT; j++)
     {
-      gnd_adc1_moment_value[i][j] = GND_NORMAL_VALUE;
+      vref_adc_moment_value[i][j] = VREF_NORMAL_VALUE;
     }
-    gnd_adc1_averange_sum[i] = GND_NORMAL_VALUE*NUMBER_POINT;
-    gnd_adc1_averange[i] = GND_NORMAL_VALUE;
+    vref_adc_averange_sum[i] = VREF_NORMAL_VALUE*NUMBER_POINT;
+    vref_adc[i] = VREF_NORMAL_VALUE;
   }
-  gnd_adc1 = GND_NORMAL_VALUE;
+  
+//  for (unsigned int i = 0; i < NUMBER_GND_ADC1; i++)
+//  {
+//    for(unsigned int j = 0; j < NUMBER_POINT; j++)
+//    {
+//      gnd_adc1_moment_value[i][j] = GND_NORMAL_VALUE;
+//    }
+//    gnd_adc1_averange_sum[i] = GND_NORMAL_VALUE*NUMBER_POINT;
+//    gnd_adc1_averange[i] = GND_NORMAL_VALUE;
+//  }
+//  gnd_adc1 = GND_NORMAL_VALUE;
 
-  for (unsigned int i = 0; i < NUMBER_GND_ADC2; i++)
-  {
-    for(unsigned int j = 0; j < NUMBER_POINT; j++)
-    {
-      gnd_adc2_moment_value[i][j] = GND_NORMAL_VALUE;
-    }
-    gnd_adc2_averange_sum[i] = GND_NORMAL_VALUE*NUMBER_POINT;
-    gnd_adc2_averange[i] = GND_NORMAL_VALUE;
-  }
-  gnd_adc2 = GND_NORMAL_VALUE;
+//  for (unsigned int i = 0; i < NUMBER_GND_ADC2; i++)
+//  {
+//    for(unsigned int j = 0; j < NUMBER_POINT; j++)
+//    {
+//      gnd_adc2_moment_value[i][j] = GND_NORMAL_VALUE;
+//    }
+//    gnd_adc2_averange_sum[i] = GND_NORMAL_VALUE*NUMBER_POINT;
+//    gnd_adc2_averange[i] = GND_NORMAL_VALUE;
+//  }
+//  gnd_adc2 = GND_NORMAL_VALUE;
 
-#ifdef BA1_VER2  
-  for (unsigned int i = 0; i < NUMBER_VREF_ADC2; i++)
-  {
-    for(unsigned int j = 0; j < NUMBER_POINT; j++)
-    {
-      vref_adc2_moment_value[i][j] = VREF_NORMAL_VALUE;
-    }
-    vref_adc2_averange_sum[i] = VREF_NORMAL_VALUE*NUMBER_POINT;
-    vref_adc2_averange[i] = VREF_NORMAL_VALUE;
-  }
-  vref_adc2 = VREF_NORMAL_VALUE;
-#endif
+//  for (unsigned int i = 0; i < NUMBER_VREF_ADC2; i++)
+//  {
+//    for(unsigned int j = 0; j < NUMBER_POINT; j++)
+//    {
+//      vref_adc2_moment_value[i][j] = VREF_NORMAL_VALUE;
+//    }
+//    vref_adc2_averange_sum[i] = VREF_NORMAL_VALUE*NUMBER_POINT;
+//    vref_adc2_averange[i] = VREF_NORMAL_VALUE;
+//  }
+//  vref_adc2 = VREF_NORMAL_VALUE;
 
-  for(unsigned int i = 0; i < NUMBER_POINT; i++)
-  {
-    vref_adc1_moment_value[i] = VREF_NORMAL_VALUE;
-    vdd_adc1_moment_value[i] = VDD_NORMAL_VALUE;
-
-#ifndef BA1_VER2
-    vref_adc2_moment_value[i] = VREF_NORMAL_VALUE;
-#endif
-    vdd_adc2_moment_value[i] = VDD_NORMAL_VALUE;
-  }
+//  for(unsigned int i = 0; i < NUMBER_POINT; i++)
+//  {
+//    vref_adc1_moment_value[i] = VREF_NORMAL_VALUE;
+//    vdd_adc1_moment_value[i] = VDD_NORMAL_VALUE;
+//
+//    vdd_adc2_moment_value[i] = VDD_NORMAL_VALUE;
+//  }
   
   for(unsigned int i=0; i<(NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT); i++)
     current_data[i] = 0;

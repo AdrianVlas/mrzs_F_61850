@@ -3,8 +3,8 @@
 /*****************************************************/
 //Діагностика АЦП
 /*****************************************************/
-inline void diagnostyca_adc_execution(void)
-{
+//inline void diagnostyca_adc_execution(void)
+//{
 //  if (gnd_adc1 >0x51) _SET_BIT(set_diagnostyka, ERROR_GND_ADC1_TEST_BIT);
 //  else _SET_BIT(clear_diagnostyka, ERROR_GND_ADC1_TEST_BIT);
 //
@@ -22,7 +22,7 @@ inline void diagnostyca_adc_execution(void)
 //
 //  if ((vdd_adc2 <0x8F9) || (vdd_adc2 > 0xE13)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_BIT);
 //  else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC2_TEST_BIT);
-}
+//}
 /*****************************************************/
 
 /*****************************************************/
@@ -9190,8 +9190,8 @@ inline void main_protection(void)
 #endif
     
       
-  //Діагностика справності раз на період
-  diagnostyca_adc_execution();
+//  //Діагностика справності раз на період
+//  diagnostyca_adc_execution();
   
   //Копіюємо вимірювання для низькопріоритетних і високопріоритетних завдань
   unsigned int bank_measurement_high_tmp = (bank_measurement_high ^ 0x1) & 0x1;
@@ -9234,6 +9234,7 @@ inline void main_protection(void)
 //  diagnostyka_tmp[2] &= USED_BITS_IN_LAST_INDEX; 
 
   _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
+  _CLEAR_BIT(diagnostyka_tmp, EVENT_SOFT_RESTART_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
   if (
       (diagnostyka_tmp[0] != 0) ||

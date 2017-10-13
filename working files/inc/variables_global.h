@@ -4,7 +4,7 @@
 //Вимірювальна система
 volatile unsigned int semaphore_adc_irq = false;
 volatile unsigned int adc_DATA_VAL_read = false;
-volatile unsigned int adc_TEST_VAL_read = false;
+//volatile unsigned int adc_TEST_VAL_read = false;
 volatile unsigned int status_adc_read_work = 0;
 const unsigned int input_adc[NUMBER_INPUTs_ADCs][2]={
                                                      {1,0x8370},
@@ -23,22 +23,6 @@ const unsigned int input_adc[NUMBER_INPUTs_ADCs][2]={
                                                      {1,0xb770},
                                                      {1,0xbb70},
                                                      {1,0xbf70},
-                                                     {2,0x8370},
-                                                     {2,0x8770},
-                                                     {2,0x8b70},
-                                                     {2,0x8f70},
-                                                     {2,0x9370},
-                                                     {2,0x9770},
-                                                     {2,0x9b70},
-                                                     {2,0x9f70},
-                                                     {2,0xa370},
-                                                     {2,0xa770},
-                                                     {2,0xab70},
-                                                     {2,0xaf70},
-                                                     {2,0xb370},
-                                                     {2,0xb770},
-                                                     {2,0xbb70},
-                                                     {2,0xbf70}
                                                     };
 EXTENDED_OUTPUT_DATA output_adc[NUMBER_INPUTs_ADCs];
 ROZSHYRENA_VYBORKA rozshyrena_vyborka;
@@ -70,45 +54,40 @@ unsigned int tick_c, tick_c_work;
 float frequency_min = 50, frequency_max = 50;
 unsigned int command_restart_monitoring_frequency = 0;
 
-const unsigned int index_GND_ADC1[NUMBER_GND_ADC1] = {C_GND_ADC1_1, C_GND_ADC1_2, C_GND_ADC1_3, C_GND_ADC1_4, C_GND_ADC1_5};
-unsigned int gnd_adc1_moment_value[NUMBER_GND_ADC1][NUMBER_POINT];
-unsigned int gnd_adc1_averange_sum[NUMBER_GND_ADC1];
-unsigned int gnd_adc1_averange[NUMBER_GND_ADC1];
-unsigned int gnd_adc1;
+unsigned int vref_adc_averange_sum[NUMBER_ANALOG_CANALES];
+unsigned int vref_adc_moment_value[NUMBER_ANALOG_CANALES][NUMBER_POINT];
+unsigned int vref_adc[NUMBER_ANALOG_CANALES];
+unsigned int vref_adc_general = VREF_NORMAL_VALUE;
 
-#ifdef BA1_VER2
-const unsigned int index_GND_ADC2[NUMBER_GND_ADC2] = {C_GND_ADC2_1, C_GND_ADC2_2, C_GND_ADC2_3};
-#else
-const unsigned int index_GND_ADC2[NUMBER_GND_ADC2] = {C_GND_ADC2_1, C_GND_ADC2_2, C_GND_ADC2_3, C_GND_ADC2_4, C_GND_ADC2_5};
-#endif
-unsigned int gnd_adc2_moment_value[NUMBER_GND_ADC2][NUMBER_POINT];
-unsigned int gnd_adc2_averange_sum[NUMBER_GND_ADC2];
-unsigned int gnd_adc2_averange[NUMBER_GND_ADC2];
-unsigned int gnd_adc2;
+//const unsigned int index_GND_ADC1[NUMBER_GND_ADC1] = {C_GND_ADC1_1, C_GND_ADC1_2, C_GND_ADC1_3, C_GND_ADC1_4, C_GND_ADC1_5};
+//unsigned int gnd_adc1_moment_value[NUMBER_GND_ADC1][NUMBER_POINT];
+//unsigned int gnd_adc1_averange_sum[NUMBER_GND_ADC1];
+//unsigned int gnd_adc1_averange[NUMBER_GND_ADC1];
+//unsigned int gnd_adc1;
 
-unsigned int vref_adc1_moment_value[NUMBER_POINT];
-unsigned int vref_adc1_averange_sum = VREF_NORMAL_VALUE*NUMBER_POINT;
-unsigned int vref_adc1 = VREF_NORMAL_VALUE;
+//const unsigned int index_GND_ADC2[NUMBER_GND_ADC2] = {C_GND_ADC2_1, C_GND_ADC2_2, C_GND_ADC2_3};
+//unsigned int gnd_adc2_moment_value[NUMBER_GND_ADC2][NUMBER_POINT];
+//unsigned int gnd_adc2_averange_sum[NUMBER_GND_ADC2];
+//unsigned int gnd_adc2_averange[NUMBER_GND_ADC2];
+//unsigned int gnd_adc2;
 
-#ifdef BA1_VER2
-const unsigned int index_VREF_ADC2[NUMBER_VREF_ADC2] = {C_VREF_ADC2_1/*, C_VREF_ADC2_2, C_VREF_ADC2_3, C_VREF_ADC2_4*/};
-unsigned int vref_adc2_moment_value[NUMBER_VREF_ADC2][NUMBER_POINT];
-unsigned int vref_adc2_averange_sum[NUMBER_VREF_ADC2];
-unsigned int vref_adc2_averange[NUMBER_VREF_ADC2];
-unsigned int vref_adc2;
-#else
-unsigned int vref_adc2_moment_value[NUMBER_POINT];
-unsigned int vref_adc2_averange_sum = VREF_NORMAL_VALUE*NUMBER_POINT;
-unsigned int vref_adc2 = VREF_NORMAL_VALUE;
-#endif
+//unsigned int vref_adc1_moment_value[NUMBER_POINT];
+//unsigned int vref_adc1_averange_sum = VREF_NORMAL_VALUE*NUMBER_POINT;
+//unsigned int vref_adc1 = VREF_NORMAL_VALUE;
 
-unsigned int vdd_adc1_moment_value[NUMBER_POINT];
-unsigned int vdd_adc1_averange_sum = VDD_NORMAL_VALUE*NUMBER_POINT;
-unsigned int vdd_adc1 = VDD_NORMAL_VALUE;
+//const unsigned int index_VREF_ADC2[NUMBER_VREF_ADC2] = {C_VREF_ADC2_1/*, C_VREF_ADC2_2, C_VREF_ADC2_3, C_VREF_ADC2_4*/};
+//unsigned int vref_adc2_moment_value[NUMBER_VREF_ADC2][NUMBER_POINT];
+//unsigned int vref_adc2_averange_sum[NUMBER_VREF_ADC2];
+//unsigned int vref_adc2_averange[NUMBER_VREF_ADC2];
+//unsigned int vref_adc2;
 
-unsigned int vdd_adc2_moment_value[NUMBER_POINT];
-unsigned int vdd_adc2_averange_sum = VDD_NORMAL_VALUE*NUMBER_POINT;
-unsigned int vdd_adc2 = VDD_NORMAL_VALUE;
+//unsigned int vdd_adc1_moment_value[NUMBER_POINT];
+//unsigned int vdd_adc1_averange_sum = VDD_NORMAL_VALUE*NUMBER_POINT;
+//unsigned int vdd_adc1 = VDD_NORMAL_VALUE;
+
+//unsigned int vdd_adc2_moment_value[NUMBER_POINT];
+//unsigned int vdd_adc2_averange_sum = VDD_NORMAL_VALUE*NUMBER_POINT;
+//unsigned int vdd_adc2 = VDD_NORMAL_VALUE;
 
 unsigned int index_array_of_one_value = 0;
 unsigned int index_array_of_one_value_fourier = 0;

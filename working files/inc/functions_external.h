@@ -228,7 +228,7 @@ extern void command_start_saving_record_dr_into_dataflash(void);
 extern void routine_for_queue_dr(void);
 extern void digital_registrator(volatile unsigned int*);
 extern void analog_registrator(volatile unsigned int*);
-extern void diagnostyca_adc_execution(void);
+//extern void diagnostyca_adc_execution(void);
 
 extern void Usb_routines(void);
 extern void USART_RS485_Configure(void);

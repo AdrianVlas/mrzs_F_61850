@@ -2416,6 +2416,27 @@ void changing_diagnostyka_state(void)
   }
   /*****/
 
+  /*****/
+  //Подія "Пр.Рестарт пр."
+  /*****/
+  if (_CHECK_SET_BIT(value_changes, EVENT_SOFT_RESTART_SYSTEM_BIT) != 0)
+  {
+    //Зафіксовано що подія "Пр.Рестарт пр." змінила свій стан
+    if (_CHECK_SET_BIT(diagnostyka_now, EVENT_SOFT_RESTART_SYSTEM_BIT) == 0)
+    {
+      /*
+      Новий стан події "Пр.Рестарт пр." є неактивний стан
+      Тому робимо так, щоб ця подія не попала у реєстратор програмних подій таким операціями
+      - знімаємо встановлений біт про зміну стану діагностики
+      - знімаємо повідомлення, що у попередньому стані діагностики ця подія була активною
+      - у текучому стані діагностики нічого міняти не треба, бо цей сигнал є неактивним
+      */
+      _CLEAR_BIT(value_changes, EVENT_SOFT_RESTART_SYSTEM_BIT);
+      _CLEAR_BIT(diagnostyka_before, EVENT_SOFT_RESTART_SYSTEM_BIT);
+    }
+  }
+  /*****/
+
   //Перевіряємо, чи треба виконувати дії поо зміні діагностики
   if (
       (value_changes[0] != 0) ||
@@ -2486,9 +2507,10 @@ void changing_diagnostyka_state(void)
 
         //Час фіксації зміни у діагностиці
         if(
-           (_CHECK_SET_BIT(diagnostyka, EVENT_START_SYSTEM_BIT   ) == 0) &&
-           (_CHECK_SET_BIT(diagnostyka, EVENT_RESTART_SYSTEM_BIT ) == 0) &&
-           (_CHECK_SET_BIT(diagnostyka, EVENT_STOP_SYSTEM_BIT    ) == 0)
+           (_CHECK_SET_BIT(diagnostyka, EVENT_START_SYSTEM_BIT       ) == 0) &&
+           (_CHECK_SET_BIT(diagnostyka, EVENT_RESTART_SYSTEM_BIT     ) == 0) &&
+           (_CHECK_SET_BIT(diagnostyka, EVENT_SOFT_RESTART_SYSTEM_BIT) == 0) &&
+           (_CHECK_SET_BIT(diagnostyka, EVENT_STOP_SYSTEM_BIT        ) == 0)
           )
         {
           //Вже відбулося перше зчитуванння часу - тобто системний час у нас є

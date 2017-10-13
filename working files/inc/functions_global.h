@@ -229,7 +229,7 @@ void command_start_saving_record_dr_into_dataflash(void);
 void routine_for_queue_dr(void);
 void digital_registrator(volatile unsigned int*);
 void analog_registrator(volatile unsigned int*);
-void diagnostyca_adc_execution(void);
+//void diagnostyca_adc_execution(void);
 
 void Usb_routines(void);
 void USART_RS485_Configure(void);

@@ -1,6 +1,6 @@
 extern volatile unsigned int semaphore_adc_irq;
 extern volatile unsigned int adc_DATA_VAL_read;
-extern volatile unsigned int adc_TEST_VAL_read;
+//extern volatile unsigned int adc_TEST_VAL_read;
 extern volatile unsigned int status_adc_read_work;
 extern const unsigned int input_adc[NUMBER_INPUTs_ADCs][2];
 extern EXTENDED_OUTPUT_DATA output_adc[NUMBER_INPUTs_ADCs];
@@ -31,40 +31,40 @@ extern unsigned int tick_c, tick_c_work;
 extern float frequency_min, frequency_max;
 extern unsigned int command_restart_monitoring_frequency;
 
-extern const unsigned int index_GND_ADC1[NUMBER_GND_ADC1];
-extern unsigned int gnd_adc1_moment_value[NUMBER_GND_ADC1][NUMBER_POINT];
-extern unsigned int gnd_adc1_averange_sum[NUMBER_GND_ADC1];
-extern unsigned int gnd_adc1_averange[NUMBER_GND_ADC1];
-extern unsigned int gnd_adc1;
+extern unsigned int vref_adc_averange_sum[NUMBER_ANALOG_CANALES];
+extern unsigned int vref_adc_moment_value[NUMBER_ANALOG_CANALES][NUMBER_POINT];
+extern unsigned int vref_adc[NUMBER_ANALOG_CANALES];
+extern unsigned int vref_adc_general;
 
-extern const unsigned int index_GND_ADC2[NUMBER_GND_ADC2];
-extern unsigned int gnd_adc2_moment_value[NUMBER_GND_ADC2][NUMBER_POINT];
-extern unsigned int gnd_adc2_averange_sum[NUMBER_GND_ADC2];
-extern unsigned int gnd_adc2_averange[NUMBER_GND_ADC2];
-extern unsigned int gnd_adc2;
+//extern const unsigned int index_GND_ADC1[NUMBER_GND_ADC1];
+//extern unsigned int gnd_adc1_moment_value[NUMBER_GND_ADC1][NUMBER_POINT];
+//extern unsigned int gnd_adc1_averange_sum[NUMBER_GND_ADC1];
+//extern unsigned int gnd_adc1_averange[NUMBER_GND_ADC1];
+//extern unsigned int gnd_adc1;
 
-extern unsigned int vref_adc1_moment_value[NUMBER_POINT];
-extern unsigned int vref_adc1_averange_sum;
-extern unsigned int vref_adc1;
+//extern const unsigned int index_GND_ADC2[NUMBER_GND_ADC2];
+//extern unsigned int gnd_adc2_moment_value[NUMBER_GND_ADC2][NUMBER_POINT];
+//extern unsigned int gnd_adc2_averange_sum[NUMBER_GND_ADC2];
+//extern unsigned int gnd_adc2_averange[NUMBER_GND_ADC2];
+//extern unsigned int gnd_adc2;
 
-#ifdef BA1_VER2
-extern const unsigned int index_VREF_ADC2[NUMBER_VREF_ADC2];
-extern unsigned int vref_adc2_moment_value[NUMBER_VREF_ADC2][NUMBER_POINT];
-extern unsigned int vref_adc2_averange_sum[NUMBER_VREF_ADC2];
-extern unsigned int vref_adc2_averange[NUMBER_VREF_ADC2];
-#else
-extern unsigned int vref_adc2_moment_value[NUMBER_POINT];
-extern unsigned int vref_adc2_averange_sum;
-#endif
-extern unsigned int vref_adc2;
+//extern unsigned int vref_adc1_moment_value[NUMBER_POINT];
+//extern unsigned int vref_adc1_averange_sum;
+//extern unsigned int vref_adc1;
 
-extern unsigned int vdd_adc1_moment_value[NUMBER_POINT];
-extern unsigned int vdd_adc1_averange_sum;
-extern unsigned int vdd_adc1;
+//extern const unsigned int index_VREF_ADC2[NUMBER_VREF_ADC2];
+//extern unsigned int vref_adc2_moment_value[NUMBER_VREF_ADC2][NUMBER_POINT];
+//extern unsigned int vref_adc2_averange_sum[NUMBER_VREF_ADC2];
+//extern unsigned int vref_adc2_averange[NUMBER_VREF_ADC2];
+//extern unsigned int vref_adc2;
 
-extern unsigned int vdd_adc2_moment_value[NUMBER_POINT];
-extern unsigned int vdd_adc2_averange_sum;
-extern unsigned int vdd_adc2;
+//extern unsigned int vdd_adc1_moment_value[NUMBER_POINT];
+//extern unsigned int vdd_adc1_averange_sum;
+//extern unsigned int vdd_adc1;
+
+//extern unsigned int vdd_adc2_moment_value[NUMBER_POINT];
+//extern unsigned int vdd_adc2_averange_sum;
+//extern unsigned int vdd_adc2;
 
 extern unsigned int index_array_of_one_value;
 extern unsigned int index_array_of_one_value_fourier;

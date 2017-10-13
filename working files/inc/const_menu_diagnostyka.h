@@ -7,7 +7,8 @@
 
 //#define USED_BITS_IN_LAST_INDEX  0x00ffffff  
 
-enum _error_id {
+enum _error_id 
+{
 ERROR_START_VIA_I2C_BIT = 0,
 ERROR_SETTINGS_EEPROM_BIT,
 ERROR_SETTINGS_EEPROM_EMPTY_BIT,
@@ -53,19 +54,7 @@ RTC_OSCILLATOR_FAIL_BIT,
 RTC_UPDATING_HALTED_BIT,
 RTC_WORK_FIELD_NOT_SET_BIT,
 
-ERROR_GND_ADC1_TEST_BIT,
-ERROR_VREF_ADC1_TEST_BIT,
-ERROR_VDD_ADC1_TEST_BIT,
-ERROR_GND_ADC1_TEST_COARSE_BIT,
-ERROR_VREF_ADC1_TEST_COARSE_BIT,
-ERROR_VDD_ADC1_TEST_COARSE_BIT,
-
-ERROR_GND_ADC2_TEST_BIT,
-ERROR_VREF_ADC2_TEST_BIT,
-ERROR_VDD_ADC2_TEST_BIT,
-ERROR_GND_ADC2_TEST_COARSE_BIT,
-ERROR_VREF_ADC2_TEST_COARSE_BIT,
-ERROR_VDD_ADC2_TEST_COARSE_BIT,
+ERROR_VREF_ADC_TEST_BIT,
 
 ERROR_SPI_ADC_BIT,
 
@@ -87,6 +76,7 @@ ERROR_PR_ERR_LOSS_INFORMATION_BIT,
 
 EVENT_START_SYSTEM_BIT,
 EVENT_RESTART_SYSTEM_BIT,
+EVENT_SOFT_RESTART_SYSTEM_BIT,
 EVENT_STOP_SYSTEM_BIT,
 EVENT_DROP_POWER_BIT,
 
@@ -117,33 +107,28 @@ LOSE_ENERGY_DATA
 )
 
 #define MASKA_AVAR_ERROR_1        (unsigned int)(               \
-    (1 << (ERROR_GND_ADC1_TEST_BIT - 32))                       \
-  | (1 << (ERROR_VREF_ADC1_TEST_BIT - 32))                      \
-  | (1 << (ERROR_VDD_ADC1_TEST_BIT - 32))                       \
-  | (1 << (ERROR_GND_ADC1_TEST_COARSE_BIT - 32))                \
-  | (1 << (ERROR_VREF_ADC1_TEST_COARSE_BIT - 32))               \
-  | (1 << (ERROR_VDD_ADC1_TEST_COARSE_BIT - 32))                \
-  | (1 << (ERROR_GND_ADC2_TEST_BIT - 32))                       \
-  | (1 << (ERROR_VREF_ADC2_TEST_BIT - 32))                      \
-  | (1 << (ERROR_VDD_ADC2_TEST_BIT - 32))                       \
-  | (1 << (ERROR_GND_ADC2_TEST_COARSE_BIT - 32))                \
-  | (1 << (ERROR_VREF_ADC2_TEST_COARSE_BIT - 32))               \
-  | (1 << (ERROR_VDD_ADC2_TEST_COARSE_BIT - 32))                \
+    (1 << (ERROR_VREF_ADC_TEST_BIT - 32))                       \
   | (1 << (ERROR_SPI_ADC_BIT - 32))                             \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 0 - 32))                \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 1 - 32))                \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 2 - 32))                \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 3 - 32))                \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 4 - 32))                \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 5 - 32))                \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 6 - 32))                \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  0 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  1 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  2 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  3 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  4 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  5 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  6 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  7 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  8 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT +  9 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 10 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 11 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 12 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 13 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 14 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 15 - 32))               \
 )
 
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
-    (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 7 - 64))                \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 8 - 64))                \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 9 - 64))                \
-  | (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
+    (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
 )
 
 # define NAME_DIAGN_RU  \
@@ -190,18 +175,7 @@ LOSE_ENERGY_DATA
   "Отказ Осцилятора",   \
   " Ост.обновл.RTC ",   \
   " Не уст.поля RTC",   \
-  " Тест GND АЦП1  ",   \
-  " Тест VREF АЦП1 ",   \
-  " Тест VDD АЦП1  ",   \
-  "Тест GND АЦП1 гр",   \
-  "Тест VREF АЦП1гр",   \
-  "Тест VDD АЦП1 гр",   \
-  " Тест GND АЦП2  ",   \
-  " Тест VREF АЦП2 ",   \
-  " Тест VDD АЦП2  ",   \
-  "Тест GND АЦП2 гр",   \
-  "Тест VREF АЦП2гр",   \
-  "Тест VDD АЦП2 гр",   \
+  " Тест VREF АЦП  ",   \
   " Ош. SPI АЦП    ",   \
   "Переп.буф.ц.осц.",   \
   " Ош.вых.реле 1  ",   \
@@ -231,6 +205,7 @@ LOSE_ENERGY_DATA
   " Потеря д.пр.ош.",   \
   " Старт устр.    ",   \
   " Рестарт устр.  ",   \
+  "Пр.Рестарт устр.",   \
   " Останов.устр.  ",   \
   " Пропад.питания ",   \
   " Отказ ЖКИ      ",   \
@@ -239,6 +214,16 @@ LOSE_ENERGY_DATA
   " Ош.внутр.FLASH ",   \
   " Ош.выб.гр.уст. ",   \
   " Пот.д.энергии  ",   \
+  " Ошибка 82      ",   \
+  " Ошибка 83      ",   \
+  " Ошибка 84      ",   \
+  " Ошибка 85      ",   \
+  " Ошибка 86      ",   \
+  " Ошибка 87      ",   \
+  " Ошибка 88      ",   \
+  " Ошибка 89      ",   \
+  " Ошибка 90      ",   \
+  " Ошибка 91      ",   \
   " Ошибка 92      ",   \
   " Ошибка 93      ",   \
   " Ошибка 94      ",   \
@@ -288,18 +273,7 @@ LOSE_ENERGY_DATA
   " Відм.Осцилятора",   \
   " Зуп.обновл.RTC ",   \
   " Не вст.поля RTC",   \
-  " Тест GND АЦП1  ",   \
-  " Тест VREF АЦП1 ",   \
-  " Тест VDD АЦП1  ",   \
-  "Тест GND АЦП1 гр",   \
-  "Тест VREF АЦП1гр",   \
-  "Тест VDD АЦП1 гр",   \
-  " Тест GND АЦП2  ",   \
-  " Тест VREF АЦП2 ",   \
-  " Тест VDD АЦП2  ",   \
-  "Тест GND АЦП2 гр",   \
-  "Тест VREF АЦП2гр",   \
-  "Тест VDD АЦП2 гр",   \
+  " Тест VREF АЦП  ",   \
   " Пом.SPI АЦП    ",   \
   "Переп.буф.ц.осц.",   \
   " Пом.вих.реле 1 ",   \
@@ -329,6 +303,7 @@ LOSE_ENERGY_DATA
   " Втрата д.р.пр.п",   \
   " Старт пристр.  ",   \
   " Рестарт пристр.",   \
+  " Пр.Рестарт пр. ",   \
   " Зуп.пристр.    ",   \
   " Пропад.живлення",   \
   " Відмова РКІ    ",   \
@@ -337,6 +312,16 @@ LOSE_ENERGY_DATA
   " Пом.внутр.FLASH",   \
   " Пом.виб.гр.уст.",   \
   " Втр.д.енергії  ",   \
+  " Помилка 82     ",   \
+  " Помилка 83     ",   \
+  " Помилка 84     ",   \
+  " Помилка 85     ",   \
+  " Помилка 86     ",   \
+  " Помилка 87     ",   \
+  " Помилка 88     ",   \
+  " Помилка 89     ",   \
+  " Помилка 90     ",   \
+  " Помилка 91     ",   \
   " Помилка 92     ",   \
   " Помилка 93     ",   \
   " Помилка 94     ",   \
@@ -386,18 +371,7 @@ LOSE_ENERGY_DATA
   " RTC:Osc.fail   ",   \
   " RTC:Halt update",   \
   "RTC:No def.sett.",   \
-  " ADC1:GND fail  ",   \
-  " ADC1:VREF fail ",   \
-  " ADC1:VDD fail  ",   \
-  "ADC1:GND Test R.",   \
-  "ADC1:VREF Test R",   \
-  "ADC1:VDD Test R.",   \
-  " ADC2:GND fail  ",   \
-  " ADC2:VREF fail ",   \
-  " ADC2:VDD fail  ",   \
-  "ADC2:GND Test R.",   \
-  "ADC2:VREF Test R",   \
-  "ADC2:VDD Test R.",   \
+  " ADC:VREF fail  ",   \
   " ADC SPI Err.   ",   \
   "Переп.буф.ц.осц.",   \
   " DO1 Ctrl.Err.  ",   \
@@ -427,6 +401,7 @@ LOSE_ENERGY_DATA
   " PER Data lost  ",   \
   " Device Start   ",   \
   " Device Restart ",   \
+  " Device SFTRST  ",   \
   " Device Stop    ",   \
   " Пропад.питания ",   \
   " LCD Fail       ",   \
@@ -435,6 +410,16 @@ LOSE_ENERGY_DATA
   " Int.FLASH Err. ",   \
   " Ош.выб.гр.уст. ",   \
   " Пот.д.энергии  ",   \
+  " Error 82       ",   \
+  " Error 83       ",   \
+  " Error 84       ",   \
+  " Error 85       ",   \
+  " Error 86       ",   \
+  " Error 87       ",   \
+  " Error 88       ",   \
+  " Error 89       ",   \
+  " Error 90       ",   \
+  " Error 91       ",   \
   " Error 92       ",   \
   " Error 93       ",   \
   " Error 94       ",   \
@@ -484,18 +469,7 @@ LOSE_ENERGY_DATA
   "Отказ Осцилятора",   \
   " Ост.обновл.RTC ",   \
   " Не уст.поля RTC",   \
-  " Тест GND АЦП1  ",   \
-  " Тест VREF АЦП1 ",   \
-  " Тест VDD АЦП1  ",   \
-  " Тест GND АЦП1гр",   \
-  "Тест VREF АЦП1гр",   \
-  "Тест VDD АЦП1 гр",   \
-  " Тест GND АЦП2  ",   \
-  " Тест VREF АЦП2 ",   \
-  " Тест VDD АЦП2  ",   \
-  " Тест GND АЦП2гр",   \
-  "Тест VREF АЦП2гр",   \
-  "Тест VDD АЦП2 гр",   \
+  " Тест VREF АЦП  ",   \
   " Ош.SPI АЦП     ",   \
   "Переп.буф.ц.осц.",   \
   " Ош.вых.реле 1  ",   \
@@ -525,6 +499,7 @@ LOSE_ENERGY_DATA
   " Потеря д.пр.ош.",   \
   " Старт устр.    ",   \
   " Рестарт устр.  ",   \
+  "Пр.Рестарт устр.",   \
   " Останов.устр.  ",   \
   " Пропад.питания ",   \
   " Отказ ЖКИ      ",   \
@@ -533,6 +508,16 @@ LOSE_ENERGY_DATA
   " Ош.внутр.FLASH ",   \
   " Ош.выб.гр.уст. ",   \
   " Пот.д.энергии  ",   \
+  " Ошибка 82      ",   \
+  " Ошибка 83      ",   \
+  " Ошибка 84      ",   \
+  " Ошибка 85      ",   \
+  " Ошибка 86      ",   \
+  " Ошибка 87      ",   \
+  " Ошибка 88      ",   \
+  " Ошибка 89      ",   \
+  " Ошибка 90      ",   \
+  " Ошибка 91      ",   \
   " Ошибка 92      ",   \
   " Ошибка 93      ",   \
   " Ошибка 94      ",   \

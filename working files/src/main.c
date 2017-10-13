@@ -388,7 +388,12 @@ int main(void)
   changing_diagnostyka_state();//Підготовлюємо новий запис для реєстратора програмних подій
   
   //Перевіряємо, що відбулося: запуск приладу, чи перезапуск (перезапуск роботи приладу без зняття оперативного живлення) 
-  if (RCC_GetFlagStatus(RCC_FLAG_PORRST) != SET)
+  if (RCC_GetFlagStatus(RCC_FLAG_SFTRST) == SET)
+  {
+    //Виставляємо подію про програмний перезапуск пристрою
+    _SET_BIT(set_diagnostyka, EVENT_SOFT_RESTART_SYSTEM_BIT);
+  }
+  else if (RCC_GetFlagStatus(RCC_FLAG_BORRST/*RCC_FLAG_PORRST*/) != SET)
   {
     //Виставляємо подію про перезапуск пристрою (бо не зафіксовано подію Power-on/Power-down)
     _SET_BIT(set_diagnostyka, EVENT_RESTART_SYSTEM_BIT);
