@@ -33,8 +33,6 @@
   /********************************************/
   //Клавіатура
   /********************************************/
-#ifdef KEYBOARD_VER_1
-
 #define KEYBOARD                        GPIOC  
 #define KEYBOARD_SW_1_PIN               GPIO_Pin_11
 #define KEYBOARD_SW_2_PIN               GPIO_Pin_8
@@ -54,29 +52,9 @@
 #define KEYBOARD_SW_C_PIN                       GPIO_Pin_15
 #define RCC_AHB1Periph_GPIO_KEYBOARD_SW_C       RCC_AHB1Periph_GPIOG
 
-#else
-
-#define KEYBOARD                        GPIOC  
-#define KEYBOARD_SW_1_PIN               GPIO_Pin_7
-#define KEYBOARD_SW_2_PIN               GPIO_Pin_8
-#define KEYBOARD_SW_3_PIN               GPIO_Pin_9
-#define KEYBOARD_SW_4_PIN               GPIO_Pin_6
-#define RCC_AHB1Periph_GPIO_KEYBOARD    RCC_AHB1Periph_GPIOC
-
-#define KEYBOARD_SW_A                           GPIOC
-#define KEYBOARD_SW_A_PIN                       GPIO_Pin_10
-#define RCC_AHB1Periph_GPIO_KEYBOARD_SW_A       RCC_AHB1Periph_GPIOC
-
-#define KEYBOARD_SW_B                           GPIOC
-#define KEYBOARD_SW_B_PIN                       GPIO_Pin_11
-#define RCC_AHB1Periph_GPIO_KEYBOARD_SW_B       RCC_AHB1Periph_GPIOC
-
-#define KEYBOARD_SW_C                           GPIOC
-#define KEYBOARD_SW_C_PIN                       GPIO_Pin_12
-#define RCC_AHB1Periph_GPIO_KEYBOARD_SW_C       RCC_AHB1Periph_GPIOC
-
-
-#endif
+#define KEYBOARD_SW_D                           GPIOG
+#define KEYBOARD_SW_D_PIN                       GPIO_Pin_11
+#define RCC_AHB1Periph_GPIO_KEYBOARD_SW_D       RCC_AHB1Periph_GPIOG
 
   /********************************************/
 

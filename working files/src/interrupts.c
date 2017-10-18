@@ -690,6 +690,7 @@ void TIM4_IRQHandler(void)
     check_state_key(KEYBOARD_SW_A, KEYBOARD_SW_A_PIN, BIT_KEY_ENTER);
     check_state_key(KEYBOARD_SW_B, KEYBOARD_SW_B_PIN, BIT_KEY_DOWN);
     check_state_key(KEYBOARD_SW_C, KEYBOARD_SW_C_PIN, BIT_KEY_RIGHT);
+    check_state_key(KEYBOARD_SW_D, KEYBOARD_SW_D_PIN, BIT_KEY_C);
     GPIO_SetBits(KEYBOARD, KEYBOARD_SW_1_PIN);
     
     //Робимо невелику затримку
@@ -700,6 +701,7 @@ void TIM4_IRQHandler(void)
     check_state_key(KEYBOARD_SW_A, KEYBOARD_SW_A_PIN, BIT_KEY_ESC);
     check_state_key(KEYBOARD_SW_B, KEYBOARD_SW_B_PIN, BIT_KEY_LEFT);
     check_state_key(KEYBOARD_SW_C, KEYBOARD_SW_C_PIN, BIT_KEY_UP);
+    check_state_key(KEYBOARD_SW_D, KEYBOARD_SW_D_PIN, BIT_KEY_I);
     GPIO_SetBits(KEYBOARD, KEYBOARD_SW_2_PIN);
 
     //Робимо невелику затримку
@@ -710,6 +712,7 @@ void TIM4_IRQHandler(void)
     check_state_key(KEYBOARD_SW_A, KEYBOARD_SW_A_PIN, BIT_KEY_1);
     check_state_key(KEYBOARD_SW_B, KEYBOARD_SW_B_PIN, BIT_KEY_2);
     check_state_key(KEYBOARD_SW_C, KEYBOARD_SW_C_PIN, BIT_KEY_3);
+    check_state_key(KEYBOARD_SW_D, KEYBOARD_SW_D_PIN, BIT_KEY_O);
     GPIO_SetBits(KEYBOARD, KEYBOARD_SW_3_PIN);
 
     //Робимо невелику затримку
@@ -726,8 +729,28 @@ void TIM4_IRQHandler(void)
     /***************************/
     //Обробка алгоритму функціональних кнопок
     /***************************/
-    new_state_keyboard_for_db |= (unsigned int)(new_state_keyboard & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)));/*new_state_keyboard змінюється і потім аналізується у функції main_manu_function, тому для аналізу натискування функціональних кнопок натискування цих кнопок аналізуємо через іншу змінну*/
-    new_state_keyboard        &= (unsigned int)(~((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)));
+    new_state_keyboard_for_db |= (unsigned int)(new_state_keyboard & (
+                                                                      (1<<BIT_KEY_1) |
+                                                                      (1<<BIT_KEY_2) |
+                                                                      (1<<BIT_KEY_3) |
+                                                                      (1<<BIT_KEY_4) |
+                                                                      (1<<BIT_KEY_5) |
+                                                                      (1<<BIT_KEY_6) |
+                                                                      (1<<BIT_KEY_C) |
+                                                                      (1<<BIT_KEY_I) |
+                                                                      (1<<BIT_KEY_O)
+                                                                      ));/*new_state_keyboard змінюється і потім аналізується у функції main_manu_function, тому для аналізу натискування функціональних кнопок натискування цих кнопок аналізуємо через іншу змінну*/
+    new_state_keyboard        &= (unsigned int)(~(
+                                                  (1<<BIT_KEY_1) |
+                                                  (1<<BIT_KEY_2) |
+                                                  (1<<BIT_KEY_3) |
+                                                  (1<<BIT_KEY_4) |
+                                                  (1<<BIT_KEY_5) |
+                                                  (1<<BIT_KEY_6) |
+                                                  (1<<BIT_KEY_C) |
+                                                  (1<<BIT_KEY_I) |
+                                                  (1<<BIT_KEY_O)
+                                                 ));
     
     //Перевірка на те, чи вже кнопка відпущена чи ще натиснута
     if (time_set_keyboard[BIT_KEY_1] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_1));
@@ -736,8 +759,11 @@ void TIM4_IRQHandler(void)
     if (time_set_keyboard[BIT_KEY_4] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_4));
     if (time_set_keyboard[BIT_KEY_5] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_5));
     if (time_set_keyboard[BIT_KEY_6] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_6));
+    if (time_set_keyboard[BIT_KEY_C] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_C));
+    if (time_set_keyboard[BIT_KEY_I] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_I));
+    if (time_set_keyboard[BIT_KEY_O] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_O));
 
-    if ((new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6))) != 0)
+    if ((new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O))) != 0)
     {
       if (
           ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_FB_ACTIVATION) == 0)
@@ -749,8 +775,8 @@ void TIM4_IRQHandler(void)
         Натиснути функціональна кнопка підтверджена натискуванням кнопки ENTER  
         Натиснуті кнопки переносимо до спеціальної змінної, щоб їх обслуговувати  у системі захистів
         ***************************/
-        pressed_buttons    |= (new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6))) >> BIT_KEY_1;
-        new_state_keyboard_for_db &= (unsigned int)(~((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)));
+        pressed_buttons    |= (new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O))) >> BIT_KEY_1;
+        new_state_keyboard_for_db &= (unsigned int)(~((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O)));
         /***************************/
 
         if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_FB_ACTIVATION) != 0)
