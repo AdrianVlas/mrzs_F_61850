@@ -423,7 +423,7 @@ void main_routines_for_i2c(void)
       offset_from_start = number_block_state_leds_outputs_write_to_eeprom*SIZE_PAGE_EEPROM;
 
       //Кількість байт до кінця буферу 
-      size_to_end = (2*(1 + 2)) - offset_from_start; 
+      size_to_end = (2*(2 + 3)) - offset_from_start; 
       
       if (size_to_end > 0)
       {
@@ -753,7 +753,7 @@ void main_routines_for_i2c(void)
       unsigned int rez;
       
       //Запускаємо процес читання
-      rez = start_read_buffer_via_I2C(EEPROM_ADDRESS, START_ADDRESS_STATE_LEDS_OUTPUTS_IN_EEPROM, read_write_i2c_buffer, (2*(1 + 2)));
+      rez = start_read_buffer_via_I2C(EEPROM_ADDRESS, START_ADDRESS_STATE_LEDS_OUTPUTS_IN_EEPROM, read_write_i2c_buffer, (2*(2 + 3)));
       
       //Аналізуємо успішність запуску
       if (rez > 1)
@@ -1070,16 +1070,20 @@ void main_routines_for_i2c(void)
       unsigned int temp_value = state_trigger_leds;
       unsigned int temp_value_inv = ((unsigned int)(~temp_value)) & ((1 << NUMBER_LEDS) - 1);
       state_trigger_leds_comp = temp_value;
-      read_write_i2c_buffer[0] = (unsigned char)(temp_value     & 0xff);
-      read_write_i2c_buffer[1] = (unsigned char)(temp_value_inv & 0xff);
+      read_write_i2c_buffer[0] = (unsigned char)( temp_value           & 0xff);
+      read_write_i2c_buffer[1] = (unsigned char)((temp_value     >> 8) & 0xff);
+      read_write_i2c_buffer[2] = (unsigned char)( temp_value_inv       & 0xff);
+      read_write_i2c_buffer[3] = (unsigned char)((temp_value_inv >> 8) & 0xff);
 
       temp_value = state_signal_outputs;
       temp_value_inv = ((unsigned int)(~temp_value)) & ((1 << NUMBER_OUTPUTS) - 1);
       state_signal_outputs_comp = temp_value;
-      read_write_i2c_buffer[2] = (unsigned char)( temp_value           & 0xff);
-      read_write_i2c_buffer[3] = (unsigned char)((temp_value     >> 8) & 0xff);
-      read_write_i2c_buffer[4] = (unsigned char)( temp_value_inv       & 0xff);
-      read_write_i2c_buffer[5] = (unsigned char)((temp_value_inv >> 8) & 0xff);
+      read_write_i2c_buffer[4] = (unsigned char)( temp_value            & 0xff);
+      read_write_i2c_buffer[5] = (unsigned char)((temp_value     >> 8 ) & 0xff);
+      read_write_i2c_buffer[6] = (unsigned char)((temp_value     >> 16) & 0xff);
+      read_write_i2c_buffer[7] = (unsigned char)( temp_value_inv        & 0xff);
+      read_write_i2c_buffer[8] = (unsigned char)((temp_value_inv >> 8 ) & 0xff);
+      read_write_i2c_buffer[9] = (unsigned char)((temp_value_inv >> 16) & 0xff);
 
       //Виставляємо перший блок стану виходів-світлоіндикаторів запису у EEPROM
       number_block_state_leds_outputs_write_to_eeprom = 0;
@@ -1884,7 +1888,7 @@ void main_routines_for_i2c(void)
       unsigned int empty_block = 1, i = 0; 
       unsigned int state_trigger_leds_tmp, state_signal_outputs_tmp;
       
-      while ((empty_block != 0) && ( i < (2*(1 + 2))))
+      while ((empty_block != 0) && ( i < (2*(2 + 3))))
       {
         if (read_write_i2c_buffer[i] != 0xff) empty_block = 0;
         i++;
@@ -1899,8 +1903,8 @@ void main_routines_for_i2c(void)
         _SET_BIT(clear_diagnostyka, ERROR_STATE_LEDS_OUTPUTS_EEPROM_EMPTY_BIT);
         
         //Перевіряємо достовірність стану тригерних індикаторів
-        state_trigger_leds_tmp = read_write_i2c_buffer[0];
-        unsigned int value_1 = read_write_i2c_buffer[1];
+        state_trigger_leds_tmp = read_write_i2c_buffer[0] | (read_write_i2c_buffer[1] << 8);
+        unsigned int value_1 = read_write_i2c_buffer[2] | (read_write_i2c_buffer[3] << 8);
         if (state_trigger_leds_tmp == ((unsigned int)((~value_1) & ((1 << NUMBER_LEDS) - 1))) )
         {
           //Контролдь зійшовся
@@ -1930,8 +1934,8 @@ void main_routines_for_i2c(void)
         }
 
         //Перевіряємо достовірність стану сигнальних виходів
-        state_signal_outputs_tmp = read_write_i2c_buffer[2] | (read_write_i2c_buffer[3] << 8);
-        value_1 = read_write_i2c_buffer[4] | (read_write_i2c_buffer[5] << 8);
+        state_signal_outputs_tmp = read_write_i2c_buffer[4] | (read_write_i2c_buffer[5] << 8) | (read_write_i2c_buffer[6] << 8);
+        value_1 = read_write_i2c_buffer[7] | (read_write_i2c_buffer[8] << 8) | (read_write_i2c_buffer[9] << 16);
         if (state_signal_outputs_tmp == ((unsigned int)((~value_1) & ((1 << NUMBER_OUTPUTS) - 1))) )
         {
           //Контролдь зійшовся
