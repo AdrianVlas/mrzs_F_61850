@@ -1422,7 +1422,7 @@ inline void calc_measurement(unsigned int number_group_stp)
 /*****************************************************/
 inline void input_scan(void)
 {
-  unsigned int state_inputs_into_pin, temp_state_inputs_into_pin; //Змінні у якій формуємо значення входів отримані із входів процесора (пінів)
+  unsigned int state_inputs_into_pin = 0; //Змінні у якій формуємо значення входів отримані із входів процесора (пінів)
   static unsigned int state_inputs_into_pin_trigger; //У цій змінній зберігається попередній стан піна, у випадку коли ми перевіряємо .чи утримається цей стан до кінця тактування таймера допуску
 
   /***************************/
@@ -1434,22 +1434,14 @@ inline void input_scan(void)
     "немає сигналу" - відповідає скинутому     біту (0)
   -----------------------------
   */
-  unsigned int temp_state_inputs_into_pin_1 = _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_INPUTS_1) & ((1 << NUMBER_INPUTS_1) - 1);
-  unsigned int temp_state_inputs_into_pin_2 = _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_INPUTS_2) & ((1 << NUMBER_INPUTS_2) - 1);
-  temp_state_inputs_into_pin = temp_state_inputs_into_pin_1 | (temp_state_inputs_into_pin_2 << NUMBER_INPUTS_1);
+#if ((NUMBER_INPUTS_1 > 0) && (NUMBER_INPUTS_2 > 0) && (NUMBER_INPUTS_3 > 0))
+  state_inputs_into_pin |= (_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_INPUTS_1) & ((1 << (NUMBER_INPUTS_1 + NUMBER_INPUTS_2)) - 1) << 0) | 
+                           (_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_INPUTS_3) & ((1 << (NUMBER_INPUTS_3                  )) - 1) << (NUMBER_INPUTS_1 + NUMBER_INPUTS_2));
+#else
+
+#error "MyError: Undefined set of Input-boards"
   
-  //Змінюємо порядок, щоб наймений номер відповідав нумерації на приладі
-  state_inputs_into_pin = 0;
-  for (unsigned int index = 0; index < NUMBER_INPUTS; index++)
-  {
-    if ((temp_state_inputs_into_pin & (1 << index)) != 0) 
-    {
-      if (index < NUMBER_INPUTS_1)
-        state_inputs_into_pin |= 1 << (NUMBER_INPUTS_1 - index - 1);
-      else
-        state_inputs_into_pin |= 1 << index;
-    }
-  }
+#endif
   /***************************/
   
   /***************************/
@@ -10082,7 +10074,7 @@ inline void main_protection(void)
   static uint32_t current_LED_N_COL;
   
   //Очищаємо попередню інформацію
-  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_LEDS) = (0 << LED_N_COL) | ((uint32_t)(~(1 << current_LED_N_COL)) & ((1 << LED_N_COL) - 1));
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_LEDS) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~0) & ((1 << LED_N_ROW) - 1));
   //Переходимо на наступний стовбець
   if (++current_LED_N_COL >= LED_N_COL) current_LED_N_COL = 0;
   
@@ -10214,7 +10206,7 @@ inline void main_protection(void)
   }
 
   //Виводимо інформацію по світлоіндикаторах на світлодіоди
-  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_LEDS) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~state_leds_tmp) & ((1 << LED_N_ROW) - 1));
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_LEDS) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~state_leds_tmp) & ((1 << LED_N_ROW) - 1));
   /**************************/
 
   /**************************/

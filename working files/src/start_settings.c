@@ -786,7 +786,6 @@ void start_settings_peripherals(void)
   FSMC_SRAM_Init();
   _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = 0;
   _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_2) = 0;
-//  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_LEDS) = 0;
 
   _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0;
   /**********************/

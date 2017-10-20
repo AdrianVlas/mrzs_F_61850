@@ -11,6 +11,7 @@
       _array[_number_bit >> 5] &= (unsigned int)(~(1 << (_number_bit & 0x1f)))
 
 #define _DEVICE_REGISTER(addr,offset)   *(unsigned short int *)(addr + (offset<<1) )
+#define _DEVICE_REGISTER_V2(addr,offset)   *(uint16_t *)(addr + offset)
 
 #define _NUMBER_CHANGES_INTO_UNSIGNED_INT_ARRAY(_array1, _array2, _number_items, _rezultat) \
         {                                                                        \

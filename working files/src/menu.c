@@ -16460,6 +16460,10 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_INPUT_14:
     case EKRAN_RANGUVANNJA_INPUT_15:
     case EKRAN_RANGUVANNJA_INPUT_16:
+    case EKRAN_RANGUVANNJA_INPUT_17:
+    case EKRAN_RANGUVANNJA_INPUT_18:
+    case EKRAN_RANGUVANNJA_INPUT_19:
+    case EKRAN_RANGUVANNJA_INPUT_20:
     case EKRAN_RANGUVANNJA_OUTPUT_1:
     case EKRAN_RANGUVANNJA_OUTPUT_2:
     case EKRAN_RANGUVANNJA_OUTPUT_3:
@@ -16595,7 +16599,7 @@ void main_manu_function(void)
           //Пріоритет стоїть на обновлені екрану
           if((new_state_keyboard & (1<<BIT_REWRITE)) !=0)
           {
-            if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_16))
+            if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
             {
               if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_INPUT) current_ekran.index_position = 0;
               if(current_ekran.edition == 0)
@@ -17201,7 +17205,7 @@ void main_manu_function(void)
               if(current_ekran.edition == 0)
               {
                 //Копіюємо ранжування у структуру для редагування
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_16))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
                 {
                   edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)] =
                     current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)];
@@ -17366,7 +17370,7 @@ void main_manu_function(void)
               else if (current_ekran.edition == 1)
               {
                 //Перевіряємо чи якісь зміни відбулися
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_16))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
                 {
                   if (
                       (edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ] == current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ]) &&
@@ -17637,7 +17641,7 @@ void main_manu_function(void)
                 //Попередньо виставляємо повідомлення, що дані не достовірні
                 current_ekran.edition = 3;
                 //Обновляємо значення
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_16))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
                 {
                   unsigned int* point = edition_settings.ranguvannja_inputs;
                   if (count_number_set_bit(
@@ -18031,7 +18035,7 @@ void main_manu_function(void)
             else if (new_state_keyboard == (1<<BIT_KEY_UP))
             {
               //Натиснута кнопка UP
-              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_16))
+              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
               {
                 if(current_ekran.edition == 0)
                 {
@@ -18688,7 +18692,7 @@ void main_manu_function(void)
             else if (new_state_keyboard == (1<<BIT_KEY_DOWN))
             {
               //Натиснута кнопка DOWN
-              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_16))
+              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
               {
                 if(current_ekran.edition == 0)
                 {
@@ -19347,7 +19351,7 @@ void main_manu_function(void)
             {
               //Натиснута кнопка RIGHT або LEFT
               //Міняємо на протилежний відповідний біт для вибраної функції
-              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_16))
+              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
               {
                 unsigned int offset, shift;
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
