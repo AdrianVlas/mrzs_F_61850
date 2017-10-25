@@ -784,8 +784,7 @@ void start_settings_peripherals(void)
   //Настроювання зовнішню шину
   /**********************/
   FSMC_SRAM_Init();
-  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = 0;
-  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_2) = 0;
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = 0;
 
   _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0;
   /**********************/
