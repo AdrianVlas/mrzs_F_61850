@@ -2426,7 +2426,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
     diagnostic_old[1] = buffer_for_manu_read_record[13] + (buffer_for_manu_read_record[14]<<8) + (buffer_for_manu_read_record[15]<<16) + (buffer_for_manu_read_record[16]<<24);
     diagnostic_old[2] = buffer_for_manu_read_record[17] + (buffer_for_manu_read_record[18]<<8) + (buffer_for_manu_read_record[19]<<16) + (buffer_for_manu_read_record[20]<<24);
     diagnostic_new[0] = buffer_for_manu_read_record[21] + (buffer_for_manu_read_record[22]<<8) + (buffer_for_manu_read_record[23]<<16) + (buffer_for_manu_read_record[24]<<24);
-    diagnostic_new[1] = buffer_for_manu_read_record[25] + (buffer_for_manu_read_record[27]<<8) + (buffer_for_manu_read_record[27]<<16) + (buffer_for_manu_read_record[28]<<24);
+    diagnostic_new[1] = buffer_for_manu_read_record[25] + (buffer_for_manu_read_record[26]<<8) + (buffer_for_manu_read_record[27]<<16) + (buffer_for_manu_read_record[28]<<24);
     diagnostic_new[2] = buffer_for_manu_read_record[29] + (buffer_for_manu_read_record[30]<<8) + (buffer_for_manu_read_record[31]<<16) + (buffer_for_manu_read_record[32]<<24);
         
     //Визначаємо, які сигнали змінилися

@@ -12,6 +12,6 @@
 #define OFFSET_OUTPUTS_1    0x1800000
 #define OFFSET_OUTPUTS_2    0x1800000
 
-#define OFFSET_CHD01_7      0xA00000
+#define OFFSET_CHD01_7      0x1400000
 
 #endif

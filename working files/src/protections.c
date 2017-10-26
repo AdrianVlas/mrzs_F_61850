@@ -10342,6 +10342,48 @@ void TIM2_IRQHandler(void)
         }
       }
     }
+    //Діагностика необхідно-приєднаних плат
+    {
+      uint32_t board_register_tmp = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7);
+      uint32_t board_register_diff = board_register_tmp ^ board_register;
+      board_register = board_register_tmp;
+
+      if ((board_register_tmp & 0x01) !=  0x1) _SET_BIT(set_diagnostyka, ERROR_BA_1_FIX);
+      else if (board_register_diff & 0x01)
+      {
+        _SET_BIT(clear_diagnostyka, ERROR_BA_1_FIX);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x1;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x11)  _SET_BIT(set_diagnostyka, ERROR_BA_1_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
+      }
+      
+      if ((board_register_tmp & 0x02) !=  0x2) _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_FIX);
+      else if (board_register_diff & 0x02)
+      {
+        _SET_BIT(clear_diagnostyka, ERROR_BDVV5_1_FIX);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x2;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x25)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
+      }
+
+      if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
+      else if (board_register_diff & 0x04)
+      {
+        _SET_BIT(clear_diagnostyka, ERROR_BDVV5_2_FIX);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x4;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x37)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
+      }
+
+      if ((board_register_tmp & 0x010) != 0x10) _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+      else if (board_register_diff & 0x10)
+      {
+        _SET_BIT(clear_diagnostyka, ERROR_BDV_DZ_FIX);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x10;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
+      }
+    }
     
     //Перевіряємо достовірність значень для аналогового реєстратора
     if (

@@ -189,6 +189,8 @@ extern volatile unsigned int diagnostyka[3];
 extern volatile unsigned int set_diagnostyka[3];
 extern volatile unsigned int clear_diagnostyka[3];
 
+extern uint32_t board_register;
+
 extern int global_timers[MAX_NUMBER_GLOBAL_TIMERS];
 extern unsigned int timer_prt_signal_output_mode_2;
 extern unsigned int output_timer_prt_signal_output_mode_2;

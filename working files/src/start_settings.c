@@ -786,7 +786,38 @@ void start_settings_peripherals(void)
   FSMC_SRAM_Init();
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = 0;
 
-  _DEVICE_REGISTER(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0;
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0;
+  uint32_t board_register_tmp = board_register = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7);
+  if ((board_register_tmp & 0x17) != 0x17)
+  {
+    if ((board_register_tmp &  0x01) !=  0x1) _SET_BIT(set_diagnostyka, ERROR_BA_1_FIX);
+    if ((board_register_tmp &  0x02) !=  0x2) _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_FIX);
+    if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
+    if ((board_register_tmp & 0x010) != 0x10) _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+  }
+  
+  if ((board_register_tmp & 0x01) == 0x01)
+  {
+    _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x1;
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x11)  _SET_BIT(set_diagnostyka, ERROR_BA_1_CTLR);
+  }
+  if ((board_register_tmp & 0x02) == 0x02)
+  {
+    _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x2;
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x25)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_CTLR);
+  }
+  if ((board_register_tmp & 0x04) == 0x04)
+  {
+    _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x4;
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x37)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_CTLR);
+  }
+  if ((board_register_tmp & 0x10) == 0x10)
+  {
+    _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x10;
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
+  }
+  //Вимикаємо вибір всіх плат для подальшого контролю
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
   /**********************/
 
   /**********************/
