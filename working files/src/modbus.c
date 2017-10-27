@@ -14367,7 +14367,7 @@ inline void start_transmint_data_via_RS_485(unsigned int count)
 void modbus_rountines(unsigned int type_interface)
 {
  unsigned char *received_buffer, *transmited_buffer;
- int volatile *received_count;
+ int *received_count;
  int *transmited_count;
  unsigned int error = 0;
   

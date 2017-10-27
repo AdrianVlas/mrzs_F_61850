@@ -315,7 +315,7 @@ typedef struct
   //Комунікація
   unsigned int name_of_cell[MAX_CHAR_IN_NAME_OF_CELL];//І'мя ячейки
   unsigned short int user_register[(M_ADDRESS_LAST_USER_REGISTER_DATA - M_ADDRESS_FIRST_USER_REGISTER_DATA) + 1]; //Регістри користувача
-  unsigned int volatile address;                      //Адреса
+  unsigned int address;                                //Адреса
   int speed_RS485;                                    //швидкість обміну
                                                         // 0 - 9600
                                                         // 1 - 14400
@@ -379,7 +379,7 @@ typedef struct
   unsigned int number_bytes;
   
   //Вказівник на буфер (корисний)
-  uint8_t volatile* point_buffer;
+  uint8_t *point_buffer;
 
 } __DRIVER_I2C;
 

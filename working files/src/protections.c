@@ -1551,7 +1551,7 @@ inline void clocking_global_timers(void)
 /*****************************************************/
 //Опрацювання Ориділювальних функцій - має запускатися після відкрпацювання блоків всіх захистів
 /*****************************************************/
-inline void df_handler(volatile unsigned int *p_active_functions, unsigned int *p_changed_state_with_start_new_timeout)
+inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed_state_with_start_new_timeout)
 {
   /*
   Джерела активації формуємо в source_activation_df
@@ -1999,7 +1999,7 @@ inline void df_handler(volatile unsigned int *p_active_functions, unsigned int *
 /*****************************************************/
 //Опрацювання Ориділювальних триґерів - має запускатися після відкрпацювання опреділювальних функцій
 /*****************************************************/
-inline void dt_handler(volatile unsigned int *p_active_functions)
+inline void dt_handler(unsigned int *p_active_functions)
 {
   /*
   Попередній стан визначуваних триґерів формуємо у state_defined_triggers
@@ -2246,7 +2246,7 @@ inline void dt_handler(volatile unsigned int *p_active_functions)
 /*****************************************************/
 //Опрацювання визначуваних "І"
 /*****************************************************/
-inline void d_and_handler(volatile unsigned int *p_active_functions)
+inline void d_and_handler(unsigned int *p_active_functions)
 {
   unsigned int state_defined_and = 0;
 
@@ -2291,7 +2291,7 @@ inline void d_and_handler(volatile unsigned int *p_active_functions)
 /*****************************************************/
 //Опрацювання визначуваних "АБО"
 /*****************************************************/
-inline void d_or_handler(volatile unsigned int *p_active_functions)
+inline void d_or_handler(unsigned int *p_active_functions)
 {
   unsigned int state_defined_or = 0;
 
@@ -2336,7 +2336,7 @@ inline void d_or_handler(volatile unsigned int *p_active_functions)
 /*****************************************************/
 //Опрацювання визначуваних "Викл.АБО"
 /*****************************************************/
-inline void d_xor_handler(volatile unsigned int *p_active_functions)
+inline void d_xor_handler(unsigned int *p_active_functions)
 {
   unsigned int state_defined_xor = 0;
 
@@ -2399,7 +2399,7 @@ inline void d_xor_handler(volatile unsigned int *p_active_functions)
 /*****************************************************/
 //Опрацювання визначуваних "НЕ"
 /*****************************************************/
-inline void d_not_handler(volatile unsigned int *p_active_functions)
+inline void d_not_handler(unsigned int *p_active_functions)
 {
   unsigned int state_defined_not = 0;
 
@@ -2577,7 +2577,7 @@ inline int timeout_dependent_general(unsigned int i, unsigned int setpoint_mtz_2
 /*****************************************************/
 // МТЗ
 /*****************************************************/
-inline void mtz_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+inline void mtz_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   unsigned int tmp_value;
   
@@ -2924,7 +2924,7 @@ inline void mtz_handler(volatile unsigned int *p_active_functions, unsigned int 
 /*****************************************************/
 // ЗДЗ
 /*****************************************************/
-inline void zdz_handler(volatile unsigned int *p_active_functions)
+inline void zdz_handler(unsigned int *p_active_functions)
 {
   unsigned int tmp_value;
   //M
@@ -2975,7 +2975,7 @@ inline void zdz_handler(volatile unsigned int *p_active_functions)
 /*****************************************************/
 // ЗЗ
 /*****************************************************/
-inline void zz_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+inline void zz_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   /********************************
   Сектор НЗЗ
@@ -3339,7 +3339,7 @@ inline void zz_handler(volatile unsigned int *p_active_functions, unsigned int n
 /*****************************************************/
 //ТЗНП
 /*****************************************************/
-inline void tznp_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+inline void tznp_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
 #define CTR_TZNP                CTR_TZNP1      
 #define CTR_TZNP_VPERED         CTR_TZNP1_VPERED      
@@ -3603,7 +3603,7 @@ inline void tznp_handler(volatile unsigned int *p_active_functions, unsigned int
 /*****************************************************/
 // ЗОП(КОФ)
 /*****************************************************/
-inline void zop_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+inline void zop_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   /*******************************/
   //Фуксуємо у локальній змінній текучі струми зворотньої послідовності і прямоїпослідовності
@@ -3714,7 +3714,7 @@ inline void zop_handler(volatile unsigned int *p_active_functions, unsigned int 
 /*****************************************************/
 // ЗНМИН1
 /*****************************************************/
-void umin1_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+void umin1_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   _Bool previous_state_po_umin1 = _CHECK_SET_BIT(p_active_functions, RANG_PO_UMIN1) > 0;
   _Bool previous_state_po_ublk_umin1 = _CHECK_SET_BIT(p_active_functions, RANG_PO_UBLK_UMIN1) > 0;
@@ -3826,7 +3826,7 @@ void umin1_handler(volatile unsigned int *p_active_functions, unsigned int numbe
 /*****************************************************/
 // ЗНМИН2
 /*****************************************************/
-void umin2_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+void umin2_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   _Bool previous_state_po_umin2 = _CHECK_SET_BIT(p_active_functions, RANG_PO_UMIN2) > 0;
   _Bool previous_state_po_ublk_umin2 = _CHECK_SET_BIT(p_active_functions, RANG_PO_UBLK_UMIN2) > 0;
@@ -3939,7 +3939,7 @@ void umin2_handler(volatile unsigned int *p_active_functions, unsigned int numbe
 /*****************************************************/
 // МТЗ04
 /*****************************************************/
-void mtz04_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+void mtz04_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
  //проверка предыдущего состояния ПО МТЗ04_1
   _Bool previous_state_po_mtz04_1 = _CHECK_SET_BIT(p_active_functions, RANG_PO_MTZ04_1) > 0;
@@ -4101,7 +4101,7 @@ void mtz04_handler(volatile unsigned int *p_active_functions, unsigned int numbe
 /*****************************************************/
 // ЗНМАКС1
 /*****************************************************/
-void umax1_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+void umax1_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   _Bool previous_state_po_umax1 = _CHECK_SET_BIT(p_active_functions, RANG_PO_UMAX1) > 0;
   
@@ -4160,7 +4160,7 @@ void umax1_handler(volatile unsigned int *p_active_functions, unsigned int numbe
 /*****************************************************/
 // ЗНМАКС2
 /*****************************************************/
-void umax2_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+void umax2_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   _Bool previous_state_po_umax2 = _CHECK_SET_BIT(p_active_functions, RANG_PO_UMAX2) > 0;
   
@@ -4219,7 +4219,7 @@ void umax2_handler(volatile unsigned int *p_active_functions, unsigned int numbe
 /*****************************************************/
 // АЧР ЧАПВ
 /*****************************************************/
-void achr_chapv_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+void achr_chapv_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
 //RANG_ACHR_CHAPV_VID_DV,
 /*
@@ -4623,7 +4623,7 @@ void achr_chapv_handler(volatile unsigned int *p_active_functions, unsigned int 
 /*****************************************************/
 // Готовность к ТУ
 /*****************************************************/
-void ready_tu(volatile unsigned int *p_active_functions)
+void ready_tu(unsigned int *p_active_functions)
 {
   unsigned int tmp_value = (_CHECK_SET_BIT(p_active_functions, RANG_PRYVID_VV) == 0)                  << 0;
   tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_VIDKL_VID_ZAKHYSTIV) != 0)                    << 1;
@@ -4653,7 +4653,7 @@ void ready_tu(volatile unsigned int *p_active_functions)
 /*****************************************************/
 // УРОВ
 /*****************************************************/
-inline void urov_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+inline void urov_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   /*******************************/
   //Визначаємо максимальний фазовий струм для УРОВ
@@ -4775,7 +4775,7 @@ inline void urov_handler(volatile unsigned int *p_active_functions, unsigned int
 /*****************************************************/
 //АПВ
 /*****************************************************/
-inline void apv_handler(volatile unsigned int *p_active_functions, unsigned int number_group_stp)
+inline void apv_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   unsigned int logic_APV_0 = 0;
   unsigned int logic_APV_1 = 0;
@@ -4993,7 +4993,7 @@ inline void apv_handler(volatile unsigned int *p_active_functions, unsigned int 
 /*****************************************************/
 //Функція управління блоками включення і відключення
 /*****************************************************/
-inline void on_off_handler(volatile unsigned int *p_active_functions)
+inline void on_off_handler(unsigned int *p_active_functions)
 {
   static unsigned int previous_active_functions[N_BIG];
   unsigned int maska[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -5551,7 +5551,7 @@ inline void on_off_handler(volatile unsigned int *p_active_functions)
 /*****************************************************/
 //Визначення місця до пошкодження
 /*****************************************************/
-inline void vmp_handler(volatile unsigned int p_active_functions[])
+inline void vmp_handler(unsigned int p_active_functions[])
 {
   //Перевіряємо чи стоїть фіксуються спрацювання від КЗ на фазних лініях
   if(
@@ -5732,7 +5732,7 @@ inline void vmp_handler(volatile unsigned int p_active_functions[])
 /*****************************************************/
 //Контроль приводу вимикача
 /*****************************************************/
-void control_VV(volatile unsigned int *p_active_functions)
+void control_VV(unsigned int *p_active_functions)
 {
   unsigned int logic_control_VV_0 = 0;
 
@@ -5783,7 +5783,7 @@ void make_koef_for_resurs(void)
 /*****************************************************/
 //Лічильник ресурсу
 /*****************************************************/
-inline void resurs_vymykacha_handler(volatile unsigned int *p_active_functions)
+inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
 {
   static unsigned int previous_active_functions[N_BIG];
   
@@ -5911,7 +5911,7 @@ inline void resurs_vymykacha_handler(volatile unsigned int *p_active_functions)
 /*****************************************************/
 //Перевірка на необхідність завершення роботи аналогового/дискретного реєстраторів
 /*****************************************************/
-inline unsigned int stop_regisrator(volatile unsigned int* carrent_active_functions, unsigned int* ranguvannja_registrator)
+inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsigned int* ranguvannja_registrator)
 {
   unsigned int stop = 0;
 
@@ -5982,7 +5982,7 @@ inline unsigned int stop_regisrator(volatile unsigned int* carrent_active_functi
 /*****************************************************/
 //Зафіксована невизначена помилка роботи дискретного реєстратора
 /*****************************************************/
-void fix_undefined_error_dr(volatile unsigned int* carrent_active_functions)
+void fix_undefined_error_dr(unsigned int* carrent_active_functions)
 {
   //Виставляємо помилку з записом в дисретний реєстратор
   _SET_BIT(set_diagnostyka, ERROR_DR_UNDEFINED_BIT);
@@ -6866,7 +6866,7 @@ inline void continue_monitoring_min_f(unsigned int time_tmp)
   type_current == IDENTIFIER_BIT_ARRAY_FREQUENCY_CHAPV          - фіксація частоти для ЧАПВ
 */
 /*****************************************************/
-inline void end_monitoring_min_max_measurement(unsigned int type_current, volatile unsigned int* carrent_active_functions)
+inline void end_monitoring_min_max_measurement(unsigned int type_current, unsigned int* carrent_active_functions)
 {
   if(
      (type_current == IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE   ) ||
@@ -7152,7 +7152,7 @@ inline void routine_for_queue_dr(void)
 /*****************************************************/
 //Функція обробки логіки дискретного реєстратора
 /*****************************************************/
-inline void digital_registrator(volatile unsigned int* carrent_active_functions)
+inline void digital_registrator(unsigned int* carrent_active_functions)
 {
   static unsigned int previous_active_functions[N_BIG];
   
@@ -8250,7 +8250,7 @@ inline void digital_registrator(volatile unsigned int* carrent_active_functions)
 /*****************************************************/
 //Зафіксована невизначена помилка роботи аналогового реєстратора
 /*****************************************************/
-void fix_undefined_error_ar(volatile unsigned int* carrent_active_functions)
+void fix_undefined_error_ar(unsigned int* carrent_active_functions)
 {
   //Виставляємо помилку з записом в дисретний реєстратор
   _SET_BIT(set_diagnostyka, ERROR_AR_UNDEFINED_BIT);
@@ -8283,7 +8283,7 @@ void fix_undefined_error_ar(volatile unsigned int* carrent_active_functions)
 /*****************************************************/
 //Функція обробки логіки дискретного реєстратора
 /*****************************************************/
-inline void analog_registrator(volatile unsigned int* carrent_active_functions)
+inline void analog_registrator(unsigned int* carrent_active_functions)
 {
   static unsigned int unsaved_bytes_of_header_ar;
 
@@ -8495,10 +8495,8 @@ inline void analog_registrator(volatile unsigned int* carrent_active_functions)
            )
         {
           //Умова зупинки роботи анаалогового реєстратора
-          unsigned int index_array_ar_heat_tmp = index_array_ar_heat;/*це робим для того, бо компілятор видає завуваження при порівнянні змінних з префіксом volatile*/
-          unsigned int index_array_ar_tail_tmp = index_array_ar_tail;/*це робим для того, бо компілятор видає завуваження при порівнянні змінних з префіксом volatile*/
           if(
-             (index_array_ar_tail_tmp == index_array_ar_heat_tmp) &&
+             (index_array_ar_tail == index_array_ar_heat) &&
              (state_ar_record == STATE_AR_ONLY_SAVE_FLASH)  
             )  
           {
@@ -9971,8 +9969,7 @@ inline void main_protection(void)
   }
   
   //Перевіряємо чи треба записувати стан сигнальних виходів у EEPROM
-  unsigned int temp_value_char_for_volatile = state_signal_outputs;
-  if((state_outputs  & current_settings_prt.type_of_output) != temp_value_char_for_volatile)
+  if((state_outputs  & current_settings_prt.type_of_output) != state_signal_outputs)
   {
     state_signal_outputs = state_outputs  & current_settings_prt.type_of_output;
     //Виставляємо повідомлення про те, що в EEPROM треба записати нові значення сигнальних виходів і тригерних світлоіндикаторів
@@ -10032,8 +10029,7 @@ inline void main_protection(void)
     }
   }
   //Перевіряємо чи треба записувати стан тригерних світлоіндикаторів у EEPROM
-  temp_value_char_for_volatile = state_trigger_leds;
-  if((state_leds  & current_settings_prt.type_of_led) != temp_value_char_for_volatile)
+  if((state_leds  & current_settings_prt.type_of_led) != state_trigger_leds)
   {
     state_trigger_leds = state_leds  & current_settings_prt.type_of_led;
     //Виставляємо повідомлення про те, що в EEPROM треба записати нові значення сигнальних виходів і тригерних світлоіндикаторів
@@ -10063,15 +10059,14 @@ inline void main_protection(void)
   {
   case 0:
     {
-      uint32_t temp_state = state_leds;
-      state_leds_tmp = (((temp_state >>  0) & 0x1) << 0) |
-                       (((temp_state >>  2) & 0x1) << 1) |
-                       (((temp_state >>  4) & 0x1) << 2) |
-                       (((temp_state >>  6) & 0x1) << 3) |
-                       (((temp_state >>  8) & 0x1) << 4) |
-                       (((temp_state >> 10) & 0x1) << 5) |
-                       (((temp_state >> 12) & 0x1) << 6) |
-                       (((temp_state >> 14) & 0x1) << 7);
+      state_leds_tmp = (((state_leds >>  0) & 0x1) << 0) |
+                       (((state_leds >>  2) & 0x1) << 1) |
+                       (((state_leds >>  4) & 0x1) << 2) |
+                       (((state_leds >>  6) & 0x1) << 3) |
+                       (((state_leds >>  8) & 0x1) << 4) |
+                       (((state_leds >> 10) & 0x1) << 5) |
+                       (((state_leds >> 12) & 0x1) << 6) |
+                       (((state_leds >> 14) & 0x1) << 7);
 
 //      state_leds_tmp = (((state_leds >> (2*0)) & ((1 << 2) - 1)) << 0) |
 //                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E)) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
@@ -10617,7 +10612,7 @@ void TIM2_IRQHandler(void)
 /*****************************************************/
 //Вибір групи уставок
 /*****************************************************/
-void setpoints_selecting(volatile unsigned int *p_active_functions, unsigned int act_inp_gr_ustavok) {
+void setpoints_selecting(unsigned int *p_active_functions, unsigned int act_inp_gr_ustavok) {
   unsigned int grupa_ustavok = 0;
   act_inp_gr_ustavok &= 0xf;
   if (current_settings_prt.grupa_ustavok < SETPOINT_GRUPA_USTAVOK_MIN ||

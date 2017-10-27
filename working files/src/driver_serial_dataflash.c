@@ -1257,13 +1257,11 @@ unsigned int making_buffer_for_save_ar_record(unsigned int *point_unsaved_bytes_
      )  
   {
     //Копіювєм миттєві виборки, якщо є такі і якщо є вільне місце для копіювання
-    unsigned int index_array_ar_heat_tmp = index_array_ar_heat;/*це робим для того, бо компілятор видає завуваження при порівнянні змінних з префіксом volatile*/
-    unsigned int index_array_ar_tail_tmp = index_array_ar_tail;/*це робим для того, бо компілятор видає завуваження при порівнянні змінних з префіксом volatile*/
     while (
            ((count_to_save + 2) <= free_space_in_page_df)           /*Є вільне місце у записуваній сторінці на два байти миттєвого значення*/
            &&  
            (
-            (index_array_ar_tail_tmp != index_array_ar_heat_tmp) || /* "хвіст" буферу FIFO не "догнав" ще "голову"*/
+            (index_array_ar_tail != index_array_ar_heat) || /* "хвіст" буферу FIFO не "догнав" ще "голову"*/
             (state_ar_record == STATE_AR_ONLY_SAVE_FLASH)           /*іде завершення формування всіх записів*/ 
            )
            &&  
@@ -1273,13 +1271,11 @@ unsigned int making_buffer_for_save_ar_record(unsigned int *point_unsaved_bytes_
     
       //Додаємо по два байти (миттєва виборка складається з двох байт), поки є вільне місце для заповнення
       unsigned int sample;
-      if (index_array_ar_tail_tmp != index_array_ar_heat_tmp)
+      if (index_array_ar_tail != index_array_ar_heat)
       {
         /*прицюємо з справжньою змінною index_array_ar_tail, а не з її комією index_array_ar_tail_tmp, бо тут компілятор не видає зауваження*/
         sample = array_ar[index_array_ar_tail++];
         if (index_array_ar_tail >= SIZE_BUFFER_FOR_AR) index_array_ar_tail = 0; /*Умова мал аб бути ==, але щоб перестахуватися на невизначену помилку я поставив >=*/
-        index_array_ar_heat_tmp = index_array_ar_heat;/*це робим для того, бо компілятор видає завуваження при порівнянні змінних з префіксом volatile*/
-        index_array_ar_tail_tmp = index_array_ar_tail;/*це робим для того, бо компілятор видає завуваження при порівнянні змінних з префіксом volatile*/
       }
       else
       {
