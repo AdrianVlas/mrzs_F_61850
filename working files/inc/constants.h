@@ -59,7 +59,8 @@
 #include "const_global_timers.h"
 #include "const_df.h"
 
-#include "const_eeprom_rtc.h"
+#include "const_eeprom.h"
+#include "const_i2c.h"
 
 #include "const_driver_serial_dataflash.h"
 

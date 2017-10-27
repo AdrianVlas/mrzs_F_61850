@@ -1,16 +1,8 @@
-#ifndef __CONST_EEPROM_RTC__
-#define __CONST_EEPROM_RTC__
+#ifndef __CONST_EEPROM__
+#define __CONST_EEPROM__
 
-#define I2C_EVENT_MASTER_BYTE_RECEIVED_NO_BUSY            ((uint32_t)0x00000040)  /* RxNE */
-
-#define MAX_NUMBER_BUSY_STATE     10
-
-#define ERROR_TOTAL_BIT           0
-#define ERROR_UNEXPECTED_BIT      1
-#define ERROR_FIX_ERRORS_BIT      2
 
 #define CLOCKSPEED_1MBIT      1000000
-#define CLOCKSPEED            400000
 #define SIZE_PAGE_EEPROM      64
 #define EEPROM_ADDRESS        0xA2
 #define RTC_ADDRESS           0xD0
@@ -28,9 +20,6 @@
 #define START_ADDRESS_INFO_REJESTRATORS_AR              (((START_ADDRESS_INFO_REJESTRATORS_PR_ERR     + (    sizeof(info_rejestrator_pr_err   ) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 #define START_ADDRESS_RESURS_IN_EEPROM                  (((START_ADDRESS_INFO_REJESTRATORS_AR         + (    sizeof(info_rejestrator_ar       ) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 #define START_ADDRESS_ENERGY_IN_EEPROM                  (((START_ADDRESS_RESURS_IN_EEPROM             + (  2*sizeof(unsigned int              ) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
-
-#define START_ADDRESS_TIME_REGISTERS              0x0
-#define MAX_NUMBER_REGISTERS_RTC                  20
 
 #define SIZE_BUFFER_FOR_EEPROM_EXCHNGE (sizeof(__SETTINGS) + 1)
 
@@ -52,9 +41,6 @@
 #define COMPARISON_WRITING_RESURS                                       (1 << COMPARISON_WRITING_RESURS_BIT)
 #define COMPARISON_WRITING_ENERGY_BIT                                   8
 #define COMPARISON_WRITING_ENERGY                                       (1 << COMPARISON_WRITING_ENERGY_BIT)
-
-#define TASK_BLK_OPERATION_BIT                                          0      
-#define TASK_BLK_WRITING_EEPROM_BIT                                     1      
 
 #define TASK_START_WRITE_SETTINGS_EEPROM_BIT                            2      
 #define TASK_WRITING_SETTINGS_EEPROM_BIT                                3      
@@ -97,16 +83,6 @@
 
 #define TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT              28      
 #define TASK_READING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT                 29      
-
-#define TASK_START_READ_RTC_BIT                                         30      
-#define TASK_READING_RTC_BIT                                            31     
-
-#define TASK_START_WRITE_RTC_BIT                                        32      
-#define TASK_WRITING_RTC_BIT                                            33      
-
-#define TASK_SET_START_SETTINGS_RTC_BIT                                 34      
-#define TASK_RESET_ST_RTC_BIT                                           35      
-#define TASK_RESET_OF_RTC_BIT                                           36      
 
 #define TASK_START_WRITE_RESURS_EEPROM_BIT                              37      
 #define TASK_WRITING_RESURS_EEPROM_BIT                                  38      
@@ -186,15 +162,5 @@
 #define STATE_ENERGY_EEPROM_FAIL                                        (1<<STATE_ENERGY_EEPROM_FAIL_BIT)      
 #define STATE_ENERGY_EEPROM_GOOD_BIT                                    28      
 #define STATE_ENERGY_EEPROM_GOOD                                        (1<<STATE_ENERGY_EEPROM_GOOD_BIT) 
-
-#define STATE_FIRST_READING_RTC_BIT                                     30      
-#define STATE_FIRST_READING_RTC                                         (1<<STATE_FIRST_READING_RTC_BIT)    
-
-#define ETAP_CLEAR_OF_NONE                                      -1                                            //-1
-#define ETAP_CLEAR_OF_ST_STOP                                   0                                             //0
-#define ETAP_CLEAR_OF_ST_CLEAR                                  (ETAP_CLEAR_OF_ST_STOP + 1)                   //1
-#define ETAP_CLEAR_OF_ST_START_WAITING_5S                       (ETAP_CLEAR_OF_ST_CLEAR + 1)                  //2
-#define ETAP_CLEAR_OF_ST_WAITING_5S                             (ETAP_CLEAR_OF_ST_START_WAITING_5S + 1)       //3
-#define ETAP_CLEAR_OF_WRITE_OF_0                                (ETAP_CLEAR_OF_ST_WAITING_5S + 1)             //4
 
 #endif
