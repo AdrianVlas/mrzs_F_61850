@@ -2011,12 +2011,12 @@ void main_routines_for_i2c(void)
         //Виводимо інформацію по виходах на піни процесора (у зворотньому порядку)
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = state_outputs_raw;
         TIM_PRT_write_tick = TIM2->CNT;
-        //Виставляємо пін CON-OUTPUTS-1, щоб можна було управляти виходами
-        GPIO_SetBits(CON_OUTPUTS, CON_1_OUTPUTS_PIN);
-        //Знімаємо пін CON-OUTPUTS-2, щоб можна було управляти виходамии
-        GPIO_ResetBits(CON_OUTPUTS, CON_2_OUTPUTS_PIN);
-        //Виставляємо  пін CON-OUTPUTS-3, щоб можна було управляти виходами
-        GPIO_SetBits(CON_OUTPUTS, CON_3_OUTPUTS_PIN);
+//        //Виставляємо пін CON-OUTPUTS-1, щоб можна було управляти виходами
+//        GPIO_SetBits(CON_OUTPUTS, CON_1_OUTPUTS_PIN);
+//        //Знімаємо пін CON-OUTPUTS-2, щоб можна було управляти виходамии
+//        GPIO_ResetBits(CON_OUTPUTS, CON_2_OUTPUTS_PIN);
+//        //Виставляємо  пін CON-OUTPUTS-3, щоб можна було управляти виходами
+//        GPIO_SetBits(CON_OUTPUTS, CON_3_OUTPUTS_PIN);
       }
       else
       {
