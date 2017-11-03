@@ -5,13 +5,11 @@
 #define Bank1_SRAM3_ADDR    0x68000000
 #define Bank1_SRAM4_ADDR    0x6C000000
 
-#define OFFSET_LEDS         0x1000000
-#define OFFSET_INPUTS_1     0x800000
-#define OFFSET_INPUTS_2     0x800000
-#define OFFSET_INPUTS_3     0xC00000
-#define OFFSET_OUTPUTS_1    0x1800000
-#define OFFSET_OUTPUTS_2    0x1800000
+#define OFFSET_DD32_DD38                0x1000000
+#define OFFSET_DD33_DD36                0x0800000
+#define OFFSET_DD26_DD29                0x0C00000
+#define OFFSET_DD31_DD34_DD35_DD37      0x1800000
 
-#define OFFSET_CHD01_7      0x1400000
+#define OFFSET_DD39_DD40_DD47           0x1400000
 
 #endif

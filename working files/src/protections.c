@@ -1434,8 +1434,8 @@ inline void input_scan(void)
     "немає сигналу" - відповідає скинутому     біту (0)
   -----------------------------
   */
-  state_inputs_into_pin |=  ( _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_INPUTS_1)       & 0xffff) | 
-                           (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_INPUTS_3) >> 8) &    0xf) << 16);
+  state_inputs_into_pin |=  ( _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36)       & 0xffff) | 
+                           (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) &    0xf) << 16);
   /***************************/
   
   /***************************/
@@ -9980,7 +9980,7 @@ inline void main_protection(void)
   unsigned int output_signal_modif = (current_settings_prt.type_of_output_modif & current_settings_prt.type_of_output);
   state_outputs_raw = ( state_outputs & ((unsigned int)(~output_signal_modif)) ) | ((state_outputs & output_signal_modif)*output_timer_prt_signal_output_mode_2);
   
-  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = state_outputs_raw;
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = state_outputs_raw;
   TIM_PRT_write_tick = TIM2->CNT;
   /**************************/
 
@@ -10049,7 +10049,7 @@ inline void main_protection(void)
   static uint32_t current_LED_N_COL;
   
   //Очищаємо попередню інформацію
-  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_LEDS) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~0) & ((1 << LED_N_ROW) - 1));
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD32_DD38) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~0) & ((1 << LED_N_ROW) - 1));
   //Переходимо на наступний стовбець
   if (++current_LED_N_COL >= LED_N_COL) current_LED_N_COL = 0;
   
@@ -10180,7 +10180,7 @@ inline void main_protection(void)
   }
 
   //Виводимо інформацію по світлоіндикаторах на світлодіоди
-  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_LEDS) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~state_leds_tmp) & ((1 << LED_N_ROW) - 1));
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD32_DD38) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~state_leds_tmp) & ((1 << LED_N_ROW) - 1));
   /**************************/
 
   /**************************/
@@ -10325,7 +10325,7 @@ void TIM2_IRQHandler(void)
     else TIM_PRT_delta_write_read = TIM_PRT_read_tick - TIM_PRT_write_tick;
     if (TIM_PRT_delta_write_read > (TIM2_MIN_PERIOD_WRITE_READ + 1))
     {
-      unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1)))) & 0xffff);
+      unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)))) & 0xffff);
 
       if (control_state_outputs != state_outputs_raw) 
       {
@@ -10339,7 +10339,7 @@ void TIM2_IRQHandler(void)
     }
     //Діагностика необхідно-приєднаних плат
     {
-      uint32_t board_register_tmp = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7);
+      uint32_t board_register_tmp = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47);
       uint32_t board_register_diff = board_register_tmp ^ board_register;
       board_register = board_register_tmp;
 
@@ -10347,36 +10347,36 @@ void TIM2_IRQHandler(void)
       else if (board_register_diff & 0x01)
       {
         _SET_BIT(clear_diagnostyka, ERROR_BA_1_FIX);
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x1;
-        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x11)  _SET_BIT(set_diagnostyka, ERROR_BA_1_CTLR);
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x1;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) >> 8) != 0x11)  _SET_BIT(set_diagnostyka, ERROR_BA_1_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
       
       if ((board_register_tmp & 0x02) !=  0x2) _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_FIX);
       else if (board_register_diff & 0x02)
       {
         _SET_BIT(clear_diagnostyka, ERROR_BDVV5_1_FIX);
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x2;
-        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x25)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_CTLR);
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x2;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) & 0xff) != 0x25)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
 
       if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
       else if (board_register_diff & 0x04)
       {
         _SET_BIT(clear_diagnostyka, ERROR_BDVV5_2_FIX);
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x4;
-        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x37)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_CTLR);
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x4;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) >> 8) != 0x37)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
 
       if ((board_register_tmp & 0x010) != 0x10) _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
       else if (board_register_diff & 0x10)
       {
         _SET_BIT(clear_diagnostyka, ERROR_BDV_DZ_FIX);
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x10;
-        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_CHD01_7) = 0x0;
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
     }
     
