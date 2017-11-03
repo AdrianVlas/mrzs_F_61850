@@ -2004,12 +2004,12 @@ void main_routines_for_i2c(void)
         //Після виконування зчитування станів тригерних світлоіндикаторів/сигнальних виходів - вводимо їх у МРЗС-05Л
         
         //Виводимо інформацію по світлоіндикаторах на світлодіоди
-        for (size_t col = 0; col < LED_N_COL; col++) _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_LEDS) = (0 << LED_N_COL) | ((uint32_t)(~(1 << col)) & ((1 << LED_N_COL) - 1));
+        for (size_t col = 0; col < LED_N_COL; col++) _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD32_DD38) = (0 << LED_N_COL) | ((uint32_t)(~(1 << col)) & ((1 << LED_N_COL) - 1));
         //Виставляємо пін CON-L, щоб можна було управляти свтоіндикаторами
         GPIO_SetBits(CON_L, CON_L_PIN);
 
         //Виводимо інформацію по виходах на піни процесора (у зворотньому порядку)
-        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_OUTPUTS_1) = state_outputs_raw;
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = state_outputs_raw;
         TIM_PRT_write_tick = TIM2->CNT;
 //        //Виставляємо пін CON-OUTPUTS-1, щоб можна було управляти виходами
 //        GPIO_SetBits(CON_OUTPUTS, CON_1_OUTPUTS_PIN);
