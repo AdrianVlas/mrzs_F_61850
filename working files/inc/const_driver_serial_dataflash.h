@@ -5,6 +5,7 @@
 
 #define INDEX_DATAFLASH_1           0
 #define INDEX_DATAFLASH_2           1
+#define INDEX_EEPROM                3
 
 #define VAGA_SIZE_PAGE_DATAFLASH_1      8 //ц€ константа потр≥бна т≥льки дл€ того, щоб можна було легко множити на 256 ≥ д≥лити на 256
 #define SIZE_PAGE_DATAFLASH_1           (1 << VAGA_SIZE_PAGE_DATAFLASH_1) //256 байт

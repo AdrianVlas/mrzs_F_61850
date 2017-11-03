@@ -81,14 +81,14 @@ void I2C_EV_IRQHandler(void)
         //Підготовлюємо буфер для передачі в мікросхему для запису (адреса)
         if (driver_i2c.device_id == EEPROM_ADDRESS)
         {
-          //Внутрішня адреса для EEPROM сттановить 2 байти
+          //Внутрішня адреса для EEPROM становить 2 байти
           Temporaty_I2C_Buffer[0] = ((driver_i2c.internal_address & 0xFF00) >> 8);
           Temporaty_I2C_Buffer[1] = (driver_i2c.internal_address & 0x00FF);
           number_transmit_with_i2c = 2;
         }
         else
         {
-          //Внутрішня адреса для RTC сттановить 1 байт
+          //Внутрішня адреса для RTC становить 1 байт
           Temporaty_I2C_Buffer[0] = (driver_i2c.internal_address & 0x00FF);
           number_transmit_with_i2c = 1;
         }
@@ -828,18 +828,6 @@ void TIM4_IRQHandler(void)
     /***********************************************************/
 
     /***********************************************************/
-    //Аналіз запуску, або розблоукування запуску періодичних задач
-    /***********************************************************/
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_WRITING_EEPROM_BIT) != 0)
-    {
-      //Розблоковуємо запуск заблокованих задач для драйверу I2C
-       _CLEAR_BIT(control_i2c_taskes, TASK_BLK_WRITING_EEPROM_BIT);
-      //Остаточне розблокування відбудеться після засинхронізацією з зняття миттєвих виборок з АЦП
-      _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
-    /***********************************************************/
-
-    /***********************************************************/
     //Лічильник ресурсу + періодичні операції раз у секунду
     /***********************************************************/
     static unsigned int number_ticks_for_OF_bit_reset;
@@ -860,7 +848,7 @@ void TIM4_IRQHandler(void)
       
       //Запуск читання часу з RTC тільки піся успішного зчитування настройок
       //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
-      if ((state_i2c_task & STATE_SETTINGS_EEPROM_GOOD) != 0) 
+      if ((state_spi1_task & STATE_SETTINGS_EEPROM_GOOD) != 0) 
       {
         _SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT);
         _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
@@ -884,7 +872,7 @@ void TIM4_IRQHandler(void)
           number_minutes = 0;
           
           //Запускаємо запис у EEPROM
-          _SET_BIT(control_i2c_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+          _SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
         }
       }
       
@@ -1013,7 +1001,7 @@ void TIM4_IRQHandler(void)
       //Виставлено каманда очистити реєстратор програмних подій
 
       //Виставляємо команду запису цієї структури у EEPROM
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
 
       //Очищаємо структуру інформації по реєстраторі програмних помилок
       info_rejestrator_pr_err.next_address = MIN_ADDRESS_PR_ERR_AREA;
@@ -1033,7 +1021,7 @@ void TIM4_IRQHandler(void)
     /***********************************************************/
     //Періодично запускаємо звертання то мікросхем DataFlash
     /***********************************************************/
-    if (((DMA_StreamSPI_DF_Tx->CR & (uint32_t)DMA_SxCR_EN) == 0) && ((DMA_StreamSPI_DF_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0))
+    if (((DMA_StreamSPI_EDF_Tx->CR & (uint32_t)DMA_SxCR_EN) == 0) && ((DMA_StreamSPI_EDF_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0))
     {
       if ((number_chip_dataflsh_exchange >= INDEX_DATAFLASH_1) && (number_chip_dataflsh_exchange <= INDEX_DATAFLASH_2))
       {
@@ -1092,7 +1080,7 @@ void TIM4_IRQHandler(void)
               виконується незаплпнованим шляхом - тому перезапуск
               */
                
-              if ((RxBuffer_SPI_DF[1] & (1<< 7)) != 0) dataflash_not_busy |= (1 << number_chip_dataflsh_exchange);
+              if ((RxBuffer_SPI_EDF[1] & (1<< 7)) != 0) dataflash_not_busy |= (1 << number_chip_dataflsh_exchange);
               else dataflash_not_busy &= (unsigned int)(~(1 << number_chip_dataflsh_exchange));
         
               driver_spi_df[number_chip_dataflsh_exchange].state_execution = TRANSACTION_EXECUTING_NONE;
@@ -1119,14 +1107,14 @@ void TIM4_IRQHandler(void)
             }
             else
             {
-              //Мікросхема готова до повторного виконання операції, під час якої виникла помилкова ситуація на SPI_DF
+              //Мікросхема готова до повторного виконання операції, під час якої виникла помилкова ситуація на SPI_EDF
 
               //Відновлюємо буфер передавання, який був під час помилки
-              if ((number_bytes_transfer_spi_df_copy != 0) && (number_bytes_transfer_spi_df_copy < sizeof(TxBuffer_SPI_DF)))
+              if ((number_bytes_transfer_spi_df_copy != 0) && (number_bytes_transfer_spi_df_copy < sizeof(TxBuffer_SPI_EDF)))
               {
                 number_bytes_transfer_spi_df = number_bytes_transfer_spi_df_copy;
                 for(unsigned int i = 0; i < number_bytes_transfer_spi_df; i++)
-                  TxBuffer_SPI_DF[i] = TxBuffer_SPI_DF_copy[i];
+                  TxBuffer_SPI_EDF[i] = TxBuffer_SPI_DF_copy[i];
 
                 /*
                 Знімаємо помітку, що зафіксовано помилку при обміні, бо ми будемо 
@@ -1171,14 +1159,14 @@ void TIM4_IRQHandler(void)
     if (periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR != 0)
     {
       //Стоїть у черзі активна задача зроботи резервні копії даних
-      if ((state_i2c_task & STATE_INFO_REJESTRATOR_PR_ERR_EEPROM_GOOD) != 0)
+      if ((state_spi1_task & STATE_INFO_REJESTRATOR_PR_ERR_EEPROM_GOOD) != 0)
       {
         //Робимо копію тільки тоді, коли структура інформації реєстратора успішно зчитана і сформована контрольна сума
         if (
-            (_CHECK_SET_BIT(control_i2c_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) == 0) &&
-            (_CHECK_SET_BIT(control_i2c_taskes, TASK_WRITING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT    ) == 0) &&
-            (_CHECK_SET_BIT(control_i2c_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT ) == 0) &&
-            (_CHECK_SET_BIT(control_i2c_taskes, TASK_READING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT    ) == 0)
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT    ) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT ) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT    ) == 0)
            ) 
         {
           //На даний моммент не іде читання-запис структури інформації реєстратора, тому можна здійснити копіювання
@@ -1280,9 +1268,9 @@ void TIM4_IRQHandler(void)
 /*****************************************************/
 
 /*****************************************************/
-//Переривання від генеррації події про помилку для SPI_DF
+//Переривання від генеррації події про помилку для SPI_EDF
 /*****************************************************/
-void SPI_DF_IRQHandler(void)
+void SPI_EDF_IRQHandler(void)
 {
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordEnterISR();
@@ -1297,36 +1285,36 @@ void SPI_DF_IRQHandler(void)
   у ньому має бути зафіксована причина генерації переривання
   Цю змінну будемо використовувати при аналізі помилки
   */
-  uint16_t spi_df_status = SPI_DF->SR;
+  uint16_t spi_status = SPI_EDF->SR;
   
-  /*Забороняємо генерацію переривань від потоку DMA_StreamSPI_DF_Rx*/
-  DMA_StreamSPI_DF_Rx->CR &= ~DMA_IT_TC;
+  /*Забороняємо генерацію переривань від потоку DMA_StreamSPI_EDF_Rx*/
+  DMA_StreamSPI_EDF_Rx->CR &= ~DMA_IT_TC;
 
   /*
   Можливо зараз ще продовжується робота DMA контролера по прийом/передачі даних,
   але осекільки зафіксовано помилку у процесі обміну, то зупиняємо їх
   */
-  DMA_StreamSPI_DF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Tx->NDTR = 0;
-  DMA_StreamSPI_DF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Rx->NDTR = 0;
+  DMA_StreamSPI_EDF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Tx->NDTR = 0;
+  DMA_StreamSPI_EDF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Rx->NDTR = 0;
 
-  /*Тимчасово забороняємо переривання від помилок на SPI_DF*/
-  SPI_I2S_ITConfig(SPI_DF, SPI_I2S_IT_ERR, DISABLE);
+  /*Тимчасово забороняємо переривання від помилок на SPI_EDF*/
+  SPI_I2S_ITConfig(SPI_EDF, SPI_I2S_IT_ERR, DISABLE);
 
   /*
   Очікуємо поки TXE=1 і BSY=0 - це ознака повногго завершення передачі даних,
   а ознакою завершення прийому дані - це є генерація цього переривання
   */
-  while ((SPI_DF->SR & SPI_I2S_FLAG_TXE) == 0);
-  while ((SPI_DF->SR & SPI_I2S_FLAG_BSY) != 0);
+  while ((SPI_EDF->SR & SPI_I2S_FLAG_TXE) == 0);
+  while ((SPI_EDF->SR & SPI_I2S_FLAG_BSY) != 0);
 
   /*Знімаємо Chip_select переводом NSS  у 1*/
-  GPIO_SPI_DF->BSRRL = GPIO_NSSPin_DF;
+  GPIO_SPI_EDF->BSRRL = GPIO_NSSPin_EDF;
 
   if (
-      ((spi_df_status & SPI_I2S_FLAG_OVR) != 0) ||
-      ((SPI_DF->SR    & SPI_I2S_FLAG_OVR) != 0)
+      ((spi_status  & SPI_I2S_FLAG_OVR) != 0) ||
+      ((SPI_EDF->SR & SPI_I2S_FLAG_OVR) != 0)
      )
   {
     //Подія про переповнення приймача
@@ -1334,15 +1322,15 @@ void SPI_DF_IRQHandler(void)
     do
     {
       //Очищаємо цю подією такою комбінацією читань:
-      SPI_DF->DR;
-      SPI_DF->SR;
+      SPI_EDF->DR;
+      SPI_EDF->SR;
     }
-    while((SPI_DF->SR & SPI_I2S_FLAG_OVR) != 0);
+    while((SPI_EDF->SR & SPI_I2S_FLAG_OVR) != 0);
   }
 
   if (
-      ((spi_df_status & SPI_FLAG_MODF) != 0) ||
-      ((SPI_DF->SR    & SPI_FLAG_MODF) != 0)  
+      ((spi_status  & SPI_FLAG_MODF) != 0) ||
+      ((SPI_EDF->SR & SPI_FLAG_MODF) != 0)  
      )   
   {
     //Подія "Master mode fault" - теоретично нікли не малаб виникати
@@ -1350,16 +1338,16 @@ void SPI_DF_IRQHandler(void)
     do
     {
       //Очищаємо цю подією такою комбінацією:
-      SPI_DF->SR;
+      SPI_EDF->SR;
 
-      //Забороняємо SPI_DF
-      SPI_Cmd(SPI_DF, DISABLE);
-      //Забороняємо SPI_DF DMA Tx запити
-      SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Tx, DISABLE);
-      //Забороняємо SPI_DF DMA Rx запити
-      SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Rx, DISABLE);
+      //Забороняємо SPI_EDF
+      SPI_Cmd(SPI_EDF, DISABLE);
+      //Забороняємо SPI_EDF DMA Tx запити
+      SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Tx, DISABLE);
+      //Забороняємо SPI_EDF DMA Rx запити
+      SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Rx, DISABLE);
     
-      //Примусово переводимо SPI_DF у Slave-режимі
+      //Примусово переводимо SPI_EDF у Slave-режимі
       SPI_InitTypeDef  SPI_InitStructure;
       SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
       SPI_InitStructure.SPI_Mode = SPI_Mode_Slave;
@@ -1367,38 +1355,38 @@ void SPI_DF_IRQHandler(void)
       SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
       SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
       SPI_InitStructure.SPI_NSS =  SPI_NSS_Soft;
-      SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4/*SPI_BaudRatePrescaler_2*/;
+      SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
       SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
       SPI_InitStructure.SPI_CRCPolynomial = 7;
-      SPI_Init(SPI_DF, &SPI_InitStructure);
-      //Дозволяємо SPI_DF - у Slave-режимі
-      SPI_Cmd(SPI_DF, ENABLE);
+      SPI_Init(SPI_EDF, &SPI_InitStructure);
+      //Дозволяємо SPI_EDF - у Slave-режимі
+      SPI_Cmd(SPI_EDF, ENABLE);
 
-      //Знову забороняємо SPI_DF для перенастройки у Master-режим
-      SPI_Cmd(SPI_DF, DISABLE);
+      //Знову забороняємо SPI_EDF для перенастройки у Master-режим
+      SPI_Cmd(SPI_EDF, DISABLE);
     
-      //Повертаємо SPI_DF у Master-режим
+      //Повертаємо SPI_EDF у Master-режим
       SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-      SPI_Init(SPI_DF, &SPI_InitStructure);
+      SPI_Init(SPI_EDF, &SPI_InitStructure);
 
-      //Забороняємо SPI_DF DMA Tx запити
-      SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Tx, DISABLE);
-      //Забороняємо SPI_DF DMA Rx запити
-      SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Rx, DISABLE);
+      //Забороняємо SPI_EDF DMA Tx запити
+      SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Tx, DISABLE);
+      //Забороняємо SPI_EDF DMA Rx запити
+      SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Rx, DISABLE);
 
-      //Очищаємо прапореці, що сигналізує про завершення прийом/передачі даних для DMA по потоку DMA_StreamSPI_DF_Rx і DMA_StreamSPI_DF_Tx
-      DMA_ClearFlag(DMA_StreamSPI_DF_Rx, DMA_FLAG_TCSPI_DF_Rx | DMA_FLAG_HTSPI_DF_Rx | DMA_FLAG_TEISPI_DF_Rx | DMA_FLAG_DMEISPI_DF_Rx | DMA_FLAG_FEISPI_DF_Rx);
-      DMA_ClearFlag(DMA_StreamSPI_DF_Tx, DMA_FLAG_TCSPI_DF_Tx | DMA_FLAG_HTSPI_DF_Tx | DMA_FLAG_TEISPI_DF_Tx | DMA_FLAG_DMEISPI_DF_Tx | DMA_FLAG_FEISPI_DF_Tx);
+      //Очищаємо прапореці, що сигналізує про завершення прийом/передачі даних для DMA по потоку DMA_StreamSPI_EDF_Rx і DMA_StreamSPI_EDF_Tx
+      DMA_ClearFlag(DMA_StreamSPI_EDF_Rx, DMA_FLAG_TCSPI_EDF_Rx | DMA_FLAG_HTSPI_EDF_Rx | DMA_FLAG_TEISPI_EDF_Rx | DMA_FLAG_DMEISPI_EDF_Rx | DMA_FLAG_FEISPI_EDF_Rx);
+      DMA_ClearFlag(DMA_StreamSPI_EDF_Tx, DMA_FLAG_TCSPI_EDF_Tx | DMA_FLAG_HTSPI_EDF_Tx | DMA_FLAG_TEISPI_EDF_Tx | DMA_FLAG_DMEISPI_EDF_Tx | DMA_FLAG_FEISPI_EDF_Tx);
 
-      //Дозволяємо SPI_DF
-      SPI_Cmd(SPI_DF, ENABLE);
+      //Дозволяємо SPI_EDF
+      SPI_Cmd(SPI_EDF, ENABLE);
     }
-    while ((SPI_DF->SR & SPI_FLAG_MODF) != 0);
+    while ((SPI_EDF->SR & SPI_FLAG_MODF) != 0);
   }
 
   if (
-      ((spi_df_status & SPI_FLAG_CRCERR) != 0) ||
-      ((SPI_DF->SR    & SPI_FLAG_CRCERR) != 0)  
+      ((spi_status  & SPI_FLAG_CRCERR) != 0) ||
+      ((SPI_EDF->SR & SPI_FLAG_CRCERR) != 0)  
      )   
   {
     //Подія "CRC error" - ніколи не мала б виникати у нашоій програмі
@@ -1407,7 +1395,12 @@ void SPI_DF_IRQHandler(void)
     total_error_sw_fixed(34);
   }
 
-  if ((number_chip_dataflsh_exchange >= INDEX_DATAFLASH_1) && (number_chip_dataflsh_exchange <= INDEX_DATAFLASH_2))
+  if (state_execution_spi1 >= 0) 
+  {
+    //Відбувався обмін з EEPROM. Помічаємо, що відбулася помилка у процесі виконання попередньої операції прийом-передачі
+    state_execution_spi1 = 2;
+  }
+  else if ((number_chip_dataflsh_exchange >= INDEX_DATAFLASH_1) && (number_chip_dataflsh_exchange <= INDEX_DATAFLASH_2))
   {
     if(driver_spi_df[number_chip_dataflsh_exchange].state_execution != TRANSACTION_EXECUTING_NONE)
     {
@@ -1442,11 +1435,11 @@ void SPI_DF_IRQHandler(void)
         }
           
         //Робимо резервну копію кількості байт для передавання і буфер передавання
-        if ((number_bytes_transfer_spi_df != 0) && (number_bytes_transfer_spi_df < sizeof(TxBuffer_SPI_DF)))
+        if ((number_bytes_transfer_spi_df != 0) && (number_bytes_transfer_spi_df < sizeof(TxBuffer_SPI_EDF)))
         {
           number_bytes_transfer_spi_df_copy = number_bytes_transfer_spi_df;
           for(unsigned int i = 0; i < number_bytes_transfer_spi_df_copy; i++)
-            TxBuffer_SPI_DF_copy[i] = TxBuffer_SPI_DF[i];
+            TxBuffer_SPI_DF_copy[i] = TxBuffer_SPI_EDF[i];
         }
         else
         {
@@ -1468,11 +1461,11 @@ void SPI_DF_IRQHandler(void)
     total_error_sw_fixed(35);
   }
   
-  /*Виставляємо повідомлення про помилку обміну через SPI_DF*/
-  _SET_BIT(set_diagnostyka, ERROR_SPI_DF_BIT);
+  /*Виставляємо повідомлення про помилку обміну через SPI_EDF*/
+  _SET_BIT(set_diagnostyka, ERROR_SPI_EDF_BIT);
 
-  //Дозволяємо переривання від помилок на SPI_DF
-  SPI_I2S_ITConfig(SPI_DF, SPI_I2S_IT_ERR, ENABLE);
+  //Дозволяємо переривання від помилок на SPI_EDF
+  SPI_I2S_ITConfig(SPI_EDF, SPI_I2S_IT_ERR, ENABLE);
   
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordExitISR();
@@ -1481,9 +1474,9 @@ void SPI_DF_IRQHandler(void)
 /*****************************************************/
   
 /*****************************************************/
-//Перереривання від завершення прийому DMA_StreamSPI_DF_Rx
+//Перереривання від завершення прийому DMA_StreamSPI_EDF_Rx
 /*****************************************************/
-void DMA_StreamSPI_DF_Rx_IRQHandler(void)
+void DMA_StreamSPI_EDF_Rx_IRQHandler(void)
 {
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordEnterISR();
@@ -1493,23 +1486,23 @@ void DMA_StreamSPI_DF_Rx_IRQHandler(void)
   Очікуємо поки TXE=1 і BSY=0 - це ознака повногго завершення передачі даних,
   а ознакою завершення прийому дані - це є генерація цього переривання
   */
-  while ((SPI_DF->SR & SPI_I2S_FLAG_TXE) == 0);
-  while ((SPI_DF->SR & SPI_I2S_FLAG_BSY) != 0);
+  while ((SPI_EDF->SR & SPI_I2S_FLAG_TXE) == 0);
+  while ((SPI_EDF->SR & SPI_I2S_FLAG_BSY) != 0);
 
   //Знімаємо Chip_select переводом NSS  у 1
-  GPIO_SPI_DF->BSRRL = GPIO_NSSPin_DF;
+  GPIO_SPI_EDF->BSRRL = GPIO_NSSPin_EDF;
   
   //Зупиняємо потоки DMA
-  DMA_StreamSPI_DF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Tx->NDTR = 0;
-  DMA_StreamSPI_DF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Rx->NDTR = 0;
+  DMA_StreamSPI_EDF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Tx->NDTR = 0;
+  DMA_StreamSPI_EDF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Rx->NDTR = 0;
 
-  //Забороняємо генерацію переривань від потоку DMA_StreamSPI_DF_Rx
-  DMA_StreamSPI_DF_Rx->CR &= ~DMA_IT_TC;
+  //Забороняємо генерацію переривань від потоку DMA_StreamSPI_EDF_Rx
+  DMA_StreamSPI_EDF_Rx->CR &= ~DMA_IT_TC;
   
-  //Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA по потоку DMA_StreamSPI_DF_Rx
-  DMA_ClearFlag(DMA_StreamSPI_DF_Rx, DMA_FLAG_TCSPI_DF_Rx | DMA_FLAG_HTSPI_DF_Rx | DMA_FLAG_TEISPI_DF_Rx | DMA_FLAG_DMEISPI_DF_Rx | DMA_FLAG_FEISPI_DF_Rx);
+  //Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA по потоку DMA_StreamSPI_EDF_Rx
+  DMA_ClearFlag(DMA_StreamSPI_EDF_Rx, DMA_FLAG_TCSPI_EDF_Rx | DMA_FLAG_HTSPI_EDF_Rx | DMA_FLAG_TEISPI_EDF_Rx | DMA_FLAG_DMEISPI_EDF_Rx | DMA_FLAG_FEISPI_EDF_Rx);
   
   //Виставляємо повідомлення, що дані передані і готові до наступного аналізу
   if ((number_chip_dataflsh_exchange == INDEX_DATAFLASH_1) || (number_chip_dataflsh_exchange == INDEX_DATAFLASH_2))
@@ -1520,8 +1513,8 @@ void DMA_StreamSPI_DF_Rx_IRQHandler(void)
     total_error_sw_fixed(20);
   }
       
-  //Обмін відбувся вдало - скидаємо повідомлення про попередньо можливу помилку обміну через SPI_DF
-  _SET_BIT(clear_diagnostyka, ERROR_SPI_DF_BIT);
+  //Обмін відбувся вдало - скидаємо повідомлення про попередньо можливу помилку обміну через SPI_EDF
+  _SET_BIT(clear_diagnostyka, ERROR_SPI_EDF_BIT);
   
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordExitISR();
@@ -1659,7 +1652,7 @@ void EXITI_POWER_IRQHandler(void)
       _SET_BIT(set_diagnostyka, EVENT_DROP_POWER_BIT);
 
       //Запускаємо запис у EEPROM
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
       number_minutes = 0;
     }
   }

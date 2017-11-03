@@ -1773,7 +1773,7 @@ void calc_power_and_energy(void)
     if ((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET)
     {
       //Запускаємо запис у EEPROM
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
     }
     else number_minutes = PERIOD_SAVE_ENERGY_IN_MINUTES; /*якщо живлення відновиться, щоб зразу була подана команда на запис*/
 

@@ -277,6 +277,7 @@ extern void detector_kuta_nzz(int*);
 extern void directional_mtz(int*, unsigned int);
 extern void directional_tznp(int*, unsigned int);
 
+extern void main_routines_for_spi1(void);
 extern void main_function_for_dataflash_resp(int);
 extern void main_function_for_dataflash_req(int);
 extern void start_checking_dataflash(void);
@@ -325,8 +326,8 @@ extern void I2C_ER_IRQHandler(void);
 extern void DMA_StreamI2C_Tx_IRQHandler(void);
 extern void DMA_StreamI2C_Rx_IRQHandler(void);
 extern void SPI_ADC_IRQHandler(void);
-extern void DMA_StreamSPI_DF_Rx_IRQHandler(void);
-extern void SPI_DF_IRQHandler(void);
+extern void DMA_StreamSPI_EDF_Rx_IRQHandler(void);
+extern void SPI_EDF_IRQHandler(void);
 extern void USARTRS485_IRQHandler(void);
 extern void DMA_StreamRS485_Tx_IRQHandler(void);
 extern void EXITI_POWER_IRQHandler(void);

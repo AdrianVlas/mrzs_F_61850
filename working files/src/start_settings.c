@@ -749,7 +749,7 @@ void Configure_I2C(I2C_TypeDef* I2Cx)
   I2C_InitStructure.I2C_OwnAddress1 = EEPROM_ADDRESS;
   I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
   I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
-  I2C_InitStructure.I2C_ClockSpeed = (low_speed_i2c == 0 ) ? CLOCKSPEED_1MBIT : CLOCKSPEED;
+  I2C_InitStructure.I2C_ClockSpeed = /*(low_speed_i2c == 0 ) ? CLOCKSPEED_1MBIT :*/ CLOCKSPEED;
   I2C_Init(I2Cx, &I2C_InitStructure);
 
   /* Дозволяємо для I2C генерацію переривань по помилках */
@@ -953,16 +953,22 @@ void start_settings_peripherals(void)
   GPIO_Init(GPIO_SPI_ADC, &GPIO_InitStructure);
   GPIO_SetBits(GPIO_SPI_ADC, GPIO_NSSPin_ADC);
 
-  /*NSS_ADC каналу SPI_DF */
-  GPIO_InitStructure.GPIO_Pin = GPIO_NSSPin_DF;
-  GPIO_Init(GPIO_SPI_DF, &GPIO_InitStructure);
-  GPIO_SetBits(GPIO_SPI_DF, GPIO_NSSPin_DF);
+  /*NSS_ADC каналу SPI_EDF */
+  GPIO_InitStructure.GPIO_Pin = GPIO_NSSPin_EDF;
+  GPIO_Init(GPIO_SPI_EDF, &GPIO_InitStructure);
+  GPIO_SetBits(GPIO_SPI_EDF, GPIO_NSSPin_EDF);
 
-  /*GPIO_SPI_DF_TOGGLE - вибір мікросхеми DataFlash*/
-  GPIO_InitStructure.GPIO_Pin = GPIO_SPI_DF_TOGGLE_Pin;
-  GPIO_Init(GPIO_SPI_DF_TOGGLE, &GPIO_InitStructure);
-  /*Вибираємо мікросхему з 1МБ*/
-  GPIO_SetBits(GPIO_SPI_DF_TOGGLE, GPIO_SPI_DF_TOGGLE_Pin);
+  /*GPIO_SPI_EDF_A0 - вибір мікросхеми DataFlash*/
+  GPIO_InitStructure.GPIO_Pin = GPIO_SPI_EDF_A0_Pin;
+  GPIO_Init(GPIO_SPI_EDF_A0, &GPIO_InitStructure);
+  //Вибираємо EEPROM
+  GPIO_ResetBits(GPIO_SPI_EDF_A0, GPIO_SPI_EDF_A0_Pin);
+
+  /*GPIO_SPI_EDF_A1 - вибір мікросхеми DataFlash*/
+  GPIO_InitStructure.GPIO_Pin = GPIO_SPI_EDF_A1_Pin;
+  GPIO_Init(GPIO_SPI_EDF_A1, &GPIO_InitStructure);
+  //Вибираємо EEPROM
+  GPIO_SetBits(GPIO_SPI_EDF_A1, GPIO_SPI_EDF_A1_Pin);
 
   /* Пін 485DE*/
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_485DE;
@@ -1010,13 +1016,13 @@ void start_settings_peripherals(void)
   GPIO_Init(GPIO_SPI_ADC, &GPIO_InitStructure);
 
   //Перекидаємо піни PA5/SPI1_SCK, PA6/SPI1_MISO і  PA7/SPI1_MOSI
-  GPIO_PinAFConfig(GPIO_SPI_DF, GPIO_SCKPin_DFSource, GPIO_AF_SPI_DF);
-  GPIO_PinAFConfig(GPIO_SPI_DF, GPIO_MISOPin_DFSource, GPIO_AF_SPI_DF);
-  GPIO_PinAFConfig(GPIO_SPI_DF, GPIO_MOSIPin_DFSource, GPIO_AF_SPI_DF);
+  GPIO_PinAFConfig(GPIO_SPI_EDF, GPIO_SCKPin_EDFSource, GPIO_AF_SPI_EDF);
+  GPIO_PinAFConfig(GPIO_SPI_EDF, GPIO_MISOPin_EDFSource, GPIO_AF_SPI_EDF);
+  GPIO_PinAFConfig(GPIO_SPI_EDF, GPIO_MOSIPin_EDFSource, GPIO_AF_SPI_EDF);
 
-  /* Configure SPI_DF SCK, MISO і MOSI */
-  GPIO_InitStructure.GPIO_Pin = GPIO_SCKPin_DF | GPIO_MISOPin_DF | GPIO_MOSIPin_DF;
-  GPIO_Init(GPIO_SPI_DF, &GPIO_InitStructure);
+  /* Configure SPI_EDF SCK, MISO і MOSI */
+  GPIO_InitStructure.GPIO_Pin = GPIO_SCKPin_EDF | GPIO_MISOPin_EDF | GPIO_MOSIPin_EDF;
+  GPIO_Init(GPIO_SPI_EDF, &GPIO_InitStructure);
 
   //Перекидаємо піни PA2/Tx_RS-485, PA3/Rx_RS-485
   GPIO_PinAFConfig(GPIO_USART_RS485, GPIO_TxPin_RS485Source, GPIO_AF_USART_RS_485);
@@ -1054,7 +1060,7 @@ void start_settings_peripherals(void)
   DMA_InitStructure.DMA_PeripheralBaseAddr = I2C_DR_Address;
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)Temporaty_I2C_Buffer;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_BufferSize = SIZE_PAGE_EEPROM + 2;
+  DMA_InitStructure.DMA_BufferSize = MAX_NUMBER_REGISTERS_RTC + 2;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte;
@@ -1080,30 +1086,30 @@ void start_settings_peripherals(void)
   DMA_Init(DMA_StreamI2C_Tx, &DMA_InitStructure);
   DMA_ClearFlag(DMA_StreamI2C_Tx, DMA_FLAG_TCI2C_Tx | DMA_FLAG_HTI2C_Tx | DMA_FLAG_TEII2C_Tx | DMA_FLAG_DMEII2C_Tx | DMA_FLAG_FEII2C_Tx);
 
-  /* DMA настроюємо для передачі даних по SPI_DF*/
-  DMA_DeInit(DMA_StreamSPI_DF_Tx);
-  while (DMA_GetCmdStatus(DMA_StreamSPI_DF_Tx) != DISABLE);
+  /* DMA настроюємо для передачі даних по SPI_EDF*/
+  DMA_DeInit(DMA_StreamSPI_EDF_Tx);
+  while (DMA_GetCmdStatus(DMA_StreamSPI_EDF_Tx) != DISABLE);
   
-  DMA_InitStructure.DMA_Channel = DMA_ChannelSPI_DF_Tx;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = SPI_DF_DR_Address;
-  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)TxBuffer_SPI_DF;
+  DMA_InitStructure.DMA_Channel = DMA_ChannelSPI_EDF_Tx;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = SPI_EDF_DR_Address;
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)TxBuffer_SPI_EDF;
   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
   DMA_InitStructure.DMA_BufferSize = SIZE_PAGE_DATAFLASH_MAX + 10;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh; /*Так як № потоку DMA_StreamSPI_DF_Tx > за № потоку DMA_StreamSPI_DF_Rx, то DMA_StreamSPI_DF_Rx має пріориет над DMA_StreamSPI_DF_Tx при однаковому програмному пріоритеті*/
-  DMA_Init(DMA_StreamSPI_DF_Tx, &DMA_InitStructure);
-  DMA_ClearFlag(DMA_StreamSPI_DF_Tx, DMA_FLAG_TCSPI_DF_Tx | DMA_FLAG_HTSPI_DF_Tx | DMA_FLAG_TEISPI_DF_Tx | DMA_FLAG_DMEISPI_DF_Tx | DMA_FLAG_FEISPI_DF_Tx);
+  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh; /*Так як № потоку DMA_StreamSPI_EDF_Tx > за № потоку DMA_StreamSPI_EDF_Rx, то DMA_StreamSPI_EDF_Rx має пріориет над DMA_StreamSPI_EDF_Tx при однаковому програмному пріоритеті*/
+  DMA_Init(DMA_StreamSPI_EDF_Tx, &DMA_InitStructure);
+  DMA_ClearFlag(DMA_StreamSPI_EDF_Tx, DMA_FLAG_TCSPI_EDF_Tx | DMA_FLAG_HTSPI_EDF_Tx | DMA_FLAG_TEISPI_EDF_Tx | DMA_FLAG_DMEISPI_EDF_Tx | DMA_FLAG_FEISPI_EDF_Tx);
 
-  /* DMA настроюємо для прийому даних по SPI_DF*/
-  DMA_DeInit(DMA_StreamSPI_DF_Rx);
-  while (DMA_GetCmdStatus(DMA_StreamSPI_DF_Rx) != DISABLE);
+  /* DMA настроюємо для прийому даних по SPI_EDF*/
+  DMA_DeInit(DMA_StreamSPI_EDF_Rx);
+  while (DMA_GetCmdStatus(DMA_StreamSPI_EDF_Rx) != DISABLE);
   
-  DMA_InitStructure.DMA_Channel = DMA_ChannelSPI_DF_Rx;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = SPI_DF_DR_Address;
-  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)RxBuffer_SPI_DF;
+  DMA_InitStructure.DMA_Channel = DMA_ChannelSPI_EDF_Rx;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = SPI_EDF_DR_Address;
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)RxBuffer_SPI_EDF;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh; /*Так як № потоку DMA_StreamSPI_DF_Tx > за № потоку DMA_StreamSPI_DF_Rx, то DMA_StreamSPI_DF_Rx має пріориет над DMA_StreamSPI_DF_Tx при однаковому програмному пріоритеті*/
-  DMA_Init(DMA_StreamSPI_DF_Rx, &DMA_InitStructure);
-  DMA_ClearFlag(DMA_StreamSPI_DF_Rx, DMA_FLAG_TCSPI_DF_Rx | DMA_FLAG_HTSPI_DF_Rx | DMA_FLAG_TEISPI_DF_Rx | DMA_FLAG_DMEISPI_DF_Rx | DMA_FLAG_FEISPI_DF_Rx);
+  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh; /*Так як № потоку DMA_StreamSPI_EDF_Tx > за № потоку DMA_StreamSPI_EDF_Rx, то DMA_StreamSPI_EDF_Rx має пріориет над DMA_StreamSPI_EDF_Tx при однаковому програмному пріоритеті*/
+  DMA_Init(DMA_StreamSPI_EDF_Rx, &DMA_InitStructure);
+  DMA_ClearFlag(DMA_StreamSPI_EDF_Rx, DMA_FLAG_TCSPI_EDF_Rx | DMA_FLAG_HTSPI_EDF_Rx | DMA_FLAG_TEISPI_EDF_Rx | DMA_FLAG_DMEISPI_EDF_Rx | DMA_FLAG_FEISPI_EDF_Rx);
 
   /* Прийом по RS-485*/
   DMA_DeInit(DMA_StreamRS485_Rx);
@@ -1217,21 +1223,51 @@ void start_settings_peripherals(void)
   TIM_Cmd(TIM4, ENABLE);
   /**********************/
 
+//  /**********************/
+//  //Конфігуруємо I2C
+//  /**********************/
+//  Configure_I2C(I2C);
+//  /**********************/
+
   /**********************/
-  //Конфігуруємо I2C
+  //Настроювання SPI для  DataFlash з початковим читанням , чи мікросхеми переведені у потрібний режим
   /**********************/
-  Configure_I2C(I2C);
+  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+  SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
+  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+  SPI_InitStructure.SPI_NSS =  SPI_NSS_Soft;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
+  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+  SPI_InitStructure.SPI_CRCPolynomial = 7;
+  SPI_Init(SPI_EDF, &SPI_InitStructure);
+
+  /* Забороняємо SPI_EDF DMA Tx запити */
+  SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Tx, DISABLE);
+  /* Забороняємо SPI_EDF DMA Rx запити */
+  SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Rx, DISABLE);
+
+  //Очищаємо прапореці, що сигналізує про завершення прийом/передачі даних для DMA по потоку DMA_StreamSPI_EDF_Rx і DMA_StreamSPI_EDF_Tx
+  DMA_ClearFlag(DMA_StreamSPI_EDF_Rx, DMA_FLAG_TCSPI_EDF_Rx | DMA_FLAG_HTSPI_EDF_Rx | DMA_FLAG_TEISPI_EDF_Rx | DMA_FLAG_DMEISPI_EDF_Rx | DMA_FLAG_FEISPI_EDF_Rx);
+  DMA_ClearFlag(DMA_StreamSPI_EDF_Tx, DMA_FLAG_TCSPI_EDF_Tx | DMA_FLAG_HTSPI_EDF_Tx | DMA_FLAG_TEISPI_EDF_Tx | DMA_FLAG_DMEISPI_EDF_Tx | DMA_FLAG_FEISPI_EDF_Tx);
+
+  //Дозволяємо переривання від помилок на SPI_EDF
+  SPI_I2S_ITConfig(SPI_EDF, SPI_I2S_IT_ERR, ENABLE);
+
+  /* Дозволяємо SPI_EDF */
+  SPI_Cmd(SPI_EDF, ENABLE);
   /**********************/
 
   /**********************/
   //Читаємо збережені дані енергій з EEPROM
   /**********************/
   comparison_writing &= (unsigned int)(~COMPARISON_WRITING_ENERGY);/*зчитування, а не порівняння*/
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_ENERGY_EEPROM_BIT);
+  _SET_BIT(control_spi1_taskes, TASK_START_READ_ENERGY_EEPROM_BIT);
   while(
-        (control_i2c_taskes[0]     != 0) ||
-        (control_i2c_taskes[1]     != 0) ||
-        (driver_i2c.state_execution > 0)
+        (control_spi1_taskes[0]     != 0) ||
+        (control_spi1_taskes[1]     != 0) ||
+        (state_execution_spi1 > 0)
        )
   {
     //Робота з watchdogs
@@ -1245,13 +1281,8 @@ void start_settings_peripherals(void)
                    );
     }
 
-    main_routines_for_i2c();
+    main_routines_for_spi1();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-    {
-      //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-      _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
   }
   /**********************/
 
@@ -1259,11 +1290,11 @@ void start_settings_peripherals(void)
   //Читаємо збережені дані настройок з EEPROM
   /**********************/
   comparison_writing &= (unsigned int)(~COMPARISON_WRITING_SETTINGS);/*зчитування, а не порівняння*/
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_SETTINGS_EEPROM_BIT);
+  _SET_BIT(control_spi1_taskes, TASK_START_READ_SETTINGS_EEPROM_BIT);
   while(
-        (control_i2c_taskes[0]     != 0) ||
-        (control_i2c_taskes[1]     != 0) ||
-        (driver_i2c.state_execution > 0)
+        (control_spi1_taskes[0]     != 0) ||
+        (control_spi1_taskes[1]     != 0) ||
+        (state_execution_spi1 > 0)
        )
   {
     //Робота з watchdogs
@@ -1277,13 +1308,8 @@ void start_settings_peripherals(void)
                    );
     }
 
-    main_routines_for_i2c();
+    main_routines_for_spi1();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-    {
-      //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-      _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
   }
   /**********************/
 
@@ -1291,11 +1317,11 @@ void start_settings_peripherals(void)
   //Читаємо збережені дані юстування з EEPROM
   /**********************/
   comparison_writing &= (unsigned int)(~COMPARISON_WRITING_USTUVANNJA);/*зчитування, а не порівняння*/
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_USTUVANNJA_EEPROM_BIT);
+  _SET_BIT(control_spi1_taskes, TASK_START_READ_USTUVANNJA_EEPROM_BIT);
   while(
-        (control_i2c_taskes[0]     != 0) ||
-        (control_i2c_taskes[1]     != 0) ||
-        (driver_i2c.state_execution > 0)
+        (control_spi1_taskes[0]     != 0) ||
+        (control_spi1_taskes[1]     != 0) ||
+        (state_execution_spi1 > 0)
        )
   {
     //Робота з watchdogs
@@ -1309,13 +1335,8 @@ void start_settings_peripherals(void)
                    );
     }
 
-    main_routines_for_i2c();
+    main_routines_for_spi1();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-    {
-      //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-      _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
   }
   /**********************/
 
@@ -1323,11 +1344,11 @@ void start_settings_peripherals(void)
   //Читаємо збережені дані про сигнальні виходи і тригерні свтлодіоди
   /**********************/
   comparison_writing &= (unsigned int)(~COMPARISON_WRITING_STATE_LEDS_OUTPUTS);/*зчитування, а не порівняння*/
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_STATE_LEDS_OUTPUTS_EEPROM_BIT);
+  _SET_BIT(control_spi1_taskes, TASK_START_READ_STATE_LEDS_OUTPUTS_EEPROM_BIT);
   while(
-        (control_i2c_taskes[0]     != 0) ||
-        (control_i2c_taskes[1]     != 0) ||
-        (driver_i2c.state_execution > 0)
+        (control_spi1_taskes[0]     != 0) ||
+        (control_spi1_taskes[1]     != 0) ||
+        (state_execution_spi1 > 0)
        )
   {
     //Робота з watchdogs
@@ -1341,13 +1362,8 @@ void start_settings_peripherals(void)
                    );
     }
 
-    main_routines_for_i2c();
+    main_routines_for_spi1();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-    {
-      //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-      _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
   }
   /**********************/
   
@@ -1355,11 +1371,11 @@ void start_settings_peripherals(void)
   //Читаємо збережені дані про тригерну інформацію
   /**********************/
   comparison_writing &= (unsigned int)(~COMPARISON_WRITING_TRG_FUNC);/*зчитування, а не порівняння*/
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_TRG_FUNC_EEPROM_BIT);
+  _SET_BIT(control_spi1_taskes, TASK_START_READ_TRG_FUNC_EEPROM_BIT);
   while(
-        (control_i2c_taskes[0]     != 0) ||
-        (control_i2c_taskes[1]     != 0) ||
-        (driver_i2c.state_execution > 0)
+        (control_spi1_taskes[0]     != 0) ||
+        (control_spi1_taskes[1]     != 0) ||
+        (state_execution_spi1 > 0)
        )
   {
     //Робота з watchdogs
@@ -1373,17 +1389,12 @@ void start_settings_peripherals(void)
                    );
     }
 
-    main_routines_for_i2c();
+    main_routines_for_spi1();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-    {
-      //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-      _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
   }
   /**********************/
   
-  if((state_i2c_task & STATE_SETTINGS_EEPROM_GOOD) != 0)
+  if((state_spi1_task & STATE_SETTINGS_EEPROM_GOOD) != 0)
   {
     /*
     Оскільки при читанні даних аналогового реєстратора буде аналізуватися
@@ -1398,11 +1409,11 @@ void start_settings_peripherals(void)
     //Читаємо збережені дані аналогового реєстратора з EEPROM
     /**********************/
     comparison_writing &= (unsigned int)(~COMPARISON_WRITING_INFO_REJESTRATOR_AR);/*зчитування, а не порівняння*/
-    _SET_BIT(control_i2c_taskes, TASK_START_READ_INFO_REJESTRATOR_AR_EEPROM_BIT);
+    _SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_AR_EEPROM_BIT);
     while(
-          (control_i2c_taskes[0]     != 0) ||
-          (control_i2c_taskes[1]     != 0) ||
-          (driver_i2c.state_execution > 0)
+          (control_spi1_taskes[0]     != 0) ||
+          (control_spi1_taskes[1]     != 0) ||
+          (state_execution_spi1 > 0)
          )
     {
       //Робота з watchdogs
@@ -1416,13 +1427,8 @@ void start_settings_peripherals(void)
                      );
       }
 
-      main_routines_for_i2c();
+      main_routines_for_spi1();
       changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-      if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-      {
-        //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-        _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-      }
     }
     /**********************/
   }
@@ -1431,11 +1437,11 @@ void start_settings_peripherals(void)
   //Читаємо збережені дані дискретного реєстратора з EEPROM
   /**********************/
   comparison_writing &= (unsigned int)(~COMPARISON_WRITING_INFO_REJESTRATOR_DR);/*зчитування, а не порівняння*/
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_INFO_REJESTRATOR_DR_EEPROM_BIT);
+  _SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_DR_EEPROM_BIT);
   while(
-        (control_i2c_taskes[0]     != 0) ||
-        (control_i2c_taskes[1]     != 0) ||
-        (driver_i2c.state_execution > 0)
+        (control_spi1_taskes[0]     != 0) ||
+        (control_spi1_taskes[1]     != 0) ||
+        (state_execution_spi1 > 0)
        )
   {
     //Робота з watchdogs
@@ -1449,13 +1455,8 @@ void start_settings_peripherals(void)
                    );
     }
 
-    main_routines_for_i2c();
+    main_routines_for_spi1();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-    {
-      //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-      _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
   }
   /**********************/
 
@@ -1463,11 +1464,11 @@ void start_settings_peripherals(void)
   //Читаємо збережені дані реєстратора програмних подій з EEPROM
   /**********************/
   comparison_writing &= (unsigned int)(~COMPARISON_WRITING_INFO_REJESTRATOR_PR_ERR);/*зчитування, а не порівняння*/
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
+  _SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
   while(
-        (control_i2c_taskes[0]     != 0) ||
-        (control_i2c_taskes[1]     != 0) ||
-        (driver_i2c.state_execution > 0)
+        (control_spi1_taskes[0]     != 0) ||
+        (control_spi1_taskes[1]     != 0) ||
+        (state_execution_spi1 > 0)
        )
   {
     //Робота з watchdogs
@@ -1481,13 +1482,8 @@ void start_settings_peripherals(void)
                    );
     }
 
-    main_routines_for_i2c();
+    main_routines_for_spi1();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-    {
-      //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-      _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
   }
   /**********************/
 
@@ -1495,11 +1491,11 @@ void start_settings_peripherals(void)
   //Читаємо збережені дані ресурсу вимикача
   /**********************/
   comparison_writing &= (unsigned int)(~COMPARISON_WRITING_RESURS);/*зчитування, а не порівняння*/
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_RESURS_EEPROM_BIT);
+  _SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT);
   while(
-        (control_i2c_taskes[0]     != 0) ||
-        (control_i2c_taskes[1]     != 0) ||
-        (driver_i2c.state_execution > 0)
+        (control_spi1_taskes[0]     != 0) ||
+        (control_spi1_taskes[1]     != 0) ||
+        (state_execution_spi1 > 0)
        )
   {
     //Робота з watchdogs
@@ -1513,19 +1509,17 @@ void start_settings_peripherals(void)
                    );
     }
 
-    main_routines_for_i2c();
+    main_routines_for_spi1();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-    {
-      //Повне роозблоковування обміну з мікросхемами для драйверу I2C
-      _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
   }
   /**********************/
   
-  //Переконфігуровуємо I2C
-  low_speed_i2c = 0xff;
-  Configure_I2C(I2C);
+//  /**********************/
+//  //Конфігуруємо I2C
+//  /**********************/
+//  low_speed_i2c = 0xff;
+//  Configure_I2C(I2C);
+//  /**********************/
 
   /**********************/
   //Настроювання TIM2 на генерацію переривань кожні 1 мс для системи захистів
@@ -1587,47 +1581,17 @@ void start_settings_peripherals(void)
   /* Дозволяємо переривання від каналу 2 таймера 5*/
   TIM_ITConfig(TIM5, TIM_IT_CC2, ENABLE);
   /**********************/
-  
-  /**********************/
-  //Настроювання SPI для  DataFlash з початковим читанням , чи мікросхеми переведені у потрібний режим
-  /**********************/
-  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-  SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
-  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
-  SPI_InitStructure.SPI_NSS =  SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = /*SPI_BaudRatePrescaler_4*/SPI_BaudRatePrescaler_2;
-  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-  SPI_InitStructure.SPI_CRCPolynomial = 7;
-  SPI_Init(SPI_DF, &SPI_InitStructure);
 
-  /* Забороняємо SPI_DF DMA Tx запити */
-  SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Tx, DISABLE);
-  /* Забороняємо SPI_DF DMA Rx запити */
-  SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Rx, DISABLE);
-
-  //Очищаємо прапореці, що сигналізує про завершення прийом/передачі даних для DMA по потоку DMA_StreamSPI_DF_Rx і DMA_StreamSPI_DF_Tx
-  DMA_ClearFlag(DMA_StreamSPI_DF_Rx, DMA_FLAG_TCSPI_DF_Rx | DMA_FLAG_HTSPI_DF_Rx | DMA_FLAG_TEISPI_DF_Rx | DMA_FLAG_DMEISPI_DF_Rx | DMA_FLAG_FEISPI_DF_Rx);
-  DMA_ClearFlag(DMA_StreamSPI_DF_Tx, DMA_FLAG_TCSPI_DF_Tx | DMA_FLAG_HTSPI_DF_Tx | DMA_FLAG_TEISPI_DF_Tx | DMA_FLAG_DMEISPI_DF_Tx | DMA_FLAG_FEISPI_DF_Tx);
-
-  //Дозволяємо переривання від помилок на SPI_DF
-  SPI_I2S_ITConfig(SPI_DF, SPI_I2S_IT_ERR, ENABLE);
-
-  /* Дозволяємо SPI_DF */
-  SPI_Cmd(SPI_DF, ENABLE);
-  /**********************/
-
-    //Робота з watchdogs
-    if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-    {
-      //Змінюємо стан біту зовнішнього Watchdog на протилежний
-      GPIO_WriteBit(
-                    GPIO_EXTERNAL_WATCHDOG,
-                    GPIO_PIN_EXTERNAL_WATCHDOG,
-                    (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                   );
-    }
+  //Робота з watchdogs
+  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
+  {
+    //Змінюємо стан біту зовнішнього Watchdog на протилежний
+    GPIO_WriteBit(
+                  GPIO_EXTERNAL_WATCHDOG,
+                  GPIO_PIN_EXTERNAL_WATCHDOG,
+                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
+                 );
+  }
 
   /**********************/
   //Ініціалізація USB
@@ -2079,12 +2043,12 @@ void error_reading_with_eeprom()
   };
   
   int index_language;
-  if ((state_i2c_task & STATE_SETTINGS_EEPROM_GOOD) == 0) index_language = index_language_in_array(LANGUAGE_ABSENT);
+  if ((state_spi1_task & STATE_SETTINGS_EEPROM_GOOD) == 0) index_language = index_language_in_array(LANGUAGE_ABSENT);
   else index_language = index_language_in_array(current_settings.language);
 
   if (
-      ((state_i2c_task & (STATE_SETTINGS_EEPROM_EMPTY | STATE_SETTINGS_EEPROM_FAIL) ) != 0) ||
-      ((state_i2c_task & (STATE_TRG_FUNC_EEPROM_EMPTY | STATE_TRG_FUNC_EEPROM_FAIL) ) != 0)
+      ((state_spi1_task & (STATE_SETTINGS_EEPROM_EMPTY | STATE_SETTINGS_EEPROM_FAIL) ) != 0) ||
+      ((state_spi1_task & (STATE_TRG_FUNC_EEPROM_EMPTY | STATE_TRG_FUNC_EEPROM_FAIL) ) != 0)
      )   
   {
     //Робота з watchdogs
@@ -2099,25 +2063,25 @@ void error_reading_with_eeprom()
     }
     
     unsigned int index_info, index_action, information_type;
-    if((state_i2c_task & STATE_SETTINGS_EEPROM_EMPTY) != 0)
+    if((state_spi1_task & STATE_SETTINGS_EEPROM_EMPTY) != 0)
     {
       index_info = 0;
       index_action = 0;
       information_type = 1;
     }
-    else if((state_i2c_task & STATE_SETTINGS_EEPROM_FAIL) != 0)
+    else if((state_spi1_task & STATE_SETTINGS_EEPROM_FAIL) != 0)
     {
       index_info = 1;
       index_action = 0;
       information_type = 1;
     }
-    else if((state_i2c_task & STATE_TRG_FUNC_EEPROM_EMPTY) != 0)
+    else if((state_spi1_task & STATE_TRG_FUNC_EEPROM_EMPTY) != 0)
     {
       index_info = 2;
       index_action = 1;
       information_type = 2;
     }
-    else if((state_i2c_task & STATE_TRG_FUNC_EEPROM_FAIL) != 0)
+    else if((state_spi1_task & STATE_TRG_FUNC_EEPROM_FAIL) != 0)
     {
       index_info = 3;
       index_action = 1;
@@ -2168,7 +2132,7 @@ void error_reading_with_eeprom()
       changed_settings = CHANGED_ETAP_ENDED;
       
       //Записуємо мінімальну конфігурацію
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT);
     }
     else if (information_type == 2)
     {
@@ -2176,14 +2140,14 @@ void error_reading_with_eeprom()
       for (unsigned int i = 0; i < N_BIG; i++) trigger_active_functions[i] = 0x0;
 
       //Записуємо очищену триґерну інформацію
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_TRG_FUNC_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_TRG_FUNC_EEPROM_BIT);
     }
     
     //Чекаємо завершення запису
     while(
-          (control_i2c_taskes[0]     != 0) ||
-          (control_i2c_taskes[1]     != 0) ||
-          (driver_i2c.state_execution > 0)
+          (control_spi1_taskes[0]     != 0) ||
+          (control_spi1_taskes[1]     != 0) ||
+          (state_execution_spi1 > 0)
          )
     {
       //Робота з watchdogs
@@ -2197,34 +2161,29 @@ void error_reading_with_eeprom()
                      );
       }
 
-      main_routines_for_i2c();
+      main_routines_for_spi1();
       changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
       //Оскільки ще тамер вимірювальної системи не запущений, то цю операцію треба робити тут
-      if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-      {
-        //Повне роозблоковування запуск заблокованих задач запису в EEPROM для драйверу I2C
-        _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-      }
     }
 
     if (information_type == 1)
     {
       //Повтрокно зчитуємо налаштування
       comparison_writing &= (unsigned int)(~COMPARISON_WRITING_SETTINGS);/*зчитування, а не порівняння*/
-      _SET_BIT(control_i2c_taskes, TASK_START_READ_SETTINGS_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_READ_SETTINGS_EEPROM_BIT);
     }
     else if (information_type == 2)
     {
       //Повтрокно зчитуємо триґерну інформацію
       comparison_writing &= (unsigned int)(~COMPARISON_WRITING_TRG_FUNC);/*зчитування, а не порівняння*/
-      _SET_BIT(control_i2c_taskes, TASK_START_READ_TRG_FUNC_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_READ_TRG_FUNC_EEPROM_BIT);
     }
 
     //Чекаємо завершення читання
     while(
-          (control_i2c_taskes[0]     != 0) ||
-          (control_i2c_taskes[1]     != 0) ||
-          (driver_i2c.state_execution > 0)
+          (control_spi1_taskes[0]     != 0) ||
+          (control_spi1_taskes[1]     != 0) ||
+          (state_execution_spi1 > 0)
          )
     {
       //Робота з watchdogs
@@ -2238,14 +2197,9 @@ void error_reading_with_eeprom()
                      );
       }
       
-      main_routines_for_i2c();
+      main_routines_for_spi1();
       changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
       //Оскільки ще тамер вимірювальної системи не запущений, то цю операцію треба робити тут
-      if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) != 0)
-      {
-        //Повне роозблоковування запуск заблокованих задач запису в EEPROM для драйверу I2C
-        _CLEAR_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-      }
     }
   }
 }  
@@ -2271,7 +2225,7 @@ void start_checking_dataflash(void)
       {
         /*
         ця ситуація могла виникнути тільки в одному випадку - якщо в процесі прийом/передачі
-        зафісована була помилка у SPI_DF, тому повторно виконуємо запуск читання регістру статусу
+        зафісована була помилка у SPI_EDF, тому повторно виконуємо запуск читання регістру статусу
         */
         dataflash_status_read(number_chip_dataflsh_exchange);
       }
@@ -2287,8 +2241,8 @@ void start_checking_dataflash(void)
                      );
       }
     }
-    page_size_256 &= RxBuffer_SPI_DF[1] & (1<< 0); 
-    ready_busy = RxBuffer_SPI_DF[1] & (1<< 7);
+    page_size_256 &= RxBuffer_SPI_EDF[1] & (1<< 0); 
+    ready_busy = RxBuffer_SPI_EDF[1] & (1<< 7);
     driver_spi_df[number_chip_dataflsh_exchange].state_execution = TRANSACTION_EXECUTING_NONE;
     driver_spi_df[number_chip_dataflsh_exchange].code_operation = CODE_OPERATION_NONE;
     if (page_size_256 == 0)
@@ -2305,7 +2259,7 @@ void start_checking_dataflash(void)
           {
             /*
             ця ситуація могла виникнути тільки в одному випадку - якщо в процесі прийом/передачі
-            зафісована була помилка у SPI_DF, тому повторно виконуємо запуск читання регістру статусу
+            зафісована була помилка у SPI_EDF, тому повторно виконуємо запуск читання регістру статусу
             */
             dataflash_status_read(number_chip_dataflsh_exchange);
           }
@@ -2321,7 +2275,7 @@ void start_checking_dataflash(void)
                          );
           }
         }
-        ready_busy = RxBuffer_SPI_DF[1] & (1<< 7);
+        ready_busy = RxBuffer_SPI_EDF[1] & (1<< 7);
         driver_spi_df[number_chip_dataflsh_exchange].state_execution = TRANSACTION_EXECUTING_NONE;
         driver_spi_df[number_chip_dataflsh_exchange].code_operation = CODE_OPERATION_NONE;
       }
@@ -2360,7 +2314,7 @@ void start_checking_dataflash(void)
           {
             /*
             ця ситуація могла виникнути тільки в одному випадку - якщо в процесі прийом/передачі
-            зафісована була помилка у SPI_DF, тому повторно виконуємо запуск читання регістру статусу
+            зафісована була помилка у SPI_EDF, тому повторно виконуємо запуск читання регістру статусу
             */
             dataflash_status_read(number_chip_dataflsh_exchange);
           }
@@ -2376,7 +2330,7 @@ void start_checking_dataflash(void)
                          );
           }
         }
-        ready_busy = RxBuffer_SPI_DF[1] & (1<< 7);
+        ready_busy = RxBuffer_SPI_EDF[1] & (1<< 7);
         driver_spi_df[number_chip_dataflsh_exchange].state_execution = TRANSACTION_EXECUTING_NONE;
         driver_spi_df[number_chip_dataflsh_exchange].code_operation = CODE_OPERATION_NONE;
       }

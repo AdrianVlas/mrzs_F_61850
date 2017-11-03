@@ -1593,9 +1593,9 @@
     <group>
       <name>src</name>
       <group>
-        <name>EEPROM_RTC</name>
+        <name>EEPROM</name>
         <file>
-          <name>$PROJ_DIR$\..\..\working files\src\eeprom_rtc.c</name>
+          <name>$PROJ_DIR$\..\..\working files\src\eeprom.c</name>
         </file>
       </group>
       <group>
@@ -1779,6 +1779,12 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\protections.c</name>
+        </file>
+      </group>
+      <group>
+        <name>I2C</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\i2c.c</name>
         </file>
       </group>
       <group>

@@ -42,8 +42,9 @@ void Set_System(void)
                          RCC_AHB1Periph_GPIO_SELECT_ADC         |
                          RCC_AHB1Periph_GPIO_SPI_ADC            |
                          RCC_AHB1Periph_GPIO_I2C                |
-                         RCC_AHB1Periph_GPIO_SPI_DF             |
-                         RCC_AHB1Periph_GPIO_SPI_DF_TOGGLE      |
+                         RCC_AHB1Periph_GPIO_SPI_EDF            |
+                         RCC_AHB1Periph_GPIO_SPI_EDF_A0         |
+                         RCC_AHB1Periph_GPIO_SPI_EDF_A1         |
                          RCC_AHB1Periph_GPIO_CON_OUTPUTS        |
                          RCC_AHB1Periph_GPIO_USART_RS485        |
                          RCC_AHB1Periph_GPIO_485DE              |
@@ -55,7 +56,7 @@ void Set_System(void)
   //APB2
   RCC_APB2PeriphClockCmd(
                          RCC_APB2Periph_SYSCFG  |
-                         RCC_APB2Periph_SPI_DF/*  |
+                         RCC_APB2Periph_SPI_EDF/*  |
                          RCC_USARTRS_485*/,
                          ENABLE);
   
@@ -174,13 +175,13 @@ void Interrupts_Config(void)
   /*******************************/
 
   /*******************************/
-  /* Дозволяємо переривання від SPI_DF - читання Dataflash */
+  /* Дозволяємо переривання від SPI_EDF - читання Dataflash */
   /*
   Pre-emption пріоритет = 2 
   Subpriority пріоритет = 0  (найвищий у даній групі)
   */
   /*******************************/
-  NVIC_InitStructure.NVIC_IRQChannel = SPI_DF_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel = SPI_EDF_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -188,13 +189,13 @@ void Interrupts_Config(void)
   /*******************************/
 
   /*******************************/
-  /* Дозволяємо переривання від DMA_SPI_DF запису - читання Dataflash */
+  /* Дозволяємо переривання від DMA_SPI_EDF запису - читання Dataflash */
   /*
   Pre-emption пріоритет = 2 
   Subpriority пріоритет = 1
   */
   /*******************************/
-  NVIC_InitStructure.NVIC_IRQChannel = DMA_StreamSPI_DF_Rx_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel = DMA_StreamSPI_EDF_Rx_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;

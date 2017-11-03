@@ -15299,7 +15299,7 @@ void modbus_rountines(unsigned int type_interface)
                 changed_ustuvannja = CHANGED_ETAP_ENDED;
               }
               //Запис юстуючик коефіцієнтів
-              _SET_BIT(control_i2c_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
+              _SET_BIT(control_spi1_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
             }
             else if (add_data == MA_DEFAULT_SETTINGS)
             {
@@ -16141,7 +16141,7 @@ void modbus_rountines(unsigned int type_interface)
               changed_ustuvannja = CHANGED_ETAP_ENDED;
               serial_number_dev = edit_serial_number_dev;
 
-              _SET_BIT(control_i2c_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
+              _SET_BIT(control_spi1_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
             }
             if (
                 (reinit_settings      != 0) ||

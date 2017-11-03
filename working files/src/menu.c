@@ -314,7 +314,7 @@ void main_manu_function(void)
                 //Не формуємо запис у таблиці настройок про зміну конфігурації, бо її як такої не було. Просто змінився пароль доступу з меню
                 //але ініціюємо запис у EEPROM настройок
                 //Запускаємо запис у EEPROM
-                _SET_BIT(control_i2c_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT);
+                _SET_BIT(control_spi1_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT);
                 
                 //Вихід у режимі редагування
                 current_ekran.edition = 0;

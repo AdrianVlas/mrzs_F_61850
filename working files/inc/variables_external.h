@@ -306,19 +306,26 @@ extern unsigned int time_delta_watchdog_output;
 extern unsigned int time_delta_watchdog_output_min;
 extern unsigned int time_delta_watchdog_output_max;
 
-extern unsigned char Temporaty_I2C_Buffer[SIZE_PAGE_EEPROM + 2];
+extern unsigned char Temporaty_I2C_Buffer[MAX_NUMBER_REGISTERS_RTC + 2];
 extern unsigned int number_busy_state;
 extern unsigned int type_error_of_exchanging_via_i2c;
-extern unsigned int low_speed_i2c;
+//extern unsigned int low_speed_i2c;
 extern __DRIVER_I2C driver_i2c;
-extern unsigned int control_i2c_taskes[2];
+extern unsigned int control_i2c_taskes[1];
 extern unsigned int comparison_writing;
 extern unsigned int state_i2c_task;
-extern unsigned char read_write_i2c_buffer[SIZE_BUFFER_FOR_EEPROM_EXCHNGE];
+extern unsigned char read_write_i2c_buffer[SIZE_BUFFER_FOR_I2C];
+
+//־בל³ם קונוח SPI1
+extern unsigned char TxBuffer_SPI_EDF[SIZE_BUFFER_FOR_EDF];
+extern unsigned char RxBuffer_SPI_EDF[SIZE_BUFFER_FOR_EDF];
+extern int state_execution_spi1;
+extern unsigned int control_spi1_taskes[2];
+extern unsigned int state_spi1_task;
+extern int etap_eeprom_write_enable;
+
 
 //DataFlash
-extern unsigned char RxBuffer_SPI_DF[SIZE_PAGE_DATAFLASH_MAX + 10];
-extern unsigned char TxBuffer_SPI_DF[SIZE_PAGE_DATAFLASH_MAX + 10];
 extern unsigned int number_bytes_transfer_spi_df;
 extern unsigned int number_bytes_transfer_spi_df_copy;
 extern unsigned char TxBuffer_SPI_DF_copy[SIZE_PAGE_DATAFLASH_MAX + 10];

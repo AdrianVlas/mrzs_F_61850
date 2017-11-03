@@ -5,46 +5,74 @@
 /*****************************************************/
 void start_exchange_via_spi(int index_chip, unsigned int number_bytes_transfer)
 {
-  //Фіксуємо скільки байт ми будем передавати (це потрібно на випадок винекнення помилки - щоб можна було повторно запустити цю операцію)
-  number_bytes_transfer_spi_df = number_bytes_transfer;
-  
   //Зупиняємо потік DMA на прийом даних якщо він запущений
-  if ((DMA_StreamSPI_DF_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamSPI_DF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Rx->NDTR = number_bytes_transfer;
+  if ((DMA_StreamSPI_EDF_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamSPI_EDF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Rx->NDTR = number_bytes_transfer;
   //Зупиняємо потік DMA на передачу даних якщо він запущений
-  if ((DMA_StreamSPI_DF_Tx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamSPI_DF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Tx->NDTR = number_bytes_transfer;
+  if ((DMA_StreamSPI_EDF_Tx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamSPI_EDF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Tx->NDTR = number_bytes_transfer;
   
-  //Очищаємо прапореці, що сигналізує про завершення прийом/передачі даних для DMA1 по каналу SPI_DF_Rx і SPI_DF_Tx
-  DMA_ClearFlag(DMA_StreamSPI_DF_Rx, DMA_FLAG_TCSPI_DF_Rx | DMA_FLAG_HTSPI_DF_Rx | DMA_FLAG_TEISPI_DF_Rx | DMA_FLAG_DMEISPI_DF_Rx | DMA_FLAG_FEISPI_DF_Rx);
-  DMA_ClearFlag(DMA_StreamSPI_DF_Tx, DMA_FLAG_TCSPI_DF_Tx | DMA_FLAG_HTSPI_DF_Tx | DMA_FLAG_TEISPI_DF_Tx | DMA_FLAG_DMEISPI_DF_Tx | DMA_FLAG_FEISPI_DF_Tx);
+  //Очищаємо прапореці, що сигналізує про завершення прийом/передачі даних для DMA1 по каналу SPI_EDF_Rx і SPI_EDF_Tx
+  DMA_ClearFlag(DMA_StreamSPI_EDF_Rx, DMA_FLAG_TCSPI_EDF_Rx | DMA_FLAG_HTSPI_EDF_Rx | DMA_FLAG_TEISPI_EDF_Rx | DMA_FLAG_DMEISPI_EDF_Rx | DMA_FLAG_FEISPI_EDF_Rx);
+  DMA_ClearFlag(DMA_StreamSPI_EDF_Tx, DMA_FLAG_TCSPI_EDF_Tx | DMA_FLAG_HTSPI_EDF_Tx | DMA_FLAG_TEISPI_EDF_Tx | DMA_FLAG_DMEISPI_EDF_Tx | DMA_FLAG_FEISPI_EDF_Tx);
   
   //Дозволяємо передачу через DMA
-  if ((SPI_DF->CR2 & SPI_I2S_DMAReq_Tx) == 0) SPI_DF->CR2 |= SPI_I2S_DMAReq_Tx;
+  if ((SPI_EDF->CR2 & SPI_I2S_DMAReq_Tx) == 0) SPI_EDF->CR2 |= SPI_I2S_DMAReq_Tx;
   //Дозволяємо прийом через DMA
-  if ((SPI_DF->CR2 & SPI_I2S_DMAReq_Rx) == 0) SPI_DF->CR2 |= SPI_I2S_DMAReq_Rx;
+  if ((SPI_EDF->CR2 & SPI_I2S_DMAReq_Rx) == 0) SPI_EDF->CR2 |= SPI_I2S_DMAReq_Rx;
 
   //Виставляємо chip_select  з встановленням у драйвері повідомлення, що іде обмін
-  if (index_chip == INDEX_DATAFLASH_1) GPIO_SPI_DF_TOGGLE->BSRRH = GPIO_SPI_DF_TOGGLE_Pin;//DF_TOGGLE - пін переводимо у 0 
-  else if (index_chip == INDEX_DATAFLASH_2)GPIO_SPI_DF_TOGGLE->BSRRL = GPIO_SPI_DF_TOGGLE_Pin;//DF_TOGGLE - пін переводимо у 1
+  switch (index_chip)
+  {
+  case INDEX_EEPROM:
+    {
+      GPIO_SPI_EDF_A0->BSRRH  = GPIO_SPI_EDF_A0_Pin;
+      GPIO_SPI_EDF_A1->BSRRL  = GPIO_SPI_EDF_A1_Pin;
+      break;
+    }
+  case INDEX_DATAFLASH_1:
+    {
+      GPIO_SPI_EDF_A0->BSRRH  = GPIO_SPI_EDF_A0_Pin;
+      GPIO_SPI_EDF_A1->BSRRH  = GPIO_SPI_EDF_A1_Pin;
+      break;
+    }
+  case INDEX_DATAFLASH_2:
+    {
+      GPIO_SPI_EDF_A0->BSRRL  = GPIO_SPI_EDF_A0_Pin;
+      GPIO_SPI_EDF_A1->BSRRH  = GPIO_SPI_EDF_A1_Pin;
+      break;
+    }
+  default:
+    {
+      //Відбцлася невизначена помилка, тому треба піти на перезавантаження
+      total_error_sw_fixed(6);
+      break;
+    }
+  }
+
+  if (index_chip == INDEX_EEPROM)
+  {
+    state_execution_spi1 = 0;
+  }
   else
   {
-    //Відбцлася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(6);
-  }
-  driver_spi_df[index_chip].state_execution = TRANSACTION_EXECUTING;
-  GPIO_SPI_DF->BSRRH = GPIO_NSSPin_DF; //Виставляємо Chip_select переводом NSS  у 0
+    //Фіксуємо скільки байт ми будем передавати (це потрібно на випадок винекнення помилки - щоб можна було повторно запустити цю операцію)
+    number_bytes_transfer_spi_df = number_bytes_transfer;
 
-  //Дозволяэмо генерацыю переривань від потоку DMA_StreamSPI_DF_Rx
-  DMA_StreamSPI_DF_Rx->CR |= DMA_IT_TC;
+    driver_spi_df[index_chip].state_execution = TRANSACTION_EXECUTING;
+  }
+  GPIO_SPI_EDF->BSRRH = GPIO_NSSPin_EDF; //Виставляємо Chip_select переводом NSS  у 0
+
+  //Дозволяэмо генерацыю переривань від потоку DMA_StreamSPI_EDF_Rx
+  DMA_StreamSPI_EDF_Rx->CR |= DMA_IT_TC;
   
   //Очищаємо можливі помилкит
-  SPI_DF->DR;
-  SPI_DF->SR;
+  SPI_EDF->DR;
+  SPI_EDF->SR;
 
   //Запускаємо прийом-передачу 
-  DMA_StreamSPI_DF_Rx->CR |= (uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Tx->CR |= (uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Rx->CR |= (uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Tx->CR |= (uint32_t)DMA_SxCR_EN;
 }
 /*****************************************************/
 
@@ -56,7 +84,7 @@ void dataflash_status_read(int index_chip)
   if ((index_chip == INDEX_DATAFLASH_1) || (index_chip == INDEX_DATAFLASH_2))
   {
     driver_spi_df[index_chip].code_operation = CODE_OPERATION_STATUS_READ;
-    TxBuffer_SPI_DF[0] = 0xD7;
+    TxBuffer_SPI_EDF[0] = 0xD7;
     start_exchange_via_spi(index_chip, 2);
   }
   else
@@ -76,10 +104,10 @@ void dataflash_set_pagesize_256(int index_chip)
   if ((index_chip == INDEX_DATAFLASH_1) || (index_chip == INDEX_DATAFLASH_2))
   {
     driver_spi_df[index_chip].code_operation = CODE_OPERATION_PAGESIZE_256;
-    TxBuffer_SPI_DF[0] = 0x3D;
-    TxBuffer_SPI_DF[1] = 0x2A;
-    TxBuffer_SPI_DF[2] = 0x80;
-    TxBuffer_SPI_DF[3] = 0xA6;
+    TxBuffer_SPI_EDF[0] = 0x3D;
+    TxBuffer_SPI_EDF[1] = 0x2A;
+    TxBuffer_SPI_EDF[2] = 0x80;
+    TxBuffer_SPI_EDF[3] = 0xA6;
     start_exchange_via_spi(index_chip, 4);
   }
   else
@@ -99,10 +127,10 @@ void dataflash_erase(int index_chip)
   if ((index_chip == INDEX_DATAFLASH_1) || (index_chip == INDEX_DATAFLASH_2))
   {
     driver_spi_df[index_chip].code_operation = CODE_OPERATION_ERASE;
-    TxBuffer_SPI_DF[0] = 0xC7;
-    TxBuffer_SPI_DF[1] = 0x94;
-    TxBuffer_SPI_DF[2] = 0x80;
-    TxBuffer_SPI_DF[3] = 0x9A;
+    TxBuffer_SPI_EDF[0] = 0xC7;
+    TxBuffer_SPI_EDF[1] = 0x94;
+    TxBuffer_SPI_EDF[2] = 0x80;
+    TxBuffer_SPI_EDF[3] = 0x9A;
     start_exchange_via_spi(index_chip, 4);
   }
   else
@@ -121,7 +149,7 @@ void dataflash_mamory_page_program_through_buffer(int index_chip)
 {
   unsigned int size_page;
   driver_spi_df[index_chip].code_operation = CODE_OPERATION_WRITE_PAGE_THROUGH_BUFFER;
-  TxBuffer_SPI_DF[0] = 0x82;
+  TxBuffer_SPI_EDF[0] = 0x82;
   
   if (index_chip == INDEX_DATAFLASH_1)
   {
@@ -135,14 +163,14 @@ void dataflash_mamory_page_program_through_buffer(int index_chip)
       //Формуємо адресу для запису
       unsigned int address_for_program_dataflash = info_rejestrator_dr.next_address + part_writing_dr_into_dataflash*size_page;
         
-      TxBuffer_SPI_DF[1] = (address_for_program_dataflash >> 16) & 0x0f; 
-      TxBuffer_SPI_DF[2] = (address_for_program_dataflash >> 8 ) & 0xff; 
-      TxBuffer_SPI_DF[3] = 0; 
+      TxBuffer_SPI_EDF[1] = (address_for_program_dataflash >> 16) & 0x0f; 
+      TxBuffer_SPI_EDF[2] = (address_for_program_dataflash >> 8 ) & 0xff; 
+      TxBuffer_SPI_EDF[3] = 0; 
         
       //Заповнюємо дальше буфер даними, які треба записати 
       unsigned int offset_from_start = part_writing_dr_into_dataflash*size_page;
       for (unsigned int i = 0; i < size_page; i++ )
-        TxBuffer_SPI_DF[4 + i] = buffer_for_save_dr_record_level_2[offset_from_start + i];
+        TxBuffer_SPI_EDF[4 + i] = buffer_for_save_dr_record_level_2[offset_from_start + i];
     }
     else
     {
@@ -157,13 +185,13 @@ void dataflash_mamory_page_program_through_buffer(int index_chip)
     //Запис даних аналогового реєстратора (цілої сторінки повністю)
 
     //Формуємо адресу для запису
-    TxBuffer_SPI_DF[1] = (temporary_address_ar >> 16) & 0x1f; 
-    TxBuffer_SPI_DF[2] = (temporary_address_ar >> 8 ) & 0xfe; 
-    TxBuffer_SPI_DF[3] = 0; 
+    TxBuffer_SPI_EDF[1] = (temporary_address_ar >> 16) & 0x1f; 
+    TxBuffer_SPI_EDF[2] = (temporary_address_ar >> 8 ) & 0xfe; 
+    TxBuffer_SPI_EDF[3] = 0; 
         
     //Заповнюємо дальше буфер даними, які треба записати 
     for (unsigned int i = 0; i < size_page; i++ )
-    TxBuffer_SPI_DF[4 + i] = buffer_for_save_ar_record[i];
+    TxBuffer_SPI_EDF[4 + i] = buffer_for_save_ar_record[i];
     
     /*
     Очищаємо кількість байт для запису у змінній count_to_save 
@@ -196,7 +224,7 @@ void dataflash_mamory_read(int index_chip)
   unsigned int size_page;
 
   driver_spi_df[index_chip].code_operation = CODE_OPERATION_READ_HIGH_FREQ;
-  TxBuffer_SPI_DF[0] = 0x0B;
+  TxBuffer_SPI_EDF[0] = 0x0B;
 
   int temp_value_for_address;
     
@@ -236,9 +264,9 @@ void dataflash_mamory_read(int index_chip)
         temp_value_for_address = info_rejestrator_dr.next_address - (((number_record + 1)*NUMBER_PAGES_IN_ONE_DR_RECORD - part_reading)<<VAGA_SIZE_PAGE_DATAFLASH_1);
         while (temp_value_for_address < MIN_ADDRESS_DR_AREA) temp_value_for_address = temp_value_for_address + SIZE_DR_AREA; 
       
-        TxBuffer_SPI_DF[1] = (temp_value_for_address >> 16) & 0x0f; 
-        TxBuffer_SPI_DF[2] = (temp_value_for_address >> 8 ) & 0xff; 
-        TxBuffer_SPI_DF[3] = (temp_value_for_address      ) & 0xff; 
+        TxBuffer_SPI_EDF[1] = (temp_value_for_address >> 16) & 0x0f; 
+        TxBuffer_SPI_EDF[2] = (temp_value_for_address >> 8 ) & 0xff; 
+        TxBuffer_SPI_EDF[3] = (temp_value_for_address      ) & 0xff; 
         
         //Після адреси має іти один додатковй байт як буфер перед початком отримування реальних даних
         
@@ -278,9 +306,9 @@ void dataflash_mamory_read(int index_chip)
       temp_value_for_address = info_rejestrator_pr_err.next_address - ((number_record + 1)<<VAGA_SIZE_ONE_RECORD_PR_ERR);
       while (temp_value_for_address < MIN_ADDRESS_PR_ERR_AREA) temp_value_for_address = temp_value_for_address + SIZE_PR_ERR_AREA; 
         
-      TxBuffer_SPI_DF[1] = (temp_value_for_address >> 16) & 0x0f; 
-      TxBuffer_SPI_DF[2] = (temp_value_for_address >> 8 ) & 0xff; 
-      TxBuffer_SPI_DF[3] = (temp_value_for_address      ) & 0xff; 
+      TxBuffer_SPI_EDF[1] = (temp_value_for_address >> 16) & 0x0f; 
+      TxBuffer_SPI_EDF[2] = (temp_value_for_address >> 8 ) & 0xff; 
+      TxBuffer_SPI_EDF[3] = (temp_value_for_address      ) & 0xff; 
 
       //Після адреси має іти один додатковй байт як буфер перед початком отримування реальних даних
         
@@ -359,9 +387,9 @@ void dataflash_mamory_read(int index_chip)
       //Формуємо буфер для передавання у мікросхему DataFlash
       if(number_bytes <= size_page)
       {
-        TxBuffer_SPI_DF[1] = (temp_value_for_address >> 16) & 0x1f; 
-        TxBuffer_SPI_DF[2] = (temp_value_for_address >> 8 ) & 0xff; 
-        TxBuffer_SPI_DF[3] = (temp_value_for_address      ) & 0xff; 
+        TxBuffer_SPI_EDF[1] = (temp_value_for_address >> 16) & 0x1f; 
+        TxBuffer_SPI_EDF[2] = (temp_value_for_address >> 8 ) & 0xff; 
+        TxBuffer_SPI_EDF[3] = (temp_value_for_address      ) & 0xff; 
         
         //Після адреси має іти один додатковй байт як буфер перед початком отримування реальних даних
         
@@ -397,25 +425,25 @@ void dataflash_mamory_page_into_buffer(int index_chip)
 {
   unsigned int address_into_dataflash;
   driver_spi_df[index_chip].code_operation = CODE_OPERATION_READ_PAGE_INTO_BUFFER;
-  TxBuffer_SPI_DF[0] = 0x53;
+  TxBuffer_SPI_EDF[0] = 0x53;
   
   if (index_chip == INDEX_DATAFLASH_1)
   {
     //Формуємо адресу сторінки для зчитування у буфер DataFlash
     address_into_dataflash = info_rejestrator_pr_err.next_address;
 
-    TxBuffer_SPI_DF[1] = (address_into_dataflash >> 16) & 0x0f; 
-    TxBuffer_SPI_DF[2] = (address_into_dataflash >> 8 ) & 0xff; 
-    TxBuffer_SPI_DF[3] = 0; 
+    TxBuffer_SPI_EDF[1] = (address_into_dataflash >> 16) & 0x0f; 
+    TxBuffer_SPI_EDF[2] = (address_into_dataflash >> 8 ) & 0xff; 
+    TxBuffer_SPI_EDF[3] = 0; 
   }
   else if (index_chip == INDEX_DATAFLASH_2)
   {
     //Формуємо адресу сторінки для зчитування у буфер DataFlash
     address_into_dataflash = temporary_address_ar;
 
-    TxBuffer_SPI_DF[1] = (address_into_dataflash >> 16) & 0x1f; 
-    TxBuffer_SPI_DF[2] = (address_into_dataflash >> 8 ) & 0xfe; 
-    TxBuffer_SPI_DF[3] = 0; 
+    TxBuffer_SPI_EDF[1] = (address_into_dataflash >> 16) & 0x1f; 
+    TxBuffer_SPI_EDF[2] = (address_into_dataflash >> 8 ) & 0xfe; 
+    TxBuffer_SPI_EDF[3] = 0; 
   }
   else
   {
@@ -436,7 +464,7 @@ void dataflash_mamory_write_buffer(int index_chip)
   unsigned int size_page;
 
   driver_spi_df[index_chip].code_operation = CODE_OPERATION_WRITE_BUFFER;
-  TxBuffer_SPI_DF[0] = 0x84;
+  TxBuffer_SPI_EDF[0] = 0x84;
 
   if (index_chip == INDEX_DATAFLASH_1)
   {
@@ -447,9 +475,9 @@ void dataflash_mamory_write_buffer(int index_chip)
     //Формуємо адресу для запису
     unsigned int next_address_into_buffer = info_rejestrator_pr_err.next_address & 0xff;
         
-    TxBuffer_SPI_DF[1] = 0; 
-    TxBuffer_SPI_DF[2] = 0; 
-    TxBuffer_SPI_DF[3] = next_address_into_buffer; 
+    TxBuffer_SPI_EDF[1] = 0; 
+    TxBuffer_SPI_EDF[2] = 0; 
+    TxBuffer_SPI_EDF[3] = next_address_into_buffer; 
     
     //Починаємо заповнювати буфер для передачі у буфер мікросхеми DataFlash даними для запису
     number_recods_writing_into_dataflash_now = 0;
@@ -461,7 +489,7 @@ void dataflash_mamory_write_buffer(int index_chip)
     {
       //Заповнюємо дальше буфер даними, які треба записати 
       for (unsigned int i = 0; i < SIZE_ONE_RECORD_PR_ERR; i++ )
-        TxBuffer_SPI_DF[4 + number_recods_writing_into_dataflash_now*SIZE_ONE_RECORD_PR_ERR + i] =
+        TxBuffer_SPI_EDF[4 + number_recods_writing_into_dataflash_now*SIZE_ONE_RECORD_PR_ERR + i] =
           buffer_pr_err_records[tail*SIZE_ONE_RECORD_PR_ERR + i];
       
       //Змінюємо контролюючі змінні
@@ -481,13 +509,13 @@ void dataflash_mamory_write_buffer(int index_chip)
     //Запис частини сторінки для аналогового реєстратора
 
     //Формуємо адресу для запису
-    TxBuffer_SPI_DF[1] = 0; 
-    TxBuffer_SPI_DF[2] = (temporary_address_ar >>  8) & 0x01; 
-    TxBuffer_SPI_DF[3] =  temporary_address_ar        & 0xff; 
+    TxBuffer_SPI_EDF[1] = 0; 
+    TxBuffer_SPI_EDF[2] = (temporary_address_ar >>  8) & 0x01; 
+    TxBuffer_SPI_EDF[3] =  temporary_address_ar        & 0xff; 
     
     //Заповнюємо дальше буфер даними, які треба записати 
     for (unsigned int i = 0; i < count_to_save; i++ )
-      TxBuffer_SPI_DF[4 + i] = buffer_for_save_ar_record[i];
+      TxBuffer_SPI_EDF[4 + i] = buffer_for_save_ar_record[i];
 
     //Запускаємо процес запису
     start_exchange_via_spi(index_chip, (4 + count_to_save));
@@ -517,27 +545,27 @@ void dataflash_mamory_buffer_into_memory(int index_chip)
 {
   //Запис внутрішнбього буферу (буферу 1) пам'ять DataFlash
   driver_spi_df[index_chip].code_operation = CODE_OPERATION_WRITE_BUFFER_INTO_MEMORY_WITH_ERASE;
-  TxBuffer_SPI_DF[0] = 0x83;
+  TxBuffer_SPI_EDF[0] = 0x83;
 
   if (index_chip == INDEX_DATAFLASH_1)
   {
     //У структурі по інформації стану реєстраторів виставляємо повідомлення, що почався запис і ще не закінчився
-    _SET_BIT(control_i2c_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
+    _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
     info_rejestrator_pr_err.saving_execution = 1;
     
     //Формуємо адресу для запису
     unsigned int address_into_dataflash = info_rejestrator_pr_err.next_address;
         
-    TxBuffer_SPI_DF[1] = (address_into_dataflash >> 16) & 0x0f; 
-    TxBuffer_SPI_DF[2] = (address_into_dataflash >> 8 ) & 0xff; 
-    TxBuffer_SPI_DF[3] = 0; 
+    TxBuffer_SPI_EDF[1] = (address_into_dataflash >> 16) & 0x0f; 
+    TxBuffer_SPI_EDF[2] = (address_into_dataflash >> 8 ) & 0xff; 
+    TxBuffer_SPI_EDF[3] = 0; 
   }
   else if (index_chip == INDEX_DATAFLASH_2)
   {
     //Формуємо адресу для запису
-    TxBuffer_SPI_DF[1] = (temporary_address_ar >> 16) & 0x1f; 
-    TxBuffer_SPI_DF[2] = (temporary_address_ar >> 8 ) & 0xfe; 
-    TxBuffer_SPI_DF[3] = 0; 
+    TxBuffer_SPI_EDF[1] = (temporary_address_ar >> 16) & 0x1f; 
+    TxBuffer_SPI_EDF[2] = (temporary_address_ar >> 8 ) & 0xfe; 
+    TxBuffer_SPI_EDF[3] = 0; 
   }
   else
   {
@@ -563,7 +591,7 @@ inline void analize_received_data_dataflash(int index_chip)
       if ((index_chip == INDEX_DATAFLASH_1) || (index_chip == INDEX_DATAFLASH_2))
       {
         //Виконувалася операція зчитування статусу мікросхеми DataFlash
-        if ((RxBuffer_SPI_DF[1] & (1<< 7)) != 0) dataflash_not_busy |= (1 << index_chip);
+        if ((RxBuffer_SPI_EDF[1] & (1<< 7)) != 0) dataflash_not_busy |= (1 << index_chip);
         else dataflash_not_busy &= (unsigned int)(~(1 << index_chip));
         
         driver_spi_df[index_chip].state_execution = TRANSACTION_EXECUTING_NONE;
@@ -623,7 +651,7 @@ inline void analize_received_data_dataflash(int index_chip)
           яку ми виставили перед зміною даних, яку ми зараз гарантовано зробимо 
           (до виклику функції main_routines_for_i2c)
           */
-          _SET_BIT(control_i2c_taskes, TASK_START_WRITE_INFO_REJESTRATOR_DR_EEPROM_BIT);
+          _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_DR_EEPROM_BIT);
           
           info_rejestrator_dr.next_address = temp_value_for_address;
           info_rejestrator_dr.saving_execution = 0;
@@ -722,7 +750,7 @@ inline void analize_received_data_dataflash(int index_chip)
         {
           //По ідеї ця умова завжди має виконуватися
           for (unsigned int i = 0; i < number_byte_copy_into_target_buffer; i++ )
-            *(point_buffer + i) = RxBuffer_SPI_DF[5 + i];
+            *(point_buffer + i) = RxBuffer_SPI_EDF[5 + i];
         }
         else
         {
@@ -815,7 +843,7 @@ inline void analize_received_data_dataflash(int index_chip)
            )
         {
           for (unsigned int i = 0; i < number_byte_copy_into_target_buffer; i++ )
-            *(point_buffer + i) = RxBuffer_SPI_DF[5 + i];
+            *(point_buffer + i) = RxBuffer_SPI_EDF[5 + i];
         }
         else
         {
@@ -907,7 +935,7 @@ inline void analize_received_data_dataflash(int index_chip)
         if (etap_writing_pr_err_into_dataflash == ETAP_WRITE_BUFFER_INTO_MEMORY)
         {
           //Виставляємо команду запису структури реєстратора програмних подій у EEPROM
-          _SET_BIT(control_i2c_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
+          _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
           //Визначаємо нову адресу наступного запису, нову кількість записів і знімаємо сигналізацію, що зараз іде запис
           unsigned int temp_value_for_address = (info_rejestrator_pr_err.next_address + number_recods_writing_into_dataflash_now*SIZE_ONE_RECORD_PR_ERR);
           while (temp_value_for_address > MAX_ADDRESS_PR_ERR_AREA) temp_value_for_address = temp_value_for_address - SIZE_PR_ERR_AREA; 

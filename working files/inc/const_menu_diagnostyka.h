@@ -81,7 +81,7 @@ EVENT_STOP_SYSTEM_BIT,
 EVENT_DROP_POWER_BIT,
 
 ERROR_LCD_BIT,
-ERROR_SPI_DF_BIT,
+ERROR_SPI_EDF_BIT,
 ERROR_EXTERNAL_SRAM_BIT,
 ERROR_INTERNAL_FLASH_BIT,
 
@@ -226,7 +226,7 @@ ERROR_BDV_DZ_CTLR,
   " Останов.устр.  ",   \
   " Пропад.питания ",   \
   " Отказ ЖКИ      ",   \
-  " Ош.SPI_DF      ",   \
+  " Ош.SPI_EDF     ",   \
   " Ош.внешней SRAM",   \
   " Ош.внутр.FLASH ",   \
   " Ош.выб.гр.уст. ",   \
@@ -324,7 +324,7 @@ ERROR_BDV_DZ_CTLR,
   " Зуп.пристр.    ",   \
   " Пропад.живлення",   \
   " Відмова РКІ    ",   \
-  " Пом.SPI_DF     ",   \
+  " Пом.SPI_EDF    ",   \
   " Пом.зовн.SRAM  ",   \
   " Пом.внутр.FLASH",   \
   " Пом.виб.гр.уст.",   \
@@ -422,7 +422,7 @@ ERROR_BDV_DZ_CTLR,
   " Device Stop    ",   \
   " Пропад.питания ",   \
   " LCD Fail       ",   \
-  " DF SPI Err.    ",   \
+  " EDF SPI Err.   ",   \
   " Ext.SRAM Err.  ",   \
   " Int.FLASH Err. ",   \
   " Ош.выб.гр.уст. ",   \
@@ -520,7 +520,7 @@ ERROR_BDV_DZ_CTLR,
   " Останов.устр.  ",   \
   " Пропад.питания ",   \
   " Отказ ЖКИ      ",   \
-  " Ош.SPI_DF      ",   \
+  " Ош.SPI_EDF     ",   \
   " Ош.внешней SRAM",   \
   " Ош.внутр.FLASH ",   \
   " Ош.выб.гр.уст. ",   \
