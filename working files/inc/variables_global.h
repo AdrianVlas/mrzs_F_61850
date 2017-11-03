@@ -424,6 +424,7 @@ unsigned int control_spi1_taskes[2] = {0,0};
 unsigned int comparison_writing = 0; /*очищений біт означає, що іде зчитування у робочий об'єкт, встановлений біт означає що іде порівняння записаної інформації після операції запису*/
 unsigned int state_spi1_task = 0;
 int etap_eeprom_write_enable = -1;
+unsigned int mutex_spi1 = false;
 
 //DataFlash
 unsigned char RxBuffer_SPI_DF[SIZE_PAGE_DATAFLASH_MAX + 10];

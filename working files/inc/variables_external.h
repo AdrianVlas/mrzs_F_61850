@@ -323,7 +323,7 @@ extern int state_execution_spi1;
 extern unsigned int control_spi1_taskes[2];
 extern unsigned int state_spi1_task;
 extern int etap_eeprom_write_enable;
-
+extern unsigned int mutex_spi1;
 
 //DataFlash
 extern unsigned int number_bytes_transfer_spi_df;

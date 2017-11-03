@@ -82,12 +82,19 @@ inline void watchdog_routine(void)
 inline void periodical_operations(void)
 {
   //־בל³ם קונוח SPI_1
+  mutex_spi1 = true;
   if (
-      (control_spi1_taskes[0]     != 0) || 
-      (control_spi1_taskes[1]     != 0) || 
-      (state_execution_spi1 > 0)
+      (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE) &&
+      (  
+       (control_spi1_taskes[0]     != 0) || 
+       (control_spi1_taskes[1]     != 0) || 
+       (state_execution_spi1 > 0)
+      )   
      )
+  {
     main_routines_for_spi1();
+  }
+  mutex_spi1 = false;
 
   //־בל³םף קונוח I2C
   if (

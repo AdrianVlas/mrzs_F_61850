@@ -676,6 +676,34 @@ void main_routines_for_spi1(void)
       }
       offset += sizeof(ustuvannja);
 
+      //Додаємо юстуючі попревки фаз
+      point_1 = (unsigned char*)(&phi_ustuvannja); 
+      point_2 = (unsigned char*)(&phi_ustuvannja_comp);
+      for (unsigned int i = 0; i < sizeof(phi_ustuvannja); i++)
+      {
+        temp_value = *(point_1);
+        *(point_2) = temp_value;
+        point_1++;
+        point_2++;
+        TxBuffer_SPI_EDF[offset + i] = temp_value;
+        crc_eeprom_ustuvannja += temp_value;
+      }
+      offset += sizeof(phi_ustuvannja);
+
+      //Додаємо COS і SIN юстуючих поправок фаз
+      point_1 = (unsigned char*)(&phi_ustuvannja_sin_cos); 
+      point_2 = (unsigned char*)(&phi_ustuvannja_sin_cos_comp);
+      for (unsigned int i = 0; i < sizeof(phi_ustuvannja_sin_cos); i++)
+      {
+        temp_value = *(point_1);
+        *(point_2) = temp_value;
+        point_1++;
+        point_2++;
+        TxBuffer_SPI_EDF[offset + i] = temp_value;
+        crc_eeprom_ustuvannja += temp_value;
+      }
+      offset += sizeof(phi_ustuvannja_sin_cos);
+
       //Додаємо ще серійний номер пристрою
       point_1 = (unsigned char*)(&serial_number_dev); 
       point_2 = (unsigned char*)(&serial_number_dev_comp); 
@@ -1033,7 +1061,7 @@ void main_routines_for_spi1(void)
       }
     }
     else if (
-             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT             ) !=0) || 
+             (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_ENERGY_EEPROM_BIT                 ) !=0) || 
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_SETTINGS_EEPROM_BIT               ) !=0) || 
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_USTUVANNJA_EEPROM_BIT             ) !=0) ||
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_STATE_LEDS_OUTPUTS_EEPROM_BIT     ) !=0) || 
@@ -1046,7 +1074,7 @@ void main_routines_for_spi1(void)
     {
       //Стоїть умова запису блоку у EEPROM
 
-      if(_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT) !=0)
+      if(_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_ENERGY_EEPROM_BIT) !=0)
       {
         //Виставляємо наступний блок настройок запису у EEPROM
         number_block_energy_write_to_eeprom++;

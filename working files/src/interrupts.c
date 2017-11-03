@@ -1021,7 +1021,11 @@ void TIM4_IRQHandler(void)
     /***********************************************************/
     //Періодично запускаємо звертання то мікросхем DataFlash
     /***********************************************************/
-    if (((DMA_StreamSPI_EDF_Tx->CR & (uint32_t)DMA_SxCR_EN) == 0) && ((DMA_StreamSPI_EDF_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0))
+    if (
+        (mutex_spi1 == false) &&
+        (state_execution_spi1 < 0) &&
+        (((DMA_StreamSPI_EDF_Tx->CR & (uint32_t)DMA_SxCR_EN) == 0) && ((DMA_StreamSPI_EDF_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0))
+       )   
     {
       if ((number_chip_dataflsh_exchange >= INDEX_DATAFLASH_1) && (number_chip_dataflsh_exchange <= INDEX_DATAFLASH_2))
       {
@@ -1055,15 +1059,21 @@ void TIM4_IRQHandler(void)
           //Аналізуємо прийняті дані, якщо такі є і чекають на аналіз
           main_function_for_dataflash_resp(number_chip_dataflsh_exchange);
 
-          //Змінюємо номер DataFlash з яким буде іти зараз робота
-          if (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE)
+          if (
+              (control_spi1_taskes[0] == 0) &&
+              (control_spi1_taskes[1] == 0) 
+             )
           {
-            //Змінюємо номер мікросхеми, до якої ми будемо звертатися при натупних трансакціях, якщо зараз не запущена ніяка трансакція
-            number_chip_dataflsh_exchange = (number_chip_dataflsh_exchange + 1) & (NUMBER_DATAFLASH_CHIP - 1);
-          }
+            //Змінюємо номер DataFlash з яким буде іти зараз робота
+            if (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE)
+            {
+              //Змінюємо номер мікросхеми, до якої ми будемо звертатися при натупних трансакціях, якщо зараз не запущена ніяка трансакція
+              number_chip_dataflsh_exchange = (number_chip_dataflsh_exchange + 1) & (NUMBER_DATAFLASH_CHIP - 1);
+            }
 
-          //Робимо запит на нову мікросхему DataFlash, якщо э такий
-          main_function_for_dataflash_req(number_chip_dataflsh_exchange);
+            //Робимо запит на нову мікросхему DataFlash, якщо э такий
+            main_function_for_dataflash_req(number_chip_dataflsh_exchange);
+          }
         }
         else
         {
@@ -1505,7 +1515,12 @@ void DMA_StreamSPI_EDF_Rx_IRQHandler(void)
   DMA_ClearFlag(DMA_StreamSPI_EDF_Rx, DMA_FLAG_TCSPI_EDF_Rx | DMA_FLAG_HTSPI_EDF_Rx | DMA_FLAG_TEISPI_EDF_Rx | DMA_FLAG_DMEISPI_EDF_Rx | DMA_FLAG_FEISPI_EDF_Rx);
   
   //Виставляємо повідомлення, що дані передані і готові до наступного аналізу
-  if ((number_chip_dataflsh_exchange == INDEX_DATAFLASH_1) || (number_chip_dataflsh_exchange == INDEX_DATAFLASH_2))
+  if (state_execution_spi1 == 0) 
+  {
+    //Відбувався обмін з EEPROM. Помічаємо, що він завершився
+    state_execution_spi1 = 1;
+  }
+  else if ((number_chip_dataflsh_exchange == INDEX_DATAFLASH_1) || (number_chip_dataflsh_exchange == INDEX_DATAFLASH_2))
     driver_spi_df[number_chip_dataflsh_exchange].state_execution = TRANSACTION_EXECUTED_WAIT_ANALIZE;
   else
   {

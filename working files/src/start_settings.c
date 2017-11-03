@@ -1518,7 +1518,7 @@ void start_settings_peripherals(void)
 //  //Конфігуруємо I2C
 //  /**********************/
 //  low_speed_i2c = 0xff;
-//  Configure_I2C(I2C);
+  Configure_I2C(I2C);
 //  /**********************/
 
   /**********************/
