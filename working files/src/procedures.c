@@ -366,6 +366,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -480,6 +482,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -598,6 +602,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -718,6 +724,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -841,6 +849,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -964,6 +974,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -1093,6 +1105,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -1222,6 +1236,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -1357,6 +1373,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -1495,6 +1513,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -1637,6 +1657,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
         target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
       }
       //Знімаємо всі функції для ранжування оприділювальних функцій
       for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -1872,6 +1894,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     {
       target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
       target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+      target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+      target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
     }
     //Очищємо всі функції для ранжування оприділювальних функцій
     for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -1989,6 +2013,8 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
     {
       target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
       target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+      target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+      target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
     }
     //Знімаємо всі функції для ранжування оприділювальних функцій
     for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -2144,6 +2170,8 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
 //  {
 //    target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
 //    target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+//    target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+//    target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
 //  }
 //  //Очищємо всі функції для ранжування оприділювальних функцій
 //  for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)

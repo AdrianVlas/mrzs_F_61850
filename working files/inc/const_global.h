@@ -1578,6 +1578,10 @@ enum _leds_colors
 #define MAX_FUNCTIONS_IN_AREG                   (1 << VAGA_MAX_FUNCTIONS_IN_AREG)
 #define VAGA_MAX_FUNCTIONS_IN_DREG              5
 #define MAX_FUNCTIONS_IN_DREG                   (1 << VAGA_MAX_FUNCTIONS_IN_DREG)
+#define VAGA_MAX_FUNCTIONS_IN_OFF_CB            5
+#define MAX_FUNCTIONS_IN_OFF_CB                 (1 << VAGA_MAX_FUNCTIONS_IN_OFF_CB)
+#define VAGA_MAX_FUNCTIONS_IN_ON_CB             5
+#define MAX_FUNCTIONS_IN_ON_CB                  (1 << VAGA_MAX_FUNCTIONS_IN_ON_CB)
 /*****************************************/
 
 
