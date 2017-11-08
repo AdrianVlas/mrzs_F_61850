@@ -835,6 +835,7 @@
 #define BIT_MA_MISCEVE_DYSTANCIJNE              60389
 #define BIT_MA_WORK_A_REJESTRATOR               60390
 #define BIT_MA_WORK_D_REJESTRATOR               60391
+#define BIT_MA_NEW_SETTINGS_SET                 60392 /*вставлно тимчасово поки немає такої адреси*/
 
 #define BIT_MA_ERROR_CONF_EL                    60397
 

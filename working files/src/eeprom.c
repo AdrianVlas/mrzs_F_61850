@@ -1384,6 +1384,7 @@ void main_routines_for_spi1(void)
               current_settings = current_settings_tmp;
               //Помічаємо, що таблиця змінилася і її треба буде з системи захистів зкопіювати у таблицю з якою працює система захистів
               changed_settings = CHANGED_ETAP_ENDED;
+              current_settings_interfaces = current_settings;
 
               //Розраховуємо розмір одного запису і максимальну кількість записів у аналоговому реєстраторі для даних витримок
               /*

@@ -876,6 +876,20 @@ void TIM4_IRQHandler(void)
         }
       }
       
+      //Робота з таймером очікування нових змін налаштувань
+      if (
+          (restart_timeout_idle_new_settings != 0) ||
+          (_CHECK_SET_BIT(active_functions, RANG_SETTINGS_CHANGED) == 0)  
+         )
+      {
+        timeout_idle_new_settings  = 0;
+        if (restart_timeout_idle_new_settings != 0) restart_timeout_idle_new_settings = false;
+      }
+      else 
+      { 
+        if (timeout_idle_new_settings < (current_settings.timeout_idle_new_settings)) timeout_idle_new_settings++;
+      }
+
       //Робота з таймерами простою USB
       if ((restart_timeout_interface & (1 << USB_RECUEST  )) != 0) 
       {

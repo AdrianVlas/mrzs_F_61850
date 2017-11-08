@@ -111,6 +111,17 @@ inline void periodical_operations(void)
   //Робота з Watchdog
   watchdog_routine();
 
+  //Робота з таймером очікування нових змін налаштувань
+  if ((timeout_idle_new_settings >= current_settings.timeout_idle_new_settings) && (restart_timeout_idle_new_settings == 0))
+  {
+    if (_CHECK_SET_BIT(active_functions, RANG_SETTINGS_CHANGED) != 0) 
+    {
+      current_settings_interfaces = current_settings;
+      type_of_settings_changed = 0;
+      _CLEAR_BIT(active_functions, RANG_SETTINGS_CHANGED);
+    }
+  }
+  
   //Обмін по USB
   if (current_settings.password_interface_USB)
   {
@@ -513,6 +524,12 @@ int main(void)
   }
   changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
 
+  //Визначаємо, чи стоїть дозвіл запису через інтерфейси з паролем
+  if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
+  else password_set_RS485 = 1;
+  timeout_idle_RS485 = current_settings.timeout_deactivation_password_interface_RS485;
+  
+  timeout_idle_new_settings = current_settings.timeout_idle_new_settings;
   //Визначаємо, чи стоїть дозвіл запису через інтерфейси з паролем
   if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
   else password_set_RS485 = 1;

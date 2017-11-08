@@ -360,7 +360,7 @@ unsigned char temp_register_rtc[2];
 
 unsigned int changed_settings = CHANGED_ETAP_NONE; 
 unsigned char crc_settings;
-__SETTINGS current_settings_prt, current_settings, edition_settings;
+__SETTINGS current_settings_prt, current_settings, edition_settings, current_settings_interfaces;
 unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
 unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
 int * type_mtz_arr[NUMBER_LEVEL_MTZ];
@@ -610,15 +610,17 @@ unsigned int command_to_receive_current_data = false;
 int current_data_transmit[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT] /*@ "variables_RAM1"*/; 
 volatile unsigned int wait_of_receiving_current_data  = false; 
 unsigned int password_set_USB = 1, password_set_RS485 = 1;
-unsigned int previous_password_interface;
+unsigned int password_changed;
 unsigned int password_ustuvannja = 0;
-unsigned int information_about_settings_changed = 0;
 unsigned int information_about_restart_counter = 0;
 unsigned int *point_to_edited_rang = NULL;
 unsigned int number_32bit_in_target = 0;
 unsigned int clear_array_rang[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
 unsigned int set_array_rang[N_BIG]   = {0, 0, 0, 0, 0, 0, 0, 0};
 unsigned int restart_timeout_interface = 0;
+unsigned int timeout_idle_new_settings;
+unsigned int restart_timeout_idle_new_settings = 0;
+unsigned int type_of_settings_changed = 0;
 
 unsigned int serial_number_dev = 0;                         //Заводський номер пристрою
 unsigned int edit_serial_number_dev;

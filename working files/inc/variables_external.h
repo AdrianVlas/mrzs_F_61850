@@ -260,7 +260,7 @@ extern unsigned char temp_register_rtc[2];
 
 extern unsigned int changed_settings; 
 extern unsigned char crc_settings;
-extern __SETTINGS current_settings_prt, current_settings, edition_settings;
+extern __SETTINGS current_settings_prt, current_settings, edition_settings, current_settings_interfaces;
 extern int * type_mtz_arr[NUMBER_LEVEL_MTZ];
 extern unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
 extern unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
@@ -508,15 +508,17 @@ extern unsigned int command_to_receive_current_data;
 extern int current_data_transmit[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT] /*@ "variables_RAM1"*/;
 extern volatile unsigned int wait_of_receiving_current_data; 
 extern unsigned int password_set_USB, password_set_RS485;
-extern unsigned int previous_password_interface;
+extern unsigned int password_changed;
 extern unsigned int password_ustuvannja;
-extern unsigned int information_about_settings_changed;
 extern unsigned int information_about_restart_counter;
 extern unsigned int *point_to_edited_rang;
 extern unsigned int number_32bit_in_target;
 extern unsigned int clear_array_rang[N_BIG];
 extern unsigned int set_array_rang[N_BIG];
 extern unsigned int restart_timeout_interface;
+extern unsigned int timeout_idle_new_settings;
+extern unsigned int restart_timeout_idle_new_settings;
+extern unsigned int type_of_settings_changed;
 
 extern unsigned int serial_number_dev;
 extern unsigned int edit_serial_number_dev;

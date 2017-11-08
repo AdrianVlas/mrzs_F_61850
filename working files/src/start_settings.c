@@ -1958,6 +1958,9 @@ void min_settings(__SETTINGS *target_label)
   target_label->password_interface_USB = 0;
   target_label->timeout_deactivation_password_interface_RS485 = TIMEOUT_DEACTIVATION_PASSWORD_MIN;
   target_label->password_interface_RS485 = 0;
+  
+  target_label->timeout_idle_new_settings = TIMEOUT_NEW_SETTINGS_MIN;
+  
   target_label->T0 = KOEF_TO_MIN;
   target_label->TCurrent = KOEF_TT_MIN;
   target_label->TCurrent04 = KOEF_TT04_MIN;
@@ -2131,11 +2134,13 @@ void error_reading_with_eeprom()
       changed_settings = CHANGED_ETAP_EXECUTION;
       //Заповнюємо мінімальну конфігурацію
       min_settings(&current_settings);
-      //Помічаємо, що таблиця змінилася і її треба буде з системи захистів зкопіювати у таблицю з якою працює система захистів
-      changed_settings = CHANGED_ETAP_ENDED;
+      current_settings_interfaces = current_settings;
       
       //Записуємо мінімальну конфігурацію
       _SET_BIT(control_spi1_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT);
+
+      //Помічаємо, що таблиця змінилася і її треба буде з системи захистів зкопіювати у таблицю з якою працює система захистів
+      changed_settings = CHANGED_ETAP_ENDED;
     }
     else if (information_type == 2)
     {
