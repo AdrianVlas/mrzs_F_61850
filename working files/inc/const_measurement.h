@@ -144,22 +144,22 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
 #define VDD_NORMAL_VALUE                0xb00
 
 //Канали
-#define C_Ua_1                  0
-#define C_Ua_16                 1
-#define C_Ub_1                  2
-#define C_Ub_16                 3
-#define C_Uc_1                  4
-#define C_Uc_16                 5
-#define C_3U0_1                 6
-#define C_3U0_16                7
-#define C_Ia_1                  8
-#define C_Ia_16                 9
-#define C_Ib_1                  10
-#define C_Ib_16                 11
-#define C_Ic_1                  12
-#define C_Ic_16                 13
-#define C_3I0_16                14
-#define C_3I0_256               15
+#define C_3I0_256               0
+#define C_3I0_16                1
+#define C_Ic_1                  2
+#define C_Ic_16                 3
+#define C_Ib_1                  4
+#define C_Ib_16                 5
+#define C_Ia_1                  6
+#define C_Ia_16                 7
+#define C_3U0_1                 8
+#define C_3U0_16                9
+#define C_Uc_1                  10
+#define C_Uc_16                 11
+#define C_Ua_16                 12
+#define C_Ua_1                  13
+#define C_Ub_16                 14
+#define C_Ub_1                  15
 
 #define READ_3U0 (                    \
                   (1 << C_3U0_1  ) |  \
