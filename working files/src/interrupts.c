@@ -775,7 +775,9 @@ void TIM4_IRQHandler(void)
         Натиснути функціональна кнопка підтверджена натискуванням кнопки ENTER  
         Натиснуті кнопки переносимо до спеціальної змінної, щоб їх обслуговувати  у системі захистів
         ***************************/
+        mutex_buttons = true;
         pressed_buttons    |= (new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O))) >> BIT_KEY_1;
+        mutex_buttons = false;
         new_state_keyboard_for_db &= (unsigned int)(~((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O)));
         /***************************/
 

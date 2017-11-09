@@ -25,9 +25,9 @@
 #define EKRAN_RANGUVANNJA_INPUT_20               (EKRAN_RANGUVANNJA_INPUT_19 + 1)
 
 #define MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA       NUMBER_INPUTS
-#define MAX_ROW_RANGUVANNJA_INPUT                 NUMBER_TOTAL_SIGNAL_FOR_RANG_INPUT
+#define MAX_ROW_RANGUVANNJA_INPUT                 NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL
 
-#define NAME_RANG_FOR_INPUTS_RU         \
+#define NAME_RANG_SMALL_RU         \
   "  Блок.вкл.ВВ   ",                   \
   " Сброс индикации",                   \
   "   Сброс реле   ",                   \
@@ -85,7 +85,7 @@
   " Уст.О-триггера4",                   \
   " Сбр.О-триггера4"
 
-#define NAME_RANG_FOR_INPUTS_UA         \
+#define NAME_RANG_SMALL_UA         \
   " Блок.ввімкн.ВВ ",                   \
   " Скид.індикації ",                   \
   "   Скид.реле    ",                   \
@@ -143,7 +143,7 @@
   " Вст.В-триґера4 ",                   \
   " Ск.В-триґера4  "
 
-#define NAME_RANG_FOR_INPUTS_EN         \
+#define NAME_RANG_SMALL_EN         \
   " ON CB Blocking ",                   \
   "Indication Reset",                   \
   "  Relay Reset   ",                   \
@@ -201,7 +201,7 @@
   "UD Flip-Flop4 S.",                   \
   "UD Flip-Flop4 R."
         
-#define NAME_RANG_FOR_INPUTS_KZ         \
+#define NAME_RANG_SMALL_KZ         \
   "  Блок.вкл.ВВ   ",                   \
   " Сброс индикации",                   \
   "   Сброс реле   ",                   \

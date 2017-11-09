@@ -125,395 +125,48 @@ void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(unsigned
 /*****************************************************/
 
 /*****************************************************/
-//Формуємо екран відображення зранжованих сигналів на функціональну кнопку
-/*****************************************************/
-void make_ekran_set_function_in_button(unsigned int number_ekran)
-{
-#define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
-  
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_RANGUVANNJA_BUTTON + NUMBER_ROW_FOR_NOTHING_INFORMATION][MAX_COL_LCD] = 
-  {
-    {
-      "      Нет       ",
-      "  ранжирования  ",
-      NAME_RANG_FOR_BUTTONS_RU
-    },
-    {
-      "      Нема      ",
-      "   ранжування   ",
-      NAME_RANG_FOR_BUTTONS_UA
-    },
-    {
-      "       No       ",
-      "    ranking     ",
-      NAME_RANG_FOR_BUTTONS_EN
-    },
-    {
-      "      Нет       ",
-      "  ранжирования  ",
-      NAME_RANG_FOR_BUTTONS_KZ
-    }
-  };
-  unsigned char name_string_tmp[MAX_ROW_RANGUVANNJA_BUTTON + NUMBER_ROW_FOR_NOTHING_INFORMATION][MAX_COL_LCD];
-
-  int index_language = index_language_in_array(current_settings.language);
-  for(int index_1 = 0; index_1 < (MAX_ROW_RANGUVANNJA_BUTTON + NUMBER_ROW_FOR_NOTHING_INFORMATION); index_1++)
-  {
-    for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-      name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
-  }
-  
-  if(current_ekran.edition == 0)
-  {
-    //Випадок, коли ми продивляємося зранжовані функції на кнопці
-    unsigned int state_viewing_input = current_settings.ranguvannja_buttons[number_ekran - EKRAN_RANGUVANNJA_BUTTON_1];
-    
-    if (state_viewing_input == 0)
-    {
-      //Це означає, що нічого не відранжовано на кнопку
-      
-      //Текучу позицію в сипску переводимо на сам початок
-      current_ekran.index_position = 0;
-      position_in_current_level_menu[number_ekran] = 0;
-
-      //Копіюємо  рядки у робочий екран
-      for (unsigned int i=0; i< MAX_ROW_LCD; i++)
-      {
-        //Копіюємо в робочий екран інформацію, що нічого не відранжовано
-        if (i < NUMBER_ROW_FOR_NOTHING_INFORMATION)
-          for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[i][j];
-        else
-          for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
-      }
-
-      //Відображення курору по вертикалі
-      current_ekran.position_cursor_y = 0;
-      //Курсор невидимий
-      current_ekran.cursor_on = 0;
-    }
-    else
-    {
-      /************************************************************/
-      //Формуємо список із функцій, які реально відранжовані
-      /************************************************************/
-      unsigned int position_temp = current_ekran.index_position;
-      unsigned int index_of_ekran;
-      unsigned int i = 0, offset = 0;
-
-      while ((i + offset) < MAX_ROW_RANGUVANNJA_BUTTON)
-      {
-        if ((state_viewing_input & (1<<(i + offset))) == 0)
-        {
-          for (unsigned int j = i; j < (MAX_ROW_RANGUVANNJA_BUTTON - offset); j++)
-          {
-            if ((j + 1) < (MAX_ROW_RANGUVANNJA_BUTTON - offset))
-            {
-              for (unsigned int k = 0; k<MAX_COL_LCD; k++)
-                name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
-            }
-            else 
-            {
-              for (unsigned int k = 0; k<MAX_COL_LCD; k++)
-                name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = ' ';
-            }
-          }
-          if (current_ekran.index_position >= ((int)(i + offset))) position_temp--;
-          offset++;
-        }
-        else i++;
-      }
-      /************************************************************/
-
-    
-      index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-      
-      //Копіюємо  рядки у робочий екран
-      for (i=0; i< MAX_ROW_LCD; i++)
-      {
-        //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-        if (index_of_ekran < MAX_ROW_RANGUVANNJA_BUTTON)
-        {
-          for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran + NUMBER_ROW_FOR_NOTHING_INFORMATION][j];
-
-          //Підтягуємо назву, щоб не було спереді багато пробілів
-          unsigned int iteration = 0;
-          while (
-                 (working_ekran[i][0] == ' ') &&
-                 (working_ekran[i][1] == ' ') &&
-                 (iteration < (MAX_COL_LCD - 1 - 1))
-                )
-          {
-            for (unsigned int j = 1; j < MAX_COL_LCD; j++)
-            {
-              if ((j + 1) < MAX_COL_LCD)
-                working_ekran[i][j] = working_ekran[i][j + 1];
-              else
-                working_ekran[i][j] = ' ';
-            }
-            iteration++;
-          }
-        }
-        else
-          for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
-
-        index_of_ekran++;
-      }
-      //Відображення курору по вертикалі
-      current_ekran.position_cursor_y = position_temp & (MAX_ROW_LCD - 1);
-      //Курсор видимий
-      current_ekran.cursor_on = 1;
-    }
-    
-    //Курсор по горизонталі відображається на першій позиції
-    current_ekran.position_cursor_x = 0;
-    //Курсор не мигає
-    current_ekran.cursor_blinking_on = 0;
-  }
-  else
-  {
-    unsigned int temp_data = edition_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1];
-    unsigned int position_temp = current_ekran.index_position;
-    unsigned int index_of_ekran;
-    unsigned int i, offset = 0;
-    int min_max_number[TOTAL_NUMBER_PROTECTION][2] ={
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {-1,-1},
-                                                     {
-                                                      (NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON + NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON + NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON + NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON + NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON + NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON + NUMBER_APV_SIGNAL_FOR_RANG_BUTTON + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON + NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON + NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON + NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON + NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON + NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON),
-                                                      (NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON + NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON + NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON + NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON + NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON + NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON + NUMBER_APV_SIGNAL_FOR_RANG_BUTTON + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON + NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON + NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON + NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON + NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON + NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON + NUMBER_EL_SIGNAL_FOR_RANG_BUTTON - 1)
-                                                     }
-                                                    };
-      
-    /*************************************************************/
-    //Фільтруємо сигнали, яких у даній конфігурації неприсутні
-    /*************************************************************/
-    //Функції загального призначення пропускаємо (вони знаходяться у початку списку), тому починаємо з першого записту
-    int index_in_list = NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON;
-    
-    for (i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
-    {
-      
-      if((current_settings.configuration & (1 << i)) != 0)
-      {
-        /*
-        Захист присутнійсть, тому функції фільтрувати не потрібно - переводимо індекс на наступні функції
-        Додаємо кількість функцій до поточного індексу, якщо для поточного захисту реально були присутні функції,
-        бо інкаше ми вже знаходимося на індексі наступного захисту
-        */
-        if(min_max_number[i][0] >=0)
-        {
-//          if (i == EL_BIT_CONFIGURATION)
-//          {
-//            /*
-//            Випадок коли деякі сигнали розширеної логіки треба відфільтрувати
-//            */
-//
-//            //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
-//            //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-//            unsigned int maska = 0;
-//            unsigned int j1 = 0;
-//            for (j1 = 0; j1 < (min_max_number[i][0] - offset); j1++) maska |= (1 << j1);
-//          
-//            //Відкидаємо назви функцій із списку, які є зайвими
-//            while(index_in_list <= min_max_number[i][1])
-//            {
-//              if (
-//                  (
-//                   (index_in_list >= (int)(RANG_BUTTON_DF1_IN + current_settings.number_defined_df)) &&
-//                   (index_in_list <= RANG_BUTTON_DF8_IN)
-//                  )
-//                  ||  
-//                  (
-//                   (index_in_list >= (int)(RANG_BUTTON_DT1_SET + 2*current_settings.number_defined_dt)) &&
-//                   (index_in_list <= RANG_BUTTON_DT4_RESET)
-//                  )
-//                 )
-//              {
-//                /***/
-//                //Зміщуємо біти стану реанжування функцій разом із їх назвами
-//                /***/
-//                unsigned int new_temp_data_1, new_temp_data_2;
-//                new_temp_data_1 = temp_data & maska;
-//                new_temp_data_2 = temp_data & (~maska);
-//                new_temp_data_2 = new_temp_data_2 >>1;
-//                new_temp_data_2 &= (~maska);
-//                temp_data = new_temp_data_1 | new_temp_data_2;
-//                
-//                /***/
-//                for (unsigned int j = (index_in_list - offset); j < (MAX_ROW_RANGUVANNJA_BUTTON - offset); j++)
-//                {
-//                  if ((j + 1) < (MAX_ROW_RANGUVANNJA_BUTTON - offset))
-//                  {
-//                    for (unsigned int k = 0; k < MAX_COL_LCD; k++)
-//                      name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
-//                  }
-//                  else 
-//                  {
-//                    for (unsigned int k = 0; k<MAX_COL_LCD; k++)
-//                      name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = ' ';
-//                  }
-//                }
-//                if (current_ekran.index_position >= index_in_list) position_temp--;
-//                offset++;
-//              }
-//              else
-//              {
-//                maska |= (1 << j1);
-//                j1++;
-//              }
-//                
-//              index_in_list++;
-//            }
-//          }
-//          else
-            index_in_list += ((min_max_number[i][1] - min_max_number[i][0]) + 1);
-        }
-      }
-      else if (min_max_number[i][0] >=0)
-      {
-        //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
-        //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-        unsigned int maska = 0;
-        for (unsigned int j = 0; j < (min_max_number[i][0] - offset); j++) maska = (maska << 1) + 0x1;
-          
-        //Відкидаємо назви функцій із списку, які є зайвими
-        while(index_in_list <= min_max_number[i][1])
-        {
-          unsigned int new_temp_data_1, new_temp_data_2;
-          //Зміщуємо біти стану реанжування функцій разом із їх назвами
-          new_temp_data_1 = temp_data & maska;
-          new_temp_data_2 = temp_data & (~maska);
-          new_temp_data_2 = new_temp_data_2 >>1;
-          new_temp_data_2 &= (~maska);
-          temp_data = new_temp_data_1 | new_temp_data_2;
-
-          for (unsigned int j = (index_in_list - offset); j < (MAX_ROW_RANGUVANNJA_BUTTON - offset); j++)
-          {
-            if ((j + 1) < (MAX_ROW_RANGUVANNJA_BUTTON - offset))
-            {
-              for (unsigned int k = 0; k<MAX_COL_LCD; k++)
-                name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
-            }
-            else 
-            {
-              for (unsigned int k = 0; k<MAX_COL_LCD; k++)
-                name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = ' ';
-            }
-          }
-          if (current_ekran.index_position >= index_in_list) position_temp--;
-          
-          offset++;
-          index_in_list++;
-        }
-      }
-    }
-    /*************************************************************/
-
-    //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
-    index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-
-    for (i=0; i< MAX_ROW_LCD; i++)
-    {
-     if (index_of_ekran < (MAX_ROW_RANGUVANNJA_BUTTON<<1))//Множення на два константи  MAX_ROW_RANGUVANNJA_BUTTON потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
-     {
-       if ((i & 0x1) == 0)
-       {
-         //У непарному номері рядку виводимо заголовок
-         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[(index_of_ekran>>1) + NUMBER_ROW_FOR_NOTHING_INFORMATION][j];
-       }
-       else
-       {
-         //У парному номері рядку виводимо значення
-         const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
-         {
-           {"      ОТКЛ      ", "      ВКЛ       "},
-           {"      ВИМК      ", "     ВВІМК      "},
-           {"      OFF       ", "       ON       "},
-           {"      СЉНД      ", "      КОСУ      "}
-        };
-        unsigned int maska = 1 << (index_of_ekran >> 1);
-          
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][((temp_data & maska) != 0)][j];
-       }
-     }
-     else
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
-
-     index_of_ekran++;
-    }
-
-    const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
-    {
-      {5, 5},
-      {5, 4},
-      {5, 6},
-      {5, 5}
-    };
-
-    //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
-    current_ekran.position_cursor_x =  cursor_x[index_language][((temp_data & (1 << position_temp)) != 0)];
-    current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
-    
-    //Курсор мигає
-    current_ekran.cursor_blinking_on = 1;
-    //Режим відображення у режимі редагування
-  }
-  
-
-  //Обновити повністю весь екран
-  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
-
-#undef NUMBER_ROW_FOR_NOTHING_INFORMATION
-}
-/*****************************************************/
-
-/*****************************************************/
 //Формуємо екран відображення зранжованих сигналів на вибраний вхід
 /*****************************************************/
-void make_ekran_set_function_in_input(unsigned int number_ekran)
+void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran)
 {
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_RANGUVANNJA_INPUT + NUMBER_ROW_FOR_NOTHING_INFORMATION][MAX_COL_LCD] = 
+  unsigned int state_viewing_input[N_SMALL];
+  unsigned int max_row_ranguvannja;
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + NUMBER_ROW_FOR_NOTHING_INFORMATION][MAX_COL_LCD] = 
   {
     {
       "      Нет       ",
       "  ранжирования  ",
-      NAME_RANG_FOR_INPUTS_RU
+      NAME_RANG_SMALL_RU
     },
     {
       "      Нема      ",
       "   ранжування   ",
-      NAME_RANG_FOR_INPUTS_UA
+      NAME_RANG_SMALL_UA
     },
     {
       "       No       ",
       "    ranking     ",
-      NAME_RANG_FOR_INPUTS_EN
+      NAME_RANG_SMALL_EN
     },
     {
       "      Нет       ",
       "  ранжирования  ",
-      NAME_RANG_FOR_INPUTS_KZ
+      NAME_RANG_SMALL_KZ
     }
   };
-  unsigned char name_string_tmp[MAX_ROW_RANGUVANNJA_INPUT + NUMBER_ROW_FOR_NOTHING_INFORMATION][MAX_COL_LCD];
+  
+  unsigned char name_string_tmp[NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + NUMBER_ROW_FOR_NOTHING_INFORMATION][MAX_COL_LCD];
 
   int index_language = index_language_in_array(current_settings.language);
-  for(int index_1 = 0; index_1 < (MAX_ROW_RANGUVANNJA_INPUT + NUMBER_ROW_FOR_NOTHING_INFORMATION); index_1++)
+  for(int index_1 = 0; index_1 < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + NUMBER_ROW_FOR_NOTHING_INFORMATION); index_1++)
   {
     for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-      name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
+    {
+      if (index_1 < NUMBER_ROW_FOR_NOTHING_INFORMATION) name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
+      else name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
+    }
   }
   
   if ((current_settings.control_zz & CTR_ZZ1_TYPE) != 0)
@@ -527,18 +180,50 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
     };
     for (unsigned int index_1 = 0; index_1 < MAX_COL_LCD; index_1++)
     {
-      name_string_tmp[RANG_INPUT_BLOCK_NZZ + NUMBER_ROW_FOR_NOTHING_INFORMATION][index_1] = name_block_zz[index_language][index_1];
+      name_string_tmp[RANG_SMALL_BLOCK_NZZ + NUMBER_ROW_FOR_NOTHING_INFORMATION][index_1] = name_block_zz[index_language][index_1];
     }
   }
   
+  if (type_ekran == INDEX_VIEWING_BUTTON)
+  {
+    if(current_ekran.edition == 0)
+    {
+      for (unsigned int i = 0; i < N_SMALL; i++)
+      {
+        state_viewing_input[i] = current_settings.ranguvannja_buttons[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_BUTTON_1) + i];
+      }
+    }
+    else
+    {
+      for (unsigned int i = 0; i < N_SMALL; i++)
+      {
+        state_viewing_input[i] = edition_settings.ranguvannja_buttons[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_BUTTON_1) + i];
+      }
+    }
+    max_row_ranguvannja = MAX_ROW_RANGUVANNJA_BUTTON;
+  }
+  else if (type_ekran == INDEX_VIEWING_INPUT)
+  {
+    if(current_ekran.edition == 0)
+    {
+      for (unsigned int i = 0; i < N_SMALL; i++)
+      {
+        state_viewing_input[i] = current_settings.ranguvannja_inputs[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_INPUT_1) + i];
+      }
+    }
+    else
+    {
+      for (unsigned int i = 0; i < N_SMALL; i++)
+      {
+        state_viewing_input[i] = edition_settings.ranguvannja_inputs[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_INPUT_1) + i];
+      }
+    }
+    max_row_ranguvannja = MAX_ROW_RANGUVANNJA_INPUT;
+  }
+
   if(current_ekran.edition == 0)
   {
     //Випадок, коли ми продивляємося зранжовані функції на вході
-    unsigned int state_viewing_input[N_SMALL];
-    
-    state_viewing_input[0] = current_settings.ranguvannja_inputs[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_INPUT_1)    ];
-    state_viewing_input[1] = current_settings.ranguvannja_inputs[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_INPUT_1) + 1];
-    
     if (
         (state_viewing_input[0] == 0) &&
         (state_viewing_input[1] == 0)
@@ -575,15 +260,15 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
       unsigned int i = 0, offset = 0;
       unsigned int state_current_bit;
 
-      while ((i + offset) < MAX_ROW_RANGUVANNJA_INPUT)
+      while ((i + offset) < max_row_ranguvannja)
       {
         state_current_bit = state_viewing_input[(i + offset)>>5] & (1<<((i + offset) & 0x1f));
 
         if (state_current_bit == 0)
         {
-          for (unsigned int j = i; j < (MAX_ROW_RANGUVANNJA_INPUT - offset); j++)
+          for (unsigned int j = i; j < (max_row_ranguvannja - offset); j++)
           {
-            if ((j + 1) < (MAX_ROW_RANGUVANNJA_INPUT - offset))
+            if ((j + 1) < (max_row_ranguvannja - offset))
             {
               for (unsigned int k = 0; k<MAX_COL_LCD; k++)
                 name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
@@ -607,7 +292,7 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
       for (i=0; i< MAX_ROW_LCD; i++)
       {
         //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-        if (index_of_ekran < MAX_ROW_RANGUVANNJA_INPUT)
+        if (index_of_ekran < max_row_ranguvannja)
         {
           for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran + NUMBER_ROW_FOR_NOTHING_INFORMATION][j];
 
@@ -647,71 +332,131 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
   }
   else
   {
-    unsigned int temp_data[N_SMALL];
-    temp_data[0] = edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ];
-    temp_data[1] = edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1];
-    
     unsigned int position_temp = current_ekran.index_position;
     unsigned int index_of_ekran;
     unsigned int i, offset = 0;
     int min_max_number[TOTAL_NUMBER_PROTECTION][2] =
     {
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT + NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT + NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT + NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT + NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL + NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT + NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT + NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT + NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT + NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT + NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL + NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL + NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL + NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {-1,-1},
       {
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT + NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT + NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT + NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT + NUMBER_VMP_SIGNAL_FOR_RANG_INPUT),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT + NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT + NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT + NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT + NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT + NUMBER_APV_SIGNAL_FOR_RANG_INPUT + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + NUMBER_UROV_SIGNAL_FOR_RANG_INPUT + NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT + NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT + NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT + NUMBER_VMP_SIGNAL_FOR_RANG_INPUT + NUMBER_EL_SIGNAL_FOR_RANG_INPUT - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL + NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL + NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL + NUMBER_VMP_SIGNAL_FOR_RANG_SMALL),
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL + NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL + NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL + NUMBER_VMP_SIGNAL_FOR_RANG_SMALL + NUMBER_EL_SIGNAL_FOR_RANG_SMALL - 1)
       }
-     };
+    };
     
     /*************************************************************/
     //Фільтруємо сигнали, яких у даній конфігурації неприсутні
     /*************************************************************/
-    //Функції загального призначення пропускаємо (вони знаходяться у початку списку), тому починаємо з першого записту
-    int index_in_list = NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT;
+    if(
+       (type_ekran == INDEX_VIEWING_BUTTON) &&
+       (((current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1) == BUTTON_MODE_BUTTON)
+      )   
+    {
+      /*************************************************************/
+      //У випадку, якщо відображення здійснюється вікна функціональних кнопок і дана кнопка є у режимі 0
+      /*************************************************************/
+      for (unsigned int index_deleted_function = 0; index_deleted_function < NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL; index_deleted_function++)
+      {
+        if (_CHECK_SET_BIT(buttons_mode_0, index_deleted_function) == 0)
+        {
+          /*************************************************************/
+          //Відкидаємо ім'я даної функції і зміщаємо біти
+          /*************************************************************/
+
+          //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
+          unsigned int maska[N_SMALL] = {0, 0};
+          for (unsigned int j = 0; j < (index_deleted_function - offset); j++) _SET_BIT(maska, j);
+          
+          /***/
+          //Зміщуємо біти стану реанжування функцій разом із їх назвами
+          /***/
+          unsigned int new_temp_data_1[N_SMALL], new_temp_data_2[N_SMALL];
+
+          for (unsigned int k = 0; k < N_SMALL; k++)
+          {
+            new_temp_data_1[k] = state_viewing_input[k] & maska[k];
+
+            new_temp_data_2[k] = state_viewing_input[k] & (~maska[k]);
+          }
+
+          for (unsigned int k = 0; k < (N_SMALL - 1); k++)
+          {
+            new_temp_data_2[k] = ( (new_temp_data_2[k] >> 1) | ((new_temp_data_2[k + 1] & 0x1) << 31) ) & (~maska[k]);
+          }
+          new_temp_data_2[N_SMALL - 1] =  (new_temp_data_2[N_SMALL - 1] >> 1) & (~maska[N_SMALL - 1]);
+                
+          for (unsigned int k = 0; k < N_SMALL; k++)
+          {
+            state_viewing_input[k] = new_temp_data_1[k] | new_temp_data_2[k];
+          }
+          /***/
+          for (unsigned int j = (index_deleted_function - offset); j < (max_row_ranguvannja - offset); j++)
+          {
+            if ((j + 1) < (max_row_ranguvannja - offset))
+            {
+              for (unsigned int k = 0; k < MAX_COL_LCD; k++)
+                name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
+            }
+            else 
+            {
+              for (unsigned int k = 0; k  <MAX_COL_LCD; k++)
+                name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = ' ';
+            }
+          }
+          if (current_ekran.index_position >= ((int)index_deleted_function)) position_temp--;
+          offset++;
+          /*************************************************************/
+        }
+      }
+      /*************************************************************/
+    }
+
+    //Функції загального призначення пропускаємо (вони знаходяться у початку списку), тому починаємо з першого захисту
+    int index_in_list = NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL;
     
     for (i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
     {
@@ -723,83 +468,76 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
         //бо інкаше ми вже знаходимося на індексі наступного захисту
         if(min_max_number[i][0] >=0)
         {
-//          if (i == EL_BIT_CONFIGURATION)
-//          {
-//            /*
-//            Випадок коли деякі сигнали розширеної логіки треба відфільтрувати
-//            */
-//
-//            //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
-//            //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-//            unsigned int maska[N_SMALL] = {0, 0};
-//            unsigned int j1;
-//            for (j1 = 0; j1 < (min_max_number[i][0] - offset); j1++) _SET_BIT(maska, j1);
-//          
-//            //Відкидаємо назви функцій із списку, які є зайвими
-//            while(index_in_list <= min_max_number[i][1])
-//            {
-//              if (
-//                  (
-//                   (index_in_list >= (int)(RANG_INPUT_DF1_IN + current_settings.number_defined_df)) &&
-//                   (index_in_list <= RANG_INPUT_DF8_IN)
-//                  )   
-//                  ||  
-//                  (
-//                   (index_in_list >= (int)(RANG_INPUT_DT1_SET + 2*current_settings.number_defined_dt)) &&
-//                   (index_in_list <= RANG_INPUT_DT4_RESET)
-//                  )   
-//                 )
-//              {
-//                /***/
-//                //Зміщуємо біти стану реанжування функцій разом із їх назвами
-//                /***/
-//                unsigned int new_temp_data_1[N_SMALL], new_temp_data_2[N_SMALL];
-//
-//                for (unsigned int k = 0; k < N_SMALL; k++)
-//                {
-//                  new_temp_data_1[k] = temp_data[k] & maska[k];
-//
-//                  new_temp_data_2[k] = temp_data[k] & (~maska[k]);
-//                }
-//
-//                for (unsigned int k = 0; k < (N_SMALL - 1); k++)
-//                {
-//                  new_temp_data_2[k] = ( (new_temp_data_2[k] >> 1) | ((new_temp_data_2[k + 1] & 0x1) << 31) ) & (~maska[k]);
-//                }
-//                new_temp_data_2[N_SMALL - 1] =  (new_temp_data_2[N_SMALL - 1] >> 1) & (~maska[N_SMALL - 1]);
-//                
-//                for (unsigned int k = 0; k < N_SMALL; k++)
-//                {
-//                  temp_data[k] = new_temp_data_1[k] | new_temp_data_2[k];
-//                }
-//                /***/
-//                for (unsigned int j = (index_in_list - offset); j < (MAX_ROW_RANGUVANNJA_INPUT - offset); j++)
-//                {
-//                  if ((j + 1) < (MAX_ROW_RANGUVANNJA_INPUT - offset))
-//                  {
-//                    for (unsigned int k = 0; k < MAX_COL_LCD; k++)
-//                      name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
-//                  }
-//                  else 
-//                  {
-//                    for (unsigned int k = 0; k<MAX_COL_LCD; k++)
-//                      name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = ' ';
-//                  }
-//                }
-//                if (current_ekran.index_position >= index_in_list) position_temp--;
-//          
-//                offset++;
-//              }
-//              else
-//              {
-//                _SET_BIT(maska, j1);
-//                j1++;
-//              }
-//                
-//              index_in_list++;
-//            }
-//          }
-//          else
+          if(
+             (type_ekran == INDEX_VIEWING_BUTTON) &&
+             (((current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1) == BUTTON_MODE_BUTTON)
+            )   
+          {
+            /*
+            Випадок коли деякі сигнали треба відфільтрувати
+            */
+
+            //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
+            //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
+            unsigned int maska[N_SMALL] = {0, 0};
+            unsigned int j1;
+            for (j1 = 0; j1 < (min_max_number[i][0] - offset); j1++) _SET_BIT(maska, j1);
+          
+            //Відкидаємо назви функцій із списку, які є зайвими
+            while(index_in_list <= min_max_number[i][1])
+            {
+              if (_CHECK_SET_BIT(buttons_mode_0, index_in_list) == 0) 
+              {
+                /***/
+                //Зміщуємо біти стану реанжування функцій разом із їх назвами
+                /***/
+                unsigned int new_temp_data_1[N_SMALL], new_temp_data_2[N_SMALL];
+
+                for (unsigned int k = 0; k < N_SMALL; k++)
+                {
+                  new_temp_data_1[k] = state_viewing_input[k] & maska[k];
+
+                  new_temp_data_2[k] = state_viewing_input[k] & (~maska[k]);
+                }
+
+                for (unsigned int k = 0; k < (N_SMALL - 1); k++)
+                {
+                  new_temp_data_2[k] = ( (new_temp_data_2[k] >> 1) | ((new_temp_data_2[k + 1] & 0x1) << 31) ) & (~maska[k]);
+                }
+                new_temp_data_2[N_SMALL - 1] =  (new_temp_data_2[N_SMALL - 1] >> 1) & (~maska[N_SMALL - 1]);
+                
+                for (unsigned int k = 0; k < N_SMALL; k++)
+                {
+                  state_viewing_input[k] = new_temp_data_1[k] | new_temp_data_2[k];
+                }
+                /***/
+                for (unsigned int j = (index_in_list - offset); j < (max_row_ranguvannja - offset); j++)
+                {
+                  if ((j + 1) < (max_row_ranguvannja - offset))
+                  {
+                    for (unsigned int k = 0; k < MAX_COL_LCD; k++)
+                      name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
+                  }
+                  else 
+                  {
+                    for (unsigned int k = 0; k<MAX_COL_LCD; k++)
+                      name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = ' ';
+                  }
+                }
+                if (current_ekran.index_position >= index_in_list) position_temp--;
+          
+                offset++;
+              }
+              else
+              {
+                _SET_BIT(maska, j1);
+                j1++;
+              }
+                
+              index_in_list++;
+            }
+          }
+          else
             index_in_list += ((min_max_number[i][1] - min_max_number[i][0]) + 1);
         }
       }
@@ -820,9 +558,9 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
 
           for (unsigned int k = 0; k < N_SMALL; k++)
           {
-            new_temp_data_1[k] = temp_data[k] & maska[k];
+            new_temp_data_1[k] = state_viewing_input[k] & maska[k];
 
-            new_temp_data_2[k] = temp_data[k] & (~maska[k]);
+            new_temp_data_2[k] = state_viewing_input[k] & (~maska[k]);
           }
 
           for (unsigned int k = 0; k < (N_SMALL - 1); k++)
@@ -833,12 +571,12 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
           
           for (unsigned int k = 0; k < N_SMALL; k++)
           {
-            temp_data[k] = new_temp_data_1[k] | new_temp_data_2[k];
+            state_viewing_input[k] = new_temp_data_1[k] | new_temp_data_2[k];
            }
           /***/
-          for (unsigned int j = (index_in_list - offset); j < (MAX_ROW_RANGUVANNJA_INPUT - offset); j++)
+          for (unsigned int j = (index_in_list - offset); j < (max_row_ranguvannja - offset); j++)
           {
-            if ((j + 1) < (MAX_ROW_RANGUVANNJA_INPUT - offset))
+            if ((j + 1) < (max_row_ranguvannja - offset))
             {
               for (unsigned int k = 0; k<MAX_COL_LCD; k++)
                 name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
@@ -863,7 +601,7 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
 
     for (i=0; i< MAX_ROW_LCD; i++)
     {
-     if (index_of_ekran < (MAX_ROW_RANGUVANNJA_INPUT<<1))//Множення на два константи  MAX_ROW_RANGUVANNJA_INPUT потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+     if (index_of_ekran < (max_row_ranguvannja<<1))//Множення на два константи  max_row_ranguvannja потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
      {
        if ((i & 0x1) == 0)
        {
@@ -882,7 +620,7 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
         };
         unsigned int index_bit = index_of_ekran >> 1;
           
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][((temp_data[index_bit >> 5] & ( 1<< (index_bit & 0x1f))) != 0)][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][((state_viewing_input[index_bit >> 5] & ( 1<< (index_bit & 0x1f))) != 0)][j];
        }
      }
      else
@@ -900,7 +638,7 @@ void make_ekran_set_function_in_input(unsigned int number_ekran)
     };
 
     //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням
-    current_ekran.position_cursor_x =  cursor_x[index_language][((temp_data[position_temp >> 5] & (1 << (position_temp & 0x1f))) != 0)];
+    current_ekran.position_cursor_x =  cursor_x[index_language][((state_viewing_input[position_temp >> 5] & (1 << (position_temp & 0x1f))) != 0)];
     current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
     
     //Курсор мигає

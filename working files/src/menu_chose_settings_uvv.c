@@ -12,28 +12,32 @@ void make_ekran_chose_settings_uvv(void)
       " Вид входа      ",
       " Тип вх.сигнала ",
       " Вид выхода     ",
-      " Вид индикатора "
+      " Вид индикатора ",
+      " Режим Ф-кнопки "
     },
     {
       " Допуск д.входу ",
       " Вид входу      ",
       " Тип вх.сигналу ",
       " Вид виходу     ",
-      " Вид індикатора "
+      " Вид індикатора ",
+      " Режим Ф-кнопки "
     },
     {
       " BIN Tolerance  ",
       " Type of Input  ",
       " In.Signal Type ",
       " Type of Output ",
-      " Type of LED    "
+      " Type of LED    ",
+      "   F-Key Mode   "
     },
     {
       " Допуск д.входа ",
       " Вид входа      ",
       " Тип вх.сигнала ",
       " Вид выхода     ",
-      " Вид индикатора "
+      " Вид индикатора ",
+      " Режим Ф-кнопки "
     }
   };
   int index_language = index_language_in_array(current_settings.language);
@@ -522,6 +526,89 @@ void make_ekran_type_led_uvv(void)
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
         current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+      }
+    }
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
+  current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  if(current_ekran.edition == 0)current_ekran.cursor_blinking_on = 0;
+  else current_ekran.cursor_blinking_on = 1;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+
+/*****************************************************/
+//Формуємо екран відображення режиму ФК
+/*****************************************************/
+void make_ekran_type_button_uvv(void)
+{
+  const unsigned char name_string[MAX_COL_LCD] = "       F        ";
+  const unsigned int first_index_number = 8;
+  
+  int index_language = index_language_in_array(current_settings.language);
+  
+  unsigned int position_temp = current_ekran.index_position;
+  unsigned int index_of_ekran;
+  
+  //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+  index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+  
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    if (index_of_ekran < (NUMBER_DEFINED_BUTTONS << 1))//Множення на два константи NUMBER_BUTTON потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    {
+      if ((i & 0x1) == 0)
+      {
+        //У непарному номері рядку виводимо заголовок
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+        {
+          if (j != first_index_number) working_ekran[i][j] = name_string[j];
+          else working_ekran[i][j] = ((index_of_ekran >> 1) + 1) + 0x30;
+        }
+      }
+      else
+      {
+        //У парному номері рядку виводимо значення 
+        unsigned int index_ctr = (index_of_ekran>>1);
+
+        const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        {
+          {"     КНОПКА     ", "      КЛЮЧ      "},
+          {"     КНОПКА     ", "      КЛЮЧ      "},
+          {"     КНОПКА     ", "      КЛЮЧ      "},
+          {"     КНОПКА     ", "      КЛЮЧ      "}
+        };
+        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+        {
+          {4, 5},
+          {4, 5},
+          {4, 5},
+          {4, 5}
+        };
+
+        uint32_t *p_temp_data;
+        if(current_ekran.edition == 0) 
+        {
+          p_temp_data = &current_settings.buttons_mode;
+        }
+        else
+        {
+          p_temp_data = &edition_settings.buttons_mode;
+        }
+
+        int value = (*p_temp_data >> index_ctr) & 0x1;
+        
+        for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][value][j];
+        current_ekran.position_cursor_x = cursor_x[index_language][value];
       }
     }
     else

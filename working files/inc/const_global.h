@@ -62,170 +62,109 @@ TOTAL_NUMBER_PROTECTION
 };
 
 /*****************************************/
-//Константи для ранжування функціональних кнопок
-/*****************************************/
-enum __rang_button {
-RANG_BUTTON_RESET_LEDS  = 0,
-RANG_BUTTON_RESET_RELES,
-RANG_BUTTON_MISCEVE_DYSTANCIJNE,
-RANG_BUTTON_VKL_VV,
-RANG_BUTTON_OTKL_VV,
-RANG_BUTTON_RESET_BLOCK_READY_TU_VID_ZAHYSTIV,
-RANG_BUTTON_DF1_IN,
-RANG_BUTTON_DF2_IN,
-RANG_BUTTON_DF3_IN,
-RANG_BUTTON_DF4_IN,
-RANG_BUTTON_DF5_IN,
-RANG_BUTTON_DF6_IN,
-RANG_BUTTON_DF7_IN,
-RANG_BUTTON_DF8_IN,
-RANG_BUTTON_DT1_SET,
-RANG_BUTTON_DT1_RESET,
-RANG_BUTTON_DT2_SET,
-RANG_BUTTON_DT2_RESET,
-RANG_BUTTON_DT3_SET,
-RANG_BUTTON_DT3_RESET,
-RANG_BUTTON_DT4_SET,
-RANG_BUTTON_DT4_RESET
-};
-
-#define NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON     6
-#define NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON         0
-#define NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON       0
-#define NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON         0
-#define NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON          0
-#define NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON        0
-#define NUMBER_APV_SIGNAL_FOR_RANG_BUTTON         0
-#define NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON  0
-#define NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON        0
-#define NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON         0
-#define NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON        0
-#define NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON        0
-#define NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON         0
-#define NUMBER_EL_SIGNAL_FOR_RANG_BUTTON          16
-
-#define NUMBER_TOTAL_SIGNAL_FOR_RANG_BUTTON       (                                            \
-                                                   NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON     + \
-                                                   NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON         + \
-                                                   NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON       + \
-                                                   NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON         + \
-                                                   NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON          + \
-                                                   NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON        + \
-                                                   NUMBER_APV_SIGNAL_FOR_RANG_BUTTON         + \
-                                                   NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON  + \
-                                                   NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON        + \
-                                                   NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON         + \
-                                                   NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON        + \
-                                                   NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON        + \
-                                                   NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON         + \
-                                                   NUMBER_EL_SIGNAL_FOR_RANG_BUTTON            \
-                                                  ) 
-/*****************************************/
-
-/*****************************************/
 //Константи для ранжування дискретних входів
 /*****************************************/
-enum __rang_input {
-RANG_INPUT_BLOCK_VKL_VV = 0,
-RANG_INPUT_RESET_LEDS,
-RANG_INPUT_RESET_RELES,
-RANG_INPUT_MISCEVE_DYSTANCIJNE,
-RANG_INPUT_STATE_VV,
-RANG_INPUT_OTKL_VID_ZOVN_ZAHYSTIV,
-RANG_INPUT_VKL_VV,
-RANG_INPUT_CTRL_VKL,
-RANG_INPUT_OTKL_VV,
-RANG_INPUT_CTRL_OTKL,
-RANG_INPUT_1_GRUPA_USTAVOK,
-RANG_INPUT_2_GRUPA_USTAVOK,
-RANG_INPUT_3_GRUPA_USTAVOK,
-RANG_INPUT_4_GRUPA_USTAVOK,
-RANG_INPUT_RESET_BLOCK_READY_TU_VID_ZAHYSTIV,
+enum __rang_small {
+RANG_SMALL_BLOCK_VKL_VV = 0,
+RANG_SMALL_RESET_LEDS,
+RANG_SMALL_RESET_RELES,
+RANG_SMALL_MISCEVE_DYSTANCIJNE,
+RANG_SMALL_STATE_VV,
+RANG_SMALL_OTKL_VID_ZOVN_ZAHYSTIV,
+RANG_SMALL_VKL_VV,
+RANG_SMALL_CTRL_VKL,
+RANG_SMALL_OTKL_VV,
+RANG_SMALL_CTRL_OTKL,
+RANG_SMALL_1_GRUPA_USTAVOK,
+RANG_SMALL_2_GRUPA_USTAVOK,
+RANG_SMALL_3_GRUPA_USTAVOK,
+RANG_SMALL_4_GRUPA_USTAVOK,
+RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV,
 
-RANG_INPUT_BLOCK_MTZ1,
-RANG_INPUT_BLOCK_MTZ2,
-RANG_INPUT_BLOCK_USK_MTZ2,
-RANG_INPUT_BLOCK_MTZ3,
-RANG_INPUT_BLOCK_MTZ4,
+RANG_SMALL_BLOCK_MTZ1,
+RANG_SMALL_BLOCK_MTZ2,
+RANG_SMALL_BLOCK_USK_MTZ2,
+RANG_SMALL_BLOCK_MTZ3,
+RANG_SMALL_BLOCK_MTZ4,
 
-RANG_INPUT_BLOCK_MTZ04_1,
-RANG_INPUT_BLOCK_MTZ04_2,
-RANG_INPUT_BLOCK_USK_MTZ04_2,
+RANG_SMALL_BLOCK_MTZ04_1,
+RANG_SMALL_BLOCK_MTZ04_2,
+RANG_SMALL_BLOCK_USK_MTZ04_2,
 
-RANG_INPUT_PUSK_ZDZ_VID_DV,
+RANG_SMALL_PUSK_ZDZ_VID_DV,
 
-RANG_INPUT_BLOCK_NZZ,
+RANG_SMALL_BLOCK_NZZ,
 
-RANG_INPUT_BLOCK_TZNP1,
-RANG_INPUT_BLOCK_TZNP2,
-RANG_INPUT_BLOCK_TZNP3,
+RANG_SMALL_BLOCK_TZNP1,
+RANG_SMALL_BLOCK_TZNP2,
+RANG_SMALL_BLOCK_TZNP3,
 
-RANG_INPUT_STAT_BLK_APV,
+RANG_SMALL_STAT_BLK_APV,
 
-RANG_INPUT_ACHR_CHAPV_VID_DV,
-RANG_INPUT_BLOCK_ACHR1,
-RANG_INPUT_BLOCK_ACHR2,
+RANG_SMALL_ACHR_CHAPV_VID_DV,
+RANG_SMALL_BLOCK_ACHR1,
+RANG_SMALL_BLOCK_ACHR2,
 
-RANG_INPUT_PUSK_UROV_VID_DV,
+RANG_SMALL_PUSK_UROV_VID_DV,
 
-RANG_INPUT_BLOCK_ZOP,
+RANG_SMALL_BLOCK_ZOP,
 
-RANG_INPUT_BLOCK_UMIN1,
-RANG_INPUT_START_UMIN1,
-RANG_INPUT_BLOCK_UMIN2,
-RANG_INPUT_START_UMIN2,
+RANG_SMALL_BLOCK_UMIN1,
+RANG_SMALL_START_UMIN1,
+RANG_SMALL_BLOCK_UMIN2,
+RANG_SMALL_START_UMIN2,
 
-RANG_INPUT_BLOCK_UMAX1,
-RANG_INPUT_BLOCK_UMAX2,
+RANG_SMALL_BLOCK_UMAX1,
+RANG_SMALL_BLOCK_UMAX2,
 
-RANG_INPUT_DF1_IN,
-RANG_INPUT_DF2_IN,
-RANG_INPUT_DF3_IN,
-RANG_INPUT_DF4_IN,
-RANG_INPUT_DF5_IN,
-RANG_INPUT_DF6_IN,
-RANG_INPUT_DF7_IN,
-RANG_INPUT_DF8_IN,
-RANG_INPUT_DT1_SET,
-RANG_INPUT_DT1_RESET,
-RANG_INPUT_DT2_SET,
-RANG_INPUT_DT2_RESET,
-RANG_INPUT_DT3_SET,
-RANG_INPUT_DT3_RESET,
-RANG_INPUT_DT4_SET,
-RANG_INPUT_DT4_RESET,
+RANG_SMALL_DF1_IN,
+RANG_SMALL_DF2_IN,
+RANG_SMALL_DF3_IN,
+RANG_SMALL_DF4_IN,
+RANG_SMALL_DF5_IN,
+RANG_SMALL_DF6_IN,
+RANG_SMALL_DF7_IN,
+RANG_SMALL_DF8_IN,
+RANG_SMALL_DT1_SET,
+RANG_SMALL_DT1_RESET,
+RANG_SMALL_DT2_SET,
+RANG_SMALL_DT2_RESET,
+RANG_SMALL_DT3_SET,
+RANG_SMALL_DT3_RESET,
+RANG_SMALL_DT4_SET,
+RANG_SMALL_DT4_RESET,
 };
 
-#define NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT     15
-#define NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT         5
-#define NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT       3
-#define NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT         1
-#define NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT          1
-#define NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT        3
-#define NUMBER_APV_SIGNAL_FOR_RANG_INPUT         1
-#define NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT  3
-#define NUMBER_UROV_SIGNAL_FOR_RANG_INPUT        1
-#define NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT         1
-#define NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT        4
-#define NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT        2
-#define NUMBER_VMP_SIGNAL_FOR_RANG_INPUT         0
-#define NUMBER_EL_SIGNAL_FOR_RANG_INPUT          16
+#define NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL     15
+#define NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL         5
+#define NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL       3
+#define NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL         1
+#define NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL          1
+#define NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL        3
+#define NUMBER_APV_SIGNAL_FOR_RANG_SMALL         1
+#define NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  3
+#define NUMBER_UROV_SIGNAL_FOR_RANG_SMALL        1
+#define NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL         1
+#define NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL        4
+#define NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL        2
+#define NUMBER_VMP_SIGNAL_FOR_RANG_SMALL         0
+#define NUMBER_EL_SIGNAL_FOR_RANG_SMALL          16
 
-#define NUMBER_TOTAL_SIGNAL_FOR_RANG_INPUT       (                                          \
-                                                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + \
-                                                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        + \
-                                                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      + \
-                                                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT        + \
-                                                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT         + \
-                                                  NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT       + \
-                                                  NUMBER_APV_SIGNAL_FOR_RANG_INPUT        + \
-                                                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT + \
-                                                  NUMBER_UROV_SIGNAL_FOR_RANG_INPUT       + \
-                                                  NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT        + \
-                                                  NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT       + \
-                                                  NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT       + \
-                                                  NUMBER_VMP_SIGNAL_FOR_RANG_INPUT        + \
-                                                  NUMBER_EL_SIGNAL_FOR_RANG_INPUT           \
+#define NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL       (                                          \
+                                                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + \
+                                                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        + \
+                                                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      + \
+                                                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        + \
+                                                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         + \
+                                                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       + \
+                                                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL        + \
+                                                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL + \
+                                                  NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       + \
+                                                  NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        + \
+                                                  NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       + \
+                                                  NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       + \
+                                                  NUMBER_VMP_SIGNAL_FOR_RANG_SMALL        + \
+                                                  NUMBER_EL_SIGNAL_FOR_RANG_SMALL           \
                                                  ) 
 /*****************************************/
 
@@ -543,6 +482,37 @@ enum __mtz_abc_direction_const {
   MTZ_VPERED,
   MTZ_NAZAD
 };
+
+/*****************************************/
+//Макски сигналів, які можна зранжувати на функціональні кнопки у Режимі 0
+/*****************************************/
+#define MASKA_BUTTON_MODE_0        (unsigned int)(            \
+    (1 << (RANG_SMALL_RESET_LEDS - 0))                        \
+  | (1 << (RANG_SMALL_RESET_RELES - 0))                       \
+  | (1 << (RANG_SMALL_VKL_VV - 0))                            \
+  | (1 << (RANG_SMALL_OTKL_VV - 0))                           \
+  | (1 << (RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV - 0)) \
+)
+
+#define MASKA_BUTTON_MODE_1        (unsigned int)(            \
+    (1 << (RANG_SMALL_DF1_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF2_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF3_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF4_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF5_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF6_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF7_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF8_IN - 32))                           \
+  | (1 << (RANG_SMALL_DT1_SET - 32))                          \
+  | (1 << (RANG_SMALL_DT1_RESET - 32))                        \
+  | (1 << (RANG_SMALL_DT2_SET - 32))                          \
+  | (1 << (RANG_SMALL_DT2_RESET - 32))                        \
+  | (1 << (RANG_SMALL_DT3_SET - 32))                          \
+  | (1 << (RANG_SMALL_DT3_RESET - 32))                        \
+  | (1 << (RANG_SMALL_DT4_SET - 32))                          \
+  | (1 << (RANG_SMALL_DT4_RESET - 32))                        \
+)
+/*****************************************/
 
 /*****************************************/
 //Макски сигналів, які активовуються або з д.входів, або з інтирфейсів чи функціональних кнопок

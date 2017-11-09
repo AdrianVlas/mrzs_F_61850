@@ -30,7 +30,7 @@ void main_routines_for_spi1(void)
   static int phi_ustuvannja_comp[NUMBER_ANALOG_CANALES];
   static float phi_ustuvannja_sin_cos_comp[2*NUMBER_ANALOG_CANALES];
   static unsigned int state_trigger_leds_comp, state_signal_outputs_comp;
-  static unsigned int misceve_dystancijne_comp, trigger_active_functions_comp[N_BIG];
+  static unsigned int fix_active_buttons_comp, trigger_active_functions_comp[N_BIG];
   static __INFO_REJESTRATOR info_rejestrator_ar_comp;
   static __INFO_REJESTRATOR info_rejestrator_dr_comp;
   static __INFO_REJESTRATOR info_rejestrator_pr_err_comp;
@@ -253,7 +253,7 @@ void main_routines_for_spi1(void)
       offset_from_start = number_block_trg_func_write_to_eeprom*SIZE_PAGE_EEPROM;
 
       //Кількість байт до кінця буферу 
-      size_to_end = (1 + sizeof(trigger_active_functions) + 1) - offset_from_start; 
+      size_to_end = (sizeof(fix_active_buttons) + sizeof(trigger_active_functions) + 1) - offset_from_start; 
       
       if (size_to_end > 0)
       {
@@ -506,7 +506,7 @@ void main_routines_for_spi1(void)
       TxBuffer_SPI_EDF[1] = (START_ADDRESS_TRG_FUNC >> 8) & 0xff; //старша  адреса початку зберігання даних про триґерну функцію у EEPROM
       TxBuffer_SPI_EDF[2] = (START_ADDRESS_TRG_FUNC     ) & 0xff; //молодша адреса початку зберігання даних про триґерну функцію у EEPROM
                                                                                           //дальше значення байт не має значення
-      start_exchange_via_spi(INDEX_EEPROM, ((1 + sizeof(trigger_active_functions) + 1) + 3));
+      start_exchange_via_spi(INDEX_EEPROM, ((sizeof(fix_active_buttons) + sizeof(trigger_active_functions) + 1) + 3));
     }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_INFO_REJESTRATOR_AR_EEPROM_BIT) !=0)
     {
@@ -770,12 +770,19 @@ void main_routines_for_spi1(void)
       unsigned char  *point_2;
       unsigned int offset = 3;
 
-      //Додаємо інформацію по місцевому/дистанційному управлінню
-      temp_value = misceve_dystancijne & 0xff; /*Достатньо одного байту, так як інформація записується на рівні 0/1*/
-      misceve_dystancijne_comp = misceve_dystancijne;
-      TxBuffer_SPI_EDF[offset] = temp_value;
-      crc_eeprom_trg_func += temp_value; 
-      offset += 1;
+      //Додаємо інформацію по ФК, які працюють у режимі ключа
+      point_1 = (unsigned char*)(&fix_active_buttons); 
+      point_2 = (unsigned char*)(&fix_active_buttons_comp);
+      for (unsigned int i =0; i < sizeof(fix_active_buttons); i++)
+      {
+        temp_value = *(point_1);
+        *(point_2) = temp_value;
+        point_1++;
+        point_2++;
+        TxBuffer_SPI_EDF[offset + i] = temp_value;
+        crc_eeprom_trg_func += temp_value;
+      }
+      offset += sizeof(fix_active_buttons);
       
       //Додаємо триґерні функції
       point_1 = (unsigned char*)(&trigger_active_functions); 
@@ -1858,9 +1865,9 @@ void main_routines_for_spi1(void)
       //Аналізуємо прочитані дані
       //Спочатку аналізуємо, чи прояитаний блок є пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      unsigned int misceve_dystancijne_tmp, trigger_active_functions_tmp[N_BIG];
+      unsigned int fix_active_buttons_tmp, trigger_active_functions_tmp[N_BIG];
 
-      while ((empty_block != 0) && ( i < (1 + sizeof(trigger_active_functions_tmp) + 1)))
+      while ((empty_block != 0) && ( i < (sizeof(fix_active_buttons_tmp) + sizeof(trigger_active_functions_tmp) + 1)))
       {
         if (RxBuffer_SPI_EDF[3 + i] != 0xff) empty_block = 0;
         i++;
@@ -1878,10 +1885,15 @@ void main_routines_for_spi1(void)
         unsigned char  *point;
         unsigned int offset = 3;
 
-        temp_value = RxBuffer_SPI_EDF[offset];
-        misceve_dystancijne_tmp = temp_value;
-        crc_eeprom_trg_func += temp_value;
-        offset += 1;
+        point = (unsigned char*)(&fix_active_buttons_tmp); 
+        for (i =0; i < sizeof(fix_active_buttons_tmp); i++)
+        {
+          temp_value = RxBuffer_SPI_EDF[offset + i];
+          *(point) = temp_value;
+          crc_eeprom_trg_func += temp_value;
+          point++;
+        }
+        offset +=  sizeof(fix_active_buttons_tmp);
 
         point = (unsigned char*)(&trigger_active_functions_tmp); 
         for (i =0; i < sizeof(trigger_active_functions_tmp); i++)
@@ -1908,7 +1920,7 @@ void main_routines_for_spi1(void)
             //Виконувалося зчитування триґерної інформації
             
             //Перекидаємо триґерну інформацію у робочі змінні
-            misceve_dystancijne = misceve_dystancijne_tmp;
+            fix_active_buttons = fix_active_buttons_tmp;
             for(unsigned int k = 0; k < N_BIG; k++) trigger_active_functions[k] = trigger_active_functions_tmp[k];
             restore_trigger_functions(trigger_active_functions);
           }
@@ -1918,7 +1930,7 @@ void main_routines_for_spi1(void)
             
             unsigned int difference = 0;
   
-            if (misceve_dystancijne_comp != misceve_dystancijne_tmp) difference = 0xff;
+            if (fix_active_buttons_comp != fix_active_buttons_tmp) difference = 0xff;
             i = 0;
             while ((difference == 0) && (i < N_BIG))
             {

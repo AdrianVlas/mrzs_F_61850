@@ -1,9 +1,6 @@
 #ifndef __CONST_MODBUS_MEMORY_MAP__
 #define __CONST_MODBUS_MEMORY_MAP__
 
-#define SET_DATA_INTO_EDIT_TABLE          0
-#define SET_DATA_IMMEDITATE               1
-
 /*****************************************************/
 /* Адресний простір тільки для читання (Блок 1) */
 /*****************************************************/
@@ -1156,20 +1153,28 @@
 #define CMD_TEST_EXTERNAL_WATCHDOG            0xCDEF
 /*****************************************************/
 
-#define SOURCE_OUTPUTS_RANG                   0
-#define SOURCE_LEDS_RANG                      1
-#define SOURCE_DF_PLUS_RANG                   2
-#define SOURCE_DF_MINUS_RANG                  3
-#define SOURCE_DF_BLK_RANG                    4
-#define SOURCE_AR_RANG                        5
-#define SOURCE_DR_RANG                        6
-#define SOURCE_SET_DT_PLUS_RANG               7
-#define SOURCE_SET_DT_MINUS_RANG              8
-#define SOURCE_RESET_DT_PLUS_RANG             9
-#define SOURCE_RESET_DT_MINUS_RANG            10
-#define SOURCE_D_AND_RANG                     11
-#define SOURCE_D_OR_RANG                      12
-#define SOURCE_D_XOR_RANG                     13
-#define SOURCE_D_NOT_RANG                     14
+enum _source_rang
+{
+  SOURCE_OUTPUTS_RANG = 0,
+  SOURCE_LEDS_RANG,
+  SOURCE_DF_PLUS_RANG,
+  SOURCE_DF_MINUS_RANG,
+  SOURCE_DF_BLK_RANG,
+  SOURCE_AR_RANG,
+  SOURCE_DR_RANG,
+  SOURCE_SET_DT_PLUS_RANG,
+  SOURCE_SET_DT_MINUS_RANG,
+  SOURCE_RESET_DT_PLUS_RANG,
+  SOURCE_RESET_DT_MINUS_RANG,
+  SOURCE_D_AND_RANG,
+  SOURCE_D_OR_RANG,
+  SOURCE_D_XOR_RANG,
+  SOURCE_D_NOT_RANG,
+  SOURCE_ON_CB_RANG,
+  SOURCE_OFF_CB_RANG,
+  
+  SOURCE_BUTTONS_RANG,
+  SOURCE_INPUTS_RANG
+};
 
 #endif

@@ -457,307 +457,6 @@ void global_vareiables_installation(void)
 /**************************************/
 
 /**************************************/
-//Конфігурація I2C
-/**************************************/
-void Configure_I2C(I2C_TypeDef* I2Cx)
-{
-  I2C_InitTypeDef  I2C_InitStructure;
-  GPIO_InitTypeDef GPIO_InitStructure;
-  uint16_t current_count_tim4, new_count_tim4;
-  unsigned int delta;
-
-  /* Забороняємо I2C  */
-  I2C_Cmd(I2Cx, DISABLE);
-
-  /***
-  Добиваємося, щоб на SDA встановилася 1
-  ***/
-  /* Настроюємо I2C піни SCL Output Open-drain */
-  GPIO_InitStructure.GPIO_Pin = GPIO_I2C_SCL;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_Init(GPIO_I2C, &GPIO_InitStructure);
-  /* Встановлюємо піни SCL у високий рівень*/
-  GPIO_SetBits(GPIO_I2C, GPIO_I2C_SCL);
-  while(GPIO_ReadOutputDataBit(GPIO_I2C, GPIO_I2C_SCL) == Bit_RESET);
-
-  /*Настроюємо I2C піни SDA  на ввід*/
-  GPIO_InitStructure.GPIO_Pin = GPIO_I2C_SDA;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIO_I2C, &GPIO_InitStructure);
-  
-  while(GPIO_ReadInputDataBit(GPIO_I2C, GPIO_I2C_SDA) == RESET)
-  {
-    /* SCL -> "0" */
-    GPIO_ResetBits(GPIO_I2C, GPIO_I2C_SCL);
-    current_count_tim4 = ((uint16_t)TIM4->CNT);
-    delta = 0;
-    while (delta < 4) // <= 4x10 = 40(мкс)
-    {
-      new_count_tim4 = ((uint16_t)TIM4->CNT);
-      if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-      else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-    }
-
-    /* SCL -> "1" */
-    GPIO_SetBits(GPIO_I2C, GPIO_I2C_SCL);
-    while(GPIO_ReadOutputDataBit(GPIO_I2C, GPIO_I2C_SCL) == Bit_RESET);
-    current_count_tim4 = ((uint16_t)TIM4->CNT);
-    delta = 0;
-    while (delta < 4) // <= 4x10 = 40(мкс)
-    {
-      new_count_tim4 = ((uint16_t)TIM4->CNT);
-      if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-      else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-    }
-  }
-  /*******/
-  
-  /***
-  Переводимо піна під упавління мікроконтролера
-  ***/
-  /* Настроюємо I2C пін SDA як Output Open-drain */
-  GPIO_InitStructure.GPIO_Pin = GPIO_I2C_SDA;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_Init(GPIO_I2C, &GPIO_InitStructure);
-  /* Встановлюємо піни SCL і SDA у високий рівень*/
-  GPIO_SetBits(GPIO_I2C, (GPIO_I2C_SCL | GPIO_I2C_SDA));
-  while(GPIO_ReadOutputDataBit(GPIO_I2C, GPIO_I2C_SCL) == Bit_RESET);
-  /*******/
-  
-  /***
-  Симулюємо SOFTWARE RESET для EEPROM: Start + 9-bit + Start + Stop 
-  ****/
-
-  /*- Start -*/
-  /*SCL = 1 і SCA = 1*/
-
-  /* SCL -> "0" */
-  GPIO_ResetBits(GPIO_I2C, GPIO_I2C_SCL);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-    
-  /* SCL -> "1" */
-  GPIO_SetBits(GPIO_I2C, GPIO_I2C_SCL);
-  while(GPIO_ReadOutputDataBit(GPIO_I2C, GPIO_I2C_SCL) == Bit_RESET);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-  
-  /* SDA -> "0" */
-  GPIO_ResetBits(GPIO_I2C, GPIO_I2C_SDA);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-
-  /* SCL -> "0" */
-  GPIO_ResetBits(GPIO_I2C, GPIO_I2C_SCL);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-  
-  /* SDA -> "1" */
-  GPIO_SetBits(GPIO_I2C, GPIO_I2C_SDA);
-
-  /*- 9 циклів -*/
-  for(unsigned int i = 0; i < 9; i++)
-  {
-    /* SCL = "0" */
-    current_count_tim4 = ((uint16_t)TIM4->CNT);
-    delta = 0;
-    while (delta < 2) // <= 2x10 = 20(мкс)
-    {
-      new_count_tim4 = ((uint16_t)TIM4->CNT);
-      if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-      else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-    }
-
-    /* SCL -> "1" */
-    GPIO_SetBits(GPIO_I2C, GPIO_I2C_SCL);
-    while(GPIO_ReadOutputDataBit(GPIO_I2C, GPIO_I2C_SCL) == Bit_RESET);
-    current_count_tim4 = ((uint16_t)TIM4->CNT);
-    delta = 0;
-    while (delta < 4) // <= 4x10 = 40(мкс)
-    {
-      new_count_tim4 = ((uint16_t)TIM4->CNT);
-      if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-      else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-    }
-
-    /* SCL -> "0" */
-    GPIO_ResetBits(GPIO_I2C, GPIO_I2C_SCL);
-    current_count_tim4 = ((uint16_t)TIM4->CNT);
-    delta = 0;
-    while (delta < 2) // <= 2x10 = 20(мкс)
-    {
-      new_count_tim4 = ((uint16_t)TIM4->CNT);
-      if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-      else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-    }
-  }
-
-  /*- Start -*/
-  /*SCL = 0 і SCA = 1*/
-
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-    
-  /* SCL -> "1" */
-  GPIO_SetBits(GPIO_I2C, GPIO_I2C_SCL);
-  while(GPIO_ReadOutputDataBit(GPIO_I2C, GPIO_I2C_SCL) == Bit_RESET);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-  
-  /* SDA -> "0" */
-  GPIO_ResetBits(GPIO_I2C, GPIO_I2C_SDA);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-
-  /* SCL -> "0" */
-  GPIO_ResetBits(GPIO_I2C, GPIO_I2C_SCL);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-
-  /*- Stop -*/
-  /*SCL = 0 і SCA = 0*/
-
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-    
-  /* SCL -> "1" */
-  GPIO_SetBits(GPIO_I2C, GPIO_I2C_SCL);
-  while(GPIO_ReadOutputDataBit(GPIO_I2C, GPIO_I2C_SCL) == Bit_RESET);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-  
-  /* SDA -> "1" */
-  GPIO_SetBits(GPIO_I2C, GPIO_I2C_SDA);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-
-  /* SCL -> "0" */
-  GPIO_ResetBits(GPIO_I2C, GPIO_I2C_SCL);
-  current_count_tim4 = ((uint16_t)TIM4->CNT);
-  delta = 0;
-  while (delta < 2) // <= 2x10 = 20(мкс)
-  {
-    new_count_tim4 = ((uint16_t)TIM4->CNT);
-    if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
-    else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
-  }
-
-  /* Встановлюємо піни SCL і SDA у високий рівень*/
-  GPIO_SetBits(GPIO_I2C, (GPIO_I2C_SCL | GPIO_I2C_SDA));
-  while(GPIO_ReadOutputDataBit(GPIO_I2C, GPIO_I2C_SCL) == Bit_RESET);
-  /*******/
-  
-  /*
-  Повертаємо піни під управління I2C
-  */
-  //Конфігуруємо піни PB8/I2C1_SCL і PB9/I2C1_SDA
-  GPIO_PinAFConfig(GPIO_I2C, GPIO_I2C_SCLSource, GPIO_AF_I2C);
-  GPIO_PinAFConfig(GPIO_I2C, GPIO_I2C_SDASource, GPIO_AF_I2C);
-
-  /* Настроюємо I2C піни: SCL і SDA */
-  GPIO_InitStructure.GPIO_Pin =  GPIO_I2C_SCL | GPIO_I2C_SDA;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_Init(GPIO_I2C, &GPIO_InitStructure);
-  /*******/
-
-  /* Скидаємо всі I2C регістри */
-  I2C_SoftwareResetCmd(I2Cx, ENABLE);
-  I2C_SoftwareResetCmd(I2Cx, DISABLE);
-
-  /* Дозволяємо I2C*/
-  I2C_Cmd(I2Cx, ENABLE);
-
-
-  I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
-  I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
-  I2C_InitStructure.I2C_OwnAddress1 = EEPROM_ADDRESS;
-  I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
-  I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
-  I2C_InitStructure.I2C_ClockSpeed = /*(low_speed_i2c == 0 ) ? CLOCKSPEED_1MBIT :*/ CLOCKSPEED;
-  I2C_Init(I2Cx, &I2C_InitStructure);
-
-  /* Дозволяємо для I2C генерацію переривань по помилках */
-  I2C_ITConfig(I2Cx, I2C_IT_ERR, ENABLE);
-}
-/**************************************/
-
-/**************************************/
 //Стартова ініціалізація периферії процесора
 /**************************************/
 void start_settings_peripherals(void)
@@ -1223,12 +922,6 @@ void start_settings_peripherals(void)
   TIM_Cmd(TIM4, ENABLE);
   /**********************/
 
-//  /**********************/
-//  //Конфігуруємо I2C
-//  /**********************/
-//  Configure_I2C(I2C);
-//  /**********************/
-
   /**********************/
   //Настроювання SPI для  DataFlash з початковим читанням , чи мікросхеми переведені у потрібний режим
   /**********************/
@@ -1514,13 +1207,6 @@ void start_settings_peripherals(void)
   }
   /**********************/
   
-//  /**********************/
-//  //Конфігуруємо I2C
-//  /**********************/
-//  low_speed_i2c = 0xff;
-  Configure_I2C(I2C);
-//  /**********************/
-
   /**********************/
   //Настроювання TIM2 на генерацію переривань кожні 1 мс для системи захистів
   /**********************/
@@ -1723,9 +1409,11 @@ void min_settings(__SETTINGS *target_label)
     for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_not[N_BIG*i+j] = 0x0;
   }
   
+  target_label->buttons_mode = 0;
   for(unsigned int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
   {
-    target_label->ranguvannja_buttons[i] = 0x0;
+    target_label->ranguvannja_buttons[N_SMALL*i  ] = 0x0;
+    target_label->ranguvannja_buttons[N_SMALL*i+1] = 0x0;
   }
 
   target_label->configuration = 0;
@@ -2144,7 +1832,7 @@ void error_reading_with_eeprom()
     }
     else if (information_type == 2)
     {
-      misceve_dystancijne = 0;
+      fix_active_buttons = 0;
       for (unsigned int i = 0; i < N_BIG; i++) trigger_active_functions[i] = 0x0;
 
       //Записуємо очищену триґерну інформацію

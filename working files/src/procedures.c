@@ -295,7 +295,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     //Вводимо нову конфігурацю у цільову структуру
     target_label->configuration = new_configuration;
     
-    unsigned int maska[N_SMALL] = {0, 0}, maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0}, maska_2 = 0;
+    unsigned int maska[N_SMALL] = {0, 0}, maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
   
     //Перевіряємо, чи МТЗ зараз знято з конфігурації
     if ((target_label->configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
@@ -315,11 +315,11 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маски функцій МТЗ
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + 
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + 
                   i
                  )
                 );
@@ -334,17 +334,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
       
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за МТЗ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за МТЗ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -428,12 +424,12 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маки функцій МТЗ 0.4кВ
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
                   i
                  )
                 );
@@ -449,18 +445,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
 
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування кнопок, які відповідають за МТЗ 0.4кВ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за МТЗ 0.4кВ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -544,13 +535,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маки функцій ЗДЗ
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
                   i
                  )
                 );
@@ -567,19 +558,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
 
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗДЗ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗДЗ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -664,14 +649,14 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маки функцій ЗЗ
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT     +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT   +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT     +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL     +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL   +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL     +
                   i
                  )
                 );
@@ -689,20 +674,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
       
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON     +
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON   +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗЗ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗЗ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -786,15 +764,15 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маки функцій ТЗНП
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT     +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT   +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT     +
-                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT      +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL     +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL   +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL     +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL      +
                   i
                  )
                 );
@@ -813,21 +791,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
       
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON     + 
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON   +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON     + 
-                            NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за ТЗНП
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за ТЗНП
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -908,16 +878,16 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маки функцій АПВ
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_APV_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_APV_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT     +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT   +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT     +
-                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT      +
-                  NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT    +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL     +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL   +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL     +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL      +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL    +
                   i
                  )
                 );
@@ -937,22 +907,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
       
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_APV_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON     + 
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON   +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON     + 
-                            NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON      +
-                            NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за АПВ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за АПВ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -1036,17 +997,17 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маки функцій АЧР-ЧАПВ
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT     +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT   +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT     +
-                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT      +
-                  NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT    +
-                  NUMBER_APV_SIGNAL_FOR_RANG_INPUT     +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL     +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL   +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL     +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL      +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL    +
+                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL     +
                   i
                  )
                 );
@@ -1067,23 +1028,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
 
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON     +
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON   +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON     +
-                            NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON      +
-                            NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON    +
-                            NUMBER_APV_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за АЧР-ЧАПВ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за АЧР-ЧАПВ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -1164,18 +1115,18 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         //Формуємо маки функцій УРОВ
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_UROV_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_UROV_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT         +
-                  NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_APV_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
                   i
                  )
                 );
@@ -1197,24 +1148,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
 
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON      +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON         +
-                            NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_APV_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за УРОВ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за УРОВ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -1298,19 +1238,19 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маки функцій ЗОП(КОФ)
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT         +
-                  NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_APV_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT +
-                  NUMBER_UROV_SIGNAL_FOR_RANG_INPUT       +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
+                  NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       +
                   i
                  )
                 );
@@ -1333,25 +1273,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
 
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON      +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON         +
-                            NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_APV_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON +
-                            NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗОП(КОФ)
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗОП(КОФ)
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -1435,20 +1363,20 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маски функцій Umin
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT         +
-                  NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_APV_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT +
-                  NUMBER_UROV_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT        +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
+                  NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
                   i
                  )
                 );
@@ -1472,26 +1400,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
 
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON      +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON         +
-                            NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_APV_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON +
-                            NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за Umin
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за Umin
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -1575,21 +1490,21 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Формуємо маски функцій Umax
       maska[0] = 0;
       maska[1] = 0;
-      for (int i = 0; i < NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT         +
-                  NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_APV_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT +
-                  NUMBER_UROV_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT       +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
+                  NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
                   i
                  )
                 );
@@ -1615,27 +1530,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                 );
 
 
-      maska_2 = 0;
-      for (int i = 0; i < NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON      +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON         +
-                            NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_APV_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON +
-                            NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-
       //Знімаємо всі функції для ранжування входів, які відповідають за Umax
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-        target_label->ranguvannja_buttons[i] &= ~maska_2;
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      }
+
       //Знімаємо всі функції для ранжування входів, які відповідають за Umax
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
@@ -1720,29 +1621,28 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     unsigned int array_full[N_BIG] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
     unsigned int *point_to_mask_array;
     for (unsigned int i = 0; i < N_BIG; i++ ) maska_1[i] = 0;
-    maska_2 = 0;
     if ((target_label->configuration & (1<<EL_BIT_CONFIGURATION)) == 0)
     {
       //Видаляємо всі сигнали розгиреної логіки
       
       //Формуємо маски функцій Розширеної логіки
-      for (int i = 0; i < NUMBER_EL_SIGNAL_FOR_RANG_INPUT; i++)
+      for (int i = 0; i < NUMBER_EL_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
-                  NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-                  NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      +
-                  NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT         +
-                  NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_APV_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT +
-                  NUMBER_UROV_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT        +
-                  NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT       +
-                  NUMBER_VMP_SIGNAL_FOR_RANG_INPUT        +
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
+                  NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_VMP_SIGNAL_FOR_RANG_SMALL        +
                   i
                  )
                 );
@@ -1768,26 +1668,6 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                  )
                 );
 
-
-      for (int i = 0; i < NUMBER_EL_SIGNAL_FOR_RANG_BUTTON; i++) maska_2 = (maska_2 <<1) + 0x1;
-      maska_2 =(
-                maska_2 << (
-                            NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
-                            NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON      +
-                            NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON         +
-                            NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_APV_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON +
-                            NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON        +
-                            NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON       +
-                            NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON
-                           )
-               );
-      
       point_to_mask_array = array_full;
     }
 //    else
@@ -1806,19 +1686,19 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 //      const unsigned int others_signals[NUMBER_DEFINED_ELEMENTS] = {2, 3, 1, 1, 1, 1};
 //      const unsigned int button_signals[NUMBER_DEFINED_ELEMENTS] = {1, 2, 0, 0, 0, 0};
 //      
-//      unsigned int input_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-//                                 NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
-//                                 NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      +
-//                                 NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT        +
-//                                 NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT         +
-//                                 NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT       +
-//                                 NUMBER_APV_SIGNAL_FOR_RANG_INPUT        +
-//                                 NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT +
-//                                 NUMBER_UROV_SIGNAL_FOR_RANG_INPUT       +
-//                                 NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT        +
-//                                 NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT       +
-//                                 NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT       +
-//                                 NUMBER_VMP_SIGNAL_FOR_RANG_INPUT;
+//      unsigned int input_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+//                                 NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+//                                 NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
+//                                 NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
+//                                 NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
+//                                 NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
+//                                 NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
+//                                 NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
+//                                 NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       +
+//                                 NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
+//                                 NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
+//                                 NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       +
+//                                 NUMBER_VMP_SIGNAL_FOR_RANG_SMALL;
 //      
 //      unsigned int others_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG    + 
 //                                  NUMBER_MTZ_SIGNAL_FOR_RANG        +
@@ -1860,11 +1740,6 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 //          _SET_BIT(maska_1, (others_shift + others_signals[index]*array_defined_logic[index][0] + i));
 //        
 //        others_shift += others_signals[index]*array_defined_logic[index][1];
-//
-//        for (unsigned int i = 0; i < button_signals[index]*(array_defined_logic[index][1] - array_defined_logic[index][0]); i++)
-//          maska_2 |= 1 << (button_shift + button_signals[index]*array_defined_logic[index][0] + i);
-//        
-//        button_shift += button_signals[index]*array_defined_logic[index][1];
 //      }
 //      
 //      point_to_mask_array = maska_1;
@@ -1872,7 +1747,11 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 
     //Знімаємо всі функції для ранжування входів, які відповідають за Розширеної логіки
     for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-      target_label->ranguvannja_buttons[i] &= ~maska_2;
+    {
+      target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+      target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+    }
+    
     //Знімаємо всі функції для ранжування входів, які відповідають за Розширеної логіки
     for (int i = 0; i < NUMBER_INPUTS; i++)
     {
@@ -1991,7 +1870,10 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
     
 //    //Знімаємо всі функції для ранжування входів, які відповідають за наявність каналу 3U0
 //    for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-//      target_label->ranguvannja_buttons[i] &= ~maska_2;
+//    {
+//      target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+//      target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+//    }
     //Знімаємо всі функції для ранжування входів, які відповідають за наявність каналу 3U0
 //    for (int i = 0; i < NUMBER_INPUTS; i++)
 //    {
@@ -2066,6 +1948,57 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
 }
 /*****************************************************/
 
+/*****************************************************
+Функція обновлення змінних при зміні режиму ФК
+*****************************************************/
+void action_during_changing_button_mode(__SETTINGS *current_label, __SETTINGS *edit_label)
+{
+  //Перебираємо всі ФК
+  for (size_t number = 0; number < NUMBER_DEFINED_BUTTONS; number++)
+  {
+    uint32_t mode_current = (current_label->buttons_mode >> number) & 0x1;
+    uint32_t mode_edit    = (edit_label->buttons_mode    >> number) & 0x1;
+    
+    //Дії виконуємо тільки над тими кнопками, у яких режим змінився
+    if (mode_current != mode_edit)
+    {
+      //Дії виконуємо тільки тоді, коли кнопку не перевели в режим ключа (де можуть бути всі сигнали)
+      if (mode_edit != BUTTON_MODE_SWITCHER)
+      {
+        unsigned int state_button[N_SMALL];
+        for (unsigned int i = 0; i < N_SMALL; i++)
+        {
+          state_button[i] = current_label->ranguvannja_buttons[N_SMALL*number + i];
+        }
+  
+        if (mode_edit == BUTTON_MODE_BUTTON)
+        {
+          for (unsigned int index_deleted_function = 0; index_deleted_function < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL; index_deleted_function++)
+          {
+            if (_CHECK_SET_BIT(buttons_mode_0, index_deleted_function) == 0)
+            {
+              /*************************************************************/
+              //Відфільтровуємо дану функцію
+              /*************************************************************/
+              _CLEAR_BIT(state_button, index_deleted_function);
+            }
+          }
+        }
+    
+        //Вводимо зміни у ранжування які попередньо підготували
+        for (unsigned int i = 0; i < N_SMALL; i++)
+        {
+          current_label->ranguvannja_buttons[N_SMALL*number + i] = state_button[i];
+        }
+      }
+    }
+  }
+  
+  //Активовуємо нові режими для всіх кнопок
+  current_label->buttons_mode = edit_label->buttons_mode;
+}
+/*****************************************************/
+
 ///*****************************************************/
 ////Функція обновлення змінних при зміні кількості елементів розширеної логіки
 ///*****************************************************/
@@ -2087,19 +2020,19 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
 //  const unsigned int others_signals[NUMBER_DEFINED_ELEMENTS] = {2, 3, 1, 1, 1, 1};
 //  const unsigned int button_signals[NUMBER_DEFINED_ELEMENTS] = {1, 2, 0, 0, 0, 0};
 //  
-//  unsigned int input_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT    + 
-//                             NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT        +
-//                             NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT      +
-//                             NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT        +
-//                             NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT         +
-//                             NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT       +
-//                             NUMBER_APV_SIGNAL_FOR_RANG_INPUT        +
-//                             NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT +
-//                             NUMBER_UROV_SIGNAL_FOR_RANG_INPUT       +
-//                             NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT        +
-//                             NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT       +
-//                             NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT       +
-//                             NUMBER_VMP_SIGNAL_FOR_RANG_INPUT;
+//  unsigned int input_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+//                             NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+//                             NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
+//                             NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
+//                             NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
+//                             NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
+//                             NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
+//                             NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
+//                             NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       +
+//                             NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
+//                             NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
+//                             NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       +
+//                             NUMBER_VMP_SIGNAL_FOR_RANG_SMALL;
 //      
 //  unsigned int others_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG    + 
 //                              NUMBER_MTZ_SIGNAL_FOR_RANG        +
@@ -2148,7 +2081,10 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
 //    
 //  //Знімаємо всі функції для ранжування входів, які відповідають за Розширену логіку
 //  for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-//    target_label->ranguvannja_buttons[i] &= ~maska_2;
+//  {
+//    target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+//    target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+//  }
 //  //Знімаємо всі функції для ранжування входів, які відповідають за Розширену логіку
 //  for (int i = 0; i < NUMBER_INPUTS; i++)
 //  {
@@ -2974,8 +2910,15 @@ void control_trg_func(void)
   unsigned char  *point; 
   unsigned int i;
   
-  temp_value_1 = misceve_dystancijne_ctrl & 0xff;
-  crc_trg_func_tmp += temp_value_1;
+  point = (unsigned char*)(&fix_active_buttons_ctrl);
+  i = 0;  
+  while (i < sizeof(fix_active_buttons_ctrl))
+  {
+    temp_value_1 = *(point);
+    crc_trg_func_tmp += temp_value_1;
+    point++;
+    i++;
+  }
   
   point = (unsigned char*)(trigger_active_functions_ctrl);
   i = 0;  

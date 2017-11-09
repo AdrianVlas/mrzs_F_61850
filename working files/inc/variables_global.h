@@ -268,7 +268,6 @@ unsigned int state_outputs = 0;
 unsigned int state_outputs_raw = 0;
 unsigned int state_signal_outputs = 0;
 unsigned int active_functions[N_BIG]  = {0, 0, 0, 0, 0, 0, 0, 0};
-unsigned int misceve_dystancijne = 0, misceve_dystancijne_ctrl;
 unsigned int trigger_active_functions[N_BIG]  = {0, 0, 0, 0, 0, 0, 0, 0}, trigger_active_functions_ctrl[N_BIG];
 unsigned char crc_trg_func, crc_trg_func_ctrl;
 unsigned int trigger_functions_USB[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -276,8 +275,11 @@ unsigned int trigger_functions_RS485[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
 unsigned int copying_active_functions = 0;
 unsigned int active_functions_copy[N_BIG]  = {0, 0, 0, 0, 0, 0, 0, 0};
 unsigned int active_functions_trg[N_BIG]  = {0, 0, 0, 0, 0, 0, 0, 0};
+unsigned int mutex_buttons = false;
 unsigned int pressed_buttons = 0;
-unsigned int activation_function_from_interface = 0;
+unsigned int fix_active_buttons = 0, fix_active_buttons_ctrl;
+unsigned int mutex_interface = false;
+unsigned int activation_function_from_interface[N_SMALL] = {0, 0};
 unsigned int reset_trigger_function_from_interface = 0;
 unsigned int diagnostyka_before[3] = {0, 0, 0};
 volatile unsigned int diagnostyka[3] = {0, 0, 0};
@@ -318,8 +320,9 @@ unsigned char time_set_keyboard[NUMBER_KEY_KEYBOARD];
 unsigned int time_rewrite = 0; //Час який пройшов після останнього обновлення
 
 __CURRENT_EKRAN current_ekran;
-int position_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається індекс текучоїпозиції
-int previous_level_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається занчення попередніх екранів для даного рівня меню
+SRAM1 int position_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається індекс текучоїпозиції
+SRAM1 int previous_level_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається занчення попередніх екранів для даного рівня меню
+const uint32_t buttons_mode_0[N_SMALL] = {MASKA_BUTTON_MODE_0, MASKA_BUTTON_MODE_1};
 
 unsigned int periodical_tasks_TEST_SETTINGS = false;
 unsigned int periodical_tasks_TEST_USTUVANNJA = false;

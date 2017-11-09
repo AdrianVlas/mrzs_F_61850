@@ -98,7 +98,10 @@ typedef struct
   unsigned int ranguvannja_d_xor[N_BIG*NUMBER_DEFINED_XOR];                     //Ранжування команд джерел визначуваних "Викл.АБО"
   unsigned int ranguvannja_d_not[N_BIG*NUMBER_DEFINED_NOT];                     //Ранжування команд джерел визначуваних "НЕ"
   
-  unsigned int ranguvannja_buttons[NUMBER_DEFINED_BUTTONS];                     //Ранжування опреділюваних кнопок
+  uint32_t buttons_mode;                                                        //Режими роботи ФК
+                                                                                //0 - Звичайна кнопка
+                                                                                //1 - Двопозиційний ключ
+  unsigned int ranguvannja_buttons[N_SMALL*NUMBER_DEFINED_BUTTONS];             //Ранжування опреділюваних кнопок
   
   unsigned int configuration;         //Конфігурація приладу
   
@@ -506,5 +509,11 @@ typedef enum _getting_data
   GET_DATA_FOR_EDITING = 0,
   GET_DATA_IMMEDITATE
 } __getting_data;
+
+typedef enum _setting_data
+{
+  SET_DATA_INTO_EDIT_TABLE = 0,
+  SET_DATA_IMMEDITATE
+} __settings_data;
 
 #endif

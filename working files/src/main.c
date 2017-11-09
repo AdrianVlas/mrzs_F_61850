@@ -558,11 +558,6 @@ int main(void)
   //Виставляємо признак, що на екрані треба обновити стартову інформацію
   new_state_keyboard |= (1<<BIT_REWRITE);
   
-  //Виставляємо признак, що требаа прочитати всі регістри RTC, а потім, при потребі відкоректувати його поля
-  //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT);
-  _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-  
   //Робота з watchdogs
   if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
   {
@@ -574,6 +569,19 @@ int main(void)
                  );
   }
   restart_resurs_count = 0xff;/*Ненульове значення перезапускає лічильники*/
+
+  /**********************/
+  //Конфігуруємо I2C
+  /**********************/
+//  low_speed_i2c = 0xff;
+  Configure_I2C(I2C);
+  /**********************/
+
+  //Виставляємо признак, що требаа прочитати всі регістри RTC, а потім, при потребі відкоректувати його поля
+  //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
+  _SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT);
+  _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
+  
   
   time_2_watchdog_input = time_2_watchdog_output = TIM4->CNT;
   restart_timing_watchdog = 0xff;

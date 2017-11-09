@@ -320,172 +320,32 @@ void convert_order_list_function_to_gmm(unsigned int* input_array, unsigned shor
 
 /***********************************************************************************/
 /*
-Переформатування ранжування функціональних кнопок
-який передається системою захистів у формат для "унверсальної карти пам'яті"
-*/
-/***********************************************************************************/
-unsigned int convert_order_list_buttons_to_gmm(unsigned int number, unsigned int number_position, __getting_data target_task)
-{
-  __SETTINGS *target_label;
-  if (target_task == GET_DATA_IMMEDITATE) target_label = &current_settings_interfaces;
-  else target_label = &edition_settings;
-
-  unsigned int input_value = target_label->ranguvannja_buttons[number];
-  unsigned int index_in_gmm = 0;
-  unsigned int rezultat = 0;
-  
-  //Шукаємо потрібний індекс функції у полі бітових настройок
-  unsigned int i = 0;
-  while ( (i < NUMBER_TOTAL_SIGNAL_FOR_RANG_BUTTON) && (index_in_gmm < number_position) )
-  {
-    if ((input_value & (1 << i)) != 0) index_in_gmm++;
-    if (index_in_gmm < number_position) i++;
-  }
-
-  //Визначаємо код функції для інтерпретації в "універсальній карті пам'яті"
-  if (index_in_gmm == number_position)
-  {
-    switch (i)
-    {
-    case RANG_BUTTON_DF1_IN:
-      {
-        rezultat = BIT_MA_INPUT_DF1;
-        break;
-      }
-    case RANG_BUTTON_DF2_IN:
-      {
-        rezultat = BIT_MA_INPUT_DF2;
-        break;
-      }
-    case RANG_BUTTON_DF3_IN:
-      {
-        rezultat = BIT_MA_INPUT_DF3;
-        break;
-      }
-    case RANG_BUTTON_DF4_IN:
-      {
-        rezultat = BIT_MA_INPUT_DF4;
-        break;
-      }
-    case RANG_BUTTON_DF5_IN:
-      {
-        rezultat = BIT_MA_INPUT_DF5;
-        break;
-      }
-    case RANG_BUTTON_DF6_IN:
-      {
-        rezultat = BIT_MA_INPUT_DF6;
-        break;
-      }
-    case RANG_BUTTON_DF7_IN:
-      {
-        rezultat = BIT_MA_INPUT_DF7;
-        break;
-      }
-    case RANG_BUTTON_DF8_IN:
-      {
-        rezultat = BIT_MA_INPUT_DF8;
-        break;
-      }
-    case RANG_BUTTON_DT1_SET:
-      {
-        rezultat = BIT_MA_DT1_SET;
-        break;
-      }
-    case RANG_BUTTON_DT1_RESET:
-      {
-        rezultat = BIT_MA_DT1_RESET;
-        break;
-      }
-    case RANG_BUTTON_DT2_SET:
-      {
-        rezultat = BIT_MA_DT2_SET;
-        break;
-      }
-    case RANG_BUTTON_DT2_RESET:
-      {
-        rezultat = BIT_MA_DT2_RESET;
-        break;
-      }
-    case RANG_BUTTON_DT3_SET:
-      {
-        rezultat = BIT_MA_DT3_SET;
-        break;
-      }
-    case RANG_BUTTON_DT3_RESET:
-      {
-        rezultat = BIT_MA_DT3_RESET;
-        break;
-      }
-    case RANG_BUTTON_DT4_SET:
-      {
-        rezultat = BIT_MA_DT4_SET;
-        break;
-      }
-    case RANG_BUTTON_DT4_RESET:
-      {
-        rezultat = BIT_MA_DT4_RESET;
-        break;
-      }
-    case RANG_BUTTON_RESET_LEDS:
-      {
-        rezultat = BIT_MA_RESET_LEDS;
-        break;
-      }
-    case RANG_BUTTON_RESET_RELES:
-      {
-        rezultat = BIT_MA_RESET_RELES;
-        break;
-      }
-    case RANG_BUTTON_MISCEVE_DYSTANCIJNE:
-      {
-        rezultat = BIT_MA_MISCEVE_DYSTANCIJNE;
-        break;
-      }
-    case RANG_BUTTON_VKL_VV:
-      {
-        rezultat = BIT_MA_VKL_VV;
-        break;
-      }
-    case RANG_BUTTON_OTKL_VV:
-      {
-        rezultat = BIT_MA_OTKL_VV;
-        break;
-      }
-    case RANG_BUTTON_RESET_BLOCK_READY_TU_VID_ZAHYSTIV:
-      {
-        rezultat = BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV;
-        break;
-      }
-    default: break;
-    }
-  }
-    
-  return rezultat;
-}
-/***********************************************************************************/
-
-/***********************************************************************************/
-/*
 Переформатування ранжування входів
 який передається системою захистів у формат для "унверсальної карти пам'яті"
 */
 /***********************************************************************************/
-unsigned int convert_order_list_inputs_to_gmm(unsigned int number, unsigned int number_position, __getting_data target_task)
+unsigned int convert_order_list_bi_to_gmm(unsigned int number, unsigned int number_position, unsigned int source, __getting_data target_task)
 {
   __SETTINGS *target_label;
   if (target_task == GET_DATA_IMMEDITATE) target_label = &current_settings_interfaces;
   else target_label = &edition_settings;
 
   unsigned int input_value[N_SMALL];
-  input_value[0] = target_label->ranguvannja_inputs[2*number    ];
-  input_value[1] = target_label->ranguvannja_inputs[2*number + 1];
   unsigned int index_in_gmm = 0;
   unsigned int rezultat = 0;
   
+  if (source == SOURCE_BUTTONS_RANG)
+  {
+    for (unsigned int i = 0; i < N_SMALL; i++ ) input_value[i] = target_label->ranguvannja_buttons[N_SMALL*number + i];
+  }
+  else if (source == SOURCE_INPUTS_RANG)
+  {
+    for (unsigned int i = 0; i < N_SMALL; i++ ) input_value[i] = target_label->ranguvannja_inputs[N_SMALL*number + i];
+  }
+  
   //Шукаємо потрібний індекс функції у полі бітових настройок
   unsigned int i = 0;
-  while ( (i < NUMBER_TOTAL_SIGNAL_FOR_RANG_INPUT) && (index_in_gmm < number_position) )
+  while ( (i < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL) && (index_in_gmm < number_position) )
   {
     unsigned int offset, shift;
     offset = i >> 5; //Це є, фактично, ділення на 32
@@ -500,282 +360,282 @@ unsigned int convert_order_list_inputs_to_gmm(unsigned int number, unsigned int 
   {
     switch (i)
     {
-    case RANG_INPUT_DF1_IN:
+    case RANG_SMALL_DF1_IN:
       {
         rezultat = BIT_MA_INPUT_DF1;
         break;
       }
-    case RANG_INPUT_DF2_IN:
+    case RANG_SMALL_DF2_IN:
       {
         rezultat = BIT_MA_INPUT_DF2;
         break;
       }
-    case RANG_INPUT_DF3_IN:
+    case RANG_SMALL_DF3_IN:
       {
         rezultat = BIT_MA_INPUT_DF3;
         break;
       }
-    case RANG_INPUT_DF4_IN:
+    case RANG_SMALL_DF4_IN:
       {
         rezultat = BIT_MA_INPUT_DF4;
         break;
       }
-    case RANG_INPUT_DF5_IN:
+    case RANG_SMALL_DF5_IN:
       {
         rezultat = BIT_MA_INPUT_DF5;
         break;
       }
-    case RANG_INPUT_DF6_IN:
+    case RANG_SMALL_DF6_IN:
       {
         rezultat = BIT_MA_INPUT_DF6;
         break;
       }
-    case RANG_INPUT_DF7_IN:
+    case RANG_SMALL_DF7_IN:
       {
         rezultat = BIT_MA_INPUT_DF7;
         break;
       }
-    case RANG_INPUT_DF8_IN:
+    case RANG_SMALL_DF8_IN:
       {
         rezultat = BIT_MA_INPUT_DF8;
         break;
       }
-    case RANG_INPUT_DT1_SET:
+    case RANG_SMALL_DT1_SET:
       {
         rezultat = BIT_MA_DT1_SET;
         break;
       }
-    case RANG_INPUT_DT1_RESET:
+    case RANG_SMALL_DT1_RESET:
       {
         rezultat = BIT_MA_DT1_RESET;
         break;
       }
-    case RANG_INPUT_DT2_SET:
+    case RANG_SMALL_DT2_SET:
       {
         rezultat = BIT_MA_DT2_SET;
         break;
       }
-    case RANG_INPUT_DT2_RESET:
+    case RANG_SMALL_DT2_RESET:
       {
         rezultat = BIT_MA_DT2_RESET;
         break;
       }
-    case RANG_INPUT_DT3_SET:
+    case RANG_SMALL_DT3_SET:
       {
         rezultat = BIT_MA_DT3_SET;
         break;
       }
-    case RANG_INPUT_DT3_RESET:
+    case RANG_SMALL_DT3_RESET:
       {
         rezultat = BIT_MA_DT3_RESET;
         break;
       }
-    case RANG_INPUT_DT4_SET:
+    case RANG_SMALL_DT4_SET:
       {
         rezultat = BIT_MA_DT4_SET;
         break;
       }
-    case RANG_INPUT_DT4_RESET:
+    case RANG_SMALL_DT4_RESET:
       {
         rezultat = BIT_MA_DT4_RESET;
         break;
       }
-    case RANG_INPUT_BLOCK_VKL_VV:
+    case RANG_SMALL_BLOCK_VKL_VV:
       {
         rezultat = BIT_MA_BLOCK_VKL_VV;
         break;
       }
-    case RANG_INPUT_RESET_LEDS:
+    case RANG_SMALL_RESET_LEDS:
       {
         rezultat = BIT_MA_RESET_LEDS;
         break;
       }
-    case RANG_INPUT_RESET_RELES:
+    case RANG_SMALL_RESET_RELES:
       {
         rezultat = BIT_MA_RESET_RELES;
         break;
       }
-    case RANG_INPUT_MISCEVE_DYSTANCIJNE:
+    case RANG_SMALL_MISCEVE_DYSTANCIJNE:
       {
         rezultat = BIT_MA_MISCEVE_DYSTANCIJNE;
         break;
       }
-    case RANG_INPUT_STATE_VV:
+    case RANG_SMALL_STATE_VV:
       {
         rezultat = BIT_MA_STATE_VV;
         break;
       }
-    case RANG_INPUT_OTKL_VID_ZOVN_ZAHYSTIV:
+    case RANG_SMALL_OTKL_VID_ZOVN_ZAHYSTIV:
       {
         rezultat = BIT_MA_OTKL_VID_ZOVN_ZAHYSTIV;
         break;
       }
-    case RANG_INPUT_VKL_VV:
+    case RANG_SMALL_VKL_VV:
       {
         rezultat = BIT_MA_VKL_VV;
         break;
       }
-    case RANG_INPUT_CTRL_VKL:
+    case RANG_SMALL_CTRL_VKL:
       {
         rezultat = BIT_MA_CONTROL_VKL;
         break;
       }
-    case RANG_INPUT_OTKL_VV:
+    case RANG_SMALL_OTKL_VV:
       {
         rezultat = BIT_MA_OTKL_VV;
         break;
       }
-    case RANG_INPUT_CTRL_OTKL:
+    case RANG_SMALL_CTRL_OTKL:
       {
         rezultat = BIT_MA_CONTROL_VIDKL;
         break;
       }
-    case RANG_INPUT_1_GRUPA_USTAVOK:
+    case RANG_SMALL_1_GRUPA_USTAVOK:
       {
         rezultat = BIT_MA_1_GRUPA_USTAVOK;
         break;
       }
-    case RANG_INPUT_2_GRUPA_USTAVOK:
+    case RANG_SMALL_2_GRUPA_USTAVOK:
       {
         rezultat = BIT_MA_2_GRUPA_USTAVOK;
         break;
       }
-    case RANG_INPUT_3_GRUPA_USTAVOK:
+    case RANG_SMALL_3_GRUPA_USTAVOK:
       {
         rezultat = BIT_MA_3_GRUPA_USTAVOK;
         break;
       }
-    case RANG_INPUT_4_GRUPA_USTAVOK:
+    case RANG_SMALL_4_GRUPA_USTAVOK:
       {
         rezultat = BIT_MA_4_GRUPA_USTAVOK;
         break;
       }
-    case RANG_INPUT_RESET_BLOCK_READY_TU_VID_ZAHYSTIV:
+    case RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV:
       {
         rezultat = BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV;
         break;
       }
-    case RANG_INPUT_BLOCK_MTZ1:
+    case RANG_SMALL_BLOCK_MTZ1:
       {
         rezultat = BIT_MA_BLOCK_MTZ1;
         break;
       }
-    case RANG_INPUT_BLOCK_MTZ2:
+    case RANG_SMALL_BLOCK_MTZ2:
       {
         rezultat = BIT_MA_BLOCK_MTZ2;
         break;
       }
-    case RANG_INPUT_BLOCK_USK_MTZ2:
+    case RANG_SMALL_BLOCK_USK_MTZ2:
       {
         rezultat = BIT_MA_BLOCK_USK_MTZ2;
         break;
       }
-    case RANG_INPUT_BLOCK_MTZ3:
+    case RANG_SMALL_BLOCK_MTZ3:
       {
         rezultat = BIT_MA_BLOCK_MTZ3;
         break;
       }
-    case RANG_INPUT_BLOCK_MTZ4:
+    case RANG_SMALL_BLOCK_MTZ4:
       {
         rezultat = BIT_MA_BLOCK_MTZ4;
         break;
       }
-    case RANG_INPUT_BLOCK_MTZ04_1:
+    case RANG_SMALL_BLOCK_MTZ04_1:
       {
         rezultat = BIT_MA_BLOCK_MTZ04_1;
         break;
       }
-    case RANG_INPUT_BLOCK_MTZ04_2:
+    case RANG_SMALL_BLOCK_MTZ04_2:
       {
         rezultat = BIT_MA_BLOCK_MTZ04_2;
         break;
       }
-    case RANG_INPUT_BLOCK_USK_MTZ04_2:
+    case RANG_SMALL_BLOCK_USK_MTZ04_2:
       {
         rezultat = BIT_MA_BLOCK_USK_MTZ04_2;
         break;
       }
-    case RANG_INPUT_PUSK_ZDZ_VID_DV:
+    case RANG_SMALL_PUSK_ZDZ_VID_DV:
       {
         rezultat = BIT_MA_PUSK_ZDZ_VID_DV;
         break;
       }
-    case RANG_INPUT_BLOCK_NZZ:
+    case RANG_SMALL_BLOCK_NZZ:
       {
         rezultat = BIT_MA_BLOCK_NZZ;
         break;
       }
-    case RANG_INPUT_BLOCK_TZNP1:
+    case RANG_SMALL_BLOCK_TZNP1:
       {
         rezultat = BIT_MA_BLOCK_TZNP1;
         break;
       }
-    case RANG_INPUT_BLOCK_TZNP2:
+    case RANG_SMALL_BLOCK_TZNP2:
       {
         rezultat = BIT_MA_BLOCK_TZNP2;
         break;
       }
-    case RANG_INPUT_BLOCK_TZNP3:
+    case RANG_SMALL_BLOCK_TZNP3:
       {
         rezultat = BIT_MA_BLOCK_TZNP3;
         break;
       }
-    case RANG_INPUT_STAT_BLK_APV:
+    case RANG_SMALL_STAT_BLK_APV:
       {
         rezultat = BIT_MA_STAT_BLK_APV;
         break;
       }
-    case RANG_INPUT_BLOCK_ACHR1:
+    case RANG_SMALL_BLOCK_ACHR1:
       {
         rezultat = BIT_MA_BLOCK_ACHR1;
         break;
       }
-    case RANG_INPUT_BLOCK_ACHR2:
+    case RANG_SMALL_BLOCK_ACHR2:
       {
         rezultat = BIT_MA_BLOCK_ACHR2;
         break;
       }
-    case RANG_INPUT_ACHR_CHAPV_VID_DV:
+    case RANG_SMALL_ACHR_CHAPV_VID_DV:
       {
         rezultat = BIT_MA_ACHR_CHAPV_VID_DV;
         break;
       }
-    case RANG_INPUT_PUSK_UROV_VID_DV:
+    case RANG_SMALL_PUSK_UROV_VID_DV:
       {
         rezultat = BIT_MA_PUSK_UROV_VID_DV;
         break;
       }
-    case RANG_INPUT_BLOCK_ZOP:
+    case RANG_SMALL_BLOCK_ZOP:
       {
         rezultat = BIT_MA_BLOCK_ZOP;
         break;
       }
-    case RANG_INPUT_BLOCK_UMIN1:
+    case RANG_SMALL_BLOCK_UMIN1:
       {
         rezultat = BIT_MA_BLOCK_UMIN1;
         break;
       }
-    case RANG_INPUT_START_UMIN1:
+    case RANG_SMALL_START_UMIN1:
       {
         rezultat = BIT_MA_START_UMIN1;
         break;
       }
-    case RANG_INPUT_BLOCK_UMIN2:
+    case RANG_SMALL_BLOCK_UMIN2:
       {
         rezultat = BIT_MA_BLOCK_UMIN2;
         break;
       }
-    case RANG_INPUT_START_UMIN2:
+    case RANG_SMALL_START_UMIN2:
       {
         rezultat = BIT_MA_START_UMIN2;
         break;
       }
-    case RANG_INPUT_BLOCK_UMAX1:
+    case RANG_SMALL_BLOCK_UMAX1:
       {
         rezultat = BIT_MA_BLOCK_UMAX1;
         break;
       }
-    case RANG_INPUT_BLOCK_UMAX2:
+    case RANG_SMALL_BLOCK_UMAX2:
       {
         rezultat = BIT_MA_BLOCK_UMAX2;
         break;
@@ -2045,549 +1905,9 @@ void set_previous_ranguvannja(void)
 /***********************************************************************************/
 
 /***********************************************************************************/
-// Виконання ранжування дискретного входу
-/***********************************************************************************/
-unsigned int save_new_rang_inputs_from_gmm(unsigned int number, unsigned int number_position, unsigned short int data, unsigned int method_setting)
-{
-  __SETTINGS *target_label;
-  if (method_setting == SET_DATA_IMMEDITATE) target_label = &current_settings_interfaces;
-  else target_label = &edition_settings;
-  
-  unsigned int *point_to_target;
-  unsigned int input_value[N_SMALL];
-  input_value[0] = current_settings_interfaces.ranguvannja_inputs[2*number    ];
-  input_value[1] = current_settings_interfaces.ranguvannja_inputs[2*number + 1];
-  unsigned int number_function_in_source = 0, index_function_in_source;
-  unsigned short error = 0;
-  
-  //Встановлюємо мітку на об'кт, який зараз редагується
-  point_to_target = (unsigned int *)target_label->ranguvannja_inputs + N_SMALL*number;
-
-  //Перевіряємо, чи треба попередні зміни (якщо такі були) ввести в цільовий масив
-  if (point_to_edited_rang != NULL)
-  {
-    //Вже відбувалися попередньо ранжування з цього пакету зміни ранжування
-    if (point_to_edited_rang != point_to_target)
-    {
-      //Зараз ми приступаємо до ранжування нового входу, тому попереднє ранжування треба ввести у попередній вхід
-      set_previous_ranguvannja();
-      
-      point_to_edited_rang = point_to_target;
-    }
-  }
-  else
-  {
-    //Це є перша операція по ранжуванню з пакету зміни ранжування
-    point_to_edited_rang = point_to_target;
-  }
-  
-  number_32bit_in_target = N_SMALL;
-  
-  //Перевіряємо, чи таку функцію можна встановлювати
-  if (data != 0)
-  {
-    //Якщо data == 0, то це означає, що треба якусь функцію скинути
-    
-    if (
-        (data == BIT_MA_BLOCK_VKL_VV          ) || 
-        (data == BIT_MA_RESET_LEDS            ) || 
-        (data == BIT_MA_RESET_RELES           ) ||
-        (data == BIT_MA_MISCEVE_DYSTANCIJNE   ) ||
-        (data == BIT_MA_STATE_VV              ) || 
-        (data == BIT_MA_OTKL_VID_ZOVN_ZAHYSTIV) ||
-        (data == BIT_MA_VKL_VV                ) || 
-        (data == BIT_MA_CONTROL_VKL           ) || 
-        (data == BIT_MA_OTKL_VV               ) ||
-        (data == BIT_MA_CONTROL_VIDKL         ) || 
-        (data == BIT_MA_1_GRUPA_USTAVOK       ) || 
-        (data == BIT_MA_2_GRUPA_USTAVOK       ) || 
-        (data == BIT_MA_3_GRUPA_USTAVOK       ) || 
-        (data == BIT_MA_4_GRUPA_USTAVOK       ) ||
-        (data == BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV)
-       )
-    {
-      //Зараз є намагання зранжувати загальну функцю і номер її є допустимим
-      error = 0;
-    }
-    else if (
-             (data == BIT_MA_BLOCK_MTZ1      ) || 
-             (data == BIT_MA_BLOCK_MTZ2      ) || 
-             (data == BIT_MA_BLOCK_USK_MTZ2  ) ||
-             (data == BIT_MA_BLOCK_MTZ3      ) || 
-             (data == BIT_MA_BLOCK_MTZ4      ) 
-            )
-    {
-      //Зараз є намагання зранжувати функцю МТЗ і номер її є допустимим
-      if ((target_label->configuration & (1 << MTZ_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_BLOCK_MTZ04_1    ) || 
-             (data == BIT_MA_BLOCK_MTZ04_2    ) || 
-             (data == BIT_MA_BLOCK_USK_MTZ04_2)
-            )
-    {
-      //Зараз є намагання зранжувати функцю МТЗ 0.4кВ і номер її є допустимим
-      if ((target_label->configuration & (1 << MTZ04_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_PUSK_ZDZ_VID_DV)
-            )
-    {
-      //Зараз є намагання зранжувати функцю ЗДЗ і номер її є допустимим
-      if ((target_label->configuration & (1 << ZDZ_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_BLOCK_NZZ)
-            )
-    {
-      //Зараз є намагання зранжувати функцю НЗЗ і номер її є допустимим
-      if (
-          ((target_label->configuration & (1 << ZZ_BIT_CONFIGURATION)) != 0)
-         ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_BLOCK_TZNP1) || 
-             (data == BIT_MA_BLOCK_TZNP2) || 
-             (data == BIT_MA_BLOCK_TZNP3)
-            )
-    {
-      //Зараз є намагання зранжувати функцю МТЗ і номер її є допустимим
-      if ((target_label->configuration & (1 << TZNP_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_STAT_BLK_APV)
-            )
-    {
-      //Зараз є намагання зранжувати функцю АПВ і номер її є допустимим
-      if ((target_label->configuration & (1 << APV_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_ACHR_CHAPV_VID_DV) ||
-             (data == BIT_MA_BLOCK_ACHR1      ) ||
-             (data == BIT_MA_BLOCK_ACHR2      )
-            )
-    {
-      //Зараз є намагання зранжувати функцю АЧР/ЧАПВ і номер її є допустимим
-      if ((target_label->configuration & (1 << ACHR_CHAPV_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_PUSK_UROV_VID_DV)
-            )
-    {
-      //Зараз є намагання зранжувати функцю УРОВ і номер її є допустимим
-      if ((target_label->configuration & (1 << UROV_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_BLOCK_ZOP)
-            )
-    {
-      //Зараз є намагання зранжувати функцю ЗОП(КОФ) і номер її є допустимим
-      if ((target_label->configuration & (1 << ZOP_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_BLOCK_UMIN1) ||
-             (data == BIT_MA_BLOCK_UMIN2) ||
-             (data == BIT_MA_START_UMIN1) ||
-             (data == BIT_MA_START_UMIN2)
-            )
-    {
-      //Зараз є намагання зранжувати функцю Umin і номер її є допустимим
-      if ((target_label->configuration & (1 << UMIN_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (data == BIT_MA_BLOCK_UMAX1) ||
-             (data == BIT_MA_BLOCK_UMAX2)
-            )
-    {
-      //Зараз є намагання зранжувати функцю Umax і номер її є допустимим
-      if ((target_label->configuration & (1 << UMAX_BIT_CONFIGURATION)) !=0 ) error = 0;
-      else error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-    else if (
-             (
-              (data >= BIT_MA_INPUT_DF1 ) && 
-              (data <= BIT_MA_INPUT_DF8 )
-             )
-             ||
-             (
-              (data >= BIT_MA_DT1_SET  ) && 
-              (data <= BIT_MA_DT4_RESET)
-             )
-            )
-    {
-      //Зараз є намагання зранжувати функцю розширеної логіки і номер її є допустимим
-
-      //Перевіряємо, чи розширена логіка зараз не знята з конфігурвації
-      if ((target_label->configuration & (1 << EL_BIT_CONFIGURATION)) == 0 ) error = ERROR_ILLEGAL_DATA_VALUE;  
-    }
-    else
-    {
-      error = ERROR_ILLEGAL_DATA_VALUE;
-    }
-  }
-  
-  //Якщо номер функції є недопустимим, то подальшу обробку виконувати немає сенсу
-  if (error != 0) return error;
-  
-  //Підраховуємо кількість функцій, які зранжовані на даний вхід
-  if (
-      (input_value[0] != 0) ||
-      (input_value[1] != 0)
-     )
-  {
-    //Якщо ця величина не нульова, то це означає, що якісь функції зранжовані
-    //Інакше кількість функцій залишається рівною 0, яким змінна number_function_in_source ініціалізується при вході
-    for (unsigned int i = 0; i < NUMBER_TOTAL_SIGNAL_FOR_RANG_INPUT; i++)
-    {
-      unsigned int offset, shift;
-      offset = i >> 5;          //Це є, фактично, ділення на 32
-      shift  = (i & (32 - 1));  //Це є, фактично, визначення остачі від ділення на 32
-      if ((input_value[offset] & (1 << shift)) != 0) number_function_in_source++;
-    }
-  }
-  
-  if (number_position <= number_function_in_source)
-  {
-    //Цей випадок означає, що треба замість якоїсь вже встановленої функції поставити інакшу
-    //Інакше просто добавляємо нову функцію у нову позицію
-    
-    //Тобто, нам треба знайти позицію, яка відповідає за номером встановленого біта відповідного регістра і  спочатку скинути цей біт
-    //А потім встановити нову функцію  
-
-    //Шукаємо позицію у бітовому полі змінної (захистів), який відповідає даному номеру регістра Modbus-RTU
-    unsigned int i = 0;
-    index_function_in_source = 0;
-    while ( (i < NUMBER_TOTAL_SIGNAL_FOR_RANG_INPUT) && (index_function_in_source < number_position) )
-    {
-      unsigned int offset, shift;
-      offset = i >> 5;          //Це є, фактично, ділення на 32
-      shift  = (i & (32 - 1));  //Це є, фактично, визначення остачі від ділення на 32
-      if ((input_value[offset] & (1 << shift)) != 0) index_function_in_source++;
-      if (index_function_in_source < number_position) i++;
-    }
-    
-    if(index_function_in_source == number_position)
-    {
-      //Якщо сюди дійшла програма, то це означає, що відповідний біт знайдений
-      //Помічаємо що замість цієї функції бкде встановлюватися іншп функція
-      _SET_BIT(clear_array_rang, i);
-    }
-  }
-  
-  if (data != 0)
-  {
-    //Встановлюємо відповідну функцію
-    switch (data)
-    {
-    case BIT_MA_INPUT_DF1:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DF1_IN);
-        break;
-      }
-    case BIT_MA_INPUT_DF2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DF2_IN);
-        break;
-      }
-    case BIT_MA_INPUT_DF3:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DF3_IN);
-        break;
-      }
-    case BIT_MA_INPUT_DF4:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DF4_IN);
-        break;
-      }
-    case BIT_MA_INPUT_DF5:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DF5_IN);
-        break;
-      }
-    case BIT_MA_INPUT_DF6:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DF6_IN);
-        break;
-      }
-    case BIT_MA_INPUT_DF7:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DF7_IN);
-        break;
-      }
-    case BIT_MA_INPUT_DF8:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DF8_IN);
-        break;
-      }
-    case BIT_MA_DT1_SET:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DT1_SET);
-        break;
-      }
-    case BIT_MA_DT1_RESET:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DT1_RESET);
-        break;
-      }
-    case BIT_MA_DT2_SET:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DT2_SET);
-        break;
-      }
-    case BIT_MA_DT2_RESET:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DT2_RESET);
-        break;
-      }
-    case BIT_MA_DT3_SET:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DT3_SET);
-        break;
-      }
-    case BIT_MA_DT3_RESET:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DT3_RESET);
-        break;
-      }
-    case BIT_MA_DT4_SET:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DT4_SET);
-        break;
-      }
-    case BIT_MA_DT4_RESET:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_DT4_RESET);
-        break;
-      }
-    case BIT_MA_BLOCK_VKL_VV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_VKL_VV);
-        break;
-      }
-    case BIT_MA_RESET_LEDS:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_RESET_LEDS);
-        break;
-      }
-    case BIT_MA_RESET_RELES:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_RESET_RELES);
-        break;
-      }
-    case BIT_MA_MISCEVE_DYSTANCIJNE:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_MISCEVE_DYSTANCIJNE);
-        break;
-      }
-    case BIT_MA_STATE_VV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_STATE_VV);
-        break;
-      }
-    case BIT_MA_OTKL_VID_ZOVN_ZAHYSTIV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_OTKL_VID_ZOVN_ZAHYSTIV);
-        break;
-      }
-    case BIT_MA_VKL_VV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_VKL_VV);
-        break;
-      }
-    case BIT_MA_CONTROL_VKL:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_CTRL_VKL);
-        break;
-      }
-    case BIT_MA_OTKL_VV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_OTKL_VV);
-        break;
-      }
-    case BIT_MA_CONTROL_VIDKL:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_CTRL_OTKL);
-        break;
-      }
-    case BIT_MA_1_GRUPA_USTAVOK:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_1_GRUPA_USTAVOK);
-        break;
-      }
-    case BIT_MA_2_GRUPA_USTAVOK:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_2_GRUPA_USTAVOK);
-        break;
-      }
-    case BIT_MA_3_GRUPA_USTAVOK:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_3_GRUPA_USTAVOK);
-        break;
-      }
-    case BIT_MA_4_GRUPA_USTAVOK:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_4_GRUPA_USTAVOK);
-        break;
-      }
-    case BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_RESET_BLOCK_READY_TU_VID_ZAHYSTIV);
-        break;
-      }
-    case BIT_MA_BLOCK_MTZ1:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_MTZ1);
-        break;
-      }
-    case BIT_MA_BLOCK_MTZ2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_MTZ2);
-        break;
-      }
-    case BIT_MA_BLOCK_USK_MTZ2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_USK_MTZ2);
-        break;
-      }
-    case BIT_MA_BLOCK_MTZ3:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_MTZ3);
-        break;
-      }
-    case BIT_MA_BLOCK_MTZ4:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_MTZ4);
-        break;
-      }
-    case BIT_MA_BLOCK_MTZ04_1:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_MTZ04_1);
-        break;
-      }
-    case BIT_MA_BLOCK_MTZ04_2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_MTZ04_2);
-        break;
-      }
-    case BIT_MA_BLOCK_USK_MTZ04_2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_USK_MTZ04_2);
-        break;
-      }
-    case BIT_MA_PUSK_ZDZ_VID_DV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_PUSK_ZDZ_VID_DV);
-        break;
-      }
-    case BIT_MA_BLOCK_NZZ:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_NZZ);
-        break;
-      }
-    case BIT_MA_BLOCK_TZNP1:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_TZNP1);
-        break;
-      }
-    case BIT_MA_BLOCK_TZNP2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_TZNP2);
-        break;
-      }
-    case BIT_MA_BLOCK_TZNP3:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_TZNP3);
-        break;
-      }
-    case BIT_MA_STAT_BLK_APV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_STAT_BLK_APV);
-        break;
-      }
-    case BIT_MA_ACHR_CHAPV_VID_DV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_ACHR_CHAPV_VID_DV);
-        break;
-      }
-    case BIT_MA_BLOCK_ACHR1:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_ACHR1);
-        break;
-      }
-    case BIT_MA_BLOCK_ACHR2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_ACHR2);
-        break;
-      }
-    case BIT_MA_PUSK_UROV_VID_DV:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_PUSK_UROV_VID_DV);
-        break;
-      }
-    case BIT_MA_BLOCK_ZOP:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_ZOP);
-        break;
-      }
-    case BIT_MA_BLOCK_UMIN1:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_UMIN1);
-        break;
-      }
-    case BIT_MA_BLOCK_UMIN2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_UMIN2);
-        break;
-      }
-    case BIT_MA_START_UMIN1:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_START_UMIN1);
-        break;
-      }
-    case BIT_MA_START_UMIN2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_START_UMIN2);
-        break;
-      }
-    case BIT_MA_BLOCK_UMAX1:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_UMAX1);
-        break;
-      }
-    case BIT_MA_BLOCK_UMAX2:
-      {
-        _SET_BIT(set_array_rang, RANG_INPUT_BLOCK_UMAX2);
-        break;
-      }
-    default:
-      {
-        //Теоретично сюди б програма ніколи не мала б доходити
-        //Але якщо дійшла, то виставляємо повідомлення про помилку
-        error = ERROR_ILLEGAL_DATA_VALUE;
-        break;
-      }
-    }
-  }
-    
-  return error;
-}
-
-/***********************************************************************************/
-
-/***********************************************************************************/
 // Виконання ранжування дискретного виходу або світлоіндикатора, або опреділюваної функції, або реємтратора
 /***********************************************************************************/
-unsigned int save_new_rang_oldr_from_gmm(unsigned int number, unsigned int number_position, unsigned int source, unsigned short int data, unsigned int method_setting)
+unsigned int save_new_rang_oldr_from_gmm(unsigned int number, unsigned int number_position, unsigned int source, unsigned short int data, __settings_data method_setting)
 {
   __SETTINGS *target_label;
   if (method_setting == SET_DATA_IMMEDITATE) target_label = &current_settings_interfaces;
@@ -4343,21 +3663,32 @@ unsigned int save_new_rang_oldr_from_gmm(unsigned int number, unsigned int numbe
 /***********************************************************************************/
 
 /***********************************************************************************/
-// Виконання ранжування функціональних клафіш
+// Виконання ранжування дискретного входу
 /***********************************************************************************/
-unsigned int save_new_rang_buttons_from_gmm(unsigned int number, unsigned int number_position, unsigned short int data, unsigned int method_setting)
+unsigned int save_new_rang_bi_from_gmm(unsigned int number, unsigned int number_position, unsigned int source, unsigned short int data, __settings_data method_setting)
 {
   __SETTINGS *target_label;
   if (method_setting == SET_DATA_IMMEDITATE) target_label = &current_settings_interfaces;
   else target_label = &edition_settings;
   
-  unsigned int *point_to_target;
-  unsigned int input_value = current_settings_interfaces.ranguvannja_buttons[number];
+  unsigned int *point_to_source, *point_to_target;
+  unsigned int input_value[N_SMALL];
   unsigned int number_function_in_source = 0, index_function_in_source;
   unsigned short error = 0;
   
   //Встановлюємо мітку на об'кт, який зараз редагується
-  point_to_target = (unsigned int *)target_label->ranguvannja_buttons + number;
+  point_to_target = (unsigned int *)target_label->ranguvannja_inputs + N_SMALL*number;
+
+  if (source == SOURCE_BUTTONS_RANG)
+  {
+    point_to_source = (unsigned int *)current_settings_interfaces.ranguvannja_buttons + N_SMALL*number;
+    point_to_target = (unsigned int *)target_label->ranguvannja_buttons + N_SMALL*number;
+  }
+  else if (source == SOURCE_INPUTS_RANG)
+  {
+    point_to_source = (unsigned int *)current_settings_interfaces.ranguvannja_inputs + N_SMALL*number;
+    point_to_target = (unsigned int *)target_label->ranguvannja_inputs + N_SMALL*number;
+  }
 
   //Перевіряємо, чи треба попередні зміни (якщо такі були) ввести в цільовий масив
   if (point_to_edited_rang != NULL)
@@ -4377,7 +3708,8 @@ unsigned int save_new_rang_buttons_from_gmm(unsigned int number, unsigned int nu
     point_to_edited_rang = point_to_target;
   }
   
-  number_32bit_in_target = 1;
+  number_32bit_in_target = N_SMALL;
+  for (unsigned int i = 0; i < N_SMALL; i++) input_value[i] = *(point_to_source + i);
   
   //Перевіряємо, чи таку функцію можна встановлювати
   if (data != 0)
@@ -4385,16 +3717,129 @@ unsigned int save_new_rang_buttons_from_gmm(unsigned int number, unsigned int nu
     //Якщо data == 0, то це означає, що треба якусь функцію скинути
     
     if (
-        (data == BIT_MA_RESET_LEDS         ) || 
-        (data == BIT_MA_RESET_RELES        ) || 
-        (data == BIT_MA_MISCEVE_DYSTANCIJNE) || 
-        (data == BIT_MA_VKL_VV             ) ||
-        (data == BIT_MA_OTKL_VV            ) ||
-        (data == BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV) 
+        (data == BIT_MA_BLOCK_VKL_VV          ) || 
+        (data == BIT_MA_RESET_LEDS            ) || 
+        (data == BIT_MA_RESET_RELES           ) ||
+        (data == BIT_MA_MISCEVE_DYSTANCIJNE   ) ||
+        (data == BIT_MA_STATE_VV              ) || 
+        (data == BIT_MA_OTKL_VID_ZOVN_ZAHYSTIV) ||
+        (data == BIT_MA_VKL_VV                ) || 
+        (data == BIT_MA_CONTROL_VKL           ) || 
+        (data == BIT_MA_OTKL_VV               ) ||
+        (data == BIT_MA_CONTROL_VIDKL         ) || 
+        (data == BIT_MA_1_GRUPA_USTAVOK       ) || 
+        (data == BIT_MA_2_GRUPA_USTAVOK       ) || 
+        (data == BIT_MA_3_GRUPA_USTAVOK       ) || 
+        (data == BIT_MA_4_GRUPA_USTAVOK       ) ||
+        (data == BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV)
        )
     {
       //Зараз є намагання зранжувати загальну функцю і номер її є допустимим
       error = 0;
+    }
+    else if (
+             (data == BIT_MA_BLOCK_MTZ1      ) || 
+             (data == BIT_MA_BLOCK_MTZ2      ) || 
+             (data == BIT_MA_BLOCK_USK_MTZ2  ) ||
+             (data == BIT_MA_BLOCK_MTZ3      ) || 
+             (data == BIT_MA_BLOCK_MTZ4      ) 
+            )
+    {
+      //Зараз є намагання зранжувати функцю МТЗ і номер її є допустимим
+      if ((target_label->configuration & (1 << MTZ_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_BLOCK_MTZ04_1    ) || 
+             (data == BIT_MA_BLOCK_MTZ04_2    ) || 
+             (data == BIT_MA_BLOCK_USK_MTZ04_2)
+            )
+    {
+      //Зараз є намагання зранжувати функцю МТЗ 0.4кВ і номер її є допустимим
+      if ((target_label->configuration & (1 << MTZ04_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_PUSK_ZDZ_VID_DV)
+            )
+    {
+      //Зараз є намагання зранжувати функцю ЗДЗ і номер її є допустимим
+      if ((target_label->configuration & (1 << ZDZ_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_BLOCK_NZZ)
+            )
+    {
+      //Зараз є намагання зранжувати функцю НЗЗ і номер її є допустимим
+      if (
+          ((target_label->configuration & (1 << ZZ_BIT_CONFIGURATION)) != 0)
+         ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_BLOCK_TZNP1) || 
+             (data == BIT_MA_BLOCK_TZNP2) || 
+             (data == BIT_MA_BLOCK_TZNP3)
+            )
+    {
+      //Зараз є намагання зранжувати функцю МТЗ і номер її є допустимим
+      if ((target_label->configuration & (1 << TZNP_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_STAT_BLK_APV)
+            )
+    {
+      //Зараз є намагання зранжувати функцю АПВ і номер її є допустимим
+      if ((target_label->configuration & (1 << APV_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_ACHR_CHAPV_VID_DV) ||
+             (data == BIT_MA_BLOCK_ACHR1      ) ||
+             (data == BIT_MA_BLOCK_ACHR2      )
+            )
+    {
+      //Зараз є намагання зранжувати функцю АЧР/ЧАПВ і номер її є допустимим
+      if ((target_label->configuration & (1 << ACHR_CHAPV_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_PUSK_UROV_VID_DV)
+            )
+    {
+      //Зараз є намагання зранжувати функцю УРОВ і номер її є допустимим
+      if ((target_label->configuration & (1 << UROV_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_BLOCK_ZOP)
+            )
+    {
+      //Зараз є намагання зранжувати функцю ЗОП(КОФ) і номер її є допустимим
+      if ((target_label->configuration & (1 << ZOP_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_BLOCK_UMIN1) ||
+             (data == BIT_MA_BLOCK_UMIN2) ||
+             (data == BIT_MA_START_UMIN1) ||
+             (data == BIT_MA_START_UMIN2)
+            )
+    {
+      //Зараз є намагання зранжувати функцю Umin і номер її є допустимим
+      if ((target_label->configuration & (1 << UMIN_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (
+             (data == BIT_MA_BLOCK_UMAX1) ||
+             (data == BIT_MA_BLOCK_UMAX2)
+            )
+    {
+      //Зараз є намагання зранжувати функцю Umax і номер її є допустимим
+      if ((target_label->configuration & (1 << UMAX_BIT_CONFIGURATION)) !=0 ) error = 0;
+      else error = ERROR_ILLEGAL_DATA_VALUE;
     }
     else if (
              (
@@ -4423,13 +3868,19 @@ unsigned int save_new_rang_buttons_from_gmm(unsigned int number, unsigned int nu
   if (error != 0) return error;
   
   //Підраховуємо кількість функцій, які зранжовані на даний вхід
-  if (input_value !=0)
+  if (
+      (input_value[0] != 0) ||
+      (input_value[1] != 0)
+     )
   {
     //Якщо ця величина не нульова, то це означає, що якісь функції зранжовані
     //Інакше кількість функцій залишається рівною 0, яким змінна number_function_in_source ініціалізується при вході
-    for (unsigned int i = 0; i < NUMBER_TOTAL_SIGNAL_FOR_RANG_BUTTON; i++)
+    for (unsigned int i = 0; i < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL; i++)
     {
-      if ((input_value & ((unsigned int)(1 << i))) != 0) number_function_in_source++;
+      unsigned int offset, shift;
+      offset = i >> 5;          //Це є, фактично, ділення на 32
+      shift  = (i & (32 - 1));  //Це є, фактично, визначення остачі від ділення на 32
+      if ((input_value[offset] & (1 << shift)) != 0) number_function_in_source++;
     }
   }
   
@@ -4444,9 +3895,12 @@ unsigned int save_new_rang_buttons_from_gmm(unsigned int number, unsigned int nu
     //Шукаємо позицію у бітовому полі змінної (захистів), який відповідає даному номеру регістра Modbus-RTU
     unsigned int i = 0;
     index_function_in_source = 0;
-    while ( (i < NUMBER_TOTAL_SIGNAL_FOR_RANG_BUTTON) && (index_function_in_source < number_position) )
+    while ( (i < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL) && (index_function_in_source < number_position) )
     {
-      if ((input_value & ((unsigned int)(1 << i))) != 0) index_function_in_source++;
+      unsigned int offset, shift;
+      offset = i >> 5;          //Це є, фактично, ділення на 32
+      shift  = (i & (32 - 1));  //Це є, фактично, визначення остачі від ділення на 32
+      if ((input_value[offset] & (1 << shift)) != 0) index_function_in_source++;
       if (index_function_in_source < number_position) i++;
     }
     
@@ -4465,112 +3919,282 @@ unsigned int save_new_rang_buttons_from_gmm(unsigned int number, unsigned int nu
     {
     case BIT_MA_INPUT_DF1:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DF1_IN);
+        _SET_BIT(set_array_rang, RANG_SMALL_DF1_IN);
         break;
       }
     case BIT_MA_INPUT_DF2:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DF2_IN);
+        _SET_BIT(set_array_rang, RANG_SMALL_DF2_IN);
         break;
       }
     case BIT_MA_INPUT_DF3:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DF3_IN);
+        _SET_BIT(set_array_rang, RANG_SMALL_DF3_IN);
         break;
       }
     case BIT_MA_INPUT_DF4:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DF4_IN);
+        _SET_BIT(set_array_rang, RANG_SMALL_DF4_IN);
         break;
       }
     case BIT_MA_INPUT_DF5:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DF5_IN);
+        _SET_BIT(set_array_rang, RANG_SMALL_DF5_IN);
         break;
       }
     case BIT_MA_INPUT_DF6:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DF6_IN);
+        _SET_BIT(set_array_rang, RANG_SMALL_DF6_IN);
         break;
       }
     case BIT_MA_INPUT_DF7:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DF7_IN);
+        _SET_BIT(set_array_rang, RANG_SMALL_DF7_IN);
         break;
       }
     case BIT_MA_INPUT_DF8:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DF8_IN);
+        _SET_BIT(set_array_rang, RANG_SMALL_DF8_IN);
         break;
       }
     case BIT_MA_DT1_SET:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DT1_SET);
+        _SET_BIT(set_array_rang, RANG_SMALL_DT1_SET);
         break;
       }
     case BIT_MA_DT1_RESET:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DT1_RESET);
+        _SET_BIT(set_array_rang, RANG_SMALL_DT1_RESET);
         break;
       }
     case BIT_MA_DT2_SET:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DT2_SET);
+        _SET_BIT(set_array_rang, RANG_SMALL_DT2_SET);
         break;
       }
     case BIT_MA_DT2_RESET:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DT2_RESET);
+        _SET_BIT(set_array_rang, RANG_SMALL_DT2_RESET);
         break;
       }
     case BIT_MA_DT3_SET:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DT3_SET);
+        _SET_BIT(set_array_rang, RANG_SMALL_DT3_SET);
         break;
       }
     case BIT_MA_DT3_RESET:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DT3_RESET);
+        _SET_BIT(set_array_rang, RANG_SMALL_DT3_RESET);
         break;
       }
     case BIT_MA_DT4_SET:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DT4_SET);
+        _SET_BIT(set_array_rang, RANG_SMALL_DT4_SET);
         break;
       }
     case BIT_MA_DT4_RESET:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_DT4_RESET);
+        _SET_BIT(set_array_rang, RANG_SMALL_DT4_RESET);
+        break;
+      }
+    case BIT_MA_BLOCK_VKL_VV:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_VKL_VV);
         break;
       }
     case BIT_MA_RESET_LEDS:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_RESET_LEDS);
+        _SET_BIT(set_array_rang, RANG_SMALL_RESET_LEDS);
         break;
       }
     case BIT_MA_RESET_RELES:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_RESET_RELES);
+        _SET_BIT(set_array_rang, RANG_SMALL_RESET_RELES);
         break;
       }
     case BIT_MA_MISCEVE_DYSTANCIJNE:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_MISCEVE_DYSTANCIJNE);
+        _SET_BIT(set_array_rang, RANG_SMALL_MISCEVE_DYSTANCIJNE);
+        break;
+      }
+    case BIT_MA_STATE_VV:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_STATE_VV);
+        break;
+      }
+    case BIT_MA_OTKL_VID_ZOVN_ZAHYSTIV:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_OTKL_VID_ZOVN_ZAHYSTIV);
         break;
       }
     case BIT_MA_VKL_VV:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_VKL_VV);
+        _SET_BIT(set_array_rang, RANG_SMALL_VKL_VV);
+        break;
+      }
+    case BIT_MA_CONTROL_VKL:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_CTRL_VKL);
         break;
       }
     case BIT_MA_OTKL_VV:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_OTKL_VV);
+        _SET_BIT(set_array_rang, RANG_SMALL_OTKL_VV);
+        break;
+      }
+    case BIT_MA_CONTROL_VIDKL:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_CTRL_OTKL);
+        break;
+      }
+    case BIT_MA_1_GRUPA_USTAVOK:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_1_GRUPA_USTAVOK);
+        break;
+      }
+    case BIT_MA_2_GRUPA_USTAVOK:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_2_GRUPA_USTAVOK);
+        break;
+      }
+    case BIT_MA_3_GRUPA_USTAVOK:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_3_GRUPA_USTAVOK);
+        break;
+      }
+    case BIT_MA_4_GRUPA_USTAVOK:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_4_GRUPA_USTAVOK);
         break;
       }
     case BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV:
       {
-        _SET_BIT(set_array_rang,RANG_BUTTON_RESET_BLOCK_READY_TU_VID_ZAHYSTIV);
+        _SET_BIT(set_array_rang, RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV);
+        break;
+      }
+    case BIT_MA_BLOCK_MTZ1:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_MTZ1);
+        break;
+      }
+    case BIT_MA_BLOCK_MTZ2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_MTZ2);
+        break;
+      }
+    case BIT_MA_BLOCK_USK_MTZ2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_USK_MTZ2);
+        break;
+      }
+    case BIT_MA_BLOCK_MTZ3:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_MTZ3);
+        break;
+      }
+    case BIT_MA_BLOCK_MTZ4:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_MTZ4);
+        break;
+      }
+    case BIT_MA_BLOCK_MTZ04_1:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_MTZ04_1);
+        break;
+      }
+    case BIT_MA_BLOCK_MTZ04_2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_MTZ04_2);
+        break;
+      }
+    case BIT_MA_BLOCK_USK_MTZ04_2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_USK_MTZ04_2);
+        break;
+      }
+    case BIT_MA_PUSK_ZDZ_VID_DV:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_PUSK_ZDZ_VID_DV);
+        break;
+      }
+    case BIT_MA_BLOCK_NZZ:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_NZZ);
+        break;
+      }
+    case BIT_MA_BLOCK_TZNP1:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_TZNP1);
+        break;
+      }
+    case BIT_MA_BLOCK_TZNP2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_TZNP2);
+        break;
+      }
+    case BIT_MA_BLOCK_TZNP3:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_TZNP3);
+        break;
+      }
+    case BIT_MA_STAT_BLK_APV:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_STAT_BLK_APV);
+        break;
+      }
+    case BIT_MA_ACHR_CHAPV_VID_DV:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_ACHR_CHAPV_VID_DV);
+        break;
+      }
+    case BIT_MA_BLOCK_ACHR1:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_ACHR1);
+        break;
+      }
+    case BIT_MA_BLOCK_ACHR2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_ACHR2);
+        break;
+      }
+    case BIT_MA_PUSK_UROV_VID_DV:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_PUSK_UROV_VID_DV);
+        break;
+      }
+    case BIT_MA_BLOCK_ZOP:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_ZOP);
+        break;
+      }
+    case BIT_MA_BLOCK_UMIN1:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_UMIN1);
+        break;
+      }
+    case BIT_MA_BLOCK_UMIN2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_UMIN2);
+        break;
+      }
+    case BIT_MA_START_UMIN1:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_START_UMIN1);
+        break;
+      }
+    case BIT_MA_START_UMIN2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_START_UMIN2);
+        break;
+      }
+    case BIT_MA_BLOCK_UMAX1:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_UMAX1);
+        break;
+      }
+    case BIT_MA_BLOCK_UMAX2:
+      {
+        _SET_BIT(set_array_rang, RANG_SMALL_BLOCK_UMAX2);
         break;
       }
     default:
@@ -4585,7 +4209,6 @@ unsigned int save_new_rang_buttons_from_gmm(unsigned int number, unsigned int nu
     
   return error;
 }
-
 /***********************************************************************************/
 
 /***********************************************************************************/
@@ -6592,7 +6215,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
     
     if(number_input < NUMBER_INPUTS)
     {
-      temp_value = convert_order_list_inputs_to_gmm(number_input, (((address_data - M_ADDRESS_FIRST_DI_RANG) & (MAX_FUNCTIONS_IN_INPUT - 1)) + 1), target_task);
+      temp_value = convert_order_list_bi_to_gmm(number_input, (((address_data - M_ADDRESS_FIRST_DI_RANG) & (MAX_FUNCTIONS_IN_INPUT - 1)) + 1), SOURCE_INPUTS_RANG, target_task);
     }
     else temp_value = 0;
   }
@@ -6636,7 +6259,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
     
     if(number_db < NUMBER_DEFINED_BUTTONS)
     {
-      temp_value = convert_order_list_buttons_to_gmm(number_db, (((address_data - M_ADDRESS_FIRST_DB_RANG) & (MAX_FUNCTIONS_IN_DB - 1)) + 1), target_task);
+      temp_value = convert_order_list_bi_to_gmm(number_db, (((address_data - M_ADDRESS_FIRST_DB_RANG) & (MAX_FUNCTIONS_IN_DB - 1)) + 1), SOURCE_BUTTONS_RANG, target_task);
     }
     else temp_value = 0;
   }
@@ -7051,7 +6674,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
 /***********************************************************************************/
 //Запис даних
 /***********************************************************************************/
-inline unsigned int Set_data(unsigned short int data, unsigned int address_data, unsigned int method_setting, unsigned int to_be_continue,  unsigned int  *p_try_once_more, unsigned int type_interface)
+inline unsigned int Set_data(unsigned short int data, unsigned int address_data, __settings_data method_setting, unsigned int to_be_continue,  unsigned int  *p_try_once_more, unsigned int type_interface)
 {
   UNUSED(p_try_once_more);
   
@@ -10130,7 +9753,7 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
     
     if(number_input < NUMBER_INPUTS)
     {
-      error = save_new_rang_inputs_from_gmm(number_input, (((address_data -  M_ADDRESS_FIRST_DI_RANG) & (MAX_FUNCTIONS_IN_INPUT - 1)) + 1), data, method_setting);
+      error = save_new_rang_bi_from_gmm(number_input, (((address_data -  M_ADDRESS_FIRST_DI_RANG) & (MAX_FUNCTIONS_IN_INPUT - 1)) + 1), SOURCE_INPUTS_RANG, data, method_setting);
     }
   }
   else if ((address_data >= M_ADDRESS_FIRST_DO_RANG) && (address_data <= M_ADDRESS_LAST_DO_RANG))
@@ -10178,7 +9801,7 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
     
     if(number_button < NUMBER_DEFINED_BUTTONS)
     {
-      error = save_new_rang_buttons_from_gmm(number_button, (((address_data -  M_ADDRESS_FIRST_DB_RANG) & (MAX_FUNCTIONS_IN_DB - 1)) + 1), data, method_setting);
+      error = save_new_rang_bi_from_gmm(number_button, (((address_data -  M_ADDRESS_FIRST_DB_RANG) & (MAX_FUNCTIONS_IN_DB - 1)) + 1), SOURCE_BUTTONS_RANG, data, method_setting);
     }
   }
   else if ((address_data >= M_ADDRESS_FIRST_DT_RANG) && (address_data <= M_ADDRESS_LAST_DT_RANG))
@@ -13049,27 +12672,132 @@ void modbus_rountines(unsigned int type_interface)
               Тут ми використовуємо каонстанти активації функцій з допомогою ф-кнопок, бо механізм обробки однаковий що активацшя
               функції з ф-кнопкт, що активація функції з інтерейсу
               */
-                   if  (add_data == BIT_MA_INPUT_DF1                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DF1_IN;                            /*ОФ1*/
-              else if  (add_data == BIT_MA_INPUT_DF2                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DF2_IN;                            /*ОФ2*/
-              else if  (add_data == BIT_MA_INPUT_DF3                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DF3_IN;                            /*ОФ3*/
-              else if  (add_data == BIT_MA_INPUT_DF4                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DF4_IN;                            /*ОФ4*/
-              else if  (add_data == BIT_MA_INPUT_DF5                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DF5_IN;                            /*ОФ5*/
-              else if  (add_data == BIT_MA_INPUT_DF6                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DF6_IN;                            /*ОФ6*/
-              else if  (add_data == BIT_MA_INPUT_DF7                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DF7_IN;                            /*ОФ7*/
-              else if  (add_data == BIT_MA_INPUT_DF8                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DF8_IN;                            /*ОФ8*/
-              else if  (add_data == BIT_MA_DT1_SET                          ) activation_function_from_interface |= 1 << RANG_BUTTON_DT1_SET;                           /*Вст. ОТ1*/
-              else if  (add_data == BIT_MA_DT1_RESET                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DT1_RESET;                         /*Скид. ОТ1*/
-              else if  (add_data == BIT_MA_DT2_SET                          ) activation_function_from_interface |= 1 << RANG_BUTTON_DT2_SET;                           /*Вст. ОТ2*/
-              else if  (add_data == BIT_MA_DT2_RESET                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DT2_RESET;                         /*Скид. ОТ2*/
-              else if  (add_data == BIT_MA_DT3_SET                          ) activation_function_from_interface |= 1 << RANG_BUTTON_DT3_SET;                           /*Вст. ОТ3*/
-              else if  (add_data == BIT_MA_DT3_RESET                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DT3_RESET;                         /*Скид. ОТ3*/
-              else if  (add_data == BIT_MA_DT4_SET                          ) activation_function_from_interface |= 1 << RANG_BUTTON_DT4_SET;                           /*Вст. ОТ4*/
-              else if  (add_data == BIT_MA_DT4_RESET                        ) activation_function_from_interface |= 1 << RANG_BUTTON_DT4_RESET;                         /*Скид. ОТ4*/
-              else if  (add_data == BIT_MA_VKL_VV                           ) activation_function_from_interface |= 1 << RANG_BUTTON_VKL_VV;                            /*Вкл.  виключателя*/
-              else if  (add_data == BIT_MA_OTKL_VV                          ) activation_function_from_interface |= 1 << RANG_BUTTON_OTKL_VV;                           /*Викл. виключателя*/
-              else if  (add_data == BIT_MA_RESET_LEDS                       ) activation_function_from_interface |= 1 << RANG_BUTTON_RESET_LEDS;                        /*Очищення індикації*/
-              else if  (add_data == BIT_MA_RESET_RELES                      ) activation_function_from_interface |= 1 << RANG_BUTTON_RESET_RELES;                       /*Скидання реле*/
-              else if  (add_data == BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV) activation_function_from_interface |= 1 << RANG_BUTTON_RESET_BLOCK_READY_TU_VID_ZAHYSTIV;                            /*Вкл.  виключателя*/
+              if  (add_data == BIT_MA_INPUT_DF1) 
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DF1_IN);                            /*ОФ1*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_INPUT_DF2) 
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DF2_IN);                            /*ОФ2*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_INPUT_DF3)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DF3_IN);                            /*ОФ3*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_INPUT_DF4)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DF4_IN);                            /*ОФ4*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_INPUT_DF5)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DF5_IN);                            /*ОФ5*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_INPUT_DF6)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DF6_IN);                            /*ОФ6*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_INPUT_DF7)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DF7_IN);                            /*ОФ7*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_INPUT_DF8)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DF8_IN);                            /*ОФ8*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_DT1_SET)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DT1_SET);                           /*Вст. ОТ1*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_DT1_RESET)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DT1_RESET);                         /*Скид. ОТ1*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_DT2_SET)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DT2_SET);                           /*Вст. ОТ2*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_DT2_RESET)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DT2_RESET);                         /*Скид. ОТ2*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_DT3_SET)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DT3_SET);                           /*Вст. ОТ3*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_DT3_RESET)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DT3_RESET);                         /*Скид. ОТ3*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_DT4_SET)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DT4_SET);                           /*Вст. ОТ4*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_DT4_RESET)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_DT4_RESET);                         /*Скид. ОТ4*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_VKL_VV)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_VKL_VV);                            /*Вкл.  виключателя*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_OTKL_VV)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_OTKL_VV);                           /*Викл. виключателя*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_RESET_LEDS)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_LEDS);                        /*Очищення індикації*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_RESET_RELES)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_RELES);                       /*Скидання реле*/
+                mutex_interface = false;
+              }
+              else if  (add_data == BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV)
+              {
+                mutex_interface = true;
+                _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV); /*Скидання блокування готорності ТУ від захистів*/
+                mutex_interface = false;
+              }
               else if  (add_data == BIT_MA_RESET_GENERAL_AF) 
               {
                 //Скидання загальних функцій 
@@ -13692,7 +13420,7 @@ void modbus_rountines(unsigned int type_interface)
               unsigned int index_byte = 0, index_bit, number_activated_function;
               unsigned char temp_data;
               unsigned int i = 0;
-              unsigned int activation_function_from_interface_tmp = 0, reset_trigger_functions = 0, restart_counter_tmp = 0;
+              unsigned int activation_function_from_interface_tmp[N_SMALL] = {0, 0}, reset_trigger_functions = 0, restart_counter_tmp = 0;
               int set_new_settings = -1;
               while ((i < number) && (error == 0))
               {
@@ -13713,51 +13441,49 @@ void modbus_rountines(unsigned int type_interface)
                 number_activated_function = add_data + i;
                 if (value_of_bit != 0)
                 {
-                  //Для активації о-функцій чи подачі команд є сенс розглядати тільки активацію ("1") бо команди деактивації цих функцій немає
-                  number_activated_function = add_data + i;
-                       if  (number_activated_function == BIT_MA_INPUT_DF1                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DF1_IN;                        /*ОФ1*/
-                  else if  (number_activated_function == BIT_MA_INPUT_DF2                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DF2_IN;                        /*ОФ2*/
-                  else if  (number_activated_function == BIT_MA_INPUT_DF3                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DF3_IN;                        /*ОФ3*/
-                  else if  (number_activated_function == BIT_MA_INPUT_DF4                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DF4_IN;                        /*ОФ4*/
-                  else if  (number_activated_function == BIT_MA_INPUT_DF5                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DF5_IN;                        /*ОФ5*/
-                  else if  (number_activated_function == BIT_MA_INPUT_DF6                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DF6_IN;                        /*ОФ6*/
-                  else if  (number_activated_function == BIT_MA_INPUT_DF7                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DF7_IN;                        /*ОФ7*/
-                  else if  (number_activated_function == BIT_MA_INPUT_DF8                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DF8_IN;                        /*ОФ8*/
-                  else if  (number_activated_function == BIT_MA_DT1_SET                          ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DT1_SET;                       /*Встановл. опред. тр. 1*/
-                  else if  (number_activated_function == BIT_MA_DT1_RESET                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DT1_RESET;                     /*Скид. опред. тр. 1*/
-                  else if  (number_activated_function == BIT_MA_DT2_SET                          ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DT2_SET;                       /*Встановл. опред. тр. 2*/
-                  else if  (number_activated_function == BIT_MA_DT2_RESET                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DT2_RESET;                     /*Скид. опред. тр. 2*/
-                  else if  (number_activated_function == BIT_MA_DT3_SET                          ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DT3_SET;                       /*Встановл. опред. тр. 3*/
-                  else if  (number_activated_function == BIT_MA_DT3_RESET                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DT3_RESET;                     /*Скид. опред. тр. 3*/
-                  else if  (number_activated_function == BIT_MA_DT4_SET                          ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DT4_SET;                       /*Встановл. опред. тр. 4*/
-                  else if  (number_activated_function == BIT_MA_DT4_RESET                        ) 
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_DT4_RESET;                     /*Скид. опред. тр. 4*/
-                  else if  (number_activated_function == BIT_MA_VKL_VV                           )
-                   activation_function_from_interface_tmp |= 1 << RANG_BUTTON_VKL_VV;                        /*Вкл.  виключателя*/
-                  else if  (number_activated_function == BIT_MA_OTKL_VV                          )
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_OTKL_VV;                       /*Викл. виключателя*/
-                  else if  (number_activated_function == BIT_MA_RESET_LEDS                       )
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_RESET_LEDS;                    /*Очищення індикації*/
-                  else if  (number_activated_function == BIT_MA_RESET_RELES                      )
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_RESET_RELES;                   /*Скидання реле*/
+                  if  (number_activated_function == BIT_MA_INPUT_DF1) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DF1_IN);                        /*ОФ1*/
+                  else if  (number_activated_function == BIT_MA_INPUT_DF2) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DF2_IN);                        /*ОФ2*/
+                  else if  (number_activated_function == BIT_MA_INPUT_DF3) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DF3_IN);                        /*ОФ3*/
+                  else if  (number_activated_function == BIT_MA_INPUT_DF4) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DF4_IN);                        /*ОФ4*/
+                  else if  (number_activated_function == BIT_MA_INPUT_DF5) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DF5_IN);                        /*ОФ5*/
+                  else if  (number_activated_function == BIT_MA_INPUT_DF6) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DF6_IN);                        /*ОФ6*/
+                  else if  (number_activated_function == BIT_MA_INPUT_DF7) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DF7_IN);                        /*ОФ7*/
+                  else if  (number_activated_function == BIT_MA_INPUT_DF8) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DF8_IN);                        /*ОФ8*/
+                  else if  (number_activated_function == BIT_MA_DT1_SET) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DT1_SET);                       /*Встановл. опред. тр. 1*/
+                  else if  (number_activated_function == BIT_MA_DT1_RESET) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DT1_RESET);                     /*Скид. опред. тр. 1*/
+                  else if  (number_activated_function == BIT_MA_DT2_SET) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DT2_SET);                       /*Встановл. опред. тр. 2*/
+                  else if  (number_activated_function == BIT_MA_DT2_RESET) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DT2_RESET);                     /*Скид. опред. тр. 2*/
+                  else if  (number_activated_function == BIT_MA_DT3_SET) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DT3_SET);                       /*Встановл. опред. тр. 3*/
+                  else if  (number_activated_function == BIT_MA_DT3_RESET) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DT3_RESET);                     /*Скид. опред. тр. 3*/
+                  else if  (number_activated_function == BIT_MA_DT4_SET) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DT4_SET);                       /*Встановл. опред. тр. 4*/
+                  else if  (number_activated_function == BIT_MA_DT4_RESET) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_DT4_RESET);                     /*Скид. опред. тр. 4*/
+                  else if  (number_activated_function == BIT_MA_VKL_VV)
+                   _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_VKL_VV);                        /*Вкл.  виключателя*/
+                  else if  (number_activated_function == BIT_MA_OTKL_VV)
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_OTKL_VV);                       /*Викл. виключателя*/
+                  else if  (number_activated_function == BIT_MA_RESET_LEDS)
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_RESET_LEDS);                    /*Очищення індикації*/
+                  else if  (number_activated_function == BIT_MA_RESET_RELES)
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_RESET_RELES);                   /*Скидання реле*/
                   else if  (number_activated_function == BIT_MA_RESET_BLOCK_READY_TU_VID_ZAHYSTIV)
-                    activation_function_from_interface_tmp |= 1 << RANG_BUTTON_RESET_BLOCK_READY_TU_VID_ZAHYSTIV;/*Скидання блокування готовності до ТУ від захистів*/
-                  else if  (number_activated_function == BIT_MA_RESET_GENERAL_AF                 ) 
+                    _SET_BIT(activation_function_from_interface_tmp, RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV);/*Скидання блокування готовності до ТУ від захистів*/
+                  else if  (number_activated_function == BIT_MA_RESET_GENERAL_AF) 
                   {
                     //Скидання загальних функцій 
                     reset_trigger_functions = 0xff; /*ненульове значення означає, що треба скинути тригерні функції*/
@@ -13792,9 +13518,17 @@ void modbus_rountines(unsigned int type_interface)
 
               if (error == 0)
               {
-                if (activation_function_from_interface_tmp != 0)
+                if (
+                    (activation_function_from_interface_tmp[0] != 0) ||
+                    (activation_function_from_interface_tmp[1] != 0)
+                   )   
                 {
-                  activation_function_from_interface |= activation_function_from_interface_tmp;
+                  mutex_interface = true;
+                  for (size_t index = 0; index < N_SMALL; index++)
+                  {
+                    activation_function_from_interface[index] |= activation_function_from_interface_tmp[index];
+                  }
+                  mutex_interface = false;
                 }
                 if (reset_trigger_functions != 0)
                 {
