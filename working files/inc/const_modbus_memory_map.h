@@ -1037,31 +1037,31 @@
 /*****************************************************/
 /* Адресний простір настроювання аналогового реєстратора */
 /*****************************************************/
-#define M_ADDRESS_FIRST_SETPOINTS_RANG_AR     3000
+#define M_ADDRESS_FIRST_SETPOINTS_RANG_AR     13000
 #define M_ADDRESS_LAST_SETPOINTS_RANG_AR      (M_ADDRESS_FIRST_SETPOINTS_RANG_AR + MAX_FUNCTIONS_IN_AREG - 1)
 
-#define MA_PREFAULT_INTERVAL_AR               3032
-#define MA_POSTFAULT_INTERVAL_AR              3033
-#define MA_TOTAL_NUMBER_RECORDS_AR            3034
-#define MA_CURRENT_NUMBER_RECORD_AR           3035
+#define MA_PREFAULT_INTERVAL_AR               13032
+#define MA_POSTFAULT_INTERVAL_AR              13033
+#define MA_TOTAL_NUMBER_RECORDS_AR            13034
+#define MA_CURRENT_NUMBER_RECORD_AR           13035
 /*****************************************************/
 
 /*****************************************************/
 /* Адресний простір настроювання дискретного реєстратора */
 /*****************************************************/
-#define M_ADDRESS_FIRST_SETPOINTS_RANG_DR     3036
+#define M_ADDRESS_FIRST_SETPOINTS_RANG_DR     13036
 #define M_ADDRESS_LAST_SETPOINTS_RANG_DR      (M_ADDRESS_FIRST_SETPOINTS_RANG_DR + MAX_FUNCTIONS_IN_DREG - 1)
 
-#define MA_TOTAL_NUMBER_RECORDS_DR            3070
-#define MA_CURRENT_NUMBER_RECORD_DR           3071
+#define MA_TOTAL_NUMBER_RECORDS_DR            13070
+#define MA_CURRENT_NUMBER_RECORD_DR           13071
 /*****************************************************/
 
 /*****************************************************/
 /* Адресний простір очистки аналогового і дискретного реєстраторів */
 /*****************************************************/
-#define MA_CLEAR_NUMBER_RECORD_AR     3074
+#define MA_CLEAR_NUMBER_RECORD_AR     13074
 #define CMD_WORD_CLEAR_AR                     0x1312
-#define MA_CLEAR_NUMBER_RECORD_DR     3075
+#define MA_CLEAR_NUMBER_RECORD_DR     13075
 #define CMD_WORD_CLEAR_DR                     0x1012
 /*****************************************************/
 

@@ -511,6 +511,7 @@ int main(void)
                       GPIO_PIN_EXTERNAL_WATCHDOG,
                       (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                      );
+        control_word_of_watchdog =  0;
       }
 
       main_routines_for_spi1();
@@ -524,6 +525,44 @@ int main(void)
   }
   changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
 
+  /**********************/
+  //Ініціалізація USB
+  /**********************/
+  //Робота з watchdogs
+  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
+  {
+    //Змінюємо стан біту зовнішнього Watchdog на протилежний
+    GPIO_WriteBit(
+                  GPIO_EXTERNAL_WATCHDOG,
+                  GPIO_PIN_EXTERNAL_WATCHDOG,
+                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
+                 );
+    control_word_of_watchdog =  0;
+  }
+  
+  USBD_Init(&USB_OTG_dev,
+#ifdef USE_USB_OTG_HS 
+            USB_OTG_HS_CORE_ID,
+#else            
+            USB_OTG_FS_CORE_ID,
+#endif  
+            &USR_desc, 
+            &USBD_CDC_cb, 
+            &USR_cb);
+  
+  //Робота з watchdogs
+  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
+  {
+    //Змінюємо стан біту зовнішнього Watchdog на протилежний
+    GPIO_WriteBit(
+                  GPIO_EXTERNAL_WATCHDOG,
+                  GPIO_PIN_EXTERNAL_WATCHDOG,
+                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
+                 );
+    control_word_of_watchdog =  0;
+  }
+  /**********************/
+    
   //Визначаємо, чи стоїть дозвіл запису через інтерфейси з паролем
   if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
   else password_set_RS485 = 1;
@@ -567,6 +606,7 @@ int main(void)
                   GPIO_PIN_EXTERNAL_WATCHDOG,
                   (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                  );
+    control_word_of_watchdog =  0;
   }
   restart_resurs_count = 0xff;/*Ненульове значення перезапускає лічильники*/
 

@@ -182,6 +182,7 @@ void lcd_init(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
     
     new_count_tim4 = ((uint16_t)TIM4->CNT);
@@ -209,6 +210,7 @@ void lcd_init(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
     new_count_tim4 = ((uint16_t)TIM4->CNT);
     if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
@@ -235,6 +237,7 @@ void lcd_init(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
     new_count_tim4 = ((uint16_t)TIM4->CNT);
     if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
@@ -256,6 +259,7 @@ void lcd_init(void)
                   GPIO_PIN_EXTERNAL_WATCHDOG,
                   (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                  );
+    control_word_of_watchdog =  0;
   }
 
   //Встановлюємо 2 рядки і розмір шрифту 5*7 і таблицю символів з кириличними символами
@@ -291,6 +295,7 @@ void lcd_init(void)
                   GPIO_PIN_EXTERNAL_WATCHDOG,
                   (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                  );
+    control_word_of_watchdog =  0;
   }
 }
 /*****************************************************/

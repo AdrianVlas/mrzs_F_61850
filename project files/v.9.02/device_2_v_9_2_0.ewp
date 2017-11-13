@@ -188,6 +188,7 @@
           <state>USE_STDPERIPH_DRIVER</state>
           <state>STM32F2XX</state>
           <state>USE_USB_OTG_FS</state>
+          <state>KEYBOARD_WITH_ERROR_F4</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -4609,6 +4610,12 @@
         </file>
       </group>
       <group>
+        <name>I2C</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\i2c.c</name>
+        </file>
+      </group>
+      <group>
         <name>interfaces</name>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\interfaces.c</name>
@@ -5028,12 +5035,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\protections.c</name>
-        </file>
-      </group>
-      <group>
-        <name>I2C</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\working files\src\i2c.c</name>
         </file>
       </group>
       <group>

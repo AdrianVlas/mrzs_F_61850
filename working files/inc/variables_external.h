@@ -34,36 +34,6 @@ extern unsigned int vref_adc_moment_value[NUMBER_ANALOG_CANALES][NUMBER_POINT];
 extern unsigned int vref_adc[NUMBER_ANALOG_CANALES];
 extern unsigned int vref_adc_general;
 
-//extern const unsigned int index_GND_ADC1[NUMBER_GND_ADC1];
-//extern unsigned int gnd_adc1_moment_value[NUMBER_GND_ADC1][NUMBER_POINT];
-//extern unsigned int gnd_adc1_averange_sum[NUMBER_GND_ADC1];
-//extern unsigned int gnd_adc1_averange[NUMBER_GND_ADC1];
-//extern unsigned int gnd_adc1;
-
-//extern const unsigned int index_GND_ADC2[NUMBER_GND_ADC2];
-//extern unsigned int gnd_adc2_moment_value[NUMBER_GND_ADC2][NUMBER_POINT];
-//extern unsigned int gnd_adc2_averange_sum[NUMBER_GND_ADC2];
-//extern unsigned int gnd_adc2_averange[NUMBER_GND_ADC2];
-//extern unsigned int gnd_adc2;
-
-//extern unsigned int vref_adc1_moment_value[NUMBER_POINT];
-//extern unsigned int vref_adc1_averange_sum;
-//extern unsigned int vref_adc1;
-
-//extern const unsigned int index_VREF_ADC2[NUMBER_VREF_ADC2];
-//extern unsigned int vref_adc2_moment_value[NUMBER_VREF_ADC2][NUMBER_POINT];
-//extern unsigned int vref_adc2_averange_sum[NUMBER_VREF_ADC2];
-//extern unsigned int vref_adc2_averange[NUMBER_VREF_ADC2];
-//extern unsigned int vref_adc2;
-
-//extern unsigned int vdd_adc1_moment_value[NUMBER_POINT];
-//extern unsigned int vdd_adc1_averange_sum;
-//extern unsigned int vdd_adc1;
-
-//extern unsigned int vdd_adc2_moment_value[NUMBER_POINT];
-//extern unsigned int vdd_adc2_averange_sum;
-//extern unsigned int vdd_adc2;
-
 extern unsigned int index_array_of_one_value;
 extern unsigned int index_array_of_one_value_fourier;
 

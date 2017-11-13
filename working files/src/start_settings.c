@@ -46,11 +46,11 @@ void global_vareiables_installation(void)
   /**************************/
   //Вимірювальна система
   /**************************/
-  for (unsigned int i = 0; i < NUMBER_INPUTs_ADCs; i++)
-  {
-    output_adc[i].tick = 0;
-    output_adc[i].value = 0;
-  }
+//  for (unsigned int i = 0; i < NUMBER_INPUTs_ADCs; i++)
+//  {
+//    output_adc[i].tick = 0;
+//    output_adc[i].value = 0;
+//  }
   
   for(size_t i = 0; i < NUMBER_ANALOG_CANALES; i++)
   {
@@ -58,106 +58,64 @@ void global_vareiables_installation(void)
     {
       vref_adc_moment_value[i][j] = VREF_NORMAL_VALUE;
     }
-    vref_adc_averange_sum[i] = VREF_NORMAL_VALUE*NUMBER_POINT;
-    vref_adc[i] = VREF_NORMAL_VALUE;
+//    vref_adc_averange_sum[i] = VREF_NORMAL_VALUE*NUMBER_POINT;
+//    vref_adc[i] = VREF_NORMAL_VALUE;
   }
   
-//  for (unsigned int i = 0; i < NUMBER_GND_ADC1; i++)
-//  {
-//    for(unsigned int j = 0; j < NUMBER_POINT; j++)
-//    {
-//      gnd_adc1_moment_value[i][j] = GND_NORMAL_VALUE;
-//    }
-//    gnd_adc1_averange_sum[i] = GND_NORMAL_VALUE*NUMBER_POINT;
-//    gnd_adc1_averange[i] = GND_NORMAL_VALUE;
-//  }
-//  gnd_adc1 = GND_NORMAL_VALUE;
-
-//  for (unsigned int i = 0; i < NUMBER_GND_ADC2; i++)
-//  {
-//    for(unsigned int j = 0; j < NUMBER_POINT; j++)
-//    {
-//      gnd_adc2_moment_value[i][j] = GND_NORMAL_VALUE;
-//    }
-//    gnd_adc2_averange_sum[i] = GND_NORMAL_VALUE*NUMBER_POINT;
-//    gnd_adc2_averange[i] = GND_NORMAL_VALUE;
-//  }
-//  gnd_adc2 = GND_NORMAL_VALUE;
-
-//  for (unsigned int i = 0; i < NUMBER_VREF_ADC2; i++)
-//  {
-//    for(unsigned int j = 0; j < NUMBER_POINT; j++)
-//    {
-//      vref_adc2_moment_value[i][j] = VREF_NORMAL_VALUE;
-//    }
-//    vref_adc2_averange_sum[i] = VREF_NORMAL_VALUE*NUMBER_POINT;
-//    vref_adc2_averange[i] = VREF_NORMAL_VALUE;
-//  }
-//  vref_adc2 = VREF_NORMAL_VALUE;
-
-//  for(unsigned int i = 0; i < NUMBER_POINT; i++)
-//  {
-//    vref_adc1_moment_value[i] = VREF_NORMAL_VALUE;
-//    vdd_adc1_moment_value[i] = VDD_NORMAL_VALUE;
-//
-//    vdd_adc2_moment_value[i] = VDD_NORMAL_VALUE;
-//  }
+//  for(unsigned int i=0; i<(NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT); i++)
+//    current_data[i] = 0;
   
-  for(unsigned int i=0; i<(NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT); i++)
-    current_data[i] = 0;
-  
-  for(unsigned int i=0; i<NUMBER_POINT; i++)
-  {
-    sqr_current_data_3I0[i] = 0;
-//    period_for_sqr_current_data_3I0[i] = 0;
-  }
+//  for(unsigned int i=0; i<NUMBER_POINT; i++)
+//  {
+//    sqr_current_data_3I0[i] = 0;
+//  }
 
-  rozshyrena_vyborka.time_p = 0;
-  rozshyrena_vyborka.time_c = 0;
-  for (unsigned int i = 0; i < NUMBER_ANALOG_CANALES; i++)
-  {
-    rozshyrena_vyborka.data_p[i] = 0;
-    rozshyrena_vyborka.data_c[i] = 0;
-  }
+//  rozshyrena_vyborka.time_p = 0;
+//  rozshyrena_vyborka.time_c = 0;
+//  for (unsigned int i = 0; i < NUMBER_ANALOG_CANALES; i++)
+//  {
+//    rozshyrena_vyborka.data_p[i] = 0;
+//    rozshyrena_vyborka.data_c[i] = 0;
+//  }
 
   for (unsigned int i = 0; i < MAX_INDEX_DATA_FOR_OSCYLOGRAPH; i++)
   {
-    data_for_oscylograph[i].time_stemp = 0;
-    data_for_oscylograph[i].DATA_fix = 0;
-    for (unsigned int j = 0; j < NUMBER_ANALOG_CANALES; j++) data_for_oscylograph[i].data[j] = 0;
-    for (unsigned int j = 0; j < N_BIG; j++) data_for_oscylograph[i].active_functions[j] = 0;
+//    data_for_oscylograph[i].time_stemp = 0;
+//    data_for_oscylograph[i].DATA_fix = 0;
+//    for (unsigned int j = 0; j < NUMBER_ANALOG_CANALES; j++) data_for_oscylograph[i].data[j] = 0;
+//    for (unsigned int j = 0; j < N_BIG; j++) data_for_oscylograph[i].active_functions[j] = 0;
     data_for_oscylograph[i].state_ar_record = STATE_AR_NO_RECORD;
   }
 
-  for (unsigned int i = 0; i < MAX_INDEX_PhK; i++)
-  {
-    for (unsigned int j = 0; j < 2; j++)
-    {
-      perechid_cherez_nul[i][j].x1 = 0;
-      perechid_cherez_nul[i][j].y1 = 0;
+//  for (unsigned int i = 0; i < MAX_INDEX_PhK; i++)
+//  {
+//    for (unsigned int j = 0; j < 2; j++)
+//    {
+//      perechid_cherez_nul[i][j].x1 = 0;
+//      perechid_cherez_nul[i][j].y1 = 0;
+//
+//      perechid_cherez_nul[i][j].x2 = 0;
+//      perechid_cherez_nul[i][j].y2 = 0;
+//    }
+//    fix_perechid_cherez_nul[i] = 0;
+//  }
 
-      perechid_cherez_nul[i][j].x2 = 0;
-      perechid_cherez_nul[i][j].y2 = 0;
-    }
-    fix_perechid_cherez_nul[i] = 0;
-  }
-
-  poperednij_perechid.Ua_x1 = 0;
-  poperednij_perechid.Ua_y1 = 0;
-  poperednij_perechid.Ua_x2 = 0;
-  poperednij_perechid.Ua_y2 = 0;
-  poperednij_perechid.Ub_x1 = 0;
-  poperednij_perechid.Ub_y1 = 0;
-  poperednij_perechid.Ub_x2 = 0;
-  poperednij_perechid.Ub_y2 = 0;
-  poperednij_perechid.Uc_x1 = 0;
-  poperednij_perechid.Uc_y1 = 0;
-  poperednij_perechid.Uc_x2 = 0;
-  poperednij_perechid.Uc_y2 = 0;
-  poperednij_perechid.U0_x1 = 0;
-  poperednij_perechid.U0_y1 = 0;
-  poperednij_perechid.U0_x2 = 0;
-  poperednij_perechid.U0_y2 = 0;
+//  poperednij_perechid.Ua_x1 = 0;
+//  poperednij_perechid.Ua_y1 = 0;
+//  poperednij_perechid.Ua_x2 = 0;
+//  poperednij_perechid.Ua_y2 = 0;
+//  poperednij_perechid.Ub_x1 = 0;
+//  poperednij_perechid.Ub_y1 = 0;
+//  poperednij_perechid.Ub_x2 = 0;
+//  poperednij_perechid.Ub_y2 = 0;
+//  poperednij_perechid.Uc_x1 = 0;
+//  poperednij_perechid.Uc_y1 = 0;
+//  poperednij_perechid.Uc_x2 = 0;
+//  poperednij_perechid.Uc_y2 = 0;
+//  poperednij_perechid.U0_x1 = 0;
+//  poperednij_perechid.U0_y1 = 0;
+//  poperednij_perechid.U0_x2 = 0;
+//  poperednij_perechid.U0_y2 = 0;
   
   sector_1[0] = (int) (AMPLITUDA_SECTOR*/*cos*/arm_cos_f32(/*(double)*/(PI*((float)(  0 + SECTOR1 - POPRAVKA_NZZ))/180.0f)));
   sector_1[1] = (int) (AMPLITUDA_SECTOR*/*sin*/arm_sin_f32(/*(double)*/(PI*((float)(  0 + SECTOR1 - POPRAVKA_NZZ))/180.0f)));
@@ -195,38 +153,38 @@ void global_vareiables_installation(void)
   sector_2_mtz_tznp[6] = (int) (AMPLITUDA_SECTOR*/*cos*/arm_cos_f32(/*(double)*/(PI*((float)(-90 + SECTOR2_MTZ_TZNP - POPRAVKA_MTZ_TZNP))/180.0f)));
   sector_2_mtz_tznp[7] = (int) (AMPLITUDA_SECTOR*/*sin*/arm_sin_f32(/*(double)*/(PI*((float)(-90 + SECTOR2_MTZ_TZNP - POPRAVKA_MTZ_TZNP))/180.0f)));
 
-  for(unsigned int i=0; i<(NUMBER_POINT*NUMBER_ANALOG_CANALES); i++)
-  {
-    data_sin[i] = 0;
-    data_cos[i] = 0;
-  }
+//  for(unsigned int i=0; i<(NUMBER_POINT*NUMBER_ANALOG_CANALES); i++)
+//  {
+//    data_sin[i] = 0;
+//    data_cos[i] = 0;
+//  }
   
-  for(unsigned int i=0; i<NUMBER_ANALOG_CANALES; i++)
-  {
-    ADCs_data_raw[i].tick = 0;
-    ADCs_data_raw[i].value = 0;
-      
-    ustuvannja_meas[i] = ustuvannja[i] = DEFAULT_USTUVANNJA_VALUE;
+//  for(unsigned int i=0; i<NUMBER_ANALOG_CANALES; i++)
+//  {
+//    ADCs_data_raw[i].tick = 0;
+//    ADCs_data_raw[i].value = 0;
+//      
+//    ustuvannja_meas[i] = ustuvannja[i] = DEFAULT_USTUVANNJA_VALUE;
+//
+//    int phi_tmp;
+//    phi_ustuvannja_meas[i] = phi_ustuvannja[i] = phi_tmp = 0;
+//    
+//    float phi_radian_tmp = PI*((float)phi_tmp)/180.0f;
+//    phi_ustuvannja_sin_cos_meas[2*i    ] = phi_ustuvannja_sin_cos[2*i    ] = arm_sin_f32(phi_radian_tmp);
+//    phi_ustuvannja_sin_cos_meas[2*i + 1] = phi_ustuvannja_sin_cos[2*i + 1] = arm_cos_f32(phi_radian_tmp);
+//  }
 
-    int phi_tmp;
-    phi_ustuvannja_meas[i] = phi_ustuvannja[i] = phi_tmp = 0;
-    
-    float phi_radian_tmp = PI*((float)phi_tmp)/180.0f;
-    phi_ustuvannja_sin_cos_meas[2*i    ] = phi_ustuvannja_sin_cos[2*i    ] = arm_sin_f32(phi_radian_tmp);
-    phi_ustuvannja_sin_cos_meas[2*i + 1] = phi_ustuvannja_sin_cos[2*i + 1] = arm_cos_f32(phi_radian_tmp);
-  }
+//  for(unsigned int i=0; i<(2*NUMBER_ANALOG_CANALES); i++)
+//  {
+//    ortogonal_irq[i] = 0;
+//    ortogonal[i][0] = ortogonal[i][1] = 0;
+//  }
 
-  for(unsigned int i=0; i<(2*NUMBER_ANALOG_CANALES); i++)
-  {
-    ortogonal_irq[i] = 0;
-    ortogonal[i][0] = ortogonal[i][1] = 0;
-  }
-
-  for(unsigned int i=0; i<(2*FULL_ORT_MAX); i++)
-  {
-    ortogonal_calc[i]     = 0;
-    ortogonal_calc_low[i] = 0;
-  }
+//  for(unsigned int i=0; i<(2*FULL_ORT_MAX); i++)
+//  {
+//    ortogonal_calc[i]     = 0;
+//    ortogonal_calc_low[i] = 0;
+//  }
   /**************************/
 
   /**************************/
@@ -238,10 +196,10 @@ void global_vareiables_installation(void)
   /**************************/
   //Змінні, які потрібні для роботи
   /**************************/
-  for(unsigned int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
-  {
-    etap_execution_df[i] = NONE_DF;
-  }
+//  for(unsigned int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
+//  {
+//    etap_execution_df[i] = NONE_DF;
+//  }
   /**************************/
 
   /**************************/
@@ -266,11 +224,11 @@ void global_vareiables_installation(void)
   /**************************/
   /**************************/
 
-  for(unsigned int i = 0; i < MAX_ROW_LCD; i++)
-  {
-    for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
-  }
-  for (unsigned int i=0; i<NUMBER_KEY_KEYBOARD; i++) time_set_keyboard[i] = 0;
+//  for(unsigned int i = 0; i < MAX_ROW_LCD; i++)
+//  {
+//    for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+//  }
+//  for (unsigned int i=0; i<NUMBER_KEY_KEYBOARD; i++) time_set_keyboard[i] = 0;
  
   for(unsigned int i=0; i<MAX_LEVEL_MENU; i++)
   {
@@ -283,27 +241,27 @@ void global_vareiables_installation(void)
   current_ekran.current_level = EKRAN_MAIN;
   current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
   current_ekran.position_cursor_y = current_ekran.index_position;
-  current_ekran.edition = 0;
-  current_ekran.cursor_on = 0;
-  current_ekran.cursor_blinking_on = 0;  
+//  current_ekran.edition = 0;
+//  current_ekran.cursor_on = 0;
+//  current_ekran.cursor_blinking_on = 0;  
   
-  time[0] = 0x0;
-  time[1] = 0x0;
-  time[2] = 0x0;
-  time[3] = 0x0;
-  time[4] = 0x0;
-  time[5] = 0x0;
-  time[6] = 0x0;
-  calibration = 0;
+//  time[0] = 0x0;
+//  time[1] = 0x0;
+//  time[2] = 0x0;
+//  time[3] = 0x0;
+//  time[4] = 0x0;
+//  time[5] = 0x0;
+//  time[6] = 0x0;
+//  calibration = 0;
 
-  time_copy[0] = 0x0;
-  time_copy[1] = 0x0;
-  time_copy[2] = 0x0;
-  time_copy[3] = 0x0;
-  time_copy[4] = 0x0;
-  time_copy[5] = 0x0;
-  time_copy[6] = 0x0;
-  calibration_copy = 0;
+//  time_copy[0] = 0x0;
+//  time_copy[1] = 0x0;
+//  time_copy[2] = 0x0;
+//  time_copy[3] = 0x0;
+//  time_copy[4] = 0x0;
+//  time_copy[5] = 0x0;
+//  time_copy[6] = 0x0;
+//  calibration_copy = 0;
   
   /**************************/
   //Ініціалізація структури усправління драйвером I2C
@@ -317,11 +275,11 @@ void global_vareiables_installation(void)
   //Значення решти полів поки не грає ролі 
   /**************************/
 
-  /**************************/
-  //Обнуляємо масив для аналогового реєстратора
-  /**************************/
-  for(unsigned int i = 0; i < SIZE_BUFFER_FOR_AR; i++) array_ar[i] = 0;
-  /**************************/
+//  /**************************/
+//  //Обнуляємо масив для аналогового реєстратора
+//  /**************************/
+//  for(unsigned int i = 0; i < SIZE_BUFFER_FOR_AR; i++) array_ar[i] = 0;
+//  /**************************/
 
   /**************************/
   //Дополнительные константы для МТЗ
@@ -502,7 +460,7 @@ void start_settings_peripherals(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_Init(GPIO_EXTERNAL_WATCHDOG, &GPIO_InitStructure);
   /* Знімаємо пін зовнішнього Watchdog */
-  GPIO_ResetBits(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG);
+  GPIO_SetBits(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG);
   
   /*
   Виконуємо стартову ініціалізацію змінних? а потім скидаємо Watchdog
@@ -972,6 +930,7 @@ void start_settings_peripherals(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     main_routines_for_spi1();
@@ -999,6 +958,7 @@ void start_settings_peripherals(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     main_routines_for_spi1();
@@ -1026,6 +986,7 @@ void start_settings_peripherals(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     main_routines_for_spi1();
@@ -1053,6 +1014,7 @@ void start_settings_peripherals(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     main_routines_for_spi1();
@@ -1080,6 +1042,7 @@ void start_settings_peripherals(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     main_routines_for_spi1();
@@ -1118,6 +1081,7 @@ void start_settings_peripherals(void)
                       GPIO_PIN_EXTERNAL_WATCHDOG,
                       (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                      );
+      control_word_of_watchdog =  0;
       }
 
       main_routines_for_spi1();
@@ -1146,6 +1110,7 @@ void start_settings_peripherals(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     main_routines_for_spi1();
@@ -1173,6 +1138,7 @@ void start_settings_peripherals(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     main_routines_for_spi1();
@@ -1200,6 +1166,7 @@ void start_settings_peripherals(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     main_routines_for_spi1();
@@ -1277,32 +1244,34 @@ void start_settings_peripherals(void)
                   GPIO_PIN_EXTERNAL_WATCHDOG,
                   (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                  );
+    control_word_of_watchdog =  0;
   }
 
-  /**********************/
-  //Ініціалізація USB
-  /**********************/
-  USBD_Init(&USB_OTG_dev,
-#ifdef USE_USB_OTG_HS 
-            USB_OTG_HS_CORE_ID,
-#else            
-            USB_OTG_FS_CORE_ID,
-#endif  
-            &USR_desc, 
-            &USBD_CDC_cb, 
-            &USR_cb);
-  /**********************/
+//  /**********************/
+//  //Ініціалізація USB
+//  /**********************/
+//  USBD_Init(&USB_OTG_dev,
+//#ifdef USE_USB_OTG_HS 
+//            USB_OTG_HS_CORE_ID,
+//#else            
+//            USB_OTG_FS_CORE_ID,
+//#endif  
+//            &USR_desc, 
+//            &USBD_CDC_cb, 
+//            &USR_cb);
+//  /**********************/
 
-    //Робота з watchdogs
-    if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-    {
-      //Змінюємо стан біту зовнішнього Watchdog на протилежний
-      GPIO_WriteBit(
-                    GPIO_EXTERNAL_WATCHDOG,
-                    GPIO_PIN_EXTERNAL_WATCHDOG,
-                    (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                   );
-    }
+//  //Робота з watchdogs
+//  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
+//  {
+//    //Змінюємо стан біту зовнішнього Watchdog на протилежний
+//    GPIO_WriteBit(
+//                  GPIO_EXTERNAL_WATCHDOG,
+//                  GPIO_PIN_EXTERNAL_WATCHDOG,
+//                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
+//                 );
+//    control_word_of_watchdog =  0;
+//  }
 }
 /**************************************/
 
@@ -1754,6 +1723,7 @@ void error_reading_with_eeprom()
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
     
     unsigned int index_info, index_action, information_type;
@@ -1811,6 +1781,7 @@ void error_reading_with_eeprom()
                       GPIO_PIN_EXTERNAL_WATCHDOG,
                       (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                      );
+      control_word_of_watchdog =  0;
       }
     }
 
@@ -1855,6 +1826,7 @@ void error_reading_with_eeprom()
                       GPIO_PIN_EXTERNAL_WATCHDOG,
                       (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                      );
+      control_word_of_watchdog =  0;
       }
 
       main_routines_for_spi1();
@@ -1891,6 +1863,7 @@ void error_reading_with_eeprom()
                       GPIO_PIN_EXTERNAL_WATCHDOG,
                       (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                      );
+      control_word_of_watchdog =  0;
       }
       
       main_routines_for_spi1();
@@ -1935,6 +1908,7 @@ void start_checking_dataflash(void)
                       GPIO_PIN_EXTERNAL_WATCHDOG,
                       (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                      );
+      control_word_of_watchdog =  0;
       }
     }
     page_size_256 &= RxBuffer_SPI_EDF[1] & (1<< 0); 
@@ -1969,6 +1943,7 @@ void start_checking_dataflash(void)
                           GPIO_PIN_EXTERNAL_WATCHDOG,
                           (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                          );
+            control_word_of_watchdog =  0;
           }
         }
         ready_busy = RxBuffer_SPI_EDF[1] & (1<< 7);
@@ -1995,6 +1970,7 @@ void start_checking_dataflash(void)
                         GPIO_PIN_EXTERNAL_WATCHDOG,
                         (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                        );
+          control_word_of_watchdog =  0;
         }
       }
       driver_spi_df[number_chip_dataflsh_exchange].state_execution = TRANSACTION_EXECUTING_NONE;
@@ -2024,6 +2000,7 @@ void start_checking_dataflash(void)
                           GPIO_PIN_EXTERNAL_WATCHDOG,
                           (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                          );
+            control_word_of_watchdog =  0;
           }
         }
         ready_busy = RxBuffer_SPI_EDF[1] & (1<< 7);
@@ -2082,6 +2059,7 @@ void start_checking_dataflash(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+      control_word_of_watchdog =  0;
     }
 
     //Копіюємо  рядки у робочий екран
@@ -2115,6 +2093,7 @@ void start_checking_dataflash(void)
                       GPIO_PIN_EXTERNAL_WATCHDOG,
                       (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                      );
+        control_word_of_watchdog =  0;
       }
     }
   }

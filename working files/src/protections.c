@@ -8583,6 +8583,7 @@ inline void main_protection(void)
   /**************************/
   //Опрцьовуємо логіку натиснутих кнопок
   uint32_t pressed_buttons_tmp;
+  uint32_t buttons_mode_tmp = current_settings_prt.buttons_mode;
   if (
       (mutex_buttons == false) &&
       (pressed_buttons != 0)
@@ -8592,15 +8593,8 @@ inline void main_protection(void)
     //Очищаємо натиснуті кнопкb, інформацію про яких ми вже забрали у роботу (аде ще не опрацювали)
     pressed_buttons = 0;
       
-    uint32_t buttons_mode_tmp = current_settings_prt.buttons_mode;
-    uint32_t maska_buttons_switcher = 0;
-    for (unsigned int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-    {
-      if (((buttons_mode_tmp >> i) & 0x1) == BUTTON_MODE_SWITCHER) maska_buttons_switcher|= (1 << i);
-    }
-      
-    uint32_t pressed_buttons_switcher = pressed_buttons_tmp & maska_buttons_switcher; /*натиснуті в даний момент кнопки-ключі*/
-    pressed_buttons_tmp &= (uint32_t)(~maska_buttons_switcher); /*натиснуті в даний момент всі інші типи кнопок*/
+    uint32_t pressed_buttons_switcher = pressed_buttons_tmp & buttons_mode_tmp; /*натиснуті в даний момент кнопки-ключі*/
+    pressed_buttons_tmp &= (uint32_t)(~buttons_mode_tmp); /*натиснуті в даний момент всі інші типи кнопок*/
       
     //Опрацьвуємо спочатку кнопки-ключі
     if (pressed_buttons_switcher != 0) 
@@ -8618,6 +8612,55 @@ inline void main_protection(void)
   else
   {
     pressed_buttons_tmp = fix_active_buttons;
+  }
+  //Світлова індикація натиснутих кнопок-ключів
+  for (size_t i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
+  {
+    uint32_t maska_yellow = ((1 << (i*NUMBER_LED_COLOR + LED_COLOR_RED_BIT)) | (1 << (i*NUMBER_LED_COLOR + LED_COLOR_GREEN_BIT)));
+    if (((buttons_mode_tmp >> i) & 0x1) == BUTTON_MODE_SWITCHER)
+    {
+      if (((pressed_buttons_tmp >> i) & 0x1) != 0) 
+      {
+#ifndef KEYBOARD_WITH_ERROR_F4
+        state_leds_Fx[0] &= (uint32_t)(~maska_yellow);
+        state_leds_Fx[1] |= maska_yellow;
+#else
+        if (i != (4 - 1))
+        {
+          state_leds_Fx[0] &= (uint32_t)(~maska_yellow);
+          state_leds_Fx[1] |= maska_yellow;
+        }
+        else
+        {
+          state_leds_Fx[1] &= (uint32_t)(~maska_yellow);
+          state_leds_Fx[0] |= maska_yellow;
+        }
+#endif
+      }    
+      else
+      {
+#ifndef KEYBOARD_WITH_ERROR_F4
+        state_leds_Fx[1] &= (uint32_t)(~maska_yellow);
+        state_leds_Fx[0] |= maska_yellow;
+#else
+        if (i != (4 - 1))
+        {
+          state_leds_Fx[1] &= (uint32_t)(~maska_yellow);
+          state_leds_Fx[0] |= maska_yellow;
+        }
+        else
+        {
+          state_leds_Fx[0] &= (uint32_t)(~maska_yellow);
+          state_leds_Fx[1] |= maska_yellow;
+        }
+#endif
+      }    
+    }
+    else
+    {
+      state_leds_Fx[0] &= (uint32_t)(~maska_yellow);
+      state_leds_Fx[1] &= (uint32_t)(~maska_yellow);
+    }
   }
 
   //Перевіряємо чи є зараз активні входи
@@ -8648,6 +8691,13 @@ inline void main_protection(void)
           temp_value_for_activated_function[1] |= current_settings_prt.ranguvannja_buttons[N_SMALL*i+1];
         }
       }
+      if ((pressed_buttons_tmp & (1 << (BIT_KEY_C - BIT_KEY_1))) != 0)
+      {
+        _SET_BIT(temp_value_for_activated_function, RANG_SMALL_RESET_LEDS);
+        _SET_BIT(temp_value_for_activated_function, RANG_SMALL_RESET_RELES);
+      }
+      if ((pressed_buttons_tmp & (1 << (BIT_KEY_I - BIT_KEY_1))) != 0) _SET_BIT(temp_value_for_activated_function, RANG_SMALL_VKL_VV);
+      if ((pressed_buttons_tmp & (1 << (BIT_KEY_O - BIT_KEY_1))) != 0) _SET_BIT(temp_value_for_activated_function, RANG_SMALL_OTKL_VV);
     }
     
     //Активація з інтерфейсу
@@ -8902,6 +8952,43 @@ inline void main_protection(void)
   }
   /**************************/
   
+  /**************************
+  Світлова індикація стану вимикача
+  **************************/
+  {
+    uint32_t state_vv_dv = false;
+    for (size_t i = 0; i < NUMBER_INPUTS; i++)
+    {
+      if(
+         (_CHECK_SET_BIT ((current_settings_prt.ranguvannja_inputs + N_SMALL*i    ), RANG_SMALL_STATE_VV) != 0) ||
+         (_CHECK_SET_BIT ((current_settings_prt.ranguvannja_inputs + N_SMALL*i + 1), RANG_SMALL_STATE_VV) != 0)
+        )
+      {
+        state_vv_dv = true;
+        break;
+      }
+    }
+    
+    if (state_vv_dv)
+    {
+      if (_CHECK_SET_BIT(active_functions, RANG_STATE_VV) !=0) 
+      {
+        state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)));
+        state_leds_ctrl |=  (uint32_t)(  (1 << LED_COLOR_RED_BIT  ) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O) );
+      }
+      else
+      {
+        state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_RED_BIT  ) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)));
+        state_leds_ctrl |=  (uint32_t)(  (1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I) );
+      }
+    }
+    else
+    {
+      state_leds_ctrl &=  (uint32_t)(~(((1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)) | ((1 << LED_COLOR_RED_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O))));
+    }
+  }
+  /**************************/
+
   /**************************/
   //Вибір групи уставок
   /**************************/
