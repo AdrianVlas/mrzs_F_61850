@@ -186,7 +186,16 @@ typedef struct
   unsigned int control_mtz04;                                 //Поле для управління МТЗ 0.4кВ
   
   //ЗДЗ
+  int32_t timeout_zdz[NUMBER_GROUP_USTAVOK];                //Витримка ЗДЗ
   unsigned int control_zdz;                                 //Поле для управління ЗДЗ
+  int32_t ctrl_zdz_type;                               //Тип контролю ЗДЗ
+                                                            /*
+                                                            0 - Без контролю
+                                                            1 - Контроль по I
+                                                            2 - Контроль по U
+                                                            3 - Контроль по I або U
+                                                            4 - Контроль по I і U
+                                                            */
 
   //ЗЗ
   unsigned int setpoint_zz_3I0[NUMBER_GROUP_USTAVOK];       //уставка ЗЗ/3I0
@@ -515,5 +524,12 @@ typedef enum _setting_data
   SET_DATA_INTO_EDIT_TABLE = 0,
   SET_DATA_IMMEDITATE
 } __settings_data;
+
+
+typedef struct _ctrl_info
+{
+  const uint8_t *information;
+  unsigned int cursor_x;
+} __ctrl_info;
 
 #endif

@@ -2926,49 +2926,87 @@ inline void mtz_handler(unsigned int *p_active_functions, unsigned int number_gr
 /*****************************************************/
 inline void zdz_handler(unsigned int *p_active_functions)
 {
-  unsigned int tmp_value;
-  //M
-  tmp_value = ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ1) != 0) << 0; //Пуск от МТЗ1 : Вкл/Откл
-  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ2) != 0) << 1; //Пуск от МТЗ2 : Вкл/Откл
-  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ3) != 0) << 2; //Пуск от МТЗ3 : Вкл/Откл
-  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ4) != 0) << 3; //Пуск от МТЗ4 : Вкл/Откл
+  static uint32_t delta_time_test;
+  static uint32_t test;
+  static uint32_t state_test;
+  uint32_t light = (_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 13) & 0x7;
   
-  for (int mtz_level = 0; mtz_level < NUMBER_LEVEL_MTZ; mtz_level++) {
-    //берем не из active потому что сигналы сформировались на предыдущем шаге mtz_handler()
-    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZ]) != 0) << (4 + mtz_level); //ПО МТЗx
-    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_VPERED]) != 0) << (8 + mtz_level); //ПО МТЗНх вперед
-    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_NAZAD]) != 0) << (12 + mtz_level);  //ПО МТЗНх назад
-    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZPN]) != 0) << (16 + mtz_level); //ПО МТЗПНх
+  /***
+  Код програми, який відповідає за діагностику оптичної системи
+  ***/
+  if (test != 0)
+  {
+    //Стан діагностики
+    state_test = (light ^ test) & test;
+    
+    //Переходимо на тест наступного оптоканалу
+    test = (test << 1) & 0x7;
+    _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = test;
   }
-  //М
-  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STATE) != 0) << 20;
-  //ДВ
-  tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_DV) != 0) << 21; //Пуск ЗДЗ от ДВ
+  delta_time_test += DELTA_TIME_FOR_TIMERS;
+  if ( delta_time_test >= (60*1000))
+  {
+    delta_time_test = 0;
+    if (test == 0) 
+    {
+      test = 0x1;
+      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = test;
+    }
+    else
+    {
+      //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+      total_error_sw_fixed(84);
+    }
+  }
+  /***/
+
+  unsigned int logic_zdz_0 = 0;
+  logic_zdz_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_DV) != 0) << 0; //Пуск ЗДЗ от ДВ
+  logic_zdz_0 |= ((light & (uint32_t)(~test)) & 0x7) << 1; //"П.ЗДЗ від ОВД1"(1), "П.ЗДЗ від ОВД2"(2), "П.ЗДЗ від ОВД3"(3)
   
-  _OR4(tmp_value, 4, tmp_value, 8, tmp_value, 12, tmp_value, 16, tmp_value, 22);
-  _OR4(tmp_value, 5, tmp_value, 9, tmp_value, 13, tmp_value, 17, tmp_value, 23);
-  _OR4(tmp_value, 6, tmp_value, 10, tmp_value, 14, tmp_value, 18, tmp_value, 24);
-  _OR4(tmp_value, 7, tmp_value, 11, tmp_value, 15, tmp_value, 19, tmp_value, 25);
-  
-  _AND2(tmp_value, 0, tmp_value, 22, tmp_value, 26);
-  _AND2(tmp_value, 1, tmp_value, 23, tmp_value, 27);
-  _AND2(tmp_value, 2, tmp_value, 24, tmp_value, 28);
-  _AND2(tmp_value, 3, tmp_value, 25, tmp_value, 29);
-  
-  _OR4(tmp_value, 26, tmp_value, 27, tmp_value, 28, tmp_value, 29, tmp_value, 30);
-  
-  unsigned int tmp_value2 = 0;
-  _AND3(tmp_value, 30, tmp_value, 21, tmp_value, 20, tmp_value2, 0);
-  _OR4_INVERTOR(tmp_value, 0, tmp_value, 1, tmp_value, 2, tmp_value, 3, tmp_value2, 1);
-  _AND3(tmp_value2, 1, tmp_value, 21, tmp_value, 20, tmp_value2, 2);
-  
-  _OR2(tmp_value2, 0, tmp_value2, 2, tmp_value2, 3);
-  
-  //Сраб. ЗДЗ
-  if (_GET_OUTPUT_STATE(tmp_value2, 3))
-    _SET_BIT(p_active_functions, RANG_ZDZ);
-  else
-    _CLEAR_BIT(p_active_functions, RANG_ZDZ);
+//  unsigned int tmp_value;
+//  //M
+//  tmp_value = ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ1) != 0) << 0; //Пуск от МТЗ1 : Вкл/Откл
+//  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ2) != 0) << 1; //Пуск от МТЗ2 : Вкл/Откл
+//  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ3) != 0) << 2; //Пуск от МТЗ3 : Вкл/Откл
+//  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ4) != 0) << 3; //Пуск от МТЗ4 : Вкл/Откл
+//  
+//  for (int mtz_level = 0; mtz_level < NUMBER_LEVEL_MTZ; mtz_level++) {
+//    //берем не из active потому что сигналы сформировались на предыдущем шаге mtz_handler()
+//    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZ]) != 0) << (4 + mtz_level); //ПО МТЗx
+//    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_VPERED]) != 0) << (8 + mtz_level); //ПО МТЗНх вперед
+//    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_NAZAD]) != 0) << (12 + mtz_level);  //ПО МТЗНх назад
+//    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZPN]) != 0) << (16 + mtz_level); //ПО МТЗПНх
+//  }
+//  //М
+//  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STATE) != 0) << 20;
+//  //ДВ
+//  tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_DV) != 0) << 21; //Пуск ЗДЗ от ДВ
+//  
+//  _OR4(tmp_value, 4, tmp_value, 8, tmp_value, 12, tmp_value, 16, tmp_value, 22);
+//  _OR4(tmp_value, 5, tmp_value, 9, tmp_value, 13, tmp_value, 17, tmp_value, 23);
+//  _OR4(tmp_value, 6, tmp_value, 10, tmp_value, 14, tmp_value, 18, tmp_value, 24);
+//  _OR4(tmp_value, 7, tmp_value, 11, tmp_value, 15, tmp_value, 19, tmp_value, 25);
+//  
+//  _AND2(tmp_value, 0, tmp_value, 22, tmp_value, 26);
+//  _AND2(tmp_value, 1, tmp_value, 23, tmp_value, 27);
+//  _AND2(tmp_value, 2, tmp_value, 24, tmp_value, 28);
+//  _AND2(tmp_value, 3, tmp_value, 25, tmp_value, 29);
+//  
+//  _OR4(tmp_value, 26, tmp_value, 27, tmp_value, 28, tmp_value, 29, tmp_value, 30);
+//  
+//  unsigned int tmp_value2 = 0;
+//  _AND3(tmp_value, 30, tmp_value, 21, tmp_value, 20, tmp_value2, 0);
+//  _OR4_INVERTOR(tmp_value, 0, tmp_value, 1, tmp_value, 2, tmp_value, 3, tmp_value2, 1);
+//  _AND3(tmp_value2, 1, tmp_value, 21, tmp_value, 20, tmp_value2, 2);
+//  
+//  _OR2(tmp_value2, 0, tmp_value2, 2, tmp_value2, 3);
+//  
+//  //Сраб. ЗДЗ
+//  if (_GET_OUTPUT_STATE(tmp_value2, 3))
+//    _SET_BIT(p_active_functions, RANG_ZDZ);
+//  else
+//    _CLEAR_BIT(p_active_functions, RANG_ZDZ);
 }
 /*****************************************************/
 
@@ -9252,6 +9290,9 @@ inline void main_protection(void)
     }
     else
     {
+      //Вимикаємо можливий режим тестування оптоканалу
+      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
+      
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
       const unsigned int maska_zdz_signals[N_BIG] = 
       {

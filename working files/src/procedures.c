@@ -64,7 +64,18 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
   if ((new_configuration & (1<<ZDZ_BIT_CONFIGURATION)) == 0)
   {
     if(
-       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ) ||
+       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ) 
+       || 
+       (
+        (current_ekran.current_level >= EKRAN_CHOOSE_TIMEOUT_GROUP1_ZDZ) &&
+        (current_ekran.current_level <= EKRAN_CHOOSE_TIMEOUT_GROUP4_ZDZ) 
+       )  
+       ||
+       (
+        (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+        (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+       )
+       ||  
        (current_ekran.current_level == EKRAN_CONTROL_ZDZ        )
       )
       error_window |= (1 << ZDZ_BIT_CONFIGURATION );
@@ -306,8 +317,21 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Виводим ступені МТЗ з АПВ
       target_label->control_apv &= (unsigned int)(~(CTR_APV_STARTED_FROM_MTZ1 | CTR_APV_STARTED_FROM_MTZ2 | CTR_APV_STARTED_FROM_MTZ3  | CTR_APV_STARTED_FROM_MTZ4));
 
+      //Вимикаємо контроль ЗДЗ за струмом
+      int32_t ctrl_zdz_type_tmp = target_label->ctrl_zdz_type;
+      if (
+          (ctrl_zdz_type_tmp == ZDZ_CTRL_I      ) ||
+          (ctrl_zdz_type_tmp == ZDZ_CTRL_I_OR_U ) ||
+          (ctrl_zdz_type_tmp == ZDZ_CTRL_I_AND_U)
+         )
+        target_label->ctrl_zdz_type = ZDZ_CTRL_NONE;
       //Виводим ступені МТЗ з ЗДЗ
-      target_label->control_zdz &= (unsigned int)(~(CTR_ZDZ_STARTED_FROM_MTZ1 | CTR_ZDZ_STARTED_FROM_MTZ2 | CTR_ZDZ_STARTED_FROM_MTZ3  | CTR_ZDZ_STARTED_FROM_MTZ4));
+      target_label->control_zdz &= (unsigned int)(~(
+                                                    MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II)) | 
+                                                    MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II)) | 
+                                                    MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II)) | 
+                                                    MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))
+                                                   ));
       
       //Виводим ступені МТЗ з УРОВ
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_MTZ1 | CTR_UROV_STARTED_FROM_MTZ2 | CTR_UROV_STARTED_FROM_MTZ3 | CTR_UROV_STARTED_FROM_MTZ4));
@@ -527,7 +551,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     if ((target_label->configuration & (1<<ZDZ_BIT_CONFIGURATION)) == 0)
     {
       //Виводим ЗДЗ
-      target_label->control_zdz &= (unsigned int)(~CTR_ZDZ_STATE);
+      target_label->control_zdz &= (unsigned int)(~MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT));
 
       //Виводим захист ЗДЗ з УРОВ
       target_label->control_urov &= (unsigned int)(~CTR_UROV_STARTED_FROM_ZDZ);
@@ -1357,6 +1381,20 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Виводим ступені Umin
       target_label->control_Umin &= (unsigned int)(~(CTR_UMIN1 | CTR_UMIN2));
    
+      //Вимикаємо контроль ЗДЗ за струмом
+      int32_t ctrl_zdz_type_tmp = target_label->ctrl_zdz_type;
+      if (
+          (ctrl_zdz_type_tmp == ZDZ_CTRL_U      ) ||
+          (ctrl_zdz_type_tmp == ZDZ_CTRL_I_OR_U ) ||
+          (ctrl_zdz_type_tmp == ZDZ_CTRL_I_AND_U)
+         )
+        target_label->ctrl_zdz_type = ZDZ_CTRL_NONE;
+      //Виводим ступені Umin з ЗДЗ
+      target_label->control_zdz &= (unsigned int)(~(
+                                                    MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II)) | 
+                                                    MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))
+                                                   ));
+      
       //Виводим ступені Umin з УРОВ
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_UMIN1 | CTR_UROV_STARTED_FROM_UMIN2));
       

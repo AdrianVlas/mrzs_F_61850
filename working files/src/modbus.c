@@ -5235,11 +5235,11 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
       {
         int input_value = target_label->control_zdz;
         
-        temp_value = (((input_value >> INDEX_ML_CTRZDZ_STATE             ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ                   - BIT_MA_CONTROL_ZDZ_BASE)) |
-                     (((input_value >> INDEX_ML_CTRZDZ_STARTED_FROM_MTZ1 ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ1 - BIT_MA_CONTROL_ZDZ_BASE)) |
-                     (((input_value >> INDEX_ML_CTRZDZ_STARTED_FROM_MTZ2 ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ2 - BIT_MA_CONTROL_ZDZ_BASE)) |
-                     (((input_value >> INDEX_ML_CTRZDZ_STARTED_FROM_MTZ3 ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ3 - BIT_MA_CONTROL_ZDZ_BASE)) |
-                     (((input_value >> INDEX_ML_CTRZDZ_STARTED_FROM_MTZ4 ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ4 - BIT_MA_CONTROL_ZDZ_BASE));
+        temp_value = (((input_value >> CTR_ZDZ_STATE_BIT             ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ                   - BIT_MA_CONTROL_ZDZ_BASE)) |
+                     (((input_value >> CTR_ZDZ_STARTED_FROM_MTZ1_BIT ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ1 - BIT_MA_CONTROL_ZDZ_BASE)) |
+                     (((input_value >> CTR_ZDZ_STARTED_FROM_MTZ2_BIT ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ2 - BIT_MA_CONTROL_ZDZ_BASE)) |
+                     (((input_value >> CTR_ZDZ_STARTED_FROM_MTZ3_BIT ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ3 - BIT_MA_CONTROL_ZDZ_BASE)) |
+                     (((input_value >> CTR_ZDZ_STARTED_FROM_MTZ4_BIT ) & 0x1 ) << (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ4 - BIT_MA_CONTROL_ZDZ_BASE));
         break;
       }
     case MA_CONTROL_NZZ:
@@ -9010,11 +9010,11 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
         {
           int output_value = 0;
 
-          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ                   - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << INDEX_ML_CTRZDZ_STATE;
-          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ1 - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << INDEX_ML_CTRZDZ_STARTED_FROM_MTZ1;
-          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ2 - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << INDEX_ML_CTRZDZ_STARTED_FROM_MTZ2;
-          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ3 - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << INDEX_ML_CTRZDZ_STARTED_FROM_MTZ3;
-          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ4 - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << INDEX_ML_CTRZDZ_STARTED_FROM_MTZ4;
+          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ                   - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << CTR_ZDZ_STATE_BIT;
+          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ1 - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << CTR_ZDZ_STARTED_FROM_MTZ1_BIT;
+          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ2 - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << CTR_ZDZ_STARTED_FROM_MTZ2_BIT;
+          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ3 - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << CTR_ZDZ_STARTED_FROM_MTZ3_BIT;
+          output_value |= ((data >> (BIT_MA_CONTROL_ZDZ_STARTED_FROM_MTZ4 - BIT_MA_CONTROL_ZDZ_BASE)) & 0x1) << CTR_ZDZ_STARTED_FROM_MTZ4_BIT;
         
           target_label->control_zdz = output_value;
         }

@@ -267,7 +267,7 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
           else temp_data = edition_settings.type_of_input;
           
           for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
-          current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+          if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
         }
         else
         {
@@ -290,7 +290,7 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
           else temp_data = edition_settings.type_of_input_signal;
         
           for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
-          current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+          if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
         }
       }
     }
@@ -425,7 +425,7 @@ void make_ekran_type_output_uvv(void)
         if (value == true) value += ((*p_temp_data_modif & maska) != 0); //тільки у випадку, коли вихід сигнальний
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][value][j];
-        current_ekran.position_cursor_x = cursor_x[index_language][value];
+        if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][value];
       }
     }
     else
@@ -525,7 +525,7 @@ void make_ekran_type_led_uvv(void)
         else temp_data = edition_settings.type_of_led;
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
-        current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+        if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
       }
     }
     else
@@ -608,7 +608,7 @@ void make_ekran_type_button_uvv(void)
         int value = (*p_temp_data >> index_ctr) & 0x1;
         
         for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][value][j];
-        current_ekran.position_cursor_x = cursor_x[index_language][value];
+        if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][value];
       }
     }
     else

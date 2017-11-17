@@ -442,6 +442,7 @@ void start_settings_peripherals(void)
   /**********************/
   FSMC_SRAM_Init();
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = 0;
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
   /**********************/
 
   /**********************/
@@ -1478,6 +1479,8 @@ void min_settings(__SETTINGS *target_label)
     target_label->timeout_mtz04_2_pr[i] = TIMEOUT_MTZ04_2_PR_MIN; 
     target_label->timeout_mtz04_2_vvid_pr[i] = TIMEOUT_MTZ04_2_VVID_PR_MIN;
     
+    target_label->timeout_zdz[i] = TIMEOUT_ZDZ_MIN;    
+
     target_label->setpoint_zz_3I0[i] = SETPOINT_ZZ_3I0_MIN;
     target_label->setpoint_zz_3U0[i] = SETPOINT_ZZ_3U0_MIN;
     target_label->timeout_zz_3I0[i]  = TIMEOUT_ZZ_3I0_MIN; 
@@ -1564,6 +1567,8 @@ void min_settings(__SETTINGS *target_label)
     target_label->timeout_Umax1[i] = TIMEOUT_UMAX1_MIN;
     target_label->timeout_Umax2[i] = TIMEOUT_UMAX2_MIN;
   }
+
+  target_label->ctrl_zdz_type = ZDZ_CTRL_MIN;
 
   target_label->control_mtz = 0;
   target_label->control_mtz04 = 0;

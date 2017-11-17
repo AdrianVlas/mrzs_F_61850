@@ -82,6 +82,7 @@ void make_ekran_control_mtz(void);
 void make_ekran_setpoint_mtz04(unsigned int);
 void make_ekran_timeout_mtz04(unsigned int);
 void make_ekran_control_mtz04(void);
+void make_ekran_timeout_zdz(unsigned int);
 void make_ekran_control_zdz(void);
 void calc_symbol_and_put_into_working_ekran(unsigned char*, void*, void*, unsigned int*, unsigned int, unsigned int, unsigned int, unsigned int);
 void calc_int_symbol_and_put_into_working_ekran(unsigned char*, unsigned int*, unsigned int*, unsigned int*, unsigned int);

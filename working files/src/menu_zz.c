@@ -502,7 +502,7 @@ void make_ekran_control_zz()
         unsigned int index_ctr = index_of_ekran_tmp;
 
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information_tmp[index_ctr][(temp_data >> index_ctr) & 0x1][j];
-        current_ekran.position_cursor_x = cursor_x_tmp[index_ctr][(temp_data >> index_ctr) & 0x1];
+        if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x_tmp[index_ctr][(temp_data >> index_ctr) & 0x1];
       }
     }
     else

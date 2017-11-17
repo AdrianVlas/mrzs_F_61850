@@ -120,7 +120,16 @@ float phi_ustuvannja_sin_cos_meas[2*NUMBER_ANALOG_CANALES] = {
                                                               0.0f, 1.0f,
                                                               0.0f, 1.0f
                                                              };
-float phi_ustuvannja_sin_cos[2*NUMBER_ANALOG_CANALES];
+float phi_ustuvannja_sin_cos[2*NUMBER_ANALOG_CANALES] = {
+                                                         0.0f, 1.0f,
+                                                         0.0f, 1.0f,
+                                                         0.0f, 1.0f,
+                                                         0.0f, 1.0f,
+                                                         0.0f, 1.0f,
+                                                         0.0f, 1.0f,
+                                                         0.0f, 1.0f,
+                                                         0.0f, 1.0f
+                                                        };
 float phi_edit_ustuvannja_sin_cos[2*NUMBER_ANALOG_CANALES];
 
 const float sin_data_f[NUMBER_POINT] = {

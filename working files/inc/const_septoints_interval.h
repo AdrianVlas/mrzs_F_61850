@@ -178,6 +178,12 @@
 #define TIMEOUT_MTZ04_2_VVID_PR_MIN             200
 #define TIMEOUT_MTZ04_2_VVID_PR_MAX             5000
 
+#define TIMEOUT_ZDZ_MIN                         0
+#define TIMEOUT_ZDZ_MAX                         1000
+
+#define ZDZ_CTRL_MIN                            _ZDZ_CTRL_MIN
+#define ZDZ_CTRL_MAX                            _ZDZ_CTRL_MAX
+
 #define SETPOINT_ZZ_3I0_MIN           10
 #define SETPOINT_ZZ_3I0_MAX           2000
 
