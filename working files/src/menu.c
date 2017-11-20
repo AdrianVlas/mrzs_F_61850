@@ -1599,7 +1599,7 @@ void main_manu_function(void)
             {
               int max_row = 1;
               if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
-                max_row += 3;
+                max_row += 3 + 2;
 
               if(current_ekran.index_position >= max_row) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_MEASURMENT_VOLTAGE_PHASE] = current_ekran.index_position;
@@ -3629,7 +3629,7 @@ void main_manu_function(void)
               {
                 int max_row = 1;
                 if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
-                  max_row += 3;
+                  max_row += 3 + 2;
 
                 if(--current_ekran.index_position < 0) current_ekran.index_position = max_row - 1;
                 if(current_ekran.index_position < 0) 
@@ -4302,7 +4302,7 @@ void main_manu_function(void)
               {
                 int max_row = 1;
                 if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
-                  max_row += 3;
+                  max_row += 3 + 2;
 
                 if(++current_ekran.index_position >= max_row) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_MEASURMENT_VOLTAGE_PHASE] = current_ekran.index_position;

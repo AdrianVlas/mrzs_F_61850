@@ -274,7 +274,7 @@ extern void calc_power(int*);
 extern void calc_power_and_energy(void);
 extern void calc_resistance(int*, int*);
 
-extern void velychyna_zvorotnoi_poslidovnosti(int*);
+extern void velychyna_zvorotnoi_poslidovnosti(int*, const __index_I_U);
 extern void detector_kuta_nzz(int*);
 
 extern void directional_mtz(int*, unsigned int);

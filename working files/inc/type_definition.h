@@ -532,4 +532,12 @@ typedef struct _ctrl_info
   unsigned int cursor_x;
 } __ctrl_info;
 
+typedef enum _index_I_U
+{
+  INDEX_I = 0,
+  INDEX_U,
+  
+  _NUMBER_FOR_I_U
+} __index_I_U;
+
 #endif

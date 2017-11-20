@@ -240,23 +240,30 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
 #define I_Uc          6
 #define I_3U0         7
 
-#define IM_3I0_i       0
-#define IM_3I0         1
-#define IM_3I0_other_g 2
-#define IM_3I0_r       3
-#define IM_IA          4
-#define IM_IB          5
-#define IM_IC          6
-#define IM_I2          7
-#define IM_I1          8
-#define IM_I04         9
-#define IM_UA          10
-#define IM_UB          11
-#define IM_UC          12
-#define IM_3U0         13
-#define IM_UAB         14
-#define IM_UBC         15
-#define IM_UCA         16
+enum _index_meas
+{
+  IM_3I0_i = 0,
+  IM_3I0,
+  IM_3I0_other_g,
+  IM_3I0_r,
+  IM_IA,
+  IM_IB,
+  IM_IC,
+  IM_I2,
+  IM_I1,
+  IM_I04,
+  IM_UA,
+  IM_UB,
+  IM_UC,
+  IM_3U0,
+  IM_UAB,
+  IM_UBC,
+  IM_UCA,
+  IM_U2,
+  IM_U1,
+  
+  _NUMBER_IM
+};
 
 #define PORIG_FOR_FAPCH 10000
 

@@ -275,7 +275,7 @@ void calc_power(int*);
 void calc_power_and_energy(void);
 void calc_resistance(int*, int*);
 
-void velychyna_zvorotnoi_poslidovnosti(int*);
+void velychyna_zvorotnoi_poslidovnosti(int*, const __index_I_U);
 void detector_kuta_nzz(int*);
 
 void directional_mtz(int*, unsigned int);

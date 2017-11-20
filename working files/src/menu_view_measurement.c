@@ -619,24 +619,30 @@ void make_ekran_voltage_phase(unsigned int pervynna_vtorynna)
     "                ",
     "                ",
     "                ",
+    "                ",
+    "                ",
     "                "
   };
-  unsigned int index_array[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE] = {255, 255, 255, 255};
+  unsigned int index_array[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE] = {255, 255, 255, 255, 255, 255};
   unsigned int row = 0;
 
   if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
   {
-    const unsigned char name_phase[3][MAX_COL_LCD] = 
+    const unsigned char name_phase[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE - 1][MAX_COL_LCD] = 
     {
       " Ua  =          ",
       " Ub  =          ",
-      " Uc  =          "
+      " Uc  =          ",
+      " U2  =          ",
+      " U1  =          "
     };
     const unsigned int index_array_phase[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE - 1] = 
     {
       IM_UA,
       IM_UB,
-      IM_UC
+      IM_UC,
+      IM_U2,
+      IM_U1
     };
     
     for (unsigned int i = 0; i < (MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE - 1); i++)

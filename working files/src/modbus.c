@@ -12462,7 +12462,7 @@ void modbus_rountines(unsigned int type_interface)
             {
               //Копіюємо вимірювання
               semaphore_measure_values_low1 = 1;
-              for (unsigned int i = 0; i < (NUMBER_ANALOG_CANALES + 9); i++ ) 
+              for (unsigned int i = 0; i < _NUMBER_IM; i++ ) 
               {
                 measurement_low[i] = measurement_middle[i];
               }

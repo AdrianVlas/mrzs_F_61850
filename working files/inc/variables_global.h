@@ -218,10 +218,10 @@ unsigned int semaphore_measure_values_low1/* = 0*/;
 
 unsigned int number_inputs_for_fix_one_second/* = 0*/;
 unsigned int number_inputs_for_fix_one_period/* = 0*/;
-unsigned int measurement[NUMBER_ANALOG_CANALES + 9]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}*/; 
-unsigned int measurement_high[2][NUMBER_ANALOG_CANALES + 9]/* = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}*/, bank_measurement_high = 0; 
-unsigned int measurement_middle[NUMBER_ANALOG_CANALES + 9]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}*/; 
-unsigned int measurement_low[NUMBER_ANALOG_CANALES + 9]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}*/; 
+unsigned int measurement[_NUMBER_IM]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}*/; 
+unsigned int measurement_high[2][_NUMBER_IM]/* = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}*/, bank_measurement_high = 0; 
+unsigned int measurement_middle[_NUMBER_IM]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}*/; 
+unsigned int measurement_low[_NUMBER_IM]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}*/; 
 
 const unsigned int index_converter_Ib_p[NUMBER_ANALOG_CANALES]  = {FULL_ORT_3I0, FULL_ORT_Ia, FULL_ORT_Ib , FULL_ORT_Ic, FULL_ORT_Ua , FULL_ORT_Ub , FULL_ORT_Uc , FULL_ORT_3U0};
 const unsigned int index_converter_I04_p[NUMBER_ANALOG_CANALES] = {FULL_ORT_3I0, FULL_ORT_Ia, FULL_ORT_I04, FULL_ORT_Ic, FULL_ORT_Ua , FULL_ORT_Ub , FULL_ORT_Uc , FULL_ORT_3U0};
