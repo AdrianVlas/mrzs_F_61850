@@ -2926,31 +2926,107 @@ inline void mtz_handler(unsigned int *p_active_functions, unsigned int number_gr
 /*****************************************************/
 inline void zdz_handler(unsigned int *p_active_functions)
 {
-  static uint32_t delta_time_test;
   static uint32_t test;
-  static uint32_t state_test;
-  uint32_t light = (_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 13) & 0x7;
+  static uint32_t swiched_on_OVD;
   
+  
+  uint32_t control_zdz_tmp = current_settings_prt.control_zdz;
+  uint32_t swiched_on_OVD_tmp = (control_zdz_tmp & ((1 << CTR_ZDZ_OVD1_STATE_BIT) | (1 << CTR_ZDZ_OVD2_STATE_BIT) | (1 << CTR_ZDZ_OVD3_STATE_BIT))) >> CTR_ZDZ_OVD1_STATE_BIT;
+
+  uint32_t new_OVD = (swiched_on_OVD ^ swiched_on_OVD_tmp) & swiched_on_OVD_tmp;
+  swiched_on_OVD = swiched_on_OVD_tmp;
+  
+  /***
+  Перевірка, чи не вимкнутий зараз є канал по якому не проходи тест ОВД
+  ***/
+  {
+    uint32_t temp_value = zdz_ovd_diagnostyka & (uint32_t)(~swiched_on_OVD);
+    if (temp_value)
+    {
+      if (temp_value & (1 << 0))
+      {
+        zdz_ovd_diagnostyka &= (uint32_t)(~(1 << 0));
+      
+        _SET_BIT(clear_diagnostyka, TEST_OVD1);
+      }
+    
+      if (temp_value & (1 << 1))
+      {
+        zdz_ovd_diagnostyka &= (uint32_t)(~(1 << 1));
+      
+        _SET_BIT(clear_diagnostyka, TEST_OVD2);
+      }
+
+      if (temp_value & (1 << 2))
+      {
+        zdz_ovd_diagnostyka &= (uint32_t)(~(1 << 2));
+      
+        _SET_BIT(clear_diagnostyka, TEST_OVD3);
+      }
+    }
+  }
+  /***/
+   
+  //Знімаємо стан з оптоприймача
+  uint32_t light = (_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 13) & 0x7;
+
   /***
   Код програми, який відповідає за діагностику оптичної системи
   ***/
   if (test != 0)
   {
     //Стан діагностики
-    state_test = (light ^ test) & test;
+    uint32_t state_test;
+    if ((state_test = (light ^ test) & test) != 0) zdz_ovd_diagnostyka |= state_test;
+    else zdz_ovd_diagnostyka &= (uint32_t)(~state_test);
+    
+    switch (test)
+    {
+    case 0x1:
+      {
+        if (state_test) _SET_BIT(set_diagnostyka, TEST_OVD1);
+        else _SET_BIT(clear_diagnostyka, TEST_OVD1);
+        
+        break;
+      }
+    case 0x2:
+      {
+        if (state_test) _SET_BIT(set_diagnostyka, TEST_OVD2);
+        else _SET_BIT(clear_diagnostyka, TEST_OVD2);
+        
+        break;
+      }
+    case 0x4:
+      {
+        if (state_test) _SET_BIT(set_diagnostyka, TEST_OVD3);
+        else _SET_BIT(clear_diagnostyka, TEST_OVD3);
+        
+        break;
+      }
+    default:
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(85);
+      }
+    }
     
     //Переходимо на тест наступного оптоканалу
     test = (test << 1) & 0x7;
-    _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = test;
   }
+  
+  //Відлік часу між послідовними запусками тестів ОВД
   delta_time_test += DELTA_TIME_FOR_TIMERS;
-  if ( delta_time_test >= (60*1000))
+  
+  //Фіксація початку нового тесту всіх ОВД
+  if (
+      (new_OVD) ||
+      ( delta_time_test >= PERIOD_ZDZ_TEST)
+     )   
   {
     delta_time_test = 0;
     if (test == 0) 
     {
       test = 0x1;
-      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = test;
     }
     else
     {
@@ -2958,6 +3034,27 @@ inline void zdz_handler(unsigned int *p_active_functions)
       total_error_sw_fixed(84);
     }
   }
+  
+  /*
+  Корекція каналів тестування проводиться, коли:
+  1) запущена процедура тестування
+  
+  і корекція полягає в:
+  1)вимкнуті канали не тестуються
+  2)на пропонованому для тестуванню каналу зараз зафіксовано світло
+  */
+  while (
+         (test != 0) && 
+         (
+          ((test & swiched_on_OVD) == 0) ||
+          ((test & light) != 0)
+         )   
+        )
+  {
+    //Переходимо на наступний к4анал
+    test = (test << 1) & 0x7;
+  }
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = test << 13;
   /***/
 
   unsigned int logic_zdz_0 = 0;
@@ -9292,6 +9389,15 @@ inline void main_protection(void)
     {
       //Вимикаємо можливий режим тестування оптоканалу
       _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
+      if (zdz_ovd_diagnostyka)
+      {
+        if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(clear_diagnostyka, TEST_OVD1);
+        if (zdz_ovd_diagnostyka & (1 << 1)) _SET_BIT(clear_diagnostyka, TEST_OVD2);
+        if (zdz_ovd_diagnostyka & (1 << 2)) _SET_BIT(clear_diagnostyka, TEST_OVD3);
+        
+        zdz_ovd_diagnostyka = 0;
+      }
+      delta_time_test = PERIOD_ZDZ_TEST;
       
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
       const unsigned int maska_zdz_signals[N_BIG] = 

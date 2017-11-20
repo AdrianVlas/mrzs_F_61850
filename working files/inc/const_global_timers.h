@@ -90,4 +90,6 @@ enum __mtz_tmr_const {
 
 #define MAX_NUMBER_GLOBAL_TIMERS                               NEXT_TIMER   //Максимальна кількість таймерів
 
+#define PERIOD_ZDZ_TEST                                         (60*1000)
+
 #endif

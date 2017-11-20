@@ -259,6 +259,10 @@ unsigned int Uxy_bilshe_porogu[3]/* = {0, 0, 0}*/;
 unsigned int Ix_bilshe_porogu[3]/* = {0, 0, 0}*/;
 unsigned int temp_states_for_mtz/* = 0*/;
 
+//ÇÄÇ
+uint32_t delta_time_test = PERIOD_ZDZ_TEST;
+uint32_t zdz_ovd_diagnostyka;
+
 //ÍÇÇ
 int sector_1[8];
 int sector_2[8];
