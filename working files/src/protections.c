@@ -2924,7 +2924,7 @@ inline void mtz_handler(unsigned int *p_active_functions, unsigned int number_gr
 /*****************************************************/
 // ЗДЗ
 /*****************************************************/
-inline void zdz_handler(unsigned int *p_active_functions)
+inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   static uint32_t test;
   static uint32_t swiched_on_OVD;
@@ -3010,6 +3010,9 @@ inline void zdz_handler(unsigned int *p_active_functions)
       }
     }
     
+    //Так, як світло випромінювали ми своїм випромінювачем, то для логіки ми  його не приймаємо
+    light &= (uint32_t)(~test);
+    
     //Переходимо на тест наступного оптоканалу
     test = (test << 1) & 0x7;
   }
@@ -3057,53 +3060,179 @@ inline void zdz_handler(unsigned int *p_active_functions)
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = test << 13;
   /***/
 
-  unsigned int logic_zdz_0 = 0;
+  uint32_t logic_zdz_0 = 0;
+
   logic_zdz_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_DV) != 0) << 0; //Пуск ЗДЗ от ДВ
-  logic_zdz_0 |= ((light & (uint32_t)(~test)) & 0x7) << 1; //"П.ЗДЗ від ОВД1"(1), "П.ЗДЗ від ОВД2"(2), "П.ЗДЗ від ОВД3"(3)
+
+  //"П.ЗДЗ від ОВД1"
+  if (_GET_OUTPUT_STATE(light, 0))
+    _SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD1);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD1);
+
+  //"П.ЗДЗ від ОВД2"
+  if (_GET_OUTPUT_STATE(light, 1))
+    _SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD2);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD2);
+
+  //"П.ЗДЗ від ОВД3"
+  if (_GET_OUTPUT_STATE(light, 2))
+    _SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD3);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD3);
   
-//  unsigned int tmp_value;
-//  //M
-//  tmp_value = ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ1) != 0) << 0; //Пуск от МТЗ1 : Вкл/Откл
-//  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ2) != 0) << 1; //Пуск от МТЗ2 : Вкл/Откл
-//  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ3) != 0) << 2; //Пуск от МТЗ3 : Вкл/Откл
-//  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STARTED_FROM_MTZ4) != 0) << 3; //Пуск от МТЗ4 : Вкл/Откл
-//  
-//  for (int mtz_level = 0; mtz_level < NUMBER_LEVEL_MTZ; mtz_level++) {
-//    //берем не из active потому что сигналы сформировались на предыдущем шаге mtz_handler()
-//    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZ]) != 0) << (4 + mtz_level); //ПО МТЗx
-//    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_VPERED]) != 0) << (8 + mtz_level); //ПО МТЗНх вперед
-//    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_NAZAD]) != 0) << (12 + mtz_level);  //ПО МТЗНх назад
-//    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZPN]) != 0) << (16 + mtz_level); //ПО МТЗПНх
-//  }
-//  //М
-//  tmp_value |= ((current_settings_prt.control_zdz & CTR_ZDZ_STATE) != 0) << 20;
-//  //ДВ
-//  tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_DV) != 0) << 21; //Пуск ЗДЗ от ДВ
-//  
-//  _OR4(tmp_value, 4, tmp_value, 8, tmp_value, 12, tmp_value, 16, tmp_value, 22);
-//  _OR4(tmp_value, 5, tmp_value, 9, tmp_value, 13, tmp_value, 17, tmp_value, 23);
-//  _OR4(tmp_value, 6, tmp_value, 10, tmp_value, 14, tmp_value, 18, tmp_value, 24);
-//  _OR4(tmp_value, 7, tmp_value, 11, tmp_value, 15, tmp_value, 19, tmp_value, 25);
-//  
-//  _AND2(tmp_value, 0, tmp_value, 22, tmp_value, 26);
-//  _AND2(tmp_value, 1, tmp_value, 23, tmp_value, 27);
-//  _AND2(tmp_value, 2, tmp_value, 24, tmp_value, 28);
-//  _AND2(tmp_value, 3, tmp_value, 25, tmp_value, 29);
-//  
-//  _OR4(tmp_value, 26, tmp_value, 27, tmp_value, 28, tmp_value, 29, tmp_value, 30);
-//  
-//  unsigned int tmp_value2 = 0;
-//  _AND3(tmp_value, 30, tmp_value, 21, tmp_value, 20, tmp_value2, 0);
-//  _OR4_INVERTOR(tmp_value, 0, tmp_value, 1, tmp_value, 2, tmp_value, 3, tmp_value2, 1);
-//  _AND3(tmp_value2, 1, tmp_value, 21, tmp_value, 20, tmp_value2, 2);
-//  
-//  _OR2(tmp_value2, 0, tmp_value2, 2, tmp_value2, 3);
-//  
-//  //Сраб. ЗДЗ
-//  if (_GET_OUTPUT_STATE(tmp_value2, 3))
-//    _SET_BIT(p_active_functions, RANG_ZDZ);
-//  else
-//    _CLEAR_BIT(p_active_functions, RANG_ZDZ);
+  logic_zdz_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_BLOCK_ZDZ) == 0) << 1; //Блок. ЗДЗ
+  
+  _AND2(control_zdz_tmp, CTR_ZDZ_STATE_BIT, logic_zdz_0, 1, logic_zdz_0, 2);
+  _AND2(logic_zdz_0, 2, logic_zdz_0, 0, logic_zdz_0, 3);
+  _AND3(logic_zdz_0, 2, light, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
+  _AND3(logic_zdz_0, 2, light, 1, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 5);
+  _AND3(logic_zdz_0, 2, light, 2, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 6);
+  _OR4(logic_zdz_0, 3, logic_zdz_0, 4, logic_zdz_0, 5, logic_zdz_0, 6, logic_zdz_0, 7);
+  
+  uint32_t logic_zdz_rez = 0;
+  if (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_NONE)
+  {
+    logic_zdz_rez |= _GET_OUTPUT_STATE(logic_zdz_0, 7) << 0;
+  }
+  else if (current_settings_prt.ctrl_zdz_type < _ZDZ_CTRL_NUMBER)
+  {
+    if (
+        (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I) ||
+        (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I_OR_U) ||
+        (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
+       )   
+    {
+      if(
+         (_GET_OUTPUT_STATE(control_zdz_tmp, (CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))))
+         &&
+         (
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZ1) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZN1_VPERED) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZN1_NAZAD) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZPN1) != 0)
+         ) 
+        )   
+      {
+        _SET_STATE(logic_zdz_0, 8);
+      }
+
+      if(
+         (_GET_OUTPUT_STATE(control_zdz_tmp, (CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))))
+         &&
+         (
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZ2) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZN2_VPERED) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZN2_NAZAD) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZPN2) != 0)
+         ) 
+        )   
+      {
+        _SET_STATE(logic_zdz_0, 9);
+      }
+
+      if(
+         (_GET_OUTPUT_STATE(control_zdz_tmp, (CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))))
+         &&
+         (
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZ3) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZN3_VPERED) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZN3_NAZAD) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZPN3) != 0)
+         ) 
+        )   
+      {
+        _SET_STATE(logic_zdz_0, 10);
+      }
+
+      if(
+         (_GET_OUTPUT_STATE(control_zdz_tmp, (CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))))
+         &&
+         (
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZ4) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZN4_VPERED) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZN4_NAZAD) != 0) ||
+          (_CHECK_SET_BIT(p_active_functions, RANG_PO_MTZPN4) != 0)
+         ) 
+        )   
+      {
+        _SET_STATE(logic_zdz_0, 11);
+      }
+      
+      _OR4(logic_zdz_0, 8, logic_zdz_0, 9, logic_zdz_0, 10, logic_zdz_0, 11, logic_zdz_0, 12);
+    }
+
+    if (
+        (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_U) ||
+        (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I_OR_U) ||
+        (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
+       )   
+    {
+      if(
+         (_GET_OUTPUT_STATE(control_zdz_tmp, (CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II)))) &&
+         (_CHECK_SET_BIT(p_active_functions, RANG_PO_UMIN1) != 0)
+        )   
+      {
+        _SET_STATE(logic_zdz_0, 13);
+      }
+      
+      if(
+         (_GET_OUTPUT_STATE(control_zdz_tmp, (CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II)))) &&
+         (_CHECK_SET_BIT(p_active_functions, RANG_PO_UMIN2) != 0)
+        )   
+      {
+        _SET_STATE(logic_zdz_0, 14);
+      }
+      
+      _OR2(logic_zdz_0, 13, logic_zdz_0, 14, logic_zdz_0, 15);
+    }
+
+    if (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I)
+    {
+      _AND2(logic_zdz_0, 7, logic_zdz_0, 12, logic_zdz_rez, 0);
+    }
+    else if (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_U)
+    {
+      _AND2(logic_zdz_0, 7, logic_zdz_0, 15, logic_zdz_rez, 0);
+    }
+    else
+    {
+      if (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I_OR_U)
+      {
+        _OR2(logic_zdz_0, 12, logic_zdz_0, 15, logic_zdz_0, 16);
+      }
+      else if (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
+      {
+        _AND2(logic_zdz_0, 12, logic_zdz_0, 15, logic_zdz_0, 16);
+      }
+      else
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(88);
+      }
+
+      _AND2(logic_zdz_0, 7, logic_zdz_0, 16, logic_zdz_rez, 0);
+    }
+  }
+  else
+  {
+    //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+    total_error_sw_fixed(88);
+  }
+  
+  //"ПО ЗДЗ"
+  if (_GET_OUTPUT_STATE(logic_zdz_rez, 0))
+    _SET_BIT(p_active_functions, RANG_PO_ZDZ);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_PO_ZDZ);
+  
+  _TIMER_T_0(INDEX_TIMER_ZDZ, current_settings_prt.timeout_zdz[number_group_stp], logic_zdz_rez, 0, logic_zdz_rez, 1);
+  //"ЗДЗ"
+  if (_GET_OUTPUT_STATE(logic_zdz_rez, 1))
+    _SET_BIT(p_active_functions, RANG_ZDZ);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_ZDZ);
 }
 /*****************************************************/
 
@@ -9108,13 +9237,13 @@ inline void main_protection(void)
     {
       if (_CHECK_SET_BIT(active_functions, RANG_STATE_VV) !=0) 
       {
-        state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)));
-        state_leds_ctrl |=  (uint32_t)(  (1 << LED_COLOR_RED_BIT  ) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O) );
+        state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)));
+        state_leds_ctrl |=  (uint32_t)(  (1 << LED_COLOR_RED_BIT  ) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I) );
       }
       else
       {
-        state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_RED_BIT  ) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)));
-        state_leds_ctrl |=  (uint32_t)(  (1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I) );
+        state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_RED_BIT  ) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)));
+        state_leds_ctrl |=  (uint32_t)(  (1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O) );
       }
     }
     else
@@ -9379,43 +9508,6 @@ inline void main_protection(void)
     }
 
     /**************************/
-    //ЗДЗ
-    /**************************/
-    if ((current_settings_prt.configuration & (1 << ZDZ_BIT_CONFIGURATION)) != 0)
-    {
-      zdz_handler(active_functions);
-    }
-    else
-    {
-      //Вимикаємо можливий режим тестування оптоканалу
-      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
-      if (zdz_ovd_diagnostyka)
-      {
-        if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(clear_diagnostyka, TEST_OVD1);
-        if (zdz_ovd_diagnostyka & (1 << 1)) _SET_BIT(clear_diagnostyka, TEST_OVD2);
-        if (zdz_ovd_diagnostyka & (1 << 2)) _SET_BIT(clear_diagnostyka, TEST_OVD3);
-        
-        zdz_ovd_diagnostyka = 0;
-      }
-      delta_time_test = PERIOD_ZDZ_TEST;
-      
-      //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_zdz_signals[N_BIG] = 
-      {
-        MASKA_ZDZ_SIGNALS_0, 
-        MASKA_ZDZ_SIGNALS_1, 
-        MASKA_ZDZ_SIGNALS_2,
-        MASKA_ZDZ_SIGNALS_3, 
-        MASKA_ZDZ_SIGNALS_4, 
-        MASKA_ZDZ_SIGNALS_5, 
-        MASKA_ZDZ_SIGNALS_6, 
-        MASKA_ZDZ_SIGNALS_7
-      };
-      for (unsigned int i = 0; i < N_BIG; i++) active_functions[i] &= (unsigned int)(~maska_zdz_signals[i]);
-    }
-    /**************************/
-
-    /**************************/
     //ЗЗ
     /**************************/
     if ((current_settings_prt.configuration & (1 << ZZ_BIT_CONFIGURATION)) != 0)
@@ -9611,6 +9703,45 @@ inline void main_protection(void)
       trigger_CHAPV2= 0;
     }
     
+    /**************************/
+    //ЗДЗ
+    /**************************/
+    if ((current_settings_prt.configuration & (1 << ZDZ_BIT_CONFIGURATION)) != 0)
+    {
+      zdz_handler(active_functions, number_group_stp);
+    }
+    else
+    {
+      //Вимикаємо можливий режим тестування оптоканалу
+      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
+      if (zdz_ovd_diagnostyka)
+      {
+        if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(clear_diagnostyka, TEST_OVD1);
+        if (zdz_ovd_diagnostyka & (1 << 1)) _SET_BIT(clear_diagnostyka, TEST_OVD2);
+        if (zdz_ovd_diagnostyka & (1 << 2)) _SET_BIT(clear_diagnostyka, TEST_OVD3);
+        
+        zdz_ovd_diagnostyka = 0;
+      }
+      delta_time_test = PERIOD_ZDZ_TEST;
+      
+      //Очищуємо сигнали, які не можуть бути у даній конфігурації
+      const unsigned int maska_zdz_signals[N_BIG] = 
+      {
+        MASKA_ZDZ_SIGNALS_0, 
+        MASKA_ZDZ_SIGNALS_1, 
+        MASKA_ZDZ_SIGNALS_2,
+        MASKA_ZDZ_SIGNALS_3, 
+        MASKA_ZDZ_SIGNALS_4, 
+        MASKA_ZDZ_SIGNALS_5, 
+        MASKA_ZDZ_SIGNALS_6, 
+        MASKA_ZDZ_SIGNALS_7
+      };
+      for (unsigned int i = 0; i < N_BIG; i++) active_functions[i] &= (unsigned int)(~maska_zdz_signals[i]);
+
+      global_timers[INDEX_TIMER_ZDZ] = -1;
+    }
+    /**************************/
+
     /**************************/
     //УРОВ
     /**************************/
