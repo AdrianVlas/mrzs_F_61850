@@ -3088,31 +3088,37 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
 
   logic_zdz_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_DV) != 0) << 0; //Ïóñê ÇÄÇ îò ÄÂ
 
-  //"Ï.ÇÄÇ â³ä ÎÂÄ1"
-  if (_GET_OUTPUT_STATE(light, 0))
-    _SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD1);
-  else
-    _CLEAR_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD1);
-
-  //"Ï.ÇÄÇ â³ä ÎÂÄ2"
-  if (_GET_OUTPUT_STATE(light, 1))
-    _SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD2);
-  else
-    _CLEAR_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD2);
-
-  //"Ï.ÇÄÇ â³ä ÎÂÄ3"
-  if (_GET_OUTPUT_STATE(light, 2))
-    _SET_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD3);
-  else
-    _CLEAR_BIT(p_active_functions, RANG_PUSK_ZDZ_VID_OVD3);
-  
   logic_zdz_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_BLOCK_ZDZ) == 0) << 1; //Áëîê. ÇÄÇ
   
   _AND2(control_zdz_tmp, CTR_ZDZ_STATE_BIT, logic_zdz_0, 1, logic_zdz_0, 2);
   _AND2(logic_zdz_0, 2, logic_zdz_0, 0, logic_zdz_0, 3);
+  //"Ñâ.ÇÄÇ â³ä ÄÂ"
+  if (_GET_OUTPUT_STATE(logic_zdz_0, 3))
+    _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_DV);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_DV);
+
   _AND3(logic_zdz_0, 2, light, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
+  //"Ñâ.ÇÄÇ â³ä ÎÂÄ1"
+  if (_GET_OUTPUT_STATE(logic_zdz_0, 4))
+    _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD1);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD1);
+
   _AND3(logic_zdz_0, 2, light, 1, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 5);
+  //"Ñâ.ÇÄÇ â³ä ÎÂÄ2"
+  if (_GET_OUTPUT_STATE(logic_zdz_0, 5))
+    _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD2);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD2);
+
   _AND3(logic_zdz_0, 2, light, 2, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 6);
+  //"Ñâ.ÇÄÇ â³ä ÎÂÄ3"
+  if (_GET_OUTPUT_STATE(logic_zdz_0, 6))
+    _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD3);
+  else
+    _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD3);
+
   _OR4(logic_zdz_0, 3, logic_zdz_0, 4, logic_zdz_0, 5, logic_zdz_0, 6, logic_zdz_0, 7);
   
   uint32_t logic_zdz_rez = 0;
