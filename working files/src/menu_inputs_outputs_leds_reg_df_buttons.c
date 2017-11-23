@@ -359,7 +359,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       },
       {
        (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
        (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL),
@@ -367,7 +367,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       },
       {
        (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL),
-       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG - 1)
+       (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL - 1)
       },
       {
        (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL),
@@ -391,17 +391,16 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     /*************************************************************/
     //Фільтруємо сигнали, яких у даній конфігурації неприсутні
     /*************************************************************/
-    if(
-       (type_ekran == INDEX_VIEWING_BUTTON) &&
-       (((current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1) == BUTTON_MODE_BUTTON)
-      )   
+    if(type_ekran == INDEX_VIEWING_BUTTON)
     {
       /*************************************************************/
-      //У випадку, якщо відображення здійснюється вікна функціональних кнопок і дана кнопка є у режимі 0
+      //У випадку, якщо відображення здійснюється вікна функціональних кнопок
       /*************************************************************/
+      uint32_t mode = (current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+
       for (unsigned int index_deleted_function = 0; index_deleted_function < NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL; index_deleted_function++)
       {
-        if (_CHECK_SET_BIT(buttons_mode_0, index_deleted_function) == 0)
+        if (_CHECK_SET_BIT(buttons_mode[mode], index_deleted_function) == 0)
         {
           /*************************************************************/
           //Відкидаємо ім'я даної функції і зміщаємо біти
@@ -468,14 +467,12 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
         //бо інкаше ми вже знаходимося на індексі наступного захисту
         if(min_max_number[i][0] >=0)
         {
-          if(
-             (type_ekran == INDEX_VIEWING_BUTTON) &&
-             (((current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1) == BUTTON_MODE_BUTTON)
-            )   
+          if(type_ekran == INDEX_VIEWING_BUTTON)
           {
             /*
             Випадок коли деякі сигнали треба відфільтрувати
             */
+            uint32_t mode = (current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
             //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
@@ -486,7 +483,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
             //Відкидаємо назви функцій із списку, які є зайвими
             while(index_in_list <= min_max_number[i][1])
             {
-              if (_CHECK_SET_BIT(buttons_mode_0, index_in_list) == 0) 
+              if (_CHECK_SET_BIT(buttons_mode[mode], index_in_list) == 0) 
               {
                 /***/
                 //Зміщуємо біти стану реанжування функцій разом із їх назвами
@@ -601,7 +598,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
 
     for (i=0; i< MAX_ROW_LCD; i++)
     {
-     if (index_of_ekran < (max_row_ranguvannja<<1))//Множення на два константи  max_row_ranguvannja потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+     if (index_of_ekran < ((max_row_ranguvannja - offset) <<1))//Множення на два константи  max_row_ranguvannja потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
      {
        if ((i & 0x1) == 0)
        {
@@ -1688,7 +1685,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
 
     for (i=0; i< MAX_ROW_LCD; i++)
     {
-     if (index_of_ekran < (max_row_ranguvannja<<1))//Множення на два константи  max_row_ranguvannja потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+     if (index_of_ekran < ((max_row_ranguvannja - offset)<<1))//Множення на два константи  max_row_ranguvannja потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
      {
        if ((i & 0x1) == 0)
        {

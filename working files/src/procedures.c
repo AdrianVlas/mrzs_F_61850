@@ -2000,34 +2000,27 @@ void action_during_changing_button_mode(__SETTINGS *current_label, __SETTINGS *e
     //Дії виконуємо тільки над тими кнопками, у яких режим змінився
     if (mode_current != mode_edit)
     {
-      //Дії виконуємо тільки тоді, коли кнопку не перевели в режим ключа (де можуть бути всі сигнали)
-      if (mode_edit != BUTTON_MODE_SWITCHER)
+      unsigned int state_button[N_SMALL];
+      for (unsigned int i = 0; i < N_SMALL; i++)
       {
-        unsigned int state_button[N_SMALL];
-        for (unsigned int i = 0; i < N_SMALL; i++)
-        {
-          state_button[i] = current_label->ranguvannja_buttons[N_SMALL*number + i];
-        }
+        state_button[i] = current_label->ranguvannja_buttons[N_SMALL*number + i];
+      }
   
-        if (mode_edit == BUTTON_MODE_BUTTON)
+      for (unsigned int index_deleted_function = 0; index_deleted_function < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL; index_deleted_function++)
+      {
+        if (_CHECK_SET_BIT(buttons_mode[mode_edit], index_deleted_function) == 0)
         {
-          for (unsigned int index_deleted_function = 0; index_deleted_function < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL; index_deleted_function++)
-          {
-            if (_CHECK_SET_BIT(buttons_mode_0, index_deleted_function) == 0)
-            {
-              /*************************************************************/
-              //Відфільтровуємо дану функцію
-              /*************************************************************/
-              _CLEAR_BIT(state_button, index_deleted_function);
-            }
-          }
+          /*************************************************************/
+          //Відфільтровуємо дану функцію
+          /*************************************************************/
+          _CLEAR_BIT(state_button, index_deleted_function);
         }
+      }
     
-        //Вводимо зміни у ранжування які попередньо підготували
-        for (unsigned int i = 0; i < N_SMALL; i++)
-        {
-          current_label->ranguvannja_buttons[N_SMALL*number + i] = state_button[i];
-        }
+      //Вводимо зміни у ранжування які попередньо підготували
+      for (unsigned int i = 0; i < N_SMALL; i++)
+      {
+        current_label->ranguvannja_buttons[N_SMALL*number + i] = state_button[i];
       }
     }
   }

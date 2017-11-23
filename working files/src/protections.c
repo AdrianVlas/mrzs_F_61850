@@ -8876,7 +8876,7 @@ inline void main_protection(void)
   //Опрацьовуємо ФК, дискретні входи і верхній рівень
   /**************************/
   //Опрцьовуємо логіку натиснутих кнопок
-  uint32_t pressed_buttons_tmp;
+  uint32_t pressed_buttons_tmp = 0;
   uint32_t buttons_mode_tmp = current_settings_prt.buttons_mode;
   if (
       (mutex_buttons == false) &&
@@ -8886,27 +8886,25 @@ inline void main_protection(void)
     pressed_buttons_tmp = pressed_buttons;
     //Очищаємо натиснуті кнопкb, інформацію про яких ми вже забрали у роботу (аде ще не опрацювали)
     pressed_buttons = 0;
-      
-    uint32_t pressed_buttons_switcher = pressed_buttons_tmp & buttons_mode_tmp; /*натиснуті в даний момент кнопки-ключі*/
-    pressed_buttons_tmp &= (uint32_t)(~buttons_mode_tmp); /*натиснуті в даний момент всі інші типи кнопок*/
-      
-    //Опрацьвуємо спочатку кнопки-ключі
-    if (pressed_buttons_switcher != 0) 
-    {
-      fix_active_buttons ^= pressed_buttons_switcher;
-      /*
-      Змінилися стани кнопок-ключів
-      */
-      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_TRG_FUNC_EEPROM_BIT);
-    }
-    
-    //Формуємо стан натиснутих кнопок з урахуванням нового стану копок клічів і інших кнопок
-    pressed_buttons_tmp |= fix_active_buttons;
   }
-  else
+      
+  uint32_t pressed_buttons_switcher = pressed_buttons_tmp & buttons_mode_tmp; /*натиснуті в даний момент кнопки-ключі*/
+  pressed_buttons_tmp &= (uint32_t)(~buttons_mode_tmp); /*натиснуті в даний момент всі інші типи кнопок*/
+      
+  //Опрацьвуємо спочатку кнопки-ключі
+  uint32_t fix_active_buttons_tmp = (fix_active_buttons ^ pressed_buttons_switcher) & buttons_mode_tmp;
+  if (fix_active_buttons_tmp != fix_active_buttons) 
   {
-    pressed_buttons_tmp = fix_active_buttons;
+    fix_active_buttons = fix_active_buttons_tmp;
+    /*
+    Змінилися стани кнопок-ключів
+    */
+    _SET_BIT(control_spi1_taskes, TASK_START_WRITE_TRG_FUNC_EEPROM_BIT);
   }
+    
+  //Формуємо стан натиснутих кнопок з урахуванням нового стану копок клічів і інших кнопок
+  pressed_buttons_tmp |= fix_active_buttons_tmp;
+
   //Світлова індикація натиснутих кнопок-ключів
   for (size_t i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
   {
@@ -8915,7 +8913,7 @@ inline void main_protection(void)
     {
       if (((pressed_buttons_tmp >> i) & 0x1) != 0) 
       {
-#ifndef KEYBOARD_WITH_ERROR_F4
+#ifndef KEYBOARD_VER_2_1
         state_leds_Fx[0] &= (uint32_t)(~maska_yellow);
         state_leds_Fx[1] |= maska_yellow;
 #else
@@ -8933,7 +8931,7 @@ inline void main_protection(void)
       }    
       else
       {
-#ifndef KEYBOARD_WITH_ERROR_F4
+#ifndef KEYBOARD_VER_2_1
         state_leds_Fx[1] &= (uint32_t)(~maska_yellow);
         state_leds_Fx[0] |= maska_yellow;
 #else

@@ -491,18 +491,69 @@ enum __mtz_abc_direction_const {
 };
 
 /*****************************************/
-//Макски сигналів, які можна зранжувати на функціональні кнопки у Режимі 0
+//Макски сигналів, які можна зранжувати на функціональні кнопки у Режимі Кнопка
 /*****************************************/
-#define MASKA_BUTTON_MODE_0        (unsigned int)(            \
+#define MASKA_BUTTON_MODE_0_SIGNALS_0 (unsigned int)(         \
     (1 << (RANG_SMALL_RESET_LEDS - 0))                        \
   | (1 << (RANG_SMALL_RESET_RELES - 0))                       \
-  | (1 << (RANG_SMALL_VKL_VV - 0))                            \
-  | (1 << (RANG_SMALL_OTKL_VV - 0))                           \
   | (1 << (RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV - 0)) \
 )
 
-#define MASKA_BUTTON_MODE_1        (unsigned int)(            \
+#define MASKA_BUTTON_MODE_0_SIGNALS_1 (unsigned int)(         \
     (1 << (RANG_SMALL_DF1_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF2_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF3_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF4_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF5_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF6_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF7_IN - 32))                           \
+  | (1 << (RANG_SMALL_DF8_IN - 32))                           \
+  | (1 << (RANG_SMALL_DT1_SET - 32))                          \
+  | (1 << (RANG_SMALL_DT1_RESET - 32))                        \
+  | (1 << (RANG_SMALL_DT2_SET - 32))                          \
+  | (1 << (RANG_SMALL_DT2_RESET - 32))                        \
+  | (1 << (RANG_SMALL_DT3_SET - 32))                          \
+  | (1 << (RANG_SMALL_DT3_RESET - 32))                        \
+  | (1 << (RANG_SMALL_DT4_SET - 32))                          \
+  | (1 << (RANG_SMALL_DT4_RESET - 32))                        \
+)
+/*****************************************/
+
+/*****************************************/
+//Макски сигналів, які можна зранжувати на функціональні кнопки у Режимі Ключ
+/*****************************************/
+#define MASKA_BUTTON_MODE_1_SIGNALS_0 (unsigned int)(         \
+    (1 << (RANG_SMALL_BLOCK_VKL_VV - 0))                      \
+  | (1 << (RANG_SMALL_MISCEVE_DYSTANCIJNE - 0))               \
+  | (1 << (RANG_SMALL_1_GRUPA_USTAVOK - 0))                   \
+  | (1 << (RANG_SMALL_2_GRUPA_USTAVOK - 0))                   \
+  | (1 << (RANG_SMALL_3_GRUPA_USTAVOK - 0))                   \
+  | (1 << (RANG_SMALL_4_GRUPA_USTAVOK - 0))                   \
+  | (1 << (RANG_SMALL_BLOCK_MTZ1 - 0))                        \
+  | (1 << (RANG_SMALL_BLOCK_MTZ2 - 0))                        \
+  | (1 << (RANG_SMALL_BLOCK_USK_MTZ2 - 0))                    \
+  | (1 << (RANG_SMALL_BLOCK_MTZ3 - 0))                        \
+  | (1 << (RANG_SMALL_BLOCK_MTZ4 - 0))                        \
+  | (1 << (RANG_SMALL_BLOCK_MTZ04_1 - 0))                     \
+  | (1 << (RANG_SMALL_BLOCK_MTZ04_2 - 0))                     \
+  | (1 << (RANG_SMALL_BLOCK_USK_MTZ04_2 - 0))                 \
+  | (1 << (RANG_SMALL_BLOCK_ZDZ - 0))                         \
+  | (1 << (RANG_SMALL_BLOCK_NZZ - 0))                         \
+  | (1 << (RANG_SMALL_BLOCK_TZNP1 - 0))                       \
+  | (1 << (RANG_SMALL_BLOCK_TZNP2 - 0))                       \
+  | (1 << (RANG_SMALL_BLOCK_TZNP3 - 0))                       \
+  | (1 << (RANG_SMALL_STAT_BLK_APV - 0))                      \
+  | (1 << (RANG_SMALL_BLOCK_ACHR1 - 0))                       \
+)
+
+#define MASKA_BUTTON_MODE_1_SIGNALS_1 (unsigned int)(         \
+    (1 << (RANG_SMALL_BLOCK_ACHR2 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_ZOP - 32))                        \
+  | (1 << (RANG_SMALL_BLOCK_UMIN1 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_UMIN2 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_UMAX1 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_UMAX2 - 32))                      \
+  | (1 << (RANG_SMALL_DF1_IN - 32))                           \
   | (1 << (RANG_SMALL_DF2_IN - 32))                           \
   | (1 << (RANG_SMALL_DF3_IN - 32))                           \
   | (1 << (RANG_SMALL_DF4_IN - 32))                           \

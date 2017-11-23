@@ -17080,14 +17080,14 @@ void main_manu_function(void)
                                                                     );
                   
                     //Перевіряємо режим рооботи функціональної кнопки (якщо іде редагування ФК)
-                    if (
-                        ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) &&
-                        (((current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1) == BUTTON_MODE_BUTTON) &&
-                        (_CHECK_SET_BIT(buttons_mode_0, current_ekran.index_position) == 0)  
-                       )   
+                    if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                     {
-                      found_new_index = 0;
-                      current_ekran.index_position++;
+                      uint32_t mode = (current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+                      if (_CHECK_SET_BIT(buttons_mode[mode], current_ekran.index_position) == 0)
+                      {
+                        found_new_index = 0;
+                        current_ekran.index_position++;
+                      }
                     }
                     
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
@@ -18605,14 +18605,14 @@ void main_manu_function(void)
                                                                       );
 
                     //Перевіряємо режим рооботи функціональної кнопки (якщо іде редагування ФК)
-                    if (
-                        ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) &&
-                        (((current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1) == BUTTON_MODE_BUTTON) &&
-                        (_CHECK_SET_BIT(buttons_mode_0, current_ekran.index_position) == 0)  
-                       )   
+                    if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                     {
-                      found_new_index = 0;
-                      current_ekran.index_position--;
+                      uint32_t mode = (current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+                      if (_CHECK_SET_BIT(buttons_mode[mode], current_ekran.index_position) == 0)
+                      {
+                        found_new_index = 0;
+                        current_ekran.index_position--;
+                      }
                     }
                     
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
@@ -19255,22 +19255,22 @@ void main_manu_function(void)
                                                                       );
 
                     //Перевіряємо режим рооботи функціональної кнопки (якщо іде редагування ФК)
-                    if (
-                        ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) &&
-                        (((current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1) == BUTTON_MODE_BUTTON) &&
-                        (_CHECK_SET_BIT(buttons_mode_0, current_ekran.index_position) == 0)  
-                       )   
+                    if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                     {
-                      found_new_index = 0;
-                      current_ekran.index_position++;
-                    }
-                    
-                      //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
-                      if(current_ekran.index_position >= max_row_ranguvannja)
+                      uint32_t mode = (current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+                      if (_CHECK_SET_BIT(buttons_mode[mode], current_ekran.index_position) == 0)
                       {
                         found_new_index = 0;
-                        current_ekran.index_position = 0;
+                        current_ekran.index_position++;
                       }
+                    }
+                    
+                    //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
+                    if(current_ekran.index_position >= max_row_ranguvannja)
+                    {
+                      found_new_index = 0;
+                      current_ekran.index_position = 0;
+                    }
                   }
                 }
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;

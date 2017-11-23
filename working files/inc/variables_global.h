@@ -361,7 +361,11 @@ unsigned int time_rewrite/* = 0*/; //Час який пройшов після останнього обновленн
 __CURRENT_EKRAN current_ekran;
 SRAM1 int position_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається індекс текучоїпозиції
 SRAM1 int previous_level_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається занчення попередніх екранів для даного рівня меню
-const uint32_t buttons_mode_0[N_SMALL] = {MASKA_BUTTON_MODE_0, MASKA_BUTTON_MODE_1};
+const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL] = 
+{
+  {MASKA_BUTTON_MODE_0_SIGNALS_0, MASKA_BUTTON_MODE_0_SIGNALS_1},
+  {MASKA_BUTTON_MODE_1_SIGNALS_0, MASKA_BUTTON_MODE_1_SIGNALS_1}
+};
 
 unsigned int periodical_tasks_TEST_SETTINGS/* = false*/;
 unsigned int periodical_tasks_TEST_USTUVANNJA/* = false*/;
