@@ -21,6 +21,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "ַ־ֿ(Ê־װ)  ",
      "ַֽלטם     ",
      "ַֽלאךס    ",
+     "׃ַ        ",
      "־ּֿ       ",
      "׀אסר.כמד. "
     },
@@ -36,6 +37,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "ַַֿ(Ê־װ)  ",
      "ַֽל³ם     ",
      "ַֽלאךס    ",
+     "׃ַ        ",
      "ֲּֿ       ",
      "׀מחר.כמד. "
     },
@@ -51,6 +53,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "NPSP      ",
      "Umin      ",
      "Umax      ",
+     "UP        ",
      "־ּֿ       ",
      "Ext.logic "
     },
@@ -66,6 +69,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "ÊKK       ",
      "ַֽלטם     ",
      "ַֽלאךס    ",
+     "׃ַ        ",
      "־ּֿ       ",
      "׀אסר.כמד. "
     }

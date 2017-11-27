@@ -82,7 +82,7 @@ unsigned int index_array_of_one_value_fourier/* = 0*/;
 
 EXTENDED_SAMPLE ADCs_data_raw[NUMBER_ANALOG_CANALES];
 int ADCs_data[NUMBER_ANALOG_CANALES];
-int current_data[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT];
+//int current_data[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT];
 unsigned long long sqr_current_data_3I0[NUMBER_POINT];
 unsigned int index_array_of_current_data_value/* = 0*/;
 
@@ -302,13 +302,13 @@ unsigned int state_outputs/* = 0*/;
 unsigned int state_outputs_raw/* = 0*/;
 unsigned int state_signal_outputs/* = 0*/;
 unsigned int active_functions[N_BIG]/*  = {0, 0, 0, 0, 0, 0, 0, 0}*/;
-unsigned int trigger_active_functions[N_BIG]/*  = {0, 0, 0, 0, 0, 0, 0, 0}*/, trigger_active_functions_ctrl[N_BIG];
+unsigned int trigger_active_functions[N_BIG]/*  = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/, trigger_active_functions_ctrl[N_BIG];
 unsigned char crc_trg_func, crc_trg_func_ctrl;
-unsigned int trigger_functions_USB[N_BIG]/* = {0, 0, 0, 0, 0, 0, 0, 0}*/;
-unsigned int trigger_functions_RS485[N_BIG]/* = {0, 0, 0, 0, 0, 0, 0, 0}*/;
+unsigned int trigger_functions_USB[N_BIG]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
+unsigned int trigger_functions_RS485[N_BIG]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
 unsigned int copying_active_functions/* = 0*/;
-unsigned int active_functions_copy[N_BIG]/*  = {0, 0, 0, 0, 0, 0, 0, 0}*/;
-unsigned int active_functions_trg[N_BIG]/*  = {0, 0, 0, 0, 0, 0, 0, 0}*/;
+unsigned int active_functions_copy[N_BIG]/*  = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
+unsigned int active_functions_trg[N_BIG]/*  = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
 unsigned int mutex_buttons/* = false*/;
 unsigned int pressed_buttons/* = 0*/;
 unsigned int fix_active_buttons/* = 0*/, fix_active_buttons_ctrl;
@@ -358,13 +358,13 @@ unsigned char time_set_keyboard[NUMBER_KEY_KEYBOARD];
 
 unsigned int time_rewrite/* = 0*/; //Час який пройшов після останнього обновлення
 
-__CURRENT_EKRAN current_ekran;
+SRAM1 __CURRENT_EKRAN current_ekran;
 SRAM1 int position_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається індекс текучоїпозиції
 SRAM1 int previous_level_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається занчення попередніх екранів для даного рівня меню
 const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL] = 
 {
-  {MASKA_BUTTON_MODE_0_SIGNALS_0, MASKA_BUTTON_MODE_0_SIGNALS_1},
-  {MASKA_BUTTON_MODE_1_SIGNALS_0, MASKA_BUTTON_MODE_1_SIGNALS_1}
+  {MASKA_BUTTON_MODE_0_SIGNALS_0, MASKA_BUTTON_MODE_0_SIGNALS_1, MASKA_BUTTON_MODE_0_SIGNALS_2},
+  {MASKA_BUTTON_MODE_1_SIGNALS_0, MASKA_BUTTON_MODE_1_SIGNALS_1, MASKA_BUTTON_MODE_1_SIGNALS_2}
 };
 
 unsigned int periodical_tasks_TEST_SETTINGS/* = false*/;
@@ -612,17 +612,17 @@ int unsigned equal_more_KZ/* = 0*/;
 
 
 //RS-485
-unsigned char TxBuffer_RS485[BUFFER_RS485];
-unsigned char RxBuffer_RS485[BUFFER_RS485];
-int TxBuffer_RS485_count/* = 0*/;
-int RxBuffer_RS485_count/* = 0*/;
-int RxBuffer_RS485_count_previous/* = 0*/;
-unsigned int time_last_receive_byte;
-unsigned int max_reaction_time_rs_485/* = 0*/;
-unsigned int make_reconfiguration_RS_485/* = 0*/;
-unsigned int number_bits_rs_485_waiting/* = 0*/;
-unsigned int mark_current_tick_RS_485/* = 0*/;
-unsigned int timeout_idle_RS485;
+SRAM1 unsigned char TxBuffer_RS485[BUFFER_RS485];
+SRAM1 unsigned char RxBuffer_RS485[BUFFER_RS485];
+SRAM1 int TxBuffer_RS485_count/* = 0*/;
+SRAM1 int RxBuffer_RS485_count/* = 0*/;
+SRAM1 int RxBuffer_RS485_count_previous/* = 0*/;
+SRAM1 unsigned int time_last_receive_byte;
+SRAM1 unsigned int max_reaction_time_rs_485/* = 0*/;
+SRAM1 unsigned int make_reconfiguration_RS_485/* = 0*/;
+SRAM1 unsigned int number_bits_rs_485_waiting/* = 0*/;
+SRAM1 unsigned int mark_current_tick_RS_485/* = 0*/;
+SRAM1 unsigned int timeout_idle_RS485;
 
 //USB
 uint8_t  USART_Rx_Buffer[USART_RX_DATA_SIZE]; 
@@ -645,28 +645,28 @@ unsigned char data_usb_transmiting/* = false*/;
 unsigned int timeout_idle_USB;
 
 //MODBUS-RTU
-unsigned int registers_address_read =0x20000000;
-unsigned int registers_address_write =0x20000000;
-unsigned int data_write_to_memory;
-unsigned int number_registers_read/* = 0*/;
-unsigned short int registers_values[64]/* @ "variables_RAM1"*/;
-unsigned int action_is_continued/* = false*/;
-unsigned int part_transmit_carrent_data/* = 0*/;
-unsigned int command_to_receive_current_data/* = false*/;
-int current_data_transmit[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT] /*@ "variables_RAM1"*/; 
-volatile unsigned int wait_of_receiving_current_data/*  = false*/; 
-unsigned int password_set_USB = 1, password_set_RS485 = 1;
-unsigned int password_changed;
-unsigned int password_ustuvannja/* = 0*/;
+//unsigned int registers_address_read =0x20000000;
+//unsigned int registers_address_write =0x20000000;
+//unsigned int data_write_to_memory;
+//unsigned int number_registers_read/* = 0*/;
+//unsigned short int registers_values[64]/* @ "variables_RAM1"*/;
+//unsigned int action_is_continued/* = false*/;
+//unsigned int part_transmit_carrent_data/* = 0*/;
+//unsigned int command_to_receive_current_data/* = false*/;
+//int current_data_transmit[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT] /*@ "variables_RAM1"*/; 
+//volatile unsigned int wait_of_receiving_current_data/*  = false*/; 
+SRAM1 unsigned int password_set_USB, password_set_RS485;
+SRAM1 unsigned int password_changed;
+SRAM1 unsigned int password_ustuvannja/* = 0*/;
 unsigned int information_about_restart_counter/* = 0*/;
-unsigned int *point_to_edited_rang/* = NULL*/;
-unsigned int number_32bit_in_target/* = 0*/;
-unsigned int clear_array_rang[N_BIG]/* = {0, 0, 0, 0, 0, 0, 0, 0}*/;
-unsigned int set_array_rang[N_BIG]/*   = {0, 0, 0, 0, 0, 0, 0, 0}*/;
+SRAM1 unsigned int *point_to_edited_rang/* = NULL*/;
+SRAM1 unsigned int number_32bit_in_target/* = 0*/;
+SRAM1 unsigned int clear_array_rang[N_BIG]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
+SRAM1 unsigned int set_array_rang[N_BIG]/*   = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
 unsigned int restart_timeout_interface/* = 0*/;
 unsigned int timeout_idle_new_settings;
 unsigned int restart_timeout_idle_new_settings/* = 0*/;
-unsigned int type_of_settings_changed/* = 0*/;
+SRAM1 unsigned int type_of_settings_changed/* = 0*/;
 
 unsigned int serial_number_dev/* = 0*/;                         //Заводський номер пристрою
 unsigned int edit_serial_number_dev;

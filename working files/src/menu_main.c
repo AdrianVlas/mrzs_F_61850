@@ -29,6 +29,7 @@ void make_ekran_main(void)
      " ÇÎÏ(ÊÎÔ)       ",
      " ÇÍìèí          ",
      " ÇÍìàêñ         ",
+     " ÓÇ             ",
      " ÎÌÏ            "
     },
     {
@@ -53,6 +54,7 @@ void make_ekran_main(void)
      " ÇÇÏ(ÊÎÔ)       ",
      " ÇÍì³í          ",
      " ÇÍìàêñ         ",
+     " ÓÇ             ",
      " ÂÌÏ            "
     },
     {
@@ -77,6 +79,7 @@ void make_ekran_main(void)
      " NPSP           ",
      " Umin           ",
      " Umax           ",
+     " UP             ",
      " ÎÌÏ            "
     },
     {
@@ -101,6 +104,7 @@ void make_ekran_main(void)
      " ÊKK            ",
      " ÇÍìèí          ",
      " ÇÍìàêñ         ",
+     " ÓÇ             ",
      " ÎÌÏ            "
     }
   };

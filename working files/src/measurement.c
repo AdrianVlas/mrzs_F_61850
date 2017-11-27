@@ -1184,8 +1184,8 @@ void SPI_ADC_IRQHandler(void)
         {
           int data_tmp = data_for_oscylograph[tail_data_for_oscylograph_tmp].data[i];
           
-          //Цифровий осцилограф
-          current_data[index_array_of_current_data_value++] = data_tmp;
+//          //Цифровий осцилограф
+//          current_data[index_array_of_current_data_value++] = data_tmp;
           
           if((prescaler_ar & MASKA_BIT_FOR_PRESCALER) == 0)
           {
@@ -1227,11 +1227,11 @@ void SPI_ADC_IRQHandler(void)
         if (++tail_data_for_oscylograph >= MAX_INDEX_DATA_FOR_OSCYLOGRAPH) tail_data_for_oscylograph = 0;
       }
     }
-    /**************************************************/
-    //При необхідності повідомляємо про вихід з формування миттєвих значень
-    /**************************************************/
-    if (wait_of_receiving_current_data  == true) wait_of_receiving_current_data  = false;
-    /**************************************************/
+//    /**************************************************/
+//    //При необхідності повідомляємо про вихід з формування миттєвих значень
+//    /**************************************************/
+//    if (wait_of_receiving_current_data  == true) wait_of_receiving_current_data  = false;
+//    /**************************************************/
 
     //Управління аналоговим реємстратором
     if ((state_ar_record == STATE_AR_START) || (state_ar_record == STATE_AR_SAVE_SRAM_AND_SAVE_FLASH))

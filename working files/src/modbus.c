@@ -2064,69 +2064,15 @@ unsigned int save_new_rang_oldr_from_gmm(unsigned int number, unsigned int numbe
           (
            (source == SOURCE_DR_RANG) & (data == BIT_MA_WORK_D_REJESTRATOR)
           )
+          ||
+          (
+           (source == SOURCE_ON_CB_RANG) && (data == BIT_MA_WORK_BV)
+          )
+          ||
+          (
+           (source == SOURCE_OFF_CB_RANG) && (data == BIT_MA_WORK_BO)
+          )
          ) error = ERROR_ILLEGAL_DATA_VALUE;  
-      else if(
-              (
-               (source == SOURCE_OUTPUTS_RANG)
-               &&
-               (method_setting == SET_DATA_IMMEDITATE)
-               &&
-               ((data == BIT_MA_WORK_BO) || (data == BIT_MA_WORK_BV))
-              )
-             )   
-      {
-        /*
-        Зараз є спроба зранжувати "Работа БВ" або "Работа БО" на дискретний вихід
-        минуючи тиблицю редагвання (тобто гарантовано у даній трансакції пізніше не буде
-        знята умова одногочаного ранжування цих функцій на різні дискретні виходи, що може
-        мати місце при виконанні функції 16, коли спочатку встановлюємо якусь функцію, а потім знімаємо
-        цю саму функцію з іншого реле але операція ця "запрограмована" у одному запиті)
-        Треба перевірити, чи на іншому виході вони зранжовані чи ні
-        Якщо зранжовані то дане ранжування є недопустимим і треба повідомити про помилку
-        */
-        unsigned int maska_function[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
-        if (data == BIT_MA_WORK_BO)
-        {
-           _SET_BIT(maska_function, RANG_WORK_BO);
-        }
-        else
-        {
-           _SET_BIT(maska_function, RANG_WORK_BV);
-        }
-        
-        unsigned int flag_fix_setting_function = 0;
-        unsigned int i = 0;
-        while ((i < NUMBER_OUTPUTS) && (flag_fix_setting_function == 0))
-        {
-          if (i != number)
-          {
-            //перевіряємо тільки ті виходи які зараз не ранжуються
-            if (
-                (((*(target_label->ranguvannja_outputs + N_BIG*i    )) & maska_function[0]) != 0)
-                ||
-                (((*(target_label->ranguvannja_outputs + N_BIG*i + 1)) & maska_function[1]) != 0)
-                ||
-                (((*(target_label->ranguvannja_outputs + N_BIG*i + 2)) & maska_function[2]) != 0)
-                ||
-                (((*(target_label->ranguvannja_outputs + N_BIG*i + 3)) & maska_function[3]) != 0)
-                ||
-                (((*(target_label->ranguvannja_outputs + N_BIG*i + 4)) & maska_function[4]) != 0)
-                ||
-                (((*(target_label->ranguvannja_outputs + N_BIG*i + 5)) & maska_function[5]) != 0)
-                ||
-                (((*(target_label->ranguvannja_outputs + N_BIG*i + 6)) & maska_function[6]) != 0)
-                ||
-                (((*(target_label->ranguvannja_outputs + N_BIG*i + 7)) & maska_function[7]) != 0)
-               ) 
-              flag_fix_setting_function = 1;
-          }
-          
-          i++;
-        }
-        
-        //Зафіксовано, що вже дана функція зафіксована на інших виходах, тому повідомляємо про помилку
-        if (flag_fix_setting_function != 0) error = ERROR_ILLEGAL_DATA_VALUE;
-      }
     }
     else if (
              (data == BIT_MA_BLOCK_MTZ1         ) || 
@@ -2472,7 +2418,8 @@ unsigned int save_new_rang_oldr_from_gmm(unsigned int number, unsigned int numbe
       (input_value[4] != 0) ||
       (input_value[5] != 0) ||
       (input_value[6] != 0) ||
-      (input_value[7] != 0)
+      (input_value[7] != 0) ||
+      (input_value[8] != 0)
      )
   {
     //Якщо ця величина не нульова, то це означає, що якісь функції зранжовані
@@ -3870,7 +3817,8 @@ unsigned int save_new_rang_bi_from_gmm(unsigned int number, unsigned int number_
   //Підраховуємо кількість функцій, які зранжовані на даний вхід
   if (
       (input_value[0] != 0) ||
-      (input_value[1] != 0)
+      (input_value[1] != 0) ||
+      (input_value[2] != 0)
      )
   {
     //Якщо ця величина не нульова, то це означає, що якісь функції зранжовані
@@ -6602,59 +6550,59 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
   {
     temp_value = resurs_global >> 16;
   }
-  else if (address_data == MA_LSW_ADR_MEMORY_TO_WRITE)
-  {
-    temp_value = registers_address_write & 0xffff;
-  }
-  else if (address_data == MA_MSW_ADR_MEMORY_TO_WRITE)
-  {
-    temp_value = registers_address_write >> 16;
-  }
-  else if (address_data == MA_NB_REG_FROM_MEM_READ)
-  {
-    temp_value = number_registers_read;
-  }
-  else if (address_data == MA_LSW_ADR_MEMORY_TO_READ)
-  {
-    temp_value = registers_address_read & 0xffff;
-  }
-  else if (address_data == MA_MSW_ADR_MEMORY_TO_READ)
-  {
-    temp_value = registers_address_read >> 16;
-  }
-  else if((address_data >= M_ADDRESS_FIRST_READ_DAMP_MEM) && (address_data < M_ADDRESS_LAST_READ_DAMP_MEM))
-  {
-    temp_value = registers_values [address_data - M_ADDRESS_FIRST_READ_DAMP_MEM];
-  }
-  else if ((address_data >= M_ADDRESS_FIRST_TMP_MEASURMENTS) && (address_data < M_ADDRESS_LAST_TMP_MEASURMENTS))
-  {
-    if((address_data & 0x1) == 0)
-    {
-      temp_value = measurement_low[(address_data - M_ADDRESS_FIRST_TMP_MEASURMENTS)>>1] >> 16;
-    }
-    else
-    {
-      temp_value = measurement_low[(address_data - M_ADDRESS_FIRST_TMP_MEASURMENTS)>>1] & 0xffff;
-    }
-  }
-  else if((address_data >= M_ADDRESS_FIRST_DIG_OSCILOGRAPH)&& (address_data < M_ADDRESS_LAST_DIG_OSCILOGRAPH))
-  {
-    if(action_is_continued == true) error = ERROR_SLAVE_DEVICE_BUSY;
-    else
-    {
-      int temp_value_32bit = current_data_transmit[(part_transmit_carrent_data<<3) + ((address_data - M_ADDRESS_FIRST_DIG_OSCILOGRAPH) >> 1)];
-      if ( ((address_data - M_ADDRESS_FIRST_DIG_OSCILOGRAPH) & 0x1)  == 0)
-      {
-        //Старше слово
-        temp_value = (((unsigned int)temp_value_32bit) >> 16) & 0xffff;
-      }
-      else
-      {
-        //Молодше слово
-        temp_value = (((unsigned int)temp_value_32bit)      ) & 0xffff;
-      }
-    }
-  }
+//  else if (address_data == MA_LSW_ADR_MEMORY_TO_WRITE)
+//  {
+//    temp_value = registers_address_write & 0xffff;
+//  }
+//  else if (address_data == MA_MSW_ADR_MEMORY_TO_WRITE)
+//  {
+//    temp_value = registers_address_write >> 16;
+//  }
+//  else if (address_data == MA_NB_REG_FROM_MEM_READ)
+//  {
+//    temp_value = number_registers_read;
+//  }
+//  else if (address_data == MA_LSW_ADR_MEMORY_TO_READ)
+//  {
+//    temp_value = registers_address_read & 0xffff;
+//  }
+//  else if (address_data == MA_MSW_ADR_MEMORY_TO_READ)
+//  {
+//    temp_value = registers_address_read >> 16;
+//  }
+//  else if((address_data >= M_ADDRESS_FIRST_READ_DAMP_MEM) && (address_data < M_ADDRESS_LAST_READ_DAMP_MEM))
+//  {
+//    temp_value = registers_values [address_data - M_ADDRESS_FIRST_READ_DAMP_MEM];
+//  }
+//  else if ((address_data >= M_ADDRESS_FIRST_TMP_MEASURMENTS) && (address_data < M_ADDRESS_LAST_TMP_MEASURMENTS))
+//  {
+//    if((address_data & 0x1) == 0)
+//    {
+//      temp_value = measurement_low[(address_data - M_ADDRESS_FIRST_TMP_MEASURMENTS)>>1] >> 16;
+//    }
+//    else
+//    {
+//      temp_value = measurement_low[(address_data - M_ADDRESS_FIRST_TMP_MEASURMENTS)>>1] & 0xffff;
+//    }
+//  }
+//  else if((address_data >= M_ADDRESS_FIRST_DIG_OSCILOGRAPH)&& (address_data < M_ADDRESS_LAST_DIG_OSCILOGRAPH))
+//  {
+//    if(action_is_continued == true) error = ERROR_SLAVE_DEVICE_BUSY;
+//    else
+//    {
+//      int temp_value_32bit = current_data_transmit[(part_transmit_carrent_data<<3) + ((address_data - M_ADDRESS_FIRST_DIG_OSCILOGRAPH) >> 1)];
+//      if ( ((address_data - M_ADDRESS_FIRST_DIG_OSCILOGRAPH) & 0x1)  == 0)
+//      {
+//        //Старше слово
+//        temp_value = (((unsigned int)temp_value_32bit) >> 16) & 0xffff;
+//      }
+//      else
+//      {
+//        //Молодше слово
+//        temp_value = (((unsigned int)temp_value_32bit)      ) & 0xffff;
+//      }
+//    }
+//  }
   else
   {
     error = ERROR_ILLEGAL_DATA_ADDRESS;
@@ -10370,56 +10318,56 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
     else
       error = ERROR_ILLEGAL_DATA_VALUE;
   }
-  else if (address_data == MA_LSW_ADR_MEMORY_TO_WRITE)
-  {
-    registers_address_write = (registers_address_write & 0xffff0000) + (data);
-  }
-  else if (address_data == MA_MSW_ADR_MEMORY_TO_WRITE)
-  {
-   registers_address_write = (registers_address_write & 0xffff) + (data << 16);
-  }
-  else if (address_data == MA_LSW_DATA_MEMORY_TO_WRITE)
-  {
-    unsigned int *label;
-
-    data_write_to_memory = (data_write_to_memory & 0xffff0000) + (data);
-    label = (unsigned int *)(registers_address_write);
-    *label = data_write_to_memory;
-  }
-  else if (address_data == MA_MSW_DATA_MEMORY_TO_WRITE)
-  {
-    data_write_to_memory = data << 16;
-  }
-  else if (address_data == MA_NB_REG_FROM_MEM_READ)
-  {
-    number_registers_read = data;
-  }
-  else if (address_data == MA_LSW_ADR_MEMORY_TO_READ)
-  {
-    unsigned int index;
-    unsigned short int *label;
-
-    registers_address_read = (registers_address_read & 0xffff0000) + (data);
-    label = (unsigned short int *)(registers_address_read);
-	  
-    for (index = 0; index<number_registers_read; index++)
-    {	
-      registers_values[index] = *(label++);
-    }
-  }
-  else if (address_data == MA_MSW_ADR_MEMORY_TO_READ)
-  {
-    registers_address_read = (registers_address_read & 0xffff) + (data << 16);
-  }
-  else if (address_data == MA_PART_RECEIVE_DIG_OSCILOGRAPH)
-  {
-    part_transmit_carrent_data = data;
-    if(part_transmit_carrent_data == 0)
-    {
-      action_is_continued = true;
-      command_to_receive_current_data = true;
-    }
-  }
+//  else if (address_data == MA_LSW_ADR_MEMORY_TO_WRITE)
+//  {
+//    registers_address_write = (registers_address_write & 0xffff0000) + (data);
+//  }
+//  else if (address_data == MA_MSW_ADR_MEMORY_TO_WRITE)
+//  {
+//   registers_address_write = (registers_address_write & 0xffff) + (data << 16);
+//  }
+//  else if (address_data == MA_LSW_DATA_MEMORY_TO_WRITE)
+//  {
+//    unsigned int *label;
+//
+//    data_write_to_memory = (data_write_to_memory & 0xffff0000) + (data);
+//    label = (unsigned int *)(registers_address_write);
+//    *label = data_write_to_memory;
+//  }
+//  else if (address_data == MA_MSW_DATA_MEMORY_TO_WRITE)
+//  {
+//    data_write_to_memory = data << 16;
+//  }
+//  else if (address_data == MA_NB_REG_FROM_MEM_READ)
+//  {
+//    number_registers_read = data;
+//  }
+//  else if (address_data == MA_LSW_ADR_MEMORY_TO_READ)
+//  {
+//    unsigned int index;
+//    unsigned short int *label;
+//
+//    registers_address_read = (registers_address_read & 0xffff0000) + (data);
+//    label = (unsigned short int *)(registers_address_read);
+//	  
+//    for (index = 0; index<number_registers_read; index++)
+//    {	
+//      registers_values[index] = *(label++);
+//    }
+//  }
+//  else if (address_data == MA_MSW_ADR_MEMORY_TO_READ)
+//  {
+//    registers_address_read = (registers_address_read & 0xffff) + (data << 16);
+//  }
+//  else if (address_data == MA_PART_RECEIVE_DIG_OSCILOGRAPH)
+//  {
+//    part_transmit_carrent_data = data;
+//    if(part_transmit_carrent_data == 0)
+//    {
+//      action_is_continued = true;
+//      command_to_receive_current_data = true;
+//    }
+//  }
   else if (address_data == MA_DEFAULT_SETTINGS)
   {
     if (data != CMD_WORD_SET_DEFAULT_SETTINGS)
@@ -12456,8 +12404,8 @@ void modbus_rountines(unsigned int type_interface)
 
             if (
                 ((add_data >= M_ADDRESS_FIRST_MEASUREMENTS_1 ) && (add_data <= M_ADDRESS_LAST_MEASUREMENTS_1)) ||
-                ((add_data >= M_ADDRESS_FIRST_MEASUREMENTS_2 ) && (add_data <= M_ADDRESS_LAST_MEASUREMENTS_2)) ||
-                ((add_data >= M_ADDRESS_FIRST_TMP_MEASURMENTS) && (add_data <  M_ADDRESS_LAST_TMP_MEASURMENTS))  
+                ((add_data >= M_ADDRESS_FIRST_MEASUREMENTS_2 ) && (add_data <= M_ADDRESS_LAST_MEASUREMENTS_2))/* ||
+                ((add_data >= M_ADDRESS_FIRST_TMP_MEASURMENTS) && (add_data <  M_ADDRESS_LAST_TMP_MEASURMENTS))*/  
                )
             {
               //Копіюємо вимірювання
@@ -13420,7 +13368,7 @@ void modbus_rountines(unsigned int type_interface)
               unsigned int index_byte = 0, index_bit, number_activated_function;
               unsigned char temp_data;
               unsigned int i = 0;
-              unsigned int activation_function_from_interface_tmp[N_SMALL] = {0, 0}, reset_trigger_functions = 0, restart_counter_tmp = 0;
+              unsigned int activation_function_from_interface_tmp[N_SMALL] = {0, 0, 0}, reset_trigger_functions = 0, restart_counter_tmp = 0;
               int set_new_settings = -1;
               while ((i < number) && (error == 0))
               {
@@ -13520,7 +13468,8 @@ void modbus_rountines(unsigned int type_interface)
               {
                 if (
                     (activation_function_from_interface_tmp[0] != 0) ||
-                    (activation_function_from_interface_tmp[1] != 0)
+                    (activation_function_from_interface_tmp[1] != 0) ||
+                    (activation_function_from_interface_tmp[2] != 0)
                    )   
                 {
                   mutex_interface = true;

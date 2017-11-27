@@ -275,6 +275,31 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       )
       error_window |= (1 << UMAX_BIT_CONFIGURATION );
   }
+  //Перевірка Універсальний Пристрій
+  if ((new_configuration & (1<<UP_BIT_CONFIGURATION)) == 0)
+  {
+    if(
+       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UP)
+       || 
+       (
+        (current_ekran.current_level >= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP) &&
+        (current_ekran.current_level <= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UP) 
+       )  
+       ||
+       (
+        (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+        (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+       )
+       ||  
+       (
+        (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+        (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+       )
+       ||  
+       (current_ekran.current_level == EKRAN_CONTROL_UP        )
+      )
+      error_window |= (1 << UP_BIT_CONFIGURATION );
+  }
   //Перевірка "Визначення місця пошкодження"
   if ((new_configuration & (1<<VMP_BIT_CONFIGURATION)) == 0)
   {
@@ -306,7 +331,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     //Вводимо нову конфігурацю у цільову структуру
     target_label->configuration = new_configuration;
     
-    unsigned int maska[N_SMALL] = {0, 0}, maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
+    unsigned int maska[N_SMALL] = {0, 0, 0}, maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   
     //Перевіряємо, чи МТЗ зараз знято з конфігурації
     if ((target_label->configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
@@ -337,8 +362,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_MTZ1 | CTR_UROV_STARTED_FROM_MTZ2 | CTR_UROV_STARTED_FROM_MTZ3 | CTR_UROV_STARTED_FROM_MTZ4));
       
       //Формуємо маски функцій МТЗ
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -363,6 +387,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за МТЗ
@@ -370,6 +395,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -446,8 +472,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_MTZ04_1 | CTR_UROV_STARTED_FROM_MTZ04_2));
       
       //Формуємо маки функцій МТЗ 0.4кВ
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -474,6 +499,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за МТЗ 0.4кВ
@@ -481,6 +507,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -557,8 +584,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~CTR_UROV_STARTED_FROM_ZDZ);
       
       //Формуємо маки функцій ЗДЗ
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -587,6 +613,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗДЗ
@@ -594,6 +621,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів, які відповідають за ЗДЗ
       //Знімаємо всі функції для ранжування виходів
@@ -671,8 +699,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_3I0 | CTR_UROV_STARTED_FROM_3U0 |CTR_UROV_STARTED_FROM_NZZ));
 
       //Формуємо маки функцій ЗЗ
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -703,6 +730,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗЗ
@@ -710,6 +738,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -786,8 +815,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_TZNP1 | CTR_UROV_STARTED_FROM_TZNP2 | CTR_UROV_STARTED_FROM_TZNP3));
       
       //Формуємо маки функцій ТЗНП
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -820,6 +848,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за ТЗНП
@@ -827,6 +856,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -900,8 +930,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_apv &= (unsigned int)(~(CTR_APV_STAGE_1 | CTR_APV_STAGE_2 | CTR_APV_STAGE_3 | CTR_APV_STAGE_4));
    
       //Формуємо маки функцій АПВ
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_APV_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -936,6 +965,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за АПВ
@@ -943,6 +973,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -1019,8 +1050,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_ACHR1 | CTR_UROV_STARTED_FROM_ACHR2));
       
       //Формуємо маки функцій АЧР-ЧАПВ
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -1057,6 +1087,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за АЧР-ЧАПВ
@@ -1064,6 +1095,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -1137,8 +1169,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~CTR_UROV_STATE);
    
         //Формуємо маки функцій УРОВ
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_UROV_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -1177,6 +1208,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за УРОВ
@@ -1184,6 +1216,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -1260,8 +1293,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~CTR_UROV_STARTED_FROM_ZOP1);
 
       //Формуємо маки функцій ЗОП(КОФ)
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -1302,6 +1334,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗОП(КОФ)
@@ -1309,6 +1342,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -1399,8 +1433,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_UMIN1 | CTR_UROV_STARTED_FROM_UMIN2));
       
       //Формуємо маски функцій Umin
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -1443,6 +1476,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за Umin
@@ -1450,6 +1484,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -1526,8 +1561,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_UMAX1 | CTR_UROV_STARTED_FROM_UMAX2));
    
       //Формуємо маски функцій Umax
-      maska[0] = 0;
-      maska[1] = 0;
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
@@ -1573,6 +1607,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за Umax
@@ -1580,6 +1615,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
         target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
       }
       //Знімаємо всі функції для ранжування виходів
       for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -1654,9 +1690,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     }
 
     //"Розширена логіка"
-    maska[0] = 0;
-    maska[1] = 0;
-    unsigned int array_full[N_BIG] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
+    for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
+    unsigned int array_full[N_BIG] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
     unsigned int *point_to_mask_array;
     for (unsigned int i = 0; i < N_BIG; i++ ) maska_1[i] = 0;
     if ((target_label->configuration & (1<<EL_BIT_CONFIGURATION)) == 0)
@@ -1788,6 +1823,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     {
       target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
       target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+      target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
     }
     
     //Знімаємо всі функції для ранжування входів, які відповідають за Розширеної логіки
@@ -1795,6 +1831,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     {
       target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
       target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+      target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
     }
     //Знімаємо всі функції для ранжування виходів
     for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -1900,7 +1937,7 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
     //Виводим НЗЗ з УРОВ
     target_label->control_urov &= (unsigned int)(~CTR_UROV_STARTED_FROM_NZZ);
       
-    unsigned int /*maska[N_SMALL] = {0,0}, */maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
+    unsigned int /*maska[N_SMALL] = {0,0,0}, */maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     
     _SET_BIT(maska_1, RANG_PO_NZZ);
     _SET_BIT(maska_1, RANG_NZZ);
@@ -1911,12 +1948,14 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
 //    {
 //      target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
 //      target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+//      target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
 //    }
     //Знімаємо всі функції для ранжування входів, які відповідають за наявність каналу 3U0
 //    for (int i = 0; i < NUMBER_INPUTS; i++)
 //    {
 //      target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
 //      target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+//      target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
 //    }
     //Знімаємо всі функції для ранжування виходів
     for (int i = 0; i < NUMBER_OUTPUTS; i++)
@@ -2035,7 +2074,7 @@ void action_during_changing_button_mode(__SETTINGS *current_label, __SETTINGS *e
 ///*****************************************************/
 //void action_after_changing_number_el(__SETTINGS *target_label, unsigned int element)
 //{
-//  unsigned int maska[N_SMALL] = {0, 0}, maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0}, maska_2 = 0;
+//  unsigned int maska[N_SMALL] = {0, 0, 0}, maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0}, maska_2 = 0;
 //
 //  //Формуємо маски тільки тих сигналів розширеної логіки, які виведені з конфігурації у кількісному значенні
 //  unsigned int array_defined_logic[NUMBER_DEFINED_ELEMENTS][2] =
@@ -2115,12 +2154,14 @@ void action_during_changing_button_mode(__SETTINGS *current_label, __SETTINGS *e
 //  {
 //    target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
 //    target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+//    target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
 //  }
 //  //Знімаємо всі функції для ранжування входів, які відповідають за Розширену логіку
 //  for (int i = 0; i < NUMBER_INPUTS; i++)
 //  {
 //    target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
 //    target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+//    target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
 //  }
 //  //Знімаємо всі функції для ранжування виходів
 //  for (int i = 0; i < NUMBER_OUTPUTS; i++)

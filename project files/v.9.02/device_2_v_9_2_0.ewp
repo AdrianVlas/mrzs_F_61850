@@ -4525,6 +4525,9 @@
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_Umin.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\working files\inc\const_menu_UP.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_urov.h</name>
         </file>
         <file>

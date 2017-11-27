@@ -1532,6 +1532,9 @@
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_Umin.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\working files\inc\const_menu_UP.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_urov.h</name>
         </file>
         <file>
@@ -1614,6 +1617,12 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\start_settings.c</name>
+        </file>
+      </group>
+      <group>
+        <name>I2C</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\i2c.c</name>
         </file>
       </group>
       <group>
@@ -1779,12 +1788,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\protections.c</name>
-        </file>
-      </group>
-      <group>
-        <name>I2C</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\working files\src\i2c.c</name>
         </file>
       </group>
       <group>

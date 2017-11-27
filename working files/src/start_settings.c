@@ -411,6 +411,17 @@ void global_vareiables_installation(void)
   i_nom_const = I_NOM * KOEF_1_2_I;
   u_linear_nom_const = U_LINEAR_NOM * KOEF_0_2_U;
   /**************************/
+  
+  //Modbus-RTU
+  number_32bit_in_target = 0;
+  type_of_settings_changed = 0;
+  point_to_edited_rang = NULL;
+  for(size_t i = 0; i < N_BIG; i++)
+  {
+    clear_array_rang[i] = 0;
+    set_array_rang[i] = 0;
+  }
+  password_ustuvannja = 0;
 }
 /**************************************/
 
@@ -1290,6 +1301,7 @@ void min_settings(__SETTINGS *target_label)
   {
     target_label->ranguvannja_inputs[N_SMALL*i  ] = 0x0;
     target_label->ranguvannja_inputs[N_SMALL*i+1] = 0x0;
+    target_label->ranguvannja_inputs[N_SMALL*i+2] = 0x0;
     
     if ((target_label->type_of_input_signal & (1<<i)) != 0)
     {
@@ -1384,6 +1396,7 @@ void min_settings(__SETTINGS *target_label)
   {
     target_label->ranguvannja_buttons[N_SMALL*i  ] = 0x0;
     target_label->ranguvannja_buttons[N_SMALL*i+1] = 0x0;
+    target_label->ranguvannja_buttons[N_SMALL*i+2] = 0x0;
   }
 
   target_label->configuration = 0;
