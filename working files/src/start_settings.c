@@ -1582,6 +1582,7 @@ void min_settings(__SETTINGS *target_label)
   }
 
   target_label->ctrl_zdz_type = ZDZ_CTRL_MIN;
+  for (size_t i = 0; i < NUMBER_UP; i++) target_label->ctrl_UP_input[i] = UP_CTRL_Ia_Ib_Ic;
 
   target_label->control_mtz = 0;
   target_label->control_mtz04 = 0;
@@ -1594,6 +1595,7 @@ void min_settings(__SETTINGS *target_label)
   target_label->control_zop = 0;
   target_label->control_Umin = 0;
   target_label->control_Umax = 0;
+  target_label->control_UP = 0;
   
   target_label->setpoint_Inom = SETPOINT_Inom_MIN;
   target_label->setpoint_r_kom_st_Inom = SETPOINT_RKS_Inom_MIN;

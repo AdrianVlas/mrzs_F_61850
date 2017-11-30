@@ -4741,6 +4741,9 @@
           <name>$PROJ_DIR$\..\..\working files\src\menu_Umin.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\working files\src\menu_UP.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\working files\src\menu_urov.c</name>
         </file>
         <file>

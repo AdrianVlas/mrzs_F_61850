@@ -9098,7 +9098,8 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
         output_value |= ((data >> (BIT_MA_CONTROL_PHASE_LINE - BIT_MA_CONTROL_558_BASE)) & 0x1) << INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE;
         output_value |= ((data >> (BIT_MA_CONTROL_IB_I04     - BIT_MA_CONTROL_558_BASE)) & 0x1) << INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04;
         
-        target_label->control_extra_settings_1 = output_value;
+        if(action_after_changing_extra_settings(output_value, target_label) != 0)
+          error = ERROR_SLAVE_DEVICE_BUSY;
 
         break;
       }

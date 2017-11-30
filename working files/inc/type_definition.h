@@ -188,7 +188,7 @@ typedef struct
   //ЗДЗ
   int32_t timeout_zdz[NUMBER_GROUP_USTAVOK];                //Витримка ЗДЗ
   unsigned int control_zdz;                                 //Поле для управління ЗДЗ
-  int32_t ctrl_zdz_type;                               //Тип контролю ЗДЗ
+  int32_t ctrl_zdz_type;                                    //Тип контролю ЗДЗ
                                                             /*
                                                             0 - Без контролю
                                                             1 - Контроль по I
@@ -291,6 +291,13 @@ typedef struct
   int timeout_Umax1[NUMBER_GROUP_USTAVOK];                  //Витримка  Umax1
   int timeout_Umax2[NUMBER_GROUP_USTAVOK];                  //Витримка  Umax2
   unsigned int control_Umax;                                //Поле для управління Umax
+  
+  //Універсальний захист
+  uint32_t setpoint_UP[NUMBER_GROUP_USTAVOK][NUMBER_UP][1];     //Уставка для всіх ступенів
+  uint32_t setpoint_UP_KP[NUMBER_GROUP_USTAVOK][NUMBER_UP][1];  //Уставка для "Коефіцієнта повернення" всіх ступенів
+  int32_t timeout_UP[NUMBER_GROUP_USTAVOK][NUMBER_UP][1];       //Витримка для Універсального захисту
+  uint32_t control_UP;                                          //Поля для управління
+  int32_t ctrl_UP_input[NUMBER_UP];                             //Вибір входу Універсального захисту
 
   unsigned int T0;                      //Коефіцієнт трансформації для трансформатора 3I0
   unsigned int TCurrent;                //Коефіцієнт трансформації для трансформатора струмів

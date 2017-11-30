@@ -1682,6 +1682,142 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       }
     }
 
+    //Перевіряємо, чи Універсальний захист зараз знято з конфігурації
+    if ((target_label->configuration & (1<<UP_BIT_CONFIGURATION)) == 0)
+    {
+      for (size_t i = 0; i < NUMBER_UP; i++)
+      {
+        //Виводим ступені УЗ
+        target_label->control_UP &= (unsigned int)(~(i*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I)));
+
+//        //Виводим ступені УЗ з УРОВ
+//        target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_UP + i));
+      }
+   
+      //Формуємо маски функцій УЗ
+      for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
+      for (int i = 0; i < NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL; i++)
+        _SET_BIT(
+                 maska, 
+                 (
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
+                  NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
+                  NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       +
+                  i
+                 )
+                );
+     
+      for (unsigned int i = 0; i < N_BIG; i++ ) maska_1[i] = 0;
+      for (int i = 0; i < NUMBER_UMAX_SIGNAL_FOR_RANG; i++)
+        _SET_BIT(
+                 maska_1, 
+                 (
+                  NUMBER_GENERAL_SIGNAL_FOR_RANG    + 
+                  NUMBER_MTZ_SIGNAL_FOR_RANG        +
+                  NUMBER_MTZ04_SIGNAL_FOR_RANG      +
+                  NUMBER_ZDZ_SIGNAL_FOR_RANG        +
+                  NUMBER_ZZ_SIGNAL_FOR_RANG         +
+                  NUMBER_TZNP_SIGNAL_FOR_RANG       +
+                  NUMBER_APV_SIGNAL_FOR_RANG        +
+                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG +
+                  NUMBER_UROV_SIGNAL_FOR_RANG       +
+                  NUMBER_ZOP_SIGNAL_FOR_RANG        +
+                  NUMBER_UMIN_SIGNAL_FOR_RANG       +
+                  NUMBER_UMAX_SIGNAL_FOR_RANG       +
+                  i
+                 )
+                );
+
+
+      //Знімаємо всі функції для ранжування входів, які відповідають за УЗ
+      for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
+      {
+        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+      }
+
+      //Знімаємо всі функції для ранжування входів, які відповідають за УЗ
+      for (int i = 0; i < NUMBER_INPUTS; i++)
+      {
+        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
+        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
+        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+      }
+      //Знімаємо всі функції для ранжування виходів
+      for (int i = 0; i < NUMBER_OUTPUTS; i++)
+      {
+        for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_outputs[N_BIG*i+j] &= ~maska_1[j];
+      }
+      //Знімаємо всі функції для ранжування світоіндикаторів
+      for (int i = 0; i < NUMBER_LEDS; i++)
+      {
+        for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_leds[N_BIG*i+j] &= ~maska_1[j];
+      }
+      //Знімаємо всі функції для ранжування аналогового і дискретного реєстраторів
+      for (unsigned int j = 0; j < N_BIG; j++ ) 
+      {
+        target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
+        target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
+        target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
+        target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
+      }
+      //Знімаємо всі функції для ранжування оприділювальних функцій
+      for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
+      {
+        for (unsigned int j = 0; j < N_BIG; j++ ) 
+        {
+          target_label->ranguvannja_df_source_plus[N_BIG*i+j]  &= ~maska_1[j];
+          target_label->ranguvannja_df_source_minus[N_BIG*i+j] &= ~maska_1[j];
+          target_label->ranguvannja_df_source_blk[N_BIG*i+j]   &= ~maska_1[j];
+        }
+      }
+      //Знімаємо всі функції для ранжування оприділювальних триґерів
+      for (int i = 0; i < NUMBER_DEFINED_TRIGGERS; i++)
+      {
+        for (unsigned int j = 0; j < N_BIG; j++ ) 
+        {
+          target_label->ranguvannja_set_dt_source_plus[N_BIG*i+j]    &= ~maska_1[j];
+          target_label->ranguvannja_set_dt_source_minus[N_BIG*i+j]   &= ~maska_1[j];
+          target_label->ranguvannja_reset_dt_source_plus[N_BIG*i+j]  &= ~maska_1[j];
+          target_label->ranguvannja_reset_dt_source_minus[N_BIG*i+j] &= ~maska_1[j];
+        }
+      }
+  
+      //Знімаємо всі функції для ранжування визначуваних "І"
+      for(unsigned int i = 0; i < NUMBER_DEFINED_AND; i++)
+      {
+        for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_and[N_BIG*i+j] &= ~maska_1[j];
+      }
+  
+      //Знімаємо всі функції для ранжування визначуваних "АБО"
+      for(unsigned int i = 0; i < NUMBER_DEFINED_OR; i++)
+      {
+        for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_or[N_BIG*i+j] &= ~maska_1[j];
+      }
+  
+      //Знімаємо всі функції для ранжування визначуваних "Викл.АБО"
+      for(unsigned int i = 0; i < NUMBER_DEFINED_XOR; i++)
+      {
+        for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_xor[N_BIG*i+j] &= ~maska_1[j];
+      }
+  
+      //Знімаємо всі функції для ранжування визначуваних "НЕ"
+      for(unsigned int i = 0; i < NUMBER_DEFINED_NOT; i++)
+      {
+        for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_not[N_BIG*i+j] &= ~maska_1[j];
+      }
+    }
+
     //Перевіряємо, чи "Визначення місця пошкодження" зараз знято з конфігурації
     if ((target_label->configuration & (1<<VMP_BIT_CONFIGURATION)) == 0)
     {
@@ -1715,6 +1851,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                   NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
                   NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
                   NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       +
+                  NUMBER_UP_SIGNAL_FOR_RANG_SMALL         +
                   NUMBER_VMP_SIGNAL_FOR_RANG_SMALL        +
                   i
                  )
@@ -1736,6 +1873,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                   NUMBER_ZOP_SIGNAL_FOR_RANG        +
                   NUMBER_UMIN_SIGNAL_FOR_RANG       +
                   NUMBER_UMAX_SIGNAL_FOR_RANG       +
+                  NUMBER_UP_SIGNAL_FOR_RANG         +
                   NUMBER_VMP_SIGNAL_FOR_RANG        +
                   i
                  )
@@ -1905,10 +2043,10 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 /*****************************************************/
 //Функція обновлення змінних при зміні типу вхідних напруг
 /*****************************************************/
-unsigned int action_after_changing_Ib_I04(__SETTINGS *target_label)
+unsigned int action_after_changing_extra_settings(unsigned int new_value, __SETTINGS *target_label)
 {
   unsigned int new_configuration = target_label->configuration;
-  if ((target_label->control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+  if ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
   {
     //Підготовляємо вивід з конфігурації МТЗ 0.4кВ
     new_configuration &= (unsigned int)(~(1 << MTZ04_BIT_CONFIGURATION));
@@ -1920,7 +2058,33 @@ unsigned int action_after_changing_Ib_I04(__SETTINGS *target_label)
   }
   
   //Виконуєм спробу зміни конфігурації по зміні Ib/I0.4 і повертаємо результат цієї спроби
-  return action_after_changing_of_configuration(new_configuration, target_label);
+  unsigned int error = action_after_changing_of_configuration(new_configuration, target_label);
+  if (error == 0) 
+  {
+    //Вводимо в дію номі значення  поля додаткових налаштувань
+    target_label->control_extra_settings_1 = new_value;
+    
+    for (size_t i = 0; i < NUMBER_UP; i++) 
+    {
+      if (
+          ((target_label->ctrl_UP_input[i] == UP_CTRL_I04  ) && ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)) ||
+          ((target_label->ctrl_UP_input[i] == UP_CTRL_3I0_r) && ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)) ||
+          (
+           (
+            (target_label->ctrl_UP_input[i] == UP_CTRL_U1) ||
+            (target_label->ctrl_UP_input[i] == UP_CTRL_U2)
+           )
+           &&
+           ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)  
+          ) 
+         )   
+      {
+        action_after_changing_input_UP(target_label, i, UP_CTRL_Ia_Ib_Ic);
+      }
+    }
+  }
+  
+  return error;
 }
 /*****************************************************/
 
@@ -2066,6 +2230,22 @@ void action_during_changing_button_mode(__SETTINGS *current_label, __SETTINGS *e
   
   //Активовуємо нові режими для всіх кнопок
   current_label->buttons_mode = edit_label->buttons_mode;
+}
+/*****************************************************/
+
+/*****************************************************
+Функція обновлення змінних при зміні режиму ФК
+*****************************************************/
+void action_after_changing_input_UP(__SETTINGS *current_label, uint32_t index, uint32_t value)
+{
+  if (current_label->ctrl_UP_input[index] != value)
+  {
+    current_label->ctrl_UP_input[index] = value;
+    uint32_t ctrl_maska = MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
+                          MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
+                          MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));  
+    current_label->control_UP &= (uint32_t)(~ctrl_maska);
+  }
 }
 /*****************************************************/
 
