@@ -5630,30 +5630,30 @@ void main_manu_function(void)
               //Формуємо екран управлінської інформації для Umax
               make_ekran_control_Umax();
             }
-//            else if(
-//                    (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
-//                    (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
-//                   )   
-//            {
-//              if(current_ekran.index_position >= MAX_ROW_FOR_SETPOINT_UP) current_ekran.index_position = 0;
-//              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
-//
-//              //Формуємо екран уставок УЗ
-//              int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
-//              make_ekran_setpoint_UP(group);
-//            }
-//            else if(
-//                    (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
-//                    (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
-//                   )   
-//            {
-//              if(current_ekran.index_position >= MAX_ROW_FOR_TIMEOUT_UP) current_ekran.index_position = 0;
-//              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
-//
-//              //Формуємо екран витримок УЗ
-//              int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
-//              make_ekran_timeout_UP(group);
-//            }
+            else if(
+                    (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                    (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                   )   
+            {
+              if(current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP)) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+
+              //Формуємо екран уставок УЗ
+              int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+              make_ekran_setpoint_UP(group);
+            }
+            else if(
+                    (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                    (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                   )   
+            {
+              if(current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_TIMEOUT_UP)) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+
+              //Формуємо екран витримок УЗ
+              int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+              make_ekran_timeout_UP(group);
+            }
             else if(current_ekran.current_level == EKRAN_CONTROL_UP)
             {
               if(current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_CONTROL_UP)) current_ekran.index_position = 0;

@@ -11,6 +11,45 @@
 #define EKRAN_TIMEOUT_UP_GROUP4    (EKRAN_TIMEOUT_UP_GROUP3  + 1)
 #define EKRAN_CONTROL_UP           (EKRAN_CONTROL_UMAX  + 1)
 
+enum _index_ml_stp_UP
+{
+  INDEX_ML_STP_UP = 0,
+  INDEX_ML_STP_UP_KP,
+  
+  MAX_ROW_FOR_SETPOINT_UP
+};
+
+#define COL_SETPOINT_UP_I_BEGIN      4
+#define COL_SETPOINT_UP_I_COMMA      7
+#define COL_SETPOINT_UP_I_END        9
+
+#define COL_SETPOINT_UP_3I0_BEGIN    4
+#define COL_SETPOINT_UP_3I0_COMMA    5
+#define COL_SETPOINT_UP_3I0_END      8
+
+#define COL_SETPOINT_UP_U_BEGIN      4
+#define COL_SETPOINT_UP_U_COMMA      7
+#define COL_SETPOINT_UP_U_END        8
+
+#define COL_SETPOINT_UP_P_BEGIN      2
+#define COL_SETPOINT_UP_P_COMMA      6
+#define COL_SETPOINT_UP_P_END        9
+
+#define COL_SETPOINT_UP_KP_BEGIN     6
+#define COL_SETPOINT_UP_KP_COMMA     7
+#define COL_SETPOINT_UP_KP_END       9
+
+enum _index_ml_tmo_UP
+{
+  INDEX_ML_TMOUP = 0,
+  
+  MAX_ROW_FOR_TIMEOUT_UP
+};
+
+#define COL_TMO_UP_BEGIN             4
+#define COL_TMO_UP_COMMA             7
+#define COL_TMO_UP_END               9
+
 enum _control_type_UP
 {
   _UP_CTRL_MIN = 0,

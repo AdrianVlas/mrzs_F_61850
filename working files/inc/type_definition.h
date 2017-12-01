@@ -293,9 +293,9 @@ typedef struct
   unsigned int control_Umax;                                //Поле для управління Umax
   
   //Універсальний захист
-  uint32_t setpoint_UP[NUMBER_GROUP_USTAVOK][NUMBER_UP][1];     //Уставка для всіх ступенів
-  uint32_t setpoint_UP_KP[NUMBER_GROUP_USTAVOK][NUMBER_UP][1];  //Уставка для "Коефіцієнта повернення" всіх ступенів
-  int32_t timeout_UP[NUMBER_GROUP_USTAVOK][NUMBER_UP][1];       //Витримка для Універсального захисту
+  uint32_t setpoint_UP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];     //Уставка для всіх ступенів
+  uint32_t setpoint_UP_KP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];  //Уставка для "Коефіцієнта повернення" всіх ступенів
+  int32_t timeout_UP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];       //Витримка для Універсального захисту
   uint32_t control_UP;                                          //Поля для управління
   int32_t ctrl_UP_input[NUMBER_UP];                             //Вибір входу Універсального захисту
 
@@ -532,6 +532,15 @@ typedef enum _setting_data
   SET_DATA_IMMEDITATE
 } __settings_data;
 
+typedef struct _vd
+{
+  unsigned int begin;
+  unsigned int comma;
+  unsigned int end;
+  unsigned int u_begin;
+  unsigned int u_end;
+  const unsigned char *p_unit;
+} __vd;
 
 typedef struct _ctrl_info
 {

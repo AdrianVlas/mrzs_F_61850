@@ -108,6 +108,8 @@ extern void make_ekran_control_Umin(void);
 extern void make_ekran_setpoint_Umax(unsigned int);
 extern void make_ekran_timeout_Umax(unsigned int);
 extern void make_ekran_control_Umax(void);
+extern void make_ekran_setpoint_UP(unsigned int);
+extern void make_ekran_timeout_UP(unsigned int);
 extern void make_ekran_control_UP(void);
 extern void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(unsigned int);
 extern void make_ekran_transformator(void);

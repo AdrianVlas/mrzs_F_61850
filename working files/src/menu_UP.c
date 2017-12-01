@@ -1,148 +1,469 @@
 #include "header.h"
 
 /*****************************************************/
+//Формуємо екран відображення уставок Універсального захисту
+/*****************************************************/
+void make_ekran_setpoint_UP(unsigned int group)
+{
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_UP][MAX_COL_LCD] = 
+  {
+    {
+      "      УЗx       ",
+      "     КВ УЗx     "
+    },
+    {
+      "      УЗx       ",
+      "     КП УЗx     "
+    },
+    {
+      "      UPx       ",
+      "     KB UPx     "
+    },
+    {
+      "      УЗx       ",
+      "     КВ УЗx     "
+    },
+  };
+  const uint32_t index_number[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_UP] = 
+  {
+    {8, 10},
+    {8, 10},
+    {8, 10},
+    {8, 10}
+  };
+  
+  const uint8_t string_W[MAX_NAMBER_LANGUAGE][2] = 
+  {
+    "Вт",
+    "Вт",
+    "W ",
+    "Вт"
+  };
+  const uint8_t string_VAR[MAX_NAMBER_LANGUAGE][3] = 
+  {
+    "ВАр",
+    "ВАр",
+    "var",
+    "ВАр"
+  };
+
+  const uint8_t string_VA[MAX_NAMBER_LANGUAGE][3] = 
+  {
+    "ВА",
+    "ВА",
+    "VA",
+    "ВА"
+  };
+
+  int index_language = index_language_in_array(current_settings.language);
+  unsigned int position_temp = current_ekran.index_position;
+  
+  __vd vd[MAX_ROW_FOR_SETPOINT_UP];
+  uint32_t vaga_arr[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP];
+  uint32_t *p_value[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP]; 
+
+  for (size_t i = 0; i < (NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP); i++)
+  {
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != i));
+    uint32_t index = current_settings.ctrl_UP_input[i / MAX_ROW_FOR_SETPOINT_UP];
+    
+    switch (i)
+    {
+    case 0:
+    case 2:
+    case 4:
+    case 6:
+    case 8:
+    case 10:
+    case 12:
+    case 14:
+      {
+        switch (index)
+        {
+        case UP_CTRL_Ia_Ib_Ic:
+        case UP_CTRL_Ia:
+        case UP_CTRL_Ib:
+        case UP_CTRL_Ic:
+        case UP_CTRL_I1:
+        case UP_CTRL_I2:
+        case UP_CTRL_I04:
+        case UP_CTRL_3I0_r:
+          {
+            vd[i].begin = COL_SETPOINT_UP_I_BEGIN;
+            vd[i].comma = COL_SETPOINT_UP_I_COMMA;
+            vd[i].end = COL_SETPOINT_UP_I_END;
+            vd[i].u_begin = COL_SETPOINT_UP_I_END + 2;
+            vd[i].u_end = COL_SETPOINT_UP_I_END + 2;
+            vd[i].p_unit = &odynyci_vymirjuvannja[index_language][INDEX_A];
+            
+            vaga_arr[i] = 100000;
+            
+            break;
+          }
+        case UP_CTRL_3I0:
+        case UP_CTRL_3I0_others:
+          {
+            vd[i].begin = COL_SETPOINT_UP_3I0_BEGIN;
+            vd[i].comma = COL_SETPOINT_UP_3I0_COMMA;
+            vd[i].end = COL_SETPOINT_UP_3I0_END;
+            vd[i].u_begin = COL_SETPOINT_UP_3I0_END + 2;
+            vd[i].u_end = COL_SETPOINT_UP_3I0_END + 2;
+            vd[i].p_unit = &odynyci_vymirjuvannja[index_language][INDEX_A];
+            
+            vaga_arr[i] = 1000;
+            
+            break;
+          }
+        case UP_CTRL_Ua_Ub_Uc:
+        case UP_CTRL_Ua:
+        case UP_CTRL_Ub:
+        case UP_CTRL_Uc:
+        case UP_CTRL_U1:
+        case UP_CTRL_U2:
+        case UP_CTRL_3U0:
+          {
+            vd[i].begin = COL_SETPOINT_UP_U_BEGIN;
+            vd[i].comma = COL_SETPOINT_UP_U_COMMA;
+            vd[i].end = COL_SETPOINT_UP_U_END;
+            vd[i].u_begin = COL_SETPOINT_UP_U_END + 2;
+            vd[i].u_end = COL_SETPOINT_UP_U_END + 2;
+            vd[i].p_unit = &odynyci_vymirjuvannja[index_language][INDEX_V];
+            
+            vaga_arr[i] = 100000;
+            
+            break;
+          }
+        case UP_CTRL_P:
+        case UP_CTRL_Q:
+        case UP_CTRL_S:
+          {
+            vd[i].begin = COL_SETPOINT_UP_P_BEGIN;
+            vd[i].comma = COL_SETPOINT_UP_P_COMMA;
+            vd[i].end = COL_SETPOINT_UP_P_END;
+            vd[i].u_begin = COL_SETPOINT_UP_P_END + 2;
+            if (i == UP_CTRL_P)
+            {
+              if (index_language == INDEX_LANGUAGE_EN) vd[i].u_end = COL_SETPOINT_UP_P_END + 2;
+              else vd[i].u_end = COL_SETPOINT_UP_P_END + 3;
+              vd[i].p_unit = &string_W[index_language][0];
+            }
+            else if (i == UP_CTRL_Q)
+            {
+              vd[i].u_end = COL_SETPOINT_UP_P_END + 4;
+              vd[i].p_unit = &string_VAR[index_language][0];
+            }
+            else
+            {
+              vd[i].u_end = COL_SETPOINT_UP_P_END + 3;
+              vd[i].p_unit = &string_VA[index_language][0];
+            }
+            
+            vaga_arr[i] = 1000000;
+            
+            break;
+          }
+        default:
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(92);
+            
+            break;
+          }
+        }
+        
+        if (view == true) p_value[i] = current_settings.setpoint_UP[index][0]; //у змінну value поміщаємо значення уставки
+        else p_value[i] = edition_settings.setpoint_UP[index][0];
+        
+        break;
+      }
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    case 9:
+    case 11:
+    case 13:
+    case 15:
+      {
+        vd[i].begin = COL_SETPOINT_UP_KP_BEGIN;
+        vd[i].comma = COL_SETPOINT_UP_KP_COMMA;
+        vd[i].end = COL_SETPOINT_UP_KP_END;
+        vd[i].u_begin = COL_SETPOINT_UP_KP_END + 2;
+        vd[i].u_end = COL_SETPOINT_UP_KP_END + 2;
+        vd[i].p_unit = NULL;
+            
+        vaga_arr[i] = 100;
+        
+        if (view == true) p_value[i] = current_settings.setpoint_UP_KP[index][0]; //у змінну value поміщаємо значення уставки
+        else p_value[i] = edition_settings.setpoint_UP_KP[index][0];
+
+        break;
+      }
+    default:
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed(91);
+      }
+    }
+  }
+
+  int index_of_ekran;
+  unsigned int vaga, value, first_symbol;
+  
+  //Множення на два величини position_temp потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+  index_of_ekran = ((position_temp << 1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+  
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    if (index_of_ekran < ((NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP) << 1))//Множення на два потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    {
+      unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+      if ((i & 0x1) == 0) 
+      {
+        uint32_t _n_UP = index_of_ekran_tmp / MAX_ROW_FOR_SETPOINT_UP;
+        //У непарному номері рядку виводимо заголовок
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) 
+        {
+          working_ekran[i][j] = (j != index_number[index_language][_n_UP]) ? name_string[index_language][_n_UP][j] : (_n_UP + 1 + 0x30);
+        }
+        vaga = vaga_arr[index_of_ekran_tmp];
+        value = *(p_value[index_of_ekran_tmp] + group);
+        
+        first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
+      }
+      else
+      {
+        //У парному номері рядку виводимо значення уставки
+        unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+        {
+          if (
+              ((j < vd[index_of_ekran_tmp].begin) ||  (j > vd[index_of_ekran_tmp].end ))  &&
+               (
+                (vd[index_of_ekran_tmp].p_unit == NULL) ||
+                (!((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin))))
+               )    
+             )working_ekran[i][j] = ' ';
+          else if (j == vd[index_of_ekran_tmp].comma )working_ekran[i][j] = ','; /*якщо коми не потрібно, то треба щоб comma була меншою за begin і тоді до ціє частини коду програма не дійде*/
+          else if (
+                   (vd[index_of_ekran_tmp].p_unit != NULL) &&
+                   ((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin)))
+                  )   
+            working_ekran[i][j] = vd[index_of_ekran_tmp].p_unit[j - vd[index_of_ekran_tmp].end];
+          else
+            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, vd[index_of_ekran_tmp].comma, view, 0);
+          
+        }
+      }
+        
+    }
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
+  current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+  //Курсор по горизонталі відображається на першому символі у випадку, коли ми не в режимі редагування, інакше позиція буде визначена у функцї main_manu_function
+  if (current_ekran.edition == 0)
+  {
+    int last_position_cursor_x = MAX_COL_LCD;
+    current_ekran.position_cursor_x = vd[current_ekran.index_position].begin;
+    last_position_cursor_x = vd[current_ekran.index_position].end;
+    
+    //Підтягуємо курсор до першого символу
+    while (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1]) == ' ') && 
+           (current_ekran.position_cursor_x < (last_position_cursor_x -1))) current_ekran.position_cursor_x++;
+    
+    //Курсор ставимо так, щоб він був перед числом
+    if (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x]) != ' ') && 
+        (current_ekran.position_cursor_x > 0)) current_ekran.position_cursor_x--;
+  }
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  if(current_ekran.edition == 0)current_ekran.cursor_blinking_on = 0;
+  else current_ekran.cursor_blinking_on = 1;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+
+/*****************************************************/
+//Формуємо екран відображення витримок Універсального захисту
+/*****************************************************/
+void make_ekran_timeout_UP(unsigned int group)
+{
+  const uint8_t name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_UP][MAX_COL_LCD] = 
+  {
+    {
+      "      УЗx       "
+    },
+    {
+      "      УЗx       "
+    },
+    {
+      "      UPx       "
+    },
+    {
+      "      УЗx       "
+    }
+  };
+  const uint32_t index_number[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_UP] = 
+  {
+    {8},
+    {8},
+    {8},
+    {8}
+  };
+
+  int index_language = index_language_in_array(current_settings.language);
+  
+  const __vd vd[MAX_ROW_FOR_TIMEOUT_UP] = 
+  {
+    {COL_TMO_UP_BEGIN, COL_TMO_UP_COMMA, COL_TMO_UP_END, COL_TMO_UP_END + 2, COL_TMO_UP_END + 2, &odynyci_vymirjuvannja[index_language][INDEX_SECOND]}
+  };
+  const uint32_t vaga_arr[MAX_ROW_FOR_TIMEOUT_UP] = 
+  {
+    10000
+  };
+  int32_t (* const p_value_current[MAX_ROW_FOR_TIMEOUT_UP])[1][NUMBER_GROUP_USTAVOK] = 
+  {
+    current_settings.timeout_UP 
+  };
+  int32_t (* const p_value_edit[MAX_ROW_FOR_TIMEOUT_UP])[1][NUMBER_GROUP_USTAVOK] = 
+  {
+    edition_settings.timeout_UP
+  };
+
+  unsigned int position_temp = current_ekran.index_position;
+
+  int index_of_ekran;
+  unsigned int vaga, value, first_symbol;
+  
+  //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+  index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+
+  
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    if (index_of_ekran < ((NUMBER_UP*MAX_ROW_FOR_TIMEOUT_UP) << 1))//Множення на два константи потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    {
+      unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+      unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+      if ((i & 0x1) == 0)
+      {
+        //У непарному номері рядку виводимо заголовок
+        uint32_t _n_UP = index_of_ekran_tmp / MAX_ROW_FOR_TIMEOUT_UP;
+        uint32_t _n_index = index_of_ekran_tmp % MAX_ROW_FOR_TIMEOUT_UP;
+        for (unsigned int j = 0; j < MAX_COL_LCD; j++) 
+        {
+          working_ekran[i][j] = (j != index_number[index_language][_n_UP]) ? name_string[index_language][_n_UP][j] : (_n_UP + 1 + 0x30);
+        }
+        
+        vaga = vaga_arr[_n_index];
+        if (view == true) value = p_value_current[_n_index][_n_UP][0][group]; //у змінну value поміщаємо значення витримки
+        else value = p_value_edit[_n_index][_n_UP][0][group];
+
+        first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
+      }
+      else
+      {
+        //У парному номері рядку виводимо значення уставки
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+        {
+          if (
+              ((j < vd[index_of_ekran_tmp].begin) ||  (j > vd[index_of_ekran_tmp].end ))  &&
+               (
+                (vd[index_of_ekran_tmp].p_unit == NULL) ||
+                (!((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin))))
+               )    
+             )working_ekran[i][j] = ' ';
+          else if (j == vd[index_of_ekran_tmp].comma )working_ekran[i][j] = ','; /*якщо коми не потрібно, то треба щоб comma була меншою за begin і тоді до ціє частини коду програма не дійде*/
+          else if (
+                   (vd[index_of_ekran_tmp].p_unit != NULL) &&
+                   ((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin)))
+                  )   
+            working_ekran[i][j] = vd[index_of_ekran_tmp].p_unit[j - vd[index_of_ekran_tmp].end];
+          else
+            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, vd[index_of_ekran_tmp].comma, view, 0);
+
+        }
+      }
+        
+    }
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
+  current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+  //Курсор по горизонталі відображається на першому символі у випадку, коли ми не в режимі редагування, інакше позиція буде визначена у функцї main_manu_function
+  if (current_ekran.edition == 0)
+  {
+    int last_position_cursor_x = MAX_COL_LCD;
+    current_ekran.position_cursor_x = vd[current_ekran.index_position].begin;
+    last_position_cursor_x = vd[current_ekran.index_position].end;
+
+    //Підтягуємо курсор до першого символу
+    while (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1]) == ' ') && 
+           (current_ekran.position_cursor_x < (last_position_cursor_x -1))) current_ekran.position_cursor_x++;
+
+    //Курсор ставимо так, щоб він був перед числом
+    if (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x]) != ' ') && 
+        (current_ekran.position_cursor_x > 0)) current_ekran.position_cursor_x--;
+  }
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  if(current_ekran.edition == 0)current_ekran.cursor_blinking_on = 0;
+  else current_ekran.cursor_blinking_on = 1;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+
+/*****************************************************/
 //Формуємо екран відображення значення управлінської інформації для Універсального Захисту
 /*****************************************************/
 void make_ekran_control_UP()
 {
-  const uint8_t name_string[MAX_NAMBER_LANGUAGE][NUMBER_UP*MAX_ROW_FOR_CONTROL_UP][MAX_COL_LCD] = 
+  const uint8_t name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_UP][MAX_COL_LCD] = 
   {
     {
-      "    Вход УЗ1    ",
-      "      УЗ1       ",
-      " ИЛИ/И для УЗ1  ",
-      "  >/< для УЗ1   ",
-      "    Вход УЗ2    ",
-      "      УЗ2       ",
-      " ИЛИ/И для УЗ2  ",
-      "  >/< для УЗ2   ",
-      "    Вход УЗ3    ",
-      "      УЗ3       ",
-      " ИЛИ/И для УЗ3  ",
-      "  >/< для УЗ3   ",
-      "    Вход УЗ4    ",
-      "      УЗ4       ",
-      " ИЛИ/И для УЗ4  ",
-      "  >/< для УЗ4   ",
-      "    Вход УЗ5    ",
-      "      УЗ5       ",
-      " ИЛИ/И для УЗ5  ",
-      "  >/< для УЗ5   ",
-      "    Вход УЗ6    ",
-      "      УЗ6       ",
-      " ИЛИ/И для УЗ6  ",
-      "  >/< для УЗ6   ",
-      "    Вход УЗ7    ",
-      "      УЗ7       ",
-      " ИЛИ/И для УЗ7  ",
-      "  >/< для УЗ7   ",
-      "    Вход УЗ8    ",
-      "      УЗ8       ",
-      " ИЛИ/И для УЗ8  ",
-      "  >/< для УЗ8   "
+      "    Вход УЗx    ",
+      "      УЗx       ",
+      " ИЛИ/И для УЗx  ",
+      "  >/< для УЗx   "
     },
     {
-      "    Вхід УЗ1    ",
-      "      УЗ1       ",
-      " АБО/І для УЗ1  ",
-      "  >/< для УЗ1   ",
-      "    Вхід УЗ2    ",
-      "      УЗ2       ",
-      " АБО/І для УЗ2  ",
-      "  >/< для УЗ2   ",
-      "    Вхід УЗ3    ",
-      "      УЗ3       ",
-      " АБО/І для УЗ3  ",
-      "  >/< для УЗ3   ",
-      "    Вхід УЗ4    ",
-      "      УЗ4       ",
-      " АБО/І для УЗ4  ",
-      "  >/< для УЗ4   ",
-      "    Вхід УЗ5    ",
-      "      УЗ5       ",
-      " АБО/І для УЗ5  ",
-      "  >/< для УЗ5   ",
-      "    Вхід УЗ6    ",
-      "      УЗ6       ",
-      " АБО/І для УЗ6  ",
-      "  >/< для УЗ6   ",
-      "    Вхід УЗ7    ",
-      "      УЗ7       ",
-      " АБО/І для УЗ7  ",
-      "  >/< для УЗ7   ",
-      "    Вхід УЗ8    ",
-      "      УЗ8       ",
-      " АБО/І для УЗ8  ",
-      "  >/< для УЗ8   "
+      "    Вхід УЗx    ",
+      "      УЗx       ",
+      " АБО/І для УЗx  ",
+      "  >/< для УЗx   "
     },
     {
-      "   UP1 Input    ",
-      "      UP1       ",
-      " OR/AND for UP1 ",
-      "  >/< for UP1   ",
-      "   UP2 Input    ",
-      "      UP2       ",
-      " OR/AND for UP2 ",
-      "  >/< for UP2   ",
-      "   UP3 Input    ",
-      "      UP3       ",
-      " OR/AND for UP3 ",
-      "  >/< for UP3   ",
-      "   UP4 Input    ",
-      "      UP4       ",
-      " OR/AND for UP4 ",
-      "  >/< for UP4   ",
-      "   UP5 Input    ",
-      "      UP5       ",
-      " OR/AND for UP5 ",
-      "  >/< for UP5   ",
-      "   UP6 Input    ",
-      "      UP6       ",
-      " OR/AND for UP6 ",
-      "  >/< for UP6   ",
-      "   UP7 Input    ",
-      "      UP7       ",
-      " OR/AND for UP7 ",
-      "  >/< for UP7   ",
-      "   UP8 Input    ",
-      "      UP8       ",
-      " OR/AND for UP8 ",
-      "  >/< for UP8   "
+      "   UPx Input    ",
+      "      UPx       ",
+      " OR/AND for UPx ",
+      "  >/< for UPx   "
     },
     {
-      "    Вход УЗ1    ",
-      "      УЗ1       ",
-      " ИЛИ/И для УЗ1  ",
-      "  >/< для УЗ1   ",
-      "    Вход УЗ2    ",
-      "      УЗ2       ",
-      " ИЛИ/И для УЗ2  ",
-      "  >/< для УЗ2   ",
-      "    Вход УЗ3    ",
-      "      УЗ3       ",
-      " ИЛИ/И для УЗ3  ",
-      "  >/< для УЗ3   ",
-      "    Вход УЗ4    ",
-      "      УЗ4       ",
-      " ИЛИ/И для УЗ4  ",
-      "  >/< для УЗ4   ",
-      "    Вход УЗ5    ",
-      "      УЗ5       ",
-      " ИЛИ/И для УЗ5  ",
-      "  >/< для УЗ5   ",
-      "    Вход УЗ6    ",
-      "      УЗ6       ",
-      " ИЛИ/И для УЗ6  ",
-      "  >/< для УЗ6   ",
-      "    Вход УЗ7    ",
-      "      УЗ7       ",
-      " ИЛИ/И для УЗ7  ",
-      "  >/< для УЗ7   ",
-      "    Вход УЗ8    ",
-      "      УЗ8       ",
-      " ИЛИ/И для УЗ8  ",
-      "  >/< для УЗ8   "
+      "    Вход УЗx    ",
+      "      УЗx       ",
+      " ИЛИ/И для УЗx  ",
+      "  >/< для УЗx   "
     },
+  };
+  const uint32_t index_number[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_UP] = 
+  {
+    {11, 8, 13, 12},
+    {11, 8, 13, 12},
+    { 5, 8, 14, 12},
+    {11, 8, 13, 12}
   };
   
   const uint8_t information_1[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
@@ -320,8 +641,12 @@ void make_ekran_control_UP()
 
   for(size_t index_1 = 0; index_1 < (NUMBER_UP*MAX_ROW_FOR_CONTROL_UP); index_1++)
   {
+    uint32_t index_1_tmp = index_1 % MAX_ROW_FOR_CONTROL_UP;
+    uint32_t index_number_tmp = index_number[index_language][index_1_tmp];
     for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-      name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
+    {
+      name_string_tmp[index_1][index_2] = (index_2 != index_number_tmp) ? name_string[index_language][index_1_tmp][index_2] : ((index_1 / MAX_ROW_FOR_CONTROL_UP) + 1 + 0x30);
+    }
   }
   
   /******************************************/
