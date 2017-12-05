@@ -88,8 +88,8 @@ enum _index_ml_ctrl_UP
   
   _CTR_UP_PART_II,
   CTR_UP_STATE_BIT = _CTR_UP_PART_II,
-  CTR_UP_AND_OR_BIT,
-  CTR_UP_LESS_MORE_BIT,
+  CTR_UP_OR_AND_BIT,
+  CTR_UP_MORE_LESS_BIT,
   
   _CTR_UP_NEXT_BIT,
   MAX_ROW_FOR_CONTROL_UP = _CTR_UP_NEXT_BIT
@@ -97,29 +97,29 @@ enum _index_ml_ctrl_UP
 
 #define CTR_UP_MASKA    (                                                                                                                                                          \
                          MASKA_FOR_BIT(0*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(0*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(0*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(0*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(0*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
                          MASKA_FOR_BIT(1*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(1*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(1*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(1*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(1*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
                          MASKA_FOR_BIT(2*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(2*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(2*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(2*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(2*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
                          MASKA_FOR_BIT(3*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(3*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(3*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(3*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(3*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
                          MASKA_FOR_BIT(4*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(4*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(4*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(4*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(4*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
                          MASKA_FOR_BIT(5*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(5*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(5*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(5*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(5*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
                          MASKA_FOR_BIT(6*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(6*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(6*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(6*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(6*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
                          MASKA_FOR_BIT(7*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(7*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
-                         MASKA_FOR_BIT(7*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))     \
+                         MASKA_FOR_BIT(7*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I))   | \
+                         MASKA_FOR_BIT(7*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))     \
                         )
 
 

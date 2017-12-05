@@ -174,7 +174,9 @@ extern unsigned int action_after_changing_of_configuration(unsigned int, __SETTI
 extern unsigned int action_after_changing_extra_settings(unsigned int, __SETTINGS *);
 extern void action_after_changing_zz1_type(__SETTINGS *);
 extern void action_during_changing_button_mode(__SETTINGS *, __SETTINGS *);
+extern void def_pickup_timeout_UP(__SETTINGS *, uint32_t, uint32_t);
 extern void action_after_changing_input_UP(__SETTINGS *, uint32_t, uint32_t);
+extern void action_after_changing_ctrl_UP(__SETTINGS *, uint32_t);
 //extern void action_after_changing_number_el(__SETTINGS *, unsigned int);
 extern void calculate_namber_bit_waiting_for_rs_485(void);
 extern void fix_change_settings(unsigned int, unsigned int);

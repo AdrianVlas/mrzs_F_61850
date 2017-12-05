@@ -58,14 +58,15 @@ void make_ekran_setpoint_UP(unsigned int group)
   int index_language = index_language_in_array(current_settings.language);
   unsigned int position_temp = current_ekran.index_position;
   
-  __vd vd[MAX_ROW_FOR_SETPOINT_UP];
+  __vd vd[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP];
   uint32_t vaga_arr[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP];
   uint32_t *p_value[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP]; 
 
   for (size_t i = 0; i < (NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP); i++)
   {
     unsigned int view = ((current_ekran.edition == 0) || (position_temp != i));
-    uint32_t index = current_settings.ctrl_UP_input[i / MAX_ROW_FOR_SETPOINT_UP];
+    uint32_t _n_UP = i / MAX_ROW_FOR_SETPOINT_UP;
+    uint32_t in_canal = current_settings.ctrl_UP_input[_n_UP];
     
     switch (i)
     {
@@ -78,7 +79,7 @@ void make_ekran_setpoint_UP(unsigned int group)
     case 12:
     case 14:
       {
-        switch (index)
+        switch (in_canal)
         {
         case UP_CTRL_Ia_Ib_Ic:
         case UP_CTRL_Ia:
@@ -141,13 +142,13 @@ void make_ekran_setpoint_UP(unsigned int group)
             vd[i].comma = COL_SETPOINT_UP_P_COMMA;
             vd[i].end = COL_SETPOINT_UP_P_END;
             vd[i].u_begin = COL_SETPOINT_UP_P_END + 2;
-            if (i == UP_CTRL_P)
+            if (in_canal == UP_CTRL_P)
             {
               if (index_language == INDEX_LANGUAGE_EN) vd[i].u_end = COL_SETPOINT_UP_P_END + 2;
               else vd[i].u_end = COL_SETPOINT_UP_P_END + 3;
               vd[i].p_unit = &string_W[index_language][0];
             }
-            else if (i == UP_CTRL_Q)
+            else if (in_canal == UP_CTRL_Q)
             {
               vd[i].u_end = COL_SETPOINT_UP_P_END + 4;
               vd[i].p_unit = &string_VAR[index_language][0];
@@ -171,8 +172,8 @@ void make_ekran_setpoint_UP(unsigned int group)
           }
         }
         
-        if (view == true) p_value[i] = current_settings.setpoint_UP[index][0]; //у змінну value поміщаємо значення уставки
-        else p_value[i] = edition_settings.setpoint_UP[index][0];
+        if (view == true) p_value[i] = current_settings.setpoint_UP[_n_UP][0]; //у змінну value поміщаємо значення уставки
+        else p_value[i] = edition_settings.setpoint_UP[_n_UP][0];
         
         break;
       }
@@ -194,8 +195,8 @@ void make_ekran_setpoint_UP(unsigned int group)
             
         vaga_arr[i] = 100;
         
-        if (view == true) p_value[i] = current_settings.setpoint_UP_KP[index][0]; //у змінну value поміщаємо значення уставки
-        else p_value[i] = edition_settings.setpoint_UP_KP[index][0];
+        if (view == true) p_value[i] = current_settings.setpoint_UP_KP[_n_UP][0]; //у змінну value поміщаємо значення уставки
+        else p_value[i] = edition_settings.setpoint_UP_KP[_n_UP][0];
 
         break;
       }
@@ -221,10 +222,11 @@ void make_ekran_setpoint_UP(unsigned int group)
       if ((i & 0x1) == 0) 
       {
         uint32_t _n_UP = index_of_ekran_tmp / MAX_ROW_FOR_SETPOINT_UP;
+        uint32_t _n_index = index_of_ekran_tmp % MAX_ROW_FOR_SETPOINT_UP;
         //У непарному номері рядку виводимо заголовок
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) 
         {
-          working_ekran[i][j] = (j != index_number[index_language][_n_UP]) ? name_string[index_language][_n_UP][j] : (_n_UP + 1 + 0x30);
+          working_ekran[i][j] = (j != index_number[index_language][_n_index]) ? name_string[index_language][_n_index][j] : (_n_UP + 1 + 0x30);
         }
         vaga = vaga_arr[index_of_ekran_tmp];
         value = *(p_value[index_of_ekran_tmp] + group);
@@ -249,7 +251,7 @@ void make_ekran_setpoint_UP(unsigned int group)
                    (vd[index_of_ekran_tmp].p_unit != NULL) &&
                    ((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin)))
                   )   
-            working_ekran[i][j] = vd[index_of_ekran_tmp].p_unit[j - vd[index_of_ekran_tmp].end];
+            working_ekran[i][j] = vd[index_of_ekran_tmp].p_unit[j - vd[index_of_ekran_tmp].u_begin];
           else
             calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, vd[index_of_ekran_tmp].comma, view, 0);
           
@@ -326,7 +328,7 @@ void make_ekran_timeout_UP(unsigned int group)
   };
   const uint32_t vaga_arr[MAX_ROW_FOR_TIMEOUT_UP] = 
   {
-    10000
+    100000
   };
   int32_t (* const p_value_current[MAX_ROW_FOR_TIMEOUT_UP])[1][NUMBER_GROUP_USTAVOK] = 
   {
@@ -351,15 +353,15 @@ void make_ekran_timeout_UP(unsigned int group)
     if (index_of_ekran < ((NUMBER_UP*MAX_ROW_FOR_TIMEOUT_UP) << 1))//Множення на два константи потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
     {
       unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+      uint32_t _n_index = index_of_ekran_tmp % MAX_ROW_FOR_TIMEOUT_UP;
       unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
         uint32_t _n_UP = index_of_ekran_tmp / MAX_ROW_FOR_TIMEOUT_UP;
-        uint32_t _n_index = index_of_ekran_tmp % MAX_ROW_FOR_TIMEOUT_UP;
         for (unsigned int j = 0; j < MAX_COL_LCD; j++) 
         {
-          working_ekran[i][j] = (j != index_number[index_language][_n_UP]) ? name_string[index_language][_n_UP][j] : (_n_UP + 1 + 0x30);
+          working_ekran[i][j] = (j != index_number[index_language][_n_index]) ? name_string[index_language][_n_index][j] : (_n_UP + 1 + 0x30);
         }
         
         vaga = vaga_arr[_n_index];
@@ -374,20 +376,20 @@ void make_ekran_timeout_UP(unsigned int group)
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
           if (
-              ((j < vd[index_of_ekran_tmp].begin) ||  (j > vd[index_of_ekran_tmp].end ))  &&
+              ((j < vd[_n_index].begin) ||  (j > vd[_n_index].end ))  &&
                (
-                (vd[index_of_ekran_tmp].p_unit == NULL) ||
-                (!((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin))))
+                (vd[_n_index].p_unit == NULL) ||
+                (!((j >= (vd[_n_index].end + 2)) && (j <= (vd[_n_index].end + 2 + vd[_n_index].u_end - vd[_n_index].u_begin))))
                )    
              )working_ekran[i][j] = ' ';
-          else if (j == vd[index_of_ekran_tmp].comma )working_ekran[i][j] = ','; /*якщо коми не потрібно, то треба щоб comma була меншою за begin і тоді до ціє частини коду програма не дійде*/
+          else if (j == vd[_n_index].comma )working_ekran[i][j] = ','; /*якщо коми не потрібно, то треба щоб comma була меншою за begin і тоді до ціє частини коду програма не дійде*/
           else if (
-                   (vd[index_of_ekran_tmp].p_unit != NULL) &&
-                   ((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin)))
+                   (vd[_n_index].p_unit != NULL) &&
+                   ((j >= (vd[_n_index].end + 2)) && (j <= (vd[_n_index].end + 2 + vd[_n_index].u_end - vd[_n_index].u_begin)))
                   )   
-            working_ekran[i][j] = vd[index_of_ekran_tmp].p_unit[j - vd[index_of_ekran_tmp].end];
+            working_ekran[i][j] = vd[_n_index].p_unit[j - vd[_n_index].u_begin];
           else
-            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, vd[index_of_ekran_tmp].comma, view, 0);
+            calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, vd[_n_index].comma, view, 0);
 
         }
       }
@@ -404,9 +406,11 @@ void make_ekran_timeout_UP(unsigned int group)
   //Курсор по горизонталі відображається на першому символі у випадку, коли ми не в режимі редагування, інакше позиція буде визначена у функцї main_manu_function
   if (current_ekran.edition == 0)
   {
+    uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_TIMEOUT_UP;
+    
     int last_position_cursor_x = MAX_COL_LCD;
-    current_ekran.position_cursor_x = vd[current_ekran.index_position].begin;
-    last_position_cursor_x = vd[current_ekran.index_position].end;
+    current_ekran.position_cursor_x = vd[_n_index].begin;
+    last_position_cursor_x = vd[_n_index].end;
 
     //Підтягуємо курсор до першого символу
     while (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1]) == ' ') && 
@@ -610,7 +614,7 @@ void make_ekran_control_UP()
     case 26:
     case 30:
       {
-        uint32_t index = (point->control_UP >> ((i / MAX_ROW_FOR_CONTROL_UP)*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) & 0x1;
+        uint32_t index = (point->control_UP >> ((i / MAX_ROW_FOR_CONTROL_UP)*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) & 0x1;
         ctrl_info[i].information = information_3[index_language][index];
         ctrl_info[i].cursor_x = cursor_x_3[index_language][index];
         break;
@@ -624,7 +628,7 @@ void make_ekran_control_UP()
     case 27:
     case 31:
       {
-        uint32_t index = (point->control_UP >> ((i / MAX_ROW_FOR_CONTROL_UP)*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) & 0x1;
+        uint32_t index = (point->control_UP >> ((i / MAX_ROW_FOR_CONTROL_UP)*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) & 0x1;
         ctrl_info[i].information = information_4[index];
         ctrl_info[i].cursor_x = cursor_x_4;
         break;
@@ -659,7 +663,7 @@ void make_ekran_control_UP()
   {
     uint32_t ctrl_UP_input = point->ctrl_UP_input[current_index / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)];
     if (
-         ((current_index % (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)) == CTR_UP_AND_OR_BIT) &&
+         ((current_index % (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)) == CTR_UP_OR_AND_BIT) &&
          (ctrl_UP_input != UP_CTRL_Ia_Ib_Ic) &&
          (ctrl_UP_input != UP_CTRL_Ua_Ub_Uc)
        )   

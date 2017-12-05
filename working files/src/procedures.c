@@ -2234,7 +2234,64 @@ void action_during_changing_button_mode(__SETTINGS *current_label, __SETTINGS *e
 /*****************************************************/
 
 /*****************************************************
-Функція обновлення змінних при зміні режиму ФК
+Функція встановлення устпавок/витримок УЗ у значення "заводські"
+*****************************************************/
+void def_pickup_timeout_UP(__SETTINGS *current_label, uint32_t _n_UP, uint32_t group)
+{
+  uint32_t min;
+  switch (current_label->ctrl_UP_input[_n_UP])
+  {
+  case UP_CTRL_Ia_Ib_Ic:
+  case UP_CTRL_Ia:
+  case UP_CTRL_Ib:
+  case UP_CTRL_Ic:
+  case UP_CTRL_I1:
+  case UP_CTRL_I2:
+  case UP_CTRL_I04:
+  case UP_CTRL_3I0_r:
+    {
+      min = SETPOINT_UP_I_MIN;
+      break;
+    }
+  case UP_CTRL_3I0:
+  case UP_CTRL_3I0_others:
+    {
+      min = SETPOINT_UP_3I0_MIN;
+      break;
+    }
+  case UP_CTRL_Ua_Ub_Uc:
+  case UP_CTRL_Ua:
+  case UP_CTRL_Ub:
+  case UP_CTRL_Uc:
+  case UP_CTRL_U1:
+  case UP_CTRL_U2:
+  case UP_CTRL_3U0:
+    {
+      min = SETPOINT_UP_U_MIN;
+      break;
+    }
+  case UP_CTRL_P:
+  case UP_CTRL_Q:
+  case UP_CTRL_S:
+    {
+      min = SETPOINT_UP_P_MIN;
+      break;
+    }
+  default:
+    {
+      //Теоретично цього ніколи не мало б бути
+      total_error_sw_fixed(99);
+    }
+  }
+  
+  current_label->setpoint_UP[_n_UP][0][group] = min;
+  current_label->setpoint_UP_KP[_n_UP][0][group] = ((current_label->control_UP & MASKA_FOR_BIT(_n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0) ? SETPOINT_EXT_PRT_KP_LESS_MIN : SETPOINT_EXT_PRT_KP_MORE_MAX;
+  current_label->timeout_UP[_n_UP][0][group] = TIMEOUT_UP_MIN;
+}
+/*****************************************************/
+
+/*****************************************************
+Функція обновлення змінних при зміні аналогового входу УЗ
 *****************************************************/
 void action_after_changing_input_UP(__SETTINGS *current_label, uint32_t index, uint32_t value)
 {
@@ -2242,9 +2299,49 @@ void action_after_changing_input_UP(__SETTINGS *current_label, uint32_t index, u
   {
     current_label->ctrl_UP_input[index] = value;
     uint32_t ctrl_maska = MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
-                          MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_AND_OR_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
-                          MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_LESS_MORE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));  
+                          MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
+                          MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));  
     current_label->control_UP &= (uint32_t)(~ctrl_maska);
+    
+    for (size_t group = 0; group < NUMBER_GROUP_USTAVOK; group++) def_pickup_timeout_UP(current_label, index, group);
+  }
+}
+/*****************************************************/
+
+/*****************************************************
+Функція обновлення коефіцієнта повернення після зміни налаштувань УЗ
+*****************************************************/
+void action_after_changing_ctrl_UP(__SETTINGS *current_label, uint32_t value)
+{
+  if (current_label->control_UP != value)
+  {
+    //Відбувається зміна налаштувань
+    for (size_t index = 0; index < NUMBER_UP; index++)
+    {
+      uint32_t maska = MASKA_FOR_BIT(index*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));
+      if (((current_label->control_UP ^ value) & maska) != 0)
+      {
+        //Відбулася зміна ">" на "<", або "<" на ">"
+        uint32_t min, max;
+        if ((value & maska) != 0)
+        {
+          min = SETPOINT_EXT_PRT_KP_LESS_MIN;
+          max = SETPOINT_EXT_PRT_KP_LESS_MAX;
+        }
+        else
+        {
+          min = SETPOINT_EXT_PRT_KP_MORE_MIN;
+          max = SETPOINT_EXT_PRT_KP_MORE_MAX;
+        }
+      
+        for (size_t group = 0; group < NUMBER_GROUP_USTAVOK; group++)
+        {
+          current_label->setpoint_UP_KP[index][0][group] = ((value & maska) != 0) ? min : max;
+        }
+      }
+    }
+    
+    current_label->control_UP = value;
   }
 }
 /*****************************************************/

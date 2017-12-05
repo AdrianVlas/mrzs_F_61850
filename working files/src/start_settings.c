@@ -1401,6 +1401,22 @@ void min_settings(__SETTINGS *target_label)
 
   target_label->configuration = 0;
   
+  target_label->ctrl_zdz_type = ZDZ_CTRL_MIN;
+  for (size_t i = 0; i < NUMBER_UP; i++) target_label->ctrl_UP_input[i] = UP_CTRL_Ia_Ib_Ic;
+
+  target_label->control_mtz = 0;
+  target_label->control_mtz04 = 0;
+  target_label->control_zdz = 0;
+  target_label->control_zz = 0;
+  target_label->control_tznp = 0;
+  target_label->control_apv = 0;
+  target_label->control_achr_chapv = 0;
+  target_label->control_urov = 0;
+  target_label->control_zop = 0;
+  target_label->control_Umin = 0;
+  target_label->control_Umax = 0;
+  target_label->control_UP = 0;
+  
   target_label->grupa_ustavok = SETPOINT_GRUPA_USTAVOK_MIN;
   
   for (unsigned int i = 0; i < NUMBER_GROUP_USTAVOK; i++)
@@ -1579,24 +1595,13 @@ void min_settings(__SETTINGS *target_label)
     target_label->setpoint_Umax2[i] = SETPOINT_UMAX2_MIN;
     target_label->timeout_Umax1[i] = TIMEOUT_UMAX1_MIN;
     target_label->timeout_Umax2[i] = TIMEOUT_UMAX2_MIN;
+    
+    for (size_t j = 0; j < NUMBER_UP; j++ )
+    {
+      def_pickup_timeout_UP(target_label, j, i);
+    }
   }
 
-  target_label->ctrl_zdz_type = ZDZ_CTRL_MIN;
-  for (size_t i = 0; i < NUMBER_UP; i++) target_label->ctrl_UP_input[i] = UP_CTRL_Ia_Ib_Ic;
-
-  target_label->control_mtz = 0;
-  target_label->control_mtz04 = 0;
-  target_label->control_zdz = 0;
-  target_label->control_zz = 0;
-  target_label->control_tznp = 0;
-  target_label->control_apv = 0;
-  target_label->control_achr_chapv = 0;
-  target_label->control_urov = 0;
-  target_label->control_zop = 0;
-  target_label->control_Umin = 0;
-  target_label->control_Umax = 0;
-  target_label->control_UP = 0;
-  
   target_label->setpoint_Inom = SETPOINT_Inom_MIN;
   target_label->setpoint_r_kom_st_Inom = SETPOINT_RKS_Inom_MIN;
   target_label->setpoint_Inom_vymk = SETPOINT_Inom_vymk_MIN;

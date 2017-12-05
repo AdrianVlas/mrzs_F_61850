@@ -361,6 +361,27 @@
 #define TIMEOUT_UMAX2_MIN             0
 #define TIMEOUT_UMAX2_MAX             300000
 
+#define SETPOINT_UP_I_MIN             500
+#define SETPOINT_UP_I_MAX             150000
+
+#define SETPOINT_UP_3I0_MIN           10
+#define SETPOINT_UP_3I0_MAX           2000
+
+#define SETPOINT_UP_U_MIN             5000
+#define SETPOINT_UP_U_MAX             140000
+
+#define SETPOINT_UP_P_MIN             10
+#define SETPOINT_UP_P_MAX             2000000
+
+#define SETPOINT_EXT_PRT_KP_MORE_MIN  50
+#define SETPOINT_EXT_PRT_KP_MORE_MAX  95
+
+#define SETPOINT_EXT_PRT_KP_LESS_MIN  110
+#define SETPOINT_EXT_PRT_KP_LESS_MAX  150
+
+#define TIMEOUT_UP_MIN                0
+#define TIMEOUT_UP_MAX                600000
+
 #define SETPOINT_Inom_MIN             5
 #define SETPOINT_Inom_MAX             (SETPOINT_Inom_MIN*KOEF_TT_MAX)
 
