@@ -230,7 +230,7 @@ void make_ekran_timeout_urov(unsigned int group)
 /*****************************************************/
 void make_ekran_control_urov()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_UROV][MAX_COL_LCD] = 
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_UROV - NUMBER_UP + 1][MAX_COL_LCD] = 
   {
     {
       "      ”–ќ¬      ",
@@ -253,7 +253,8 @@ void make_ekran_control_urov()
       " ѕуск от «Ќмакс1",
       " ѕуск от «Ќмакс2",
       "  ѕуск от ј„–1  ",
-      "  ѕуск от ј„–2  "
+      "  ѕуск от ј„–2  ",
+      "  ѕуск от ”«х   "
     },
     {
       "      ѕ–¬¬      ",
@@ -276,7 +277,8 @@ void make_ekran_control_urov()
       "ѕуск в≥д «Ќмакс1",
       "ѕуск в≥д «Ќмакс2",
       " ѕуск в≥д ј„–1  ",
-      " ѕуск в≥д ј„–2  "
+      " ѕуск в≥д ј„–2  ",
+      "  ѕуск в≥д ”«x  "
     },
     {
       "      CBFP      ",
@@ -299,7 +301,8 @@ void make_ekran_control_urov()
       "Start from Umax1",
       "Start from Umax2",
       "  ѕуск от ј„–1  ",
-      "  ѕуск от ј„–2  "
+      "  ѕуск от ј„–2  ",
+      "  ѕуск от ”«х   "
     },
     {
       "      ”–ќ¬      ",
@@ -322,16 +325,29 @@ void make_ekran_control_urov()
       " ѕуск от «Ќмакс1",
       " ѕуск от «Ќмакс2",
       "  ѕуск от ј„–1  ",
-      "  ѕуск от ј„–2  "
+      "  ѕуск от ј„–2  ",
+      "  ѕуск от ”«х   "
     }
   };
+  const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE] = {12, 13, 12, 12};
+  
   unsigned char name_string_tmp[MAX_ROW_FOR_CONTROL_UROV][MAX_COL_LCD];
 
   int index_language = index_language_in_array(current_settings.language);
   for(int index_1 = 0; index_1 < MAX_ROW_FOR_CONTROL_UROV; index_1++)
   {
+    unsigned int index_row = (index_1 < (MAX_ROW_FOR_CONTROL_UROV - NUMBER_UP)) ? index_1 : (MAX_ROW_FOR_CONTROL_UROV - NUMBER_UP);
     for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-      name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
+    {
+      if (
+          (index_1 >= (MAX_ROW_FOR_CONTROL_UROV - NUMBER_UP)) &&
+          (index_2 == index_number_UP[index_language]) 
+         )
+      {
+        name_string_tmp[index_1][index_2] = 0x30 + (index_1 - (MAX_ROW_FOR_CONTROL_UROV - NUMBER_UP) + 1);
+      }
+      else name_string_tmp[index_1][index_2] = name_string[index_language][index_row][index_2];
+    }
   }
   
   unsigned int temp_data;
@@ -344,12 +360,14 @@ void make_ekran_control_urov()
   int additional_current_mtz = 0, additional_current_mtz04 = 0, additional_current_zdz = 0;
   int additional_current_zz = 0, additional_current_tznp = 0, additional_current_zop = 0;
   int additional_current_Umin = 0, additional_current_Umax = 0, additional_current_achr = 0;
+  int additional_current_up = 0;
   int position_temp = current_ekran.index_position;
   int index_of_ekran;
 
-  int additional_current = additional_current_mtz  + additional_current_mtz04 + additional_current_zdz + 
-                           additional_current_zz   + additional_current_tznp  + additional_current_zop + 
-                           additional_current_Umin + additional_current_Umax  + additional_current_achr;
+  int additional_current = additional_current_mtz  + additional_current_mtz04 + additional_current_zdz  + 
+                           additional_current_zz   + additional_current_tznp  + additional_current_zop  + 
+                           additional_current_Umin + additional_current_Umax  + additional_current_achr + 
+                           additional_current_up;
   for (int current_index = 0; current_index < MAX_ROW_FOR_CONTROL_UROV; current_index++ )
   {
 
@@ -420,8 +438,8 @@ void make_ekran_control_urov()
         ||
         (
          (
-          (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN1) ||
-          (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN2)
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_UMIN1) ||
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_UMIN2)
          )   
          &&
          ((current_settings.configuration & (1<<UMIN_BIT_CONFIGURATION)) == 0)
@@ -429,8 +447,8 @@ void make_ekran_control_urov()
         ||
         (
          (
-          (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX1) ||
-          (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX2)
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_UMAX1) ||
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_UMAX2)
          )   
          &&
          ((current_settings.configuration & (1<<UMAX_BIT_CONFIGURATION)) == 0)
@@ -438,11 +456,29 @@ void make_ekran_control_urov()
         ||
         (
          (
-          (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR1) ||
-          (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2)
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_ACHR1) ||
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2)
          )   
          &&
          ((current_settings.configuration & (1<<ACHR_CHAPV_BIT_CONFIGURATION)) == 0)
+        )
+        ||
+        (
+         (
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_ACHR1) ||
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2)
+         )   
+         &&
+         ((current_settings.configuration & (1<<ACHR_CHAPV_BIT_CONFIGURATION)) == 0)
+        )
+        ||
+        (
+         (
+          (current_index >= INDEX_ML_CTRUROV_STARTED_FROM_UP1) &&
+          (current_index <= INDEX_ML_CTRUROV_STARTED_FROM_UP1 + NUMBER_UP - 1)
+         )   
+         &&
+         ((current_settings.configuration & (1<<UP_BIT_CONFIGURATION)) == 0)
         )
        )   
     {
@@ -521,10 +557,17 @@ void make_ekran_control_urov()
           (current_index == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2)
          )   
         additional_current_achr++;
+
+      if (
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_UP1) ||
+          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_UP1 + NUMBER_UP - 1)
+         )   
+        additional_current_up++;
       
-      additional_current = additional_current_mtz  + additional_current_mtz04 + additional_current_zdz + 
-                           additional_current_zz   + additional_current_tznp  + additional_current_zop + 
-                           additional_current_Umin + additional_current_Umax  + additional_current_achr;
+      additional_current = additional_current_mtz  + additional_current_mtz04 + additional_current_zdz  + 
+                           additional_current_zz   + additional_current_tznp  + additional_current_zop  + 
+                           additional_current_Umin + additional_current_Umax  + additional_current_achr +
+                           additional_current_up;
     }
   }
   /******************************************/

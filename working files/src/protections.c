@@ -4977,30 +4977,51 @@ inline void urov_handler(unsigned int *p_active_functions, unsigned int number_g
   /*******************************/
   
   /*******************************/
+  uint32_t state_UROV = (( current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STATE)) != 0);
+  uint32_t start_from_UP = false;
+  if (
+      (state_UROV != 0) &&
+      ((current_settings_prt.control_urov & ((MASKA_FOR_BIT(NUMBER_UP) - 1) << INDEX_ML_CTRUROV_STARTED_FROM_UP1)) != 0)
+     )   
+  {
+    //Налаштовано запуск ПРЗЗ від УЗ
+    for (size_t n_UP = 0; n_UP < NUMBER_UP; n_UP++)
+    {
+      if ( 
+          ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UP1 + n_UP)) != 0) && 
+          (_CHECK_SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP)      ) != 0)
+         )
+      {
+        start_from_UP = true;
+      }
+    }
+  }
+  
   if(
-     (( current_settings_prt.control_urov & CTR_UROV_STATE) != 0) &&
+     (state_UROV != 0) &&
      (
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_MTZ1   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ1             ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_MTZ2   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ2             ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_MTZ3   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ3             ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_MTZ4   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ4             ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_MTZ04_1) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ04_1          ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_MTZ04_2) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ04_2          ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_ZDZ    ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_ZDZ              ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_3I0    ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_3I0              ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_3U0    ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_3U0              ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_NZZ    ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_NZZ              ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_TZNP1  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_TZNP1            ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_TZNP2  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_TZNP2            ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_TZNP3  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_TZNP3            ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_ZOP1   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_ZOP              ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_UMIN1  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_UMIN1            ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_UMIN2  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_UMIN2            ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_UMAX1  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_UMAX1            ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_UMAX2  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_UMAX2            ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_ACHR1  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_ACHR_CHAPV1      ) != 0)) ||
-      ( ((current_settings_prt.control_urov & CTR_UROV_STARTED_FROM_ACHR2  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_ACHR_CHAPV2      ) != 0)) ||
-      (                                                                               (_CHECK_SET_BIT(p_active_functions, RANG_PUSK_UROV_VID_DV ) != 0))
+      (start_from_UP == true) ||
+      (_CHECK_SET_BIT(p_active_functions, RANG_PUSK_UROV_VID_DV) != 0) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ1)   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ1             ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ2)   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ2             ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ3)   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ3             ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ4)   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ4             ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1)) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ04_1          ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2)) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_MTZ04_2          ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZDZ)    ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_ZDZ              ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3I0)    ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_3I0              ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3U0)    ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_3U0              ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_NZZ)    ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_NZZ              ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP1)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_TZNP1            ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP2)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_TZNP2            ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP3)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_TZNP3            ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZOP1)   ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_ZOP              ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN1)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_UMIN1            ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN2)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_UMIN2            ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX1)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_UMAX1            ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX2)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_UMAX2            ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR1)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_ACHR_CHAPV1      ) != 0)) ||
+      ( ((current_settings_prt.control_urov & MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR2)  ) != 0) && (_CHECK_SET_BIT(p_active_functions, RANG_ACHR_CHAPV2      ) != 0))
      )     
     )
   {
@@ -5300,6 +5321,203 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
   if (work_apv) _SET_BIT(p_active_functions, RANG_APV_WORK);
   else  _CLEAR_BIT(p_active_functions, RANG_APV_WORK);
   
+}
+/*****************************************************/
+
+/*****************************************************/
+// Універсальний Захист
+/*****************************************************/
+inline void up_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
+{
+  for (size_t n_UP = 0; n_UP < NUMBER_UP; n_UP++)
+  {
+    uint32_t logic_UP_0 = 0;
+    
+    logic_UP_0 |= (
+                   ((current_settings_prt.control_UP & (n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0)
+                   &&
+                   (_CHECK_SET_BIT(p_active_functions, (RANG_BLOCK_UP1 + 3*n_UP)) == 0)
+                  ) << 0;
+
+    uint32_t pickup = current_settings_prt.setpoint_UP[n_UP][0][number_group_stp];
+    if (_CHECK_SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP)) == 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
+
+    unsigned int more_less = ((current_settings_prt.control_UP & (n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
+    
+    uint32_t analog_value;
+    switch (current_settings_prt.ctrl_UP_input[n_UP])
+    {
+    case UP_CTRL_Ia_Ib_Ic:
+      {
+        analog_value = measurement[IM_IA];
+        if (more_less) 
+        {
+         if (measurement[IM_IB] > analog_value) analog_value = measurement[IM_IB];
+         if (measurement[IM_IC] > analog_value) analog_value = measurement[IM_IC];
+        }
+        else
+        {
+         if (measurement[IM_IB] < analog_value) analog_value = measurement[IM_IB];
+         if (measurement[IM_IC] < analog_value) analog_value = measurement[IM_IC];
+        }
+        
+        break;
+      }
+    case UP_CTRL_Ia:
+      {
+        analog_value = measurement[IM_IA];
+        
+        break;
+      }
+    case UP_CTRL_Ib:
+      {
+        analog_value = measurement[IM_IB];
+        
+        break;
+      }
+    case UP_CTRL_Ic:
+      {
+        analog_value = measurement[IM_IC];
+        
+        break;
+      }
+    case UP_CTRL_I1:
+      {
+        analog_value = measurement[IM_I1];
+        
+        break;
+      }
+    case UP_CTRL_I2:
+      {
+        analog_value = measurement[IM_I2];
+        
+        break;
+      }
+    case UP_CTRL_I04:
+      {
+        analog_value = measurement[IM_I04];
+        
+        break;
+      }
+    case UP_CTRL_3I0_r:
+      {
+        analog_value = measurement[IM_3I0_r];
+        
+        break;
+      }
+    case UP_CTRL_3I0:
+      {
+        analog_value = measurement[IM_3I0];
+        
+        break;
+      }
+    case UP_CTRL_3I0_others:
+      {
+        analog_value = measurement[IM_3I0_other_g];
+        
+        break;
+      }
+    case UP_CTRL_Ua_Ub_Uc:
+      {
+        uint32_t phase_line = ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0);
+        analog_value = (phase_line == 0) ? measurement[IM_UA] : measurement[IM_UAB];
+        
+        uint32_t analog_value_tmp = (phase_line == 0) ? measurement[IM_UB] : measurement[IM_UBC];
+        if (more_less) 
+        {
+         if (analog_value_tmp > analog_value) analog_value = analog_value_tmp;
+         
+         analog_value_tmp = (phase_line == 0) ? measurement[IM_UC] : measurement[IM_UCA];
+         if (analog_value_tmp > analog_value) analog_value = analog_value_tmp;
+        }
+        else
+        {
+         if (analog_value_tmp < analog_value) analog_value = analog_value_tmp;
+         
+         analog_value_tmp = (phase_line == 0) ? measurement[IM_UC] : measurement[IM_UCA];
+         if (analog_value_tmp < analog_value) analog_value = analog_value_tmp;
+        }
+        
+        break;
+      }
+    case UP_CTRL_Ua:
+      {
+        analog_value = ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0) ? measurement[IM_UA] : measurement[IM_UAB];
+        
+        break;
+      }
+    case UP_CTRL_Ub:
+      {
+        analog_value = ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0) ? measurement[IM_UB] : measurement[IM_UBC];
+        
+        break;
+      }
+    case UP_CTRL_Uc:
+      {
+        analog_value = ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0) ? measurement[IM_UC] : measurement[IM_UCA];
+        
+        break;
+      }
+    case UP_CTRL_U1:
+      {
+        analog_value = measurement[IM_U1];
+        
+        break;
+      }
+    case UP_CTRL_U2:
+      {
+        analog_value = measurement[IM_U2];
+        
+        break;
+      }
+    case UP_CTRL_3U0:
+      {
+        analog_value = measurement[IM_3U0];
+        
+        break;
+      }
+    case UP_CTRL_P:
+      {
+        analog_value = P[mutex_power != 0];
+        
+        break;
+      }
+    case UP_CTRL_Q:
+      {
+        analog_value = Q[mutex_power != 0];
+        
+        break;
+      }
+    case UP_CTRL_S:
+      {
+        analog_value = S[mutex_power != 0];
+        
+        break;
+      }
+    default:
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed(100);
+      }
+    }
+    
+    if (more_less)
+    {
+      logic_UP_0 |= (analog_value >= pickup) << 1;
+    }
+    else
+    {
+      logic_UP_0 |= (analog_value <= pickup) << 1;
+    }
+
+    _AND2(logic_UP_0, 0, logic_UP_0, 1, logic_UP_0, 2);
+    if (_GET_OUTPUT_STATE(logic_UP_0, 2)) _SET_BIT(p_active_functions, (RANG_PO_UP1 + 3*n_UP));
+    else _CLEAR_BIT(p_active_functions, (RANG_PO_UP1 + 3*n_UP));
+    
+    _TIMER_T_0(INDEX_TIMER_UP1 + n_UP, current_settings_prt.timeout_UP[n_UP][0][number_group_stp], logic_UP_0, 2, logic_UP_0, 3);
+    if (_GET_OUTPUT_STATE(logic_UP_0, 3)) _SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP));
+    else _CLEAR_BIT(p_active_functions, (RANG_UP1 + 3*n_UP));
+  }
 }
 /*****************************************************/
 
@@ -9254,6 +9472,14 @@ inline void main_protection(void)
       //Блок для Umax
       active_functions[RANG_BLOCK_UMAX1 >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_UMAX1) != 0) << (RANG_BLOCK_UMAX1 & 0x1f);
       active_functions[RANG_BLOCK_UMAX2 >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_UMAX2) != 0) << (RANG_BLOCK_UMAX2 & 0x1f);
+
+      //Блокування для УЗ
+      for (size_t i = 0; i < NUMBER_UP; i++)
+      {
+        uint32_t rang_small_block_up = RANG_SMALL_BLOCK_UMAX1 + i;
+        uint32_t rang_block_up = RANG_BLOCK_UP1 + 3*i;
+        active_functions[rang_block_up >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, rang_small_block_up) != 0) << (rang_block_up & 0x1f);
+      }
     }
   }
   /**************************/
@@ -9911,6 +10137,7 @@ inline void main_protection(void)
 
     if ((current_settings_prt.configuration & (1 << UP_BIT_CONFIGURATION)) != 0) 
     {
+      up_handler(active_functions, number_group_stp);
     } 
     else 
     {

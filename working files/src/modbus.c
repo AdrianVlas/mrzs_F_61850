@@ -5629,17 +5629,17 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
       }
     case (M_ADDRESS_FIRST_MEASUREMENTS_1 + OFFSET_ACTIVE_POWER):
       {
-        temp_value = P/50;
+        temp_value = P[0]/50;
         break;
       }
     case (M_ADDRESS_FIRST_MEASUREMENTS_1 + OFFSET_REACTIVE_POWER):
       {
-        temp_value = Q/50;
+        temp_value = Q[0]/50;
         break;
       }
     case (M_ADDRESS_FIRST_MEASUREMENTS_1 + OFFSET_FULL_POWER):
       {
-        temp_value = S/50;
+        temp_value = S[0]/50;
         break;
       }
     case (M_ADDRESS_FIRST_MEASUREMENTS_1 + OFFSET_COS_PHI):
@@ -9174,20 +9174,20 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
         {
           int output_value = target_label->control_urov & 
                             (unsigned int)(~(
-                                             CTR_UROV_STATE                | 
-                                             CTR_UROV_STARTED_FROM_MTZ1    | 
-                                             CTR_UROV_STARTED_FROM_MTZ2    | 
-                                             CTR_UROV_STARTED_FROM_MTZ3    | 
-                                             CTR_UROV_STARTED_FROM_MTZ4    |
-                                             CTR_UROV_STARTED_FROM_MTZ04_1 | 
-                                             CTR_UROV_STARTED_FROM_MTZ04_2 | 
-                                             CTR_UROV_STARTED_FROM_UMAX1   | 
-                                             CTR_UROV_STARTED_FROM_UMAX2   | 
-                                             CTR_UROV_STARTED_FROM_UMIN1   | 
-                                             CTR_UROV_STARTED_FROM_UMIN2   |
-                                             CTR_UROV_STARTED_FROM_ZOP1    | 
-                                             CTR_UROV_STARTED_FROM_NZZ     | 
-                                             CTR_UROV_STARTED_FROM_3I0
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STATE)                | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ1)    | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ2)    | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ3)    | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ4)    |
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1) | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2) | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX1)   | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX2)   | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN1)   | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN2)   |
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZOP1)    | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_NZZ)     | 
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3I0)
                                           ));
 
           output_value |= ((data >> (BIT_MA_CONTROL_UROV_STATE                - BIT_MA_CONTROL_UROV_BASE_PART1)) & 0x1) << INDEX_ML_CTRUROV_STATE;
@@ -9258,13 +9258,13 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
         {
           int output_value = target_label->control_urov & 
                             (unsigned int)(~(
-                                             CTR_UROV_STARTED_FROM_3U0   |
-                                             CTR_UROV_STARTED_FROM_TZNP1 |
-                                             CTR_UROV_STARTED_FROM_TZNP2 |
-                                             CTR_UROV_STARTED_FROM_TZNP3 |
-                                             CTR_UROV_STARTED_FROM_ZDZ   |
-                                             CTR_UROV_STARTED_FROM_ACHR1 |
-                                             CTR_UROV_STARTED_FROM_ACHR2
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3U0)   |
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP1) |
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP2) |
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP3) |
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZDZ)   |
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR1) |
+                                             MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR2)
                                           ));
 
           output_value |= ((data >> (BIT_MA_CONTROL_UROV_STARTED_FROM_3U0   - BIT_MA_CONTROL_UROV_BASE_PART2)) & 0x1) << INDEX_ML_CTRUROV_STARTED_FROM_3U0;

@@ -1207,17 +1207,17 @@ void make_ekran_power(unsigned int pervynna_vtorynna)
       {
       case INDEX_ML_P:
         {
-          temp_value = P;
+          temp_value = P[0];
           break;
         }
       case INDEX_ML_Q:
         {
-          temp_value = Q;
+          temp_value = Q[0];
           break;
         }
       case INDEX_ML_S:
         {
-          temp_value = S;
+          temp_value = S[0];
           break;
         }
       case INDEX_ML_COS_PHI:

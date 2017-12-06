@@ -212,6 +212,7 @@ void achr_chapv_handler(unsigned int*, unsigned int);
 void ready_tu(unsigned int*);
 void urov_handler(unsigned int*, unsigned int);
 void apv_handler(unsigned int*, unsigned int);
+void up_handler(unsigned int*, unsigned int);
 void on_off_handler(unsigned int*);
 void vmp_handler(unsigned int*);
 void control_VV(unsigned int*);

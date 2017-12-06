@@ -359,7 +359,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                                                    ));
       
       //Виводим ступені МТЗ з УРОВ
-      target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_MTZ1 | CTR_UROV_STARTED_FROM_MTZ2 | CTR_UROV_STARTED_FROM_MTZ3 | CTR_UROV_STARTED_FROM_MTZ4));
+      target_label->control_urov &= (unsigned int)(~(
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ1) | 
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ2) | 
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ3) | 
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ4)
+                                                    )
+                                                  );
       
       //Формуємо маски функцій МТЗ
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -469,7 +475,12 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_mtz04 &= (unsigned int)(~(CTR_MTZ04_1 | CTR_MTZ04_2));
    
       //Виводим ступені МТЗ 0.4кВ з УРОВ
-      target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_MTZ04_1 | CTR_UROV_STARTED_FROM_MTZ04_2));
+      target_label->control_urov &= (unsigned int)(
+                                                   ~(
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1) | 
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2)
+                                                    )
+                                                  );
       
       //Формуємо маки функцій МТЗ 0.4кВ
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -581,7 +592,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_zdz &= (unsigned int)(~MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT));
 
       //Виводим захист ЗДЗ з УРОВ
-      target_label->control_urov &= (unsigned int)(~CTR_UROV_STARTED_FROM_ZDZ);
+      target_label->control_urov &= (unsigned int)(~MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZDZ));
       
       //Формуємо маки функцій ЗДЗ
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -696,7 +707,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_zz &= (unsigned int)(~(CTR_ZZ1_3I0_STATE | CTR_ZZ1_3U0_STATE | CTR_ZZ1_NZZ_STATE));
    
       //Виводим захисти 3I0, 3U0 і НЗЗ з УРОВ
-      target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_3I0 | CTR_UROV_STARTED_FROM_3U0 |CTR_UROV_STARTED_FROM_NZZ));
+      target_label->control_urov &= (unsigned int)(
+                                                   ~(
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3I0) | 
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3U0) |
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_NZZ)
+                                                    )
+                                                  );
 
       //Формуємо маки функцій ЗЗ
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -812,7 +829,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_tznp &= (unsigned int)(~(CTR_TZNP1 | CTR_TZNP2 | CTR_TZNP3));
    
       //Виводим ступені ТЗНП з УРОВ
-      target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_TZNP1 | CTR_UROV_STARTED_FROM_TZNP2 | CTR_UROV_STARTED_FROM_TZNP3));
+      target_label->control_urov &= (unsigned int)(
+                                                   ~(
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP1) |
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP2) |
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP3)
+                                                    )
+                                                  );
       
       //Формуємо маки функцій ТЗНП
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -1047,7 +1070,12 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_achr_chapv &= (unsigned int)(~(CTR_ACHR1 | CTR_CHAPV1 | CTR_ACHR2 | CTR_CHAPV2));
 
       //Виводим захисти АЧР з УРОВ
-      target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_ACHR1 | CTR_UROV_STARTED_FROM_ACHR2));
+      target_label->control_urov &= (unsigned int)(
+                                                   ~(
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR1) |
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR2)
+                                                    )
+                                                  );
       
       //Формуємо маки функцій АЧР-ЧАПВ
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -1166,7 +1194,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     if ((target_label->configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
     {
       //Виводим УРОВ
-      target_label->control_urov &= (unsigned int)(~CTR_UROV_STATE);
+      target_label->control_urov &= (unsigned int)(~MASKA_FOR_BIT(INDEX_ML_CTRUROV_STATE));
    
         //Формуємо маки функцій УРОВ
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -1290,7 +1318,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_zop &= (unsigned int)(~CTR_ZOP_STATE);
    
       //Виводим захисти ЗОП(КОФ) з УРОВ
-      target_label->control_urov &= (unsigned int)(~CTR_UROV_STARTED_FROM_ZOP1);
+      target_label->control_urov &= (unsigned int)(~MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZOP1));
 
       //Формуємо маки функцій ЗОП(КОФ)
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -1430,7 +1458,12 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                                                    ));
       
       //Виводим ступені Umin з УРОВ
-      target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_UMIN1 | CTR_UROV_STARTED_FROM_UMIN2));
+      target_label->control_urov &= (unsigned int)(
+                                                   ~(
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN1) | 
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN2)
+                                                    )
+                                                  );
       
       //Формуємо маски функцій Umin
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -1558,7 +1591,12 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       target_label->control_Umax &= (unsigned int)(~(CTR_UMAX1 | CTR_UMAX2));
 
       //Виводим ступені Umin з УРОВ
-      target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_UMAX1 | CTR_UROV_STARTED_FROM_UMAX2));
+      target_label->control_urov &= (unsigned int)(
+                                                   ~(
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX1) |
+                                                     MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX2)
+                                                    )
+                                                  );
    
       //Формуємо маски функцій Umax
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
@@ -1690,8 +1728,8 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         //Виводим ступені УЗ
         target_label->control_UP &= (unsigned int)(~(i*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I)));
 
-//        //Виводим ступені УЗ з УРОВ
-//        target_label->control_urov &= (unsigned int)(~(CTR_UROV_STARTED_FROM_UP + i));
+        //Виводим ступені УЗ з УРОВ
+        target_label->control_urov &= (unsigned int)(~((MASKA_FOR_BIT(NUMBER_UP) - 1) << INDEX_ML_CTRUROV_STARTED_FROM_UP1));
       }
    
       //Формуємо маски функцій УЗ
@@ -2099,7 +2137,7 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
     target_label->control_zz &= (unsigned int)(~(CTR_ZZ1_NZZ_STATE/* | CTR_ZZ1_SECTOR*/));
     
     //Виводим НЗЗ з УРОВ
-    target_label->control_urov &= (unsigned int)(~CTR_UROV_STARTED_FROM_NZZ);
+    target_label->control_urov &= (unsigned int)(~MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_NZZ));
       
     unsigned int /*maska[N_SMALL] = {0,0,0}, */maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     

@@ -667,14 +667,14 @@ void SPI_ADC_IRQHandler(void)
         if (abs(_y2) > 87)
         {
           _x2 = output_adc[C_3I0_16].tick;
-          _y2 = (int)((-_y2)*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA - 4);
+          _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA - 4);
         }
         else
         {
           _y2 = output_adc[C_3I0_256].value - /*gnd_adc - */ vref_adc_general;
 
           _x2 = output_adc[C_3I0_256].tick;
-          _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA);
+          _y2 = (int)((-_y2)*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA);
         }
 //      }
       
@@ -1836,18 +1836,26 @@ void calc_power_and_energy(void)
   
   float P_float = ((float)P_tmp)/((float)MAIN_FREQUENCY);
   float Q_float = ((float)Q_tmp)/((float)MAIN_FREQUENCY);
-  P = (int)P_float;
-  Q = (int)Q_float;
+  
+  mutex_power = 0xff;
+  P[0] = (int)P_float;
+  Q[0] = (int)Q_float;
+  mutex_power = 0;
+  P[1] = P[0];
+  Q[1] = Q[0];
   
   //Повна потужність
-  if ( (P != 0) || (Q != 0))
+  if ( (P[0] != 0) || (Q[0] != 0))
   {
     float in_square_root, S_float;
     in_square_root = P_float*P_float + Q_float*Q_float;
     
     if (arm_sqrt_f32(in_square_root, &S_float) == ARM_MATH_SUCCESS)
     {
-      S = (unsigned int)S_float;
+      mutex_power = 0xff;
+      S[0] = (unsigned int)S_float;
+      mutex_power = 0;
+      S[1] = S[0];
     }
     else
     {
@@ -1859,7 +1867,11 @@ void calc_power_and_energy(void)
   }
   else
   {
-    S = 0;
+    mutex_power = 0xff;
+    S[0] = 0;
+    mutex_power = 0;
+    S[1] = S[0];
+    
     cos_phi_x1000 = 0;
   }
   
