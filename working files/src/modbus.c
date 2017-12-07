@@ -11149,6 +11149,30 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
           case (225 + NUMBER_ANALOG_CANALES):
           case (226 + NUMBER_ANALOG_CANALES):
           case (227 + NUMBER_ANALOG_CANALES):
+          case (228 + NUMBER_ANALOG_CANALES):
+          case (229 + NUMBER_ANALOG_CANALES):
+          case (230 + NUMBER_ANALOG_CANALES):
+          case (231 + NUMBER_ANALOG_CANALES):
+          case (232 + NUMBER_ANALOG_CANALES):
+          case (233 + NUMBER_ANALOG_CANALES):
+          case (234 + NUMBER_ANALOG_CANALES):
+          case (235 + NUMBER_ANALOG_CANALES):
+          case (236 + NUMBER_ANALOG_CANALES):
+          case (237 + NUMBER_ANALOG_CANALES):
+          case (238 + NUMBER_ANALOG_CANALES):
+          case (239 + NUMBER_ANALOG_CANALES):
+          case (240 + NUMBER_ANALOG_CANALES):
+          case (241 + NUMBER_ANALOG_CANALES):
+          case (242 + NUMBER_ANALOG_CANALES):
+          case (243 + NUMBER_ANALOG_CANALES):
+          case (244 + NUMBER_ANALOG_CANALES):
+          case (245 + NUMBER_ANALOG_CANALES):
+          case (246 + NUMBER_ANALOG_CANALES):
+          case (247 + NUMBER_ANALOG_CANALES):
+          case (248 + NUMBER_ANALOG_CANALES):
+          case (249 + NUMBER_ANALOG_CANALES):
+          case (250 + NUMBER_ANALOG_CANALES):
+          case (251 + NUMBER_ANALOG_CANALES):
             {
               if (length <= 19)
               {
@@ -11163,18 +11187,52 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
                   else if ( i < 9)
                   {
                     //Ідентитифікатор каналу - 16 ASCII символів
-                    const char idetyficator[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG][16] =
+                    const char idetyficator[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG + 3][16] =
                     {
                       {NAME_RANG_RU},
                       {NAME_RANG_UA},
                       {NAME_RANG_EN},
                       {NAME_RANG_KZ},
                     };
-                    int index_language = index_language_in_array(current_settings.language);
-                    unsigned int index_cell;
+                    const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] = 
+                    {
+                      {11, 10, 8}, 
+                      {11, 10, 8}, 
+                      {12,  7, 8}, 
+                      {11, 10, 8}, 
+                    };
                     
-                    index_cell =  (i - 1)<<1;
-                    temp_data  = idetyficator[index_language][number_record - (2 + NUMBER_ANALOG_CANALES)][index_cell] | (idetyficator[index_language][number_record - (2 + NUMBER_ANALOG_CANALES)][index_cell+1]<<8);
+                    int index_language = index_language_in_array(current_settings.language);
+                    
+                    unsigned int index_cell =  (i - 1)<<1;
+                    temp_data = 0;
+                    for (size_t sym = 0; sym < 2; sym++)
+                    {
+                      unsigned int index_row;
+                      if ((number_record - (2 + NUMBER_ANALOG_CANALES)) < (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) 
+                      {
+                        index_row = (number_record - (2 + NUMBER_ANALOG_CANALES));
+                      }
+                      else if ((number_record - (2 + NUMBER_ANALOG_CANALES)) < (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG))
+                      {
+                        index_row = (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG) + (((number_record - (2 + NUMBER_ANALOG_CANALES)) - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) % 3);
+                      }
+                      else
+                      {
+                        index_row = (number_record - (2 + NUMBER_ANALOG_CANALES)) - NUMBER_UP_SIGNAL_FOR_RANG + 3;
+                      }
+      
+                      if (
+                          ((number_record - (2 + NUMBER_ANALOG_CANALES)) >= (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG))  &&
+                          ((number_record - (2 + NUMBER_ANALOG_CANALES)) <  (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG)) &&
+                          ((index_cell + sym) == index_number_UP[index_language][((number_record - (2 + NUMBER_ANALOG_CANALES)) - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) % 3]) 
+                         )
+                      {
+                        temp_data |= (0x30 + (((number_record - (2 + NUMBER_ANALOG_CANALES)) - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) / 3 + 1)) << (8*sym);
+                      }
+                      else temp_data |= (idetyficator[index_language][index_row][(index_cell + sym)]) << (8*sym);
+                    }
+//                    temp_data  = idetyficator_tmp[number_record - (2 + NUMBER_ANALOG_CANALES)][index_cell] | (idetyficator_tmp[number_record - (2 + NUMBER_ANALOG_CANALES)][index_cell+1]<<8);
                   }
                   else if ( i == 9)
                   {
@@ -11863,6 +11921,30 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
           case 225:
           case 226:
           case 227:
+          case 228:
+          case 229:
+          case 230:
+          case 231:
+          case 232:
+          case 233:
+          case 234:
+          case 235:
+          case 236:
+          case 237:
+          case 238:
+          case 239:
+          case 240:
+          case 241:
+          case 242:
+          case 243:
+          case 244:
+          case 245:
+          case 246:
+          case 247:
+          case 248:
+          case 249:
+          case 250:
+          case 251:
             {
               if (length <= 19)
               {
@@ -11884,11 +11966,45 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
                       {NAME_RANG_EN},
                       {NAME_RANG_KZ},
                     };
-                    int index_language = index_language_in_array(current_settings.language);
-                    unsigned int index_cell;
+                    const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] = 
+                    {
+                      {11, 10, 8}, 
+                      {11, 10, 8}, 
+                      {12,  7, 8}, 
+                      {11, 10, 8}, 
+                    };
                     
-                    index_cell =  (i - 1)<<1;
-                    temp_data  = idetyficator[index_language][number_record - 2][index_cell] | (idetyficator[index_language][number_record - 2][index_cell+1]<<8);
+                    int index_language = index_language_in_array(current_settings.language);
+                    
+                    unsigned int index_cell =  (i - 1)<<1;
+                    temp_data = 0;
+                    for (size_t sym = 0; sym < 2; sym++)
+                    {
+                      unsigned int index_row;
+                      if ((number_record - 2) < (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) 
+                      {
+                        index_row = (number_record - 2);
+                      }
+                      else if ((number_record - 2) < (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG))
+                      {
+                        index_row = (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG) + (((number_record - 2) - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) % 3);
+                      }
+                      else
+                      {
+                        index_row = (number_record - 2) - NUMBER_UP_SIGNAL_FOR_RANG + 3;
+                      }
+      
+                      if (
+                          ((number_record - 2) >= (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG))  &&
+                          ((number_record - 2) <  (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG)) &&
+                          ((index_cell + sym) == index_number_UP[index_language][((number_record - 2) - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) % 3]) 
+                         )
+                      {
+                        temp_data |= (0x30 + (((number_record - 2) - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) / 3 + 1)) << (8*sym);
+                      }
+                      else temp_data |= (idetyficator[index_language][index_row][(index_cell + sym)]) << (8*sym);
+                    }
+//                    temp_data  = idetyficator_tmp[number_record - 2][index_cell] | (idetyficator_tmp[number_record - 2][index_cell+1]<<8);
                   }
                   else if ( i == 9)
                   {

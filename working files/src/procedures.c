@@ -1734,7 +1734,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
    
       //Формуємо маски функцій УЗ
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
-      for (int i = 0; i < NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL; i++)
+      for (int i = 0; i < NUMBER_UP_SIGNAL_FOR_RANG_SMALL; i++)
         _SET_BIT(
                  maska, 
                  (
@@ -1755,7 +1755,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                 );
      
       for (unsigned int i = 0; i < N_BIG; i++ ) maska_1[i] = 0;
-      for (int i = 0; i < NUMBER_UMAX_SIGNAL_FOR_RANG; i++)
+      for (int i = 0; i < NUMBER_UP_SIGNAL_FOR_RANG; i++)
         _SET_BIT(
                  maska_1, 
                  (
@@ -1947,6 +1947,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 //                                 NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
 //                                 NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
 //                                 NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       +
+//                                 NUMBER_UP_SIGNAL_FOR_RANG_SMALL         +
 //                                 NUMBER_VMP_SIGNAL_FOR_RANG_SMALL;
 //      
 //      unsigned int others_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG    + 
@@ -1961,6 +1962,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 //                                  NUMBER_ZOP_SIGNAL_FOR_RANG        +
 //                                  NUMBER_UMIN_SIGNAL_FOR_RANG       +
 //                                  NUMBER_UMAX_SIGNAL_FOR_RANG       +
+//                                  NUMBER_UP_SIGNAL_FOR_RANG         +
 //                                  NUMBER_VMP_SIGNAL_FOR_RANG;
 //      
 //      unsigned int button_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
@@ -1975,6 +1977,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 //                                  NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON        +
 //                                  NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON       +
 //                                  NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON       +
+//                                  NUMBER_UP_SIGNAL_FOR_RANG_BUTTON         +
 //                                  NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON;
 //      
 //      for (unsigned int index = 0; index < NUMBER_DEFINED_ELEMENTS; index++)
@@ -2417,6 +2420,7 @@ void action_after_changing_ctrl_UP(__SETTINGS *current_label, uint32_t value)
 //                             NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
 //                             NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
 //                             NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       +
+//                             NUMBER_UP_SIGNAL_FOR_RANG_SMALL         +
 //                             NUMBER_VMP_SIGNAL_FOR_RANG_SMALL;
 //      
 //  unsigned int others_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG    + 
@@ -2431,6 +2435,7 @@ void action_after_changing_ctrl_UP(__SETTINGS *current_label, uint32_t value)
 //                              NUMBER_ZOP_SIGNAL_FOR_RANG        +
 //                              NUMBER_UMIN_SIGNAL_FOR_RANG       +
 //                              NUMBER_UMAX_SIGNAL_FOR_RANG       +
+//                              NUMBER_UP_SIGNAL_FOR_RANG         +
 //                              NUMBER_VMP_SIGNAL_FOR_RANG;
 //      
 //  unsigned int button_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
@@ -2445,6 +2450,7 @@ void action_after_changing_ctrl_UP(__SETTINGS *current_label, uint32_t value)
 //                              NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON        +
 //                              NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON       +
 //                              NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON       +
+//                              NUMBER_UP_SIGNAL_FOR_RANG_BUTTON         +
 //                              NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON;
 //      
 //  for (unsigned int index = 0; index < element; index++)

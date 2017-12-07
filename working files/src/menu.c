@@ -18106,6 +18106,7 @@ void main_manu_function(void)
                                                                      NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL,
                                                                      NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL,
                                                                      NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_UP_SIGNAL_FOR_RANG_SMALL,
                                                                      NUMBER_VMP_SIGNAL_FOR_RANG_SMALL,
                                                                      NUMBER_EL_SIGNAL_FOR_RANG_SMALL
                                                                     );
@@ -18334,6 +18335,7 @@ void main_manu_function(void)
                                                                      NUMBER_ZOP_SIGNAL_FOR_RANG,
                                                                      NUMBER_UMIN_SIGNAL_FOR_RANG,
                                                                      NUMBER_UMAX_SIGNAL_FOR_RANG,
+                                                                     NUMBER_UP_SIGNAL_FOR_RANG,
                                                                      NUMBER_VMP_SIGNAL_FOR_RANG,
                                                                      NUMBER_EL_SIGNAL_FOR_RANG
                                                                     );
@@ -19659,6 +19661,7 @@ void main_manu_function(void)
                                                                        NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL,
                                                                        NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL,
                                                                        NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UP_SIGNAL_FOR_RANG_SMALL,
                                                                        NUMBER_VMP_SIGNAL_FOR_RANG_SMALL,
                                                                        NUMBER_EL_SIGNAL_FOR_RANG_SMALL
                                                                       );
@@ -19942,6 +19945,7 @@ void main_manu_function(void)
                                                                        NUMBER_ZOP_SIGNAL_FOR_RANG,
                                                                        NUMBER_UMIN_SIGNAL_FOR_RANG,
                                                                        NUMBER_UMAX_SIGNAL_FOR_RANG,
+                                                                       NUMBER_UP_SIGNAL_FOR_RANG,
                                                                        NUMBER_VMP_SIGNAL_FOR_RANG,
                                                                        NUMBER_EL_SIGNAL_FOR_RANG
                                                                       );
@@ -20316,6 +20320,7 @@ void main_manu_function(void)
                                                                        NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL,
                                                                        NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL,
                                                                        NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UP_SIGNAL_FOR_RANG_SMALL,
                                                                        NUMBER_VMP_SIGNAL_FOR_RANG_SMALL,
                                                                        NUMBER_EL_SIGNAL_FOR_RANG_SMALL
                                                                       );
@@ -20599,6 +20604,7 @@ void main_manu_function(void)
                                                                        NUMBER_ZOP_SIGNAL_FOR_RANG,
                                                                        NUMBER_UMIN_SIGNAL_FOR_RANG,
                                                                        NUMBER_UMAX_SIGNAL_FOR_RANG,
+                                                                       NUMBER_UP_SIGNAL_FOR_RANG,
                                                                        NUMBER_VMP_SIGNAL_FOR_RANG,
                                                                        NUMBER_EL_SIGNAL_FOR_RANG
                                                                       );
