@@ -11529,6 +11529,19 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
                 )
           {
             //Якщ очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
+            mutex_spi1 = true;
+            if (
+                (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE) &&
+                (  
+                 (control_spi1_taskes[0]     != 0) || 
+                 (control_spi1_taskes[1]     != 0) || 
+                 (state_execution_spi1 > 0)
+                )   
+               )
+            {
+              main_routines_for_spi1();
+            }
+            mutex_spi1 = false;
           }
 
           if (
@@ -11584,7 +11597,20 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
                      ((type_interface == RS485_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
                     )
               {
-                //Якщ очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
+                //Якщо очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
+                mutex_spi1 = true;
+                if (
+                    (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE) &&
+                    (  
+                     (control_spi1_taskes[0]     != 0) || 
+                     (control_spi1_taskes[1]     != 0) || 
+                     (state_execution_spi1 > 0)
+                    )   
+                   )
+                {
+                  main_routines_for_spi1();
+                }
+                mutex_spi1 = false;
               }
             }
             
