@@ -5339,12 +5339,13 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
                    (_CHECK_SET_BIT(p_active_functions, (RANG_BLOCK_UP1 + 3*n_UP)) == 0)
                   ) << 0;
 
-    uint32_t pickup = current_settings_prt.setpoint_UP[n_UP][0][number_group_stp];
+    int32_t pickup = current_settings_prt.setpoint_UP[n_UP][0][number_group_stp];
     if (_CHECK_SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP)) == 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
 
     unsigned int more_less = ((current_settings_prt.control_UP & (n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
     
-    uint32_t analog_value;
+    int32_t analog_value;
+    uint32_t PQ = false;
     switch (current_settings_prt.ctrl_UP_input[n_UP])
     {
     case UP_CTRL_Ia_Ib_Ic:
@@ -5352,13 +5353,13 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
         analog_value = measurement[IM_IA];
         if (more_less) 
         {
-         if (measurement[IM_IB] > analog_value) analog_value = measurement[IM_IB];
-         if (measurement[IM_IC] > analog_value) analog_value = measurement[IM_IC];
+         if (measurement[IM_IB] > (uint32_t)analog_value) analog_value = measurement[IM_IB];
+         if (measurement[IM_IC] > (uint32_t)analog_value) analog_value = measurement[IM_IC];
         }
         else
         {
-         if (measurement[IM_IB] < analog_value) analog_value = measurement[IM_IB];
-         if (measurement[IM_IC] < analog_value) analog_value = measurement[IM_IC];
+         if (measurement[IM_IB] < (uint32_t)analog_value) analog_value = measurement[IM_IB];
+         if (measurement[IM_IC] < (uint32_t)analog_value) analog_value = measurement[IM_IC];
         }
         
         break;
@@ -5425,17 +5426,17 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
         uint32_t analog_value_tmp = (phase_line == 0) ? measurement[IM_UB] : measurement[IM_UBC];
         if (more_less) 
         {
-         if (analog_value_tmp > analog_value) analog_value = analog_value_tmp;
+         if (analog_value_tmp > (uint32_t)analog_value) analog_value = analog_value_tmp;
          
          analog_value_tmp = (phase_line == 0) ? measurement[IM_UC] : measurement[IM_UCA];
-         if (analog_value_tmp > analog_value) analog_value = analog_value_tmp;
+         if (analog_value_tmp > (uint32_t)analog_value) analog_value = analog_value_tmp;
         }
         else
         {
-         if (analog_value_tmp < analog_value) analog_value = analog_value_tmp;
+         if (analog_value_tmp < (uint32_t)analog_value) analog_value = analog_value_tmp;
          
          analog_value_tmp = (phase_line == 0) ? measurement[IM_UC] : measurement[IM_UCA];
-         if (analog_value_tmp < analog_value) analog_value = analog_value_tmp;
+         if (analog_value_tmp < (uint32_t)analog_value) analog_value = analog_value_tmp;
         }
         
         break;
@@ -5478,12 +5479,14 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
       }
     case UP_CTRL_P:
       {
+        PQ = true;
         analog_value = P[mutex_power != 0];
         
         break;
       }
     case UP_CTRL_Q:
       {
+        PQ = true;
         analog_value = Q[mutex_power != 0];
         
         break;
@@ -5503,11 +5506,51 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     
     if (more_less)
     {
-      logic_UP_0 |= (analog_value >= pickup) << 1;
+      if (PQ)
+      {
+        if (
+            (
+             (analog_value >= 0) &&
+             (pickup >= 0)  
+            )
+            ||
+            (
+             (analog_value < 0) &&
+             (pickup < 0)  
+            ) 
+           ) 
+        {
+          logic_UP_0 |= (abs(analog_value) >= abs(pickup)) << 1;
+        }
+      }
+      else
+      {
+        logic_UP_0 |= (analog_value >= pickup) << 1;
+      }
     }
     else
     {
-      logic_UP_0 |= (analog_value <= pickup) << 1;
+      if (PQ)
+      {
+        if (
+            (
+             (analog_value >= 0) &&
+             (pickup >= 0)  
+            )
+            ||
+            (
+             (analog_value < 0) &&
+             (pickup < 0)  
+            ) 
+           ) 
+        {
+          logic_UP_0 |= (abs(analog_value) <= abs(pickup)) << 1;
+        }
+      }
+      else
+      {
+        logic_UP_0 |= (analog_value <= pickup) << 1;
+      }
     }
 
     _AND2(logic_UP_0, 0, logic_UP_0, 1, logic_UP_0, 2);

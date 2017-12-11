@@ -6681,9 +6681,13 @@ void main_manu_function(void)
                       }
                     case UP_CTRL_P:
                     case UP_CTRL_Q:
+                      {
+                        current_ekran.position_cursor_x = COL_SETPOINT_UP_PQ_BEGIN - 1;
+                        break;
+                      }
                     case UP_CTRL_S:
                       {
-                        current_ekran.position_cursor_x = COL_SETPOINT_UP_P_BEGIN;
+                        current_ekran.position_cursor_x = COL_SETPOINT_UP_S_BEGIN;
                         break;
                       }
                     default:
@@ -10229,7 +10233,7 @@ void main_manu_function(void)
                   uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_SETPOINT_UP;
                   if (_n_index == INDEX_ML_STP_UP)
                   {
-                    uint32_t min, max;
+                    uint32_t min, max, PQ = false;
                     switch (current_settings.ctrl_UP_input[_n_UP])
                     {
                     case UP_CTRL_Ia_Ib_Ic:
@@ -10266,6 +10270,12 @@ void main_manu_function(void)
                       }
                     case UP_CTRL_P:
                     case UP_CTRL_Q:
+                      {
+                        PQ = true;
+                        min = SETPOINT_UP_P_MIN;
+                        max = SETPOINT_UP_P_MAX;
+                        break;
+                      }
                     case UP_CTRL_S:
                       {
                         min = SETPOINT_UP_P_MIN;
@@ -10278,7 +10288,17 @@ void main_manu_function(void)
                         total_error_sw_fixed(94);
                       }
                     }
-                    if (check_data_setpoint(edition_settings.setpoint_UP[_n_UP][0][group], min, max) == 1)
+                    if (
+                        (
+                         (PQ == false) &&
+                         (check_data_setpoint(edition_settings.setpoint_UP[_n_UP][0][group], min, max) == 1)
+                        )   
+                        ||  
+                        (
+                         (PQ == true) &&
+                         (check_data_setpoint(abs(edition_settings.setpoint_UP[_n_UP][0][group]), min, max) == 1)
+                        )   
+                       )   
                     {
                       if (edition_settings.setpoint_UP[_n_UP][0][group] != current_settings.setpoint_UP[_n_UP][0][group])
                       {
@@ -12250,6 +12270,7 @@ void main_manu_function(void)
                   if (_n_index == INDEX_ML_STP_UP)
                   {
                     uint32_t comma, end, min_step;
+                    int32_t sign_before = 1, sign_after = 1;
                     switch (current_settings.ctrl_UP_input[_n_UP])
                     {
                     case UP_CTRL_Ia_Ib_Ic:
@@ -12289,10 +12310,25 @@ void main_manu_function(void)
                       }
                     case UP_CTRL_P:
                     case UP_CTRL_Q:
+                      {
+                        if (edition_settings.setpoint_UP[_n_UP][0][group] < 0) sign_before = -1;
+                        if (current_ekran.position_cursor_x == (COL_SETPOINT_UP_PQ_BEGIN - 1))
+                        {
+                          sign_after = -sign_before;
+                        }
+                        else
+                        {
+                          sign_after = sign_before;
+                          comma = COL_SETPOINT_UP_PQ_COMMA;
+                          end = COL_SETPOINT_UP_PQ_END;
+                          min_step = 1;
+                        }
+                        break;
+                      }
                     case UP_CTRL_S:
                       {
-                        comma = COL_SETPOINT_UP_P_COMMA;
-                        end = COL_SETPOINT_UP_P_END;
+                        comma = COL_SETPOINT_UP_S_COMMA;
+                        end = COL_SETPOINT_UP_S_END;
                         min_step = 1;
                         break;
                       }
@@ -12303,7 +12339,10 @@ void main_manu_function(void)
                       }
                     }
                     
-                    edition_settings.setpoint_UP[_n_UP][0][group] = edit_setpoint(1, edition_settings.setpoint_UP[_n_UP][0][group], 1, comma, end, min_step);
+                    if (sign_before == sign_after)
+                      edition_settings.setpoint_UP[_n_UP][0][group] = sign_after*edit_setpoint(1, abs(edition_settings.setpoint_UP[_n_UP][0][group]), 1, comma, end, min_step);
+                    else
+                      edition_settings.setpoint_UP[_n_UP][0][group] = sign_after*abs(edition_settings.setpoint_UP[_n_UP][0][group]);
                   }
                   else if (_n_index == INDEX_ML_STP_UP_KP)
                     edition_settings.setpoint_UP_KP[_n_UP][0][group] = edit_setpoint(1, edition_settings.setpoint_UP_KP[_n_UP][0][group], 1, COL_SETPOINT_UP_KP_COMMA, COL_SETPOINT_UP_KP_END, 1);
@@ -13657,6 +13696,7 @@ void main_manu_function(void)
                   if (_n_index == INDEX_ML_STP_UP)
                   {
                     uint32_t comma, end, min_step;
+                    int32_t sign_before = 1, sign_after = 1;
                     switch (current_settings.ctrl_UP_input[_n_UP])
                     {
                     case UP_CTRL_Ia_Ib_Ic:
@@ -13696,10 +13736,25 @@ void main_manu_function(void)
                       }
                     case UP_CTRL_P:
                     case UP_CTRL_Q:
+                      {
+                        if (edition_settings.setpoint_UP[_n_UP][0][group] < 0) sign_before = -1;
+                        if (current_ekran.position_cursor_x == (COL_SETPOINT_UP_PQ_BEGIN - 1))
+                        {
+                          sign_after = -sign_before;
+                        }
+                        else
+                        {
+                          sign_after = sign_before;
+                          comma = COL_SETPOINT_UP_PQ_COMMA;
+                          end = COL_SETPOINT_UP_PQ_END;
+                          min_step = 1;
+                        }
+                        break;
+                      }
                     case UP_CTRL_S:
                       {
-                        comma = COL_SETPOINT_UP_P_COMMA;
-                        end = COL_SETPOINT_UP_P_END;
+                        comma = COL_SETPOINT_UP_S_COMMA;
+                        end = COL_SETPOINT_UP_S_END;
                         min_step = 1;
                         break;
                       }
@@ -13710,7 +13765,10 @@ void main_manu_function(void)
                       }
                     }
                     
-                    edition_settings.setpoint_UP[_n_UP][0][group] = edit_setpoint(0, edition_settings.setpoint_UP[_n_UP][0][group], 1, comma, end, min_step);
+                    if (sign_before == sign_after)
+                      edition_settings.setpoint_UP[_n_UP][0][group] = sign_after*edit_setpoint(0, abs(edition_settings.setpoint_UP[_n_UP][0][group]), 1, comma, end, min_step);
+                    else
+                      edition_settings.setpoint_UP[_n_UP][0][group] = sign_after*abs(edition_settings.setpoint_UP[_n_UP][0][group]);
                   }
                   else if (_n_index == INDEX_ML_STP_UP_KP)
                     edition_settings.setpoint_UP_KP[_n_UP][0][group] = edit_setpoint(0, edition_settings.setpoint_UP_KP[_n_UP][0][group], 1, COL_SETPOINT_UP_KP_COMMA, COL_SETPOINT_UP_KP_END, 1);
@@ -15479,11 +15537,17 @@ void main_manu_function(void)
                     }
                   case UP_CTRL_P:
                   case UP_CTRL_Q:
+                    {
+                      begin = COL_SETPOINT_UP_PQ_BEGIN - 1;
+                      comma = COL_SETPOINT_UP_PQ_COMMA;
+                      end = COL_SETPOINT_UP_PQ_END;
+                      break;
+                    }
                   case UP_CTRL_S:
                     {
-                      begin = COL_SETPOINT_UP_P_BEGIN;
-                      comma = COL_SETPOINT_UP_P_COMMA;
-                      end = COL_SETPOINT_UP_P_END;
+                      begin = COL_SETPOINT_UP_S_BEGIN;
+                      comma = COL_SETPOINT_UP_S_COMMA;
+                      end = COL_SETPOINT_UP_S_END;
                       break;
                     }
                   default:
@@ -17242,11 +17306,17 @@ void main_manu_function(void)
                     }
                   case UP_CTRL_P:
                   case UP_CTRL_Q:
+                    {
+                      begin = COL_SETPOINT_UP_PQ_BEGIN - 1;
+                      comma = COL_SETPOINT_UP_PQ_COMMA;
+                      end = COL_SETPOINT_UP_PQ_END;
+                      break;
+                    }
                   case UP_CTRL_S:
                     {
-                      begin = COL_SETPOINT_UP_P_BEGIN;
-                      comma = COL_SETPOINT_UP_P_COMMA;
-                      end = COL_SETPOINT_UP_P_END;
+                      begin = COL_SETPOINT_UP_S_BEGIN;
+                      comma = COL_SETPOINT_UP_S_COMMA;
+                      end = COL_SETPOINT_UP_S_END;
                       break;
                     }
                   default:

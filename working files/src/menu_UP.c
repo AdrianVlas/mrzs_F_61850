@@ -60,7 +60,7 @@ void make_ekran_setpoint_UP(unsigned int group)
   
   __vd vd[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP];
   uint32_t vaga_arr[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP];
-  uint32_t *p_value[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP]; 
+  int32_t *p_value[NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP]; 
 
   for (size_t i = 0; i < (NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP); i++)
   {
@@ -68,6 +68,7 @@ void make_ekran_setpoint_UP(unsigned int group)
     uint32_t _n_UP = i / MAX_ROW_FOR_SETPOINT_UP;
     uint32_t in_canal = current_settings.ctrl_UP_input[_n_UP];
     
+    vd[i].sign = -1;
     switch (i)
     {
     case 0:
@@ -136,28 +137,36 @@ void make_ekran_setpoint_UP(unsigned int group)
           }
         case UP_CTRL_P:
         case UP_CTRL_Q:
-        case UP_CTRL_S:
           {
-            vd[i].begin = COL_SETPOINT_UP_P_BEGIN;
-            vd[i].comma = COL_SETPOINT_UP_P_COMMA;
-            vd[i].end = COL_SETPOINT_UP_P_END;
-            vd[i].u_begin = COL_SETPOINT_UP_P_END + 2;
+            vd[i].sign = COL_SETPOINT_UP_PQ_BEGIN - 1;
+            vd[i].begin = COL_SETPOINT_UP_PQ_BEGIN;
+            vd[i].comma = COL_SETPOINT_UP_PQ_COMMA;
+            vd[i].end = COL_SETPOINT_UP_PQ_END;
+            vd[i].u_begin = COL_SETPOINT_UP_PQ_END + 2;
             if (in_canal == UP_CTRL_P)
             {
-              if (index_language == INDEX_LANGUAGE_EN) vd[i].u_end = COL_SETPOINT_UP_P_END + 2;
-              else vd[i].u_end = COL_SETPOINT_UP_P_END + 3;
+              if (index_language == INDEX_LANGUAGE_EN) vd[i].u_end = COL_SETPOINT_UP_PQ_END + 2;
+              else vd[i].u_end = COL_SETPOINT_UP_PQ_END + 3;
               vd[i].p_unit = &string_W[index_language][0];
-            }
-            else if (in_canal == UP_CTRL_Q)
-            {
-              vd[i].u_end = COL_SETPOINT_UP_P_END + 4;
-              vd[i].p_unit = &string_VAR[index_language][0];
             }
             else
             {
-              vd[i].u_end = COL_SETPOINT_UP_P_END + 3;
-              vd[i].p_unit = &string_VA[index_language][0];
+              vd[i].u_end = COL_SETPOINT_UP_PQ_END + 4;
+              vd[i].p_unit = &string_VAR[index_language][0];
             }
+            
+            vaga_arr[i] = 1000000;
+            
+            break;
+          }
+        case UP_CTRL_S:
+          {
+            vd[i].begin = COL_SETPOINT_UP_S_BEGIN;
+            vd[i].comma = COL_SETPOINT_UP_S_COMMA;
+            vd[i].end = COL_SETPOINT_UP_S_END;
+            vd[i].u_begin = COL_SETPOINT_UP_S_END + 2;
+            vd[i].u_end = COL_SETPOINT_UP_S_END + 3;
+            vd[i].p_unit = &string_VA[index_language][0];
             
             vaga_arr[i] = 1000000;
             
@@ -195,8 +204,8 @@ void make_ekran_setpoint_UP(unsigned int group)
             
         vaga_arr[i] = 100;
         
-        if (view == true) p_value[i] = current_settings.setpoint_UP_KP[_n_UP][0]; //у змінну value поміщаємо значення уставки
-        else p_value[i] = edition_settings.setpoint_UP_KP[_n_UP][0];
+        if (view == true) p_value[i] = (int32_t *)current_settings.setpoint_UP_KP[_n_UP][0]; //у змінну value поміщаємо значення уставки
+        else p_value[i] = (int32_t *)edition_settings.setpoint_UP_KP[_n_UP][0];
 
         break;
       }
@@ -229,7 +238,7 @@ void make_ekran_setpoint_UP(unsigned int group)
           working_ekran[i][j] = (j != index_number[index_language][_n_index]) ? name_string[index_language][_n_index][j] : (_n_UP + 1 + 0x30);
         }
         vaga = vaga_arr[index_of_ekran_tmp];
-        value = *(p_value[index_of_ekran_tmp] + group);
+        value = abs(*(p_value[index_of_ekran_tmp] + group));
         
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
       }
@@ -239,13 +248,17 @@ void make_ekran_setpoint_UP(unsigned int group)
         unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if (
-              ((j < vd[index_of_ekran_tmp].begin) ||  (j > vd[index_of_ekran_tmp].end ))  &&
-               (
-                (vd[index_of_ekran_tmp].p_unit == NULL) ||
-                (!((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin))))
-               )    
-             )working_ekran[i][j] = ' ';
+          if (j == vd[index_of_ekran_tmp].sign)
+          {
+            working_ekran[i][j] = (*(p_value[index_of_ekran_tmp] + group) < 0) ? '-' : ' ';
+          }
+          else if (
+                   ((j < vd[index_of_ekran_tmp].begin) ||  (j > vd[index_of_ekran_tmp].end ))  &&
+                    (
+                     (vd[index_of_ekran_tmp].p_unit == NULL) ||
+                     (!((j >= (vd[index_of_ekran_tmp].end + 2)) && (j <= (vd[index_of_ekran_tmp].end + 2 + vd[index_of_ekran_tmp].u_end - vd[index_of_ekran_tmp].u_begin))))
+                   )    
+                  )working_ekran[i][j] = ' ';
           else if (j == vd[index_of_ekran_tmp].comma )working_ekran[i][j] = ','; /*якщо коми не потрібно, то треба щоб comma була меншою за begin і тоді до ціє частини коду програма не дійде*/
           else if (
                    (vd[index_of_ekran_tmp].p_unit != NULL) &&
@@ -271,12 +284,20 @@ void make_ekran_setpoint_UP(unsigned int group)
   if (current_ekran.edition == 0)
   {
     int last_position_cursor_x = MAX_COL_LCD;
-    current_ekran.position_cursor_x = vd[current_ekran.index_position].begin;
+    if (vd[current_ekran.index_position].sign < 0)
+      current_ekran.position_cursor_x = vd[current_ekran.index_position].begin;
+    else
+      current_ekran.position_cursor_x = vd[current_ekran.index_position].sign;
     last_position_cursor_x = vd[current_ekran.index_position].end;
     
     //Підтягуємо курсор до першого символу
     while (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1]) == ' ') && 
-           (current_ekran.position_cursor_x < (last_position_cursor_x -1))) current_ekran.position_cursor_x++;
+           (current_ekran.position_cursor_x < (last_position_cursor_x -1))) 
+    {
+      working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1] = working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x];
+      working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x] = ' ';
+      current_ekran.position_cursor_x++;
+    }
     
     //Курсор ставимо так, щоб він був перед числом
     if (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x]) != ' ') && 
@@ -324,7 +345,7 @@ void make_ekran_timeout_UP(unsigned int group)
   
   const __vd vd[MAX_ROW_FOR_TIMEOUT_UP] = 
   {
-    {COL_TMO_UP_BEGIN, COL_TMO_UP_COMMA, COL_TMO_UP_END, COL_TMO_UP_END + 2, COL_TMO_UP_END + 2, &odynyci_vymirjuvannja[index_language][INDEX_SECOND]}
+    {-1, COL_TMO_UP_BEGIN, COL_TMO_UP_COMMA, COL_TMO_UP_END, COL_TMO_UP_END + 2, COL_TMO_UP_END + 2, &odynyci_vymirjuvannja[index_language][INDEX_SECOND]}
   };
   const uint32_t vaga_arr[MAX_ROW_FOR_TIMEOUT_UP] = 
   {

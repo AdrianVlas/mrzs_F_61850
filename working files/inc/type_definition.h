@@ -293,7 +293,7 @@ typedef struct
   unsigned int control_Umax;                                //Поле для управління Umax
   
   //Універсальний захист
-  uint32_t setpoint_UP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];     //Уставка для всіх ступенів
+  int32_t setpoint_UP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];      //Уставка для всіх ступенів
   uint32_t setpoint_UP_KP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];  //Уставка для "Коефіцієнта повернення" всіх ступенів
   int32_t timeout_UP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];       //Витримка для Універсального захисту
   uint32_t control_UP;                                          //Поля для управління
@@ -534,6 +534,7 @@ typedef enum _setting_data
 
 typedef struct _vd
 {
+           int sign;
   unsigned int begin;
   unsigned int comma;
   unsigned int end;

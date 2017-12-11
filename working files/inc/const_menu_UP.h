@@ -31,9 +31,13 @@ enum _index_ml_stp_UP
 #define COL_SETPOINT_UP_U_COMMA      7
 #define COL_SETPOINT_UP_U_END        8
 
-#define COL_SETPOINT_UP_P_BEGIN      2
-#define COL_SETPOINT_UP_P_COMMA      6
-#define COL_SETPOINT_UP_P_END        9
+#define COL_SETPOINT_UP_PQ_BEGIN     3
+#define COL_SETPOINT_UP_PQ_COMMA     7
+#define COL_SETPOINT_UP_PQ_END       10
+
+#define COL_SETPOINT_UP_S_BEGIN      2
+#define COL_SETPOINT_UP_S_COMMA      6
+#define COL_SETPOINT_UP_S_END        9
 
 #define COL_SETPOINT_UP_KP_BEGIN     6
 #define COL_SETPOINT_UP_KP_COMMA     7
