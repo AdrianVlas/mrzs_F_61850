@@ -1,6 +1,7 @@
 #ifndef __LIBRARIES_H
 #define __LIBRARIES_H
 
+
 #include "stm32f2xx.h"
 #include "stm32f2xx_it.h"
 #include "platform_config.h"
@@ -13,6 +14,7 @@
 #include "usb_conf.h"
 #include "usbd_desc.h"
 
+#include  <intrinsics.h>
 #include <stdbool.h>
 #include <math.h>
 #include <arm_math.h>
