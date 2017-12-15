@@ -222,6 +222,8 @@ extern unsigned int periodical_tasks_CALC_ENERGY_DATA;
 
 extern const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODYNYCI_VYMIRJUVANNJA];
 
+extern const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
+
 extern unsigned int fixed_power_down_into_RTC; 
 extern unsigned char time[7]; 
 extern unsigned char time_copy[7]; 

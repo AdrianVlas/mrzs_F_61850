@@ -37,6 +37,7 @@
 #define NUMBER_DEFINED_OR               8
 #define NUMBER_DEFINED_XOR              8
 #define NUMBER_DEFINED_NOT              16
+#define NUMBER_TRANSFER_FUNCTIONS       16
 
 #define NUMBER_DEFINED_BUTTONS          6
 

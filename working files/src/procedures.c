@@ -1918,9 +1918,11 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
                 );
 
       point_to_mask_array = array_full;
+      
+      for (size_t i = 0; i < NUMBER_TRANSFER_FUNCTIONS; i++) target_label->ranguvannja_tf[i] = 0;
     }
-//    else
-//    {
+    else
+    {
 //      //Формуємо маски тільки тих сигналів розширеної логіки, які виведені з конфігурації у кількісному значенні
 //      unsigned int array_defined_logic[NUMBER_DEFINED_ELEMENTS][2] =
 //      {
@@ -1993,9 +1995,39 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 //        
 //        others_shift += others_signals[index]*array_defined_logic[index][1];
 //      }
-//      
-//      point_to_mask_array = maska_1;
-//    }
+      
+      point_to_mask_array = maska_1;
+
+      for (size_t i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
+      {
+         if ((target_label->configuration & (1 << i)) == 0)
+         {
+           for (size_t j = 0; j < NUMBER_TRANSFER_FUNCTIONS; j++)
+           {
+             uint32_t value = target_label->ranguvannja_tf[j];
+             uint32_t value_1 = (value >> (16*0)) & 0xffff;
+             if (
+                 (value_1 >= max_value_for_tf[1 + i - 1][0]) &&
+                 (value_1 <= max_value_for_tf[1 + i    ][0])
+                ) 
+             {
+               value_1 = 0;
+             }
+         
+             uint32_t value_2 = (value >> (16*1)) & 0xffff;
+             if (
+                 (value_2 >= max_value_for_tf[1 + i - 1][1]) &&
+                 (value_2 <= max_value_for_tf[1 + i    ][1])
+                ) 
+             {
+               value_2 = 0;
+             }
+
+             target_label->ranguvannja_tf[j] = (value_2 << (16*1)) | (value_1 << (16*0));
+           }
+         }
+      }
+    }
 
     //Знімаємо всі функції для ранжування входів, які відповідають за Розширеної логіки
     for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
@@ -2224,6 +2256,19 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
     for(unsigned int i = 0; i < NUMBER_DEFINED_NOT; i++)
     {
       for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_not[N_BIG*i+j] &= ~maska_1[j];
+    }
+
+    for (size_t i = 0; i < NUMBER_TRANSFER_FUNCTIONS; i++)
+    {
+      uint32_t value = (target_label->ranguvannja_tf[i] >> (16*0)) & 0xffff;
+      if (
+          (value == (RANG_PO_NZZ     + 1)) ||
+          (value == (RANG_NZZ        + 1)) ||
+          (value == (RANG_SECTOR_NZZ + 1))
+         ) 
+      {
+        target_label->ranguvannja_tf[i] &= (uint32_t)(~(0xffff << (16*0)));
+      }
     }
   }
 

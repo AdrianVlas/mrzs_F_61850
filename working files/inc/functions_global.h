@@ -151,6 +151,7 @@ void make_ekran_timeout_df(unsigned int);
 void make_ekran_list_type_source_df(void);
 void make_ekran_set_reset_trigger(void);
 void make_ekran_list_type_source_dt(void);
+void make_ekran_type_source_tf(void);
 void make_ekran_info(void);
 void make_ekran_date_time_pz(void);
 void make_ekran_chose_item_of_point_time_settings(void);

@@ -1391,6 +1391,8 @@ void min_settings(__SETTINGS *target_label)
     for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_not[N_BIG*i+j] = 0x0;
   }
   
+  for(unsigned int i = 0; i < NUMBER_TRANSFER_FUNCTIONS; i++) target_label->ranguvannja_tf[i] = 0x0;
+  
   target_label->buttons_mode = 0;
   for(unsigned int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
   {

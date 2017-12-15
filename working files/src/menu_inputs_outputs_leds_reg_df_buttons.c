@@ -5,38 +5,39 @@
 /* 
 -------------------------------------------------------
 Вхідний параметр
-0 - входи
-1 - виходи
-2 - світодіоди
-3 - опреділювальні функції
-4 - функціональні кнопки
-5 - опреділювальні триґери
-6 - визначувані "І"
-7 - визначувані "АБО"
-8 - визначувані "Викл.АБО"
-9 - визначувані "НЕ"
+0  - входи
+1  - виходи
+2  - світодіоди
+3  - опреділювальні функції
+4  - функціональні кнопки
+5  - опреділювальні триґери
+6  - визначувані "І"
+7  - визначувані "АБО"
+8  - визначувані "Викл.АБО"
+9  - визначувані "НЕ"
+10 - Передавальні функції
 -------------------------------------------------------
 */
 /*****************************************************/
 void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(unsigned int type_of_window)
 {
-  const unsigned char information[MAX_NAMBER_LANGUAGE][10][MAX_COL_LCD] = 
+  const unsigned char information[MAX_NAMBER_LANGUAGE][11][MAX_COL_LCD] = 
   {
-    {" Двх            ", " Двых           ", " Св             ", " О-функция      ", " F              ", " О-триггер      ", " О-И            ", " О-ИЛИ          ", " О-Искл.ИЛИ     ", " О-НЕ           "},
-    {" Двх            ", " Двих           ", " Св             ", " В-функція      ", " F              ", " В-триґер       ", " В-І            ", " В-АБО          ", " В-Викл.АБО     ", " В-НЕ           "},
-    {" DI             ", " DO             ", " LED            ", " UD Function    ", " F              ", " UD Flip-Flop   ", " UD AND         ", " UD OR          ", " UD XOR         ", " UD NOT         "},
-    {" Двх            ", " Двых           ", " Св             ", " О-функция      ", " F              ", " О-триггер      ", " О-И            ", " О-ИЛИ          ", " О-Искл.ИЛИ     ", " О-НЕ           "}
+    {" Двх            ", " Двых           ", " Св             ", " О-функция      ", " F              ", " О-триггер      ", " О-И            ", " О-ИЛИ          ", " О-Искл.ИЛИ     ", " О-НЕ           ", " Пер.ф.         "},
+    {" Двх            ", " Двих           ", " Св             ", " В-функція      ", " F              ", " В-триґер       ", " В-І            ", " В-АБО          ", " В-Викл.АБО     ", " В-НЕ           ", " Пер.ф.         "},
+    {" DI             ", " DO             ", " LED            ", " UD Function    ", " F              ", " UD Flip-Flop   ", " UD AND         ", " UD OR          ", " UD XOR         ", " UD NOT         ", " Tr.F.          "},
+    {" Двх            ", " Двых           ", " Св             ", " О-функция      ", " F              ", " О-триггер      ", " О-И            ", " О-ИЛИ          ", " О-Искл.ИЛИ     ", " О-НЕ           ", " Пер.ф.         "}
   };
 
-  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE][10] = 
+  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE][11] = 
   {
-    {4, 5, 3, 10, 2, 10, 4, 6, 11, 5},
-    {4, 5, 3, 10, 2,  9, 4, 6, 11, 5},
-    {3, 3, 4, 12, 2, 13, 7, 6,  7, 6},
-    {4, 5, 3, 10, 2, 10, 4, 6, 11, 5}
+    {4, 5, 3, 10, 2, 10, 4, 6, 11, 5, 7},
+    {4, 5, 3, 10, 2,  9, 4, 6, 11, 5, 7},
+    {3, 3, 4, 12, 2, 13, 7, 6,  7, 6, 6},
+    {4, 5, 3, 10, 2, 10, 4, 6, 11, 5, 7}
   };
   
-  const unsigned int max_row[10] =
+  const unsigned int max_row[11] =
   {
     MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA,
     MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA,
@@ -47,7 +48,8 @@ void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(unsigned
     MAX_ROW_FOR_LIST_D_AND,
     MAX_ROW_FOR_LIST_D_OR,
     MAX_ROW_FOR_LIST_D_XOR,
-    MAX_ROW_FOR_LIST_D_NOT
+    MAX_ROW_FOR_LIST_D_NOT,
+    MAX_ROW_FOR_LIST_TF
   };
   int index_language = index_language_in_array(current_settings.language);
   unsigned int first_index_number_1 = first_index_number[index_language][type_of_window];
@@ -55,13 +57,13 @@ void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(unsigned
   unsigned int position_temp = current_ekran.index_position;
   unsigned int index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
 
-  //Формуємо рядки  рядки у робочий екран
+  //Формуємо рядки  у робочий екран
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
     unsigned int number = index_of_ekran + 1;
     unsigned int tmp_1 = (number / 10), tmp_2 = number - tmp_1*10;
 
-    //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+    //Наступні рядки треба перевірити, чи їх требе відображати у текучій кофігурації
     if (index_of_ekran < max_row[type_of_window])
     {
       for (unsigned int j = 0; j<MAX_COL_LCD; j++)
@@ -690,7 +692,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
 {
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
-  unsigned int state_viewing_input[N_BIG];
+  unsigned int state_viewing_input[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   unsigned int max_row_ranguvannja;
   const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG + 3 + NUMBER_ROW_FOR_NOTHING_INFORMATION][MAX_COL_LCD] = 
   {

@@ -98,6 +98,8 @@ typedef struct
   unsigned int ranguvannja_d_xor[N_BIG*NUMBER_DEFINED_XOR];                     //Ранжування команд джерел визначуваних "Викл.АБО"
   unsigned int ranguvannja_d_not[N_BIG*NUMBER_DEFINED_NOT];                     //Ранжування команд джерел визначуваних "НЕ"
   
+  uint32_t ranguvannja_tf[NUMBER_TRANSFER_FUNCTIONS];                           //Ранжування передавальних функцій
+  
   uint32_t buttons_mode;                                                        //Режими роботи ФК
                                                                                 //0 - Звичайна кнопка
                                                                                 //1 - Двопозиційний ключ

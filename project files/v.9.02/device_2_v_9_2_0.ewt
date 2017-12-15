@@ -1659,6 +1659,9 @@
                     <name>$PROJ_DIR$\..\..\working files\inc\const_menu_time.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_transfer_functions.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_menu_transformator.h</name>
                 </file>
                 <file>
@@ -1870,6 +1873,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\menu_switch.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\menu_tf.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\menu_time.c</name>
