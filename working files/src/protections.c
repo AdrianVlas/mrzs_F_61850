@@ -2485,6 +2485,48 @@ inline void d_not_handler(unsigned int *p_active_functions)
 /*****************************************************/
 
 /*****************************************************/
+//Опрацювання Передавальних функцій
+/*****************************************************/
+inline void tf_handler(unsigned int *p_previous_active_functions, unsigned int *p_active_functions)
+{
+  for (size_t i = 0; i < NUMBER_TRANSFER_FUNCTIONS; i++)
+  {
+    uint32_t value = current_settings_prt.ranguvannja_tf[i];
+    uint32_t value_input = value & 0xffff;
+    if (value_input > 0)
+    {
+      value_input--;
+      if (value_input < NUMBER_TOTAL_SIGNAL_FOR_RANG)
+      {
+        if (_CHECK_SET_BIT(p_previous_active_functions, value_input) != 0)
+        {
+          uint32_t value_output = (value >> 16) & 0xffff;
+          if (value_output > 0)
+          {
+            value_output--;
+            if (value_output < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)
+            {
+              _SET_BIT(p_active_functions, small_big_rang[value_output]);
+            }
+            else
+            {
+              //Відбулася невизначена помилка, тому треба піти на перезавантаження
+              total_error_sw_fixed(102);
+            }
+          }
+        }
+      }
+      else
+      {
+        //Відбулася невизначена помилка, тому треба піти на перезавантаження
+        total_error_sw_fixed(101);
+      }
+    }
+  }
+}
+/*****************************************************/
+
+/*****************************************************/
 //Вираховування часової витримки  для залежної МТЗ2 (універсальна формула)
 /*
 -------------------------------------------------
@@ -9149,7 +9191,7 @@ inline void main_protection(void)
 {
   copying_active_functions = 1; //Помічаємо, що зараз обновляємо значення активних функцій
   
-  //Скижаємо тісигнали, які відповідають за входи, фкнопки і активацію з інтерфейсу
+  //Скижаємо ті сигнали, які відповідають за входи, кнопки і активацію з інтерфейсу
   const unsigned int maska_input_signals[N_BIG] = 
   {
     MASKA_FOR_INPUT_SIGNALS_0, 
@@ -9775,11 +9817,19 @@ inline void main_protection(void)
   /**************************/
 
   
+  static unsigned int previous_active_functions[N_BIG];
+  
   //Логічні схеми мають працювати тільки у тому випадку, якщо немє сигналу "Аварийная неисправность"
   if (_CHECK_SET_BIT(active_functions, RANG_AVAR_DEFECT) == 0)
   {
     //Аварійна ситуація не зафіксована
     
+    /**************************/
+    //Обробка передавальних функцій
+    /**************************/
+    tf_handler(previous_active_functions, active_functions);
+    /**************************/
+
     /**************************/
     //Контроль привода ВВ
     /**************************/
@@ -10433,7 +10483,12 @@ inline void main_protection(void)
   обновлятися, то можна було б іншим модулям  (запис у об'єднаний аналоговий
   реєстратор) взяти попереднє, але достовірне значення
   */
-  for (unsigned int i = 0; i < N_BIG; i++) active_functions_copy[i] = active_functions[i];
+  for (unsigned int i = 0; i < N_BIG; i++) 
+  {
+    unsigned int temp_data = active_functions[i];
+    active_functions_copy[i] = temp_data;
+    previous_active_functions[i] = temp_data;
+  }
   /**************************/
 
   /**************************/

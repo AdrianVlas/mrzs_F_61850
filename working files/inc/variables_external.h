@@ -104,6 +104,9 @@ extern int resistance_low[MAX_NUMBER_INDEXES_RESISTANCE];
 extern int sector_1_mtz_tznp[8];
 extern int sector_2_mtz_tznp[8];
 
+//Конвертація "короткої" таблиці ранжування у "довгу"
+extern const uint32_t small_big_rang[NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL];
+
 //Направлена МТЗ
 extern unsigned int sector_directional_mtz[4][3];
 extern unsigned int Uxy_bilshe_porogu[3];
