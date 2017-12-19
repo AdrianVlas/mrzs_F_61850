@@ -290,6 +290,7 @@ typedef struct
   //Umax
   unsigned int setpoint_Umax1[NUMBER_GROUP_USTAVOK];        //уставка Umax1
   unsigned int setpoint_Umax2[NUMBER_GROUP_USTAVOK];        //уставка Umax2
+  uint32_t setpoint_kp_Umax[NUMBER_GROUP_USTAVOK];          //Уставка коефіцієнт повернення ЗНмакс
   int timeout_Umax1[NUMBER_GROUP_USTAVOK];                  //Витримка  Umax1
   int timeout_Umax2[NUMBER_GROUP_USTAVOK];                  //Витримка  Umax2
   unsigned int control_Umax;                                //Поле для управління Umax

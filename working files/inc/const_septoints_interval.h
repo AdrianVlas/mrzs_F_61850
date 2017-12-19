@@ -355,6 +355,10 @@
 #define SETPOINT_UMAX2_MIN            23000
 #define SETPOINT_UMAX2_MAX            140000
 
+#define SETPOINT_KP_UMAX_MIN          50
+#define SETPOINT_KP_UMAX_DEFAULT      95
+#define SETPOINT_KP_UMAX_MAX          96
+
 #define TIMEOUT_UMAX1_MIN             0
 #define TIMEOUT_UMAX1_MAX             300000
 

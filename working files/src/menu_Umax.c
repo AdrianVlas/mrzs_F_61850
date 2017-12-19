@@ -9,19 +9,23 @@ void make_ekran_setpoint_Umax(unsigned int group)
   {
     {
       " ”ставка «Ќмакс1",
-      " ”ставка «Ќмакс2"
+      " ”ставка «Ќмакс2",
+      "    ¬ «Ќмакс    "
     },
     {
       " ”ставка «Ќмакс1",
-      " ”ставка «Ќмакс2"
+      " ”ставка «Ќмакс2",
+      "    ѕ «Ќмакс    "
     },
     {
       " ”ставка Umax1  ",
-      " ”ставка Umax2  "
+      " ”ставка Umax2  ",
+      "     ѕ Umax     "
     },
     {
       " ”ставка «Ќмакс1",
-      " ”ставка «Ќмакс2"
+      " ”ставка «Ќмакс2",
+      "    ¬ «Ќмакс    "
     }
   };
   int index_language = index_language_in_array(current_settings.language);
@@ -55,6 +59,12 @@ void make_ekran_setpoint_Umax(unsigned int group)
           if (view == true) value = current_settings.setpoint_Umax2[group]; //у зм≥нну value пом≥щаЇмо значенн€ уставки Umax2
           else value = edition_settings.setpoint_Umax2[group];
         }
+        else if (index_of_ekran_tmp == INDEX_ML_STP_KP_UMAX)
+        {
+          vaga = 100; //максимальний ваговий коеф≥ц≥Їнт дл€ вил≥ленн€ старшого розр€ду
+          if (view == true) value = current_settings.setpoint_kp_Umax[group]; //у зм≥нну value пом≥щаЇмо значенн€ уставки
+          else value = edition_settings.setpoint_kp_Umax[group];
+        }
         first_symbol = 0; //пом≥чаЇмо, що ще н≥один значущий символ не виведений
       }
       else
@@ -84,6 +94,13 @@ void make_ekran_setpoint_Umax(unsigned int group)
             else
               calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_UMAX2_COMMA, view, 0);
           }
+          else if (index_of_ekran_tmp == INDEX_ML_STP_KP_UMAX)
+          {
+            if ((j < COL_SETPOINT_KP_UMAX_BEGIN) ||  (j > COL_SETPOINT_KP_UMAX_END )) working_ekran[i][j] = ' ';
+            else if (j == COL_SETPOINT_KP_UMAX_COMMA )working_ekran[i][j] = ',';
+            else
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_KP_UMAX_COMMA, view, 0);
+          }
         }
       }
         
@@ -109,6 +126,11 @@ void make_ekran_setpoint_Umax(unsigned int group)
     {
       current_ekran.position_cursor_x = COL_SETPOINT_UMAX2_BEGIN;
       last_position_cursor_x = COL_SETPOINT_UMAX2_END;
+    }
+    else if (current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+    {
+      current_ekran.position_cursor_x = COL_SETPOINT_KP_UMAX_BEGIN;
+      last_position_cursor_x = COL_SETPOINT_KP_UMAX_END;
     }
     
     //ѕ≥дт€гуЇмо курсор до першого символу

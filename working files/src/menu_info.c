@@ -28,7 +28,7 @@ void make_ekran_info()
   
   unsigned int position_temp = current_ekran.index_position;
   unsigned int index_of_ekran;
-  unsigned char value_str[MAX_COL_LCD] = "                ";
+  unsigned char value_str[MAX_COL_LCD];
   
   //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
@@ -41,7 +41,11 @@ void make_ekran_info()
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) 
+        {
+          working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+          value_str[j] = ' ';
+        }
         
         if ((index_of_ekran>>1) == INDEX_ML_INFO_FIRMWARE)
         {
@@ -71,6 +75,16 @@ void make_ekran_info()
 #else
           value_str[index_tmp++] = ZBIRKA_VERSII_PZ + 0x30;
 #endif
+
+          value_str[index_tmp++] = '.';
+          
+#if ZBIRKA_PIDVERSII_PZ > 9
+          value_str[index_tmp++] = (ZBIRKA_PIDVERSII_PZ / 10) + 0x30;
+          value_str[index_tmp++] = (ZBIRKA_PIDVERSII_PZ % 10) + 0x30;
+#else
+          value_str[index_tmp++] = ZBIRKA_PIDVERSII_PZ + 0x30;
+#endif
+
           unsigned int shift = (MAX_COL_LCD - index_tmp) >> 1;
           first_char_row1 = shift;
           last_chat_row1 = first_char_row1 + index_tmp;

@@ -4461,7 +4461,7 @@ void umax1_handler(unsigned int *p_active_functions, unsigned int number_group_s
   _Bool previous_state_po_umax1 = _CHECK_SET_BIT(p_active_functions, RANG_PO_UMAX1) > 0;
   
   unsigned int setpoint1 = previous_state_po_umax1 ?
-          current_settings_prt.setpoint_Umax1[number_group_stp] * U_UP / 100 :
+          current_settings_prt.setpoint_Umax1[number_group_stp] * current_settings_prt.setpoint_kp_Umax[number_group_stp] / 100 :
           current_settings_prt.setpoint_Umax1[number_group_stp];
   
   _Bool Uab_is_larger_than_Umax1 = measurement[IM_UAB] >= setpoint1;
@@ -4520,7 +4520,7 @@ void umax2_handler(unsigned int *p_active_functions, unsigned int number_group_s
   _Bool previous_state_po_umax2 = _CHECK_SET_BIT(p_active_functions, RANG_PO_UMAX2) > 0;
   
   unsigned int setpoint1 = previous_state_po_umax2 ?
-          current_settings_prt.setpoint_Umax2[number_group_stp] * U_UP / 100 :
+          current_settings_prt.setpoint_Umax2[number_group_stp] * current_settings_prt.setpoint_kp_Umax[number_group_stp] / 100 :
           current_settings_prt.setpoint_Umax2[number_group_stp];
   
   _Bool Uab_is_larger_than_Umax2 = measurement[IM_UAB] >= setpoint1;

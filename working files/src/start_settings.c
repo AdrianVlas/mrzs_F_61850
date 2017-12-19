@@ -1595,6 +1595,7 @@ void min_settings(__SETTINGS *target_label)
     
     target_label->setpoint_Umax1[i] = SETPOINT_UMAX1_MIN;
     target_label->setpoint_Umax2[i] = SETPOINT_UMAX2_MIN;
+    target_label->setpoint_kp_Umax[i] = SETPOINT_KP_UMAX_DEFAULT;
     target_label->timeout_Umax1[i] = TIMEOUT_UMAX1_MIN;
     target_label->timeout_Umax2[i] = TIMEOUT_UMAX2_MIN;
     
