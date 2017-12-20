@@ -27,8 +27,9 @@ enum _control_type
   ZDZ_CTRL_U,
   ZDZ_CTRL_I_OR_U,
   ZDZ_CTRL_I_AND_U,
+  ZDZ_CTRL_3I0,
   
-  _ZDZ_CTRL_MAX = ZDZ_CTRL_I_AND_U,
+  _ZDZ_CTRL_MAX = ZDZ_CTRL_3I0,
   
   _ZDZ_CTRL_NUMBER
 };

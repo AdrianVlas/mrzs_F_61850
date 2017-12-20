@@ -3287,6 +3287,17 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
     {
       _AND2(logic_zdz_0, 7, logic_zdz_0, 15, logic_zdz_rez, 0);
     }
+    else if (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_3I0)
+    {
+      if(
+         (_CHECK_SET_BIT(p_active_functions, RANG_PO_NZZ) != 0) ||
+         (_CHECK_SET_BIT(p_active_functions, RANG_PO_3I0) != 0)
+        )   
+      {
+        _SET_STATE(logic_zdz_0, 17);
+      }
+      _AND2(logic_zdz_0, 7, logic_zdz_0, 17, logic_zdz_rez, 0);
+    }
     else
     {
       if (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_I_OR_U)

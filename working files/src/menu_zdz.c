@@ -170,17 +170,17 @@ void make_ekran_control_zdz()
   };
   const unsigned char information_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER][MAX_COL_LCD] = 
   {
-    {"  Без контроля  ", "       I        ", "       U        ", "    I или U     ", "     I и U      "},
-    {"  Без контролю  ", "       I        ", "       U        ", "    I або U     ", "     I і U      "},
-    {" Without control", "       I        ", "       U        ", "    I or U      ", "    I and U     "},
-    {"  Без контроля  ", "       I        ", "       U        ", "    I или U     ", "     I и U      "}
+    {"  Без контроля  ", "       I        ", "       U        ", "    I или U     ", "     I и U      ", "      3I0       "},
+    {"  Без контролю  ", "       I        ", "       U        ", "    I або U     ", "     I і U      ", "      3I0       "},
+    {" Without control", "       I        ", "       U        ", "    I or U      ", "    I and U     ", "      3I0       "},
+    {"  Без контроля  ", "       I        ", "       U        ", "    I или U     ", "     I и U      ", "      3I0       "}
   };
   const unsigned int cursor_x_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER] = 
   {
-    {1, 6, 6, 4, 5},
-    {1, 6, 6, 4, 5},
-    {0, 6, 6, 4, 3},
-    {1, 6, 6, 4, 5}
+    {1, 6, 6, 3, 4, 5},
+    {1, 6, 6, 3, 4, 5},
+    {0, 6, 6, 3, 3, 5},
+    {1, 6, 6, 3, 4, 5}
   };
         
   int index_language = index_language_in_array(current_settings.language);
