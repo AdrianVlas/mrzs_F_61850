@@ -658,7 +658,7 @@ unsigned int max_number_records_ar/* = 0*/; //Максимальна кількість записів в ан
 unsigned int semaphore_read_state_ar_record/* = 0*/; //Коли цей симафор встановлений, то якщо не йде запис, то новий запис не можна починати, а якщо іде, то можна продовжувати запис
 unsigned int continue_previous_record_ar/* = 0*/; //Сигналізує, не зняті вще всі джерела запуску аналогового реєстратора після його попе6реднього запуску
 int state_ar_record = STATE_AR_NO_RECORD;
-SRAM1 short int array_ar[SIZE_BUFFER_FOR_AR];
+SRAM1_AR short int array_ar[SIZE_BUFFER_FOR_AR];
 SRAM1 short int word_SRAM1;
 unsigned int index_array_ar_current/* = 0*/;
 unsigned int index_array_ar_heat;
@@ -932,8 +932,8 @@ extern unsigned short const __checksum;
 extern unsigned int __checksum_begin;
 extern unsigned int __checksum_end;
 
-extern unsigned int __ICFEDIT_region_RAM1_start__;
-extern unsigned int __ICFEDIT_region_RAM1_size__;
+//extern unsigned int __ICFEDIT_region_RAM1_start__;
+//extern unsigned int __ICFEDIT_region_RAM1_size__;
 
 #ifdef DEBUG_TEST
 //unsigned int time_1 = 0xffff0000, time_2 = 0xffff0000, max_delay = 0;

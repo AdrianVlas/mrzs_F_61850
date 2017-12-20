@@ -7,17 +7,17 @@
 inline void test_external_SRAM(void)
 {
   //Визнапчаємо кількість двохбайтих слів
-  unsigned int size_SRAM_word = (((unsigned int)&__ICFEDIT_region_RAM1_size__) + 1) >> 1;
+  unsigned int size_SRAM_word = (((unsigned int)__section_size("variables_RAM1")/*&__ICFEDIT_region_RAM1_size__*/) + 1) >> 1;
   
   //Визначаємо вказівник на початок зовнішньої оперативної пам'яті
-   unsigned short int *point = ((unsigned short int *)&__ICFEDIT_region_RAM1_start__);
+   unsigned short int *point = ((unsigned short int *)__section_begin("variables_RAM1")/*&__ICFEDIT_region_RAM1_start__*/);
   
   //Заповнюємо кожну комірку зовнішьої оперативної пам'яті її адресою
   for (unsigned int i = 0; i < size_SRAM_word; i++) *point++ = (unsigned short int)(i & 0xffff);
   
   //Перевіряємо зчитуванням, чи у всіх комірках прописані ті числа, які ми попередньо записали
   unsigned int error = 0, i = 0;
-  point = ((unsigned short int *)&__ICFEDIT_region_RAM1_start__);
+  point = ((unsigned short int *)__section_begin("variables_RAM1")/*&__ICFEDIT_region_RAM1_start__*/);
   while((i < size_SRAM_word) && (error == 0))
   {
     if ((*point) == ((unsigned short int)(i & 0xffff)))

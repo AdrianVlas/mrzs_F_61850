@@ -2,6 +2,7 @@
 #define __TYPE_DEFINITION__
 
 #define SRAM1 _Pragma("location=\"variables_RAM1\"")
+#define SRAM1_AR _Pragma("location=\"Analog_Registrator_Buffer\"")
 
 typedef struct
 {

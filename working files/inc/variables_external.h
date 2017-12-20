@@ -525,8 +525,8 @@ extern unsigned short const __checksum;
 extern unsigned int __checksum_begin;
 extern unsigned int __checksum_end;
 
-extern unsigned int __ICFEDIT_region_RAM1_start__;
-extern unsigned int __ICFEDIT_region_RAM1_size__;
+//extern unsigned int __ICFEDIT_region_RAM1_start__;
+//extern unsigned int __ICFEDIT_region_RAM1_size__;
 
 
 #ifdef DEBUG_TEST
