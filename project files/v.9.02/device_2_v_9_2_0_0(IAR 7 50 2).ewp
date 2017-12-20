@@ -618,7 +618,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>device_2_v_9_2_0.bin</state>
+          <state>device_2_v_9_2_0_0(IAR 7 50 2).bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -4513,6 +4513,9 @@
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_time.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\working files\inc\const_menu_transfer_functions.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_transformator.h</name>
         </file>
         <file>
@@ -4724,6 +4727,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\menu_switch.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\menu_tf.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\menu_time.c</name>
