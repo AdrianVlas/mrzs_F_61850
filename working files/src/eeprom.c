@@ -1401,13 +1401,15 @@ void main_routines_for_spi1(void)
               calc_size_and_max_number_records_ar(current_settings.prefault_number_periods, current_settings.postfault_number_periods);
               //Онулюємо доаварійний масив перед стартом захистів
               {
-                uint32_t total_size = (current_settings.prefault_number_periods << VAGA_NUMBER_POINT_AR)*(NUMBER_ANALOG_CANALES + number_word_digital_part_ar);
+                uint32_t number_words_slice = NUMBER_ANALOG_CANALES + number_word_digital_part_ar;
+                uint32_t total_size = (current_settings.prefault_number_periods << VAGA_NUMBER_POINT_AR)*number_words_slice;
                 int32_t difference = index_array_ar_heat - total_size;
                 uint32_t index = (difference >= 0) ? difference : (difference + SIZE_BUFFER_FOR_AR);
 
                 for (size_t l = 0; l < total_size; l++)
                 {
-                  AR_WRITE(index, 0);
+                  int32_t data_tmp =  ((l % number_words_slice) < NUMBER_ANALOG_CANALES) ? 0x8000 : 0;
+                  AR_WRITE(index, data_tmp);
                   if (index >= SIZE_BUFFER_FOR_AR) index = 0; /*Умова мал аб бути ==, але щоб перестахуватися на невизначену помилку я поставив >=*/
                 }
               } 
