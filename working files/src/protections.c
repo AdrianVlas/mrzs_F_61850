@@ -8290,8 +8290,13 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 29] = (previous_active_functions[6] >> 16) & 0xff;
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 30] = (previous_active_functions[6] >> 24) & 0xff;
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 31] =  previous_active_functions[7]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 32] = (previous_active_functions[7] >> 8)  & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 33] = (previous_active_functions[7] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 34] = (previous_active_functions[7] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 35] =  previous_active_functions[8]        & 0xff;
           //Нулем позначаємо у цій позиції кількість змін
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 32] = 0;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 36] = 0;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 37] = 0;
 
           //Помічаємо кількість нових зрізів
           number_items_dr = 1;
@@ -8304,47 +8309,52 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
       
           //Записуємо текучий cтан сигналів
           //Мітка часу
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  0] =  time_from_start_record_dr        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  1] = (time_from_start_record_dr >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  2] = (time_from_start_record_dr >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  0] =  time_from_start_record_dr        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  1] = (time_from_start_record_dr >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  2] = (time_from_start_record_dr >> 16) & 0xff;
           //Текучий стан сигналів
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  3] =  carrent_active_functions[0]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  4] = (carrent_active_functions[0] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  5] = (carrent_active_functions[0] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  6] = (carrent_active_functions[0] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  7] =  carrent_active_functions[1]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  8] = (carrent_active_functions[1] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  9] = (carrent_active_functions[1] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 10] = (carrent_active_functions[1] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 11] =  carrent_active_functions[2]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 12] = (carrent_active_functions[2] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 13] = (carrent_active_functions[2] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 14] = (carrent_active_functions[2] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 15] =  carrent_active_functions[3]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 16] = (carrent_active_functions[3] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 17] = (carrent_active_functions[3] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 18] = (carrent_active_functions[3] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 19] =  carrent_active_functions[4]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 20] = (carrent_active_functions[4] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 21] = (carrent_active_functions[4] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 22] = (carrent_active_functions[4] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 23] =  carrent_active_functions[5]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 24] = (carrent_active_functions[5] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 25] = (carrent_active_functions[5] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 26] = (carrent_active_functions[5] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 27] =  carrent_active_functions[6]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 28] = (carrent_active_functions[6] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 29] = (carrent_active_functions[6] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 30] = (carrent_active_functions[6] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 31] =  carrent_active_functions[7]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  3] =  carrent_active_functions[0]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  4] = (carrent_active_functions[0] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  5] = (carrent_active_functions[0] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  6] = (carrent_active_functions[0] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  7] =  carrent_active_functions[1]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  8] = (carrent_active_functions[1] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  9] = (carrent_active_functions[1] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 10] = (carrent_active_functions[1] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 11] =  carrent_active_functions[2]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 12] = (carrent_active_functions[2] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 13] = (carrent_active_functions[2] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 14] = (carrent_active_functions[2] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 15] =  carrent_active_functions[3]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 16] = (carrent_active_functions[3] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 17] = (carrent_active_functions[3] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 18] = (carrent_active_functions[3] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 19] =  carrent_active_functions[4]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 20] = (carrent_active_functions[4] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 21] = (carrent_active_functions[4] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 22] = (carrent_active_functions[4] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 23] =  carrent_active_functions[5]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 24] = (carrent_active_functions[5] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 25] = (carrent_active_functions[5] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 26] = (carrent_active_functions[5] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 27] =  carrent_active_functions[6]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 28] = (carrent_active_functions[6] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 29] = (carrent_active_functions[6] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 30] = (carrent_active_functions[6] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 31] =  carrent_active_functions[7]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 32] = (carrent_active_functions[7] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 33] = (carrent_active_functions[7] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 34] = (carrent_active_functions[7] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 35] =  carrent_active_functions[8]        & 0xff;
           
           //Кількість змін сигналів у порівнянні із попереднім станом
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 32] = number_changes_into_current_item & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 36] = number_changes_into_current_item & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 37] = (number_changes_into_current_item >> 8) & 0xff;
       
 //          //Решту масиву очищаємо, щоб у запис не пішла інформація із попередніх записів
 //          for(unsigned int i = FIRST_INDEX_FIRST_BLOCK_DR; i < FIRST_INDEX_FIRST_DATA_DR; i++)
 //            buffer_for_save_dr_record[i] = 0xff;
-//          for(unsigned int i = (FIRST_INDEX_FIRST_DATA_DR + (number_items_dr + 1)*33); i < SIZE_BUFFER_FOR_DR_RECORD; i++)
+//          for(unsigned int i = (FIRST_INDEX_FIRST_DATA_DR + (number_items_dr + 1)*38); i < SIZE_BUFFER_FOR_DR_RECORD; i++)
 //            buffer_for_save_dr_record[i] = 0xff;
         }
         else
@@ -8687,41 +8697,46 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
       
           //Записуємо текучий cтан сигналів
           //Мітка часу
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  0] =  time_from_start_record_dr        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  1] = (time_from_start_record_dr >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  2] = (time_from_start_record_dr >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  0] =  time_from_start_record_dr        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  1] = (time_from_start_record_dr >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  2] = (time_from_start_record_dr >> 16) & 0xff;
           //Текучий стан сигналів
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  3] =  carrent_active_functions[0]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  4] = (carrent_active_functions[0] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  5] = (carrent_active_functions[0] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  6] = (carrent_active_functions[0] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  7] =  carrent_active_functions[1]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  8] = (carrent_active_functions[1] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 +  9] = (carrent_active_functions[1] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 10] = (carrent_active_functions[1] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 11] =  carrent_active_functions[2]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 12] = (carrent_active_functions[2] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 13] = (carrent_active_functions[2] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 14] = (carrent_active_functions[2] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 15] =  carrent_active_functions[3]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 16] = (carrent_active_functions[3] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 17] = (carrent_active_functions[3] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 18] = (carrent_active_functions[3] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 19] =  carrent_active_functions[4]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 20] = (carrent_active_functions[4] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 21] = (carrent_active_functions[4] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 22] = (carrent_active_functions[4] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 23] =  carrent_active_functions[5]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 24] = (carrent_active_functions[5] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 25] = (carrent_active_functions[5] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 26] = (carrent_active_functions[5] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 27] =  carrent_active_functions[6]        & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 28] = (carrent_active_functions[6] >> 8 ) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 29] = (carrent_active_functions[6] >> 16) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 30] = (carrent_active_functions[6] >> 24) & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 31] =  carrent_active_functions[7]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  3] =  carrent_active_functions[0]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  4] = (carrent_active_functions[0] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  5] = (carrent_active_functions[0] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  6] = (carrent_active_functions[0] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  7] =  carrent_active_functions[1]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  8] = (carrent_active_functions[1] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  9] = (carrent_active_functions[1] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 10] = (carrent_active_functions[1] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 11] =  carrent_active_functions[2]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 12] = (carrent_active_functions[2] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 13] = (carrent_active_functions[2] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 14] = (carrent_active_functions[2] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 15] =  carrent_active_functions[3]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 16] = (carrent_active_functions[3] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 17] = (carrent_active_functions[3] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 18] = (carrent_active_functions[3] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 19] =  carrent_active_functions[4]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 20] = (carrent_active_functions[4] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 21] = (carrent_active_functions[4] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 22] = (carrent_active_functions[4] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 23] =  carrent_active_functions[5]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 24] = (carrent_active_functions[5] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 25] = (carrent_active_functions[5] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 26] = (carrent_active_functions[5] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 27] =  carrent_active_functions[6]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 28] = (carrent_active_functions[6] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 29] = (carrent_active_functions[6] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 30] = (carrent_active_functions[6] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 31] =  carrent_active_functions[7]        & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 32] = (carrent_active_functions[7] >> 8 ) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 33] = (carrent_active_functions[7] >> 16) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 34] = (carrent_active_functions[7] >> 24) & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 35] =  carrent_active_functions[8]        & 0xff;
           //Кількість змін сигналів у порівнянні із попереднім станом
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*33 + 32] = number_changes_into_current_item & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 36] = number_changes_into_current_item & 0xff;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 37] = (number_changes_into_current_item >> 8) & 0xff;
         }
         
         //Перевіряємо, чи стоїть умова завершення запису

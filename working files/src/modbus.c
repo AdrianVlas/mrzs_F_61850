@@ -12197,7 +12197,7 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
                 if (i == 0) temp_data = number_record + 1;
                 else
                 {
-                  unsigned int offset = FIRST_INDEX_FIRST_DATA_DR + (number_record + 1)*33; //бо найперший запис містить попереднє значення (до фіксації запуску роботи дискретного реєстратора)
+                  unsigned int offset = FIRST_INDEX_FIRST_DATA_DR + (number_record + 1)*38; //бо найперший запис містить попереднє значення (до фіксації запуску роботи дискретного реєстратора)
                   if (i == 1)
                   {
                     temp_data =  (*(point_to_buffer + offset + 0)) + ((*(point_to_buffer + offset + 1)) << 8 );
