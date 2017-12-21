@@ -572,7 +572,7 @@ void main_routines_for_i2c(void)
     {
       unsigned int rez;
 
-      copying_time = 1; //Помічаємо, що зараз  ще також обновляємо масив часу
+      copying_time = 2; //Помічаємо, що зараз  ще також обновляємо масив часу
       //Запускаємо процес запису часу в RTC
       read_write_i2c_buffer[0] = time[0] = 0;
       read_write_i2c_buffer[1] = time[1] = time_edit[1] & 0x7F;
@@ -586,10 +586,13 @@ void main_routines_for_i2c(void)
       calibration = calibration_edit & 0x3f;
       read_write_i2c_buffer[8] = calibration | (copy_register8_RTC & 0xC0);
 
-      copying_time = 0; //Помічаємо, що обновлення масив часу завершене
+      copying_time = 1;
+      
       //Робимо копію масиву часу для того, щоб коли основний масив буде обновлятися можна було іншим модулям взяти попереднє, але достовірне значення часу і дати з цього масиву
       for(unsigned int i = 0; i < 7; i++) time_copy[i] = time[i];
       calibration_copy = calibration;
+
+      copying_time = 0; //Помічаємо, що обновлення масив часу завершене
       
       rez = start_write_buffer_via_I2C(RTC_ADDRESS, START_ADDRESS_TIME_REGISTERS, read_write_i2c_buffer, 9);
       
@@ -688,7 +691,7 @@ void main_routines_for_i2c(void)
       }
 
       //Обновлюємо час
-      copying_time = 1; //Помічаємо, що зараз обновляємо масив часу
+      copying_time = 2; //Помічаємо, що зараз обновляємо масив часу
       time[0] = read_write_i2c_buffer[0] & 0xff;
       time[1] = read_write_i2c_buffer[1] & 0x7f;
       time[2] = read_write_i2c_buffer[2] & 0x7f;
@@ -699,10 +702,13 @@ void main_routines_for_i2c(void)
       copy_register8_RTC = read_write_i2c_buffer[8];
       calibration = copy_register8_RTC & 0x3f;
 
-      copying_time = 0; //Помічаємо, що обновлення масив часу завершене
+      copying_time = 1;
+      
       //Робимо копію масиву часу для того, щоб коли основний масив буде обновлятися можна було іншим модулям взяти попереднє, але достовірне значення часу і дати з цього масиву
       for(unsigned int i = 0; i < 7; i++) time_copy[i] = time[i];
       calibration_copy = calibration;
+
+      copying_time = 0; //Помічаємо, що обновлення масив часу завершене
       
       if(
          (_CHECK_SET_BIT(    diagnostyka, EVENT_START_SYSTEM_BIT       ) != 0) ||

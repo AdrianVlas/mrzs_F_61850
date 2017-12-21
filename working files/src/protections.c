@@ -5742,8 +5742,8 @@ inline void on_off_handler(unsigned int *p_active_functions)
       Формуванні інформації про причину відключення для меню
       *****************************************************/
       unsigned char *label_to_time_array;
-      if (copying_time == 0) label_to_time_array = time;
-      else label_to_time_array = time_copy;
+      if (copying_time == 2) label_to_time_array = time_copy;
+      else label_to_time_array = time;
           
       //МТЗ1
       if(
@@ -8089,8 +8089,8 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
          
           //Записуємо час початку запису
           unsigned char *label_to_time_array;
-          if (copying_time == 0) label_to_time_array = time;
-          else label_to_time_array = time_copy;
+          if (copying_time == 2) label_to_time_array = time_copy;
+          else label_to_time_array = time;
           for(unsigned int i = 0; i < 7; i++) buffer_for_save_dr_record[FIRST_INDEX_DATA_TIME_DR + i] = *(label_to_time_array + i);
           
           //Додаткові налаштування при яких було запущено дискретний реєстратор
@@ -8969,8 +8969,8 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
           header_ar.label_start_record = LABEL_START_RECORD_AR;
           //Записуємо час початку запису
           unsigned char *label_to_time_array;
-          if (copying_time == 0) label_to_time_array = time;
-          else label_to_time_array = time_copy;
+          if (copying_time == 2) label_to_time_array = time_copy;
+          else label_to_time_array = time;
           for(unsigned int i = 0; i < 7; i++) header_ar.time[i] = *(label_to_time_array + i);
           //Коефіцієнт трансформації T0
           header_ar.T0 = current_settings_prt.T0;

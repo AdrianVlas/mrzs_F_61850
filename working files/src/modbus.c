@@ -5427,8 +5427,8 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
   {
     unsigned char *label_to_time_array;
     
-    if (copying_time == 0) label_to_time_array = time;
-    else label_to_time_array = time_copy;
+    if (copying_time == 2) label_to_time_array = time_copy;
+    else label_to_time_array = time;
     
     switch (address_data)
     {
@@ -13072,15 +13072,15 @@ void modbus_rountines(unsigned int type_interface)
                 {  
                   //Іде намагання встановити новий час-дату, тому робимо копію часу
                   unsigned char *label_to_time_array, *label_calibration;
-                  if (copying_time == 0)
-                  {
-                    label_to_time_array = time;
-                    label_calibration = &calibration;
-                  }
-                  else
+                  if (copying_time == 2)
                   {
                     label_to_time_array = time_copy;
                     label_calibration = &calibration_copy;
+                  }
+                  else
+                  {
+                    label_to_time_array = time;
+                    label_calibration = &calibration;
                   }
                   for(unsigned int index = 0; index < 7; index++) time_edit[index] = *(label_to_time_array + index);
                   calibration_edit = *label_calibration;
@@ -13849,15 +13849,15 @@ void modbus_rountines(unsigned int type_interface)
 
                       //Робимо копію часу, дати і калібровки на яку ми накладемо зміни, перевіримо їх на достовірність і потім, якщо провірка пройде вдало, то запишемо їх у мікросхему RTC
                       unsigned char *label_to_time_array, *label_calibration;
-                      if (copying_time == 0)
-                      {
-                        label_to_time_array = time;
-                        label_calibration = &calibration;
-                      }
-                      else
+                      if (copying_time == 2)
                       {
                         label_to_time_array = time_copy;
                         label_calibration = &calibration_copy;
+                      }
+                      else
+                      {
+                        label_to_time_array = time;
+                        label_calibration = &calibration;
                       }
                       for(unsigned int index = 0; index < 7; index++) time_edit[index] = *(label_to_time_array + index);
                       calibration_edit = *label_calibration;
