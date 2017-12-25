@@ -535,9 +535,8 @@
 
 #define AR_WRITE(index, data)                                                           \
 {                                                                                       \
-  int16_t test_data = (int16_t)(index & 0xffff);                                      \
-  array_ar[index] = test_data;                                                          \
-  if (array_ar[index] != test_data) _SET_BIT(set_diagnostyka, ERROR_EXTERNAL_SRAM_BIT); \
+  int16_t test_data = index & 0xffff;                                                   \
+  if ((array_ar[index] = test_data) != test_data) _SET_BIT(set_diagnostyka, ERROR_EXTERNAL_SRAM_BIT); \
                                                                                         \
   array_ar[index++] = data;                                                             \
 }

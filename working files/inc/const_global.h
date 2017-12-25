@@ -46,6 +46,9 @@
 
 #define NUMBER_GROUP_USTAVOK            4
 
+#define N_INPUT_BOARDS          3
+#define N_OUTPUT_BOARDS         3
+
 enum _configuration {
 MTZ_BIT_CONFIGURATION = 0,
 MTZ04_BIT_CONFIGURATION,

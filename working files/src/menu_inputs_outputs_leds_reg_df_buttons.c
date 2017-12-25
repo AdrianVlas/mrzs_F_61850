@@ -19,22 +19,22 @@
 -------------------------------------------------------
 */
 /*****************************************************/
-void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(unsigned int type_of_window)
+void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(__id_input_output type_of_window)
 {
   const unsigned char information[MAX_NAMBER_LANGUAGE][11][MAX_COL_LCD] = 
   {
-    {" Двх            ", " Двых           ", " Св             ", " О-функция      ", " F              ", " О-триггер      ", " О-И            ", " О-ИЛИ          ", " О-Искл.ИЛИ     ", " О-НЕ           ", " Пер.ф.         "},
-    {" Двх            ", " Двих           ", " Св             ", " В-функція      ", " F              ", " В-триґер       ", " В-І            ", " В-АБО          ", " В-Викл.АБО     ", " В-НЕ           ", " Пер.ф.         "},
-    {" DI             ", " DO             ", " LED            ", " UD Function    ", " F              ", " UD Flip-Flop   ", " UD AND         ", " UD OR          ", " UD XOR         ", " UD NOT         ", " Tr.F.          "},
-    {" Двх            ", " Двых           ", " Св             ", " О-функция      ", " F              ", " О-триггер      ", " О-И            ", " О-ИЛИ          ", " О-Искл.ИЛИ     ", " О-НЕ           ", " Пер.ф.         "}
+    {" Двх.           ", " Двых.          ", " Св             ", " О-функция      ", " F              ", " О-триггер      ", " О-И            ", " О-ИЛИ          ", " О-Искл.ИЛИ     ", " О-НЕ           ", " Пер.ф.         "},
+    {" Двх.           ", " Двих.          ", " Св             ", " В-функція      ", " F              ", " В-триґер       ", " В-І            ", " В-АБО          ", " В-Викл.АБО     ", " В-НЕ           ", " Пер.ф.         "},
+    {" DI.            ", " DO.            ", " LED            ", " UD Function    ", " F              ", " UD Flip-Flop   ", " UD AND         ", " UD OR          ", " UD XOR         ", " UD NOT         ", " Tr.F.          "},
+    {" Двх.           ", " Двых.          ", " Св             ", " О-функция      ", " F              ", " О-триггер      ", " О-И            ", " О-ИЛИ          ", " О-Искл.ИЛИ     ", " О-НЕ           ", " Пер.ф.         "}
   };
 
   const unsigned int first_index_number[MAX_NAMBER_LANGUAGE][11] = 
   {
-    {4, 5, 3, 10, 2, 10, 4, 6, 11, 5, 7},
-    {4, 5, 3, 10, 2,  9, 4, 6, 11, 5, 7},
-    {3, 3, 4, 12, 2, 13, 7, 6,  7, 6, 6},
-    {4, 5, 3, 10, 2, 10, 4, 6, 11, 5, 7}
+    {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7},
+    {5, 6, 3, 10, 2,  9, 4, 6, 11, 5, 7},
+    {4, 4, 4, 12, 2, 13, 7, 6,  7, 6, 6},
+    {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7}
   };
   
   const unsigned int max_row[11] =
@@ -61,45 +61,132 @@ void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(unsigned
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
     unsigned int number = index_of_ekran + 1;
-    unsigned int tmp_1 = (number / 10), tmp_2 = number - tmp_1*10;
+    int tmp_1 = -1, tmp_2 = -1;
+    
+    if (type_of_window == ID_INPUT)
+    {
+      for (size_t j = 0; j < N_INPUT_BOARDS; j++)
+      {
+        if (number <= input_boards[j][0])
+        {
+          tmp_1 = input_boards[j][1];
+          tmp_2 = (j == 0) ? number : number - input_boards[j - 1][0];
+          
+          break;
+        }
+      }
+    }
+    else if (type_of_window == ID_OUTPUT)
+    {
+      for (size_t j = 0; j < N_OUTPUT_BOARDS; j++)
+      {
+        if (number <= output_boards[j][0])
+        {
+          tmp_1 = output_boards[j][1];
+          tmp_2 = (j == 0) ? number : number - output_boards[j - 1][0];
+          
+          break;
+        }
+      }
+    }
+    else
+    {
+      tmp_1 = (number / 10);
+      tmp_2 = number - tmp_1*10;
+    }
 
     //Наступні рядки треба перевірити, чи їх требе відображати у текучій кофігурації
     if (index_of_ekran < max_row[type_of_window])
     {
       for (unsigned int j = 0; j<MAX_COL_LCD; j++)
       {
-        if ((j < first_index_number_1) || (j >= (first_index_number_1 + 2 + 3)))
+        if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3 + 3)))
            working_ekran[i][j] = information[index_language][type_of_window][j];
         else
         {
-          if (j == first_index_number_1)
+          if (j == (first_index_number_1 + 0))
           {
-            if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x30;
-          }
-          else if (j == (first_index_number_1 + 1))     
-          {
-            if (tmp_1 > 0 )
+            if (tmp_1 < 0) working_ekran[i][j] = '?';
+            else if (tmp_1 > 0 ) 
             {
-              working_ekran[i][j] = tmp_2 + 0x30;
-            }
-            else
-            {
-              working_ekran[i][j - 1] = tmp_2 + 0x30;
-              working_ekran[i][j] = '.';
-            }
-          }
-          else
-          {
-            if (tmp_1 > 0 )
-            {
-              working_ekran[i][j] = '.';
-            }
-            else
-            {
-              if ( j < (first_index_number_1 + 2 + 3 - 1))
-                working_ekran[i][j] = '.';
+              if (
+                  (type_of_window != ID_INPUT) &&
+                  (type_of_window != ID_OUTPUT)
+                 )  
+              {
+                working_ekran[i][j] = tmp_1 + 0x30;
+              }
               else
-                working_ekran[i][j] = ' ';
+              {
+                working_ekran[i][j] = tmp_1 + 0x40;
+              }
+            }
+          }
+          else if (
+                   (j == (first_index_number_1 + 1)) &&
+                   (
+                    (type_of_window == ID_INPUT) ||
+                    (type_of_window == ID_OUTPUT)
+                   )   
+                  )   
+          {
+            working_ekran[i][j] = '.';
+          }
+          else if (
+                   (j == (first_index_number_1 + 1))
+                   /*попередня перевірка вже перевірила, що якщо (j == (first_index_number_1 + 1)), то type_of_window != ID_INPUT і ID_OUTPUT*/  
+                   ||
+                   (
+                    (j == (first_index_number_1 + 2)) &&
+                    (
+                     (type_of_window == ID_INPUT) ||
+                     (type_of_window == ID_OUTPUT)
+                    )   
+                   ) 
+                  )   
+          {
+            if (
+                (tmp_1 > 0) ||
+                (tmp_1 < 0)  
+               )   
+            {
+              if (tmp_2 < 0) working_ekran[i][j] = '?';
+              else working_ekran[i][j] = tmp_2 + 0x30;
+            }
+            else
+            {
+              if (tmp_2 < 0) working_ekran[i][j] = '?';
+              else
+              {
+                working_ekran[i][j - 1] = tmp_2 + 0x30;
+                working_ekran[i][j] = '.';
+              }
+            }
+          }
+          else   
+          {
+            if (
+                (
+                 (type_of_window == ID_INPUT) ||
+                 (type_of_window == ID_OUTPUT)
+                )
+                ||  
+                ( j < (first_index_number_1 + 2 + 3 - 1))
+                ||  
+                (
+                 ( j == (first_index_number_1 + 2 + 3 - 1)) && 
+                 (
+                  (tmp_1 > 0 ) ||
+                  (tmp_1 < 0 )  
+                 ) 
+                )   
+               )  
+            {
+              working_ekran[i][j] = '.';
+            }
+            else
+            {
+              working_ekran[i][j] = ' ';
             }
           }
         }

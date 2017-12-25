@@ -1406,10 +1406,14 @@ void main_routines_for_spi1(void)
                 int32_t difference = index_array_ar_heat - total_size;
                 uint32_t index = (difference >= 0) ? difference : (difference + SIZE_BUFFER_FOR_AR);
 
+                uint32_t m = 0;
                 for (size_t l = 0; l < total_size; l++)
                 {
-                  int32_t data_tmp =  ((l % number_words_slice) < NUMBER_ANALOG_CANALES) ? 0x8000 : 0;
-                  AR_WRITE(index, data_tmp);
+                  int32_t data_tmp = (m < NUMBER_ANALOG_CANALES) ? 0x8000 : 0;
+                  if (++m >= number_words_slice) m = 0;
+                  
+                  array_ar[index++] = data_tmp;
+//                  AR_WRITE(index, data_tmp);
                   if (index >= SIZE_BUFFER_FOR_AR) index = 0; /*Умова мал аб бути ==, але щоб перестахуватися на невизначену помилку я поставив >=*/
                 }
               } 

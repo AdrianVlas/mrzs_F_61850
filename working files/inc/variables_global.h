@@ -450,6 +450,18 @@ const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL] =
   {MASKA_BUTTON_MODE_0_SIGNALS_0, MASKA_BUTTON_MODE_0_SIGNALS_1, MASKA_BUTTON_MODE_0_SIGNALS_2},
   {MASKA_BUTTON_MODE_1_SIGNALS_0, MASKA_BUTTON_MODE_1_SIGNALS_1, MASKA_BUTTON_MODE_1_SIGNALS_2}
 };
+const uint32_t output_boards[N_OUTPUT_BOARDS][2] = 
+{
+  { 2, 1},
+  { 9, 4},
+  {16, 5}
+};
+const uint32_t input_boards[N_INPUT_BOARDS][2] = 
+{
+  { 8, 4},
+  {16, 5},
+  {20, 7}
+};
 
 unsigned int periodical_tasks_TEST_SETTINGS/* = false*/;
 unsigned int periodical_tasks_TEST_USTUVANNJA/* = false*/;

@@ -561,4 +561,20 @@ typedef enum _index_I_U
   _NUMBER_FOR_I_U
 } __index_I_U;
 
+typedef enum _id_input_output
+{
+  ID_INPUT = 0,
+  ID_OUTPUT,
+  ID_LED,
+  ID_DF,
+  ID_DB,
+  ID_DT,
+  ID_AND,
+  ID_OR,
+  ID_XOR,
+  ID_NOT,
+  ID_TF
+  
+} __id_input_output;
+
 #endif
