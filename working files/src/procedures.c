@@ -2371,7 +2371,7 @@ void def_pickup_timeout_UP(__SETTINGS *current_label, uint32_t _n_UP, uint32_t g
   }
   
   current_label->setpoint_UP[_n_UP][0][group] = min;
-  current_label->setpoint_UP_KP[_n_UP][0][group] = ((current_label->control_UP & MASKA_FOR_BIT(_n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0) ? SETPOINT_EXT_PRT_KP_LESS_MIN : SETPOINT_EXT_PRT_KP_MORE_MAX;
+  current_label->setpoint_UP_KP[_n_UP][0][group] = ((current_label->control_UP & MASKA_FOR_BIT(_n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0) ? SETPOINT_UP_KP_LESS_MIN : SETPOINT_UP_KP_MORE_MAX;
   current_label->timeout_UP[_n_UP][0][group] = TIMEOUT_UP_MIN;
 }
 /*****************************************************/
@@ -2411,13 +2411,13 @@ void action_after_changing_ctrl_UP(__SETTINGS *current_label, uint32_t value)
         uint32_t min, max;
         if ((value & maska) != 0)
         {
-          min = SETPOINT_EXT_PRT_KP_LESS_MIN;
-          max = SETPOINT_EXT_PRT_KP_LESS_MAX;
+          min = SETPOINT_UP_KP_LESS_MIN;
+          max = SETPOINT_UP_KP_LESS_MAX;
         }
         else
         {
-          min = SETPOINT_EXT_PRT_KP_MORE_MIN;
-          max = SETPOINT_EXT_PRT_KP_MORE_MAX;
+          min = SETPOINT_UP_KP_MORE_MIN;
+          max = SETPOINT_UP_KP_MORE_MAX;
         }
       
         for (size_t group = 0; group < NUMBER_GROUP_USTAVOK; group++)

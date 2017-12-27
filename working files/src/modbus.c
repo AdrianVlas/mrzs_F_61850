@@ -8800,10 +8800,10 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
       }
     case MA_UVV_TYPE_LED:
       {
-        if (data <= ((1 << NUMBER_LEDS) - 1)) 
+//        if (data <= ((1 << NUMBER_LEDS) - 1)) 
           target_label->type_of_led = data;
-        else
-          error = ERROR_ILLEGAL_DATA_VALUE;
+//        else
+//          error = ERROR_ILLEGAL_DATA_VALUE;
 
         break;
       }

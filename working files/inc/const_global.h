@@ -26,7 +26,7 @@
 #define NUMBER_INPUTS                   20
 #define NUMBER_OUTPUTS                  16
 
-#define NUMBER_LEDS                     15
+#define NUMBER_LEDS                     17
 
 #define NUMBER_UP                       8
 
@@ -1782,8 +1782,8 @@ NUMBER_ODYNYCI_VYMIRJUVANNJA
 /*****************************************/
 //Версія програмного забезпечення
 /*****************************************/
-#define VERSIA_PZ                                             9
-#define MODYFIKACIA_VERSII_PZ                                 2
+#define VERSIA_PZ                                             14
+#define MODYFIKACIA_VERSII_PZ                                 0
 #define ZBIRKA_VERSII_PZ                                      0
 #define ZBIRKA_PIDVERSII_PZ                                   0
 /*****************************************/
@@ -1803,7 +1803,7 @@ NUMBER_ODYNYCI_VYMIRJUVANNJA
 /*****************************************/
 //Версія універсальної карти памяті
 /*****************************************/
-#define VERSIA_GMM                                             7
+#define VERSIA_GMM                                             8
 #define MODYFIKACIA_VERSII_GMM                                 0
 /*****************************************/
 #endif

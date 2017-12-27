@@ -209,7 +209,7 @@ void main_routines_for_spi1(void)
       offset_from_start = number_block_state_leds_outputs_write_to_eeprom*SIZE_PAGE_EEPROM;
 
       //Кількість байт до кінця буферу 
-      size_to_end = (2*(2 + 3)) - offset_from_start; 
+      size_to_end = (2*(3 + 3)) - offset_from_start; 
       
       if (size_to_end > 0)
       {
@@ -497,7 +497,7 @@ void main_routines_for_spi1(void)
       TxBuffer_SPI_EDF[1] = (START_ADDRESS_STATE_LEDS_OUTPUTS_IN_EEPROM >> 8) & 0xff; //старша  адреса початку зберігання даних про сигнальні виходи і тригерні свтлодіоди у EEPROM
       TxBuffer_SPI_EDF[2] = (START_ADDRESS_STATE_LEDS_OUTPUTS_IN_EEPROM     ) & 0xff; //молодша адреса початку зберігання даних про сигнальні виходи і тригерні свтлодіоди у EEPROM
                                                                                               //дальше значення байт не має значення
-      start_exchange_via_spi(INDEX_EEPROM, ((2*(2 + 3)) + 3));
+      start_exchange_via_spi(INDEX_EEPROM, ((2*(3 + 3)) + 3));
     }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_TRG_FUNC_EEPROM_BIT) !=0)
     {
@@ -737,20 +737,22 @@ void main_routines_for_spi1(void)
       unsigned int temp_value = state_trigger_leds;
       unsigned int temp_value_inv = ((unsigned int)(~temp_value)) & ((1 << NUMBER_LEDS) - 1);
       state_trigger_leds_comp = temp_value;
-      TxBuffer_SPI_EDF[3 + 0] = (unsigned char)( temp_value           & 0xff);
-      TxBuffer_SPI_EDF[3 + 1] = (unsigned char)((temp_value     >> 8) & 0xff);
-      TxBuffer_SPI_EDF[3 + 2] = (unsigned char)( temp_value_inv       & 0xff);
-      TxBuffer_SPI_EDF[3 + 3] = (unsigned char)((temp_value_inv >> 8) & 0xff);
+      TxBuffer_SPI_EDF[3 +  0] = (unsigned char)( temp_value            & 0xff);
+      TxBuffer_SPI_EDF[3 +  1] = (unsigned char)((temp_value     >> 8 ) & 0xff);
+      TxBuffer_SPI_EDF[3 +  2] = (unsigned char)((temp_value     >> 16) & 0xff);
+      TxBuffer_SPI_EDF[3 +  3] = (unsigned char)( temp_value_inv        & 0xff);
+      TxBuffer_SPI_EDF[3 +  4] = (unsigned char)((temp_value_inv >> 8 ) & 0xff);
+      TxBuffer_SPI_EDF[3 +  5] = (unsigned char)((temp_value_inv >> 16) & 0xff);
 
       temp_value = state_signal_outputs;
       temp_value_inv = ((unsigned int)(~temp_value)) & ((1 << NUMBER_OUTPUTS) - 1);
       state_signal_outputs_comp = temp_value;
-      TxBuffer_SPI_EDF[3 + 4] = (unsigned char)( temp_value            & 0xff);
-      TxBuffer_SPI_EDF[3 + 5] = (unsigned char)((temp_value     >> 8 ) & 0xff);
-      TxBuffer_SPI_EDF[3 + 6] = (unsigned char)((temp_value     >> 16) & 0xff);
-      TxBuffer_SPI_EDF[3 + 7] = (unsigned char)( temp_value_inv        & 0xff);
-      TxBuffer_SPI_EDF[3 + 8] = (unsigned char)((temp_value_inv >> 8 ) & 0xff);
-      TxBuffer_SPI_EDF[3 + 9] = (unsigned char)((temp_value_inv >> 16) & 0xff);
+      TxBuffer_SPI_EDF[3 +  6] = (unsigned char)( temp_value            & 0xff);
+      TxBuffer_SPI_EDF[3 +  7] = (unsigned char)((temp_value     >> 8 ) & 0xff);
+      TxBuffer_SPI_EDF[3 +  8] = (unsigned char)((temp_value     >> 16) & 0xff);
+      TxBuffer_SPI_EDF[3 +  9] = (unsigned char)( temp_value_inv        & 0xff);
+      TxBuffer_SPI_EDF[3 + 10] = (unsigned char)((temp_value_inv >> 8 ) & 0xff);
+      TxBuffer_SPI_EDF[3 + 11] = (unsigned char)((temp_value_inv >> 16) & 0xff);
 
       //Виставляємо перший блок стану виходів-світлоіндикаторів запису у EEPROM
       number_block_state_leds_outputs_write_to_eeprom = 0;
@@ -1713,7 +1715,7 @@ void main_routines_for_spi1(void)
       unsigned int empty_block = 1, i = 0; 
       unsigned int state_trigger_leds_tmp, state_signal_outputs_tmp;
       
-      while ((empty_block != 0) && ( i < (2*(2 + 3))))
+      while ((empty_block != 0) && ( i < (2*(3 + 3))))
       {
         if (RxBuffer_SPI_EDF[3 + i] != 0xff) empty_block = 0;
         i++;
@@ -1728,8 +1730,8 @@ void main_routines_for_spi1(void)
         _SET_BIT(clear_diagnostyka, ERROR_STATE_LEDS_OUTPUTS_EEPROM_EMPTY_BIT);
         
         //Перевіряємо достовірність стану тригерних індикаторів
-        state_trigger_leds_tmp = RxBuffer_SPI_EDF[3 + 0] | (RxBuffer_SPI_EDF[3 + 1] << 8);
-        unsigned int value_1 = RxBuffer_SPI_EDF[3 + 2] | (RxBuffer_SPI_EDF[3 + 3] << 8);
+        state_trigger_leds_tmp = RxBuffer_SPI_EDF[3 + 0] | (RxBuffer_SPI_EDF[3 + 1] << 8) | (RxBuffer_SPI_EDF[3 + 2] << 16);
+        unsigned int value_1 = RxBuffer_SPI_EDF[3 + 3] | (RxBuffer_SPI_EDF[3 + 4] << 8) | (RxBuffer_SPI_EDF[3 + 5] << 16);
         if (state_trigger_leds_tmp == ((unsigned int)((~value_1) & ((1 << NUMBER_LEDS) - 1))) )
         {
           //Контролдь зійшовся
@@ -1759,8 +1761,8 @@ void main_routines_for_spi1(void)
         }
 
         //Перевіряємо достовірність стану сигнальних виходів
-        state_signal_outputs_tmp = RxBuffer_SPI_EDF[3 + 4] | (RxBuffer_SPI_EDF[3 + 5] << 8) | (RxBuffer_SPI_EDF[3 + 6] << 8);
-        value_1 = RxBuffer_SPI_EDF[3 + 7] | (RxBuffer_SPI_EDF[3 + 8] << 8) | (RxBuffer_SPI_EDF[3 + 9] << 16);
+        state_signal_outputs_tmp = RxBuffer_SPI_EDF[3 + 6] | (RxBuffer_SPI_EDF[3 + 7] << 8) | (RxBuffer_SPI_EDF[3 + 8] << 16);
+        value_1 = RxBuffer_SPI_EDF[3 + 9] | (RxBuffer_SPI_EDF[3 + 10] << 8) | (RxBuffer_SPI_EDF[3 + 11] << 16);
         if (state_signal_outputs_tmp == ((unsigned int)((~value_1) & ((1 << NUMBER_OUTPUTS) - 1))) )
         {
           //Контролдь зійшовся

@@ -20,7 +20,7 @@
 #define START_ADDRESS_USTUVANNJA_IN_EEPROM              0x0
 #define START_ADDRESS_SETTINGS_IN_EEPROM                (((START_ADDRESS_USTUVANNJA_IN_EEPROM         + (SIZE_USTUVANNJA                                               + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 #define START_ADDRESS_STATE_LEDS_OUTPUTS_IN_EEPROM      (((START_ADDRESS_SETTINGS_IN_EEPROM           + (SIZE_SETTINGS                                                 + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
-#define START_ADDRESS_TRG_FUNC                          (((START_ADDRESS_STATE_LEDS_OUTPUTS_IN_EEPROM + (2*(2 + 3))                                                        ) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
+#define START_ADDRESS_TRG_FUNC                          (((START_ADDRESS_STATE_LEDS_OUTPUTS_IN_EEPROM + (2*(3 + 3))                                                        ) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 #define START_ADDRESS_INFO_REJESTRATORS_DR              (((START_ADDRESS_TRG_FUNC                     + (sizeof(fix_active_buttons) + sizeof(trigger_active_functions) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 #define START_ADDRESS_INFO_REJESTRATORS_PR_ERR          (((START_ADDRESS_INFO_REJESTRATORS_DR         + (    sizeof(info_rejestrator_dr                              ) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 #define START_ADDRESS_INFO_REJESTRATORS_AR              (((START_ADDRESS_INFO_REJESTRATORS_PR_ERR     + (    sizeof(info_rejestrator_pr_err                          ) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)

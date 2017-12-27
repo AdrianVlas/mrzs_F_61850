@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.20.1.14181</state>
+                    <state>8.20.2.14834</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -198,6 +198,10 @@
                 </option>
                 <option>
                     <name>DSPExtension</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZone</name>
                     <state>0</state>
                 </option>
             </data>
@@ -648,7 +652,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>device_2_v_9_2_0_0.bin</state>
+                    <state>device_2_v_14_0_0_0.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -703,7 +707,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>device_2_v_9_2_0_0.out</state>
+                    <state>device_2_v_14_0_0_0.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
