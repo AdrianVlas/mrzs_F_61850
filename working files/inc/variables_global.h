@@ -428,12 +428,7 @@ _Bool trigger_ready_tu/* = 0*/;
 
 unsigned int start_restart = 0xff;
 
-unsigned char working_ekran[MAX_ROW_LCD][MAX_COL_LCD] = {
-                                                          "                ",
-                                                          "                ",
-                                                          "                ",
-                                                          "                "
-                                                        };
+SRAM1 unsigned char working_ekran[MAX_ROW_LCD][MAX_COL_LCD];
 unsigned int rewrite_ekran_once_more/* = 0*/;
 
 volatile unsigned int new_state_keyboard/* = 0*/;
@@ -648,7 +643,7 @@ __DRIVER_SPI_DF driver_spi_df[NUMBER_DATAFLASH_CHIP] = {
 unsigned int error_into_spi_df/* = 0*/;/*Ненульве значення означає, що зафіксована помилка при прийом/передачі через SPI_DF*/
 unsigned int dataflash_not_busy/* = 0*/;
 volatile unsigned int control_tasks_dataflash/* = 0*/;
-unsigned char buffer_for_manu_read_record[SIZE_BUFFER_FOR_DR_RECORD];
+SRAM1 unsigned char buffer_for_manu_read_record[SIZE_BUFFER_FOR_DR_RECORD];
 unsigned char buffer_for_USB_read_record_ar[SIZE_PAGE_DATAFLASH_2];
 unsigned char buffer_for_RS485_read_record_ar[SIZE_PAGE_DATAFLASH_2];
 unsigned char buffer_for_USB_read_record_dr[SIZE_BUFFER_FOR_DR_RECORD];

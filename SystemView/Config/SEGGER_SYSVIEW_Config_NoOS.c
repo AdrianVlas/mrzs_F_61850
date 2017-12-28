@@ -75,7 +75,7 @@ extern unsigned int SystemCoreClock;
 **********************************************************************
 */
 // The application name to be displayed in SystemViewer
-#define SYSVIEW_APP_NAME        "MRZS-05L-12.1"
+#define SYSVIEW_APP_NAME        "MRZS-F"
 
 // The target device name
 #define SYSVIEW_DEVICE_NAME     "Cortex-M3"
@@ -129,12 +129,12 @@ static void _cbSendSystemDesc(void) {
   SEGGER_SYSVIEW_SendSysDesc("I#46=IF_KB_D");
   SEGGER_SYSVIEW_SendSysDesc("I#47=I2C_EV");
   SEGGER_SYSVIEW_SendSysDesc("I#48=I2C_ER");
-  SEGGER_SYSVIEW_SendSysDesc("I#51=SPI_DF");
+  SEGGER_SYSVIEW_SendSysDesc("I#51=SPI_EDF");
   SEGGER_SYSVIEW_SendSysDesc("I#52=SPI_Meas.");
   SEGGER_SYSVIEW_SendSysDesc("I#54=USART_RS485");
   SEGGER_SYSVIEW_SendSysDesc("I#63=DMA_I2C_Tx");
   SEGGER_SYSVIEW_SendSysDesc("I#66=TIM_Meas.");
-  SEGGER_SYSVIEW_SendSysDesc("I#72=DMA_DF_Rx");
+  SEGGER_SYSVIEW_SendSysDesc("I#72=DMA_EDF_Rx");
   SEGGER_SYSVIEW_SendSysDesc("I#83=USB_OTG_FS");
 }
 

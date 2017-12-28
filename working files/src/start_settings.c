@@ -224,10 +224,10 @@ void global_vareiables_installation(void)
   /**************************/
   /**************************/
 
-//  for(unsigned int i = 0; i < MAX_ROW_LCD; i++)
-//  {
-//    for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
-//  }
+  for(unsigned int i = 0; i < MAX_ROW_LCD; i++)
+  {
+    for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+  }
 //  for (unsigned int i=0; i<NUMBER_KEY_KEYBOARD; i++) time_set_keyboard[i] = 0;
  
   for(unsigned int i=0; i<MAX_LEVEL_MENU; i++)
