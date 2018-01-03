@@ -631,7 +631,7 @@ void start_settings_peripherals(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_SPI_EDF_A0_Pin;
   GPIO_Init(GPIO_SPI_EDF_A0, &GPIO_InitStructure);
   //¬ибираЇмо EEPROM
-  GPIO_ResetBits(GPIO_SPI_EDF_A0, GPIO_SPI_EDF_A0_Pin);
+  GPIO_SetBits(GPIO_SPI_EDF_A0, GPIO_SPI_EDF_A0_Pin);
 
   /*GPIO_SPI_EDF_A1 - виб≥р м≥кросхеми DataFlash*/
   GPIO_InitStructure.GPIO_Pin = GPIO_SPI_EDF_A1_Pin;
