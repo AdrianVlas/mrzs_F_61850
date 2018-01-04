@@ -589,11 +589,21 @@ void SPI_ADC_IRQHandler(void)
     unsigned int shift = ((GPIO_SELECT_ADC->ODR & GPIO_SELECTPin_ADC) == 0) ? 0 : NUMBER_CANALs_ADC;
     unsigned int number_canal = shift + ((read_value >> 12) & 0xf);
     
-    if(channel_answer != number_canal) _SET_BIT(set_diagnostyka, ERROR_SPI_ADC_BIT);
-    else _SET_BIT(clear_diagnostyka, ERROR_SPI_ADC_BIT);
-
     output_adc[number_canal].tick = tick_output_adc_p;
-    output_adc[number_canal].value = read_value & 0xfff;
+    
+    static uint32_t error_spi_adc;
+    if(channel_answer != number_canal) 
+    {
+      if (error_spi_adc < 3 ) error_spi_adc++;
+      if (error_spi_adc >= 3 )_SET_BIT(set_diagnostyka, ERROR_SPI_ADC_BIT);
+    }
+    else 
+    {
+      error_spi_adc = 0;
+      
+      _SET_BIT(clear_diagnostyka, ERROR_SPI_ADC_BIT);
+      output_adc[number_canal].value = read_value & 0xfff;
+    }
   }
   tick_output_adc_p = tick_output_adc_tmp;
   /***/
