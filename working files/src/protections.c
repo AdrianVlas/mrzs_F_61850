@@ -9587,7 +9587,7 @@ inline void main_protection(void)
       //Блокування для УЗ
       for (size_t i = 0; i < NUMBER_UP; i++)
       {
-        uint32_t rang_small_block_up = RANG_SMALL_BLOCK_UMAX1 + i;
+        uint32_t rang_small_block_up = RANG_SMALL_BLOCK_UP1 + i;
         uint32_t rang_block_up = RANG_BLOCK_UP1 + 3*i;
         active_functions[rang_block_up >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, rang_small_block_up) != 0) << (rang_block_up & 0x1f);
       }

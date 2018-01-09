@@ -660,6 +660,14 @@ enum __mtz_abc_direction_const {
     
 #define MASKA_FOR_INPUT_SIGNALS_5        (unsigned int)(      \
     (1 << (RANG_BLOCK_UMAX2 - 160))                           \
+  | (1 << (RANG_BLOCK_UP1 + 3*0 - 160))                       \
+  | (1 << (RANG_BLOCK_UP1 + 3*1 - 160))                       \
+  | (1 << (RANG_BLOCK_UP1 + 3*2 - 160))                       \
+  | (1 << (RANG_BLOCK_UP1 + 3*3 - 160))                       \
+  | (1 << (RANG_BLOCK_UP1 + 3*4 - 160))                       \
+  | (1 << (RANG_BLOCK_UP1 + 3*5 - 160))                       \
+  | (1 << (RANG_BLOCK_UP1 + 3*6 - 160))                       \
+  | (1 << (RANG_BLOCK_UP1 + 3*7 - 160))                       \
   | (1 << (RANG_DF1_IN - 160))                                \
   | (1 << (RANG_DF2_IN - 160))                                \
 )
