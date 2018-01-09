@@ -9828,108 +9828,34 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
   }
   else if ((address_data == MA_PREFAULT_INTERVAL_AR) || (address_data == MA_POSTFAULT_INTERVAL_AR))
   {
-    //Запис ширини доаварійного і/або післяаварійного масиву аналогового реєстратора
-    unsigned int modified_value = 0;
-    unsigned int semaphore_read_state_ar_record_copy = semaphore_read_state_ar_record;
-    int state_ar_record_copy = state_ar_record;
+    temp_value = data*20; //Переводимо кількість періодів промислової частоти у мілісекунди
 
-    /*Встановлюємо симафор - суть якого полягає у тому, що якщо процес запису нової 
-    аварії не йде - то на час його установлення новий запис починати не можна, якщо ж вже іде ноий запис,
-    то він має продовжуватися і, навпаки, блокувати роботу аналогового реєстратора не можна*/
-    semaphore_read_state_ar_record = 1;
-      
-    if (
-        (state_ar_record == STATE_AR_NO_RECORD      ) ||
-        (state_ar_record == STATE_AR_TEMPORARY_BLOCK)
-       )   
+    //Встановлюємо нові значення
+    if (address_data == MA_PREFAULT_INTERVAL_AR)
     {
-      /*На даний момент не йде запис текучого аналогового аварійного процесу,
-      тому для зміни часових настройок тимчасово встановлюємо стан роботи
-      аналогового реєстратора у заблокований режим*/
-      state_ar_record = STATE_AR_TEMPORARY_BLOCK; 
-      
-      temp_value = data*20; //Переводимо кількість періодів промислової частоти у мілісекунди
-
-      //Встановлюємо нові значення
-      if (address_data == MA_PREFAULT_INTERVAL_AR)
+      //Ширина доаварійного масиву
+      if ((temp_value >= TIMEOUT_PREFAULT_MIN) && (temp_value <= TIMEOUT_PREFAULT_MAX))
       {
-        //Ширина доаварійного масиву
-        if ((temp_value >= TIMEOUT_PREFAULT_MIN) && (temp_value <= TIMEOUT_PREFAULT_MAX))
+        if (target_label->prefault_number_periods != data)
         {
-          if (target_label->prefault_number_periods != data)
-          {
-            target_label->prefault_number_periods = data; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
-            modified_value = 0xff;
-          }
+          target_label->prefault_number_periods = data; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
         }
-        else
-          error = ERROR_ILLEGAL_DATA_VALUE;
-      }
-      else if (address_data == MA_POSTFAULT_INTERVAL_AR)
-      {
-        //Ширина післяаварійного масиву
-        if ((temp_value >= TIMEOUT_POSTFAULT_MIN) && (temp_value <= TIMEOUT_POSTFAULT_MAX))
-        {
-          if (target_label->postfault_number_periods != data)
-          {
-            target_label->postfault_number_periods = data; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
-            modified_value = 0xff;
-          }
-        }
-        else
-          error = ERROR_ILLEGAL_DATA_VALUE;
-      }
-        
-      if (method_setting == SET_DATA_IMMEDITATE)
-      {
-        //Виконуємо дії по зміні часових витримок аналогового реєстратора, якщо при їх зміні не було зафіксовано помилки
-        if (error == 0)
-        {
-          if (modified_value != 0) actions_after_changing_tiomouts_ar();
-        }
-
-        //Розблоковуємо роботу аналогового реєстратора
-        state_ar_record = STATE_AR_NO_RECORD;
       }
       else
+        error = ERROR_ILLEGAL_DATA_VALUE;
+    }
+    else if (address_data == MA_POSTFAULT_INTERVAL_AR)
+    {
+      //Ширина післяаварійного масиву
+      if ((temp_value >= TIMEOUT_POSTFAULT_MIN) && (temp_value <= TIMEOUT_POSTFAULT_MAX))
       {
-        /*
-        Інаше ці операції виконуємо після того, як зміни будуть перекопійовані у current_settings структуру
-        
-        У випадку, якщо нове значення реально не вводилося, бо записується те саме число, яке до того
-        було - вертаємо попереднє значення стану роботи аналогового реєстратора, бо
-        якщо ми в цьому місці парограми то можливі два варіанти 
-        STATE_AR_NO_RECORD       - якщо до цього часу функція 16 не ввела нового значення для іншого параметру витримки аналогового реєстратора
-        STATE_AR_TEMPORARY_BLOCK - якщо до цього часу функція 16    ввела нове   значення для іншого параметру витримки аналогового реєстратора
-        */
-        
-        if (modified_value == 0) state_ar_record = state_ar_record_copy;
+        if (target_label->postfault_number_periods != data)
+        {
+          target_label->postfault_number_periods = data; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+        }
       }
-    }
-    else
-    {
-      //Операція тимчасово недоступна, бо іде робота аналогового реєстратора
-      error = ERROR_SLAVE_DEVICE_BUSY;
-    }
-
-    if (method_setting == SET_DATA_IMMEDITATE)
-    {
-      //Знімаємо семафор
-      semaphore_read_state_ar_record = 0;
-    }
-    else
-    {
-      /*
-      Інаше цю операцію виконуємо після того, як зміни будуть перекопійовані у current_settings структуру
-        
-      У випадку, якщо нове значення реально не вводилося, бо записується те саме число, яке до того
-      було - вертаємо попереднє значення semaphore_read_state_ar_record, бо
-      якщо ми в цьому місці парограми то можливі два варіанти 
-      0    - якщо до цього часу функція 16 не ввела нового значення для іншого параметру витримки аналогового реєстратора
-      не 0 - якщо до цього часу функція 16    ввела нове   значення для іншого параметру витримки аналогового реєстратора
-      */
-      
-       if (modified_value == 0) semaphore_read_state_ar_record = semaphore_read_state_ar_record_copy;
+      else
+        error = ERROR_ILLEGAL_DATA_VALUE;
     }
   }
   else if (address_data == MA_CURRENT_NUMBER_RECORD_AR)
@@ -10376,60 +10302,10 @@ inline unsigned int Set_data(unsigned short int data, unsigned int address_data,
       //Для встановлення мінімальної конфігурації має бути прописано по певній адресі визначене число - інакше повідомляємо, що такої адреси взагалі не існує (примітивний метод маскування від несанкціонованого дослідження карти пам'яті)
       error = ERROR_ILLEGAL_DATA_ADDRESS;
     }
-    else if (current_ekran.current_level != EKRAN_MAIN)
-    {
-      //Мінімальну конфігурацію можна встановлювати тільки з головного меню
-      error = ERROR_SLAVE_DEVICE_BUSY;
-    }
     else
     {
-      /*
-      Під час встановлення мінімальних настройок буде спроба змінити ширину 
-      доаварійного і післяаварійного масивів аналогового реєстратора - тому треба ще провірити
-      чи ми можемо цю операцію виконати
-      */
-      
-      /*Встановлюємо симафор - суть якого полягає у тому, що якщо процес запису нової 
-      аварії не йде - то на час його установлення новий запис починати не можна, якщо ж вже іде ноий запис,
-      то він має продовжуватися і, навпаки, блокувати роботу аналогового реєстратора не можна*/
-      semaphore_read_state_ar_record = 1;
-      
-      if (state_ar_record == STATE_AR_NO_RECORD)
-      {
-        /*На даний момент не йде запис текучого аналогового аварійного процесу,
-        тому для зміни часових настройок тимчасово встановлюємо стан роботи
-        аналогового реєстратора у заблокований режим*/
-        state_ar_record = STATE_AR_TEMPORARY_BLOCK; 
-      
-        //Скидаємо настройки у "мінімальні заводські значення"
-        min_settings(target_label);
-        
-        if (method_setting == SET_DATA_IMMEDITATE)
-        {
-          //Виконуємо дії по зміні часових витримок аналогового реєстратора
-          actions_after_changing_tiomouts_ar();
-
-          //Розблоковуємо роботу аналогового реєстратора
-          state_ar_record = STATE_AR_NO_RECORD;
-        }
-        /*
-        Інаше ці операції виконуємо після того, як зміни будуть перекопійовані у current_settings структуру
-        */
-      }
-      else
-      {
-        //Операція тимчасово недоступна, бо іде робота аналогового реєстратора
-        error = ERROR_SLAVE_DEVICE_BUSY;
-      }
-
-      if (method_setting == SET_DATA_IMMEDITATE)
-      {
-        //Знімаємо семафор
-        semaphore_read_state_ar_record = 0;
-      }
-      /*
-      Інаше цю операцію виконуємо після того, як зміни будуть перекопійовані у current_settings структуру
-      */
+      //Скидаємо настройки у "мінімальні заводські значення"
+      min_settings(target_label);
     }
   }
   else if (address_data == MA_TEST_WATCHDOGS)
