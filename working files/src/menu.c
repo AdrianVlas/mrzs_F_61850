@@ -2189,7 +2189,7 @@ void main_manu_function(void)
                        || 
                        (
                         (type_view_max_values_dr != IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE) && 
-                        (current_ekran.index_position == 23)  
+                        (current_ekran.index_position == 25)  
                        )   
                       )   
                   current_ekran.index_position++;
@@ -4302,7 +4302,7 @@ void main_manu_function(void)
                          || 
                          (
                           (type_view_max_values_dr != IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE) && 
-                          (current_ekran.index_position == 23)  
+                          (current_ekran.index_position == 25)  
                          )   
                         )   
                     current_ekran.index_position--;
@@ -4983,7 +4983,7 @@ void main_manu_function(void)
                          || 
                          (
                           (type_view_max_values_dr != IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE) && 
-                          (current_ekran.index_position == 23)  
+                          (current_ekran.index_position == 25)  
                          )   
                         )   
                     current_ekran.index_position++;

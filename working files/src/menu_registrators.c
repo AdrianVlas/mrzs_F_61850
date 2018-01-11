@@ -786,6 +786,8 @@ void make_ekran_analog_value_records_digital_registrator(void)
       " Ub   =         ",
       " Uc   =         ",
       " 3U0  =         ",
+      " U2   =         ",
+      " U1   =         ",
       " Uab  =         ",
       " Ubc  =         ",
       " Uca  =         ",
@@ -803,7 +805,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
 
     for (unsigned int i = 0; i < MAX_ROW_FOR_EKRAN_ANALOG_VALUES_DR; i++)
     {
-      if (i < 16)
+      if (i < 18)
       {
        //Струми і напруги
        if (i == 2)
@@ -818,7 +820,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
         else start_number_digit_after_point = 3;
         convert_and_insert_char_for_measurement(start_number_digit_after_point, temp_measurement, 1, 1, name_string[i], 7);
       }
-      else if (i == 16)
+      else if (i == 18)
       {
         //Частота
         int temp_measurement = *(((int *)point_unsigned_int) + i);
@@ -839,7 +841,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
         }
         convert_and_insert_char_for_frequency(temp_measurement, name_string[i]);
       }
-      else if (i < 23)
+      else if (i < 25)
       {
        //Опори
         const unsigned int index_of_start_position_array[MAX_NAMBER_LANGUAGE] = {4, 4, 5, 4};
@@ -900,7 +902,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
 #undef SIZE_UNDEF
         }
       }
-      else if ((i == 23) && (type_view_max_values_dr == IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE))
+      else if ((i == 25) && (type_view_max_values_dr == IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE))
       {
         //Місце пошкодження
 #define SIZE_NAME_FIELD         2
@@ -979,7 +981,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
       
       if (i < 9)
         name_string[i][MAX_COL_LCD - 1] = odynyci_vymirjuvannja[index_language][INDEX_A];
-      else if (i < 16)
+      else if (i < 18)
         name_string[i][MAX_COL_LCD - 1] = odynyci_vymirjuvannja[index_language][INDEX_V];
       else
       {
@@ -1041,7 +1043,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
 
     if (type_view_max_values_dr != IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE)
     {
-      int shift_ind = 23 - additional_current;
+      int shift_ind = 25 - additional_current;
       if ((shift_ind + 1) <= position_temp) position_temp--;
       do  
       {

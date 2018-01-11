@@ -5958,7 +5958,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
           }
         case DR_OFFSET_MEASUREMENT_UAB_1:
           {
-            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 13)*sizeof(unsigned int);
+            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 15)*sizeof(unsigned int);
             value = *((unsigned int *)(point_to_buffer + index));
             
             temp_value = value >> 3;
@@ -5966,7 +5966,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
           }
         case DR_OFFSET_MEASUREMENT_UBC_1:
           {
-            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 14)*sizeof(unsigned int);
+            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 16)*sizeof(unsigned int);
             value = *((unsigned int *)(point_to_buffer + index));
             
             temp_value = value >> 3;
@@ -5974,7 +5974,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
           }
         case DR_OFFSET_MEASUREMENT_UCA_1:
           {
-            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 15)*sizeof(unsigned int);
+            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 17)*sizeof(unsigned int);
             value = *((unsigned int *)(point_to_buffer + index));
             
             temp_value = value >> 3;
@@ -6035,7 +6035,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
           }
         case DR_OFFSET_FREQUENCY_1:
           {
-            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 16)*sizeof(unsigned int);
+            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 18)*sizeof(unsigned int);
             value = *((unsigned int *)(point_to_buffer + index));
             
             temp_value = value / 10;
@@ -6043,7 +6043,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
           }
         case DR_OFFSET_VMP:
           {
-            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 23)*sizeof(unsigned int);
+            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 25)*sizeof(unsigned int);
             int value_int = *((int *)(point_to_buffer + index));
 
             if (((unsigned int)value_int) != ((unsigned int)UNDEF_VMP))
@@ -6066,7 +6066,7 @@ inline unsigned int Get_data(unsigned char *data, unsigned int address_data, uns
         case DR_OFFSET_LABEL_TIME_MSW:
         case DR_OFFSET_LABEL_PROTECT:
           {
-            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 25)*sizeof(unsigned int);
+            index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 27)*sizeof(unsigned int);
             
             if (offset == DR_OFFSET_LABEL_TIME_LSW)
             {
