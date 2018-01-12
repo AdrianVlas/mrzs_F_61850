@@ -5387,7 +5387,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     uint32_t logic_UP_0 = 0;
     
     logic_UP_0 |= (
-                   ((current_settings_prt.control_UP & (n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0)
+                   ((current_settings_prt.control_UP & MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0)
                    &&
                    (_CHECK_SET_BIT(p_active_functions, (RANG_BLOCK_UP1 + 3*n_UP)) == 0)
                   ) << 0;
@@ -5395,7 +5395,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     int32_t pickup = current_settings_prt.setpoint_UP[n_UP][0][number_group_stp];
     if (_CHECK_SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP)) == 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
 
-    unsigned int more_less = ((current_settings_prt.control_UP & (n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
+    unsigned int more_less = ((current_settings_prt.control_UP & MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
     
     int32_t analog_value;
     uint32_t PQ = false;
@@ -5573,12 +5573,12 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
             ) 
            ) 
         {
-          logic_UP_0 |= (abs(analog_value) >= abs(pickup)) << 1;
+          logic_UP_0 |= (abs(analog_value) <= abs(pickup)) << 1;
         }
       }
       else
       {
-        logic_UP_0 |= (analog_value >= pickup) << 1;
+        logic_UP_0 |= (analog_value <= pickup) << 1;
       }
     }
     else
@@ -5597,12 +5597,12 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
             ) 
            ) 
         {
-          logic_UP_0 |= (abs(analog_value) <= abs(pickup)) << 1;
+          logic_UP_0 |= (abs(analog_value) >= abs(pickup)) << 1;
         }
       }
       else
       {
-        logic_UP_0 |= (analog_value <= pickup) << 1;
+        logic_UP_0 |= (analog_value >= pickup) << 1;
       }
     }
 

@@ -1726,7 +1726,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       for (size_t i = 0; i < NUMBER_UP; i++)
       {
         //Виводим ступені УЗ
-        target_label->control_UP &= (unsigned int)(~(i*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I)));
+        target_label->control_UP &= (unsigned int)(~MASKA_FOR_BIT(i*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I)));
 
         //Виводим ступені УЗ з УРОВ
         target_label->control_urov &= (unsigned int)(~((MASKA_FOR_BIT(NUMBER_UP) - 1) << INDEX_ML_CTRUROV_STARTED_FROM_UP1));
