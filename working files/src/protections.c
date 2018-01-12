@@ -5393,7 +5393,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
                   ) << 0;
 
     int32_t pickup = current_settings_prt.setpoint_UP[n_UP][0][number_group_stp];
-    if (_CHECK_SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP)) == 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
+    if (_CHECK_SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP)) != 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
 
     unsigned int more_less = ((current_settings_prt.control_UP & MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
     
@@ -5404,15 +5404,20 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     case UP_CTRL_Ia_Ib_Ic:
       {
         analog_value = measurement[IM_IA];
-        if (more_less) 
+
+        unsigned int or_and = ((current_settings_prt.control_UP & MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
+        if (
+            ((more_less == 0) && (or_and == 0)) ||
+            ((more_less != 0) && (or_and != 0))
+           )   
         {
-         if (measurement[IM_IB] > (uint32_t)analog_value) analog_value = measurement[IM_IB];
-         if (measurement[IM_IC] > (uint32_t)analog_value) analog_value = measurement[IM_IC];
+         if ((uint32_t)analog_value < measurement[IM_IB]) analog_value = measurement[IM_IB];
+         if ((uint32_t)analog_value < measurement[IM_IC]) analog_value = measurement[IM_IC];
         }
         else
         {
-         if (measurement[IM_IB] < (uint32_t)analog_value) analog_value = measurement[IM_IB];
-         if (measurement[IM_IC] < (uint32_t)analog_value) analog_value = measurement[IM_IC];
+         if ((uint32_t)analog_value > measurement[IM_IB]) analog_value = measurement[IM_IB];
+         if ((uint32_t)analog_value > measurement[IM_IC]) analog_value = measurement[IM_IC];
         }
         
         break;
@@ -5476,20 +5481,24 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
         uint32_t phase_line = ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0);
         analog_value = (phase_line == 0) ? measurement[IM_UA] : measurement[IM_UAB];
         
+        unsigned int or_and = ((current_settings_prt.control_UP & MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
         uint32_t analog_value_tmp = (phase_line == 0) ? measurement[IM_UB] : measurement[IM_UBC];
-        if (more_less) 
+        if (
+            ((more_less == 0) && (or_and == 0)) ||
+            ((more_less != 0) && (or_and != 0))
+           )   
         {
-         if (analog_value_tmp > (uint32_t)analog_value) analog_value = analog_value_tmp;
+          if ((uint32_t)analog_value < analog_value_tmp) analog_value = analog_value_tmp;
          
-         analog_value_tmp = (phase_line == 0) ? measurement[IM_UC] : measurement[IM_UCA];
-         if (analog_value_tmp > (uint32_t)analog_value) analog_value = analog_value_tmp;
+          analog_value_tmp = (phase_line == 0) ? measurement[IM_UC] : measurement[IM_UCA];
+          if ((uint32_t)analog_value < analog_value_tmp) analog_value = analog_value_tmp;
         }
         else
         {
-         if (analog_value_tmp < (uint32_t)analog_value) analog_value = analog_value_tmp;
+          if ((uint32_t)analog_value > analog_value_tmp) analog_value = analog_value_tmp;
          
-         analog_value_tmp = (phase_line == 0) ? measurement[IM_UC] : measurement[IM_UCA];
-         if (analog_value_tmp < (uint32_t)analog_value) analog_value = analog_value_tmp;
+          analog_value_tmp = (phase_line == 0) ? measurement[IM_UC] : measurement[IM_UCA];
+          if ((uint32_t)analog_value > analog_value_tmp) analog_value = analog_value_tmp;
         }
         
         break;
