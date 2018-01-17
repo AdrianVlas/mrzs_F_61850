@@ -1380,7 +1380,7 @@ void SPI_ADC_IRQHandler(void)
 //    if ((status_adc_read_work & TEST_VAL_READ) != 0)
     {
       //Треба опрацювати інтегральні величини
-      operate_test_ADCs();
+//      operate_test_ADCs();
     
 //      status_adc_read_work &= (unsigned int)(~TEST_VAL_READ);
 
