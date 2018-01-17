@@ -629,8 +629,6 @@ int etap_eeprom_write_enable = -1;
 unsigned int mutex_spi1/* = false*/;
 
 //DataFlash
-unsigned char RxBuffer_SPI_DF[SIZE_PAGE_DATAFLASH_MAX + 10];
-unsigned char TxBuffer_SPI_DF[SIZE_PAGE_DATAFLASH_MAX + 10];
 unsigned int number_bytes_transfer_spi_df;
 unsigned int number_bytes_transfer_spi_df_copy;
 unsigned char TxBuffer_SPI_DF_copy[SIZE_PAGE_DATAFLASH_MAX + 10];
