@@ -175,131 +175,6 @@ void control_reading_ADCs(void)
 /*****************************************************/
 
 /*************************************************************************
-ќпрацьовуЇмо ≥нтегра≥льн≥ величини
- *************************************************************************/
-void operate_test_ADCs(void)
-{
-  //VREF дл€ ј÷ѕ
-  static uint32_t index_canal[NUMBER_ANALOG_CANALES] = {C_3I0_16, C_Ia_1, C_Ib_1, C_Ic_1, C_Ua_1, C_Ub_1, C_Uc_1, C_3U0_1};
-  uint32_t vref_adc_general_tmp = 0;
-  for (size_t i = 0; i < NUMBER_ANALOG_CANALES; i++)
-  {
-    unsigned int temp = output_adc[index_canal[i]].value;
-    
-    vref_adc_averange_sum[i] += temp;
-    vref_adc_averange_sum[i] -= vref_adc_moment_value[i][index_array_of_one_value];
-    vref_adc_moment_value[i][index_array_of_one_value] = temp;
-    vref_adc_general_tmp += vref_adc[i] = vref_adc_averange_sum[i] >> VAGA_NUMBER_POINT;
-  }
-  vref_adc_general_tmp /=NUMBER_ANALOG_CANALES;
-  vref_adc_general = vref_adc_general_tmp;
-  
-  if ((vref_adc_general_tmp <0x709) || (vref_adc_general_tmp > 0x8f5)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC_TEST_BIT);
-  else _SET_BIT(clear_diagnostyka,ERROR_VREF_ADC_TEST_BIT);
-  
-//  temp = output_adc[C_VREF_ADC1].value;
-//  vref_adc1_averange_sum += temp;
-//  vref_adc1_averange_sum -= vref_adc1_moment_value[index_array_of_one_value];
-//  vref_adc1_moment_value[index_array_of_one_value] = temp;
-//  vref_adc1 = vref_adc1_averange_sum >> VAGA_NUMBER_POINT;
-
-//  /*******************************************************
-//  ¬ираховуванн€ середнього значенн€ контрольних точок
-//  *******************************************************/
-//  unsigned int temp;
-//
-//  //GND дл€ ј÷ѕ1
-//  _SET_BIT(clear_diagnostyka, ERROR_GND_ADC1_TEST_COARSE_BIT);
-//  unsigned int gnd_tmp = 0;
-//  for (unsigned int i = 0; i < NUMBER_GND_ADC1; i++)
-//  {
-//    temp = output_adc[index_GND_ADC1[i]].value;
-//    gnd_adc1_averange_sum[i] += temp;
-//    gnd_adc1_averange_sum[i] -= gnd_adc1_moment_value[i][index_array_of_one_value];
-//    gnd_adc1_moment_value[i][index_array_of_one_value] = temp;
-//    gnd_tmp += gnd_adc1_averange[i] = gnd_adc1_averange_sum[i] >> VAGA_NUMBER_POINT;
-//    if (temp > 0xA1) _SET_BIT(set_diagnostyka, ERROR_GND_ADC1_TEST_COARSE_BIT);
-//  }
-//  gnd_adc1 = gnd_tmp / NUMBER_GND_ADC1;
-//  
-//  //GND дл€ ј÷ѕ2
-//  _SET_BIT(clear_diagnostyka, ERROR_GND_ADC2_TEST_COARSE_BIT);
-//  gnd_tmp = 0;
-//  for (unsigned int i = 0; i < NUMBER_GND_ADC2; i++)
-//  {
-//    temp = output_adc[index_GND_ADC2[i]].value;
-//    gnd_adc2_averange_sum[i] += temp;
-//    gnd_adc2_averange_sum[i] -= gnd_adc2_moment_value[i][index_array_of_one_value];
-//    gnd_adc2_moment_value[i][index_array_of_one_value] = temp;
-//    gnd_tmp += gnd_adc2_averange[i] = gnd_adc2_averange_sum[i] >> VAGA_NUMBER_POINT;
-//    if (temp > 0xA1) _SET_BIT(set_diagnostyka, ERROR_GND_ADC2_TEST_COARSE_BIT);
-//  }
-//  gnd_adc2 = gnd_tmp / NUMBER_GND_ADC2;
-//  
-//  //VREF дл€ ј÷ѕ1
-//  _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC1_TEST_COARSE_BIT);
-//  temp = output_adc[C_VREF_ADC1].value;
-//  vref_adc1_averange_sum += temp;
-//  vref_adc1_averange_sum -= vref_adc1_moment_value[index_array_of_one_value];
-//  vref_adc1_moment_value[index_array_of_one_value] = temp;
-//  vref_adc1 = vref_adc1_averange_sum >> VAGA_NUMBER_POINT;
-//  if ((temp < 0x614) || (temp > 0x9EB)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC1_TEST_COARSE_BIT);
-//  
-//  //VREF дл€ ј÷ѕ2
-//#ifdef BA1_VER2
-//  _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
-//  unsigned int vref_tmp = 0;
-//  for (unsigned int i = 0; i < NUMBER_VREF_ADC2; i++)
-//  {
-//    temp = output_adc[index_VREF_ADC2[i]].value;
-//    vref_adc2_averange_sum[i] += temp;
-//    vref_adc2_averange_sum[i] -= vref_adc2_moment_value[i][index_array_of_one_value];
-//    vref_adc2_moment_value[i][index_array_of_one_value] = temp;
-//    vref_tmp += vref_adc2_averange[i] = vref_adc2_averange_sum[i] >> VAGA_NUMBER_POINT;
-//    if ((temp < 0x614) || (temp > 0x9EB)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
-//  }
-//  vref_adc2 = vref_tmp / NUMBER_VREF_ADC2;
-//#else
-//  _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
-//  temp = output_adc[C_VREF_ADC2].value;
-//  vref_adc2_averange_sum += temp;
-//  vref_adc2_averange_sum -= vref_adc2_moment_value[index_array_of_one_value];
-//  vref_adc2_moment_value[index_array_of_one_value] = temp;
-//  vref_adc2 = vref_adc2_averange_sum >> VAGA_NUMBER_POINT;
-//  if ((temp < 0x614) || (temp > 0x9EB)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
-//#endif
-//
-//  //VDD дл€ ј÷ѕ1
-//  _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
-//  temp = output_adc[C_VDD_ADC1].value; 
-//  vdd_adc1_averange_sum += temp;
-//  vdd_adc1_averange_sum -= vdd_adc1_moment_value[index_array_of_one_value];
-//  vdd_adc1_moment_value[index_array_of_one_value] = temp;
-//  vdd_adc1 = vdd_adc1_averange_sum >> VAGA_NUMBER_POINT;
-//  if ((temp <0x6F2) || (temp > 0xF5B)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
-//
-//  //VDD дл€ ј÷ѕ2
-//  _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
-//  temp = output_adc[C_VDD_ADC2].value; 
-//  vdd_adc2_averange_sum += temp;
-//  vdd_adc2_averange_sum -= vdd_adc2_moment_value[index_array_of_one_value];
-//  vdd_adc2_moment_value[index_array_of_one_value] = temp;
-//  vdd_adc2 = vdd_adc2_averange_sum >> VAGA_NUMBER_POINT;
-//  if ((temp <0x6F2) || (temp > 0xF5B)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
-
-  //¬с≥ масиви одноњ величини ми вже опрацювали  
-  if((++index_array_of_one_value) == NUMBER_POINT)
-    index_array_of_one_value = 0;
-  else if (index_array_of_one_value > NUMBER_POINT)
-  {
-    //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-    total_error_sw_fixed(21);
-  }
-  /*******************************************************/
-}
-/*************************************************************************/
-
-/*************************************************************************
 ќпрацьовуЇмо дан≥ дл€ перетворенн€ ‘ур'Ї
  *************************************************************************/
 void Fourier(void)
@@ -664,6 +539,39 @@ void SPI_ADC_IRQHandler(void)
     {
       _x1 = ADCs_data_raw[I_3I0].tick;
       _y1 = ADCs_data_raw[I_3I0].value;
+      
+      static uint32_t index_array_of_one_value_3I0;
+      
+      uint32_t val_C_3I0_16 = output_adc[C_3I0_16].value;
+      vref_adc_averange_sum[I_3I0] += val_C_3I0_16;
+      
+      if((++index_array_of_one_value_3I0) == NUMBER_POINT)
+      {
+        index_array_of_one_value_3I0 = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_3I0] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_3I0] = 0;
+
+        //–обимо тепер усередненн€ за секунду
+        static uint32_t index_array_of_one_value_3I0_1s;
+        
+        vref_adc_averange_sum_1s[I_3I0] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_3I0] -= vref_adc_moment_value_1s[I_3I0][index_array_of_one_value_3I0_1s];
+        vref_adc_moment_value_1s[I_3I0][index_array_of_one_value_3I0_1s] = vref_adc_period;
+        vref_adc[I_3I0] = vref_adc_averange_sum_1s[I_3I0] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_3I0_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_3I0_1s = 0;
+        else if (index_array_of_one_value_3I0_1s > MAIN_FREQUENCY)
+        {
+          //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+          total_error_sw_fixed(104);
+        }
+      }
+      else if (index_array_of_one_value_3I0 > NUMBER_POINT)
+      {
+        //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+        total_error_sw_fixed(21);
+      }
         
 //      _y2 = output_adc[C_3I0_1].value - gnd_adc - vref_adc;
 //      if (abs(_y2) > 87)
@@ -673,7 +581,7 @@ void SPI_ADC_IRQHandler(void)
 //      }
 //      else
 //      {
-        _y2 = output_adc[C_3I0_16].value - /*gnd_adc - */ vref_adc_general;
+        _y2 = val_C_3I0_16 - /*gnd_adc - */ vref_adc[I_3I0];
         if (abs(_y2) > 87)
         {
           _x2 = output_adc[C_3I0_16].tick;
@@ -681,7 +589,7 @@ void SPI_ADC_IRQHandler(void)
         }
         else
         {
-          _y2 = output_adc[C_3I0_256].value - /*gnd_adc - */ vref_adc_general;
+          _y2 = output_adc[C_3I0_256].value - /*gnd_adc - */ vref_adc[I_3I0];
 
           _x2 = output_adc[C_3I0_256].tick;
           _y2 = (int)((-_y2)*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA);
@@ -717,7 +625,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ia].tick;
       _y1 = ADCs_data_raw[I_Ia].value;
         
-      _y2 = output_adc[C_Ia_1].value - /*gnd_adc - */ vref_adc_general;
+      static uint32_t index_array_of_one_value_Ia;
+      
+      uint32_t val_C_Ia_1 = output_adc[C_Ia_1].value;
+      vref_adc_averange_sum[I_Ia] += val_C_Ia_1;
+      
+      if((++index_array_of_one_value_Ia) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ia = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ia] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ia] = 0;
+
+        //–обимо тепер усередненн€ за секунду
+        static uint32_t index_array_of_one_value_Ia_1s;
+        
+        vref_adc_averange_sum_1s[I_Ia] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ia] -= vref_adc_moment_value_1s[I_Ia][index_array_of_one_value_Ia_1s];
+        vref_adc_moment_value_1s[I_Ia][index_array_of_one_value_Ia_1s] = vref_adc_period;
+        vref_adc[I_Ia] = vref_adc_averange_sum_1s[I_Ia] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ia_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ia_1s = 0;
+        else if (index_array_of_one_value_Ia_1s > MAIN_FREQUENCY)
+        {
+          //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+          total_error_sw_fixed(106);
+        }
+      }
+      else if (index_array_of_one_value_Ia > NUMBER_POINT)
+      {
+        //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+        total_error_sw_fixed(105);
+      }
+
+      _y2 = val_C_Ia_1 - /*gnd_adc - */ vref_adc[I_Ia];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ia_1].tick;
@@ -725,7 +666,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ia_16].value - /*gnd_adc - */ vref_adc_general;
+        _y2 = output_adc[C_Ia_16].value - /*gnd_adc - */ vref_adc[I_Ia];
 
         _x2 = output_adc[C_Ia_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ia])>>(USTUVANNJA_VAGA);
@@ -760,7 +701,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ib_I04].tick;
       _y1 = ADCs_data_raw[I_Ib_I04].value;
         
-      _y2 = output_adc[C_Ib_1].value - /*gnd_adc - */ vref_adc_general;
+      static uint32_t index_array_of_one_value_Ib_I04;
+      
+      uint32_t val_C_Ib_I04_1 = output_adc[C_Ib_1].value;
+      vref_adc_averange_sum[I_Ib_I04] += val_C_Ib_I04_1;
+      
+      if((++index_array_of_one_value_Ib_I04) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ib_I04 = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ib_I04] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ib_I04] = 0;
+
+        //–обимо тепер усередненн€ за секунду
+        static uint32_t index_array_of_one_value_Ib_I04_1s;
+        
+        vref_adc_averange_sum_1s[I_Ib_I04] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ib_I04] -= vref_adc_moment_value_1s[I_Ib_I04][index_array_of_one_value_Ib_I04_1s];
+        vref_adc_moment_value_1s[I_Ib_I04][index_array_of_one_value_Ib_I04_1s] = vref_adc_period;
+        vref_adc[I_Ib_I04] = vref_adc_averange_sum_1s[I_Ib_I04] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ib_I04_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ib_I04_1s = 0;
+        else if (index_array_of_one_value_Ib_I04_1s > MAIN_FREQUENCY)
+        {
+          //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+          total_error_sw_fixed(108);
+        }
+      }
+      else if (index_array_of_one_value_Ib_I04 > NUMBER_POINT)
+      {
+        //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+        total_error_sw_fixed(107);
+      }
+
+      _y2 = val_C_Ib_I04_1 - /*gnd_adc - */ vref_adc[I_Ib_I04];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ib_1].tick;
@@ -768,7 +742,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ib_16].value - /*gnd_adc - */ vref_adc_general;
+        _y2 = output_adc[C_Ib_16].value - /*gnd_adc - */ vref_adc[I_Ib_I04];
 
         _x2 = output_adc[C_Ib_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ib_I04])>>(USTUVANNJA_VAGA);
@@ -803,7 +777,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ic].tick;
       _y1 = ADCs_data_raw[I_Ic].value;
         
-      _y2 = output_adc[C_Ic_1].value - /*gnd_adc - */ vref_adc_general;
+      static uint32_t index_array_of_one_value_Ic;
+      
+      uint32_t val_C_Ic_1 = output_adc[C_Ic_1].value;
+      vref_adc_averange_sum[I_Ic] += val_C_Ic_1;
+      
+      if((++index_array_of_one_value_Ic) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ic = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ic] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ic] = 0;
+
+        //–обимо тепер усередненн€ за секунду
+        static uint32_t index_array_of_one_value_Ic_1s;
+        
+        vref_adc_averange_sum_1s[I_Ic] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ic] -= vref_adc_moment_value_1s[I_Ic][index_array_of_one_value_Ic_1s];
+        vref_adc_moment_value_1s[I_Ic][index_array_of_one_value_Ic_1s] = vref_adc_period;
+        vref_adc[I_Ic] = vref_adc_averange_sum_1s[I_Ic] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ic_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ic_1s = 0;
+        else if (index_array_of_one_value_Ic_1s > MAIN_FREQUENCY)
+        {
+          //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+          total_error_sw_fixed(110);
+        }
+      }
+      else if (index_array_of_one_value_Ic > NUMBER_POINT)
+      {
+        //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+        total_error_sw_fixed(109);
+      }
+
+      _y2 = val_C_Ic_1 - /*gnd_adc - */ vref_adc[I_Ic];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ic_1].tick;
@@ -811,7 +818,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ic_16].value - /*gnd_adc - */ vref_adc_general;
+        _y2 = output_adc[C_Ic_16].value - /*gnd_adc - */ vref_adc[I_Ic];
 
         _x2 = output_adc[C_Ic_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ic])>>(USTUVANNJA_VAGA);
@@ -849,7 +856,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_3U0].tick;
       _y1 = ADCs_data_raw[I_3U0].value;
         
-      _y2 = output_adc[C_3U0_1].value - /*gnd_adc - */ vref_adc_general;
+      static uint32_t index_array_of_one_value_3U0;
+      
+      uint32_t val_C_3U0_1 = output_adc[C_3U0_1].value;
+      vref_adc_averange_sum[I_3U0] += val_C_3U0_1;
+      
+      if((++index_array_of_one_value_3U0) == NUMBER_POINT)
+      {
+        index_array_of_one_value_3U0 = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_3U0] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_3U0] = 0;
+
+        //–обимо тепер усередненн€ за секунду
+        static uint32_t index_array_of_one_value_3U0_1s;
+        
+        vref_adc_averange_sum_1s[I_3U0] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_3U0] -= vref_adc_moment_value_1s[I_3U0][index_array_of_one_value_3U0_1s];
+        vref_adc_moment_value_1s[I_3U0][index_array_of_one_value_3U0_1s] = vref_adc_period;
+        vref_adc[I_3U0] = vref_adc_averange_sum_1s[I_3U0] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_3U0_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_3U0_1s = 0;
+        else if (index_array_of_one_value_3U0_1s > MAIN_FREQUENCY)
+        {
+          //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+          total_error_sw_fixed(112);
+        }
+      }
+      else if (index_array_of_one_value_3U0 > NUMBER_POINT)
+      {
+        //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+        total_error_sw_fixed(111);
+      }
+
+      _y2 = val_C_3U0_1 - /*gnd_adc - */ vref_adc[I_3U0];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_3U0_1].tick;
@@ -857,7 +897,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_3U0_16].value - /*gnd_adc - */ vref_adc_general;
+        _y2 = output_adc[C_3U0_16].value - /*gnd_adc - */ vref_adc[I_3U0];
 
         _x2 = output_adc[C_3U0_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_3U0])>>(USTUVANNJA_VAGA);
@@ -912,7 +952,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ua].tick;
       _y1 = ADCs_data_raw[I_Ua].value;
         
-      _y2 = output_adc[C_Ua_1].value - /*gnd_adc - */ vref_adc_general;
+      static uint32_t index_array_of_one_value_Ua;
+      
+      uint32_t val_C_Ua_1 = output_adc[C_Ua_1].value;
+      vref_adc_averange_sum[I_Ua] += val_C_Ua_1;
+      
+      if((++index_array_of_one_value_Ua) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ua = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ua] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ua] = 0;
+
+        //–обимо тепер усередненн€ за секунду
+        static uint32_t index_array_of_one_value_Ua_1s;
+        
+        vref_adc_averange_sum_1s[I_Ua] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ua] -= vref_adc_moment_value_1s[I_Ua][index_array_of_one_value_Ua_1s];
+        vref_adc_moment_value_1s[I_Ua][index_array_of_one_value_Ua_1s] = vref_adc_period;
+        vref_adc[I_Ua] = vref_adc_averange_sum_1s[I_Ua] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ua_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ua_1s = 0;
+        else if (index_array_of_one_value_Ua_1s > MAIN_FREQUENCY)
+        {
+          //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+          total_error_sw_fixed(114);
+        }
+      }
+      else if (index_array_of_one_value_Ua > NUMBER_POINT)
+      {
+        //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+        total_error_sw_fixed(113);
+      }
+
+      _y2 = val_C_Ua_1 - /*gnd_adc - */ vref_adc[I_Ua];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ua_1].tick;
@@ -920,7 +993,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ua_16].value - /*gnd_adc - */ vref_adc_general;
+        _y2 = output_adc[C_Ua_16].value - /*gnd_adc - */ vref_adc[I_Ua];
 
         _x2 = output_adc[C_Ua_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ua])>>(USTUVANNJA_VAGA);
@@ -975,7 +1048,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ub].tick;
       _y1 = ADCs_data_raw[I_Ub].value;
         
-      _y2 = output_adc[C_Ub_1].value - /*gnd_adc - */ vref_adc_general;
+      static uint32_t index_array_of_one_value_Ub;
+      
+      uint32_t val_C_Ub_1 = output_adc[C_Ub_1].value;
+      vref_adc_averange_sum[I_Ub] += val_C_Ub_1;
+      
+      if((++index_array_of_one_value_Ub) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ub = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ub] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ub] = 0;
+
+        //–обимо тепер усередненн€ за секунду
+        static uint32_t index_array_of_one_value_Ub_1s;
+        
+        vref_adc_averange_sum_1s[I_Ub] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ub] -= vref_adc_moment_value_1s[I_Ub][index_array_of_one_value_Ub_1s];
+        vref_adc_moment_value_1s[I_Ub][index_array_of_one_value_Ub_1s] = vref_adc_period;
+        vref_adc[I_Ub] = vref_adc_averange_sum_1s[I_Ub] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ub_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ub_1s = 0;
+        else if (index_array_of_one_value_Ub_1s > MAIN_FREQUENCY)
+        {
+          //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+          total_error_sw_fixed(116);
+        }
+      }
+      else if (index_array_of_one_value_Ub > NUMBER_POINT)
+      {
+        //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+        total_error_sw_fixed(115);
+      }
+
+      _y2 = val_C_Ub_1 - /*gnd_adc - */ vref_adc[I_Ub];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ub_1].tick;
@@ -983,7 +1089,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ub_16].value - /*gnd_adc - */ vref_adc_general;
+        _y2 = output_adc[C_Ub_16].value - /*gnd_adc - */ vref_adc[I_Ub];
 
         _x2 = output_adc[C_Ub_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ub])>>(USTUVANNJA_VAGA);
@@ -1038,7 +1144,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Uc].tick;
       _y1 = ADCs_data_raw[I_Uc].value;
         
-      _y2 = output_adc[C_Uc_1].value - /*gnd_adc - */ vref_adc_general;
+      static uint32_t index_array_of_one_value_Uc;
+      
+      uint32_t val_C_Uc_1 = output_adc[C_Uc_1].value;
+      vref_adc_averange_sum[I_Uc] += val_C_Uc_1;
+      
+      if((++index_array_of_one_value_Uc) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Uc = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Uc] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Uc] = 0;
+
+        //–обимо тепер усередненн€ за секунду
+        static uint32_t index_array_of_one_value_Uc_1s;
+        
+        vref_adc_averange_sum_1s[I_Uc] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Uc] -= vref_adc_moment_value_1s[I_Uc][index_array_of_one_value_Uc_1s];
+        vref_adc_moment_value_1s[I_Uc][index_array_of_one_value_Uc_1s] = vref_adc_period;
+        vref_adc[I_Uc] = vref_adc_averange_sum_1s[I_Uc] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Uc_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Uc_1s = 0;
+        else if (index_array_of_one_value_Uc_1s > MAIN_FREQUENCY)
+        {
+          //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+          total_error_sw_fixed(118);
+        }
+      }
+      else if (index_array_of_one_value_Uc > NUMBER_POINT)
+      {
+        //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
+        total_error_sw_fixed(117);
+      }
+
+      _y2 = val_C_Uc_1 - /*gnd_adc - */ vref_adc[I_Uc];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Uc_1].tick;
@@ -1046,7 +1185,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Uc_16].value - /*gnd_adc - */ vref_adc_general;
+        _y2 = output_adc[C_Uc_16].value - /*gnd_adc - */ vref_adc[I_Uc];
 
         _x2 = output_adc[C_Uc_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Uc])>>(USTUVANNJA_VAGA);
@@ -1379,8 +1518,19 @@ void SPI_ADC_IRQHandler(void)
     
 //    if ((status_adc_read_work & TEST_VAL_READ) != 0)
     {
-      //“реба опрацювати ≥нтегральн≥ величини
-//      operate_test_ADCs();
+      //¬ид≥л€Їмо м≥н≥мальне ≥ максимальне значенн€ опори по вс≥х каналах
+      uint32_t min_vref_adc = vref_adc[0];
+      uint32_t max_vref_adc = min_vref_adc;
+  
+      for (size_t i = 1; i < NUMBER_ANALOG_CANALES; i++)
+      {
+        if (min_vref_adc > vref_adc[i]) min_vref_adc = vref_adc[i];
+        if (max_vref_adc < vref_adc[i]) max_vref_adc = vref_adc[i];
+      }
+
+      //ѕерев≥р€Їмо допустим≥сть д≥апазону
+      if ((min_vref_adc < 0x709) || (max_vref_adc > 0x8f5)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC_TEST_BIT);
+      else _SET_BIT(clear_diagnostyka,ERROR_VREF_ADC_TEST_BIT);
     
 //      status_adc_read_work &= (unsigned int)(~TEST_VAL_READ);
 

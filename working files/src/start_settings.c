@@ -54,11 +54,7 @@ void global_vareiables_installation(void)
   
   for(size_t i = 0; i < NUMBER_ANALOG_CANALES; i++)
   {
-    for(size_t j = 0; j < NUMBER_POINT; j++)
-    {
-      vref_adc_moment_value[i][j] = VREF_NORMAL_VALUE;
-    }
-//    vref_adc_averange_sum[i] = VREF_NORMAL_VALUE*NUMBER_POINT;
+    for(unsigned int j = 0; j < MAIN_FREQUENCY; j++) vref_adc_moment_value_1s[i][j] = VREF_NORMAL_VALUE;
 //    vref_adc[i] = VREF_NORMAL_VALUE;
   }
   

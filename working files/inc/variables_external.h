@@ -30,11 +30,10 @@ extern float frequency_min, frequency_max;
 extern unsigned int command_restart_monitoring_frequency;
 
 extern unsigned int vref_adc_averange_sum[NUMBER_ANALOG_CANALES];
-extern unsigned int vref_adc_moment_value[NUMBER_ANALOG_CANALES][NUMBER_POINT];
-extern unsigned int vref_adc[NUMBER_ANALOG_CANALES];
-extern unsigned int vref_adc_general;
+extern uint32_t vref_adc_averange_sum_1s[NUMBER_ANALOG_CANALES];
+extern uint32_t vref_adc_moment_value_1s[NUMBER_ANALOG_CANALES][MAIN_FREQUENCY];
+extern uint32_t vref_adc[NUMBER_ANALOG_CANALES];
 
-extern unsigned int index_array_of_one_value;
 extern unsigned int index_array_of_one_value_fourier;
 
 extern EXTENDED_SAMPLE ADCs_data_raw[NUMBER_ANALOG_CANALES];

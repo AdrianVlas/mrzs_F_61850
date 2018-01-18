@@ -52,32 +52,31 @@ unsigned int tick_c, tick_c_work;
 float frequency_min = 50, frequency_max = 50;
 unsigned int command_restart_monitoring_frequency/* = 0*/;
 
-unsigned int vref_adc_averange_sum[NUMBER_ANALOG_CANALES] = 
-                                                            {
-                                                              VREF_NORMAL_VALUE*NUMBER_POINT, 
-                                                              VREF_NORMAL_VALUE*NUMBER_POINT, 
-                                                              VREF_NORMAL_VALUE*NUMBER_POINT, 
-                                                              VREF_NORMAL_VALUE*NUMBER_POINT, 
-                                                              VREF_NORMAL_VALUE*NUMBER_POINT, 
-                                                              VREF_NORMAL_VALUE*NUMBER_POINT, 
-                                                              VREF_NORMAL_VALUE*NUMBER_POINT, 
-                                                              VREF_NORMAL_VALUE*NUMBER_POINT
-                                                            };
-unsigned int vref_adc_moment_value[NUMBER_ANALOG_CANALES][NUMBER_POINT];
-unsigned int vref_adc[NUMBER_ANALOG_CANALES] = 
-                                              {
-                                                VREF_NORMAL_VALUE,
-                                                VREF_NORMAL_VALUE,
-                                                VREF_NORMAL_VALUE,
-                                                VREF_NORMAL_VALUE,
-                                                VREF_NORMAL_VALUE,
-                                                VREF_NORMAL_VALUE,
-                                                VREF_NORMAL_VALUE,
-                                                VREF_NORMAL_VALUE
-                                              };
-unsigned int vref_adc_general = VREF_NORMAL_VALUE;
+unsigned int vref_adc_averange_sum[NUMBER_ANALOG_CANALES];
+uint32_t vref_adc_averange_sum_1s[NUMBER_ANALOG_CANALES] = 
+{
+  VREF_NORMAL_VALUE*MAIN_FREQUENCY,
+  VREF_NORMAL_VALUE*MAIN_FREQUENCY,
+  VREF_NORMAL_VALUE*MAIN_FREQUENCY,
+  VREF_NORMAL_VALUE*MAIN_FREQUENCY,
+  VREF_NORMAL_VALUE*MAIN_FREQUENCY,
+  VREF_NORMAL_VALUE*MAIN_FREQUENCY,
+  VREF_NORMAL_VALUE*MAIN_FREQUENCY,
+  VREF_NORMAL_VALUE*MAIN_FREQUENCY
+};
+uint32_t vref_adc_moment_value_1s[NUMBER_ANALOG_CANALES][MAIN_FREQUENCY];
+uint32_t vref_adc[NUMBER_ANALOG_CANALES] = 
+                                          {
+                                            VREF_NORMAL_VALUE,
+                                            VREF_NORMAL_VALUE,
+                                            VREF_NORMAL_VALUE,
+                                            VREF_NORMAL_VALUE,
+                                            VREF_NORMAL_VALUE,
+                                            VREF_NORMAL_VALUE,
+                                            VREF_NORMAL_VALUE,
+                                            VREF_NORMAL_VALUE
+                                          };
 
-unsigned int index_array_of_one_value/* = 0*/;
 unsigned int index_array_of_one_value_fourier/* = 0*/;
 
 EXTENDED_SAMPLE ADCs_data_raw[NUMBER_ANALOG_CANALES];

@@ -270,7 +270,6 @@ void error_start_i2c(void);
 
 void find_new_ADC_canal_to_read(unsigned int, unsigned int*);
 void control_reading_ADCs(void);
-void operate_test_ADCs(void);
 void Fourier(void);
 void fapch(void);
 void calc_measurement(unsigned int);
