@@ -616,7 +616,7 @@ int index_language_in_array(int language)
           }
         }
       }
-     }
+    }
 
     if (error_LCD != 0) 
     {
