@@ -79,7 +79,7 @@ void make_ekran_list_source_tf(void)
     }
   }
 
-  uint8_t output_signals_tmp[1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_UP_SIGNAL_FOR_RANG_SMALL + 1][MAX_COL_LCD];
+  uint8_t output_signals_tmp[1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL][MAX_COL_LCD];
   for(int index_1 = 0; index_1 < (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL); index_1++)
   {
     unsigned int index_row;
