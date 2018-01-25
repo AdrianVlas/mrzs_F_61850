@@ -24,7 +24,7 @@
 #define INDEX_ML_STPPOCHATKOVA_K_VYMK     6
 
 #define COL_SETPOINT_Inom_BEGIN                 5
-#define COL_SETPOINT_Inom_END                   8
+#define COL_SETPOINT_Inom_END                   9
 
 #define COL_SETPOINT_RKS_Inom_BEGIN             5
 #define COL_SETPOINT_RKS_Inom_END               10

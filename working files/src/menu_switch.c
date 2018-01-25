@@ -121,7 +121,7 @@ void make_ekran_setpoint_switch()
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
         if (index_of_ekran_tmp == INDEX_ML_STPInom)
         {
-          vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для уставки номінального струму
+          vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для уставки номінального струму
           if (view == true) value = current_settings.setpoint_Inom; //у змінну value поміщаємо значення уставки номінального струму
           else value = edition_settings.setpoint_Inom;
           first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
