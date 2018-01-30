@@ -26,7 +26,7 @@
 #define KOEF_0_2_U                      0.2
 
 #define PORIG_CHUTLYVOSTI_3I0        50
-#define PORIG_CHUTLYVOSTI_3U0        6000
+#define PORIG_CHUTLYVOSTI_3U0        4000
 #define PORIG_CHUTLYVOSTI_CURRENT    50
 #define PORIG_CHUTLYVOSTI_VOLTAGE    5000
 
