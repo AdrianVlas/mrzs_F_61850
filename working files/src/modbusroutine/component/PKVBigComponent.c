@@ -302,8 +302,8 @@ int postPKVBigWriteAction(void)
   extern int upravlSetting;//флаг Setting
 //action после записи
   int beginAdr = pkvbigcomponent->operativMarker[0];
-  int endAdr   = pkvbigcomponent->operativMarker[1];
   if(beginAdr<0) return 0;//не было записи
+  int endAdr   = pkvbigcomponent->operativMarker[1];
   int offsetTempWriteArray = superFindTempWriteArrayOffset(BEGIN_ADR_REGISTER);//найти смещение TempWriteArray
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;

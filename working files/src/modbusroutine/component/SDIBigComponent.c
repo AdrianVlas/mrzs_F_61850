@@ -89,8 +89,8 @@ int postSDIBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи
   int beginAdr = sdibigcomponent->operativMarker[0];
-  int endAdr   = sdibigcomponent->operativMarker[1];
   if(beginAdr<0) return 0;//не было записи
+  int endAdr   = sdibigcomponent->operativMarker[1];
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
 
@@ -99,15 +99,6 @@ extern int upravlSchematic;//флаг Rang
 
       //ВАЛИДАЦИЯ УСПЕШНА - УСТАНОВКА
      upravlSchematic = 1;//флаг Rang
-
-//      current_settings = edition_settings;//утвердить изменения
-
-      //Відбулася зміна настройки
-//      _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
-      //Виставляємо признак, що на екрані треба обновити інформацію
-  //    new_state_keyboard |= (1<<BIT_REWRITE);
-    //  fix_change_settings_m(1, 2);//1 - запис ранжування 2 - USB
-      //restart_timeout_idle_new_settings = true;
 
   return 0;
 }//

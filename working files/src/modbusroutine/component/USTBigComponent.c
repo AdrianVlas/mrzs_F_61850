@@ -5,8 +5,8 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 11395
 
-#define CLRACT_CONTROL 0
-#define SETACT_CONTROL 1
+//#define CLRACT_CONTROL 0
+//#define SETACT_CONTROL 1
 
 int privateUSTBigGetReg2(int adrReg);
 
@@ -19,14 +19,20 @@ void setUSTBigCountObject(void);//записать к-во обектов
 void preUSTBigReadAction(void);//action до чтения
 void preUSTBigWriteAction(void);//action до записи
 int  postUSTBigWriteAction(void);//action после записи
-int  ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl, uint32_t **editValue);
+int  ustFunc000(int inOffset, int gruppa, int *multer, int regUst, /*int actControl,*/ uint32_t **editValue);
 int grupa_ustavok_control(int  offset, int *grupa_ustavok, int *adresGruppa);
 
 COMPONENT_OBJ *ustbigcomponent;
 
-int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl, uint32_t **editValue)
+int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, /*int actControl,*/ uint32_t **editValue)
 {
   int diapazon = 1;
+  int actControl = 0;
+  if(inOffset<0)
+  {
+   inOffset = -inOffset;
+   actControl = 1;
+  }//if(inOffset<0)
   (*multer) = 10;
   switch(inOffset)
   {
@@ -127,6 +133,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl
     if(regUst<SETPOINT_MTZ2_U_MIN/10 || regUst>SETPOINT_MTZ2_U_MAX/10) diapazon=0;
     break;
   case 32:
+    (*multer) = 1;
     (*editValue) = &edition_settings.setpoint_mtz_2_angle[gruppa];
     if(regUst<SETPOINT_MTZ2_ANGLE_MIN || regUst>SETPOINT_MTZ2_ANGLE_MAX) diapazon=0;
     break;
@@ -189,6 +196,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl
     if(regUst<SETPOINT_MTZ3_U_MIN/10 || regUst>SETPOINT_MTZ3_U_MAX/10) diapazon=0;
     break;
   case 50:
+    (*multer) = 1;
     (*editValue) = &edition_settings.setpoint_mtz_3_angle[gruppa];
     if(regUst<SETPOINT_MTZ3_ANGLE_MIN || regUst>SETPOINT_MTZ3_ANGLE_MAX) diapazon=0;
     break;
@@ -231,6 +239,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl
     if(regUst<SETPOINT_MTZ4_U_MIN/10 || regUst>SETPOINT_MTZ4_U_MAX/10) diapazon=0;
     break;
   case 68:
+    (*multer) = 1;
     (*editValue) = &edition_settings.setpoint_mtz_4_angle[gruppa];
     if(regUst<SETPOINT_MTZ4_ANGLE_MIN || regUst>SETPOINT_MTZ4_ANGLE_MAX) diapazon=0;
     break;
@@ -279,6 +288,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl
 
 //  count_bit = 2;
   case 82:
+    (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.setpoint_zz_3I0[gruppa];
     if(regUst<SETPOINT_ZZ_3I0_MIN || regUst>SETPOINT_ZZ_3I0_MAX) diapazon=0;
     break;
@@ -393,6 +403,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl
     break;
 
   case 113:
+    (*multer) = 1;
     (*editValue) = &edition_settings.setpoint_zop[gruppa];
     if(regUst<SETPOINT_ZOP_MIN || regUst>SETPOINT_ZOP_MAX) diapazon=0;
     break;
@@ -554,6 +565,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl
 
 //  count_bit = 9;
   case 987:
+    (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.lines[0];
     if(regUst<1 || regUst>8) diapazon=0;
     break;
@@ -561,6 +573,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, int actControl
 //IF ВСТАВКА 988-1003
 
   case 1004:
+    (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.lines[1];
     if(regUst<0 || regUst>8) diapazon=0;
     break;
@@ -912,7 +925,7 @@ int getUSTBigModbusRegister(int adrReg)
   int  offset = adrReg-BEGIN_ADR_REGISTER;
   grupa_ustavok_control(offset, &grupa_ustavok, &adresGruppa);
 
-  ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, CLRACT_CONTROL, &editValue);
+  ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, /*CLRACT_CONTROL,*/ &editValue);
   if(editValue==NULL) return 0;
 
   if(editValue == (uint32_t*)&edition_settings.type_mtz04_2 && (*editValue)!=0) return (*editValue)-2;
@@ -967,7 +980,7 @@ int setUSTBigModbusRegister(int adrReg, int dataReg)
 
   uint32_t *editValue=NULL;
   int  multer = 1;
-  if(!ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, dataReg, CLRACT_CONTROL, &editValue)) return MARKER_ERRORDIAPAZON;
+  if(!ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, dataReg, /*CLRACT_CONTROL,*/ &editValue)) return MARKER_ERRORDIAPAZON;
   if(editValue==NULL) return 0;
 
   return 0;
@@ -997,8 +1010,8 @@ int postUSTBigWriteAction(void)
   extern int upravlSetting;//флаг Setting
 //action после записи
   int beginAdr = ustbigcomponent->operativMarker[0];
-  int endAdr   = ustbigcomponent->operativMarker[1];
   if(beginAdr<0) return 0;//не было записи
+  int endAdr   = ustbigcomponent->operativMarker[1];
   int flag=0;
   int offsetTempWriteArray = superFindTempWriteArrayOffset(BEGIN_ADR_REGISTER);//найти смещение TempWriteArray
   int countAdr = endAdr-beginAdr+1;
@@ -1012,7 +1025,7 @@ int postUSTBigWriteAction(void)
     uint32_t *editValue=NULL;
     int  multer = 1;
     int grupa_offset = grupa_ustavok_control(offset, &grupa_ustavok, &adresGruppa);
-    ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, CLRACT_CONTROL, &editValue);
+    ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, /*CLRACT_CONTROL,*/ &editValue);
     if(editValue==NULL) continue;
 
     flag=1;
@@ -1100,7 +1113,7 @@ int postUSTBigWriteAction(void)
 
 m1:
     grupa_ustavok_control(offset, &grupa_ustavok, &adresGruppa);
-    ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, value*multer, SETACT_CONTROL, &editValue);
+    ustFunc000(-offset +adresGruppa, grupa_ustavok, &multer, value*multer, /*SETACT_CONTROL,*/ &editValue);
   }//for
 
 
@@ -1146,27 +1159,7 @@ m1:
     !((unsigned int)temp1 <= edition_settings.setpoint_r_kom_st_Inom)
   ) return ERROR_VALID2;//ошибка валидации
 
-  //ВАЛИДАЦИЯ УСПЕШНА - УСТАНОВКА
-//  current_settings = edition_settings;//утвердить изменения
-
   if(flag) upravlSetting = 1;//флаг Setting
-//  {
-  //ВАЛИДАЦИЯ УСПЕШНА - УСТАНОВКА
-//     upravlSetting = 1;//флаг Setting
-  /*
-     current_settings_interfaces = edition_settings;//утвердить изменения
-      //Відбулася зміна настройки
-                          _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
-                          restart_timeout_idle_new_settings = true;
-                          type_of_settings_changed |= (1 << SETTINGS_DATA_CHANGED_BIT);
-             if(set_new_settings_from_interface(2)) return 2;//2-USB
-  */
-//    _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
-  //Виставляємо признак, що на екрані треба обновити інформацію
-  //  new_state_keyboard |= (1<<BIT_REWRITE);
-  //fix_change_settings_m(0, 2);//0 - запис уставок 2 - USB
-  //restart_timeout_idle_new_settings = true;
-//  }//if(flag)
 
   return 0;
 }//

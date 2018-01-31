@@ -641,24 +641,12 @@ int superPostWriteAction(void)
     }//for
 
     if(!(upravlSetting>0 || upravlSchematic>0)) return 0;
+    _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
+    restart_timeout_idle_new_settings = true;
     current_settings_interfaces = edition_settings;//утвердить изменения
     if(upravlSetting==1) type_of_settings_changed |= (1 << SETTINGS_DATA_CHANGED_BIT);
-    if(upravlSchematic==1) type_of_settings_changed |= (1 << USER_REGISTRY_CHANGED_BIT);
-    restart_timeout_idle_new_settings = true;
-    if(set_new_settings_from_interface(2))//2-USB
-          return Error_modbus_m(inputPacket[0], // address,
-                                inputPacket[1],//function,
-                                ERROR_ILLEGAL_DATA_VALUE,//error,
-                                outputPacket);//output_data
+    if(upravlSchematic==1) type_of_settings_changed |= (1 << RANGUVANNJA_DATA_CHANGED_BIT);
 
-/*
-   current_settings_interfaces = edition_settings;//утвердить изменения
-    //Відбулася зміна настройки
-                        _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
-                        restart_timeout_idle_new_settings = true;
-                        type_of_settings_changed |= (1 << SETTINGS_DATA_CHANGED_BIT);
-           if(set_new_settings_from_interface(2)) return 2;//2-USB
-*/
   return 0;
 }//superPostWriteAction
 

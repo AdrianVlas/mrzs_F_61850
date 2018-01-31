@@ -28,6 +28,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset);
 unsigned int encoderValidN_BIGACMD(int offsetCMD, int *validCMD, int actControl);
 unsigned int encoderValidN_SMALLACMD(int offsetCMD, int *validCMD);
 int validBazaN_BIGACMD(unsigned short dataReg, int actControl);
+int writeACMDSmallActualDataBit(int offset, int dataBit);
 
 #define CLRACT_CONTROL  0
 
@@ -1032,15 +1033,15 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 //  case 565:
 //    (*outMaska) = RANG_SETTINGS_CHANGED;
 //        (*dvMaska) =
-    /*
-          if ((information_about_restart_counter & (1 << type_interface)) != 0)
-          {
-	            output_array[(BIT_MA_RESET_RESURS_VYMYKACHA - BIT_MA_CURRENT_AF_BASE) >> 4] |=
-              (0x1 << ((BIT_MA_RESET_RESURS_VYMYKACHA - BIT_MA_CURRENT_AF_BASE) & 0xf));
-          }
+  /*
+        if ((information_about_restart_counter & (1 << type_interface)) != 0)
+        {
+            output_array[(BIT_MA_RESET_RESURS_VYMYKACHA - BIT_MA_CURRENT_AF_BASE) >> 4] |=
+            (0x1 << ((BIT_MA_RESET_RESURS_VYMYKACHA - BIT_MA_CURRENT_AF_BASE) & 0xf));
+        }
 
-          restart_counter = 0xff; //Сигнал про очищення ресурсу лічильників з системи захистів
-    */
+        restart_counter = 0xff; //Сигнал про очищення ресурсу лічильників з системи захистів
+  */
 
 //    break;
 //  case 566:
@@ -1129,41 +1130,41 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
   }//switch
   if((*outMaska)!=-1)
   {
-   if(inOffset>=MTZ_CONFIGURATION_BEGIN && inOffset<=MTZ_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=MTZ_CONFIGURATION_BEGIN && inOffset<=MTZ_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=MTZ04_CONFIGURATION_BEGIN && inOffset<=MTZ04_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<MTZ04_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=MTZ04_CONFIGURATION_BEGIN && inOffset<=MTZ04_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<MTZ04_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=ZDZ_CONFIGURATION_BEGIN && inOffset<=ZDZ_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<ZDZ_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=ZDZ_CONFIGURATION_BEGIN && inOffset<=ZDZ_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<ZDZ_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=ZZ_CONFIGURATION_BEGIN && inOffset<=ZZ_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<ZZ_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=ZZ_CONFIGURATION_BEGIN && inOffset<=ZZ_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<ZZ_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=TZNP_CONFIGURATION_BEGIN && inOffset<=TZNP_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<TZNP_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=TZNP_CONFIGURATION_BEGIN && inOffset<=TZNP_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<TZNP_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=ZOP_CONFIGURATION_BEGIN && inOffset<=ZOP_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<ZOP_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=ZOP_CONFIGURATION_BEGIN && inOffset<=ZOP_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<ZOP_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=UMIN_CONFIGURATION_BEGIN && inOffset<=UMIN_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=UMIN_CONFIGURATION_BEGIN && inOffset<=UMIN_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=UMAX_CONFIGURATION_BEGIN && inOffset<=UMAX_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<UMAX_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=UMAX_CONFIGURATION_BEGIN && inOffset<=UMAX_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<UMAX_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=APV_CONFIGURATION_BEGIN && inOffset<=APV_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<APV_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=APV_CONFIGURATION_BEGIN && inOffset<=APV_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<APV_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=UROV_CONFIGURATION_BEGIN && inOffset<=UROV_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<UROV_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=UROV_CONFIGURATION_BEGIN && inOffset<=UROV_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<UROV_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=EL_CONFIGURATION_BEGIN && inOffset<=EL_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<EL_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=EL_CONFIGURATION_BEGIN && inOffset<=EL_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<EL_BIT_CONFIGURATION))) isValid = 0;
 
-   if(inOffset>=ACHR_CHAPV_CONFIGURATION_BEGIN && inOffset<=ACHR_CHAPV_CONFIGURATION_END)
-     if(!(edition_settings.configuration&(1<<ACHR_CHAPV_BIT_CONFIGURATION))) isValid = 0;
+    if(inOffset>=ACHR_CHAPV_CONFIGURATION_BEGIN && inOffset<=ACHR_CHAPV_CONFIGURATION_END)
+      if(!(edition_settings.configuration&(1<<ACHR_CHAPV_BIT_CONFIGURATION))) isValid = 0;
 
   }//if((*outMaska)!=-1)
 
@@ -1247,7 +1248,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
 
 int validN_BIGACMD(unsigned short dataReg)
 {
- return validBazaN_BIGACMD(dataReg, CLRACT_CONTROL);
+  return validBazaN_BIGACMD(dataReg, CLRACT_CONTROL);
 }//validN_BIGACMD(unsigned short dataReg)
 int validBazaN_BIGACMD(unsigned short dataReg, int actControl)
 {
@@ -1464,20 +1465,18 @@ void writeRangN_SMALLModbusRegister(unsigned int *ranguvannja, int countItem, in
 
 int getACMDSmallModbusRegister(int adrReg)
 {
-  extern int globalcntReg;//к-во бит для чтения
-  extern int globalbeginAdrReg;//адрес нач бит
+  extern int globalcntReg;//к-во reg для чтения
+  extern int globalbeginAdrReg;//адрес нач reg
   //получить содержимое регистра
   if(privateACMDSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(acmdsmallcomponent->isActiveActualData)
   {
     int begin = globalbeginAdrReg-BEGIN_ADR_REGISTER;
     if(begin<0) globalcntReg += begin;
-//  qDebug()<<"begin= "<<begin;
 
     int beginOffset = (adrReg-BEGIN_ADR_REGISTER)*16;
-    int endOffset   = (adrReg-BEGIN_ADR_REGISTER +globalcntReg)*16 + beginOffset;
-//  qDebug()<<"beginOffset= "<<beginOffset;
-//  qDebug()<<"endOffset= "<<endOffset;
+    int endOffset   = beginOffset +globalcntReg*16;// + beginOffset;
+
     loadACMDSmallActualDataBit(0, beginOffset, endOffset); //ActualData
   }//if(acmdsmallcomponent->isActiveActualData)
   acmdsmallcomponent->isActiveActualData = 0;
@@ -1489,31 +1488,39 @@ int getACMDSmallModbusBit(int adrBit)
   extern int globalcntBit;//к-во бит для чтения
   extern int globalbeginAdrBit;//адрес нач бит
   //получить содержимое bit
+
   if(privateACMDSmallGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
+
+  int beginOffset = adrBit-BEGIN_ADR_BIT;
   if(acmdsmallcomponent->isActiveActualData)
   {
     int begin = globalbeginAdrBit-BEGIN_ADR_BIT;
     if(begin<0) globalcntBit += begin;
 
-    int beginOffset = adrBit-BEGIN_ADR_BIT;
-    int endOffset   = adrBit-BEGIN_ADR_BIT +globalcntBit;
-//  qDebug()<<"beginOffset= "<<beginOffset;
-//  qDebug()<<"endOffset= "<<endOffset;
+    int endOffset   = beginOffset +globalcntBit;
+
     loadACMDSmallActualDataBit(0, beginOffset, endOffset); //ActualData
   }//if(acmdsmallcomponent->isActiveActualData)
   acmdsmallcomponent->isActiveActualData = 0;
 
-  short tmp   = tempReadArray[(adrBit-BEGIN_ADR_BIT)/16];
-  short maska = 1<<((adrBit-BEGIN_ADR_BIT)%16);
+  short tmp   = tempReadArray[beginOffset/16];
+  short maska = 1<<(beginOffset%16);
   if(tmp&maska) return 1;
   return 0;
 }//getDOUTModbusBit(int adrReg)
-int setACMDSmallModbusRegister(int x, int y)
+int setACMDSmallModbusRegister(int adrReg, int dataReg)
 {
-  UNUSED(x);
-  UNUSED(y);
-  //записать содержимое регистра
-  return MARKER_OUTPERIMETR;
+  if(privateACMDSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
+
+  int beginOffset = (adrReg-BEGIN_ADR_REGISTER)*16;
+  int endOffset   = beginOffset+16;// + beginOffset;
+  for(int offset=beginOffset; offset<endOffset; offset++)
+  {
+    if(!(dataReg & (1<<(offset%16)))) continue;
+    if(writeACMDSmallActualDataBit(offset, 0)!=0) return MARKER_ERRORPERIMETR;
+  }//for
+
+  return 0;
 }//getDOUTModbusRegister(int adrReg)
 int setACMDSmallModbusBit(int adrBit, int dataBit)
 {
@@ -1522,44 +1529,238 @@ int setACMDSmallModbusBit(int adrBit, int dataBit)
 
   superSetOperativMarker(acmdsmallcomponent, adrBit);
   superSetTempWriteArray(dataBit);//записать в буфер
+  if(adrBit!=50567)//Активация конфигурации
+  {
+    if(dataBit==0) return MARKER_ERRORPERIMETR;
+  }//if(adrBit!=50567)
+  else return 0;
+  if(writeACMDSmallActualDataBit(adrBit-BEGIN_ADR_BIT, 0)!=0) return MARKER_ERRORPERIMETR;
 
-  if(dataBit==0) return MARKER_ERRORPERIMETR;
+  return 0;
+}//getDOUTModbusRegister(int adrReg)
 
-  switch(adrBit-BEGIN_ADR_BIT)
+int writeACMDSmallActualDataBit(int inOffset, int dataBit)
+{
+  int actControl = 0;
+  if(inOffset<0)
+  {
+    inOffset = -inOffset;
+    actControl = 1;
+  }//if(offset<0)
+  switch(inOffset)
   {
   case 432://OF
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DF1_IN);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 433://OF
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DF2_IN);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 434://OF
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DF3_IN);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 435://OF
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DF4_IN);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 436://OF
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DF5_IN);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 437://OF
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DF6_IN);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 438://OF
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DF7_IN);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 439://OF
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DF8_IN);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
 
   case 464://DTR
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DT1_SET);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 465://DTR
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DT1_RESET);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 466://DTR
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DT2_SET);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 467://DTR
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DT2_RESET);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 468://DTR
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DT3_SET);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 469://DTR
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DT3_RESET);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 470://DTR
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DT4_SET);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 471://DTR
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_DT4_RESET);
+      mutex_interface = false;
+    }//if(action)
+    return 0;
 
   case 528://
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_VKL_VV); //Вкл.  виключателя
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 529://
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_OTKL_VV); //Викл. виключателя
+      mutex_interface = false;
+    }//if(action)
+    return 0;
 
   case 562://
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_LEDS);//Очищення індикації
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 563://
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_RELES); //Скидання реле
+      mutex_interface = false;
+    }//if(action)
+    return 0;
   case 564://
+    if(actControl&&dataBit)
+    {
+      //Скидання загальних функцій
+      unsigned int type_interface = USB_RECUEST;
+      reset_trigger_function_from_interface |= (1 << type_interface);
+    }//if(action)
+    return 0;
   case 565://
+    if(actControl&&dataBit)
+    {
+      restart_counter = 0xff; //Сигнал про очищення ресурсу лічильників з системи захистів
+    }//if(action)
+    return 0;
 
-  case 567://
+  case 567://Активизация конфигурации
+    if(actControl)
+    {
+      if(dataBit)
+      {
+        //Активація внесекних змін
+        if(set_new_settings_from_interface(2))//2-USB
+        {
+        type_of_settings_changed = 0;
+        _CLEAR_BIT(active_functions, RANG_SETTINGS_CHANGED);
+          return ERROR_VALID3;//ошибка
+        }//if
+      }//if
+      else//деактивация
+      {
+        //Відміна внесекних змін
+        current_settings_interfaces = current_settings;
+      }
+        type_of_settings_changed = 0;
+        _CLEAR_BIT(active_functions, RANG_SETTINGS_CHANGED);
+    }//if(action)
+    return 0;
 
   case 599://
+    if(actControl&&dataBit)
+    {
+      mutex_interface = true;
+      _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV); //Скидання блокування готорності ТУ від захистів
+      mutex_interface = false;
+    }//if(action)
     return 0;
   }//switch
   return MARKER_ERRORPERIMETR;
-}//getDOUTModbusRegister(int adrReg)
+}//writeACMDSmallActualDataBit(int offset)
 
 void preACMDSmallReadAction(void)
 {
@@ -1577,16 +1778,38 @@ int postACMDSmallWriteAction(void)
 {
 //action после записи
   int beginAdr = acmdsmallcomponent->operativMarker[0];
-  int endAdr   = acmdsmallcomponent->operativMarker[1];
   if(beginAdr<0) return 0;//не было записи
+  int endAdr   = acmdsmallcomponent->operativMarker[1];
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
 
-  for(int i=0; i<countAdr; i++) {
-    int bit = encoderN_BIGACMD(beginAdr+i - BEGIN_ADR_BIT); //кодировщик адреса modbus в индекс бита для реле
-    if(bit!=-1) {
-    }//if
-  }//for
+  if(beginAdr>=BEGIN_ADR_BIT)
+  {
+    //работа с битами
+    int offsetTempWriteArray = superFindTempWriteArrayOffset(BEGIN_ADR_BIT);//найти смещение TempWriteArray
+
+    for(int i=0; i<countAdr; i++) {
+      int offset = i+beginAdr-BEGIN_ADR_BIT;
+      uint32_t value = tempWriteArray[offsetTempWriteArray+i];
+      writeACMDSmallActualDataBit(-offset, value);//action
+    }//for
+  }//if(beginAdr>=BEGIN_ADR_BIT)
+  else
+  {
+    //работа с регистрами
+    int offsetTempWriteArray = superFindTempWriteArrayOffset(BEGIN_ADR_REGISTER);//найти смещение TempWriteArray
+    for(int i=0; i<countAdr; i++) {
+      int offset = i+beginAdr-BEGIN_ADR_REGISTER;
+      for(int bit=0; bit<16; bit++)
+      {
+        uint32_t value = tempWriteArray[offsetTempWriteArray+i];
+        int temp = 0;
+        if(value&(1<<bit)) temp = 1;
+        writeACMDSmallActualDataBit(-(offset*16+bit), temp);//action
+      }//for
+    }//for
+  }//else
+
   return 0;
 }//
 

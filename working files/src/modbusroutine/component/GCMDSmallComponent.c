@@ -58,7 +58,7 @@ int getGCMDSmallModbusRegister(int adrReg)
     if(begin<0) globalcntReg += begin;
 
     int beginOffset = (adrReg-BEGIN_ADR_REGISTER)*16;
-    int endOffset   = (adrReg-BEGIN_ADR_REGISTER +globalcntReg)*16 + beginOffset;
+    int endOffset   = beginOffset +globalcntReg*16;// + beginOffset;
 
       loadACMDSmallActualDataBit(1, beginOffset, endOffset); //ActualData GCMD
     }//if(gcmdsmallcomponent->isActiveActualData)
@@ -72,20 +72,21 @@ int getGCMDSmallModbusBit(int adrBit)
   extern int globalbeginAdrBit;//адрес нач бит
   //получить содержимое bit
   if(privateGCMDSmallGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
+
+  int beginOffset = adrBit-BEGIN_ADR_BIT;
   if(gcmdsmallcomponent->isActiveActualData)
     {
       int begin = globalbeginAdrBit-BEGIN_ADR_BIT;
     if(begin<0) globalcntBit += begin;
 
-      int beginOffset = adrBit-BEGIN_ADR_BIT;
-      int endOffset   = adrBit-BEGIN_ADR_BIT +globalcntBit;
+      int endOffset   = beginOffset +globalcntBit;
 
       loadACMDSmallActualDataBit(1, beginOffset, endOffset); //ActualData GCMD
     }//if(gcmdsmallcomponent->isActiveActualData)
   gcmdsmallcomponent->isActiveActualData = 0;
 
-  short tmp   = tempReadArray[(adrBit-BEGIN_ADR_BIT)/16];
-  short maska = 1<<((adrBit-BEGIN_ADR_BIT)%16);
+  short tmp   = tempReadArray[beginOffset/16];
+  short maska = 1<<(beginOffset%16);
   if(tmp&maska) return 1;
   return 0;
 }//getGCMDSmallModbusBit(int adrBit)

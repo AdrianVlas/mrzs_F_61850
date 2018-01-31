@@ -11,8 +11,8 @@
 //конечный bit в карте памяти
 #define END_ADR_BIT 55416
 
-#define CLRACT_CONTROL 0
-#define SETACT_CONTROL 1
+//#define CLRACT_CONTROL 0
+//#define SETACT_CONTROL 1
 #define CLRVALID_DATA  0
 
 int privateUPRBigGetReg2(int adrReg);
@@ -28,9 +28,9 @@ void preUPRBigReadAction(void);//action до чтения
 void preUPRBigWriteAction(void);//action до записи
 int  postUPRBigWriteAction(void);//action после записи
 
-int  uprFunc000(int inOffset, uint32_t *uprMaska, int validData, int actControl, uint32_t **editControl);
+int  uprFunc000(int inOffset, uint32_t *uprMaska, int validData, /*int actControl,*/ uint32_t **editControl);
 void uprFuncRead000(int inOffset, uint32_t *uprMaska, uint32_t **editControl);
-int  uprFuncValidWrite000(int inOffset, uint32_t *uprMaska, int actControl, uint32_t **editControl);
+int  uprFuncValidWrite000(int inOffset, uint32_t *uprMaska, /*int actControl,*/ uint32_t **editControl);
 int  uprFuncValid000(int inOffset, int validData);
 int isValidCONFCondition(unsigned int confControl, unsigned int confMaska, uint32_t uprMaska, int validData);
 int isValidEXTRACondition(unsigned int extraControl, unsigned int extraMaska, uint32_t uprMaska, int validData);
@@ -42,22 +42,28 @@ COMPONENT_OBJ *uprbigcomponent;
 
 void uprFuncRead000(int inOffset, uint32_t *uprMaska, uint32_t **editControl)
 {
-  uprFunc000(inOffset, uprMaska, CLRVALID_DATA, CLRACT_CONTROL, editControl);
+  uprFunc000(inOffset, uprMaska, CLRVALID_DATA, /*CLRACT_CONTROL,*/ editControl);
 }//uprFuncRead000(int inOffset, uint32_t *uprMaska)
-int uprFuncValidWrite000(int inOffset, uint32_t *uprMaska, int actControl, uint32_t **editControl)
+int uprFuncValidWrite000(int inOffset, uint32_t *uprMaska, /*int actControl,*/ uint32_t **editControl)
 {
-  return uprFunc000(inOffset, uprMaska, CLRVALID_DATA, actControl, editControl);
+  return uprFunc000(inOffset, uprMaska, CLRVALID_DATA, /*actControl,*/ editControl);
 }//uprFuncRead000(int inOffset, uint32_t *uprMaska)
 int uprFuncValid000(int inOffset, int validData)
 {
   uint32_t uprMaska=0;
   uint32_t *editControl=NULL;
-  return uprFunc000(inOffset, &uprMaska, validData, CLRACT_CONTROL, &editControl);
+  return uprFunc000(inOffset, &uprMaska, validData, /*CLRACT_CONTROL,*/ &editControl);
 }//uprFuncRead000(int inOffset, uint32_t *uprMaska)
 
-int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, int actControl, uint32_t **editControl)
+int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, /*int actControl,*/ uint32_t **editControl)
 {
   int isValid = 1;
+  int actControl = 0;
+  if(inOffset<0)
+  {
+   inOffset = -inOffset;
+   actControl = 1;
+  }//if(inOffset<0)
   (*uprMaska) = 0xFFFFFFFF;
   switch(inOffset)
   {
@@ -919,8 +925,8 @@ int postUPRBigWriteAction(void)
   extern int upravlSetting;//флаг Setting
 //action после записи
   int beginAdr = uprbigcomponent->operativMarker[0];
-  int endAdr   = uprbigcomponent->operativMarker[1];
   if(beginAdr<0) return 0;//не было записи
+  int endAdr   = uprbigcomponent->operativMarker[1];
   int flag=0;
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
@@ -933,7 +939,7 @@ int postUPRBigWriteAction(void)
       uint32_t uprMaska=0;
       uint32_t *editControl=NULL;
       int offset = i+beginAdr-BEGIN_ADR_BIT;
-      uprFuncValidWrite000(offset, &uprMaska, CLRACT_CONTROL, &editControl);
+      uprFuncValidWrite000(offset, &uprMaska, /*CLRACT_CONTROL,*/ &editControl);
       if(editControl==NULL) continue;
       flag=1;
       uint32_t value = tempWriteArray[offsetTempWriteArray+i];
@@ -942,13 +948,11 @@ int postUPRBigWriteAction(void)
       (*editControl) &= ~(1<<uprMaska);
       (*editControl) |= (value<<uprMaska);
       //actControl
-      if(!uprFuncValidWrite000(offset, &uprMaska, SETACT_CONTROL, &editControl))
+      if(!uprFuncValidWrite000(-offset, &uprMaska, /*SETACT_CONTROL,*/ &editControl))
       {
         return ERROR_VALID3;//ошибка валидации
       }//if
     }//for
-    //current_settings = edition_settings;//утвердить изменения
-    //   upravlSetting = 1;//флаг Setting
   }//if(beginAdr>=BEGIN_ADR_BIT)
   else
   {
@@ -961,7 +965,7 @@ int postUPRBigWriteAction(void)
       {
         uint32_t uprMaska=0;
         uint32_t *editControl=NULL;
-        uprFuncValidWrite000(offset*16+bit, &uprMaska, CLRACT_CONTROL, &editControl);
+        uprFuncValidWrite000(offset*16+bit, &uprMaska, /*CLRACT_CONTROL,*/ &editControl);
         if(editControl==NULL) continue;
         flag=1;
         uint32_t value = tempWriteArray[offsetTempWriteArray+i];
@@ -971,25 +975,15 @@ int postUPRBigWriteAction(void)
         (*editControl) &= ~(1<<uprMaska);
         (*editControl) |= (temp<<uprMaska);
 
-        if(!uprFuncValidWrite000(offset*16+bit, &uprMaska, SETACT_CONTROL, &editControl))
+        if(!uprFuncValidWrite000(-offset*16-bit, &uprMaska, /*SETACT_CONTROL,*/ &editControl))
         {
           return ERROR_VALID3;//ошибка валидации
         }//if
       }//for
     }//for
-    //ВАЛИДАЦИЯ УСПЕШНА - УСТАНОВКА
-//    current_settings = edition_settings;//утвердить изменения
-//     upravlSetting = 1;//флаг Setting
   }//else
   if(flag) upravlSetting = 1;//флаг Setting
-//  {
-  //Відбулася зміна настройки
-//    _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
-  //Виставляємо признак, що на екрані треба обновити інформацію
-  //  new_state_keyboard |= (1<<BIT_REWRITE);
-  //fix_change_settings_m(0, 2);//0 - запис уставок 2 - USB
-  //restart_timeout_idle_new_settings = true;
-//  }//if(flag)
+
   return 0;
 }//
 

@@ -122,8 +122,8 @@ void preYustBigWriteAction(void) {
 int postYustBigWriteAction(void) {
 //action после записи
   int beginAdr = yustbigcomponent->operativMarker[0];
-  int endAdr   = yustbigcomponent->operativMarker[1];
   if(beginAdr<0) return 0;//не было записи
+  int endAdr   = yustbigcomponent->operativMarker[1];
   int offsetTempWriteArray = superFindTempWriteArrayOffset(BEGIN_ADR_REGISTER);//найти смещение TempWriteArray
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;

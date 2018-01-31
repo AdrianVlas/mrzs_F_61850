@@ -97,9 +97,8 @@ int postRPRBigWriteAction(void)
 extern int upravlSetting;//флаг Setting
 //action после записи
   int beginAdr = rprbigcomponent->operativMarker[0];
-  int endAdr   = rprbigcomponent->operativMarker[1];
   if(beginAdr<0) return 0;//не было записи
-  //int flag=0;
+  int endAdr   = rprbigcomponent->operativMarker[1];
   int offsetTempWriteArray = superFindTempWriteArrayOffset(BEGIN_ADR_REGISTER);//найти смещение TempWriteArray
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
@@ -111,15 +110,6 @@ extern int upravlSetting;//флаг Setting
   //ВАЛИДАЦИЯ УСПЕШНА - УСТАНОВКА
      upravlSetting = 2;//флаг Setting
      type_of_settings_changed |= (1 << USER_REGISTRY_CHANGED_BIT);
-
-//  current_settings = edition_settings;//утвердить изменения
-
-      //Відбулася зміна настройки
-//      _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
-      //Виставляємо признак, що на екрані треба обновити інформацію
-  //    new_state_keyboard |= (1<<BIT_REWRITE);
-    //  fix_change_settings_m(0, 2);//0 - запис уставок 2 - USB
-      //restart_timeout_idle_new_settings = true;
 
   return 0;
 }//
