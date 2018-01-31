@@ -319,6 +319,7 @@
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\..\working files\inc</state>
           <state>$PROJ_DIR$\..\..\working files\usb</state>
+          <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
           <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
           <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
           <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -1215,6 +1216,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -1477,6 +1479,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -1739,6 +1742,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -2004,6 +2008,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -2266,6 +2271,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -2561,6 +2567,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -2848,6 +2855,7 @@
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\working files\inc</state>
                     <state>$PROJ_DIR$\..\..\working files\usb</state>
+                    <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                     <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                     <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -3135,6 +3143,7 @@
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
+                  <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -3400,6 +3409,7 @@
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
+                  <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -3690,6 +3700,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -3952,6 +3963,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -4214,6 +4226,7 @@
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
+                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -4623,6 +4636,120 @@
       </group>
       <group>
         <name>interfaces</name>
+        <group>
+          <name>modbusroutine</name>
+          <group>
+            <name>component</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ACMDSmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\AISmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ANDBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTSmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DTRBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVSmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GCMDSmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\IUSmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\KEYBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MFTBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\NOTBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ORBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PFBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PKVBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\REGBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRSmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDIBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDISmallComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\UPRBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\USTBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\VVBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\XORBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\YustBigComponent.c</name>
+            </file>
+          </group>
+          <group>
+            <name>inc</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentdef.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentenum.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\prototyps.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_external_m.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_global_m.h</name>
+            </file>
+          </group>
+          <file>
+            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\start_settings_m.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\supervisor.c</name>
+          </file>
+        </group>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\interfaces.c</name>
         </file>
@@ -4926,6 +5053,7 @@
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
+                  <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -5224,6 +5352,7 @@
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
+                  <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -5487,6 +5616,7 @@
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
+                  <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -5749,6 +5879,7 @@
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
+                  <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
@@ -6011,6 +6142,7 @@
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
+                  <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>

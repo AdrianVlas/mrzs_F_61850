@@ -418,6 +418,7 @@ void global_vareiables_installation(void)
     set_array_rang[i] = 0;
   }
   password_ustuvannja = 0;
+  global_component_installation();  
 }
 /**************************************/
 

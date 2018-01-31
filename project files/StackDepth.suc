@@ -39,3 +39,32 @@ call graph root [Interrupt]: NMI_Handler, HardFault_Handler, MemManage_Handler, 
 call graph root [System]: SystemInit;
 
 exclude USBD_USR_DeviceConnected, USBD_USR_DeviceDisconnected;
+
+//²ãîðÿ ôóíêö³¿
+exclude superPreWriteAction, superPostWriteAction, superWriterRegister, superWriterBit, superPreReadAction, superReaderRegister, superReaderBit, 
+        getACMDSmallModbusBit, getACMDSmallModbusRegister, postACMDSmallWriteAction, preACMDSmallReadAction, preACMDSmallWriteAction, setACMDSmallModbusBit, setACMDSmallModbusRegister,
+        getAISmallModbusBit, getAISmallModbusRegister, postAISmallWriteAction, preAISmallReadAction, preAISmallWriteAction, setAISmallModbusBit, setAISmallModbusRegister,
+        getANDBigModbusBit, getANDBigModbusRegister, postANDBigWriteAction, preANDBigReadAction, preANDBigWriteAction, setANDBigModbusBit, setANDBigModbusRegister,
+        getDOUTSmallModbusBit, getDOUTSmallModbusRegister, postDOUTSmallWriteAction, preDOUTSmallReadAction, preDOUTSmallWriteAction, setDOUTSmallModbusBit, setDOUTSmallModbusRegister, getDOUTBigModbusBit, getDOUTBigModbusRegister, postDOUTBigWriteAction, preDOUTBigReadAction, preDOUTBigWriteAction, setDOUTBigModbusBit, setDOUTBigModbusRegister,
+        getDTRBigModbusBit, getDTRBigModbusRegister, postDTRBigWriteAction, preDTRBigReadAction, preDTRBigWriteAction, setDTRBigModbusBit, setDTRBigModbusRegister,
+        getDVSmallModbusBit, getDVSmallModbusRegister, postDVSmallWriteAction, preDVSmallReadAction, preDVSmallWriteAction, setDVSmallModbusBit, setDVSmallModbusRegister, getDVBigModbusBit, getDVBigModbusRegister, postDVBigWriteAction, preDVBigReadAction, preDVBigWriteAction, setDVBigModbusBit, setDVBigModbusRegister,
+        postGCMDSmallWriteAction, preGCMDSmallReadAction, preGCMDSmallWriteAction, setGCMDSmallModbusBit, setGCMDSmallModbusRegister, getGCMDSmallModbusBit, getGCMDSmallModbusRegister,
+        getIUSmallModbusBit, getIUSmallModbusRegister, postIUSmallWriteAction, preIUSmallReadAction, preIUSmallWriteAction, setIUSmallModbusBit, setIUSmallModbusRegister,
+        getKEYBigModbusBit, getKEYBigModbusRegister, postKEYBigWriteAction, preKEYBigReadAction, preKEYBigWriteAction, setKEYBigModbusBit, setKEYBigModbusRegister,
+        getMFTBigModbusBit, getMFTBigModbusRegister, postMFTBigWriteAction, preMFTBigReadAction, preMFTBigWriteAction, setMFTBigModbusBit, setMFTBigModbusRegister,
+        getNOTBigModbusBit, getNOTBigModbusRegister, postNOTBigWriteAction, preNOTBigReadAction, preNOTBigWriteAction, setNOTBigModbusBit, setNOTBigModbusRegister,
+        getORBigModbusBit, getORBigModbusRegister, postORBigWriteAction, preORBigReadAction, preORBigWriteAction, setORBigModbusBit, setORBigModbusRegister,
+        getPFBigModbusBit, getPFBigModbusRegister, postPFBigWriteAction, prePFBigReadAction, prePFBigWriteAction, setPFBigModbusBit, setPFBigModbusRegister,
+        getPKVBigModbusBit, getPKVBigModbusRegister, postPKVBigWriteAction, prePKVBigReadAction, prePKVBigWriteAction, setPKVBigModbusBit, setPKVBigModbusRegister,
+        getRAISmallModbusBit, getRAISmallModbusRegister, postRAISmallWriteAction, preRAISmallReadAction, preRAISmallWriteAction, setRAISmallModbusBit, setRAISmallModbusRegister,
+        getREGBigModbusBit, getREGBigModbusRegister, postREGBigWriteAction, preREGBigReadAction, preREGBigWriteAction, setREGBigModbusBit, setREGBigModbusRegister,
+        getRPRBigModbusBit, postRPRBigWriteAction, preRPRBigReadAction, preRPRBigWriteAction, setRPRBigModbusBit,
+        getRPRBigModbusBit, getRPRBigModbusRegister, postRPRBigWriteAction, preRPRBigReadAction, preRPRBigWriteAction, setRPRBigModbusBit, setRPRBigModbusRegister,
+        getRPRSmallModbusBit, getRPRSmallModbusRegister, postRPRSmallWriteAction, preRPRSmallReadAction, preRPRSmallWriteAction, setRPRSmallModbusBit, setRPRSmallModbusRegister,
+        getSDIBigModbusBit, getSDIBigModbusRegister, postSDIBigWriteAction, preSDIBigReadAction, preSDIBigWriteAction, setSDIBigModbusBit, setSDIBigModbusRegister,
+        getSDISmallModbusBit, getSDISmallModbusRegister, postSDISmallWriteAction, preSDISmallReadAction, preSDISmallWriteAction, setSDISmallModbusBit, setSDISmallModbusRegister,
+        getUPRBigModbusBit, getUPRBigModbusRegister, postUPRBigWriteAction, preUPRBigReadAction, preUPRBigWriteAction, setUPRBigModbusBit, setUPRBigModbusRegister,
+        getUSTBigModbusBit, getUSTBigModbusRegister, postUSTBigWriteAction, preUSTBigReadAction, preUSTBigWriteAction, setUSTBigModbusBit, setUSTBigModbusRegister,
+        getVVBigModbusBit, getVVBigModbusRegister, postVVBigWriteAction, preVVBigReadAction, preVVBigWriteAction, setVVBigModbusBit, setVVBigModbusRegister,
+        getXORBigModbusBit, getXORBigModbusRegister, postXORBigWriteAction, preXORBigReadAction, preXORBigWriteAction, setXORBigModbusBit, setXORBigModbusRegister,
+        getYustBigModbusBit, getYustBigModbusRegister, postYustBigWriteAction, preYustBigReadAction, preYustBigWriteAction, setYustBigModbusBit, setYustBigModbusRegister;

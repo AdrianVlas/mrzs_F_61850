@@ -346,3 +346,5 @@ extern void EXITI_POWER_IRQHandler(void);
 extern void setpoints_selecting(unsigned int*, unsigned int);
 
 extern int str_to_int_DATE_Mmm(void);
+
+extern void inputPacketParserUSB(void);

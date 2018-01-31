@@ -3,6 +3,7 @@
 #include "libraries.h"
 #include "variables_global.h"
 #include "functions_global.h"
+#include "variables_global_m.h"
 
 /*******************************************************************************/
 //Робота з Wotchdog
