@@ -1715,7 +1715,7 @@ void calc_angle(void)
       }
     }
   
-    if (measurement_low[index_m] >= PORIG_CHUTLYVOSTI_VOLTAGE)
+    if (measurement_low[index_m] >= PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE)
     {
       base_index_for_angle_tmp = index;
       break; //Вихід із циклу while
@@ -1750,43 +1750,43 @@ void calc_angle(void)
           {
           case FULL_ORT_Ua:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UA;
               break;
             }
           case FULL_ORT_Ub:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UB;
               break;
             }
           case FULL_ORT_Uc:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UC;
               break;
             }
           case FULL_ORT_Uab:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UAB;
               break;
             }
           case FULL_ORT_Ubc:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UBC;
               break;
             }
           case FULL_ORT_Uca:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UCA;
               break;
             }
           case FULL_ORT_3U0:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_3U0;
               break;
             }
