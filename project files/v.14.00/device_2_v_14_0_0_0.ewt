@@ -1493,9 +1493,12 @@
             </group>
             <group>
                 <name>general</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_global.h</name>
-                </file>
+                <group>
+                    <name>a.b.00.d</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.b.00.d\const_global.h</name>
+                    </file>
+                </group>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_septoints_interval.h</name>
                 </file>
