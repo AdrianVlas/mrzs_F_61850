@@ -10,7 +10,10 @@
 #define OFFSET_DD32_DD38                0x1000000
 #define OFFSET_DD39_DD40_DD47           0x1400000
 #define OFFSET_DD31_DD34_DD35_DD37      0x1800000
+
+#if ZBIRKA_VERSII_PZ != 1
 #define OFFSET_DD28                     0x1C00000
+#endif
 
 
 #endif

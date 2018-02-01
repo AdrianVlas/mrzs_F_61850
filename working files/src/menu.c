@@ -14886,9 +14886,11 @@ void main_manu_function(void)
           
                   //Виділяємо, який біт треба міняти
                   if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
+#if ZBIRKA_VERSII_PZ != 1
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD3_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD3_STATE_BIT);
+#endif
                   else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ1_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
                   else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ2_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
                   else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ3_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
@@ -16685,9 +16687,11 @@ void main_manu_function(void)
           
                   //Виділяємо, який біт треба міняти
                   if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
+#if ZBIRKA_VERSII_PZ != 1
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD3_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD3_STATE_BIT);
+#endif
                   else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ1_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
                   else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ2_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
                   else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ3_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));

@@ -224,6 +224,10 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, /*int actControl
   case 103:
     (*uprMaska)   = CTR_ZDZ_STARTED_FROM_UMIN2_BIT;
     break;
+
+//123456
+#if ZBIRKA_VERSII_PZ != 1    
+
   case 104:
     (*uprMaska)   = CTR_ZDZ_OVD1_STATE_BIT;
     break;
@@ -234,6 +238,11 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, /*int actControl
   case ZDZ_CONFIGURATION_END:
     (*uprMaska)   = CTR_ZDZ_OVD1_STATE_BIT;
     break;
+
+//123456
+#else
+#define ZDZ_CONFIGURATION_END 106
+#endif
 
 //  count_bit = 2;
   case 112:

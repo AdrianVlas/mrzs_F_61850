@@ -11053,9 +11053,11 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
           case (253 + NUMBER_ANALOG_CANALES):
           case (254 + NUMBER_ANALOG_CANALES):
           case (255 + NUMBER_ANALOG_CANALES):
+#if ZBIRKA_VERSII_PZ != 1
           case (256 + NUMBER_ANALOG_CANALES):
           case (257 + NUMBER_ANALOG_CANALES):
           case (258 + NUMBER_ANALOG_CANALES):
+#endif
             {
               if (length <= 19)
               {
@@ -11858,9 +11860,11 @@ inline unsigned int Get_data_file(unsigned char* input_data, unsigned char* outp
           case 253:
           case 254:
           case 255:
+#if ZBIRKA_VERSII_PZ != 1
           case 256:
           case 257:
           case 258:
+#endif
             {
               if (length <= 19)
               {

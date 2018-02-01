@@ -450,7 +450,9 @@ void start_settings_peripherals(void)
   /**********************/
   FSMC_SRAM_Init();
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = 0;
+#if ZBIRKA_VERSII_PZ != 1
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
+#endif
   /**********************/
 
   /**********************/

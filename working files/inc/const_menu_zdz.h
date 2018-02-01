@@ -38,9 +38,11 @@ enum _index_ml_ctrl_zdz
 {
   _CTR_ZDZ_PART_I = 0, 
   CTR_ZDZ_STATE_BIT = _CTR_ZDZ_PART_I,
+#if ZBIRKA_VERSII_PZ != 1
   CTR_ZDZ_OVD1_STATE_BIT,
   CTR_ZDZ_OVD2_STATE_BIT,
   CTR_ZDZ_OVD3_STATE_BIT,
+#endif
   
   _CTR_ZDZ_PART_II,
   CTR_ZDZ_CTRL_TYPE = _CTR_ZDZ_PART_II,
@@ -57,6 +59,8 @@ enum _index_ml_ctrl_zdz
   MAX_ROW_FOR_CONTROL_ZDZ = _CTR_ZDZ_NEXT_BIT
 };
 
+#if ZBIRKA_VERSII_PZ != 1
+
 #define CTR_ZDZ_MASKA                 (                                                                                           \
                                        MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT)                                                         | \
                                        MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT)                                                    | \
@@ -69,5 +73,18 @@ enum _index_ml_ctrl_zdz
                                        MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))   | \
                                        MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))     \
                                       )
+#else
+
+#define CTR_ZDZ_MASKA                 (                                                                                           \
+                                       MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT)                                                         | \
+                                       MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ1_BIT  - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))   | \
+                                       MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ2_BIT  - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))   | \
+                                       MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ3_BIT  - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))   | \
+                                       MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ4_BIT  - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))   | \
+                                       MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))   | \
+                                       MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))     \
+                                      )
+
+#endif
 
 #endif

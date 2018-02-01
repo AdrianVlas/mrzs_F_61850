@@ -3011,16 +3011,19 @@ inline void mtz_handler(unsigned int *p_active_functions, unsigned int number_gr
 /*****************************************************/
 inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
-  static uint32_t test;
-  static uint32_t swiched_on_OVD;
-  
   
   uint32_t control_zdz_tmp = current_settings_prt.control_zdz;
+
+#if ZBIRKA_VERSII_PZ != 1
+
+  static uint32_t test;
+  static uint32_t swiched_on_OVD;
+
   uint32_t swiched_on_OVD_tmp = (control_zdz_tmp & ((1 << CTR_ZDZ_OVD1_STATE_BIT) | (1 << CTR_ZDZ_OVD2_STATE_BIT) | (1 << CTR_ZDZ_OVD3_STATE_BIT))) >> CTR_ZDZ_OVD1_STATE_BIT;
 
   uint32_t new_OVD = (swiched_on_OVD ^ swiched_on_OVD_tmp) & swiched_on_OVD_tmp;
   swiched_on_OVD = swiched_on_OVD_tmp;
-  
+
   /***
   Перевірка, чи не вимкнутий зараз є канал по якому не проходи тест ОВД
   ***/
@@ -3139,11 +3142,13 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
          )   
         )
   {
-    //Переходимо на наступний к4анал
+    //Переходимо на наступний канал
     test = (test << 1) & 0x7;
   }
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = test << 13;
   /***/
+
+#endif  
 
   uint32_t logic_zdz_0 = 0;
 
@@ -3159,6 +3164,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   else
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_DV);
 
+#if ZBIRKA_VERSII_PZ != 1
   _AND3(logic_zdz_0, 2, light, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
   //"Св.ЗДЗ від ОВД1"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 4))
@@ -3181,6 +3187,9 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD3);
 
   _OR4(logic_zdz_0, 3, logic_zdz_0, 4, logic_zdz_0, 5, logic_zdz_0, 6, logic_zdz_0, 7);
+#else
+  if (_GET_OUTPUT_STATE(logic_zdz_0, 3)) _SET_STATE(logic_zdz_0, 7);
+#endif
   
   uint32_t logic_zdz_rez = 0;
   if (current_settings_prt.ctrl_zdz_type == ZDZ_CTRL_NONE)
@@ -10220,6 +10229,7 @@ inline void main_protection(void)
     }
     else
     {
+#if ZBIRKA_VERSII_PZ != 1
       //Вимикаємо можливий режим тестування оптоканалу
       _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
       if (zdz_ovd_diagnostyka)
@@ -10231,6 +10241,7 @@ inline void main_protection(void)
         zdz_ovd_diagnostyka = 0;
       }
       delta_time_test = PERIOD_ZDZ_TEST;
+#endif
       
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
       const unsigned int maska_zdz_signals[N_BIG] = 
