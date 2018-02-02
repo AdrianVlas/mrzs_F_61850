@@ -9756,6 +9756,19 @@ inline void main_protection(void)
   /**************************/
   //Вибір групи уставок
   /**************************/
+  for (size_t i = 0; i < NUMBER_GROUP_USTAVOK; i++)
+  {
+    if (active_inputs_grupa_ustavok & (1 << i)) 
+    {
+      _CLEAR_BIT(active_functions, RANG_INVERS_DV_GRUPA_USTAVOK);
+      break;
+    }
+    else
+    {
+      if (i == (NUMBER_GROUP_USTAVOK - 1)) _SET_BIT(active_functions, RANG_INVERS_DV_GRUPA_USTAVOK);
+    }
+  }
+  
   if (count_number_set_bit(&active_inputs_grupa_ustavok, NUMBER_GROUP_USTAVOK) > 1)
     _SET_BIT(set_diagnostyka, ERROR_SELECT_GRUPY_USRAVOK);
   else
@@ -11377,11 +11390,7 @@ void setpoints_selecting(unsigned int *p_active_functions, unsigned int act_inp_
     grupa_ustavok = 1 << (current_settings_prt.grupa_ustavok - 1);
   }
   
-  _OR4_INVERTOR(act_inp_gr_ustavok, 0, act_inp_gr_ustavok, 1, act_inp_gr_ustavok, 2, act_inp_gr_ustavok, 3, act_inp_gr_ustavok, 4);
-  if (_GET_OUTPUT_STATE(act_inp_gr_ustavok, 4)) 
-    _SET_BIT(p_active_functions, RANG_INVERS_DV_GRUPA_USTAVOK);
-  else
-    _CLEAR_BIT(p_active_functions, RANG_INVERS_DV_GRUPA_USTAVOK);
+  if (_CHECK_SET_BIT(p_active_functions, RANG_INVERS_DV_GRUPA_USTAVOK)) _SET_STATE(act_inp_gr_ustavok, 4);
   
   _AND2(grupa_ustavok, 0, act_inp_gr_ustavok, 4, grupa_ustavok, 4);
   _AND2(grupa_ustavok, 1, act_inp_gr_ustavok, 4, grupa_ustavok, 5);
