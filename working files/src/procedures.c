@@ -706,6 +706,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Виводим ЗЗ
       target_label->control_zz &= (unsigned int)(~(CTR_ZZ1_3I0_STATE | CTR_ZZ1_3U0_STATE | CTR_ZZ1_NZZ_STATE));
    
+      //Вимикаємо контроль ЗДЗ за струмом 3I0
+      int32_t ctrl_zdz_type_tmp = target_label->ctrl_zdz_type;
+      if (
+          (ctrl_zdz_type_tmp == ZDZ_CTRL_3I0)
+         )
+        target_label->ctrl_zdz_type = ZDZ_CTRL_NONE;
+
       //Виводим захисти 3I0, 3U0 і НЗЗ з УРОВ
       target_label->control_urov &= (unsigned int)(
                                                    ~(
@@ -1443,7 +1450,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Виводим ступені Umin
       target_label->control_Umin &= (unsigned int)(~(CTR_UMIN1 | CTR_UMIN2));
    
-      //Вимикаємо контроль ЗДЗ за струмом
+      //Вимикаємо контроль ЗДЗ за напругою
       int32_t ctrl_zdz_type_tmp = target_label->ctrl_zdz_type;
       if (
           (ctrl_zdz_type_tmp == ZDZ_CTRL_U      ) ||
@@ -1590,7 +1597,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Виводим ступені Umax
       target_label->control_Umax &= (unsigned int)(~(CTR_UMAX1 | CTR_UMAX2));
 
-      //Виводим ступені Umin з УРОВ
+      //Виводим ступені Umax з УРОВ
       target_label->control_urov &= (unsigned int)(
                                                    ~(
                                                      MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX1) |

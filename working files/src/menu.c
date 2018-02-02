@@ -14878,6 +14878,13 @@ void main_manu_function(void)
                           (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
                          )   
                         )
+                        ||  
+                        (
+                         ((current_settings.configuration & (1<<ZZ_BIT_CONFIGURATION)) == 0) &&
+                         (
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_3I0)
+                         )   
+                        )
                        ); 
                 }
                 else
@@ -16679,6 +16686,13 @@ void main_manu_function(void)
                           (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
                          )   
                         )
+                        ||  
+                        (
+                         ((current_settings.configuration & (1<<ZZ_BIT_CONFIGURATION)) == 0) &&
+                         (
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_3I0)
+                         )   
+                        )
                        ); 
                 }
                 else
@@ -18149,11 +18163,13 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_INPUT_13:
     case EKRAN_RANGUVANNJA_INPUT_14:
     case EKRAN_RANGUVANNJA_INPUT_15:
+#if ZBIRKA_VERSII_PZ != 1
     case EKRAN_RANGUVANNJA_INPUT_16:
     case EKRAN_RANGUVANNJA_INPUT_17:
     case EKRAN_RANGUVANNJA_INPUT_18:
     case EKRAN_RANGUVANNJA_INPUT_19:
     case EKRAN_RANGUVANNJA_INPUT_20:
+#endif
     case EKRAN_RANGUVANNJA_OUTPUT_1:
     case EKRAN_RANGUVANNJA_OUTPUT_2:
     case EKRAN_RANGUVANNJA_OUTPUT_3:
@@ -18295,14 +18311,14 @@ void main_manu_function(void)
           {
             if(
                ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) ||
-               ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+               ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
               )   
             {
               int max_row_ranguvannja;
               
               if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                 max_row_ranguvannja = MAX_ROW_RANGUVANNJA_BUTTON;
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 max_row_ranguvannja = MAX_ROW_RANGUVANNJA_INPUT;
 
               if(current_ekran.index_position >= max_row_ranguvannja) current_ekran.index_position = 0;
@@ -18315,7 +18331,7 @@ void main_manu_function(void)
                   temp_state[1] = current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + 1];
                   temp_state[2] = current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + 2];
                 }
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 {
                   temp_state[0] = current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ];
                   temp_state[1] = current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1];
@@ -18402,7 +18418,7 @@ void main_manu_function(void)
               //Формуємо екран відображення зранжованих функцій
               if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                 make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON);
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT);
             }
             else if(
@@ -18895,7 +18911,7 @@ void main_manu_function(void)
               if(current_ekran.edition == 0)
               {
                 //Копіюємо ранжування у структуру для редагування
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 {
                   for (unsigned int i = 0; i < N_SMALL; i++)
                   {
@@ -19078,7 +19094,7 @@ void main_manu_function(void)
               else if (current_ekran.edition == 1)
               {
                 //Перевіряємо чи якісь зміни відбулися
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 {
                   if (
                       (edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ] == current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ]) &&
@@ -19400,7 +19416,7 @@ void main_manu_function(void)
                 //Попередньо виставляємо повідомлення, що дані не достовірні
                 current_ekran.edition = 3;
                 //Обновляємо значення
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 {
                   unsigned int* point = edition_settings.ranguvannja_inputs;
                   if (count_number_set_bit(
@@ -19843,14 +19859,14 @@ void main_manu_function(void)
               //Натиснута кнопка UP
               if(
                  ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) ||
-                 ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                 ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 )
               {
                 int max_row_ranguvannja;
                 
                 if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                   max_row_ranguvannja = MAX_ROW_RANGUVANNJA_BUTTON;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                   max_row_ranguvannja = MAX_ROW_RANGUVANNJA_INPUT;
 
                 if(current_ekran.edition == 0)
@@ -19864,7 +19880,7 @@ void main_manu_function(void)
                       temp_state[i] = current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i];
                     }
                   }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                   {
                     for (unsigned int i = 0; i < N_SMALL; i++)
                     {
@@ -19957,7 +19973,7 @@ void main_manu_function(void)
                 //Формуємо екран відображення зранжованих функцій
                 if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                   make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON);
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                   make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT);
               }
               else if(
@@ -20502,14 +20518,14 @@ void main_manu_function(void)
               //Натиснута кнопка DOWN
               if(
                  ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) ||
-                 ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                 ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 )   
               {
                 int max_row_ranguvannja;
                 
                 if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                   max_row_ranguvannja = MAX_ROW_RANGUVANNJA_BUTTON;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                   max_row_ranguvannja = MAX_ROW_RANGUVANNJA_INPUT;
 
                 if(current_ekran.edition == 0)
@@ -20523,7 +20539,7 @@ void main_manu_function(void)
                       temp_state[i] = current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i];
                     }
                   }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                   {
                     for (unsigned int i = 0; i < N_SMALL; i++)
                     {
@@ -20616,7 +20632,7 @@ void main_manu_function(void)
                 //Формуємо екран відображення зранжованих функцій
                 if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                   make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON);
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                   make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT);
               }
               else if(
@@ -21173,7 +21189,7 @@ void main_manu_function(void)
                 //Формуємо екран відображення зранжованих функцій
                 make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON);
               }
-              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_20))
+              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
               {
                 unsigned int offset, shift;
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32

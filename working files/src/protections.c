@@ -1458,8 +1458,11 @@ inline void input_scan(void)
     "немає сигналу" - відповідає скинутому     біту (0)
   -----------------------------
   */
-  state_inputs_into_pin |=  ( _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36)       & 0xffff) | 
-                           (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) &    0xf) << 16);
+  state_inputs_into_pin |=  ( _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36)       & 0xffff)
+#if ZBIRKA_VERSII_PZ != 1
+                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) &    0xf) << 16)
+#endif
+                        ;
   /***************************/
   
   /***************************/
@@ -11137,6 +11140,7 @@ void TIM2_IRQHandler(void)
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
 
+#if ZBIRKA_VERSII_PZ != 1
       if ((board_register_tmp & 0x010) != 0x10) _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
       else if (board_register_diff & 0x10)
       {
@@ -11145,6 +11149,7 @@ void TIM2_IRQHandler(void)
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
+#endif
     }
     
     //Перевіряємо достовірність значень для аналогового реєстратора

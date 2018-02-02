@@ -455,8 +455,11 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
 const uint32_t input_boards[N_INPUT_BOARDS][2] = 
 {
   { 8, 4},
-  {16, 5},
+  {16, 5}
+#if ZBIRKA_VERSII_PZ != 1
+  ,
   {20, 7}
+#endif
 };
 
 unsigned int periodical_tasks_TEST_SETTINGS/* = false*/;

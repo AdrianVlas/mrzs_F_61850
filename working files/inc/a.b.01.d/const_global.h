@@ -23,7 +23,7 @@
 
 #define NUMBER_ANALOG_CANALES           8
 
-#define NUMBER_INPUTS                   20
+#define NUMBER_INPUTS                   16
 #define NUMBER_OUTPUTS                  16
 
 #define NUMBER_LEDS                     17
@@ -46,7 +46,7 @@
 
 #define NUMBER_GROUP_USTAVOK            4
 
-#define N_INPUT_BOARDS          3
+#define N_INPUT_BOARDS          2
 #define N_OUTPUT_BOARDS         3
 
 enum _configuration {
