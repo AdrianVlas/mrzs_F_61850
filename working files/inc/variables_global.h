@@ -830,7 +830,7 @@ unsigned int serial_number_dev/* = 0*/;                         //Заводський ном
 unsigned int edit_serial_number_dev;
 
 //Для відображення інформації про причину відключення
-unsigned int info_vidkluchennja_vymykacha/* = 0*/;
+unsigned int info_vidkluchennja_vymykacha[2];
 unsigned char info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER][7]; 
 
 unsigned int control_word_of_watchdog/* = 0*/;

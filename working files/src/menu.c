@@ -11,7 +11,10 @@ void main_manu_function(void)
   if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_WINDOW_OFF_CB) != 0)
   {
     if (
-        (info_vidkluchennja_vymykacha != 0) &&
+        (
+         (info_vidkluchennja_vymykacha[0] != 0) ||
+         (info_vidkluchennja_vymykacha[1] != 0)
+        ) &&   
         (current_ekran.current_level != EKRAN_VIDKLUCHENNJA) &&
         ((new_state_keyboard & (1<<BIT_REWRITE)) == 0)
        )   
@@ -40,7 +43,8 @@ void main_manu_function(void)
   else
   {
     //Очищаємо інформацію про спрацювання захистів
-    info_vidkluchennja_vymykacha = 0;
+    info_vidkluchennja_vymykacha[0] = 0;
+    info_vidkluchennja_vymykacha[1] = 0;
   }
   
   //Перевіряємо чи якась кнопка натиснута
@@ -21398,7 +21402,10 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= ((int)MAX_ROW_FOR_VIDKLUCHENNJA)) current_ekran.index_position = 0;
               
-              if (info_vidkluchennja_vymykacha == 0)
+              if (
+                  (info_vidkluchennja_vymykacha[0] == 0) &&
+                  (info_vidkluchennja_vymykacha[1] == 0)
+                 )   
               {
                 //Подаємо команду на вихід з віна повідомдень про відключення від захистів
                 new_state_keyboard |= (1<<BIT_KEY_ENTER);
@@ -21408,7 +21415,7 @@ void main_manu_function(void)
                 //Переходимо на наступну інформацію про спрацювання захистів
                 current_ekran.index_position++;
               
-                while (_GET_OUTPUT_STATE(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
+                while (_CHECK_SET_BIT(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
                 {
                   current_ekran.index_position++;
                   if(current_ekran.index_position >= ((int)MAX_ROW_FOR_VIDKLUCHENNJA)) current_ekran.index_position = 0;
@@ -21427,7 +21434,8 @@ void main_manu_function(void)
             if (new_state_keyboard == (1<<BIT_KEY_ENTER))
             {
               //Очищаємо інформацію про спрацювання захистів
-              info_vidkluchennja_vymykacha = 0;
+              info_vidkluchennja_vymykacha[0] = 0;
+              info_vidkluchennja_vymykacha[1] = 0;
               
               //Переходимо у попереднє меню
               current_ekran = current_ekran_reserv;
@@ -21451,7 +21459,10 @@ void main_manu_function(void)
               //Натиснута кнопка UP
               if(current_ekran.current_level == EKRAN_VIDKLUCHENNJA)
               {
-                if (info_vidkluchennja_vymykacha == 0)
+                if (
+                    (info_vidkluchennja_vymykacha[0] == 0) &&
+                    (info_vidkluchennja_vymykacha[1] == 0)
+                   )   
                 {
                   //Подаємо команду на вихід з віна повідомдень про відключення від захистів
                   new_state_keyboard |= (1<<BIT_KEY_ENTER);
@@ -21459,7 +21470,7 @@ void main_manu_function(void)
                 else
                 {
                   if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_VIDKLUCHENNJA - 1;
-                  while (_GET_OUTPUT_STATE(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
+                  while (_CHECK_SET_BIT(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
                   {
                     current_ekran.index_position--;
                     if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_VIDKLUCHENNJA - 1;
@@ -21479,7 +21490,10 @@ void main_manu_function(void)
               //Натиснута кнопка DOWN
               if(current_ekran.current_level == EKRAN_VIDKLUCHENNJA)
               {
-                if (info_vidkluchennja_vymykacha == 0)
+                if (
+                    (info_vidkluchennja_vymykacha[0] == 0) &&
+                    (info_vidkluchennja_vymykacha[1] == 0)
+                   )   
                 {
                   //Подаємо команду на вихід з віна повідомдень про відключення від захистів
                   new_state_keyboard |= (1<<BIT_KEY_ENTER);
@@ -21487,7 +21501,7 @@ void main_manu_function(void)
                 else
                 {
                   if(++current_ekran.index_position >= ((int)MAX_ROW_FOR_VIDKLUCHENNJA)) current_ekran.index_position = 0;
-                  while (_GET_OUTPUT_STATE(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
+                  while (_CHECK_SET_BIT(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
                   {
                     current_ekran.index_position++;
                     if(current_ekran.index_position >= ((int)MAX_ROW_FOR_VIDKLUCHENNJA)) current_ekran.index_position = 0;

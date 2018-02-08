@@ -509,7 +509,7 @@ extern unsigned int serial_number_dev;
 extern unsigned int edit_serial_number_dev;
 
 //Для відображення інформації про причину відключення
-extern unsigned int info_vidkluchennja_vymykacha;
+extern unsigned int info_vidkluchennja_vymykacha[2];
 extern unsigned char info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER][7]; 
 
 extern unsigned int control_word_of_watchdog;
