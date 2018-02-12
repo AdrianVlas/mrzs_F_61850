@@ -28,9 +28,9 @@ void preUPRBigReadAction(void);//action до чтения
 void preUPRBigWriteAction(void);//action до записи
 int  postUPRBigWriteAction(void);//action после записи
 
-int  uprFunc000(int inOffset, uint32_t *uprMaska, int validData, /*int actControl,*/ uint32_t **editControl);
+int  uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editControl);
 void uprFuncRead000(int inOffset, uint32_t *uprMaska, uint32_t **editControl);
-int  uprFuncValidWrite000(int inOffset, uint32_t *uprMaska, /*int actControl,*/ uint32_t **editControl);
+int  uprFuncValidWrite000(int inOffset, uint32_t *uprMaska, uint32_t **editControl);
 int  uprFuncValid000(int inOffset, int validData);
 int isValidCONFCondition(unsigned int confControl, unsigned int confMaska, uint32_t uprMaska, int validData);
 int isValidEXTRACondition(unsigned int extraControl, unsigned int extraMaska, uint32_t uprMaska, int validData);
@@ -42,20 +42,20 @@ COMPONENT_OBJ *uprbigcomponent;
 
 void uprFuncRead000(int inOffset, uint32_t *uprMaska, uint32_t **editControl)
 {
-  uprFunc000(inOffset, uprMaska, CLRVALID_DATA, /*CLRACT_CONTROL,*/ editControl);
+  uprFunc000(inOffset, uprMaska, CLRVALID_DATA, editControl);
 }//uprFuncRead000(int inOffset, uint32_t *uprMaska)
-int uprFuncValidWrite000(int inOffset, uint32_t *uprMaska, /*int actControl,*/ uint32_t **editControl)
+int uprFuncValidWrite000(int inOffset, uint32_t *uprMaska, uint32_t **editControl)
 {
-  return uprFunc000(inOffset, uprMaska, CLRVALID_DATA, /*actControl,*/ editControl);
+  return uprFunc000(inOffset, uprMaska, CLRVALID_DATA, editControl);
 }//uprFuncRead000(int inOffset, uint32_t *uprMaska)
 int uprFuncValid000(int inOffset, int validData)
 {
   uint32_t uprMaska=0;
   uint32_t *editControl=NULL;
-  return uprFunc000(inOffset, &uprMaska, validData, /*CLRACT_CONTROL,*/ &editControl);
+  return uprFunc000(inOffset, &uprMaska, validData, &editControl);
 }//uprFuncRead000(int inOffset, uint32_t *uprMaska)
 
-int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, /*int actControl,*/ uint32_t **editControl)
+int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editControl)
 {
   int isValid = 1;
   int actControl = 0;
@@ -232,11 +232,11 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, /*int actControl
     (*uprMaska)   = CTR_ZDZ_OVD1_STATE_BIT;
     break;
   case 105:
-    (*uprMaska)   = CTR_ZDZ_OVD1_STATE_BIT;
+    (*uprMaska)   = CTR_ZDZ_OVD2_STATE_BIT;
     break;
 #define ZDZ_CONFIGURATION_END 106
   case ZDZ_CONFIGURATION_END:
-    (*uprMaska)   = CTR_ZDZ_OVD1_STATE_BIT;
+    (*uprMaska)   = CTR_ZDZ_OVD3_STATE_BIT;
     break;
 
 //123456
@@ -841,7 +841,9 @@ int getUPRBigModbusRegister(int adrReg)
     if(begin<0) globalcntReg += begin;
 
     int beginOffset = (adrReg-BEGIN_ADR_REGISTER)*16;
-    int endOffset   = (adrReg-BEGIN_ADR_REGISTER +globalcntReg)*16 + beginOffset;
+//    int endOffset   = (adrReg-BEGIN_ADR_REGISTER +globalcntReg)*16 + beginOffset;
+    int endOffset   = beginOffset +globalcntReg*16;
+
     loadUPRBigActualDataBit(beginOffset, endOffset); //ActualData
   }//if(acmdsmallcomponent->isActiveActualData)
   uprbigcomponent->isActiveActualData = 0;
@@ -880,7 +882,6 @@ int setUPRBigModbusRegister(int adrReg, int dataReg)
   {
     edition_settings = current_settings;//делаем копию
   }//if(uprbigcomponent->isActiveActualData)
-//  uprbigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   superSetOperativMarker(uprbigcomponent, adrReg);
@@ -890,7 +891,7 @@ int setUPRBigModbusRegister(int adrReg, int dataReg)
   for(int item=beginOffset; item<(beginOffset+16); item++)
   {
     int temp = 0;
-    if(dataReg&(1<<(item-beginOffset))) temp=1;
+    if(dataReg&(1<<(item-beginOffset))) temp=1;//валидация на включение
     if(temp)
       if(!uprFuncValid000(item, temp)) return MARKER_ERRORDIAPAZON;
   }//for
@@ -911,7 +912,8 @@ int setUPRBigModbusBit(int adrBit, int dataBit)
   superSetTempWriteArray(dataBit);//записать в буфер
 
   int offset = adrBit-BEGIN_ADR_BIT;
-  if(!uprFuncValid000(offset, dataBit)) return MARKER_ERRORDIAPAZON;
+  if(dataBit)//валидация на включение
+   if(!uprFuncValid000(offset, dataBit)) return MARKER_ERRORDIAPAZON;
 
   return 0;
 }//getDOUTBigModbusRegister(int adrReg)
@@ -948,7 +950,7 @@ int postUPRBigWriteAction(void)
       uint32_t uprMaska=0;
       uint32_t *editControl=NULL;
       int offset = i+beginAdr-BEGIN_ADR_BIT;
-      uprFuncValidWrite000(offset, &uprMaska, /*CLRACT_CONTROL,*/ &editControl);
+      uprFuncValidWrite000(offset, &uprMaska, &editControl);
       if(editControl==NULL) continue;
       flag=1;
       uint32_t value = tempWriteArray[offsetTempWriteArray+i];
@@ -957,7 +959,8 @@ int postUPRBigWriteAction(void)
       (*editControl) &= ~(1<<uprMaska);
       (*editControl) |= (value<<uprMaska);
       //actControl
-      if(!uprFuncValidWrite000(-offset, &uprMaska, /*SETACT_CONTROL,*/ &editControl))
+      if(value)//валидация на включение
+        if(!uprFuncValidWrite000(-offset, &uprMaska, &editControl))
       {
         return ERROR_VALID3;//ошибка валидации
       }//if
@@ -974,7 +977,7 @@ int postUPRBigWriteAction(void)
       {
         uint32_t uprMaska=0;
         uint32_t *editControl=NULL;
-        uprFuncValidWrite000(offset*16+bit, &uprMaska, /*CLRACT_CONTROL,*/ &editControl);
+        uprFuncValidWrite000(offset*16+bit, &uprMaska, &editControl);
         if(editControl==NULL) continue;
         flag=1;
         uint32_t value = tempWriteArray[offsetTempWriteArray+i];
@@ -984,7 +987,8 @@ int postUPRBigWriteAction(void)
         (*editControl) &= ~(1<<uprMaska);
         (*editControl) |= (temp<<uprMaska);
 
-        if(!uprFuncValidWrite000(-offset*16-bit, &uprMaska, /*SETACT_CONTROL,*/ &editControl))
+        if(temp)//валидация на включение
+          if(!uprFuncValidWrite000(-offset*16-bit, &uprMaska, &editControl))
         {
           return ERROR_VALID3;//ошибка валидации
         }//if

@@ -43,7 +43,7 @@ int getXORBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateXORBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_BIGModbusRegister(&current_settings.ranguvannja_d_xor[0], 2, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_d_xor[0], 2, adrReg-BEGIN_ADR_REGISTER );
 }//getDOUTBigModbusRegister(int adrReg)
 int getXORBigModbusBit(int x)
 {
@@ -57,9 +57,8 @@ int setXORBigModbusRegister(int adrReg, int dataReg)
   if(privateXORBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(xorbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
-//  xorbigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   superSetOperativMarker(xorbigcomponent, adrReg);

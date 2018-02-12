@@ -43,7 +43,7 @@ int getSDIBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateSDIBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_BIGModbusRegister(&current_settings.ranguvannja_leds[0], 8, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_leds[0], 8, adrReg-BEGIN_ADR_REGISTER );
 }//getSDIBigModbusRegister(int adrReg)
 int getSDIBigModbusBit(int x)
 {
@@ -57,9 +57,8 @@ int setSDIBigModbusRegister(int adrReg, int dataReg)
   if(privateSDIBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(sdibigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
-//  sdibigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   superSetOperativMarker(sdibigcomponent, adrReg);

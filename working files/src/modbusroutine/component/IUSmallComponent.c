@@ -27,15 +27,12 @@ void constructorIUSmallComponent(COMPONENT_OBJ *iucomp)
 {
   iucomponent = iucomp;
 
-  //iucomponent->countObject = 1;//к-во обектов
-
   iucomponent->getModbusRegister = getIUSmallModbusRegister;//получить содержимое регистра
   iucomponent->getModbusBit      = getIUSmallModbusBit;//получить содержимое бита
   iucomponent->setModbusRegister = setIUSmallModbusRegister;//получить содержимое регистра
   iucomponent->setModbusBit      = setIUSmallModbusBit;//получить содержимое бита
 
   iucomponent->preReadAction   = preIUSmallReadAction;//action до чтения
-  //iucomponent->postReadAction  = postIUSmallReadAction;//action после чтения
   iucomponent->preWriteAction  = preIUSmallWriteAction;//action до записи
   iucomponent->postWriteAction = postIUSmallWriteAction;//action после записи
 

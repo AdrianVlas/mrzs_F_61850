@@ -43,7 +43,7 @@ int getDVBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateDVBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_SMALLModbusRegister(&current_settings.ranguvannja_inputs[0], 8, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_SMALLModbusRegister(&current_settings_interfaces.ranguvannja_inputs[0], 8, adrReg-BEGIN_ADR_REGISTER );
 }//getDVBigModbusRegister(int adrReg)
 int getDVBigModbusBit(int x)
 {
@@ -57,9 +57,8 @@ int setDVBigModbusRegister(int adrReg, int dataReg)
   if(privateDVBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(dvbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
-//  dvbigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   superSetOperativMarker(dvbigcomponent, adrReg);

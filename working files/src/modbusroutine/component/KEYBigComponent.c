@@ -43,7 +43,7 @@ int getKEYBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateKEYBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_SMALLModbusRegister(&current_settings.ranguvannja_buttons[0], 8, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_SMALLModbusRegister(&current_settings_interfaces.ranguvannja_buttons[0], 8, adrReg-BEGIN_ADR_REGISTER );
 }//getDOUTBigModbusRegister(int adrReg)
 int getKEYBigModbusBit(int x)
 {
@@ -57,7 +57,7 @@ int setKEYBigModbusRegister(int adrReg, int dataReg)
   if(privateKEYBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(keybigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 

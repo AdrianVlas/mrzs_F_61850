@@ -49,13 +49,13 @@ int getDTRBigModbusRegister(int adrReg)
   int offset = adrReg-BEGIN_ADR_REGISTER;
   int idxObj = offset/24;
 //поиск активного бита
-  unsigned int *ranguvannja_dtr = &current_settings.ranguvannja_set_dt_source_plus[N_BIG*idxObj]; //Ранжування прямих
+  unsigned int *ranguvannja_dtr = &current_settings_interfaces.ranguvannja_set_dt_source_plus[N_BIG*idxObj]; //Ранжування прямих
   if(((offset%24)/6)==1)
-       ranguvannja_dtr = &current_settings.ranguvannja_set_dt_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
+       ranguvannja_dtr = &current_settings_interfaces.ranguvannja_set_dt_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
   if(((offset%24)/6)==2)
-       ranguvannja_dtr = &current_settings.ranguvannja_reset_dt_source_plus[N_BIG*idxObj]; //Ранжування 
+       ranguvannja_dtr = &current_settings_interfaces.ranguvannja_reset_dt_source_plus[N_BIG*idxObj]; //Ранжування 
   if(((offset%24)/6)==3)
-       ranguvannja_dtr = &current_settings.ranguvannja_reset_dt_source_minus[N_BIG*idxObj]; //Ранжування 
+       ranguvannja_dtr = &current_settings_interfaces.ranguvannja_reset_dt_source_minus[N_BIG*idxObj]; //Ранжування 
 
   int bit = getSequenceN_BIGIndexActiveBit(offset%6, ranguvannja_dtr);//индекс активного бита
   if(bit!=-1)
@@ -77,7 +77,7 @@ int setDTRBigModbusRegister(int adrReg, int dataReg)
   if(privateDTRBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(dtrbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 

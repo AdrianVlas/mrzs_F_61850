@@ -58,7 +58,7 @@ int getGCMDSmallModbusRegister(int adrReg)
     if(begin<0) globalcntReg += begin;
 
     int beginOffset = (adrReg-BEGIN_ADR_REGISTER)*16;
-    int endOffset   = beginOffset +globalcntReg*16;// + beginOffset;
+    int endOffset   = beginOffset +globalcntReg*16;
 
       loadACMDSmallActualDataBit(1, beginOffset, endOffset); //ActualData GCMD
     }//if(gcmdsmallcomponent->isActiveActualData)

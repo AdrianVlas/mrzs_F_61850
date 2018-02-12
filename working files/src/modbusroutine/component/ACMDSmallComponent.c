@@ -10,6 +10,7 @@
 #define END_ADR_REGISTER 293
 //конечный bit в карте памяти
 #define END_ADR_BIT 50599
+extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 
 int privateACMDSmallGetReg2(int adrReg);
 int privateACMDSmallGetBit2(int adrBit);
@@ -272,7 +273,6 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 
 //123456
 #if ZBIRKA_VERSII_PZ != 1    
-
   case 117:
     (*outMaska) = RANG_LIGHT_ZDZ_FROM_OVD1;
 //        (*dvMaska) =
@@ -286,12 +286,10 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     (*outMaska) = RANG_LIGHT_ZDZ_FROM_OVD3;
 //        (*dvMaska) =
     break;
-    
 //123456
 #else
 #define ZDZ_CONFIGURATION_END 119 /*???*/
 #endif
-
 
 //  count_bit = 5;
 #define ZZ_CONFIGURATION_BEGIN 128
@@ -1033,56 +1031,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     (*outMaska) = RANG_RESET_RELES;
     (*dvMaska) = RANG_SMALL_RESET_RELES;
     break;
-//  case 564:
-//    (*outMaska) = 0;
-//        (*dvMaska) =
-//    break;
 
-//                  reset_trigger_function_from_interface |= (1 << type_interface); USB_RECUEST/RS485_RECUEST
-//  case 565:
-//    (*outMaska) = RANG_SETTINGS_CHANGED;
-//        (*dvMaska) =
-  /*
-        if ((information_about_restart_counter & (1 << type_interface)) != 0)
-        {
-            output_array[(BIT_MA_RESET_RESURS_VYMYKACHA - BIT_MA_CURRENT_AF_BASE) >> 4] |=
-            (0x1 << ((BIT_MA_RESET_RESURS_VYMYKACHA - BIT_MA_CURRENT_AF_BASE) & 0xf));
-        }
-
-        restart_counter = 0xff; //Сигнал про очищення ресурсу лічильників з системи захистів
-  */
-
-//    break;
-//  case 566:
-//    (*outMaska) = 0;
-//        (*dvMaska) =
-//    break;
-//        (*outMaska) = RANG_SETTINGS_CHANGED;
-//  case 567:
-//    (*outMaska) = 0;
-//        (*dvMaska) =
-//    break;
-  /*
-
-                    //Активація внесекних змін
-                    if(type_interface == USB_RECUEST) error = set_new_settings_from_interface(2);
-                    else if(type_interface ==  RS485_RECUEST) error = set_new_settings_from_interface(3);
-  */
-//  case 568:
-//    (*outMaska) = 0;
-//        (*dvMaska) =
-//    break;
-  /*
-        unsigned int password_set_tmp;
-        if (type_interface == USB_RECUEST) password_set_tmp = password_set_USB;
-        else if (type_interface == RS485_RECUEST) password_set_tmp = password_set_RS485;
-
-        if (password_set_tmp != 0)
-        {
-          output_array[(BIT_MA_PASSWORD_SET - BIT_MA_CURRENT_AF_BASE) >> 4] |=
-            (0x1 << ((BIT_MA_PASSWORD_SET - BIT_MA_CURRENT_AF_BASE) & 0xf));
-        }
-  */
   case 569:
     (*outMaska) = RANG_MISCEVE_DYSTANCIJNE;
     (*dvMaska) = RANG_SMALL_MISCEVE_DYSTANCIJNE;
@@ -1115,14 +1064,6 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     (*outMaska) = RANG_BLK_GRUP_USTAVOK_VID_ZACHYSTIV;
 //        (*dvMaska) =
     break;
-  /*
-  //BIT_MA_BLK_GRUP_USTAVOK_VID_ZACHYSTIV
-  //    case 565:
-  //        (*outMaska) = 0;
-  //        (*dvMaska) =
-  //          break;
-  */
-//BIT_MA_INVERS_DV_GRUPA_USTAVOK
 
   case 597:
     (*outMaska) = RANG_INVERS_DV_GRUPA_USTAVOK;
@@ -1484,7 +1425,7 @@ int getACMDSmallModbusRegister(int adrReg)
     if(begin<0) globalcntReg += begin;
 
     int beginOffset = (adrReg-BEGIN_ADR_REGISTER)*16;
-    int endOffset   = beginOffset +globalcntReg*16;// + beginOffset;
+    int endOffset   = beginOffset +globalcntReg*16;
 
     loadACMDSmallActualDataBit(0, beginOffset, endOffset); //ActualData
   }//if(acmdsmallcomponent->isActiveActualData)
@@ -1725,8 +1666,10 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     if(actControl&&dataBit)
     {
       //Скидання загальних функцій
-      unsigned int type_interface = USB_RECUEST;
-      reset_trigger_function_from_interface |= (1 << type_interface);
+  if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+      reset_trigger_function_from_interface |= (1 << USB_RECUEST);
+  else 
+      reset_trigger_function_from_interface |= (1 << RS485_RECUEST);
     }//if(action)
     return 0;
   case 565://
@@ -1742,7 +1685,9 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
       if(dataBit)
       {
         //Активація внесекних змін
-        if(set_new_settings_from_interface(2))//2-USB
+        int typI = 2;
+        if(pointInterface==1) typI = 3;//метка интерфейса 0-USB 1-RS485
+        if(set_new_settings_from_interface(typI))//2-USB
         {
         type_of_settings_changed = 0;
         _CLEAR_BIT(active_functions, RANG_SETTINGS_CHANGED);

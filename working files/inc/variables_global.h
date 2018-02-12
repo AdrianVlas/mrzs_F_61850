@@ -834,7 +834,7 @@ unsigned int info_vidkluchennja_vymykacha[2];
 unsigned char info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER][7]; 
 
 unsigned int control_word_of_watchdog/* = 0*/;
-unsigned int test_watchdogs/* = 0*/;
+//unsigned int test_watchdogs/* = 0*/;
 
 /**************************************************************
  * Змінна використовується в функції вибору групи уставок:

@@ -4,6 +4,7 @@
 #define BEGIN_ADR_REGISTER 13000
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 13075
+extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 
 int privateREGBigGetReg2(int adrReg);
 
@@ -45,24 +46,30 @@ int getREGBigModbusRegister(int adrReg)
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
 //Ранжирование источников запуска аналогового регистратора
-  if(offset<32) return getRangN_BIGModbusRegister(&current_settings.ranguvannja_analog_registrator[0], 32, offset );
+  if(offset<32) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_analog_registrator[0], 32, offset );
 //Ранжирование источников запуска дискретного регистратора
-  if(offset>=36&&offset<70) return getRangN_BIGModbusRegister(&current_settings.ranguvannja_digital_registrator[0], 32, offset );
+  if(offset>=36&&offset<70) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_digital_registrator[0], 32, offset );
 
   switch(offset)
   {
   case 32://Время записи аналогового регистратора (доаварийный массив)
-    return current_settings.prefault_number_periods*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+    return current_settings_interfaces.prefault_number_periods*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
   case 33://Время записи аналогового регистратора (послеаварый массив)
-    return current_settings.postfault_number_periods*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+    return current_settings_interfaces.postfault_number_periods*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
   case 34://Количество аналоговых регистраторов
     return info_rejestrator_ar.number_records;
   case 35://Текущий аналоговый регистратор
-    return number_record_of_ar_for_USB;
+    if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+      return number_record_of_ar_for_USB;
+    else
+      return number_record_of_ar_for_RS485;
   case 70://Количество дискретных регистраторов
     return info_rejestrator_dr.number_records;
   case 71://Текущий дискретный регистратор
-    return number_record_of_dr_for_USB;
+    if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+      return number_record_of_dr_for_USB;
+    else
+      return number_record_of_dr_for_RS485;
   case 74://Очистить аналоговый регистратор
     return MARKER_ERRORPERIMETR;
   case 75://Очистить дискретный регистратор
@@ -83,7 +90,7 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
   if(privateREGBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(regbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
   }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 
@@ -181,10 +188,32 @@ int postREGBigWriteAction(void) {
       upravlSetting = 1;//флаг Setting
       break;
     case 35://Текущий аналоговый регистратор
-      number_record_of_ar_for_USB = tempWriteArray[offsetTempWriteArray+i];
+     if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+         number_record_of_ar_for_USB = tempWriteArray[offsetTempWriteArray+i];
+     else
+         number_record_of_ar_for_RS485 = tempWriteArray[offsetTempWriteArray+i];
       break;
     case 71://Текущий дискретный регистратор
-      number_record_of_dr_for_USB = tempWriteArray[offsetTempWriteArray+i];
+      if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+      {
+        number_record_of_dr_for_USB = tempWriteArray[offsetTempWriteArray+i];
+        //Подаємо команду читання дискретного реєстратора для інтерфейсу USB
+
+        //Виставляємо першу частину запису
+        part_reading_dr_from_dataflash_for_USB = 0;
+        //Подаємо команду зчитати дані у бувер пам'яті
+        control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB;
+      }//if
+      else
+      {
+        number_record_of_dr_for_RS485 = tempWriteArray[offsetTempWriteArray+i];
+        //Подаємо команду читання дискретного реєстратора для інтерфейсу RS-485
+
+        //Виставляємо першу частину запису
+        part_reading_dr_from_dataflash_for_RS485 = 0;
+        //Подаємо команду зчитати дані у бувер пам'яті
+        control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485;
+      }
       break;
     case 74://Очистить аналоговый регистратор
 //ОСОБАЯ ПРОВЕРКА
@@ -206,6 +235,7 @@ int postREGBigWriteAction(void) {
         ||
         ((clean_rejestrators & CLEAN_AR) != 0)
       ) return ERROR_VALID2;//ошибка валидации
+
       clean_rejestrators |= CLEAN_AR;
       break;
     case 75://Очистить дискретный регистратор
@@ -233,6 +263,7 @@ int postREGBigWriteAction(void) {
         ||
         ((clean_rejestrators & CLEAN_DR) != 0)
       ) return ERROR_VALID2;//ошибка валидации
+
       //Помічаємо, що треба очистити дискретного реєстратора
       clean_rejestrators |= CLEAN_DR;
       break;

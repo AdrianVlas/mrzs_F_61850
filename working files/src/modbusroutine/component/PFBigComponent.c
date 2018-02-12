@@ -44,7 +44,7 @@ int getPFBigModbusRegister(int adrReg)
   if(privatePFBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
-  int bitInOut  = current_settings.ranguvannja_tf[offset/2];
+  int bitInOut  = current_settings_interfaces.ranguvannja_tf[offset/2];
   int bit = -1;
   int adr = -1;
   switch(offset%2)
@@ -79,7 +79,7 @@ int setPFBigModbusRegister(int adrReg, int dataReg)
   if(privatePFBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(pfbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 

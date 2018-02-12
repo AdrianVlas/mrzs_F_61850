@@ -1541,9 +1541,6 @@
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_interfaces.h</name>
                 </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_modbus_memory_map.h</name>
-                </file>
             </group>
             <group>
                 <name>menu</name>
@@ -1824,6 +1821,9 @@
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PKVBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\QAISmallComponent.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>

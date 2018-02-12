@@ -60,5 +60,6 @@ void constructorVVBigComponent(COMPONENT_OBJ *);
 void constructorXORBigComponent(COMPONENT_OBJ *);
 void constructorYustBigComponent(COMPONENT_OBJ *);
 void constructorAISmallComponent(COMPONENT_OBJ *);
+void constructorQAISmallComponent(COMPONENT_OBJ *);
 void constructorPFBigComponent(COMPONENT_OBJ *);
 #endif

@@ -250,17 +250,6 @@ void USART_RS485_Configure(void);
 void restart_monitoring_RS485(void);
 void start_transmint_data_via_RS_485(unsigned int);
 unsigned short int  AddCRC(unsigned char, unsigned short int);
-void modbus_rountines(unsigned int);
-void Error_modbus(unsigned char, unsigned char, unsigned char, unsigned char *);
-unsigned int Get_data(unsigned char *, unsigned int, unsigned int, __getting_data);
-unsigned int Set_data(unsigned short int, unsigned int, __settings_data, unsigned int, unsigned int*, unsigned int);
-unsigned int Get_data_file(unsigned char*, unsigned char*, unsigned int*, unsigned int);
-void convert_order_list_function_to_gmm(unsigned int*, unsigned short int*);
-unsigned int convert_order_list_bi_to_gmm(unsigned int, unsigned int, unsigned int, __getting_data);
-unsigned int convert_order_list_oldr_to_gmm(unsigned int, unsigned int, unsigned int, __getting_data);
-void set_previous_ranguvannja(void);
-unsigned int save_new_rang_bi_from_gmm(unsigned int, unsigned int, unsigned int, unsigned short int, __settings_data);
-unsigned int save_new_rang_oldr_from_gmm(unsigned int, unsigned int, unsigned int, unsigned short int, __settings_data);
 
 ErrorStatus check_errors_i2c(void);
 unsigned int start_write_buffer_via_I2C(uint32_t, uint32_t, uint8_t*, uint32_t);
@@ -323,6 +312,10 @@ void total_error_sw_fixed(unsigned int);
 void setpoints_selecting(unsigned int*, unsigned int);
 
 int str_to_int_DATE_Mmm(void);
+
+extern void inputPacketParserUSB(void);
+extern void inputPacketParserRS485(void);
+
 
 #endif
 

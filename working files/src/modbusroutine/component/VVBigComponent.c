@@ -45,9 +45,9 @@ int getVVBigModbusRegister(int adrReg)
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
 //поиск активного бита
-  unsigned int *ranguvannja_vv = &current_settings.ranguvannja_on_cb[0]; //Ранжування прямих
+  unsigned int *ranguvannja_vv = &current_settings_interfaces.ranguvannja_on_cb[0]; //Ранжування прямих
   if((offset/32)==1)
-       ranguvannja_vv = &current_settings.ranguvannja_off_cb[0]; //Ранжування інверсних 
+       ranguvannja_vv = &current_settings_interfaces.ranguvannja_off_cb[0]; //Ранжування інверсних 
 
   int bit = getSequenceN_BIGIndexActiveBit(offset%32, ranguvannja_vv);//индекс активного бита
   if(bit!=-1)
@@ -69,9 +69,8 @@ int setVVBigModbusRegister(int adrReg, int dataReg)
   if(privateVVBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(vvbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
-//  vvbigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   superSetOperativMarker(vvbigcomponent, adrReg);

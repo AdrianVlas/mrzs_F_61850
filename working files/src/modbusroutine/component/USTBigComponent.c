@@ -5,9 +5,6 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 11395
 
-//#define CLRACT_CONTROL 0
-//#define SETACT_CONTROL 1
-
 int privateUSTBigGetReg2(int adrReg);
 
 int getUSTBigModbusRegister(int);//получить содержимое регистра
@@ -19,12 +16,12 @@ void setUSTBigCountObject(void);//записать к-во обектов
 void preUSTBigReadAction(void);//action до чтения
 void preUSTBigWriteAction(void);//action до записи
 int  postUSTBigWriteAction(void);//action после записи
-int  ustFunc000(int inOffset, int gruppa, int *multer, int regUst, /*int actControl,*/ uint32_t **editValue);
+int  ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **editValue);
 int grupa_ustavok_control(int  offset, int *grupa_ustavok, int *adresGruppa);
 
 COMPONENT_OBJ *ustbigcomponent;
 
-int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, /*int actControl,*/ uint32_t **editValue)
+int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **editValue)
 {
   int diapazon = 1;
   int actControl = 0;
@@ -718,14 +715,14 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, /*int actContr
     //Зміна режиму відбудеться у цій функції рахом з можливими змінами у ранжуванні ФК
     if(actControl)
     {
-      action_during_changing_button_mode(&current_settings, &edition_settings);
+      action_during_changing_button_mode(&current_settings_interfaces, &edition_settings);
       //Перебираємо всі ФК
       for (size_t number = 0; number < NUMBER_DEFINED_BUTTONS; number++)
       {
         for (unsigned int i = 0; i < N_SMALL; i++)
         {
           edition_settings.ranguvannja_buttons[N_SMALL*number + i] =
-            current_settings.ranguvannja_buttons[N_SMALL*number + i];
+            current_settings_interfaces.ranguvannja_buttons[N_SMALL*number + i];
         }//for
       }//for
     }//if
@@ -744,7 +741,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, /*int actContr
     (*multer) = 1;
     if(regUst<0 || regUst>19) diapazon=0;
     if(actControl)
-      if(regUst!=current_settings.ctrl_UP_input[item])
+      if(regUst!=current_settings_interfaces.ctrl_UP_input[item])
       {
         uint32_t tmp = edition_settings.ctrl_UP_input[item];
         edition_settings.ctrl_UP_input[item] = -1;
@@ -913,9 +910,8 @@ int getUSTBigModbusRegister(int adrReg)
   if(privateUSTBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(ustbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
   }//if(uprbigcomponent->isActiveActualData)
-  //ustbigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   uint32_t *editValue=NULL;
@@ -925,7 +921,7 @@ int getUSTBigModbusRegister(int adrReg)
   int  offset = adrReg-BEGIN_ADR_REGISTER;
   grupa_ustavok_control(offset, &grupa_ustavok, &adresGruppa);
 
-  ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, /*CLRACT_CONTROL,*/ &editValue);
+  ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, &editValue);
   if(editValue==NULL) return 0;
 
   if(editValue == (uint32_t*)&edition_settings.type_mtz04_2 && (*editValue)!=0) return (*editValue)-2;
@@ -966,7 +962,7 @@ int setUSTBigModbusRegister(int adrReg, int dataReg)
   if(privateUSTBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(ustbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
   }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 
@@ -980,7 +976,7 @@ int setUSTBigModbusRegister(int adrReg, int dataReg)
 
   uint32_t *editValue=NULL;
   int  multer = 1;
-  if(!ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, dataReg, /*CLRACT_CONTROL,*/ &editValue)) return MARKER_ERRORDIAPAZON;
+  if(!ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, dataReg, &editValue)) return MARKER_ERRORDIAPAZON;
   if(editValue==NULL) return 0;
 
   return 0;
@@ -1025,7 +1021,7 @@ int postUSTBigWriteAction(void)
     uint32_t *editValue=NULL;
     int  multer = 1;
     int grupa_offset = grupa_ustavok_control(offset, &grupa_ustavok, &adresGruppa);
-    ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, /*CLRACT_CONTROL,*/ &editValue);
+    ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, &editValue);
     if(editValue==NULL) continue;
 
     flag=1;
@@ -1113,7 +1109,7 @@ int postUSTBigWriteAction(void)
 
 m1:
     grupa_ustavok_control(offset, &grupa_ustavok, &adresGruppa);
-    ustFunc000(-offset +adresGruppa, grupa_ustavok, &multer, value*multer, /*SETACT_CONTROL,*/ &editValue);
+    ustFunc000(-offset +adresGruppa, grupa_ustavok, &multer, value*multer, &editValue);
   }//for
 
 

@@ -43,7 +43,7 @@ int getANDBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateANDBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_BIGModbusRegister(&current_settings.ranguvannja_d_and[0], 8, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_d_and[0], 8, adrReg-BEGIN_ADR_REGISTER );
 }//getDOUTBigModbusRegister(int adrReg)
 int getANDBigModbusBit(int x)
 {
@@ -57,9 +57,8 @@ int setANDBigModbusRegister(int adrReg, int dataReg)
   if(privateANDBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(andbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
-//  andbigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   superSetOperativMarker(andbigcomponent, adrReg);

@@ -43,7 +43,7 @@ int getORBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateORBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_BIGModbusRegister(&current_settings.ranguvannja_d_or[0], 8, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_d_or[0], 8, adrReg-BEGIN_ADR_REGISTER );
 }//getDOUTBigModbusRegister(int adrReg)
 int getORBigModbusBit(int x)
 {
@@ -57,9 +57,8 @@ int setORBigModbusRegister(int adrReg, int dataReg)
   if(privateORBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(orbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
-//  orbigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   superSetOperativMarker(orbigcomponent, adrReg);

@@ -48,11 +48,11 @@ int getMFTBigModbusRegister(int adrReg)
   int offset = adrReg-BEGIN_ADR_REGISTER;
   int idxObj = offset/48;
 //поиск активного бита
-  unsigned int *ranguvannja_mft = &current_settings.ranguvannja_df_source_plus[N_BIG*idxObj]; //Ранжування прямих
+  unsigned int *ranguvannja_mft = &current_settings_interfaces.ranguvannja_df_source_plus[N_BIG*idxObj]; //Ранжування прямих
   if(((offset%48)/16)==1)
-       ranguvannja_mft = &current_settings.ranguvannja_df_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
+       ranguvannja_mft = &current_settings_interfaces.ranguvannja_df_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
   if(((offset%48)/16)==2)
-       ranguvannja_mft = &current_settings.ranguvannja_df_source_blk[N_BIG*idxObj]; //Ранжування блокування 
+       ranguvannja_mft = &current_settings_interfaces.ranguvannja_df_source_blk[N_BIG*idxObj]; //Ранжування блокування 
 
   int bit = getSequenceN_BIGIndexActiveBit(offset%16, ranguvannja_mft);//индекс активного бита
   if(bit!=-1)
@@ -74,7 +74,7 @@ int setMFTBigModbusRegister(int adrReg, int dataReg)
   if(privateMFTBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(mftbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 

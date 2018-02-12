@@ -57,7 +57,7 @@ int getRPRSmallModbusRegister(int adrReg)
   if(privateRPRSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
   superPreReadAction();//action до чтения
-  int result = superReaderRegister(current_settings.user_register[adrReg-BEGIN_ADR_REGISTER]);
+  int result = superReaderRegister(current_settings_interfaces.user_register[adrReg-BEGIN_ADR_REGISTER]);
   if(result&0xffff0000) return 0;
 
   return result;

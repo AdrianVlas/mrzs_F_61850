@@ -45,7 +45,7 @@ int getRPRBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateRPRBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return current_settings.user_register[adrReg-BEGIN_ADR_REGISTER];
+  return current_settings_interfaces.user_register[adrReg-BEGIN_ADR_REGISTER];
 }//getDOUTBigModbusRegister(int adrReg)
 int getRPRBigModbusBit(int x)
 {
@@ -59,9 +59,8 @@ int setRPRBigModbusRegister(int adrReg, int dataReg)
   if(privateRPRBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(rprbigcomponent->isActiveActualData)
     {
-      edition_settings = current_settings;//делаем копию
+      edition_settings = current_settings_interfaces;//делаем копию
     }//if(rprbigcomponent->isActiveActualData)
-//  rprbigcomponent->isActiveActualData = 0;
   superClearActiveActualData();
 
   superSetOperativMarker(rprbigcomponent, adrReg);

@@ -4,6 +4,7 @@
 #define BEGIN_ADR_REGISTER 12000
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 12042
+extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 
 int privatePKVBigGetReg2(int adrReg);
 
@@ -27,7 +28,10 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
   switch(inOffset)
   {
   case 0://Время активации пароля после простоя
-    (*editValue) = &edition_settings.timeout_deactivation_password_interface_USB;
+    if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+          (*editValue) = &edition_settings.timeout_deactivation_password_interface_USB;
+    else 
+          (*editValue) = &edition_settings.timeout_deactivation_password_interface_RS485;
     if(regPKV<TIMEOUT_DEACTIVATION_PASSWORD_MIN || regPKV>TIMEOUT_DEACTIVATION_PASSWORD_MAX) diapazon=0;
     break;
 

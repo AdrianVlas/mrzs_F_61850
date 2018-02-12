@@ -108,13 +108,13 @@ int getAISmallModbusRegister(int adrReg)
         else
         {
           if (int_frequency == (-1*100))
-            return (-1);
+            return (-1)&0x0000FFFF;
           else if (int_frequency == (-2*100))
-            return (-2);
+            return (-2)&0x0000FFFF;
           else if (int_frequency == (-3*100))
-            return (-3);
+            return (-3)&0x0000FFFF;
           else
-            return (-4);
+            return (-4)&0x0000FFFF;
         }
       } break;
     case 13://Ea+

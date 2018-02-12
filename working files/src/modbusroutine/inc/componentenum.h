@@ -28,6 +28,7 @@ enum {
  XORBIGCOMPONENT         ,//18
  YUSTBIGCOMPONENT        ,//24
  AISMALLCOMPONENT        ,//4
+ QAISMALLCOMPONENT       ,//4
  PFBIGCOMPONENT          ,//4
  TOTAL_COMPONENT         ,//26
 
