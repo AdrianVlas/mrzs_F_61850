@@ -9486,27 +9486,20 @@ inline void main_protection(void)
     }
     
     //Перевірка на необхідність пролонгації активації В-функції на час  таймеру павзи
-    if(
-       (temp_value_for_activated_function[0] != 0) ||
-       (temp_value_for_activated_function[1] != 0) ||
-       (temp_value_for_activated_function[2] != 0)
-      ) 
+    for (size_t i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
     {
-      for (size_t i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
+      if (_CHECK_SET_BIT(temp_value_for_activated_function, (RANG_SMALL_DF1_IN + i)) != 0)
       {
-        if (_CHECK_SET_BIT(temp_value_for_activated_function, (RANG_SMALL_DF1_IN + i)) != 0)
+        //Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+        //для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+        if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] < 0)
         {
-          //Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-          //для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-          if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] < 0)
-          {
-            //Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-            //Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-            global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] = 0;
-          }
+          //Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+          //Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+          global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] = 0;
         }
       }
-    } 
+    }
 
     //Активація з Д.Входу
     if (active_inputs != 0)
