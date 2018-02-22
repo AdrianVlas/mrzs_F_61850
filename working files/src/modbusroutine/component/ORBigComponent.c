@@ -3,7 +3,7 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 2444
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 2499
+#define END_ADR_REGISTER 2507
 
 int privateORBigGetReg2(int adrReg);
 

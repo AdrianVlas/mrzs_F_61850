@@ -197,7 +197,7 @@ int getPKVBigModbusRegister(int adrReg)
   if(privatePKVBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(pkvbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
   }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 
@@ -268,7 +268,7 @@ int setPKVBigModbusRegister(int adrReg, int dataReg)
   if(privatePKVBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(pkvbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
   }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 

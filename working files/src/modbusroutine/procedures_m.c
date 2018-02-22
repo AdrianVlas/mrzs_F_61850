@@ -13,7 +13,8 @@ extern int globalcntReg;//к-во регистров
 extern int globalbeginAdrReg;//адрес нач регистра
 extern int globalbeginAdrBit;//адрес нач бит
 
-#define DISKRET_TOTAL (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG + 3)
+#define DISKRET_TOTAL NUMBER_TOTAL_SIGNAL_FOR_RANG
+// - NUMBER_UP_SIGNAL_FOR_RANG + 3)
 #define DISKRET_REGISTRATOR 0
 #define ANALOG_REGISTRATOR  1
 
@@ -860,12 +861,22 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
 int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int registrator)
 {
   __HEADER_AR *header_ar_tmp;
+  unsigned char *point_to_buffer;
+  if (pointInterface == 0) //метка интерфейса 0-USB 1-RS485
+    point_to_buffer = buffer_for_USB_read_record_dr;
+  else
+    point_to_buffer = buffer_for_RS485_read_record_dr;
+
   int max_number_time_sample = (current_settings.prefault_number_periods + current_settings.postfault_number_periods) << VAGA_NUMBER_POINT_AR;
 
-  if (pointInterface==0)//метка интерфейса 0-USB 1-RS485
+  if (pointInterface==0) //метка интерфейса 0-USB 1-RS485
+  {
     header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
+  }//if
   else
+  {
     header_ar_tmp = (__HEADER_AR*)buffer_for_RS485_read_record_ar;
+  }
 
   switch(subObj)
     {
@@ -886,7 +897,7 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
           return 0;
         case 1://Последняя выборка на этой частоте offsetRegister
           if(registrator==ANALOG_REGISTRATOR) return max_number_time_sample; //Частота виборки
-//          return *(point_to_buffer + FIRST_INDEX_NUMBER_ITEMS_DR); //остання виборка на даній чатоті дискретизації рівна останній
+          return *(point_to_buffer + FIRST_INDEX_NUMBER_ITEMS_DR); //остання виборка на даній чатоті дискретизації рівна останній
         }//switch
 
       return MARKER_ERRORPERIMETR;

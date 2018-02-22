@@ -52,6 +52,7 @@ void constructorORBigComponent(COMPONENT_OBJ *);
 void constructorPKVBigComponent(COMPONENT_OBJ *);
 void constructorRAISmallComponent(COMPONENT_OBJ *);
 void constructorREGBigComponent(COMPONENT_OBJ *);
+void constructorPREGBigComponent(COMPONENT_OBJ *);
 void constructorRPRBigComponent(COMPONENT_OBJ *);
 void constructorRPRSmallComponent(COMPONENT_OBJ *);
 void constructorSDIBigComponent(COMPONENT_OBJ *);

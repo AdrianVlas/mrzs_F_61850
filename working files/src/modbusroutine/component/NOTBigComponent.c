@@ -3,7 +3,7 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 2524
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 2538
+#define END_ADR_REGISTER 2539
 
 int privateNOTBigGetReg2(int adrReg);
 

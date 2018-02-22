@@ -836,7 +836,7 @@ int getUPRBigModbusRegister(int adrReg)
 
   if(uprbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
     int begin = globalbeginAdrReg-BEGIN_ADR_REGISTER;
     if(begin<0) globalcntReg += begin;
 
@@ -859,7 +859,7 @@ int getUPRBigModbusBit(int adrBit)
   if(privateUPRBigGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(uprbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
     int begin = globalbeginAdrBit-BEGIN_ADR_BIT;
     if(begin<0) globalcntBit += begin;
 
@@ -880,7 +880,7 @@ int setUPRBigModbusRegister(int adrReg, int dataReg)
   if(privateUPRBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(uprbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
   }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 
@@ -904,7 +904,7 @@ int setUPRBigModbusBit(int adrBit, int dataBit)
   if(privateUPRBigGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if(uprbigcomponent->isActiveActualData)
   {
-    edition_settings = current_settings;//делаем копию
+    edition_settings = current_settings_interfaces;//делаем копию
   }//if(uprbigcomponent->isActiveActualData)
   uprbigcomponent->isActiveActualData = 0;
 

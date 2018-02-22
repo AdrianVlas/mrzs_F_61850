@@ -23,7 +23,8 @@ void global_component_installation(void) {
   constructorPKVBigComponent(&(config_array[PKVBIGCOMPONENT]));//подготовка компонента pkv
   constructorRAISmallComponent(&(config_array[RAISMALLCOMPONENT]));//подготовка компонента raismall
   constructorREGBigComponent(&(config_array[REGBIGCOMPONENT]));//подготовка компонента reg
-  constructorRPRBigComponent(&(config_array[RPRBIGCOMPONENT]));//подготовка компонента rpr
+  constructorPREGBigComponent(&(config_array[PREGBIGCOMPONENT]));//подготовка компонента reg
+  constructorRPRBigComponent(&(config_array[RPRBIGCOMPONENT]));//подготовка компонента prpr
   constructorRPRSmallComponent(&(config_array[RPRSMALLCOMPONENT]));//подготовка компонента rpr
   constructorSDIBigComponent(&(config_array[SDIBIGCOMPONENT]));//подготовка компонента sdi
   constructorSDISmallComponent(&(config_array[SDISMALLCOMPONENT]));//подготовка компонента sdi
