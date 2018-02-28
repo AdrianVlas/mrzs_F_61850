@@ -1275,11 +1275,12 @@ int decoderN_SMALLACMD(int idxBit)
   }//for(int item=0; item<568; item++)
   return -1;
 }//decoderN_SMALLACMD(int idxBit)
-int getSequenceN_BIGIndexActiveBit(int propusk, unsigned int *array)
+int getSequenceN_BIGIndexActiveBit(int pps, unsigned int *array)
 {
 //индекс активного бита N_BIG
   int bit=0;
   unsigned int arrayData = 0;
+  int propusk = pps;
   for(; bit<N_BIG*32; bit++)
   {
     arrayData = array[bit/32];
@@ -1295,11 +1296,12 @@ int getSequenceN_BIGIndexActiveBit(int propusk, unsigned int *array)
   return -1;
 }//getSequenceN_BIGIndexActiveBit(int propusk, unsigned int *array)
 
-int getSequenceN_SMALLIndexActiveBit(int propusk, unsigned int *array)
+int getSequenceN_SMALLIndexActiveBit(int pps, unsigned int *array)
 {
 //индекс активного бита N_SMALL
   int bit=0;
   unsigned int arrayData = 0;
+  int propusk = pps;
   for(; bit<N_SMALL*32; bit++)
   {
     arrayData = array[bit/32];
@@ -1317,7 +1319,8 @@ int getSequenceN_SMALLIndexActiveBit(int propusk, unsigned int *array)
 int getRangN_BIGModbusRegister(unsigned int *ranguvannja, int countItem, int offset )
 {
 //поиск активного бита
-  int bit = getSequenceN_BIGIndexActiveBit(offset%countItem, &ranguvannja[N_BIG*offset/countItem]);//индекс активного бита
+  int subObj = offset/countItem;
+  int bit = getSequenceN_BIGIndexActiveBit(offset%countItem, &ranguvannja[N_BIG*subObj]);//индекс активного бита
   if(bit!=-1)
   {
     int adr = decoderN_BIGACMD(bit);
@@ -1328,7 +1331,8 @@ int getRangN_BIGModbusRegister(unsigned int *ranguvannja, int countItem, int off
 int getRangN_SMALLModbusRegister(unsigned int *ranguvannja, int countItem, int offset )
 {
 //поиск активного бита
-  int bit = getSequenceN_SMALLIndexActiveBit(offset%countItem, &ranguvannja[N_SMALL*offset/countItem]);//индекс активного бита
+  int subObj = offset/countItem;
+  int bit = getSequenceN_SMALLIndexActiveBit(offset%countItem, &ranguvannja[N_SMALL*subObj]);//индекс активного бита
   if(bit!=-1)
   {
     int adr = decoderN_SMALLACMD(bit);

@@ -5,6 +5,9 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 2315
 
+#define REGISTERS_DTR 6
+#define PART_REGISTERS_DTR 4
+
 int privateDTRBigGetReg2(int adrReg);
 
 int getDTRBigModbusRegister(int);//получить содержимое регистра
@@ -47,17 +50,17 @@ int getDTRBigModbusRegister(int adrReg)
   if(privateDTRBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
-  int idxObj = offset/24;
+  int idxObj = offset/(PART_REGISTERS_DTR*REGISTERS_DTR);
 //поиск активного бита
   unsigned int *ranguvannja_dtr = &current_settings_interfaces.ranguvannja_set_dt_source_plus[N_BIG*idxObj]; //Ранжування прямих
-  if(((offset%24)/6)==1)
+  if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==1)
        ranguvannja_dtr = &current_settings_interfaces.ranguvannja_set_dt_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
-  if(((offset%24)/6)==2)
+  if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==2)
        ranguvannja_dtr = &current_settings_interfaces.ranguvannja_reset_dt_source_plus[N_BIG*idxObj]; //Ранжування 
-  if(((offset%24)/6)==3)
+  if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==3)
        ranguvannja_dtr = &current_settings_interfaces.ranguvannja_reset_dt_source_minus[N_BIG*idxObj]; //Ранжування 
 
-  int bit = getSequenceN_BIGIndexActiveBit(offset%6, ranguvannja_dtr);//индекс активного бита
+  int bit = getSequenceN_BIGIndexActiveBit(offset%REGISTERS_DTR, ranguvannja_dtr);//индекс активного бита
   if(bit!=-1)
     {
       int adr = decoderN_BIGACMD(bit);
@@ -85,7 +88,7 @@ int setDTRBigModbusRegister(int adrReg, int dataReg)
   superSetTempWriteArray(dataReg);//записать в буфер
 
   //проверка на допустимость
-  return validDTRN_BIGACMD(dataReg, (adrReg-BEGIN_ADR_REGISTER)/24);
+  return validDTRN_BIGACMD(dataReg, (adrReg-BEGIN_ADR_REGISTER)/(PART_REGISTERS_DTR*REGISTERS_DTR));
 }//getDOUTBigModbusRegister(int adrReg)
 int setDTRBigModbusBit(int x, int y)
 {
@@ -122,22 +125,22 @@ extern int upravlSchematic;//флаг Rang
     {
       int offset = beginAdr-BEGIN_ADR_REGISTER+i;
 
-      int idxObj = offset/24;
+      int idxObj = offset/(PART_REGISTERS_DTR*REGISTERS_DTR);
 
       unsigned int *ranguvannja_dtr = &edition_settings.ranguvannja_set_dt_source_plus[N_BIG*idxObj]; //Ранжування прямих
-      if(((offset%24)/6)==1)
+      if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==1)
           ranguvannja_dtr = &edition_settings.ranguvannja_set_dt_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
-      if(((offset%24)/6)==2)
+      if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==2)
           ranguvannja_dtr = &edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*idxObj]; //Ранжування 
-      if(((offset%24)/6)==3)
+      if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==3)
           ranguvannja_dtr = &edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*idxObj]; //Ранжування 
 
-      if((offset/6)!=idxObjOld) {
-       idxObjOld = offset/6;
+      if((offset/REGISTERS_DTR)!=idxObjOld) {
+       idxObjOld = offset/REGISTERS_DTR;
        for(int dx=0; dx<N_BIG; dx++) tmp[dx]=ranguvannja_dtr[dx];//сохр старое ранж
       }//if
 
-      int bitOld = getSequenceN_BIGIndexActiveBit(offset%6, tmp);//индекс активного бита
+      int bitOld = getSequenceN_BIGIndexActiveBit(offset%REGISTERS_DTR, tmp);//индекс активного бита
       if(bitOld!=-1) {
         ranguvannja_dtr[bitOld/32] &= ~(1<<(bitOld%32));
       }//if
@@ -149,14 +152,14 @@ extern int upravlSchematic;//флаг Rang
       if(adr==0) continue;
       int offset = beginAdr-BEGIN_ADR_REGISTER+i;
 
-      int idxObj = offset/24;
+      int idxObj = offset/(PART_REGISTERS_DTR*REGISTERS_DTR);
 
       unsigned int *ranguvannja_dtr = &edition_settings.ranguvannja_set_dt_source_plus[N_BIG*idxObj]; //Ранжування прямих
-      if(((offset%24)/6)==1)
+      if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==1)
           ranguvannja_dtr = &edition_settings.ranguvannja_set_dt_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
-      if(((offset%24)/6)==2)
+      if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==2)
           ranguvannja_dtr = &edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*idxObj]; //Ранжування 
-      if(((offset%24)/6)==3)
+      if(((offset%(PART_REGISTERS_DTR*REGISTERS_DTR))/REGISTERS_DTR)==3)
           ranguvannja_dtr = &edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*idxObj]; //Ранжування 
       int bit = encoderN_BIGACMD(adr-getACMDSmallBeginAdr()); //кодировщик адреса modbus в индекс бита для реле
       if(bit!=-1) {

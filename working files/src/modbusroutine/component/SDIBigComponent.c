@@ -3,7 +3,9 @@
 //начальный регистр в карте пам€ти
 #define BEGIN_ADR_REGISTER 1516
 //конечный регистр в карте пам€ти
-#define END_ADR_REGISTER 1675
+#define END_ADR_REGISTER 1651
+
+#define REGISTERS_SDI 8
 
 int privateSDIBigGetReg2(int adrReg);
 
@@ -43,7 +45,8 @@ int getSDIBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateSDIBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_leds[0], 8, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_leds[0], 
+                                     REGISTERS_SDI, adrReg-BEGIN_ADR_REGISTER );
 }//getSDIBigModbusRegister(int adrReg)
 int getSDIBigModbusBit(int x)
 {
@@ -93,7 +96,7 @@ extern int upravlSchematic;//флаг Rang
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
 
-  writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_leds[0], 8, beginAdr,
+  writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_leds[0], REGISTERS_SDI, beginAdr,
                                 countAdr, BEGIN_ADR_REGISTER);
 
       //¬јЋ»ƒј÷»я ”—ѕ≈ЎЌј - ”—“јЌќ¬ ј

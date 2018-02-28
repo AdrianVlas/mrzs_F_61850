@@ -5,6 +5,8 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 2571
 
+#define REGISTERS_PF 2
+
 int privatePFBigGetReg2(int adrReg);
 
 int getPFBigModbusRegister(int);//получить содержимое регистра
@@ -44,10 +46,10 @@ int getPFBigModbusRegister(int adrReg)
   if(privatePFBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
-  int bitInOut  = current_settings_interfaces.ranguvannja_tf[offset/2];
+  int bitInOut  = current_settings_interfaces.ranguvannja_tf[offset/REGISTERS_PF];
   int bit = -1;
   int adr = -1;
-  switch(offset%2)
+  switch(offset%REGISTERS_PF)
   {
    case 0:
      bit = (bitInOut&0xFFFF)-1;
@@ -87,7 +89,7 @@ int setPFBigModbusRegister(int adrReg, int dataReg)
   superSetTempWriteArray(dataReg);//записать в буфер
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
-  switch(offset%2)
+  switch(offset%REGISTERS_PF)
   {
    case 0:
      if(!dataReg) return 0;
@@ -132,9 +134,10 @@ extern int upravlSchematic;//флаг Rang
     {
       unsigned int adr = (unsigned short)tempWriteArray[offsetTempWriteArray+i];//новое значение
       int offset = beginAdr-BEGIN_ADR_REGISTER+i;
+      int subObj = offset/REGISTERS_PF;
       int bit = -1;
 
-  switch(offset%2)
+  switch(offset%REGISTERS_PF)
   {
    case 0:
       if(adr==0) bit = -2;
@@ -142,8 +145,8 @@ extern int upravlSchematic;//флаг Rang
 
       if(bit!=-1) {
          if(bit==-2) bit=-1;
-         edition_settings.ranguvannja_tf[offset/2] &= (uint32_t)~0xffff;
-         edition_settings.ranguvannja_tf[offset/2] |= (bit+1);
+         edition_settings.ranguvannja_tf[subObj] &= (uint32_t)~0xffff;
+         edition_settings.ranguvannja_tf[subObj] |= (bit+1);
       }//if
    break;
 
@@ -153,8 +156,8 @@ extern int upravlSchematic;//флаг Rang
 
       if(bit!=-1) {
          if(bit==-2) bit=-1;
-         edition_settings.ranguvannja_tf[offset/2] &= (uint32_t)~(0xffff<<16);
-         edition_settings.ranguvannja_tf[offset/2] |= ((bit+1)<<16);//
+         edition_settings.ranguvannja_tf[subObj] &= (uint32_t)~(0xffff<<16);
+         edition_settings.ranguvannja_tf[subObj] |= ((bit+1)<<16);//
       }//if
    break;
   }//switch

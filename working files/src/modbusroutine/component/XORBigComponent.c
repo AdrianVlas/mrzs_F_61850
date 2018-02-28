@@ -5,6 +5,8 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 2523
 
+#define REGISTERS_XOR 2
+
 int privateXORBigGetReg2(int adrReg);
 
 int getXORBigModbusRegister(int);//получить содержимое регистра
@@ -43,7 +45,7 @@ int getXORBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateXORBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_d_xor[0], 2, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_d_xor[0], REGISTERS_XOR, adrReg-BEGIN_ADR_REGISTER );
 }//getDOUTBigModbusRegister(int adrReg)
 int getXORBigModbusBit(int x)
 {
@@ -94,7 +96,7 @@ extern int upravlSchematic;//флаг Rang
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
 
-  writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_d_xor[0], 2, beginAdr,
+  writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_d_xor[0], REGISTERS_XOR, beginAdr,
                                 countAdr, BEGIN_ADR_REGISTER);
 
       //ВАЛИДАЦИЯ УСПЕШНА - УСТАНОВКА

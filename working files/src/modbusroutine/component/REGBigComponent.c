@@ -4,6 +4,9 @@
 #define BEGIN_ADR_REGISTER 13000
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 13075
+
+#define REGISTERS_REG 32
+
 extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 
 int privateREGBigGetReg2(int adrReg);
@@ -46,9 +49,11 @@ int getREGBigModbusRegister(int adrReg)
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
 //Ранжирование источников запуска аналогового регистратора
-  if(offset<32) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_analog_registrator[0], 32, offset );
+  if(offset<32) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_analog_registrator[0],
+                                                   REGISTERS_REG, offset );
 //Ранжирование источников запуска дискретного регистратора
-  if(offset>=36&&offset<70) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_digital_registrator[0], 32, offset );
+  if(offset>=36&&offset<70) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_digital_registrator[0],
+                                                               REGISTERS_REG, offset );
 
   switch(offset)
     {
@@ -186,7 +191,7 @@ int postREGBigWriteAction(void)
       int offset = beginAdr-BEGIN_ADR_REGISTER+i;
       if(offset<32&&flag1)
         {
-          writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_analog_registrator[0], 32, beginAdr,
+          writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_analog_registrator[0], REGISTERS_REG, beginAdr,
                                        countReg, BEGIN_ADR_REGISTER);
           flag1=0;
           upravlSchematic = 1;//флаг Rang
@@ -194,7 +199,7 @@ int postREGBigWriteAction(void)
 
       if(offset>=36&&offset<70&&flag2)
         {
-          writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_digital_registrator[0], 32, offset-36,
+          writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_digital_registrator[0], REGISTERS_REG, offset-36,
                                        countReg, BEGIN_ADR_REGISTER+36);
           flag2=0;
           upravlSchematic = 1;//флаг Rang

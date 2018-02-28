@@ -5,6 +5,9 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 2059
 
+#define REGISTERS_MFT 16
+#define PART_REGISTERS_MFT 3
+
 int privateMFTBigGetReg2(int adrReg);
 
 int getMFTBigModbusRegister(int);//получить содержимое регистра
@@ -46,15 +49,15 @@ int getMFTBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateMFTBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   int offset = adrReg-BEGIN_ADR_REGISTER;
-  int idxObj = offset/48;
+  int idxObj = offset/(REGISTERS_MFT*PART_REGISTERS_MFT);
 //поиск активного бита
   unsigned int *ranguvannja_mft = &current_settings_interfaces.ranguvannja_df_source_plus[N_BIG*idxObj]; //Ранжування прямих
-  if(((offset%48)/16)==1)
+  if(((offset%(REGISTERS_MFT*PART_REGISTERS_MFT))/REGISTERS_MFT)==1)
        ranguvannja_mft = &current_settings_interfaces.ranguvannja_df_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
-  if(((offset%48)/16)==2)
+  if(((offset%(REGISTERS_MFT*PART_REGISTERS_MFT))/REGISTERS_MFT)==2)
        ranguvannja_mft = &current_settings_interfaces.ranguvannja_df_source_blk[N_BIG*idxObj]; //Ранжування блокування 
 
-  int bit = getSequenceN_BIGIndexActiveBit(offset%16, ranguvannja_mft);//индекс активного бита
+  int bit = getSequenceN_BIGIndexActiveBit(offset%REGISTERS_MFT, ranguvannja_mft);//индекс активного бита
   if(bit!=-1)
     {
       int adr = decoderN_BIGACMD(bit);
@@ -82,7 +85,7 @@ int setMFTBigModbusRegister(int adrReg, int dataReg)
   superSetTempWriteArray(dataReg);//записать в буфер
 
   //проверка на допустимость
-  return validMFTN_BIGACMD(dataReg, (adrReg-BEGIN_ADR_REGISTER)/48);
+  return validMFTN_BIGACMD(dataReg, (adrReg-BEGIN_ADR_REGISTER)/(REGISTERS_MFT*PART_REGISTERS_MFT));
 }//getDOUTBigModbusRegister(int adrReg)
 int setMFTBigModbusBit(int x, int y)
 {
@@ -119,20 +122,20 @@ extern int upravlSchematic;//флаг Rang
     {
       int offset = beginAdr-BEGIN_ADR_REGISTER+i;
 
-      int idxObj = offset/48;
+      int idxObj = offset/(REGISTERS_MFT*PART_REGISTERS_MFT);
       //поиск активного бита
       unsigned int *ranguvannja_mft = &edition_settings.ranguvannja_df_source_plus[N_BIG*idxObj]; //Ранжування прямих
-      if(((offset%48)/16)==1)
+      if(((offset%(REGISTERS_MFT*PART_REGISTERS_MFT))/REGISTERS_MFT)==1)
              ranguvannja_mft = &edition_settings.ranguvannja_df_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
-      if(((offset%48)/16)==2)
+      if(((offset%(REGISTERS_MFT*PART_REGISTERS_MFT))/REGISTERS_MFT)==2)
              ranguvannja_mft = &edition_settings.ranguvannja_df_source_blk[N_BIG*idxObj]; //Ранжування блокування 
 
-      if((offset/16)!=idxObjOld) {
-       idxObjOld = offset/16;
+      if((offset/REGISTERS_MFT)!=idxObjOld) {
+       idxObjOld = offset/REGISTERS_MFT;
        for(int dx=0; dx<N_BIG; dx++) tmp[dx]=ranguvannja_mft[dx];//сохр старое ранж
       }//if
 
-      int bitOld = getSequenceN_BIGIndexActiveBit(offset%16, tmp);//индекс активного бита
+      int bitOld = getSequenceN_BIGIndexActiveBit(offset%REGISTERS_MFT, tmp);//индекс активного бита
       if(bitOld!=-1) {
         ranguvannja_mft[bitOld/32] &= ~(1<<(bitOld%32));
       }//if
@@ -144,12 +147,12 @@ extern int upravlSchematic;//флаг Rang
       if(adr==0) continue;
       int offset = beginAdr-BEGIN_ADR_REGISTER+i;
 
-      int idxObj = offset/48;
+      int idxObj = offset/(REGISTERS_MFT*PART_REGISTERS_MFT);
       //поиск активного бита
       unsigned int *ranguvannja_mft = &edition_settings.ranguvannja_df_source_plus[N_BIG*idxObj]; //Ранжування прямих
-      if(((offset%48)/16)==1)
+      if(((offset%(REGISTERS_MFT*PART_REGISTERS_MFT))/REGISTERS_MFT)==1)
              ranguvannja_mft = &edition_settings.ranguvannja_df_source_minus[N_BIG*idxObj]; //Ранжування інверсних 
-      if(((offset%48)/16)==2)
+      if(((offset%(REGISTERS_MFT*PART_REGISTERS_MFT))/REGISTERS_MFT)==2)
              ranguvannja_mft = &edition_settings.ranguvannja_df_source_blk[N_BIG*idxObj]; //Ранжування блокування 
 
       int bit = encoderN_BIGACMD(adr-getACMDSmallBeginAdr()); //кодировщик адреса modbus в индекс бита для реле

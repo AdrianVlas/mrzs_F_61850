@@ -5,6 +5,8 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 2379
 
+#define REGISTERS_VV 32
+
 int privateVVBigGetReg2(int adrReg);
 
 int getVVBigModbusRegister(int);//получить содержимое регистра
@@ -46,10 +48,10 @@ int getVVBigModbusRegister(int adrReg)
   int offset = adrReg-BEGIN_ADR_REGISTER;
 //поиск активного бита
   unsigned int *ranguvannja_vv = &current_settings_interfaces.ranguvannja_on_cb[0]; //Ранжування прямих
-  if((offset/32)==1)
+  if((offset/REGISTERS_VV)==1)
        ranguvannja_vv = &current_settings_interfaces.ranguvannja_off_cb[0]; //Ранжування інверсних 
 
-  int bit = getSequenceN_BIGIndexActiveBit(offset%32, ranguvannja_vv);//индекс активного бита
+  int bit = getSequenceN_BIGIndexActiveBit(offset%REGISTERS_VV, ranguvannja_vv);//индекс активного бита
   if(bit!=-1)
     {
       int adr = decoderN_BIGACMD(bit);
@@ -114,17 +116,17 @@ extern int upravlSchematic;//флаг Rang
       int offset = beginAdr-BEGIN_ADR_REGISTER+i;
 
       unsigned int *ranguvannja_vv = &edition_settings.ranguvannja_on_cb[0]; //Ранжуванн
-      if((offset/32)==1)
+      if((offset/REGISTERS_VV)==1)
            ranguvannja_vv = &edition_settings.ranguvannja_off_cb[0]; //Ранжування 
 
-      if((offset/32)!=idxObjOld) {
-       idxObjOld = offset/32;
+      if((offset/REGISTERS_VV)!=idxObjOld) {
+       idxObjOld = offset/REGISTERS_VV;
        for(int dx=0; dx<N_BIG; dx++) tmp[dx]=ranguvannja_vv[dx];//сохр старое ранж
       }//if
 
-      int bitOld = getSequenceN_BIGIndexActiveBit(offset%32, tmp);//индекс активного бита
+      int bitOld = getSequenceN_BIGIndexActiveBit(offset%REGISTERS_VV, tmp);//индекс активного бита
       if(bitOld!=-1) {
-        ranguvannja_vv[bitOld/32] &= ~(1<<(bitOld%32));
+        ranguvannja_vv[bitOld/REGISTERS_VV] &= ~(1<<(bitOld%REGISTERS_VV));
       }//if
     }//for
   //добавить новое
@@ -135,12 +137,12 @@ extern int upravlSchematic;//флаг Rang
       int offset = beginAdr-BEGIN_ADR_REGISTER+i;
 
       unsigned int *ranguvannja_vv = &edition_settings.ranguvannja_on_cb[0]; //Ранжуванн
-      if((offset/32)==1)
+      if((offset/REGISTERS_VV)==1)
            ranguvannja_vv = &edition_settings.ranguvannja_off_cb[0]; //Ранжування 
 
       int bit = encoderN_BIGACMD(adr-getACMDSmallBeginAdr()); //кодировщик адреса modbus в индекс бита для реле
       if(bit!=-1) {
-        ranguvannja_vv[bit/32] |= (1<<(bit%32));
+        ranguvannja_vv[bit/REGISTERS_VV] |= (1<<(bit%REGISTERS_VV));
       }//if
     }//for
 

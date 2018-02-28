@@ -5,6 +5,8 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 2203
 
+#define REGISTERS_KEY 8
+
 int privateKEYBigGetReg2(int adrReg);
 
 int getKEYBigModbusRegister(int);//получить содержимое регистра
@@ -43,7 +45,7 @@ int getKEYBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateKEYBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_SMALLModbusRegister(&current_settings_interfaces.ranguvannja_buttons[0], 8, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_SMALLModbusRegister(&current_settings_interfaces.ranguvannja_buttons[0], REGISTERS_KEY, adrReg-BEGIN_ADR_REGISTER );
 }//getDOUTBigModbusRegister(int adrReg)
 int getKEYBigModbusBit(int x)
 {
@@ -66,7 +68,7 @@ int setKEYBigModbusRegister(int adrReg, int dataReg)
   if(validN_SMALLACMD(dataReg)==MARKER_ERRORPERIMETR) return MARKER_ERRORPERIMETR;
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
-  uint32_t maska = ((uint32_t)edition_settings.buttons_mode)&(1<<((offset/8)*1));
+  uint32_t maska = ((uint32_t)edition_settings.buttons_mode)&(1<<((offset/REGISTERS_KEY)*1));
   //проверка на допустимость Режим «Кнопка»
   if(!maska)
   switch((unsigned short)dataReg)
@@ -203,7 +205,7 @@ extern int upravlSchematic;//флаг Rang
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
 
-  writeRangN_SMALLModbusRegister(&edition_settings.ranguvannja_buttons[0], 8, beginAdr,
+  writeRangN_SMALLModbusRegister(&edition_settings.ranguvannja_buttons[0], REGISTERS_KEY, beginAdr,
                                 countAdr, BEGIN_ADR_REGISTER);
 
       //ВАЛИДАЦИЯ УСПЕШНА - УСТАНОВКА

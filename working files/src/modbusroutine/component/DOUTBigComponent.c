@@ -1,10 +1,12 @@
-//#include <QtWidgets>
+
 #include "header.h"
 
 //начальный регистр в карте пам€ти
 #define BEGIN_ADR_REGISTER 1100
 //конечный регистр в карте пам€ти
 #define END_ADR_REGISTER 1355
+
+#define REGISTERS_OUTPUTS 16
 
 int privateDOUTBigGetReg2(int adrReg);
 
@@ -42,7 +44,7 @@ int getDOUTBigModbusRegister(int adrReg)
 {
   //получить содержимое регистра
   if(privateDOUTBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
-  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_outputs[0], 16, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_outputs[0], REGISTERS_OUTPUTS, adrReg-BEGIN_ADR_REGISTER );
 }//getDOUTBigModbusRegister(int adrReg)
 int getDOUTBigModbusBit(int x)
 {
@@ -95,7 +97,7 @@ extern int upravlSchematic;//флаг Rang
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
 
-  writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_outputs[0], 16, beginAdr,
+  writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_outputs[0], REGISTERS_OUTPUTS, beginAdr,
                                 countAdr, BEGIN_ADR_REGISTER);
 
       //¬јЋ»ƒј÷»я ”—ѕ≈ЎЌј - ”—“јЌќ¬ ј

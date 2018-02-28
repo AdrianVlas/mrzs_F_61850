@@ -5,6 +5,8 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1515
 
+#define REGISTERS_DV 8
+
 int privateDVBigGetReg2(int adrReg);
 
 int getDVBigModbusRegister(int);//получить содержимое регистра
@@ -43,7 +45,7 @@ int getDVBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateDVBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return getRangN_SMALLModbusRegister(&current_settings_interfaces.ranguvannja_inputs[0], 8, adrReg-BEGIN_ADR_REGISTER );
+  return getRangN_SMALLModbusRegister(&current_settings_interfaces.ranguvannja_inputs[0], REGISTERS_DV, adrReg-BEGIN_ADR_REGISTER );
 }//getDVBigModbusRegister(int adrReg)
 int getDVBigModbusBit(int x)
 {
@@ -93,7 +95,7 @@ extern int upravlSchematic;//флаг Rang
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
 
-  writeRangN_SMALLModbusRegister(&edition_settings.ranguvannja_inputs[0], 8, beginAdr,
+  writeRangN_SMALLModbusRegister(&edition_settings.ranguvannja_inputs[0], REGISTERS_DV, beginAdr,
                                 countAdr, BEGIN_ADR_REGISTER);
 
       //ВАЛИДАЦИЯ УСПЕШНА - УСТАНОВКА

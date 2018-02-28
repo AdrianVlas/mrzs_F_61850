@@ -176,23 +176,9 @@ int postYustBigWriteAction(void) {
     _SET_BIT(control_i2c_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
   }//if
   else if(upravlMin==0x1111) {
-    //min param
-//    if (current_ekran.current_level != EKRAN_MAIN) return ERROR_VALID2;
-//    semaphore_read_state_ar_record = 1;
-//    if (state_ar_record != STATE_AR_NO_RECORD) {
-//      semaphore_read_state_ar_record = 0;
-//      return ERROR_VALID2;
-//    }//if(state_ar_record != STATE_AR_NO_RECORD)
-//    state_ar_record = STATE_AR_TEMPORARY_BLOCK;
 
     //Скидаємо настройки у "мінімальні заводські значення"
     min_settings(&current_settings_interfaces);
-    //     if (method_setting != SET_DATA_IMMEDITATE) return 2;
-//    actions_after_changing_tiomouts_ar();
-
-//    //Розблоковуємо роботу аналогового реєстратора
-//    state_ar_record = STATE_AR_NO_RECORD;
-//    semaphore_read_state_ar_record = 0;
 
     //Відбулася зміна настройки
     _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
