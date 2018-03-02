@@ -409,14 +409,7 @@ void global_vareiables_installation(void)
   /**************************/
   
   //Modbus-RTU
-  number_32bit_in_target = 0;
   type_of_settings_changed = 0;
-  point_to_edited_rang = NULL;
-  for(size_t i = 0; i < N_BIG; i++)
-  {
-    clear_array_rang[i] = 0;
-    set_array_rang[i] = 0;
-  }
   password_ustuvannja = 0;
   global_component_installation();  
 }

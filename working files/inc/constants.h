@@ -1,3 +1,6 @@
+#ifndef __CONSTANTS__
+#define __CONSTANTS__
+
 #include "const_global.h"
 
 #include "const_fsmc.h"
@@ -69,3 +72,5 @@
 #include "const_interfaces.h"
 
 #include "SEGGER_SYSVIEW.h"
+
+#endif 

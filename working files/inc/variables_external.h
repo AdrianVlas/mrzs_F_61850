@@ -1,3 +1,6 @@
+#ifndef __EXTERNAL_VARIABLES_H
+#define __EXTERNAL_VARIABLES_H
+
 extern unsigned int semaphore_adc_irq;
 extern unsigned int adc_DATA_VAL_read;
 //extern unsigned int adc_TEST_VAL_read;
@@ -496,10 +499,6 @@ extern unsigned int password_set_USB, password_set_RS485;
 extern unsigned int password_changed;
 extern unsigned int password_ustuvannja;
 extern unsigned int information_about_restart_counter;
-extern unsigned int *point_to_edited_rang;
-extern unsigned int number_32bit_in_target;
-extern unsigned int clear_array_rang[N_BIG];
-extern unsigned int set_array_rang[N_BIG];
 extern unsigned int restart_timeout_interface;
 extern unsigned int timeout_idle_new_settings;
 extern unsigned int restart_timeout_idle_new_settings;
@@ -550,5 +549,7 @@ extern unsigned int temp_value_UC;
 extern unsigned int temp_value_3U0;
 extern unsigned int temp_value_I2;
 extern unsigned int temp_value_I1;
+
+#endif
 
 #endif

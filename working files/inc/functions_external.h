@@ -1,3 +1,6 @@
+#ifndef __EXTERNAL_FUNCTIONS_H
+#define __EXTERNAL_FUNCTIONS_H
+
 extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
 extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 
@@ -339,3 +342,4 @@ extern int str_to_int_DATE_Mmm(void);
 extern void inputPacketParserUSB(void);
 extern void inputPacketParserRS485(void);
 
+#endif
