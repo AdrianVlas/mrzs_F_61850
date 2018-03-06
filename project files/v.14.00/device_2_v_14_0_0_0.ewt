@@ -1733,9 +1733,12 @@
             </group>
             <group>
                 <name>Serial Dataflash</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_driver_serial_dataflash.h</name>
-                </file>
+                <group>
+                    <name>a.b.00.d</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.b.00.d\const_driver_serial_dataflash.h</name>
+                    </file>
+                </group>
             </group>
         </group>
         <group>

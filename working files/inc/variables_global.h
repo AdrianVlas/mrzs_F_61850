@@ -662,7 +662,7 @@ __INFO_REJESTRATOR info_rejestrator_ar;
 unsigned char crc_info_rejestrator_ar_ctrl;
 __INFO_REJESTRATOR info_rejestrator_ar_ctrl;
 unsigned int size_one_ar_record /*= 0*/;
-unsigned int number_word_digital_part_ar;
+const unsigned int number_word_digital_part_ar = (NUMBER_TOTAL_SIGNAL_FOR_RANG / (8*sizeof(short int))) + ((NUMBER_TOTAL_SIGNAL_FOR_RANG % (8*sizeof(short int))) != 0);
 unsigned int max_number_records_ar/* = 0*/; //Максимальна кількість записів в аналоговому реєстраторі при вибраних витримках (розраховується з витрмиок доаварійного і післяаварійного часу)
 unsigned int semaphore_read_state_ar_record/* = 0*/; //Коли цей симафор встановлений, то якщо не йде запис, то новий запис не можна починати, а якщо іде, то можна продовжувати запис
 unsigned int continue_previous_record_ar/* = 0*/; //Сигналізує, не зняті вще всі джерела запуску аналогового реєстратора після його попе6реднього запуску

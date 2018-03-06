@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.20.2.14834</state>
+                    <state>8.22.1.15696</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -4735,9 +4735,12 @@
             </group>
             <group>
                 <name>Serial Dataflash</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_driver_serial_dataflash.h</name>
-                </file>
+                <group>
+                    <name>a.b.00.d</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.b.00.d\const_driver_serial_dataflash.h</name>
+                    </file>
+                </group>
             </group>
         </group>
         <group>

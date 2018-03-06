@@ -340,7 +340,7 @@ extern __INFO_REJESTRATOR info_rejestrator_ar;
 extern unsigned char crc_info_rejestrator_ar_ctrl;
 extern __INFO_REJESTRATOR info_rejestrator_ar_ctrl;
 extern unsigned int size_one_ar_record;
-extern unsigned int number_word_digital_part_ar;
+extern const unsigned int number_word_digital_part_ar;
 extern unsigned int max_number_records_ar;
 extern unsigned int semaphore_read_state_ar_record;
 extern unsigned int continue_previous_record_ar;
