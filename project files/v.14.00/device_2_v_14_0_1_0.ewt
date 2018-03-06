@@ -1731,9 +1731,12 @@
             </group>
             <group>
                 <name>Serial Dataflash</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_driver_serial_dataflash.h</name>
-                </file>
+                <group>
+                    <name>a.b.01.d</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.b.01.d\const_driver_serial_dataflash.h</name>
+                    </file>
+                </group>
             </group>
         </group>
         <group>
@@ -1819,6 +1822,9 @@
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PKVBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PREGBigComponent.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\QAISmallComponent.c</name>
