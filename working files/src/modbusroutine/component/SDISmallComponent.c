@@ -9,7 +9,7 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 233
 //конечный bit в карте памяти
-#define END_ADR_BIT 251
+#define END_ADR_BIT 248
 
 int privateSDISmallGetReg2(int adrReg);
 int privateSDISmallGetBit2(int adrBit);

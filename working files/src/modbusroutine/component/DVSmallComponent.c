@@ -9,7 +9,7 @@
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 200
 //конечный bit в карте памяти
-#define END_ADR_BIT 219
+#define END_ADR_BIT 215
 
 int privateDVSmallGetReg2(int adrReg);
 int privateDVSmallGetBit2(int adrBit);
@@ -24,7 +24,6 @@ void setDVSmallCountObject(void);//записать к-во обектов
 void preDVSmallReadAction(void);//action до чтения
 void preDVSmallWriteAction(void);//action до записи
 int  postDVSmallWriteAction(void);//action после записи
-//void loadDVSmallActualData(void);
 
 COMPONENT_OBJ *dvsmallcomponent;
 

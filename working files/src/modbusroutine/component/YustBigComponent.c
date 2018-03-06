@@ -19,6 +19,8 @@ int postYustBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *yustbigcomponent;
 
+  int upravlYust=0;//флаг юстировки
+
 /**************************************/
 //подготовка компонента ёстировки
 /**************************************/
@@ -120,7 +122,7 @@ int postYustBigWriteAction(void) {
   int countAdr = endAdr-beginAdr+1;
   if(endAdr<0) countAdr = 1;
 
-  int upravlYust=0;//флаг юстировки
+//  int upravlYust=0;//флаг юстировки
   int upravlMin=0;//флаг min param
   int number_iteration_el=-1;
 

@@ -11,10 +11,8 @@ int setIUSmallModbusRegister(int, int);//получить содержимое регистра
 int setIUSmallModbusBit(int, int);//получить содержимое бита
 
 void preIUSmallReadAction(void);//action до чтения
-//void postIUSmallReadAction(void);//action после чтения
 void preIUSmallWriteAction(void);//action до записи
 int postIUSmallWriteAction(void);//action после записи
-//void config_and_settingsIUSmall(void);//action активации
 
 int privateIUGetReg2(int adrReg);
 

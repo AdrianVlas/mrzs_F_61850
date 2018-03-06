@@ -4,7 +4,7 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 1016
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 1098
+#define END_ADR_REGISTER 1099
 
 int privateRPRBigGetReg2(int adrReg);
 
