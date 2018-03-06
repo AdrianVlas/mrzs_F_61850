@@ -1246,6 +1246,9 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
           }
           if (current_ekran.index_position >= ((int)(i + offset))) position_temp--;
           offset++;
+          
+          //Робота з Watchdog
+          watchdog_routine();
         }
         else i++;
       }
