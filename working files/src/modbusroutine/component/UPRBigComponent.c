@@ -934,6 +934,7 @@ void preUPRBigWriteAction(void)
 int postUPRBigWriteAction(void)
 {
   extern int upravlSetting;//флаг Setting
+  extern int upravlSchematic;//флаг Rang
 //action после записи
   int beginAdr = uprbigcomponent->operativMarker[0];
   if(beginAdr<0) return 0;//не было записи
@@ -964,6 +965,15 @@ int postUPRBigWriteAction(void)
       {
         return ERROR_VALID3;//ошибка валидации
       }//if
+     //ќ—ќЅјя —Ѕќ– ј
+    if((editControl == (uint32_t*)&edition_settings.control_extra_settings_1) ||
+       (editControl == (uint32_t*)&edition_settings.configuration) 
+      )
+    {
+      //тотальный контроль
+      uprFuncValidWrite000(-offset, &uprMaska, &editControl);
+      if(flag) upravlSchematic = 1;//флаг Rang
+    }//if
     }//for
   }//if(beginAdr>=BEGIN_ADR_BIT)
   else
@@ -992,6 +1002,15 @@ int postUPRBigWriteAction(void)
         {
           return ERROR_VALID3;//ошибка валидации
         }//if
+       //ќ—ќЅјя —Ѕќ– ј
+    if((editControl == (uint32_t*)&edition_settings.control_extra_settings_1) ||
+       (editControl == (uint32_t*)&edition_settings.configuration) 
+      )
+    {
+      //тотальный контроль
+     uprFuncValidWrite000(-offset*16-bit, &uprMaska, &editControl);
+     if(flag) upravlSchematic = 1;//флаг Rang
+    }//if
       }//for
     }//for
   }//else

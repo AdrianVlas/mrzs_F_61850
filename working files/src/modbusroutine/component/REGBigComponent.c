@@ -58,9 +58,9 @@ int getREGBigModbusRegister(int adrReg)
   switch(offset)
     {
     case 32://Время записи аналогового регистратора (доаварийный массив)
-      return current_settings_interfaces.prefault_number_periods*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+      return current_settings_interfaces.prefault_number_periods;//*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
     case 33://Время записи аналогового регистратора (послеаварый массив)
-      return current_settings_interfaces.postfault_number_periods*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+      return current_settings_interfaces.postfault_number_periods;//*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
     case 34://Количество аналоговых регистраторов
       return info_rejestrator_ar.number_records;
     case 35://Текущий аналоговый регистратор
