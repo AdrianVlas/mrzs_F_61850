@@ -61,6 +61,16 @@ int getYustBigModbusRegister(int adrReg)
   case 26:
   case 27:
     return ustuvannja[offset-20];
+  case 52-16+0://62000-16 +0
+  case 52-16+1://62000-16 +1
+  case 52-16+2://62000-16 +2
+  case 52-16+3://62000-16 +3
+  case 52-16+4://62000-16 +4
+  case 52-16+5://62000-16 +5
+  case 52-16+6://62000-16 +6
+  case 52-16+7://62000-16 +7
+    return phi_ustuvannja[offset- 52-16+0];
+
   case 52://62000
     return current_settings_interfaces.number_iteration_el;//Максимальное количество итераций
   }//switch
@@ -81,6 +91,7 @@ int setYustBigModbusRegister(int adrReg, int dataReg)
   if(yustbigcomponent->isActiveActualData) {
     edit_serial_number_dev = serial_number_dev;
     for(int i=0; i<NUMBER_ANALOG_CANALES; i++) edit_ustuvannja[i] = ustuvannja[i];
+    for(int i=0; i<NUMBER_ANALOG_CANALES; i++) phi_edit_ustuvannja[i] = phi_ustuvannja[i];
   }//if
   yustbigcomponent->isActiveActualData = 0;
 
@@ -145,6 +156,17 @@ int postYustBigWriteAction(void) {
     case 27:
       edit_ustuvannja[offset-20] = tempWriteArray[offsetTempWriteArray+i];
       break;
+  case 52-16+0://62000-16 +0
+  case 52-16+1://62000-16 +1
+  case 52-16+2://62000-16 +2
+  case 52-16+3://62000-16 +3
+  case 52-16+4://62000-16 +4
+  case 52-16+5://62000-16 +5
+  case 52-16+6://62000-16 +6
+  case 52-16+7://62000-16 +7
+      phi_edit_ustuvannja[offset- 52-16+0] = tempWriteArray[offsetTempWriteArray+i];
+      break;
+
     case 52://62000 number_iteration_el
       number_iteration_el = tempWriteArray[offsetTempWriteArray+i];//number_iteration_el
       break;
@@ -173,6 +195,7 @@ int postYustBigWriteAction(void) {
     changed_ustuvannja = CHANGED_ETAP_EXECUTION;
     serial_number_dev = edit_serial_number_dev;
     for(int i=0; i<NUMBER_ANALOG_CANALES; i++) ustuvannja[i] = edit_ustuvannja[i];
+    for(int i=0; i<NUMBER_ANALOG_CANALES; i++) phi_ustuvannja[i] = phi_edit_ustuvannja[i];
 
     changed_ustuvannja = CHANGED_ETAP_ENDED;
     _SET_BIT(control_i2c_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
