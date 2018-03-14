@@ -109,10 +109,10 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
   switch(offset)
     {
     case 32://Время записи аналогового регистратора (доаварийный массив)
-      if(dataReg<TIMEOUT_PREFAULT_MIN || dataReg>TIMEOUT_PREFAULT_MAX) return MARKER_ERRORDIAPAZON;
+      if(dataReg<TIMEOUT_PREFAULT_MIN/20 || dataReg>TIMEOUT_PREFAULT_MAX/20) return MARKER_ERRORDIAPAZON;
       break;
     case 33://Время записи аналогового регистратора (послеаварый массив)
-      if(dataReg<TIMEOUT_POSTFAULT_MIN || dataReg>TIMEOUT_POSTFAULT_MAX) return MARKER_ERRORDIAPAZON;
+      if(dataReg<TIMEOUT_POSTFAULT_MIN/20 || dataReg>TIMEOUT_POSTFAULT_MAX/20) return MARKER_ERRORDIAPAZON;
       break;
     case 34://Количество аналоговых регистраторов
       return MARKER_ERRORDIAPAZON;
@@ -207,11 +207,11 @@ int postREGBigWriteAction(void)
       switch(offset)
         {
         case 32://Время записи аналогового регистратора (доаварийный массив)
-          edition_settings.prefault_number_periods = tempWriteArray[offsetTempWriteArray+i]/20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+          edition_settings.prefault_number_periods = tempWriteArray[offsetTempWriteArray+i];// /20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
           upravlSetting = 1;//флаг Setting
           break;
         case 33://Время записи аналогового регистратора (послеаварый массив)
-          edition_settings.postfault_number_periods = tempWriteArray[offsetTempWriteArray+i]/20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+          edition_settings.postfault_number_periods = tempWriteArray[offsetTempWriteArray+i];// /20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
           upravlSetting = 1;//флаг Setting
           break;
         case 35://Текущий аналоговый регистратор
