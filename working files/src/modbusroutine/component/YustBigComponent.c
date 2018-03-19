@@ -198,7 +198,7 @@ int postYustBigWriteAction(void) {
     for(int i=0; i<NUMBER_ANALOG_CANALES; i++) phi_ustuvannja[i] = phi_edit_ustuvannja[i];
 
     changed_ustuvannja = CHANGED_ETAP_ENDED;
-    _SET_BIT(control_i2c_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
+    _SET_BIT(control_spi1_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
   }//if
   else if(upravlMin==0x1111) {
 
