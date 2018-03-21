@@ -926,6 +926,24 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
               val_m = (val >> 4) & 0xf;
               time_avar_analog[i] = (unsigned char)(val_m*10 + val_l);
             }
+          
+
+                            int temp_data;
+          
+          
+          if(subObj==4) {// return time_avar_analog[offsetRegister];
+                            if (offsetRegister < 3)
+                            {
+                              temp_data = time_avar_analog[4 + offsetRegister];
+                              if (offsetRegister == 2)temp_data += 2000; //Бо формат має бути чотиризначним числом
+                            } //break;
+                            
+                            else if (offsetRegister < 5 ) temp_data = time_avar_analog[3 - (offsetRegister - 3)];
+                            else if (offsetRegister == 5) temp_data = time_avar_analog[1]*100 + time_avar_analog[0];
+                            else temp_data = 0;
+                            return temp_data;
+          }//if
+          
           if(registrator==DISKRET_REGISTRATOR)
             return time_avar_analog[offsetRegister];
 
@@ -1083,25 +1101,31 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
                 }
             }
 //                }
-          /*
-                          unsigned int i = 0;
-                          while (i < length)
-                          {
-                            if (i < 3)
+          ///*
+                          //unsigned int i = 0;
+                         // while (i < length)
+          //while(offsetRegister)
+            //              {
+                            if (offsetRegister < 3)
+              //            case 0:
+                //          case 1:
+                  //        case 2:
                             {
-                              temp_data = time_avar_analog[4 + i];
-                              if (i == 2)temp_data += 2000; //Бо формат має бути чотиризначним числом
-                            }
-                            else if (i < 5 ) temp_data = time_avar_analog[3 - (i - 3)];
-                            else if (i == 5) temp_data = time_avar_analog[1]*100 + time_avar_analog[0];
+                              temp_data = time_avar_analog[4 + offsetRegister];
+                              if (offsetRegister == 2)temp_data += 2000; //Бо формат має бути чотиризначним числом
+                            } //break;
+                            
+                            else if (offsetRegister < 5 ) temp_data = time_avar_analog[3 - (offsetRegister - 3)];
+                            else if (offsetRegister == 5) temp_data = time_avar_analog[1]*100 + time_avar_analog[0];
                             else temp_data = 0;
 
-                            *(output_data + 2 + 2*i) = (temp_data >> 8) & 0xff;
-                            *(output_data + 3 + 2*i) = temp_data & 0xff;
-                            i++;
-                          }
-          */
-          return time_avar_analog[offsetRegister];
+            //                *(output_data + 2 + 2*i) = (temp_data >> 8) & 0xff;
+              //              *(output_data + 3 + 2*i) = temp_data & 0xff;
+                            //i++;
+                          //}//if
+          //*/
+                            return temp_data;
+//          return time_avar_analog[offsetRegister];
         }//case 0-6
 //      return 3;
         }//switch
