@@ -307,6 +307,7 @@ typedef struct
   unsigned int TCurrent;                //Коефіцієнт трансформації для трансформатора струмів
   unsigned int TCurrent04;              //Коефіцієнт трансформації для трансформатора струмів сторони 0.4кВ
   unsigned int TVoltage;                //Коефіцієнт трансформації для трансформатора напруг
+  unsigned int control_transformator;   //налаштування для меню "Трансформатор"
   
   unsigned int password1;                                       //Пароль для редагування з меню
   unsigned int password2;                                       //Пароль для очистки лічилчників енегії і ресурсу вимикача

@@ -2125,41 +2125,50 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 /*****************************************************/
 unsigned int action_after_changing_extra_settings(unsigned int new_value, __SETTINGS *target_label)
 {
-  unsigned int new_configuration = target_label->configuration;
-  if ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+  unsigned int error = 0;
+  if ((target_label->control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
   {
-    //Підготовляємо вивід з конфігурації МТЗ 0.4кВ
-    new_configuration &= (unsigned int)(~(1 << MTZ04_BIT_CONFIGURATION));
-  }
-  else
-  {
-    //Підготовляємо вивід з конфігурації СЗНП
-    new_configuration &= (unsigned int)(~(1 << TZNP_BIT_CONFIGURATION));
+    if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL) error |= (unsigned int)(1 << 31);
   }
   
-  //Виконуєм спробу зміни конфігурації по зміні Ib/I0.4 і повертаємо результат цієї спроби
-  unsigned int error = action_after_changing_of_configuration(new_configuration, target_label);
-  if (error == 0) 
+  if (error == 0)
   {
-    //Вводимо в дію номі значення  поля додаткових налаштувань
-    target_label->control_extra_settings_1 = new_value;
-    
-    for (size_t i = 0; i < NUMBER_UP; i++) 
+    unsigned int new_configuration = target_label->configuration;
+    if ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
     {
-      if (
-          ((target_label->ctrl_UP_input[i] == UP_CTRL_I04  ) && ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)) ||
-          ((target_label->ctrl_UP_input[i] == UP_CTRL_3I0_r) && ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)) ||
-          (
-           (
-            (target_label->ctrl_UP_input[i] == UP_CTRL_U1) ||
-            (target_label->ctrl_UP_input[i] == UP_CTRL_U2)
-           )
-           &&
-           ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)  
-          ) 
-         )   
+      //Підготовляємо вивід з конфігурації МТЗ 0.4кВ
+      new_configuration &= (unsigned int)(~(1 << MTZ04_BIT_CONFIGURATION));
+    }
+    else
+    { 
+      //Підготовляємо вивід з конфігурації СЗНП
+      new_configuration &= (unsigned int)(~(1 << TZNP_BIT_CONFIGURATION));
+    }
+  
+    //Виконуєм спробу зміни конфігурації по зміні Ib/I0.4 і повертаємо результат цієї спроби
+    error |= action_after_changing_of_configuration(new_configuration, target_label);
+    if (error == 0) 
+    {
+      //Вводимо в дію номі значення  поля додаткових налаштувань
+      target_label->control_extra_settings_1 = new_value;
+    
+      for (size_t i = 0; i < NUMBER_UP; i++) 
       {
-        action_after_changing_input_UP(target_label, i, UP_CTRL_Ia_Ib_Ic);
+        if (
+            ((target_label->ctrl_UP_input[i] == UP_CTRL_I04  ) && ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)) ||
+            ((target_label->ctrl_UP_input[i] == UP_CTRL_3I0_r) && ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)) ||
+            (
+             (  
+              (target_label->ctrl_UP_input[i] == UP_CTRL_U1) ||
+              (target_label->ctrl_UP_input[i] == UP_CTRL_U2)
+             )
+             &&
+             ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)  
+            ) 
+           )   
+        {
+          action_after_changing_input_UP(target_label, i, UP_CTRL_Ia_Ib_Ic);
+        }
       }
     }
   }

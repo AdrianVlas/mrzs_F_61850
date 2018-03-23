@@ -1486,6 +1486,7 @@ void main_manu_function(void)
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP2_UP:
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP3_UP:
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UP:
+    case EKRAN_TRANSFORMATOR_INFO:
     case EKRAN_CHOSE_SETTINGS:
     case EKRAN_LEVEL_CHOOSE_PASSWORDS:
     case EKRAN_LIST_INPUTS_FOR_RANGUVANNJA:
@@ -1789,6 +1790,23 @@ void main_manu_function(void)
 
                 //Формуємо екран витримки для захистів у яких є багато груп уставок
               make_ekran_chose_timeout();
+            }
+            else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL) current_ekran.index_position = 0;
+              while(
+                    ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+                    &&
+                    (current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_CONTROL)
+                   )
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL) current_ekran.index_position = 0;
+              }
+              
+              position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+
+              //Формуємо екран уставки-настройки
+              make_ekran_chose_setpoint_control_transformator();
             }
             else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
             {
@@ -2843,6 +2861,26 @@ void main_manu_function(void)
                 }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              {
+                //Натисну кнопка Enter у вікні вибору уставок-настройок трансформатора
+                if(current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_SETPOINT)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення уставок для вимикача
+                  current_ekran.current_level = EKRAN_TRANSFORMATOR_INFO_SETPOINT;
+                }
+                else if (current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_CONTROL)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення управлінської інформації для вимикача
+                  current_ekran.current_level = EKRAN_TRANSFORMATOR_INFO_CONTROL;
+                } 
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+                current_ekran.cursor_on = 1;
+                current_ekran.cursor_blinking_on = 0;
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
               {
@@ -3904,6 +3942,23 @@ void main_manu_function(void)
                 //Формуємо екран витримки для захистів у яких є багато груп уставок
                 make_ekran_chose_timeout();
               }
+              else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL - 1;
+                while(
+                      ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+                      &&
+                      (current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_CONTROL)
+                     )
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL - 1;
+                }
+              
+                position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+
+                //Формуємо екран уставки-настройки
+                make_ekran_chose_setpoint_control_transformator();
+              }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_SWITCHER - 1;
@@ -4581,6 +4636,23 @@ void main_manu_function(void)
                 //Формуємо екран витримки для захистів у яких є багато груп уставок
                 make_ekran_chose_timeout();
               }
+              else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL) current_ekran.index_position = 0;
+                while(
+                      ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+                      &&
+                      (current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_CONTROL)
+                     )
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL) current_ekran.index_position = 0;
+                }
+              
+                position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+
+                //Формуємо екран уставки-настройки
+                make_ekran_chose_setpoint_control_transformator();
+              }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_SWITCHER) current_ekran.index_position = 0;
@@ -5141,7 +5213,8 @@ void main_manu_function(void)
     case EKRAN_TIMEOUT_UP_GROUP3:
     case EKRAN_TIMEOUT_UP_GROUP4:
     case EKRAN_CONTROL_UP:
-    case EKRAN_TRANSFORMATOR_INFO:
+    case EKRAN_TRANSFORMATOR_INFO_SETPOINT:
+    case EKRAN_TRANSFORMATOR_INFO_CONTROL:
     case EKRAN_SETPOINT_SWITCH:
     case EKRAN_TIMEOUT_SWITCH:
     case EKRAN_CONTROL_SWITCH:
@@ -5742,28 +5815,35 @@ void main_manu_function(void)
               //Формуємо екран управлінської інформації для УЗ
               make_ekran_control_UP();
             }
-            else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
+            else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
             {
-              if(current_ekran.index_position >= MAX_ROW_FOR_SETPOINT_SWITCH) current_ekran.index_position = 0;
-              position_in_current_level_menu[EKRAN_SETPOINT_SWITCH] = current_ekran.index_position;
-              //Формуємо екран уставок виключателя
-              make_ekran_setpoint_switch();
-            }
-            else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
-            {
-              if(current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO) current_ekran.index_position = 0;
+              if(current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) current_ekran.index_position = 0;
               while(
                     ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
                     &&
                     (current_ekran.index_position == INDEX_ML_TT04)
                    )
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO) current_ekran.index_position = 0;
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) current_ekran.index_position = 0;
               }
 
-              position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+              position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_SETPOINT] = current_ekran.index_position;
               //Формуємо екран інфтрмації по трансформаторах
               make_ekran_transformator();
+            }
+            else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_CONTROL] = current_ekran.index_position;
+              //Формуємо екран відображення налаштувань для меню "Трансформатор"
+              make_ekran_transformator_control();
+            }
+            else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_SETPOINT_SWITCH) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_SETPOINT_SWITCH] = current_ekran.index_position;
+              //Формуємо екран уставок виключателя
+              make_ekran_setpoint_switch();
             }
             else if(current_ekran.current_level == EKRAN_TIMEOUT_SWITCH)
             {
@@ -6791,7 +6871,7 @@ void main_manu_function(void)
                   edition_settings.control_UP = current_settings.control_UP;
                   for (size_t i = 0; i < NUMBER_UP; i++) edition_settings.ctrl_UP_input[i] = current_settings.ctrl_UP_input[i];
                 }
-                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
                 {
                   if (current_ekran.index_position == INDEX_ML_T0)
                   {
@@ -6813,6 +6893,10 @@ void main_manu_function(void)
                     edition_settings.TVoltage = current_settings.TVoltage;
                     current_ekran.position_cursor_x = COL_TN_BEGIN;
                   }
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+                {
+                  edition_settings.control_transformator = current_settings.control_transformator;
                 }
                 else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
                 {
@@ -7771,7 +7855,7 @@ void main_manu_function(void)
                   }
                        
                 }
-                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
                 {
                   if (current_ekran.index_position == INDEX_ML_T0)
                   {
@@ -7789,6 +7873,10 @@ void main_manu_function(void)
                   {
                     if (edition_settings.TVoltage != current_settings.TVoltage) found_changes = 1;
                   }
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+                {
+                  if (edition_settings.control_transformator != current_settings.control_transformator) found_changes = 1;
                 }
                 else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
                 {
@@ -10509,7 +10597,7 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
-                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
                 {
                   if (current_ekran.index_position == INDEX_ML_T0)
                   {
@@ -10578,6 +10666,24 @@ void main_manu_function(void)
                       //Виходимо з режиму редагування
                       current_ekran.edition = 0;
                     }
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+                {
+                  if ((edition_settings.control_transformator  & ((unsigned int)(~CTR_TRANSFORMATOR_MASKA))) == 0)
+                  {
+                    if (edition_settings.control_transformator != current_settings.control_transformator)
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                      current_settings.control_transformator = edition_settings.control_transformator;
+                      
+                      //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
                   }
                 }
                 else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
@@ -12520,21 +12626,21 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для УЗ
                 make_ekran_control_UP();
               }
-              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
               {
                 if(current_ekran.edition == 0)
                 {
-                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO - 1;
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT - 1;
                   while(
                         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
                         &&
                         (current_ekran.index_position == INDEX_ML_TT04)
                        )
                   {
-                    if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO - 1;
+                    if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT - 1;
                   }
                   
-                  position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+                  position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_SETPOINT] = current_ekran.index_position;
                 }
                 else
                 {
@@ -12550,6 +12656,13 @@ void main_manu_function(void)
                 }
                 //Формуємо екран інфтрмації по трансформаторах
                 make_ekran_transformator();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL - 1;
+                position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_CONTROL] = current_ekran.index_position;
+                //Формуємо екран відображення налаштувань меню "Трансформатор"
+                make_ekran_transformator_control();
               }
               else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
               {
@@ -13954,21 +14067,21 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для УЗ
                 make_ekran_control_UP();
               }
-              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
               {
                 if(current_ekran.edition == 0)
                 {
-                  if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO) current_ekran.index_position = 0;
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) current_ekran.index_position = 0;
                   while(
                         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
                         &&
                         (current_ekran.index_position == INDEX_ML_TT04)
                        )
                   {
-                    if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO) current_ekran.index_position = 0;
+                    if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) current_ekran.index_position = 0;
                   }
                   
-                  position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+                  position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_SETPOINT] = current_ekran.index_position;
                 }
                 else
                 {
@@ -13984,6 +14097,13 @@ void main_manu_function(void)
                 }
                 //Формуємо екран інфтрмації по трансформаторах
                 make_ekran_transformator();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_CONTROL] = current_ekran.index_position;
+                //Формуємо екран відображення налаштувань меню "Трансформатор"
+                make_ekran_transformator_control();
               }
               else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
               {
@@ -15789,7 +15909,7 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для УЗ
                 make_ekran_control_UP();
               }
-              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
               {
                 if(current_ekran.index_position == INDEX_ML_T0)
                 {
@@ -15817,6 +15937,17 @@ void main_manu_function(void)
                 }
                 //Формуємо екран відображення інформації по трансформаторах
                 make_ekran_transformator();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+              {
+                //Виділяємо, який біт треба міняти
+                unsigned int maska = (1 << current_ekran.index_position);
+                
+                //Міняємо на протилежний відповідний біт для вибраної позиції
+                edition_settings.control_transformator ^= maska;
+
+                //Формуємо екран відображення налаштувань меню "Трансформатор"
+                make_ekran_transformator_control();
               }
               else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
               {
@@ -17597,7 +17728,7 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для УЗ
                 make_ekran_control_UP();
               }
-              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
               {
                 if(current_ekran.index_position == INDEX_ML_T0)
                 {
@@ -17625,6 +17756,17 @@ void main_manu_function(void)
                 }
                 //Формуємо екран відображення інформації по трансформаторах
                 make_ekran_transformator();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+              {
+                //Виділяємо, який біт треба міняти
+                unsigned int maska = (1 << current_ekran.index_position);
+                
+                //Міняємо на протилежний відповідний біт для вибраної позиції
+                edition_settings.control_transformator ^= maska;
+
+                //Формуємо екран відображення налаштувань меню "Трансформатор"
+                make_ekran_transformator_control();
               }
               else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
               {
