@@ -559,8 +559,8 @@ void make_ekran_control_urov()
         additional_current_achr++;
 
       if (
-          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_UP1) ||
-          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_UP1 + NUMBER_UP - 1)
+          (current_index >= INDEX_ML_CTRUROV_STARTED_FROM_UP1) &&
+          (current_index <= INDEX_ML_CTRUROV_STARTED_FROM_UP1 + NUMBER_UP - 1)
          )   
         additional_current_up++;
       
