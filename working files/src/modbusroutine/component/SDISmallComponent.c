@@ -50,7 +50,15 @@ int getSDISmallModbusRegister(int adrReg) {
   //получить содержимое регистра
   if(privateSDISmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return state_leds;
+  switch(adrReg-BEGIN_ADR_REGISTER)
+  {
+    case 0:
+    return state_leds;
+    case 1:
+    return (state_leds>>16)&0xFFFF;
+  }//switch
+
+  return 0;
 }//getSDIModbusRegister(int adrReg)
 int getSDISmallModbusBit(int adrBit) {
   //получить содержимое bit

@@ -261,6 +261,7 @@ int postREGBigWriteAction(void)
 
           if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
             {
+//int test = tempWriteArray[offsetTempWriteArray+i];
               number_record_of_dr_for_USB = tempWriteArray[offsetTempWriteArray+i];
               //Подаємо команду читання дискретного реєстратора для інтерфейсу USB
 
