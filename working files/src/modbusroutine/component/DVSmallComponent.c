@@ -7,9 +7,9 @@
 #define BEGIN_ADR_BIT 200
 
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 200
+#define END_ADR_REGISTER 201
 //конечный bit в карте памяти
-#define END_ADR_BIT 215
+#define END_ADR_BIT 219
 
 int privateDVSmallGetReg2(int adrReg);
 int privateDVSmallGetBit2(int adrBit);
@@ -49,8 +49,15 @@ void constructorDVSmallComponent(COMPONENT_OBJ *dvcomp)
 int getDVSmallModbusRegister(int adrReg) {
   //получить содержимое регистра
   if(privateDVSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
+  switch(adrReg-BEGIN_ADR_REGISTER)
+  {
+    case 0:
+    return state_inputs;
+    case 1:
+    return (state_inputs>>16)&0xFFFF;
+  }//switch
 
-  return state_inputs;
+  return 0;
 }//getDVModbusRegister(int adrReg)
 int getDVSmallModbusBit(int adrBit) {
   //получить содержимое bit

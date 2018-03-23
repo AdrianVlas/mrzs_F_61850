@@ -646,14 +646,34 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
 
 //  count_bit = 1;
   case 368:
-    (*uprMaska)   = 0;
+    (*uprMaska)   = INDEX_ML_CTRPRYVOD_VV;
     (*editControl) = &edition_settings.control_switch;
     break;
 
 //  count_bit = 1;
-  case 374:
-    (*uprMaska)   = 1;
+  case 371://Блокировка Вкл. ВВ от ДВ
+    (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE;
+    (*editControl) = &edition_settings.control_extra_settings_1;
+    break;
+  case 372://Блокировка Откл. ВВ от ДВ
+    (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_BLK_OFF_CB_MISCEVE;
+    (*editControl) = &edition_settings.control_extra_settings_1;
+    break;
+  case 373://Контроль ФК
+    (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_FB_ACTIVATION;
+    (*editControl) = &edition_settings.control_extra_settings_1;
+    break;
+  case 374://Ресурс ВВ
+    (*uprMaska)   = INDEX_ML_CTRRESURS_VV;
     (*editControl) = &edition_settings.control_switch;
+    break;
+  case 375://Разрешение блокировки готовности к ТУ от защит
+    (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_READY_TU;
+    (*editControl) = &edition_settings.control_extra_settings_1;
+    break;
+  case 376://Окно информации об отключении ВВ
+    (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_WINDOW_OFF_CB;
+    (*editControl) = &edition_settings.control_extra_settings_1;
     break;
 
 //  count_bit = 1;
