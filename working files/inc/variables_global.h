@@ -343,7 +343,7 @@ unsigned int Ix_bilshe_porogu[3]/* = {0, 0, 0}*/;
 unsigned int temp_states_for_mtz/* = 0*/;
 
 //ÇÄÇ
-#if ZBIRKA_VERSII_PZ != 1
+#if ZBIRKA_VERSII_PZ == 0
 uint32_t delta_time_test = PERIOD_ZDZ_TEST;
 uint32_t zdz_ovd_diagnostyka;
 #endif
@@ -449,16 +449,22 @@ const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL] =
 const uint32_t output_boards[N_OUTPUT_BOARDS][2] = 
 {
   { 2, 1},
-  { 9, 4},
+  { 9, 4}
+#if ((ZBIRKA_VERSII_PZ == 0) || (ZBIRKA_VERSII_PZ == 1))
+  ,
   {16, 5}
+#endif
 };
 const uint32_t input_boards[N_INPUT_BOARDS][2] = 
 {
-  { 8, 4},
+  { 8, 4}
+#if ((ZBIRKA_VERSII_PZ == 0) || (ZBIRKA_VERSII_PZ == 1))
+  ,
   {16, 5}
-#if ZBIRKA_VERSII_PZ != 1
+#if ZBIRKA_VERSII_PZ == 0
   ,
   {20, 7}
+#endif
 #endif
 };
 

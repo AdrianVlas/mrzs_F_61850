@@ -443,7 +443,7 @@ void start_settings_peripherals(void)
   /**********************/
   FSMC_SRAM_Init();
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = 0;
-#if ZBIRKA_VERSII_PZ != 1
+#if ZBIRKA_VERSII_PZ == 0
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
 #endif
   /**********************/
@@ -530,18 +530,25 @@ void start_settings_peripherals(void)
   ***/
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0;
   uint32_t board_register_tmp = board_register = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47);
-#if ZBIRKA_VERSII_PZ != 1
+#if ZBIRKA_VERSII_PZ == 0
   if ((board_register_tmp & 0x17) != 0x17)
-#else
+#elif ZBIRKA_VERSII_PZ == 1
   if ((board_register_tmp & 0x07) != 0x07)
+#else
+  if ((board_register_tmp & 0x03) != 0x03)
 #endif
   {
     if ((board_register_tmp &  0x01) !=  0x1) _SET_BIT(set_diagnostyka, ERROR_BA_1_FIX);
     if ((board_register_tmp &  0x02) !=  0x2) _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_FIX);
+    
+#if ((ZBIRKA_VERSII_PZ == 0) || (ZBIRKA_VERSII_PZ == 1))
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
-#if ZBIRKA_VERSII_PZ != 1
+
+#if ZBIRKA_VERSII_PZ == 0
     if ((board_register_tmp & 0x010) != 0x10) _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
 #endif
+#endif
+    
   }
   
   if ((board_register_tmp & 0x01) == 0x01)
@@ -554,18 +561,21 @@ void start_settings_peripherals(void)
     _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x2;
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) & 0xff) != 0x25)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_CTLR);
   }
+
+#if ((ZBIRKA_VERSII_PZ == 0) || (ZBIRKA_VERSII_PZ == 1))
   if ((board_register_tmp & 0x04) == 0x04)
   {
     _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x4;
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) >> 8) != 0x37)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_CTLR);
   }
   
-#if ZBIRKA_VERSII_PZ != 1
+#if ZBIRKA_VERSII_PZ == 0
   if ((board_register_tmp & 0x10) == 0x10)
   {
     _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
   }
+#endif
 #endif
   
   //Вимикаємо вибір всіх плат для подальшого контролю
