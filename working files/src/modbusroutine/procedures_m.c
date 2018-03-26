@@ -29,7 +29,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
 int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen);
 int configDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen);
 int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen);
-int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen);
+int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, int registrator);
 int recordNumberCaseDiskret(int subObj, int offsetRegister);
 int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int registrator);
 
@@ -398,79 +398,79 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
   if(recordNumber>max_number_time_sample) return MARKER_ERRORPERIMETR;//уйти если превышение
 
 
-/*
-  int *point_to_first_number_time_sample;
-  if (pointInterface == 0)
-  {
-    point_to_first_number_time_sample = &first_number_time_sample_for_USB;
-  }
-  else
-  {
-    point_to_first_number_time_sample = &first_number_time_sample_for_RS485;
-  }
-*/
+  /*
+    int *point_to_first_number_time_sample;
+    if (pointInterface == 0)
+    {
+      point_to_first_number_time_sample = &first_number_time_sample_for_USB;
+    }
+    else
+    {
+      point_to_first_number_time_sample = &first_number_time_sample_for_RS485;
+    }
+  */
 
   int *point_to_first_number_time_sample, *point_to_last_number_time_sample;
 
   if (pointInterface == 0)
-            {
-              point_to_first_number_time_sample = &first_number_time_sample_for_USB;
-              point_to_last_number_time_sample  = &last_number_time_sample_for_USB;
-            }
-            else
-            {
-              point_to_first_number_time_sample = &first_number_time_sample_for_RS485;
-              point_to_last_number_time_sample  = &last_number_time_sample_for_RS485;
-            }
+  {
+    point_to_first_number_time_sample = &first_number_time_sample_for_USB;
+    point_to_last_number_time_sample  = &last_number_time_sample_for_USB;
+  }
+  else
+  {
+    point_to_first_number_time_sample = &first_number_time_sample_for_RS485;
+    point_to_last_number_time_sample  = &last_number_time_sample_for_RS485;
+  }
 
-            //Перевіряємо чи зчитано заголовок аналогового реєстратора
-            if (
-                (((int)recordNumber) < (*point_to_first_number_time_sample)) || 
-                (((int)recordNumber) > (*point_to_last_number_time_sample ))
-               )
-            {
-              //Запитуваний часовий зріз не є зчитаним
-              
-              //Виставляємо читання без заголовку запису даного запису з запитуваноого номеру зрізу і дальше, скільки можливо, часових зрізів 
-              *point_to_first_number_time_sample = recordNumber;
-              int last_number_time_sample_tmp = recordNumber + SIZE_PAGE_DATAFLASH_2/((NUMBER_ANALOG_CANALES + number_word_digital_part_ar)*sizeof(short int));
-              if (last_number_time_sample_tmp <= max_number_time_sample)
-              {
-                *point_to_last_number_time_sample = last_number_time_sample_tmp - 1;//номер останнього часового зрізу ВКЛЮЧНО
-              }
-              else
-              {
-                *point_to_last_number_time_sample = max_number_time_sample - 1;
-              }
+  //Перевіряємо чи зчитано заголовок аналогового реєстратора
+  if (
+    (((int)recordNumber) < (*point_to_first_number_time_sample)) ||
+    (((int)recordNumber) > (*point_to_last_number_time_sample ))
+  )
+  {
+    //Запитуваний часовий зріз не є зчитаним
 
-              //Подаємо команду зчитати дані у бувер пам'яті
-              if (pointInterface == 0)
-                control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB;
-              else
-                control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485;
-                
-              //Очікуємо поки завершиться зчитуквання даних для аналогового реєстратора
-              while (
-                     ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
-                     ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
-                    )
-              {
-                //Якщо очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
-                if (  
-                    (control_spi1_taskes[0] != 0) || 
-                    (control_spi1_taskes[1] != 0) || 
-                    (state_execution_spi1 > 0)
-                   )
-                {
-                  mutex_spi1 = true;
-                  if (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE)
-                  {
-                    main_routines_for_spi1();
-                  }
-                  mutex_spi1 = false;
-                }
-              }//while
-            }
+    //Виставляємо читання без заголовку запису даного запису з запитуваноого номеру зрізу і дальше, скільки можливо, часових зрізів
+    *point_to_first_number_time_sample = recordNumber;
+    int last_number_time_sample_tmp = recordNumber + SIZE_PAGE_DATAFLASH_2/((NUMBER_ANALOG_CANALES + number_word_digital_part_ar)*sizeof(short int));
+    if (last_number_time_sample_tmp <= max_number_time_sample)
+    {
+      *point_to_last_number_time_sample = last_number_time_sample_tmp - 1;//номер останнього часового зрізу ВКЛЮЧНО
+    }
+    else
+    {
+      *point_to_last_number_time_sample = max_number_time_sample - 1;
+    }
+
+    //Подаємо команду зчитати дані у бувер пам'яті
+    if (pointInterface == 0)
+      control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB;
+    else
+      control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485;
+
+    //Очікуємо поки завершиться зчитуквання даних для аналогового реєстратора
+    while (
+      ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
+      ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
+    )
+    {
+      //Якщо очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
+      if (
+        (control_spi1_taskes[0] != 0) ||
+        (control_spi1_taskes[1] != 0) ||
+        (state_execution_spi1 > 0)
+      )
+      {
+        mutex_spi1 = true;
+        if (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE)
+        {
+          main_routines_for_spi1();
+        }
+        mutex_spi1 = false;
+      }
+    }//while
+  }
 
   //Якщо ми сюди дійшли, то вважаємо що запитувана виборка зчитана і знаходиться у буфері читання аналогового реєстратора для інтерфейсу
 
@@ -515,7 +515,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
   {
   case 0://Имя станции recordNumber
   case 1://Количество каналов recordNumber
-    return recordNumberCase0Case1(offsetRegister, recordNumber, recordLen);
+    return recordNumberCase0Case1(offsetRegister, recordNumber, recordLen, ANALOG_REGISTRATOR);
   }//switch
 
 //АНАЛОГОВЫЕ КАНАЛЫ
@@ -758,7 +758,7 @@ int configDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen
   {
   case 0://Имя станции recordNumber
   case 1://Количество каналов recordNumber
-    return recordNumberCase0Case1(offsetRegister, recordNumber, recordLen);
+    return recordNumberCase0Case1(offsetRegister, recordNumber, recordLen, DISKRET_REGISTRATOR);
   }//switch
 
 //ДИСКРЕТНЫЕ КАНАЛЫ
@@ -781,7 +781,7 @@ int configDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen
   return MARKER_ERRORPERIMETR;
 }//configDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
-int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen)
+int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, int registrator)
 {
   //Якщо ми сюди дійшли, то вважаємо що заголовок аналогового реєстратора вже зчитаний
   __HEADER_AR *header_ar_tmp;
@@ -794,50 +794,96 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen)
   {
   case 0://Имя станции recordNumber
   {
-    if(recordLen>10) return MARKER_ERRORPERIMETR;
-    switch(offsetRegister)
-    {
-    case 0://Имя станции offsetRegister
-      return header_ar_tmp->name_of_cell[ 0] | (header_ar_tmp->name_of_cell[ 1]<<8);
-    case 1://Имя станции offsetRegister
-      return header_ar_tmp->name_of_cell[ 2] | (header_ar_tmp->name_of_cell[ 3]<<8);
-    case 2://Имя станции offsetRegister
-      return header_ar_tmp->name_of_cell[ 4] | (header_ar_tmp->name_of_cell[ 5]<<8);
-    case 3://Имя станции offsetRegister
-      return header_ar_tmp->name_of_cell[ 6] | (header_ar_tmp->name_of_cell[ 7]<<8);
-    case 4://Имя станции offsetRegister
-      return header_ar_tmp->name_of_cell[ 8] | (header_ar_tmp->name_of_cell[ 9]<<8);
-    case 5://Имя станции offsetRegister
-      return header_ar_tmp->name_of_cell[ 10] | (header_ar_tmp->name_of_cell[ 11]<<8);
-    case 6://Имя станции offsetRegister
-      return header_ar_tmp->name_of_cell[ 12] | (header_ar_tmp->name_of_cell[ 13]<<8);
-    case 7://Имя станции offsetRegister
-      return header_ar_tmp->name_of_cell[ 14] | (header_ar_tmp->name_of_cell[ 15]<<8);
-    case 8://Идентиф. номер устройства offsetRegister
-      //Серійний номер пристрою завжди один і той самий (встановлюється на заводі-виготовнику), тому я його не включив для запису у DataFlash у складі заголовку аналогового реєстратора
-      return serial_number_dev & 0xffff;
-    case 9://Год редакции стандарта (1999) offsetRegister
-      return 1999;
 
-    }//switch
-  }
+    if(recordLen>10) return MARKER_ERRORPERIMETR;
+    if(registrator==ANALOG_REGISTRATOR)
+    {
+      switch(offsetRegister)
+      {
+      case 0://Имя станции offsetRegister
+        return header_ar_tmp->name_of_cell[ 0] | (header_ar_tmp->name_of_cell[ 1]<<8);
+      case 1://Имя станции offsetRegister
+        return header_ar_tmp->name_of_cell[ 2] | (header_ar_tmp->name_of_cell[ 3]<<8);
+      case 2://Имя станции offsetRegister
+        return header_ar_tmp->name_of_cell[ 4] | (header_ar_tmp->name_of_cell[ 5]<<8);
+      case 3://Имя станции offsetRegister
+        return header_ar_tmp->name_of_cell[ 6] | (header_ar_tmp->name_of_cell[ 7]<<8);
+      case 4://Имя станции offsetRegister
+        return header_ar_tmp->name_of_cell[ 8] | (header_ar_tmp->name_of_cell[ 9]<<8);
+      case 5://Имя станции offsetRegister
+        return header_ar_tmp->name_of_cell[ 10] | (header_ar_tmp->name_of_cell[ 11]<<8);
+      case 6://Имя станции offsetRegister
+        return header_ar_tmp->name_of_cell[ 12] | (header_ar_tmp->name_of_cell[ 13]<<8);
+      case 7://Имя станции offsetRegister
+        return header_ar_tmp->name_of_cell[ 14] | (header_ar_tmp->name_of_cell[ 15]<<8);
+      case 8://Идентиф. номер устройства offsetRegister
+        //Серійний номер пристрою завжди один і той самий (встановлюється на заводі-виготовнику), тому я його не включив для запису у DataFlash у складі заголовку аналогового реєстратора
+        return serial_number_dev & 0xffff;
+      case 9://Год редакции стандарта (1999) offsetRegister
+        return 1999;
+
+      }//switch
+    }//if(registrator==ANALOG_REGISTRATOR)
+    else
+    {
+      //if(registrator==DISKRET_REGISTRATOR)
+      unsigned char *point_to_buffer;
+      if (pointInterface==0)//метка интерфейса 0-USB 1-RS485
+        point_to_buffer = buffer_for_USB_read_record_dr;
+      else point_to_buffer = buffer_for_RS485_read_record_dr;
+      if (offsetRegister < 8)
+      {
+        unsigned int index_cell;
+
+        index_cell =  (offsetRegister - 0)<<1;
+        return (*(point_to_buffer + FIRST_INDEX_NAME_OF_CELL_DR + index_cell)) | ((*(point_to_buffer + FIRST_INDEX_NAME_OF_CELL_DR + index_cell + 1))<<8);
+      }
+      else if (offsetRegister == 8)
+      {
+        //Серійний номер пристрою завжди один і той самий (встановлюється на заводі-виготовнику), тому я його не включив для запису у DataFlash у складі заголовку аналогового реєстратора
+        return serial_number_dev & 0xffff;
+      }
+      else
+      {
+        return 1999;
+      }
+    }//else if(registrator==DISKRET_REGISTRATOR)
+  }//case 0
   break;
 
   case 1://Количество каналов recordNumber
   {
     if(recordLen>3) return MARKER_ERRORPERIMETR;
-    switch(offsetRegister)
+    if(registrator==ANALOG_REGISTRATOR)
     {
-    case 0://Количество каналов всего offsetRegister
-      return NUMBER_ANALOG_CANALES + NUMBER_TOTAL_SIGNAL_FOR_RANG;
-    case 1://Количество аналоговых каналов offsetRegister
-      return NUMBER_ANALOG_CANALES;
-    case 2://Количество дискретных каналов offsetRegister
-      return NUMBER_TOTAL_SIGNAL_FOR_RANG;
-    }//switch
-    return MARKER_ERRORPERIMETR;
+      switch(offsetRegister)
+      {
+      case 0://Количество каналов всего offsetRegister
+        return NUMBER_ANALOG_CANALES + NUMBER_TOTAL_SIGNAL_FOR_RANG;
+      case 1://Количество аналоговых каналов offsetRegister
+        return NUMBER_ANALOG_CANALES;
+      case 2://Количество дискретных каналов offsetRegister
+        return NUMBER_TOTAL_SIGNAL_FOR_RANG;
+      }//switch
+      return MARKER_ERRORPERIMETR;
+    }// if(registrator==ANALOG_REGISTRATOR)
+    else
+    {
+      //if(registrator==DISKRET_REGISTRATOR)
+      switch(offsetRegister)
+      {
+      case 0://Количество каналов всего offsetRegister
+        return   0 + NUMBER_TOTAL_SIGNAL_FOR_RANG;
+      case 1://Количество аналоговых каналов offsetRegister
+        return 0;
+      case 2://Количество дискретных каналов offsetRegister
+        return NUMBER_TOTAL_SIGNAL_FOR_RANG;
+      }//switch
+
+    }//else
   }
   break;
+
   }//switch
   return MARKER_ERRORPERIMETR;
 }//recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen)
@@ -978,223 +1024,227 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
     case 5://секунды offsetRegister
     case 6://микросекунды offsetRegister
     {
-      unsigned char time_avar_analog[7];
-
-      //Конвертуємо формат BCD у int
-      for (unsigned int i = 0; i < 7; i++)
+      if(registrator==ANALOG_REGISTRATOR)
       {
-        unsigned int val = header_ar_tmp->time[i], val_l, val_m;
-        val_l = val & 0xf;
-        val_m = (val >> 4) & 0xf;
-        time_avar_analog[i] = (unsigned char)(val_m*10 + val_l);
-      }
+        unsigned char time_avar_analog[7];
 
-      int temp_data;
-      unsigned int max_time_milliseconds_before = (current_settings.prefault_number_periods)*2; //2 - це десяті від 20 мс, що відображає період на 50Гц
-      unsigned int flag_carry = 0;
-      unsigned int s, ds_ms;
-
-      
-      if(subObj==4)  goto m1;// return time_avar_analog[offsetRegister];
-/*
-      {
-        if (offsetRegister < 3)
+        //Конвертуємо формат BCD у int
+        for (unsigned int i = 0; i < 7; i++)
         {
-          temp_data = time_avar_analog[4 + offsetRegister];
-          if (offsetRegister == 2)temp_data += 2000; //Бо формат має бути чотиризначним числом
-        } //break;
+          unsigned int val = header_ar_tmp->time[i], val_l, val_m;
+          val_l = val & 0xf;
+          val_m = (val >> 4) & 0xf;
+          time_avar_analog[i] = (unsigned char)(val_m*10 + val_l);
+        }
 
-        else if (offsetRegister < 5 ) temp_data = time_avar_analog[3 - (offsetRegister - 3)];
-        else if (offsetRegister == 5) temp_data = time_avar_analog[1]*100 + time_avar_analog[0];
-        else temp_data = 0;
-        return temp_data;
-      }//if
-*/
+        int temp_data;
+        unsigned int max_time_milliseconds_before = (current_settings.prefault_number_periods)*2; //2 - це десяті від 20 мс, що відображає період на 50Гц
+        unsigned int flag_carry = 0;
+        unsigned int s, ds_ms;
 
-//      if(registrator==DISKRET_REGISTRATOR)
-  //      return time_avar_analog[offsetRegister];
-      //Визначаємо час першої виборки у доаварійному масиві = час запису мінус час доаварійного масиву
-      //Максимальний час доаварійного масиву може бути 5000мс, бо максимальна кількість періодів 250
 
-      //Час у сотих секунд доаварійноо масиву
-//      unsigned int max_time_milliseconds_before = (current_settings.prefault_number_periods)*2; //2 - це десяті від 20 мс, що відображає період на 50Гц
-  //    unsigned int flag_carry = 0;
-    //  unsigned int s, ds_ms;
+        if(subObj==4)  goto m1;// return time_avar_analog[offsetRegister];
+        //Кількість секунд
+        s = max_time_milliseconds_before / 100;
+        //Кількість десятих і сотих мілісекунд
+        ds_ms = max_time_milliseconds_before - s*100;
 
-      //Кількість секунд
-      s = max_time_milliseconds_before / 100;
-      //Кількість десятих і сотих мілісекунд
-      ds_ms = max_time_milliseconds_before - s*100;
-
-      //Віднімаємо даесяті і соті мілісекунд
-      if (time_avar_analog[0] >= ds_ms)
-      {
-        time_avar_analog[0] -= ds_ms;
-        flag_carry = 0;
-      }
-      else
-      {
-        time_avar_analog[0] = time_avar_analog[0] + 100 - ds_ms;
-        flag_carry = 1;
-      }
-
-      //Віднімаємо секунди
-      if (time_avar_analog[1] >= (s + flag_carry))
-      {
-        time_avar_analog[1] -= (s + flag_carry);
-        flag_carry = 0;
-      }
-      else
-      {
-        time_avar_analog[1] = time_avar_analog[1] + 60 - (s + flag_carry);
-        flag_carry = 1;
-      }
-
-      //Дальше віднімаємо, якщо є виставлений прапорець переносу
-      if (flag_carry != 0)
-      {
-        //Віднімаємо хвилини
-        if (time_avar_analog[2] >=  flag_carry)
+        //Віднімаємо даесяті і соті мілісекунд
+        if (time_avar_analog[0] >= ds_ms)
         {
-          time_avar_analog[2] -= flag_carry;
+          time_avar_analog[0] -= ds_ms;
           flag_carry = 0;
         }
         else
         {
-          time_avar_analog[2] = time_avar_analog[2] + 60 - flag_carry;
+          time_avar_analog[0] = time_avar_analog[0] + 100 - ds_ms;
+          flag_carry = 1;
+        }
+
+        //Віднімаємо секунди
+        if (time_avar_analog[1] >= (s + flag_carry))
+        {
+          time_avar_analog[1] -= (s + flag_carry);
+          flag_carry = 0;
+        }
+        else
+        {
+          time_avar_analog[1] = time_avar_analog[1] + 60 - (s + flag_carry);
           flag_carry = 1;
         }
 
         //Дальше віднімаємо, якщо є виставлений прапорець переносу
         if (flag_carry != 0)
         {
-          //Віднімаємо години
-          if (time_avar_analog[3] >=  flag_carry)
+          //Віднімаємо хвилини
+          if (time_avar_analog[2] >=  flag_carry)
           {
-            time_avar_analog[3] -= flag_carry;
+            time_avar_analog[2] -= flag_carry;
             flag_carry = 0;
           }
           else
           {
-            time_avar_analog[3] = time_avar_analog[3] + 24 - flag_carry;
+            time_avar_analog[2] = time_avar_analog[2] + 60 - flag_carry;
             flag_carry = 1;
           }
 
           //Дальше віднімаємо, якщо є виставлений прапорець переносу
           if (flag_carry != 0)
           {
-            //Віднімаємо дні місяця
-            if (time_avar_analog[4] > flag_carry)
+            //Віднімаємо години
+            if (time_avar_analog[3] >=  flag_carry)
             {
-              time_avar_analog[4] -= flag_carry;
+              time_avar_analog[3] -= flag_carry;
               flag_carry = 0;
             }
             else
             {
-              unsigned int max_value, number_previous_mounth;
-
-              if (((int)(time_avar_analog[5] - 1)) > 0) number_previous_mounth = time_avar_analog[5] - 1;
-              else number_previous_mounth = 12; //Попередній місяць - Грудень
-
-              //Максимальну кількість днів у попередньому місяця (бо ми у місяців "позичаємо" одиничку і потім перейдемо на віднімання переносу у місяців)
-              if (number_previous_mounth == 2)
-              {
-                //Попередній місяць - лютий
-                //Перевірка на високосний рік
-                if((time_avar_analog[6] & 0xfc) == 0)
-                {
-                  //Рік високосний - кількість днів у лютому 29
-                  max_value = 29;
-                }
-                else
-                {
-                  //Рік не високосний - кількість днів у лютому 28
-                  max_value = 28;
-                }
-              }
-              else if (
-                ((number_previous_mounth <= 7) && ((number_previous_mounth & 0x01) != 0)) ||
-                ((number_previous_mounth >= 8) && ((number_previous_mounth & 0x01) == 0))
-              )
-              {
-                //Попередній місяць має 31 день
-                max_value = 31;
-              }
-              else
-              {
-                //Попередній місяць має 30 днів
-                max_value = 30;
-              }
-
-              time_avar_analog[4] = time_avar_analog[4] + max_value - flag_carry;
+              time_avar_analog[3] = time_avar_analog[3] + 24 - flag_carry;
               flag_carry = 1;
             }
 
             //Дальше віднімаємо, якщо є виставлений прапорець переносу
             if (flag_carry != 0)
             {
-              //Віднімаємо місяці
-              if ((int)(time_avar_analog[5] - flag_carry) > 0)
+              //Віднімаємо дні місяця
+              if (time_avar_analog[4] > flag_carry)
               {
-                time_avar_analog[5] -= flag_carry;
+                time_avar_analog[4] -= flag_carry;
                 flag_carry = 0;
               }
               else
               {
-                time_avar_analog[5] = 12;
+                unsigned int max_value, number_previous_mounth;
+
+                if (((int)(time_avar_analog[5] - 1)) > 0) number_previous_mounth = time_avar_analog[5] - 1;
+                else number_previous_mounth = 12; //Попередній місяць - Грудень
+
+                //Максимальну кількість днів у попередньому місяця (бо ми у місяців "позичаємо" одиничку і потім перейдемо на віднімання переносу у місяців)
+                if (number_previous_mounth == 2)
+                {
+                  //Попередній місяць - лютий
+                  //Перевірка на високосний рік
+                  if((time_avar_analog[6] & 0xfc) == 0)
+                  {
+                    //Рік високосний - кількість днів у лютому 29
+                    max_value = 29;
+                  }
+                  else
+                  {
+                    //Рік не високосний - кількість днів у лютому 28
+                    max_value = 28;
+                  }
+                }
+                else if (
+                  ((number_previous_mounth <= 7) && ((number_previous_mounth & 0x01) != 0)) ||
+                  ((number_previous_mounth >= 8) && ((number_previous_mounth & 0x01) == 0))
+                )
+                {
+                  //Попередній місяць має 31 день
+                  max_value = 31;
+                }
+                else
+                {
+                  //Попередній місяць має 30 днів
+                  max_value = 30;
+                }
+
+                time_avar_analog[4] = time_avar_analog[4] + max_value - flag_carry;
                 flag_carry = 1;
               }
 
               //Дальше віднімаємо, якщо є виставлений прапорець переносу
               if (flag_carry != 0)
               {
-                //Віднімаємо роки
-                if (time_avar_analog[6] > flag_carry)
+                //Віднімаємо місяці
+                if ((int)(time_avar_analog[5] - flag_carry) > 0)
                 {
-                  time_avar_analog[6] -= flag_carry;
+                  time_avar_analog[5] -= flag_carry;
                   flag_carry = 0;
                 }
                 else
                 {
-                  time_avar_analog[6] = 99;
+                  time_avar_analog[5] = 12;
                   flag_carry = 1;
+                }
+
+                //Дальше віднімаємо, якщо є виставлений прапорець переносу
+                if (flag_carry != 0)
+                {
+                  //Віднімаємо роки
+                  if (time_avar_analog[6] > flag_carry)
+                  {
+                    time_avar_analog[6] -= flag_carry;
+                    flag_carry = 0;
+                  }
+                  else
+                  {
+                    time_avar_analog[6] = 99;
+                    flag_carry = 1;
+                  }
                 }
               }
             }
           }
         }
-      }
 m1:
-      switch(offsetRegister)
+        switch(offsetRegister)
+        {
+        case 0:
+        case 1:
+          temp_data = time_avar_analog[4 + offsetRegister];
+          break;
+        case 2:
+          temp_data = time_avar_analog[4 + offsetRegister];
+          temp_data += 2000; //Бо формат має бути чотиризначним числом
+          break;
+        case 3:
+        case 4:
+          temp_data = time_avar_analog[3 - (offsetRegister - 3)];
+          break;
+        case 5:
+          temp_data = time_avar_analog[1]*100 + time_avar_analog[0];
+          break;
+        default:
+          temp_data = 0;
+        }//switch
+        return temp_data;
+      }//if(registrator==ANALOG_REGISTRATOR)
+      else
       {
-       case 0:
-       case 1:
-        temp_data = time_avar_analog[4 + offsetRegister];
-       break;
-       case 2:
-        temp_data = time_avar_analog[4 + offsetRegister];
-        temp_data += 2000; //Бо формат має бути чотиризначним числом
-       break;
-       case 3:
-       case 4:
-        temp_data = time_avar_analog[3 - (offsetRegister - 3)];
-       break;
-       case 5:
-        temp_data = time_avar_analog[1]*100 + time_avar_analog[0];
-       break;
-       default: temp_data = 0;
-      }//switch
-/*
-      if (offsetRegister < 3)
-      {
-        temp_data = time_avar_analog[4 + offsetRegister];
-        if (offsetRegister == 2)temp_data += 2000; //Бо формат має бути чотиризначним числом
-      }//if
-      else if (offsetRegister < 5 ) temp_data = time_avar_analog[3 - (offsetRegister - 3)];
-      else if (offsetRegister == 5) temp_data = time_avar_analog[1]*100 + time_avar_analog[0];
-      else temp_data = 0;
-*/
-      return temp_data;
+        //if(registrator==DISKRET_REGISTRATOR)
+        //Конвертуємо формат BCD у int
+        int temp_data;
+        unsigned int time_avar_digital[7];
+        for (unsigned int i = 0; i < 7; i++)
+        {
+          unsigned int val = *(point_to_buffer + FIRST_INDEX_DATA_TIME_DR + i), val_l, val_m;
+          val_l = val & 0xf;
+          val_m = (val >> 4) & 0xf;
+          time_avar_digital[i] = val_m*10 + val_l;
+        }//for
+        switch(offsetRegister)
+        {
+        case 0:
+        case 1:
+          temp_data = time_avar_digital[4 + offsetRegister];
+          break;
+        case 2:
+          temp_data = time_avar_digital[4 + offsetRegister];
+          temp_data += 2000; //Бо формат має бути чотиризначним числом
+          break;
+        case 3:
+        case 4:
+          temp_data = time_avar_digital[3 - (offsetRegister - 3)];
+          break;
+        case 5:
+          temp_data = time_avar_digital[1]*100 + time_avar_digital[0];
+          break;
+        default:
+          temp_data = 0;
+        }//switch
+        return temp_data;
+      } //else
     }//case 0-6
     }//switch
     return MARKER_ERRORPERIMETR;
@@ -1205,7 +1255,7 @@ m1:
     return (1000000 >> VAGA_NUMBER_POINT_AR)/50; //Період дискретизації
   case 6://Коэффициент временной метки subObj
     if(recordLen>1) return MARKER_ERRORPERIMETR;
-    return (1000000 >> VAGA_NUMBER_POINT_AR)/50;;
+    return (1000000 >> VAGA_NUMBER_POINT_AR)/50;
   }//switch
 
   return MARKER_ERRORPERIMETR;
