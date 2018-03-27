@@ -398,18 +398,6 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
   if(recordNumber>max_number_time_sample) return MARKER_ERRORPERIMETR;//уйти если превышение
 
 
-  /*
-    int *point_to_first_number_time_sample;
-    if (pointInterface == 0)
-    {
-      point_to_first_number_time_sample = &first_number_time_sample_for_USB;
-    }
-    else
-    {
-      point_to_first_number_time_sample = &first_number_time_sample_for_RS485;
-    }
-  */
-
   int *point_to_first_number_time_sample, *point_to_last_number_time_sample;
 
   if (pointInterface == 0)

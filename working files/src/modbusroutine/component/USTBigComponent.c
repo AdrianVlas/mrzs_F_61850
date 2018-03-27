@@ -480,10 +480,10 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     (*editValue) = (uint32_t*)&edition_settings.timeout_apv_block_vid_VV[gruppa];
     if(regUst<TIMEOUT_APV_BLOCK_VID_VV_MIN/10 || regUst>TIMEOUT_APV_BLOCK_VID_VV_MAX/10) diapazon=0;
     break;
-  case 180:
+  case 180:{
     (*editValue) = (uint32_t*)&edition_settings.timeout_apv_1[gruppa];
     if(regUst<TIMEOUT_APV1_MIN/10 || regUst>TIMEOUT_APV1_MAX/10) diapazon=0;
-    break;
+  } break;
   case 181:
     (*editValue) = (uint32_t*)&edition_settings.timeout_apv_2[gruppa];
     if(regUst<TIMEOUT_APV2_MIN/10 || regUst>TIMEOUT_APV2_MAX/10) diapazon=0;
@@ -936,9 +936,9 @@ int getUSTBigModbusRegister(int adrReg)
       if(editValue == (uint32_t*)&edition_settings.setpoint_UP[item][0][gruppa])
       {
         if(offset&1)
-          return ((unsigned short)*editValue);
+          return (*editValue);
         else
-          return ((unsigned short)((*editValue)>>16));
+          return (((*editValue)>>16));
       }//if
     }//for(int item=0; item<NUMBER_UP; item++)
   }//for(int gruppa=0; gruppa<NUMBER_UP; gruppa++)
@@ -1007,7 +1007,7 @@ int getUSTBigModbusRegister(int adrReg)
       }//else
     }//if(editValue == (uint32_t*)&edition_settings.type_of_led)
 
-  return ((unsigned short)*editValue)/multer;
+  return (*editValue)/multer;
 }//getDOUTBigModbusRegister(int adrReg)
 int getUSTBigModbusBit(int x)
 {
