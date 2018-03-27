@@ -468,6 +468,10 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
       if(action_after_changing_extra_settings(edition_settings.control_extra_settings_1, &edition_settings)) isValid = 0;
     }//if(actControl)
     break;
+  case 228:
+    (*uprMaska)   = INDEX_ML_CTR_TRANSFORMATOR_PHASE_LINE;
+    (*editControl) = &edition_settings.control_transformator;
+    break;
 
 //  count_bit = 3;
   case 288:

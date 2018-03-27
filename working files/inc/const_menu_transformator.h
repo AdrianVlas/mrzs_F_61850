@@ -25,11 +25,11 @@
 #define COL_TN_BEGIN                        6
 #define COL_TN_END                          9
 
-#define INDEX_ML_CTR_TRANSFORMATOR_LINE_PHASE           0          
-#define CTR_TRANSFORMATOR_LINE_PHASE                    (1 << INDEX_ML_CTR_TRANSFORMATOR_LINE_PHASE)   
+#define INDEX_ML_CTR_TRANSFORMATOR_PHASE_LINE           0          
+#define CTR_TRANSFORMATOR_PHASE_LINE                    (1 << INDEX_ML_CTR_TRANSFORMATOR_PHASE_LINE)   
 
 #define CTR_TRANSFORMATOR_MASKA                         (                                 \
-                                                         CTR_TRANSFORMATOR_LINE_PHASE     \
+                                                         CTR_TRANSFORMATOR_PHASE_LINE     \
                                                         )
 
 #endif

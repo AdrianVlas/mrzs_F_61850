@@ -371,10 +371,10 @@ void make_ekran_transformator_control(void)
         const unsigned char information[MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
         {
           {
-            {"    Линейные    ", "     Фазные     "},
-            {"    Лінійні     ", "     Фазні      "},
-            {"    Линейные    ", "     Фазные     "},
-            {"    Линейные    ", "     Фазные     "}
+            {"     Фазные     ", "    Линейные    "},
+            {"     Фазні      ", "    Лінійні     "},
+            {"     Фазные     ", "    Линейные    "},
+            {"     Фазные     ", "    Линейные    "}
           }
         };
         const unsigned int cursor_x[MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL][MAX_NAMBER_LANGUAGE][2] = 
