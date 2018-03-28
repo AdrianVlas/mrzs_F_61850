@@ -12,9 +12,6 @@
 #define EKRAN_RANGUVANNJA_OUTPUT_7                (EKRAN_RANGUVANNJA_OUTPUT_6 + 1)
 #define EKRAN_RANGUVANNJA_OUTPUT_8                (EKRAN_RANGUVANNJA_OUTPUT_7 + 1)
 #define EKRAN_RANGUVANNJA_OUTPUT_9                (EKRAN_RANGUVANNJA_OUTPUT_8 + 1)
-
-#if ((ZBIRKA_VERSII_PZ == 0) || (ZBIRKA_VERSII_PZ == 1))
-
 #define EKRAN_RANGUVANNJA_OUTPUT_10               (EKRAN_RANGUVANNJA_OUTPUT_9 + 1)
 #define EKRAN_RANGUVANNJA_OUTPUT_11               (EKRAN_RANGUVANNJA_OUTPUT_10 + 1)
 #define EKRAN_RANGUVANNJA_OUTPUT_12               (EKRAN_RANGUVANNJA_OUTPUT_11 + 1)
@@ -23,17 +20,7 @@
 #define EKRAN_RANGUVANNJA_OUTPUT_15               (EKRAN_RANGUVANNJA_OUTPUT_14 + 1)
 #define EKRAN_RANGUVANNJA_OUTPUT_16               (EKRAN_RANGUVANNJA_OUTPUT_15 + 1)
 
-#endif
-
-#if ((ZBIRKA_VERSII_PZ == 0) || (ZBIRKA_VERSII_PZ == 1))
-
 #define EKRAN_RANGUVANNJA_OUTPUT_LAST             EKRAN_RANGUVANNJA_OUTPUT_16
-
-#else
-
-#define EKRAN_RANGUVANNJA_OUTPUT_LAST             EKRAN_RANGUVANNJA_OUTPUT_9
-
-#endif
 
 #define MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA       NUMBER_OUTPUTS
 #define MAX_ROW_RANGUVANNJA_OUTPUT                 NUMBER_TOTAL_SIGNAL_FOR_RANG
@@ -118,6 +105,9 @@
   "    Блок.ЗДЗ    ",   \
   " Пуск ЗДЗ от ДВ ",   \
   " Свет ЗДЗ от ДВ ",   \
+  "Свет ЗДЗ от ОВД1",   \
+  "Свет ЗДЗ от ОВД2",   \
+  "Свет ЗДЗ от ОВД3",   \
   "     ПО ЗДЗ     ",   \
   "      ЗДЗ       ",   \
   "    Блок.НЗЗ    ",   \
@@ -353,6 +343,9 @@
   "    Блок.ЗДЗ    ",   \
   " Пуск ЗДЗ від ДВ",   \
   " Св.ЗДЗ від ДВ  ",   \
+  " Св.ЗДЗ від ОВД1",   \
+  " Св.ЗДЗ від ОВД2",   \
+  " Св.ЗДЗ від ОВД3",   \
   "     ПО ЗДЗ     ",   \
   "      ЗДЗ       ",   \
   "    Блок.НЗЗ    ",   \
@@ -588,6 +581,9 @@
   "    Блок.ЗДЗ    ",   \
   " Пуск ЗДЗ от ДВ ",   \
   " Свет ЗДЗ от ДВ ",   \
+  "Свет ЗДЗ от ОВД1",   \
+  "Свет ЗДЗ от ОВД2",   \
+  "Свет ЗДЗ от ОВД3",   \
   "     ПО ЗДЗ     ",   \
   "      ЗДЗ       ",   \
   "    Блок.НЗЗ    ",   \
@@ -823,6 +819,9 @@
   "    Блок.ЗДЗ    ",   \
   " Пуск ЗДЗ от ДВ ",   \
   " Свет ЗДЗ от ДВ ",   \
+  "Свет ЗДЗ от ОВД1",   \
+  "Свет ЗДЗ от ОВД2",   \
+  "Свет ЗДЗ от ОВД3",   \
   "     ПО ЗДЗ     ",   \
   "      ЗДЗ       ",   \
   "    Блок.НЗЗ    ",   \
