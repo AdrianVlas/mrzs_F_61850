@@ -4546,6 +4546,12 @@
             </group>
             <group>
                 <name>menu</name>
+                <group>
+                    <name>a.b.01.d</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.b.01.d\const_menu_outputs.h</name>
+                    </file>
+                </group>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_lcd_and_keyboard.h</name>
                 </file>

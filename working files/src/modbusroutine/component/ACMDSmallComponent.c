@@ -272,7 +272,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     break;
 
 //123456
-#if ZBIRKA_VERSII_PZ != 1    
+#if ZBIRKA_VERSII_PZ == 0    
   case 117:
     (*outMaska) = RANG_LIGHT_ZDZ_FROM_OVD1;
 //        (*dvMaska) =
