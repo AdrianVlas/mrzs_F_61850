@@ -52,8 +52,9 @@ int getREGBigModbusRegister(int adrReg)
   if(offset<32) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_analog_registrator[0],
                                                    REGISTERS_REG, offset );
 //Ранжирование источников запуска дискретного регистратора
-  if(offset>=36&&offset<70) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_digital_registrator[0],
-                                                               REGISTERS_REG, offset );
+  if(offset>=36&&offset<70)
+      return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_digital_registrator[0],
+                                                               REGISTERS_REG, offset-36 );
 
   switch(offset)
     {
@@ -199,7 +200,7 @@ int postREGBigWriteAction(void)
 
       if(offset>=36&&offset<70&&flag2)
         {
-          writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_digital_registrator[0], REGISTERS_REG, offset-36,
+          writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_digital_registrator[0], REGISTERS_REG, beginAdr,
                                        countReg, BEGIN_ADR_REGISTER+36);
           flag2=0;
           upravlSchematic = 1;//флаг Rang
