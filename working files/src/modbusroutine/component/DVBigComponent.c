@@ -2,10 +2,23 @@
 
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 1356
+
+#if ZBIRKA_VERSII_PZ == 0
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1515
+#endif
 
 #define REGISTERS_DV 8
+
+#if ZBIRKA_VERSII_PZ == 1    
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 1483
+#endif
+
+#if ZBIRKA_VERSII_PZ == 2    
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 1419
+#endif
 
 int privateDVBigGetReg2(int adrReg);
 

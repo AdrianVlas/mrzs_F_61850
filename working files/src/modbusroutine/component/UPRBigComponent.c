@@ -11,8 +11,6 @@
 //конечный bit в карте памяти
 #define END_ADR_BIT 55416
 
-//#define CLRACT_CONTROL 0
-//#define SETACT_CONTROL 1
 #define CLRVALID_DATA  0
 
 int privateUPRBigGetReg2(int adrReg);
@@ -241,7 +239,7 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
 
 //123456
 #else
-#define ZDZ_CONFIGURATION_END 106
+#define ZDZ_CONFIGURATION_END 103
 #endif
 
 //  count_bit = 2;

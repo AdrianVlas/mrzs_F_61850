@@ -864,7 +864,15 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     }//switch
   }//if(inOffset>=1005 && inOffset<1021)
 
+#if ZBIRKA_VERSII_PZ == 0    
   if(inOffset>=1056 && inOffset<1076)
+#endif
+#if ZBIRKA_VERSII_PZ == 1    
+  if(inOffset>=1056 && inOffset<1072)
+#endif
+#if ZBIRKA_VERSII_PZ == 2
+  if(inOffset>=1056 && inOffset<1064)
+#endif
   {
     int item = inOffset-1056;
     (*editValue) = (uint32_t*)&edition_settings.dopusk_dv[item];
@@ -929,7 +937,7 @@ int getUSTBigModbusRegister(int adrReg)
   if(editValue==NULL) return 0;
 
   if(editValue == (uint32_t*)&edition_settings.type_mtz04_2 && (*editValue)!=0) return (*editValue)-2;
-  for(int gruppa=0; gruppa<NUMBER_UP; gruppa++)
+  for(int gruppa=0; gruppa<4; gruppa++)
   {
     for(int item=0; item<NUMBER_UP; item++)
     {
@@ -975,6 +983,7 @@ int getUSTBigModbusRegister(int adrReg)
     }//if(editValue == (uint32_t*)&edition_settings.setpoint_pochatkova_k_vymk)
     if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
     {
+#if ZBIRKA_VERSII_PZ == 0    
       if(offset==1046)
       {
        return (*editValue) & (uint32_t)0xffff;
@@ -983,9 +992,21 @@ int getUSTBigModbusRegister(int adrReg)
       {
         return ((*editValue)>>16)  & (uint32_t)0xffff;
       }//else
+#else
+      if(offset==1046)
+      {
+       return (*editValue) & (uint32_t)0xffff;
+      }
+      else
+      {
+        return 0;
+      }//else
+
+#endif
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
     if(editValue == (uint32_t*)&edition_settings.type_of_input)
     {
+#if ZBIRKA_VERSII_PZ == 0    
       if(offset==1048)
       {
        return (*editValue) & (uint32_t)0xffff;
@@ -994,6 +1015,17 @@ int getUSTBigModbusRegister(int adrReg)
       {
         return ((*editValue)>>16)  & (uint32_t)0xffff;
       }//else
+#else
+      if(offset==1048)
+      {
+       return (*editValue) & (uint32_t)0xffff;
+      }
+      else
+      {
+        return 0;
+      }//else
+
+#endif
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
     if(editValue == (uint32_t*)&edition_settings.type_of_led)
     {
@@ -1196,13 +1228,13 @@ int postUSTBigWriteAction(void)
       if(editValue == (uint32_t*)&edition_settings.setpoint_UP[item][0][grupa_ustavok])
       {
         if((offset-grupa_offset*grupa_ustavok)&1)
-        {
+        {//мл регистр
           (*editValue) &= (uint32_t)~0xffff;
           (*editValue) |= (value & 0xffff);
           goto m1;
         }//if(offset&1)
         else
-        {
+        {//ст регистр
           (*editValue)  &= (uint32_t)~(0xffff<<16);
           (*editValue)  |= ((value & 0xffff)<<16);//
           goto m1;

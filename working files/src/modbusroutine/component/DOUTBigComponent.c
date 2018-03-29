@@ -3,10 +3,17 @@
 
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 1100
+#define REGISTERS_OUTPUTS 16
+
+#if (ZBIRKA_VERSII_PZ == 0) || (ZBIRKA_VERSII_PZ == 1)
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1355
+#endif
 
-#define REGISTERS_OUTPUTS 16
+#if ZBIRKA_VERSII_PZ == 2    
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 1243
+#endif
 
 int privateDOUTBigGetReg2(int adrReg);
 

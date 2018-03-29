@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.22.1.15696</state>
+                    <state>8.22.2.15993</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -4641,9 +4641,6 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_menu_mtz04.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_outputs.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_menu_point_time_settings.h</name>
