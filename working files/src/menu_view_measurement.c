@@ -1019,12 +1019,12 @@ void make_ekran_angle(void)
         
         //Видаляємо зайві пробіли і по можливості звільняємо першу позицю по горизонталі для курсору
         int shift = 0;
-        for (int index_1 = 1; index_1 <= (LAST_POSITION_OF_TITLE - shift); index_1++)
+        for (int index_1 = 1; index_1 <= LAST_POSITION_OF_TITLE; index_1++)
         {
-          if (name_string[index_of_ekran][index_1    ] == ' ')
+          if (name_string[index_of_ekran][index_1 - shift] == ' ')
           {
             //Підтягуємо символи, щоб не було багато пробілів
-            for (int index_2 = index_1; index_2 <= (LAST_POSITION_OF_TITLE - shift); index_2++)
+            for (int index_2 = (index_1 - shift); index_2 <= (LAST_POSITION_OF_TITLE - shift); index_2++)
             {
               name_string[index_of_ekran][index_2] = name_string[index_of_ekran][index_2 + 1];
             }
@@ -1033,10 +1033,13 @@ void make_ekran_angle(void)
         }
         if (
             (name_string[index_of_ekran][0] != ' ') && 
+            (shift > 0) && 
             (
-             (shift > 0) || 
              ((value >= 0 /*0.0°*/) && (value <= 999 /*99.9°*/)) ||
-             (number_charts_for_undef_tmp < (MAX_COL_LCD - LAST_POSITION_OF_TITLE - 1 - 1))  
+             (
+              (value < 0) &&
+              (number_charts_for_undef_tmp < (MAX_COL_LCD - LAST_POSITION_OF_TITLE - 1 - 1))  
+             )  
             )
            )
         {
