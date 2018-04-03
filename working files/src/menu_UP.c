@@ -514,7 +514,7 @@ void make_ekran_control_UP()
     "       I1       ",
     "       I2       ",
     "      I0.4      ",
-    "      3I0 .     ",
+    "      3I0-1     ",
     "       3I0      ",
     "      3I0**     ",
     "                ",
@@ -569,8 +569,8 @@ void make_ekran_control_UP()
         
   int index_language = index_language_in_array(current_settings.language);
 
-  if (index_language == INDEX_LANGUAGE_EN) information_2[UP_CTRL_3I0_r][9] = 'c';
-  else information_2[UP_CTRL_3I0_r][9] = 'ð';
+//  if (index_language == INDEX_LANGUAGE_EN) information_2[UP_CTRL_3I0_r][9] = 'c';
+//  else information_2[UP_CTRL_3I0_r][9] = 'ð';
   
   __SETTINGS *point = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
   

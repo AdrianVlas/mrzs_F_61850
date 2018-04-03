@@ -461,7 +461,7 @@ void make_ekran_current(unsigned int pervynna_vtorynna)
     " 3I0 i=         ",
     " 3I0  =         ",
     " 3I0**=         ",
-    " 3I0 .=         ",
+    " 3I0-1=         ",
     " Ia   =         ",
     " Ib   =         ",
     " Ic   =         ",
@@ -497,11 +497,11 @@ void make_ekran_current(unsigned int pervynna_vtorynna)
   {
     name_string[i][MAX_COL_LCD - 1] = odynyci_vymirjuvannja[index_language][INDEX_A];
     if (
-        (
-         (index_array[i] == IM_3I0_r) &&
-         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
-        )
-        ||
+//        (
+//         (index_array[i] == IM_3I0_r) &&
+//         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+//        )
+//        ||
         (
          (index_array[i] == IM_IB) &&
          ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)
@@ -905,19 +905,19 @@ void make_ekran_angle(void)
   {
     unsigned char name_string[MAX_ROW_FOR_MEASURMENT_ANGLE][MAX_COL_LCD] = 
     {
-      " Ua -           ",
-      " Ub -           ",
-      " Uc -           ",
-      " Uab-           ",
-      " Ubc-           ",
-      " Uca-           ",
-      " 3U0-           ",
-      " Ia -           ",
-      " Ib -           ",
-      " Ic -           ",
-      " 3I0-           ",
-      "3I0 -           ",
-      "I0.4-           "
+      " Ua  -          ",
+      " Ub  -          ",
+      " Uc  -          ",
+      " Uab -          ",
+      " Ubc -          ",
+      " Uca -          ",
+      " 3U0 -          ",
+      " Ia  -          ",
+      " Ib  -          ",
+      " Ic  -          ",
+      " 3I0 -          ",
+      "3I0-1-          ",
+      "I0.4 -          "
     };
 #define SIZE_UNDEF      6
     const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
@@ -935,13 +935,13 @@ void make_ekran_angle(void)
     /*************
     Завершуємо формування назв кутів
     *************/
-    if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
-    {
-      if (index_language == INDEX_LANGUAGE_EN) name_string[FULL_ORT_3I0_r][3] = 'c';
-      else name_string[FULL_ORT_3I0_r][3] = 'р';
-    }
+//    if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+//    {
+//      if (index_language == INDEX_LANGUAGE_EN) name_string[FULL_ORT_3I0_r][3] = 'c';
+//      else name_string[FULL_ORT_3I0_r][3] = 'р';
+//    }
 
-#define SIZE_NAME_ANALOG_CANAL   4
+#define SIZE_NAME_ANALOG_CANAL   5
     for (int index_1 = 0; index_1 < MAX_ROW_FOR_MEASURMENT_ANGLE; index_1++) 
     {
       for (int index_2 = 0; index_2 < SIZE_NAME_ANALOG_CANAL; index_2++) 
@@ -1015,7 +1015,7 @@ void make_ekran_angle(void)
       {
         int value = phi_angle[index_of_ekran + value_index_shift[index_of_ekran]];
 
-#define LAST_POSITION_OF_TITLE  8
+#define LAST_POSITION_OF_TITLE  10
         
         //Видаляємо зайві пробіли і по можливості звільняємо першу позицю по горизонталі для курсору
         int shift = 0;

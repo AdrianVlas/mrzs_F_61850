@@ -775,7 +775,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
     {
       " 3I0  =         ",
       " 3I0**=         ",
-      " 3I0 .=         ",
+      " 3I0-1=         ",
       " Ia   =         ",
       " Ib   =         ",
       " Ic   =         ",
@@ -808,11 +808,11 @@ void make_ekran_analog_value_records_digital_registrator(void)
       if (i < 18)
       {
        //Струми і напруги
-       if (i == 2)
-       {
-         if (index_language == INDEX_LANGUAGE_EN) name_string[i][4] = 'c';
-         else name_string[i][4] = 'р';
-       }
+//       if (i == 2)
+//       {
+//         if (index_language == INDEX_LANGUAGE_EN) name_string[i][4] = 'c';
+//         else name_string[i][4] = 'р';
+//       }
 
         unsigned int temp_measurement = *(point_unsigned_int + i);
         unsigned int start_number_digit_after_point;
