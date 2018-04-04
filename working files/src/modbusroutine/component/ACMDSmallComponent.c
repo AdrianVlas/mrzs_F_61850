@@ -1129,7 +1129,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     {
     case 0:
       (*outMaska) = RANG_BLOCK_UP1 + 3*subObj;
-      (*dvMaska)  = RANG_SMALL_BLOCK_UP1 + 3*subObj;
+      (*dvMaska)  = RANG_SMALL_BLOCK_UP1 + 1*subObj;
       break;
     case 1:
       (*outMaska) = RANG_PO_UP1 + 3*subObj;
