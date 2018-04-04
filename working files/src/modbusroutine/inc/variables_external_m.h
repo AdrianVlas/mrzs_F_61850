@@ -9,6 +9,8 @@ extern  COMPONENT_OBJ config_array[];
 extern  short tempReadArray[];
 extern  short tempWriteArray[];
 extern  int   indexTW;//индекс буфера записи
-//extern  short rprAdresRegister[];//хранилище адресов пользовательских регистров
+
+//закоментируйте для боевого применения
+//#define TESTZBIRKA_VERSII_PZ
 
 #endif

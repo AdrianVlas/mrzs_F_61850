@@ -944,9 +944,9 @@ int getUSTBigModbusRegister(int adrReg)
       if(editValue == (uint32_t*)&edition_settings.setpoint_UP[item][0][gruppa])
       {
         if(offset&1)
-          return (*editValue);
+          return (*editValue)/multer;
         else
-          return (((*editValue)>>16));
+          return ((*editValue)/multer)>>16;
       }//if
     }//for(int item=0; item<NUMBER_UP; item++)
   }//for(int gruppa=0; gruppa<NUMBER_UP; gruppa++)
@@ -1068,7 +1068,11 @@ int setUSTBigModbusRegister(int adrReg, int dataReg)
   uint32_t *editValue=NULL;
   int  multer = 1;
   if(!ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, dataReg, &editValue)) return MARKER_ERRORDIAPAZON;
+#ifdef TESTZBIRKA_VERSII_PZ
+  if(editValue==NULL) return MARKER_ERRORDIAPAZON;
+#else
   if(editValue==NULL) return 0;
+#endif
 
   return 0;
 }//getDOUTBigModbusRegister(int adrReg)

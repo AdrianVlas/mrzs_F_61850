@@ -1122,18 +1122,21 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
   {
     if(!(edition_settings.configuration&(1<<UP_BIT_CONFIGURATION))) isValid = 0;
     int inupOffset = inOffset-384;
-    switch(inupOffset%3)
+    int subObj = inupOffset/3;
+    int offsetObj = inupOffset%3;
+    
+    switch(offsetObj)
     {
     case 0:
-      (*outMaska) = RANG_BLOCK_UP1 + inupOffset;
-      (*dvMaska)  = RANG_SMALL_BLOCK_UP1 + (inupOffset/3);
+      (*outMaska) = RANG_BLOCK_UP1 + 3*subObj;
+      (*dvMaska)  = RANG_SMALL_BLOCK_UP1 + 3*subObj;
       break;
     case 1:
-      (*outMaska) = RANG_PO_UP1 +inupOffset;
+      (*outMaska) = RANG_PO_UP1 + 3*subObj;
 //        (*dvMaska) =
       break;
     case 2:
-      (*outMaska) = RANG_UP1 +inupOffset;
+      (*outMaska) = RANG_UP1 + 3*subObj;
 //        (*dvMaska) =
       break;
     }//switch
