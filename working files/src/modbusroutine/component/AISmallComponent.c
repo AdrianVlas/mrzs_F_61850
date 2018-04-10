@@ -232,7 +232,7 @@ int getAISmallModbusRegister(int adrReg)
 #ifdef TESTZBIRKA_VERSII_PZ
         return 361;
 #else
-        return measurement_low[IM_3I0];
+        return measurement_low[IM_3I0_r];
 #endif
       }
     case 30://IM_3I0_other_g

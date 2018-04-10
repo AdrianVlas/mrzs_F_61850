@@ -781,13 +781,14 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
       case UP_CTRL_I1:
       case UP_CTRL_I2:
       case UP_CTRL_I04:
-      case UP_CTRL_3I0_r:
+//      case UP_CTRL_3I0_r:
         if((item%4)==1)
         {
           if(regUst!=0) diapazon=0;//нет старшего регистра
         }//if
         else if(regUst<SETPOINT_UP_I_MIN/10 || regUst>SETPOINT_UP_I_MAX/10) diapazon=0;
         break;
+      case UP_CTRL_3I0_r:
       case UP_CTRL_3I0:
       case UP_CTRL_3I0_others:
         (*multer) = 1;
@@ -943,7 +944,7 @@ int getUSTBigModbusRegister(int adrReg)
     {
       if(editValue == (uint32_t*)&edition_settings.setpoint_UP[item][0][gruppa])
       {
-        if(offset&1)
+        if((offset-adresGruppa)&1)
           return (*editValue)/multer;
         else
           return ((*editValue)/multer)>>16;

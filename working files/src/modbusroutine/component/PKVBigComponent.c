@@ -215,21 +215,21 @@ int getPKVBigModbusRegister(int adrReg)
   case 6://Количество стоп-бит
     return ((unsigned short)*editValue)+1;
   case 16://Символ 1 и 2
-    return edition_settings.name_of_cell[0] + ((edition_settings.name_of_cell[1]<<8)&0xFF00);
+    return edition_settings.name_of_cell[0] | ((edition_settings.name_of_cell[1]<<8)&0xFF00);
   case 17://Символ 3 и 4
-    return edition_settings.name_of_cell[2] + ((edition_settings.name_of_cell[3]<<8)&0xFF00);
+    return edition_settings.name_of_cell[2] | ((edition_settings.name_of_cell[3]<<8)&0xFF00);
   case 18://Символ 5 и 6
-    return edition_settings.name_of_cell[4] + ((edition_settings.name_of_cell[5]<<8)&0xFF00);
+    return edition_settings.name_of_cell[4] | ((edition_settings.name_of_cell[5]<<8)&0xFF00);
   case 19://Символ 7 и 8
-    return edition_settings.name_of_cell[6] + ((edition_settings.name_of_cell[7]<<8)&0xFF00);
+    return edition_settings.name_of_cell[6] | ((edition_settings.name_of_cell[7]<<8)&0xFF00);
   case 20://Символ 9 и 10
-    return edition_settings.name_of_cell[8] + ((edition_settings.name_of_cell[9]<<8)&0xFF00);
+    return edition_settings.name_of_cell[8] | ((edition_settings.name_of_cell[9]<<8)&0xFF00);
   case 21://Символ 11 и 12
-    return edition_settings.name_of_cell[10] + ((edition_settings.name_of_cell[11]<<8)&0xFF00);
+    return edition_settings.name_of_cell[10] | ((edition_settings.name_of_cell[11]<<8)&0xFF00);
   case 22://Символ 13 и 14
-    return edition_settings.name_of_cell[12] + ((edition_settings.name_of_cell[13]<<8)&0xFF00);
+    return edition_settings.name_of_cell[12] | ((edition_settings.name_of_cell[13]<<8)&0xFF00);
   case 23://Символ 15 и 16
-    return edition_settings.name_of_cell[14] + ((edition_settings.name_of_cell[15]<<8)&0xFF00);
+    return edition_settings.name_of_cell[14] | ((edition_settings.name_of_cell[15]<<8)&0xFF00);
 
   case 24://Год
     return  *(label_to_time_array + 6);
@@ -410,7 +410,8 @@ int postPKVBigWriteAction(void)
     }//switch
   }//for
 
-  if(flag_time_array)
+  if(flag_time_array) 
+  {
     if (check_data_for_data_time_menu() == 1)
     {
       //Дані достовірні
@@ -418,7 +419,7 @@ int postPKVBigWriteAction(void)
       _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
     }//if
     else return ERROR_VALID2;
-
+  }
   return 0;
 }//
 
