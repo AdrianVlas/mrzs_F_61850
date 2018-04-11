@@ -1189,7 +1189,9 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
         if(cmdSwitch==1) {
           //GCMD
           if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+          {
              if(trigger_functions_USB[value/16] & (1<<(value%16))) value=1;
+          }//if
           else if(trigger_functions_RS485[value/16] & (1<<(value%16))) value=1;
         }//if(cmdSwitch==0)
       }
@@ -1511,7 +1513,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 432://OF
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF1_IN);
       mutex_interface = false;
@@ -1520,7 +1522,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 433://OF
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF2_IN);
       mutex_interface = false;
@@ -1529,7 +1531,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 434://OF
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF3_IN);
       mutex_interface = false;
@@ -1538,7 +1540,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 435://OF
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF4_IN);
       mutex_interface = false;
@@ -1547,7 +1549,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 436://OF
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF5_IN);
       mutex_interface = false;
@@ -1556,7 +1558,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 437://OF
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF6_IN);
       mutex_interface = false;
@@ -1565,7 +1567,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 438://OF
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF7_IN);
       mutex_interface = false;
@@ -1574,7 +1576,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 439://OF
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF8_IN);
       mutex_interface = false;
@@ -1584,7 +1586,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 464://DTR
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT1_SET);
       mutex_interface = false;
@@ -1593,7 +1595,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 465://DTR
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT1_RESET);
       mutex_interface = false;
@@ -1602,7 +1604,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 466://DTR
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT2_SET);
       mutex_interface = false;
@@ -1611,7 +1613,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 467://DTR
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT2_RESET);
       mutex_interface = false;
@@ -1620,7 +1622,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 468://DTR
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT3_SET);
       mutex_interface = false;
@@ -1629,7 +1631,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 469://DTR
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT3_RESET);
       mutex_interface = false;
@@ -1638,7 +1640,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 470://DTR
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT4_SET);
       mutex_interface = false;
@@ -1647,7 +1649,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 471://DTR
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT4_RESET);
       mutex_interface = false;
@@ -1657,7 +1659,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 528://
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_VKL_VV); //Вкл.  виключателя
       mutex_interface = false;
@@ -1666,7 +1668,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 529://
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_OTKL_VV); //Викл. виключателя
       mutex_interface = false;
@@ -1676,7 +1678,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 562://
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_LEDS);//Очищення індикації
       mutex_interface = false;
@@ -1685,7 +1687,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 563://
     if(actControl&&dataBit)
     {
-      if(current_settings_interfaces.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE) return 0;
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_RELES); //Скидання реле
       mutex_interface = false;
@@ -1736,6 +1738,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   case 599://
     if(actControl&&dataBit)
     {
+      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV); //Скидання блокування готорності ТУ від захистів
       mutex_interface = false;
