@@ -9493,15 +9493,47 @@ inline void main_protection(void)
     temp_value_for_activated_function[2] |= temp_value_for_activated_function_button_interface[2];
 
     //Активація з Д.Входу
+    unsigned int vvimk_VV_vid_DV = false;
+    unsigned int vymk_VV_vid_DV = false;
     if (active_inputs != 0)
     {
       for (unsigned int i = 0; i < NUMBER_INPUTS; i++)
       {
         if ((active_inputs & (1 << i)) != 0)
         {
-          temp_value_for_activated_function[0] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i  ];
-          temp_value_for_activated_function[1] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+1];
-          temp_value_for_activated_function[2] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+2];
+          if (
+              (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_VKL_VV )) ||
+              (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_OTKL_VV))
+             )   
+          {
+            unsigned int ranguvannja_inputs_tmp[N_SMALL] = {
+                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i  ],
+                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i+1],
+                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i+2]
+                                                           };
+
+            if (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_VKL_VV ))
+            {
+              vvimk_VV_vid_DV = true;
+              _CLEAR_BIT(ranguvannja_inputs_tmp, RANG_SMALL_VKL_VV);
+            }
+
+            if (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_OTKL_VV ))
+            {
+              vymk_VV_vid_DV = true;
+              _CLEAR_BIT(ranguvannja_inputs_tmp, RANG_SMALL_OTKL_VV);
+            }
+
+            temp_value_for_activated_function[0] |= ranguvannja_inputs_tmp[0];
+            temp_value_for_activated_function[1] |= ranguvannja_inputs_tmp[1];
+            temp_value_for_activated_function[2] |= ranguvannja_inputs_tmp[2];
+          }
+          else
+          {
+            temp_value_for_activated_function[0] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i  ];
+            temp_value_for_activated_function[1] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+1];
+            temp_value_for_activated_function[2] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+2];
+          }
         }
       }
     }
@@ -9600,6 +9632,7 @@ inline void main_protection(void)
       default: break;
       }
     }
+    
       
     //Загальні функції (без ОФ-ій і функцій, які можуть блокуватися у місцевому управлінні)
     active_functions[RANG_BLOCK_VKL_VV                      >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_VKL_VV                     ) != 0) << (RANG_BLOCK_VKL_VV                      & 0x1f);
@@ -9619,7 +9652,8 @@ inline void main_protection(void)
       
     //Загальні функції (які блокувються у місцевому управлінні)
     //Ввімкнення ВВ
-    if (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_VKL_VV ))
+    active_functions[RANG_VKL_VV >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_VKL_VV) != 0) << (RANG_VKL_VV & 0x1f);
+    if (vvimk_VV_vid_DV)
     {
       if (
           (_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE )) &&
@@ -9631,7 +9665,10 @@ inline void main_protection(void)
       }
       else _SET_BIT(active_functions, RANG_VKL_VV);
     }
-    if (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_OTKL_VV ))
+
+    //Вимкнення ВВ
+    active_functions[RANG_OTKL_VV >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_OTKL_VV) != 0) << (RANG_OTKL_VV & 0x1f);
+    if (vymk_VV_vid_DV)
     {
       if (
           (_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE )) &&
