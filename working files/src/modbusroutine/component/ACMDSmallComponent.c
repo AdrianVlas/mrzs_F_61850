@@ -1183,16 +1183,18 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
         //читать значение команд
         if(cmdSwitch==0) {
           //ACMD
-          if(active_functions[value/16] & (1<<(value%16))) value=1;
-//           if(value==RANG_BLOCK_MTZ2) value=1;
+          value = active_functions[value/16] & (1<<(value%16));
         }//if(cmdSwitch==0)
         if(cmdSwitch==1) {
           //GCMD
           if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
           {
-             if(trigger_functions_USB[value/16] & (1<<(value%16))) value=1;
+             value = trigger_functions_USB[value/16] & (1<<(value%16));
           }//if
-          else if(trigger_functions_RS485[value/16] & (1<<(value%16))) value=1;
+          else
+          {
+             value = trigger_functions_RS485[value/16] & (1<<(value%16));
+          }//else
         }//if(cmdSwitch==0)
       }
     }//if(item>=beginOffset && item<endOffset)
@@ -1511,72 +1513,80 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   switch(inOffset)
   {
   case 432://OF
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF1_IN);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 433://OF
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF2_IN);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 434://OF
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF3_IN);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 435://OF
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF4_IN);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 436://OF
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF5_IN);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 437://OF
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF6_IN);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 438://OF
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF7_IN);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 439://OF
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DF8_IN);
       mutex_interface = false;
@@ -1584,72 +1594,80 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     return 0;
 
   case 464://DTR
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT1_SET);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 465://DTR
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT1_RESET);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 466://DTR
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT2_SET);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 467://DTR
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT2_RESET);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 468://DTR
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT3_SET);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 469://DTR
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT3_RESET);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 470://DTR
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT4_SET);
       mutex_interface = false;
     }//if(action)
     return 0;
   case 471://DTR
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_DT4_RESET);
       mutex_interface = false;
@@ -1657,18 +1675,20 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     return 0;
 
   case 528://
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_VKL_VV); //Вкл.  виключателя
       mutex_interface = false;
     }//if(action)
     return 0;
   case 529://
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_OTKL_VV); //Викл. виключателя
       mutex_interface = false;
@@ -1676,24 +1696,26 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     return 0;
 
   case 562://
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_LEDS);//Очищення індикації
       mutex_interface = false;
     }//if(action)
     return 0;
   case 563://
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_RELES); //Скидання реле
       mutex_interface = false;
     }//if(action)
     return 0;
-  case 564://
+  case 564://Скидання загальних функцій
     if(actControl&&dataBit)
     {
       //Скидання загальних функцій
@@ -1703,7 +1725,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
       reset_trigger_function_from_interface |= (1 << RS485_RECUEST);
     }//if(action)
     return 0;
-  case 565://
+  case 565://Сигнал про очищення ресурсу лічильників з системи захистів
     if(actControl&&dataBit)
     {
       restart_counter = 0xff; //Сигнал про очищення ресурсу лічильників з системи захистів
@@ -1735,10 +1757,10 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     }//if(action)
     return 0;
 
-  case 599://
+  case 599://Скидання блокування готорності ТУ від захистів
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
-      if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
       mutex_interface = true;
       _SET_BIT(activation_function_from_interface, RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV); //Скидання блокування готорності ТУ від захистів
       mutex_interface = false;
