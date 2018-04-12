@@ -1234,8 +1234,8 @@ int postUSTBigWriteAction(void)
       {
         if((offset-grupa_offset*grupa_ustavok)&1)
         {//мл регистр
-          (*editValue) &= (uint32_t)~0xffff;
-          (*editValue) |= (value & 0xffff);
+          //(*editValue) &= (uint32_t)~0xffff;
+          (*editValue) = value*multer;
           goto m1;
         }//if(offset&1)
         else
