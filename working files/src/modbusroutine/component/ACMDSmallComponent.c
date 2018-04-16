@@ -10,7 +10,6 @@
 #define END_ADR_REGISTER 293
 //конечный bit в карте памяти
 #define END_ADR_BIT 50599
-extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 
 int privateACMDSmallGetReg2(int adrReg);
 int privateACMDSmallGetBit2(int adrBit);
@@ -1032,6 +1031,8 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     (*dvMaska) = RANG_SMALL_RESET_RELES;
     break;
 
+#define PASSWORD_SETCMD 568
+
   case 569:
     (*outMaska) = RANG_MISCEVE_DYSTANCIJNE;
     (*dvMaska) = RANG_SMALL_MISCEVE_DYSTANCIJNE;
@@ -1175,8 +1176,17 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
   for(int item=0; item<(END_ADR_BIT-BEGIN_ADR_BIT+1); item++)
   {
     int value =0;
+    int tsdata = 0;
     if(item>=beginOffset && item<endOffset)
     {
+     if(item==PASSWORD_SETCMD)//Пароль установлен
+     {
+      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+                 value = password_set_USB;//Пароль установлен
+      else
+                 value = password_set_RS485;//Пароль установлен
+      goto m1;
+     }//if
       value = encoderN_BIGACMD(item);//кодировщик адреса modbus в индекс бита для реле
       if(value==-1) value=0;
       else {
@@ -1187,7 +1197,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
         }//if(cmdSwitch==0)
         if(cmdSwitch==1) {
           //GCMD
-          if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+          if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
           {
              value = trigger_functions_USB[value/16] & (1<<(value%16));
           }//if
@@ -1198,8 +1208,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
         }//if(cmdSwitch==0)
       }
     }//if(item>=beginOffset && item<endOffset)
-
-    int tsdata = 0;
+m1:
     if(value) tsdata=1;
     tempReadArray[item/16] |= tsdata<<(item%16);
   }//for(int item=0; item<568; item++)
@@ -1719,7 +1728,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     if(actControl&&dataBit)
     {
       //Скидання загальних функцій
-  if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+  if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
       reset_trigger_function_from_interface |= (1 << USB_RECUEST);
   else 
       reset_trigger_function_from_interface |= (1 << RS485_RECUEST);
@@ -1739,7 +1748,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
       {
         //Активація внесекних змін
         int typI = 2;
-        if(pointInterface==1) typI = 3;//метка интерфейса 0-USB 1-RS485
+        if(pointInterface==RS485_RECUEST) typI = 3;//метка интерфейса 0-USB 1-RS485
         if(set_new_settings_from_interface(typI))//2-USB
         {
         type_of_settings_changed = 0;

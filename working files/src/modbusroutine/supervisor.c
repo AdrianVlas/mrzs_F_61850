@@ -19,7 +19,9 @@ int outputFunc6PacketEncoder(int adrUnit, int adrReg, int dataReg);
 int outputFunc5PacketEncoder(int adrUnit, int adrBit, int dataBit);
 int outputFunc3PacketEncoder(int adrUnit, int adrReg, int cntReg);
 int outputFunc1PacketEncoder(int adrUnit, int adrReg, int cntReg);
-//void restart_monitoring_RS485(void);
+int passwordImunitetReg(int adrReg);
+int passwordImunitetBit(int adrBit);
+int passwordImunitetRegPKVBigComponent(int adrReg);
 
 unsigned char  *outputPacket;
 unsigned char  outputPacket_USB[300];
@@ -28,7 +30,6 @@ unsigned char  outputPacket_RS485[300];
 int sizeOutputPacket = 0;
 unsigned char *inputPacket;
 int *received_count;
-int pointInterface=0;//метка интерфейса 0-USB 1-RS485
 int globalcntBit  = 0;//к-во бит
 int globalcntReg  = 0;//к-во регистров
 int globalbeginAdrReg  = 0;//адрес нач регистра
@@ -247,6 +248,12 @@ int outputFunc16PacketEncoder(int adrUnit, int adrReg, int cntReg)
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_VALUE,//error,
                                 outputPacket);//output_data
+        case MARKER_ERRORPAROL:
+          result = -4;
+          return Error_modbus_m(adrUnit, // address,
+                                outputPacket[1],//function,
+                                ERROR_ACKNOWLEDGE,//error,
+                                outputPacket);//output_data
         default:
         {
           flag = 0;
@@ -314,6 +321,13 @@ int outputFunc15PacketEncoder(int adrUnit, int adrBit, int cntBit)
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_VALUE,//error,
                                 outputPacket);//output_data
+
+        case MARKER_ERRORPAROL:
+          result = -4;
+          return Error_modbus_m(adrUnit, // address,
+                                outputPacket[1],//function,
+                                ERROR_ACKNOWLEDGE,//error,
+                                outputPacket);//output_data
         default:
         {
           flag = 0;
@@ -376,6 +390,12 @@ int outputFunc6PacketEncoder(int adrUnit, int adrReg, int dataReg)
                             outputPacket[1],//function,
                             ERROR_ILLEGAL_DATA_VALUE,//error,
                             outputPacket);//output_data
+    case MARKER_ERRORPAROL:
+      result = -4;
+      return Error_modbus_m(adrUnit, // address,
+                            outputPacket[1],//function,
+                            ERROR_ACKNOWLEDGE,//error,
+                            outputPacket);//output_data
     }//switch
 
   int upravlReturn = superPostWriteAction();//action после записи
@@ -426,6 +446,12 @@ int outputFunc5PacketEncoder(int adrUnit, int adrBit, int dataBit)
       return Error_modbus_m(adrUnit, // address,
                             outputPacket[1],//function,
                             ERROR_ILLEGAL_DATA_VALUE,//error,
+                            outputPacket);//output_data
+    case MARKER_ERRORPAROL:
+      result = -4;
+      return Error_modbus_m(adrUnit, // address,
+                            outputPacket[1],//function,
+                            ERROR_ACKNOWLEDGE,//error,
                             outputPacket);//output_data
     }//switch
 
@@ -661,11 +687,43 @@ int superReaderRegister(int adrReg)
     {
       result = config_array[i].getModbusRegister(adrReg);
       if(!(result==MARKER_OUTPERIMETR)) break;
-//      if(result==MARKER_ERRORPERIMETR) break;
     }//for
   if(i==TOTAL_COMPONENT) result = MARKER_OUTPERIMETR;
   return result;
 }//superReaderRegister()
+
+int passwordImunitetBit(int x)
+{
+  UNUSED(x);
+  return 0;
+}//passwordImunitetBit(int adrBit)
+
+int passwordImunitetReg(int adrReg)
+{
+  UNUSED(adrReg);
+//  int tmp1 = passwordImunitetRegPKVBigComponent(adrReg);
+  return 1;//tmp1;
+/*
+                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_PART1                 ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_PART1                 )                                       ) || уставки і витримки
+                 ((add_data >= (M_ADDRESS_FIRST_SETPOINTS_ZACHYSTIV + SHIFT_G1)) && (add_data <= (M_ADDRESS_LAST_SETPOINTS_ZACHYSTIV + SHIFT_G1))                                       ) || уставки і витримки першої групи
+                 ((add_data >= (M_ADDRESS_FIRST_SETPOINTS_ZACHYSTIV + SHIFT_G2)) && (add_data <= (M_ADDRESS_LAST_SETPOINTS_ZACHYSTIV + SHIFT_G2))                                       ) || уставки і витримки другої групи
+                 ((add_data >= (M_ADDRESS_FIRST_SETPOINTS_ZACHYSTIV + SHIFT_G3)) && (add_data <= (M_ADDRESS_LAST_SETPOINTS_ZACHYSTIV + SHIFT_G3))                                       ) || уставки і витримки третьої групи
+                 ((add_data >= (M_ADDRESS_FIRST_SETPOINTS_ZACHYSTIV + SHIFT_G4)) && (add_data <= (M_ADDRESS_LAST_SETPOINTS_ZACHYSTIV + SHIFT_G4))                                       ) || уставки і витримки четвертої групи
+                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_CONTINUE              ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_CONTINUE              ) && (add_data != MA_PASSWORD_INTERFACE)) || уставки і витримки (продовження) і налаштування крім паролю доступу
+                 ((add_data >= M_ADDRESS_FIRST_TIME_AND_DATA                   ) && (add_data <= M_ADDRESS_LAST_TIME_AND_DATA                   )                                       ) || час
+                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_RANG                  ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_RANG                  )                                       ) || ранжування
+                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_RANG_AR               ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_RANG_AR               )                                       ) || ранжування аналогового реєстратора
+                 ((add_data >= MA_PREFAULT_INTERVAL_AR                         ) && (add_data <= MA_POSTFAULT_INTERVAL_AR                       )                                       ) || встановлення ширини доаварійного/післяаварійного масиву аналогового реєстратора
+                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_RANG_DR               ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_RANG_DR               )                                       ) || ранжування дискретного реєстратора
+                  (add_data == MA_CLEAR_NUMBER_RECORD_PR_ERR                   )                                                                                                          || очищення реєстратора програмних подій
+                  (add_data == MA_CLEAR_NUMBER_RECORD_AR                       )                                                                                                          || очищення аналогового реєстратора
+                  (add_data == MA_CLEAR_NUMBER_RECORD_DR                       )                                                                                                          || очищення дискретного реєстратора
+                  (add_data == MA_DEFAULT_SETTINGS                             )                                                                                                          || встановлення мінімальної конфігурації
+                  (add_data == MA_TEST_WATCHDOGS                               )                                                                                                          || тестування внутрішнього і зовнішнього watchdog
+                  (add_data == MA_CLEAR_ENERGY                                 )                                                                                                          || скидання соказів лічильника енергій
+                  (add_data == MA_NUMBER_ITERATION_EL                          )                                                                                                             встановленнямаксимальної кількості ітераційдля розширеної логіки
+*/
+}//passwordImunitetReg(int adrReg)
 
 /**************************************/
 //регистровый писатель
@@ -674,6 +732,15 @@ int superWriterRegister(int adrReg, int dataReg)
 {
   int result=0;
   int i=0;
+  if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+  {
+   if(passwordImunitetReg(adrReg)==0 && password_set_USB==1) return MARKER_ERRORPAROL;
+  }
+  else
+  {
+   if(passwordImunitetReg(adrReg)==0 && password_set_RS485==1) return MARKER_ERRORPAROL;
+  }
+
   for(; i<TOTAL_COMPONENT; i++)
     {
       result = config_array[i].setModbusRegister(adrReg, dataReg);
@@ -706,6 +773,15 @@ int superWriterBit(int adrBit, int dataBit)
 {
   int result=0;
   int i=0;
+  if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+  {
+   if(passwordImunitetBit(adrBit)==0 && password_set_USB==1) return MARKER_ERRORPAROL;
+  }
+  else
+  {
+   if(passwordImunitetBit(adrBit)==0 && password_set_RS485==1) return MARKER_ERRORPAROL;
+  }
+
   for(; i<TOTAL_COMPONENT; i++)
     {
       result = config_array[i].setModbusBit(adrBit, dataBit);

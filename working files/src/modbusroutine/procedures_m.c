@@ -7,7 +7,6 @@ extern unsigned char  outputPacket_RS485[300];
 extern int sizeOutputPacket;
 extern unsigned char *inputPacket;
 extern int *received_count;
-extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 extern int globalcntBit;//к-во бит
 extern int globalcntReg;//к-во регистров
 extern int globalbeginAdrReg;//адрес нач регистра
@@ -49,7 +48,7 @@ const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG -
 /**************************************/
 void inputPacketParserUSB(void)
 {
-  pointInterface=0;//метка интерфейса 0-USB 1-RS485
+  pointInterface=USB_RECUEST;//метка интерфейса 0-USB 1-RS485
 
   received_count = &usb_received_count;
 
@@ -76,7 +75,7 @@ void inputPacketParserUSB(void)
 /**************************************/
 void inputPacketParserRS485(void)
 {
-  pointInterface=1;//метка интерфейса 0-USB 1-RS485
+  pointInterface=RS485_RECUEST;//метка интерфейса 0-USB 1-RS485
 
   inputPacket = RxBuffer_RS485;
 
@@ -266,8 +265,8 @@ int openRegistrator(int number_file)
       (number_file >= 1) &&
       (number_file <= 4) &&
       (
-        ((pointInterface == 0  ) && (number_record_of_ar_for_USB   == 0xffff)) ||
-        ((pointInterface == 1  ) && (number_record_of_ar_for_RS485 == 0xffff))
+        ((pointInterface == USB_RECUEST  ) && (number_record_of_ar_for_USB   == 0xffff)) ||
+        ((pointInterface == RS485_RECUEST  ) && (number_record_of_ar_for_RS485 == 0xffff))
       )
     )
     ||
@@ -275,8 +274,8 @@ int openRegistrator(int number_file)
       (number_file >= 5) &&
       (number_file <= 6) &&
       (
-        ((pointInterface == 0  ) && (number_record_of_dr_for_USB   == 0xffff)) ||
-        ((pointInterface == 1  ) && (number_record_of_dr_for_RS485 == 0xffff))
+        ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB   == 0xffff)) ||
+        ((pointInterface == RS485_RECUEST  ) && (number_record_of_dr_for_RS485 == 0xffff))
       )
     )
   )
@@ -321,8 +320,8 @@ int openRegistrator(int number_file)
     (number_file <= 6) &&
     (
       (
-        ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
-        ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+        ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
       )
       ||
       ((clean_rejestrators & CLEAN_DR) != 0)
@@ -339,8 +338,8 @@ int openRegistrator(int number_file)
   {
     //ќч≥куЇмо поки завершитьс€ зчитукванн€ даних дл€ аналогового реЇстратора
     while (
-      ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
-      ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
+      ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
+      ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
     )
     {
       //якщ очасом буде спрацьовувати Watchdog, то тут треба буде поставити функц≥ю роботи з ним
@@ -363,8 +362,8 @@ int openRegistrator(int number_file)
   else
   {
     while (
-      ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
-      ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+      ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+      ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
     )
     {
       //якщ очасом буде спрацьовувати Watchdog, то тут треба буде поставити функц≥ю роботи з ним
@@ -400,7 +399,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
   int *point_to_first_number_time_sample, *point_to_last_number_time_sample;
 
-  if (pointInterface == 0)
+  if (pointInterface == USB_RECUEST)
   {
     point_to_first_number_time_sample = &first_number_time_sample_for_USB;
     point_to_last_number_time_sample  = &last_number_time_sample_for_USB;
@@ -432,15 +431,15 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
     }
 
     //ѕодаЇмо команду зчитати дан≥ у бувер пам'€т≥
-    if (pointInterface == 0)
+    if (pointInterface == USB_RECUEST)
       control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB;
     else
       control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485;
 
     //ќч≥куЇмо поки завершитьс€ зчитукванн€ даних дл€ аналогового реЇстратора
     while (
-      ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
-      ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
+      ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
+      ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
     )
     {
       //якщо очасом буде спрацьовувати Watchdog, то тут треба буде поставити функц≥ю роботи з ним
@@ -486,7 +485,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
   }//switch
 
   unsigned char *point_to_buffer;
-  if (pointInterface == 0)
+  if (pointInterface == USB_RECUEST)
     point_to_buffer = buffer_for_USB_read_record_ar;
   else
     point_to_buffer = buffer_for_RS485_read_record_ar;
@@ -513,7 +512,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
     int subObj = recordNumber-2;//индекс канала
     __HEADER_AR *header_ar_tmp;
 
-    if (pointInterface==0)//метка интерфейса 0-USB 1-RS485
+    if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
       header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
     else
       header_ar_tmp = (__HEADER_AR*)buffer_for_RS485_read_record_ar;
@@ -774,7 +773,7 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
   //якщо ми сюди д≥йшли, то вважаЇмо що заголовок аналогового реЇстратора вже зчитаний
   __HEADER_AR *header_ar_tmp;
 
-  if (pointInterface==0)//метка интерфейса 0-USB 1-RS485
+  if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
     header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
   else
     header_ar_tmp = (__HEADER_AR*)buffer_for_RS485_read_record_ar;
@@ -816,7 +815,7 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
     {
       //if(registrator==DISKRET_REGISTRATOR)
       unsigned char *point_to_buffer;
-      if (pointInterface==0)//метка интерфейса 0-USB 1-RS485
+      if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         point_to_buffer = buffer_for_USB_read_record_dr;
       else point_to_buffer = buffer_for_RS485_read_record_dr;
       if (offsetRegister < 8)
@@ -958,14 +957,14 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
 {
   __HEADER_AR *header_ar_tmp;
   unsigned char *point_to_buffer;
-  if (pointInterface == 0) //метка интерфейса 0-USB 1-RS485
+  if (pointInterface == USB_RECUEST) //метка интерфейса 0-USB 1-RS485
     point_to_buffer = buffer_for_USB_read_record_dr;
   else
     point_to_buffer = buffer_for_RS485_read_record_dr;
 
   int max_number_time_sample = (current_settings.prefault_number_periods + current_settings.postfault_number_periods) << VAGA_NUMBER_POINT_AR;
 
-  if (pointInterface==0) //метка интерфейса 0-USB 1-RS485
+  if (pointInterface==USB_RECUEST) //метка интерфейса 0-USB 1-RS485
   {
     header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
   }//if
@@ -1253,7 +1252,7 @@ int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
 {
 //данные Diskret регистратора
   unsigned char *point_to_buffer;
-  if (pointInterface==0)//метка интерфейса 0-USB 1-RS485
+  if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
     point_to_buffer = buffer_for_USB_read_record_dr;
   else point_to_buffer = buffer_for_RS485_read_record_dr;
 

@@ -9,6 +9,7 @@ extern  COMPONENT_OBJ config_array[];
 extern  short tempReadArray[];
 extern  short tempWriteArray[];
 extern  int   indexTW;//индекс буфера записи
+extern  int   pointInterface;//метка интерфейса 0-USB 1-RS485
 
 //закоментируйте для боевого применения
 //#define TESTZBIRKA_VERSII_PZ

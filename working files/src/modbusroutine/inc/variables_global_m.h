@@ -9,6 +9,6 @@
  short tempReadArray[130];
  short tempWriteArray[MAXIMUMTW];
  int   indexTW;//индекс буфера записи
-// short rprAdresRegister[130];//хранилище адресов пользовательских регистров
+ int   pointInterface=0;//метка интерфейса 0-USB 1-RS485
 
 #endif

@@ -7,8 +7,6 @@
 
 #define REGISTERS_REG 32
 
-extern int pointInterface;//метка интерфейса 0-USB 1-RS485
-
 int privateREGBigGetReg2(int adrReg);
 
 int getREGBigModbusRegister(int);//получить содержимое регистра
@@ -65,14 +63,14 @@ int getREGBigModbusRegister(int adrReg)
     case 34://Количество аналоговых регистраторов
       return info_rejestrator_ar.number_records;
     case 35://Текущий аналоговый регистратор
-      if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         return number_record_of_ar_for_USB;
       else
         return number_record_of_ar_for_RS485;
     case 70://Количество дискретных регистраторов
       return info_rejestrator_dr.number_records;
     case 71://Текущий дискретный регистратор
-      if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         return number_record_of_dr_for_USB;
       else
         return number_record_of_dr_for_RS485;
@@ -121,8 +119,8 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
       if (
         ((clean_rejestrators & CLEAN_AR) != 0) ||
         (
-          ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
-          ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
+          ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
+          ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
         )
       ) return MARKER_ERRORDIAPAZON;
       if(! ((unsigned int)dataReg < info_rejestrator_ar.number_records) &&
@@ -135,8 +133,8 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
       if (
         ((clean_rejestrators & CLEAN_DR) != 0) ||
         (
-          ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
-          ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+          ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+          ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
         )
       ) return MARKER_ERRORDIAPAZON;
       if(! ((unsigned int)dataReg < info_rejestrator_dr.number_records) &&
@@ -220,7 +218,7 @@ int postREGBigWriteAction(void)
           unsigned int *point_to_number_record_of_ar;
           int *point_to_first_number_time_sample, *point_to_last_number_time_sample;
 
-          if (pointInterface == 0)
+          if (pointInterface == USB_RECUEST)
             {
               point_to_number_record_of_ar = &number_record_of_ar_for_USB;
               point_to_first_number_time_sample = &first_number_time_sample_for_USB;
@@ -251,7 +249,7 @@ int postREGBigWriteAction(void)
             }
 
           //Подаємо команду зчитати дані у бувер пам'яті
-          if (pointInterface == 0)
+          if (pointInterface == USB_RECUEST)
             control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB;
           else
             control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485;
@@ -260,7 +258,7 @@ int postREGBigWriteAction(void)
         break;//case 35
         case 71://Текущий дискретный регистратор
 
-          if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+          if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
             {
 //int test = tempWriteArray[offsetTempWriteArray+i];
               number_record_of_dr_for_USB = tempWriteArray[offsetTempWriteArray+i];

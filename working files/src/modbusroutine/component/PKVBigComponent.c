@@ -4,7 +4,6 @@
 #define BEGIN_ADR_REGISTER 12000
 //конечный регистр в карте пам€ти
 #define END_ADR_REGISTER 12042
-extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 
 int privatePKVBigGetReg2(int adrReg);
 
@@ -18,6 +17,7 @@ void prePKVBigReadAction(void);//action до чтени€
 void prePKVBigWriteAction(void);//action до записи
 int  postPKVBigWriteAction(void);//action после записи
 int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue);
+int passwordImunitetRegPKVBigComponent(int x);
 
 COMPONENT_OBJ *pkvbigcomponent;
 
@@ -28,7 +28,7 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
   switch(inOffset)
   {
   case 0://¬рем€ активации парол€ после просто€
-    if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+    if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
           (*editValue) = &edition_settings.timeout_deactivation_password_interface_USB;
     else 
           (*editValue) = &edition_settings.timeout_deactivation_password_interface_RS485;
@@ -429,3 +429,13 @@ int privatePKVBigGetReg2(int adrReg)
   return controlPerimetr(adrReg, BEGIN_ADR_REGISTER, END_ADR_REGISTER);
 }//privateGetReg2(int adrReg)
 
+int passwordImunitetRegPKVBigComponent(int adrReg)
+{
+  //имунитетные к паролю адреса регистров 1 - есть имунитет
+  switch(adrReg)
+  {
+   case BEGIN_ADR_REGISTER+1://ѕроверка/установка парол€
+     return 1;
+  }//switch
+ return 0;
+}//

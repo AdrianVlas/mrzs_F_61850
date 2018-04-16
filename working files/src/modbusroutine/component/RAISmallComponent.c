@@ -51,8 +51,6 @@
 #define MBLOCK_PROTECTION_FREQUENCY_2_CAPV     12
 #define MBLOCK_PROTECTION_MTZ04                13
 
-extern int pointInterface;//метка интерфейса 0-USB 1-RS485
-
 int getRAISmallModbusRegister(int);//получить содержимое регистра
 int getRAISmallModbusBit(int);//получить содержимое бита
 int setRAISmallModbusRegister(int, int);//получить содержимое регистра
@@ -92,15 +90,15 @@ int getRAISmallModbusRegister(int adrReg)
   if (
     //Не подано попередньокоманди вичитування відповідного запису дискретного реєстратора
     //pointInterface=0 метка интерфейса 0-USB 1-RS485
-    ((pointInterface == 0  ) && (number_record_of_dr_for_USB == 0xffff)) ||
-    ((pointInterface == 1) && (number_record_of_dr_for_RS485 == 0xffff))
+    ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB == 0xffff)) ||
+    ((pointInterface == RS485_RECUEST) && (number_record_of_dr_for_RS485 == 0xffff))
   ) return MARKER_ERRORPERIMETR;
   if (
     //Зараз іде зчитування для інтерфейсу запису дискретного реєстратора, або очистка його, тому ця операція є тимчасово недоступною
     ((clean_rejestrators & CLEAN_DR) != 0) ||
     (
-      ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
-      ((pointInterface == 1) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+      ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+      ((pointInterface == RS485_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
     )
   ) return MARKER_ERRORPERIMETR; //Не подано попередньокоманди вичитування відповідного запису дискретного реєстратора
 
@@ -109,7 +107,7 @@ int getRAISmallModbusRegister(int adrReg)
   unsigned char *point_to_buffer;
   number_block = (adrReg - MM_ADDRESS_FIRST_MEASUREMENTS_DR) / MMEASUREMENTS_DR_WIDTH;
   offset = (adrReg - MM_ADDRESS_FIRST_MEASUREMENTS_DR) - number_block*MMEASUREMENTS_DR_WIDTH;
-  if (pointInterface == 0) point_to_buffer = buffer_for_USB_read_record_dr;
+  if (pointInterface == USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_dr;
   else point_to_buffer = buffer_for_RS485_read_record_dr;
 
   if (!(

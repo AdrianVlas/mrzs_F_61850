@@ -945,9 +945,9 @@ int getUSTBigModbusRegister(int adrReg)
       if(editValue == (uint32_t*)&edition_settings.setpoint_UP[item][0][gruppa])
       {
         if((offset-adresGruppa)&1)
-          return (*editValue)/multer;
+          return (((uint32_t)(*editValue))/multer)&0xFFFF;
         else
-          return ((*editValue)/multer)>>16;
+          return (((*editValue)/multer)>>16)&0xFFFF;
       }//if
     }//for(int item=0; item<NUMBER_UP; item++)
   }//for(int gruppa=0; gruppa<NUMBER_UP; gruppa++)
@@ -1040,7 +1040,7 @@ int getUSTBigModbusRegister(int adrReg)
       }//else
     }//if(editValue == (uint32_t*)&edition_settings.type_of_led)
 
-  return (*editValue)/multer;
+  return ((*editValue)/multer)&0xFFFF;
 }//getDOUTBigModbusRegister(int adrReg)
 int getUSTBigModbusBit(int x)
 {
@@ -1334,3 +1334,5 @@ int grupa_ustavok_control(int  offset, int *grupa_ustavok, int *adresGruppa)
   }//if
   return grupa_offset;
 }//grupa_ustavok_control(int  offset, int *grupa_ustavok, int *adresGruppa)
+
+

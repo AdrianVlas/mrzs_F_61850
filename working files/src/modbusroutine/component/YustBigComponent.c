@@ -4,7 +4,6 @@
 #define BEGIN_ADR_REGISTER 61948
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 62100
-extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 
 int privateYustBigGetReg2(int adrReg);
 
@@ -184,7 +183,7 @@ int postYustBigWriteAction(void) {
     _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
     type_of_settings_changed |= (1 << SETTINGS_DATA_CHANGED_BIT);
     int typI = 2;
-    if(pointInterface==1)//метка интерфейса 0-USB 1-RS485
+    if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;//2-USB
     return 0;
@@ -211,7 +210,7 @@ int postYustBigWriteAction(void) {
     type_of_settings_changed = (1 << DEFAULT_SETTINGS_SET_BIT);
 
     int typI = 2;
-    if(pointInterface==1)//метка интерфейса 0-USB 1-RS485
+    if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;
   }//if(upravlMin==0x1111)

@@ -4,7 +4,6 @@
 #define BEGIN_ADR_REGISTER 61800
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 61808
-extern int pointInterface;//метка интерфейса 0-USB 1-RS485
 
 int privatePREGBigGetReg2(int adrReg);
 
@@ -49,7 +48,7 @@ int getPREGBigModbusRegister(int adrReg)
     case 0://Очистить регистратор программных ошибок
       return MARKER_ERRORPERIMETR;
     case 1://Номер аварии доступной для чтения
-      if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         return number_record_of_pr_err_into_USB;
       return number_record_of_pr_err_into_RS485;
     case 2://Количество событий
@@ -62,20 +61,20 @@ int getPREGBigModbusRegister(int adrReg)
     case 8:
       
       if (
-        ((pointInterface==0  ) && (number_record_of_pr_err_into_USB   == 0xffff)) ||
-        ((pointInterface==1  ) && (number_record_of_pr_err_into_RS485 == 0xffff))
+        ((pointInterface==USB_RECUEST  ) && (number_record_of_pr_err_into_USB   == 0xffff)) ||
+        ((pointInterface==RS485_RECUEST  ) && (number_record_of_pr_err_into_RS485 == 0xffff))
       ) return MARKER_ERRORPERIMETR;
       
       if (
         ((clean_rejestrators & CLEAN_PR_ERR) != 0) ||
         (
-          ((pointInterface==0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) ||
-          ((pointInterface==1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
+          ((pointInterface==USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) ||
+          ((pointInterface==RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
         )
       ) return MARKER_ERRORPERIMETR;
       if (
         (
-          (pointInterface==0)//метка интерфейса 0-USB 1-RS485
+          (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
           &&
           (
             (number_record_of_pr_err_into_USB >= info_rejestrator_pr_err.number_records) ||
@@ -84,7 +83,7 @@ int getPREGBigModbusRegister(int adrReg)
         )
         ||
         (
-          (pointInterface==1)//метка интерфейса 0-USB 1-RS485
+          (pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
           &&
           (
             (number_record_of_pr_err_into_RS485 >= info_rejestrator_pr_err.number_records) ||
@@ -94,15 +93,15 @@ int getPREGBigModbusRegister(int adrReg)
       )
         {
           //Помічаємо, що номер запису не вибраний
-          if (pointInterface==0) number_record_of_pr_err_into_USB = 0xffff;
-          else if (pointInterface==1) number_record_of_pr_err_into_RS485 = 0xffff;
+          if (pointInterface==USB_RECUEST) number_record_of_pr_err_into_USB = 0xffff;
+          else number_record_of_pr_err_into_RS485 = 0xffff;
           return MARKER_ERRORPERIMETR;
         }//if
       
       else
         {
           unsigned char *point_to_buffer;
-          if (pointInterface==0) point_to_buffer = buffer_for_USB_read_record_pr_err;
+          if (pointInterface==USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_pr_err;
           else point_to_buffer = buffer_for_RS485_read_record_pr_err;
 
           if ( (*(point_to_buffer + 0)) != LABEL_START_RECORD_PR_ERR)
@@ -234,8 +233,8 @@ int getPREGBigModbusRegister(int adrReg)
 //      або очистка його, тому ця операція є тимчасово недоступною
           ((clean_rejestrators & CLEAN_PR_ERR) != 0) ||
           (
-            ((pointInterface == 0  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) ||
-            ((pointInterface == 1  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
+            ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) ||
+            ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
           )
         ) return MARKER_ERRORPERIMETR;
 
@@ -291,7 +290,7 @@ int getPREGBigModbusRegister(int adrReg)
             break;
           case 1://Номер аварии доступной для чтения
           {
-            if(pointInterface==0)//метка интерфейса 0-USB 1-RS485
+            if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
               {
                 //Встановлюємо номер запису реєстратора програмних подій для читання через інтерфейс USB
                 number_record_of_pr_err_into_USB = (tempWriteArray[offsetTempWriteArray+i]);
