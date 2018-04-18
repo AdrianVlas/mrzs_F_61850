@@ -1193,17 +1193,17 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
         //читать значение команд
         if(cmdSwitch==0) {
           //ACMD
-          value = active_functions[value/16] & (1<<(value%16));
+          value = active_functions[value/32] & (1<<(value%32));
         }//if(cmdSwitch==0)
         if(cmdSwitch==1) {
           //GCMD
           if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
           {
-             value = trigger_functions_USB[value/16] & (1<<(value%16));
+             value = trigger_functions_USB[value/32] & (1<<(value%32));
           }//if
           else
           {
-             value = trigger_functions_RS485[value/16] & (1<<(value%16));
+             value = trigger_functions_RS485[value/32] & (1<<(value%32));
           }//else
         }//if(cmdSwitch==0)
       }
@@ -1735,6 +1735,8 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     }//if(action)
     return 0;
   case 565://Сигнал про очищення ресурсу лічильників з системи захистів
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
     {
       restart_counter = 0xff; //Сигнал про очищення ресурсу лічильників з системи захистів
