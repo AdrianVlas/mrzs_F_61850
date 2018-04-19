@@ -21,7 +21,6 @@ int outputFunc3PacketEncoder(int adrUnit, int adrReg, int cntReg);
 int outputFunc1PacketEncoder(int adrUnit, int adrReg, int cntReg);
 int passwordImunitetReg(int adrReg);
 int passwordImunitetBit(int adrBit);
-int passwordImunitetRegPKVBigComponent(int adrReg);
 
 unsigned char  *outputPacket;
 unsigned char  outputPacket_USB[300];
@@ -666,6 +665,8 @@ int superPostWriteAction(void)
 
     }//for
 
+    //рестарт таймера 12000 Время активации пароля после простоя
+    restart_timeout_interface |= (1 << pointInterface);//метка интерфейса 0-USB 1-RS485
     if(!(upravlSetting>0 || upravlSchematic>0)) return 0;
     _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
     restart_timeout_idle_new_settings = true;
@@ -692,39 +693,6 @@ int superReaderRegister(int adrReg)
   return result;
 }//superReaderRegister()
 
-int passwordImunitetBit(int x)
-{
-  UNUSED(x);
-  return 0;
-}//passwordImunitetBit(int adrBit)
-
-int passwordImunitetReg(int adrReg)
-{
-  UNUSED(adrReg);
-//  int tmp1 = passwordImunitetRegPKVBigComponent(adrReg);
-  return 1;//tmp1;
-/*
-                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_PART1                 ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_PART1                 )                                       ) || уставки і витримки
-                 ((add_data >= (M_ADDRESS_FIRST_SETPOINTS_ZACHYSTIV + SHIFT_G1)) && (add_data <= (M_ADDRESS_LAST_SETPOINTS_ZACHYSTIV + SHIFT_G1))                                       ) || уставки і витримки першої групи
-                 ((add_data >= (M_ADDRESS_FIRST_SETPOINTS_ZACHYSTIV + SHIFT_G2)) && (add_data <= (M_ADDRESS_LAST_SETPOINTS_ZACHYSTIV + SHIFT_G2))                                       ) || уставки і витримки другої групи
-                 ((add_data >= (M_ADDRESS_FIRST_SETPOINTS_ZACHYSTIV + SHIFT_G3)) && (add_data <= (M_ADDRESS_LAST_SETPOINTS_ZACHYSTIV + SHIFT_G3))                                       ) || уставки і витримки третьої групи
-                 ((add_data >= (M_ADDRESS_FIRST_SETPOINTS_ZACHYSTIV + SHIFT_G4)) && (add_data <= (M_ADDRESS_LAST_SETPOINTS_ZACHYSTIV + SHIFT_G4))                                       ) || уставки і витримки четвертої групи
-                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_CONTINUE              ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_CONTINUE              ) && (add_data != MA_PASSWORD_INTERFACE)) || уставки і витримки (продовження) і налаштування крім паролю доступу
-                 ((add_data >= M_ADDRESS_FIRST_TIME_AND_DATA                   ) && (add_data <= M_ADDRESS_LAST_TIME_AND_DATA                   )                                       ) || час
-                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_RANG                  ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_RANG                  )                                       ) || ранжування
-                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_RANG_AR               ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_RANG_AR               )                                       ) || ранжування аналогового реєстратора
-                 ((add_data >= MA_PREFAULT_INTERVAL_AR                         ) && (add_data <= MA_POSTFAULT_INTERVAL_AR                       )                                       ) || встановлення ширини доаварійного/післяаварійного масиву аналогового реєстратора
-                 ((add_data >= M_ADDRESS_FIRST_SETPOINTS_RANG_DR               ) && (add_data <= M_ADDRESS_LAST_SETPOINTS_RANG_DR               )                                       ) || ранжування дискретного реєстратора
-                  (add_data == MA_CLEAR_NUMBER_RECORD_PR_ERR                   )                                                                                                          || очищення реєстратора програмних подій
-                  (add_data == MA_CLEAR_NUMBER_RECORD_AR                       )                                                                                                          || очищення аналогового реєстратора
-                  (add_data == MA_CLEAR_NUMBER_RECORD_DR                       )                                                                                                          || очищення дискретного реєстратора
-                  (add_data == MA_DEFAULT_SETTINGS                             )                                                                                                          || встановлення мінімальної конфігурації
-                  (add_data == MA_TEST_WATCHDOGS                               )                                                                                                          || тестування внутрішнього і зовнішнього watchdog
-                  (add_data == MA_CLEAR_ENERGY                                 )                                                                                                          || скидання соказів лічильника енергій
-                  (add_data == MA_NUMBER_ITERATION_EL                          )                                                                                                             встановленнямаксимальної кількості ітераційдля розширеної логіки
-*/
-}//passwordImunitetReg(int adrReg)
-
 /**************************************/
 //регистровый писатель
 /**************************************/
@@ -734,11 +702,11 @@ int superWriterRegister(int adrReg, int dataReg)
   int i=0;
   if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
   {
-   if(passwordImunitetReg(adrReg)==0 && password_set_USB==1) return MARKER_ERRORPAROL;
+   if(passwordImunitetReg(adrReg) && password_set_USB) return MARKER_ERRORPAROL;
   }
   else
   {
-   if(passwordImunitetReg(adrReg)==0 && password_set_RS485==1) return MARKER_ERRORPAROL;
+   if(passwordImunitetReg(adrReg) && password_set_RS485) return MARKER_ERRORPAROL;
   }
 
   for(; i<TOTAL_COMPONENT; i++)
@@ -775,11 +743,11 @@ int superWriterBit(int adrBit, int dataBit)
   int i=0;
   if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
   {
-   if(passwordImunitetBit(adrBit)==0 && password_set_USB==1) return MARKER_ERRORPAROL;
+   if(passwordImunitetBit(adrBit) && password_set_USB) return MARKER_ERRORPAROL;
   }
   else
   {
-   if(passwordImunitetBit(adrBit)==0 && password_set_RS485==1) return MARKER_ERRORPAROL;
+   if(passwordImunitetBit(adrBit) && password_set_RS485) return MARKER_ERRORPAROL;
   }
 
   for(; i<TOTAL_COMPONENT; i++)
@@ -872,20 +840,21 @@ void superClearActiveActualData(void)
   xorbigcomponent->isActiveActualData = 0;
 }//superClearActiveActualData()
 
+int passwordImunitetRegPKVBigComponent(int adrReg);
+int passwordImunitetRegREGBigComponent(int adrReg);
+int passwordImunitetBitACMDSmallComponent(int adrBit);
+int passwordImunitetBit(int adrBit)
+{
+  if(passwordImunitetBitACMDSmallComponent(adrBit)==MARKER_OUTPERIMETR) return 1;//имунитета нет
+  return 0;//имунитет есть 
+}//passwordImunitetBit(int adrBit)
 
-/*
-Привіт!
-Якщо по простому. то new_state_keyboard |= (1<<BIT_REWRITE);
+int passwordImunitetReg(int adrReg)
+{
+//  UNUSED(adrReg);
+  if(passwordImunitetRegPKVBigComponent(adrReg)==MARKER_OUTPERIMETR &&
+     passwordImunitetRegREGBigComponent(adrReg)==MARKER_OUTPERIMETR) return 1;//имунитета нет
+     return 0;//имунитет есть 
+}//passwordImunitetReg(int adrReg)
 
-У мене це виконувалося у функції set_new_settings_from_interface
-Якщо ти цю функцію не використовуєш. то тобі треба самому викуонати такі дії:
-- зафіксувати час змін. що змінилося  (мін. параметри, налаштування, ранжування)
-- викуонати реконфігурацію USART для RS-485
-- якщо була команда встановити мін.параметри. то змінні для меню перевести у початковий стан (рядки 1924-1941) у функції set_new_settings_from_interface файлу procedures.c
-- визнати дії по аналоговому реєстратору (ґякщо витримки змінювалися)*/
-/*
-action_after_changing_of_configuration - ді на можливість зараз встановити таку конфігурацію і якщо це можна зробити дїї, які ти згадуєш
-action_after_changing_3U0_Uab - дії при зміні вибору взідного сигналу 3U0, або Uab
-action_after_changing_zz1_type - дії при зміні типу захисту 3I0 (робота по першій гармоніці (тип реле)РТЗ-50), або по вищих гармоніках (тип реле УСЗ))
-action_during_changing_button_mode - дії при зміні режиму роботи функціональної кнопки (ФК-Кнопка, ФК-Ключ)*/
 

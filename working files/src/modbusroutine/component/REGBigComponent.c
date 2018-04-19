@@ -18,6 +18,7 @@ void setREGBigCountObject(void);//записать к-во обектов
 void preREGBigReadAction(void);//action до чтения
 void preREGBigWriteAction(void);//action до записи
 int  postREGBigWriteAction(void);//action после записи
+int passwordImunitetRegREGBigComponent(int adrReg);
 
 COMPONENT_OBJ *regbigcomponent;
 
@@ -62,14 +63,16 @@ int getREGBigModbusRegister(int adrReg)
       return current_settings_interfaces.postfault_number_periods;//*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
     case 34://Количество аналоговых регистраторов
       return info_rejestrator_ar.number_records;
-    case 35://Текущий аналоговый регистратор
+#define IMUNITET_REG35 35
+    case IMUNITET_REG35://Текущий аналоговый регистратор
       if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         return number_record_of_ar_for_USB;
       else
         return number_record_of_ar_for_RS485;
     case 70://Количество дискретных регистраторов
       return info_rejestrator_dr.number_records;
-    case 71://Текущий дискретный регистратор
+#define IMUNITET_REG71 71
+    case IMUNITET_REG71://Текущий дискретный регистратор
       if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         return number_record_of_dr_for_USB;
       else
@@ -344,3 +347,16 @@ int privateREGBigGetReg2(int adrReg)
   //проверить внешний периметр
   return controlPerimetr(adrReg, BEGIN_ADR_REGISTER, END_ADR_REGISTER);
 }//privateGetReg2(int adrReg)
+
+int passwordImunitetRegREGBigComponent(int adrReg)
+{
+  //имунитетные к паролю адреса регистров 0 - есть имунитет
+  if(privateREGBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
+  switch(adrReg)
+  {
+  case BEGIN_ADR_REGISTER+IMUNITET_REG35://Текущий аналоговый регистратор
+  case BEGIN_ADR_REGISTER+IMUNITET_REG71://Текущий дискретный регистратор
+    return 0;//есть имунитет
+  }//switch
+  return MARKER_OUTPERIMETR;
+}//passwordImunitetRegREGBigComponent(int adrReg)

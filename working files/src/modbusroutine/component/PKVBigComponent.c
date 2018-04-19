@@ -29,15 +29,19 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
   {
   case 0://Время активации пароля после простоя
     if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-          (*editValue) = &edition_settings.timeout_deactivation_password_interface_USB;
-    else 
-          (*editValue) = &edition_settings.timeout_deactivation_password_interface_RS485;
+      (*editValue) = &edition_settings.timeout_deactivation_password_interface_USB;
+    else
+      (*editValue) = &edition_settings.timeout_deactivation_password_interface_RS485;
     if(regPKV<TIMEOUT_DEACTIVATION_PASSWORD_MIN || regPKV>TIMEOUT_DEACTIVATION_PASSWORD_MAX) diapazon=0;
     break;
 
-//    case 1://Проверка/установка пароля
-//      (*editValue) = &stubnull;
-//      break;
+#define IMUNITET_PKV1 1
+  case IMUNITET_PKV1://Проверка/установка пароля
+    if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+      (*editValue) = &edition_settings.password_interface_USB;
+    else
+      (*editValue) = &edition_settings.password_interface_RS485;
+    break;
 
   case 2://Тайм-аут применения изменений
     (*editValue) = &edition_settings.timeout_idle_new_settings;
@@ -48,10 +52,6 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
     (*editValue) = (uint32_t *)&edition_settings.language;
     if(regPKV<VALUE_SETTING_LANGUAGE_MIN || regPKV>VALUE_SETTING_LANGUAGE_MAX) diapazon=0;
     break;
-
-//    case 4:
-//      (*editValue) = &stubnull;
-//      break;
 
   case 5://Скорость порта связи
     (*editValue) = (uint32_t *)&edition_settings.speed_RS485;
@@ -321,7 +321,8 @@ int postPKVBigWriteAction(void)
     int offset = i+beginAdr-BEGIN_ADR_REGISTER;
     uint32_t *editValue=NULL;
     PKVFunc000(offset, 0, &editValue);
-    switch(offset) {//индекс регистра
+    switch(offset)  //индекс регистра
+    {
     case 0://Время активации пароля после простоя
     case 2://Тайм-аут применения изменений
     case 3://Язык пользовательского интерфейса
@@ -332,6 +333,42 @@ int postPKVBigWriteAction(void)
       *editValue = (tempWriteArray[offsetTempWriteArray+i]);
       upravlSetting = 1;//флаг Setting
       break;
+
+    case 1://Проверка/установка пароля
+      {
+      int passwordS=-1;
+      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+      {
+        passwordS = password_set_USB;//Пароль установлен
+      }//if
+      else
+      {
+        passwordS = password_set_RS485;//Пароль установлен
+      }
+      if(passwordS==1) //пароль не снят
+      {
+        //режим check parol
+        //int tt1 = (*editValue);
+        //int tt2 = (unsigned short)(tempWriteArray[offsetTempWriteArray+i]);
+        if((*editValue) == (unsigned short)(tempWriteArray[offsetTempWriteArray+i]))
+        {
+          //обнулить флажок пароля
+          if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+          {
+            password_set_USB=0;//Пароль установлен
+          }//if
+          else
+          {
+            password_set_RS485=0;//Пароль установлен
+          }
+        }//if
+        else return ERROR_VALID2;//неправильный пароль
+        break;
+      }//if(passwordS==1) //пароль не снят
+      //записать новый пароль
+      *editValue = (unsigned short)(tempWriteArray[offsetTempWriteArray+i]);
+      upravlSetting = 1;//флаг Setting
+      } break;
 
     case 6://Количество стоп-бит
       *editValue = (tempWriteArray[offsetTempWriteArray+i])-1;
@@ -410,7 +447,7 @@ int postPKVBigWriteAction(void)
     }//switch
   }//for
 
-  if(flag_time_array) 
+  if(flag_time_array)
   {
     if (check_data_for_data_time_menu() == 1)
     {
@@ -431,11 +468,12 @@ int privatePKVBigGetReg2(int adrReg)
 
 int passwordImunitetRegPKVBigComponent(int adrReg)
 {
-  //имунитетные к паролю адреса регистров 1 - есть имунитет
+  //имунитетные к паролю адреса регистров 0 - есть имунитет
+  if(privatePKVBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   switch(adrReg)
   {
-   case BEGIN_ADR_REGISTER+1://Проверка/установка пароля
-     return 1;
+  case BEGIN_ADR_REGISTER+IMUNITET_PKV1://Проверка/установка пароля
+    return 0;//есть имунитет
   }//switch
- return 0;
-}//
+  return MARKER_OUTPERIMETR;
+}//passwordImunitetRegPKVBigComponent(int adrReg)

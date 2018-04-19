@@ -163,8 +163,14 @@ int postYustBigWriteAction(void) {
   case 52-16+5://62000-16 +5
   case 52-16+6://62000-16 +6
   case 52-16+7://62000-16 +7
-      phi_edit_ustuvannja[offset- (52-16+0)] = tempWriteArray[offsetTempWriteArray+i];
-      break;
+      {
+      int index = offset- (52-16+0);
+      int angle = tempWriteArray[offsetTempWriteArray+i];
+      phi_edit_ustuvannja[index] = angle;
+      float phi_radian_tmp = PI*((float)angle)/1800.0f;
+      phi_ustuvannja_sin_cos[2*index+0] = arm_sin_f32(phi_radian_tmp);
+      phi_ustuvannja_sin_cos[2*index+1] = arm_cos_f32(phi_radian_tmp);
+      } break;
 
     case 52://62000 number_iteration_el
       number_iteration_el = tempWriteArray[offsetTempWriteArray+i];//number_iteration_el

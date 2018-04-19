@@ -29,6 +29,7 @@ unsigned int encoderValidN_BIGACMD(int offsetCMD, int *validCMD, int actControl)
 unsigned int encoderValidN_SMALLACMD(int offsetCMD, int *validCMD);
 int validBazaN_BIGACMD(unsigned short dataReg, int actControl);
 int writeACMDSmallActualDataBit(int offset, int dataBit);
+int passwordImunitetBitACMDSmallComponent(int adrReg);
 
 #define CLRACT_CONTROL  0
 
@@ -962,11 +963,13 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     break;
 
 //  count_bit = 3;
-  case 528:
+#define  IMUNITET_BITACMD528 528
+  case IMUNITET_BITACMD528:
     (*outMaska) = RANG_VKL_VV;
     (*dvMaska) = RANG_SMALL_VKL_VV;
     break;
-  case 529:
+#define  IMUNITET_BITACMD529 529
+  case IMUNITET_BITACMD529:
     (*outMaska) = RANG_OTKL_VV;
     (*dvMaska) = RANG_SMALL_OTKL_VV;
     break;
@@ -1022,14 +1025,21 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     (*outMaska) = RANG_AVAR_DEFECT;
 //        (*dvMaska) =
     break;
-  case 562:
+#define  IMUNITET_BITACMD562 562
+  case IMUNITET_BITACMD562:
     (*outMaska) = RANG_RESET_LEDS;
     (*dvMaska) = RANG_SMALL_RESET_LEDS;
     break;
-  case 563:
+#define  IMUNITET_BITACMD563 563
+  case IMUNITET_BITACMD563:
     (*outMaska) = RANG_RESET_RELES;
     (*dvMaska) = RANG_SMALL_RESET_RELES;
     break;
+
+#define  IMUNITET_BITACMD564 564
+#define  IMUNITET_BITACMD565 565
+
+#define  IMUNITET_BITACMD567 567
 
 #define PASSWORD_SETCMD 568
 
@@ -1074,7 +1084,8 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     (*outMaska) = RANG_READY_TU;
 //        (*dvMaska) =
     break;
-  case 599:
+#define  IMUNITET_BITACMD599 599
+  case IMUNITET_BITACMD599:
     (*outMaska) = RANG_RESET_BLOCK_READY_TU_VID_ZAHYSTIV;
     (*dvMaska) = RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV;
     break;
@@ -1835,9 +1846,7 @@ int postACMDSmallWriteAction(void)
 int privateACMDSmallGetReg2(int adrReg)
 {
   //проверить внешний периметр
-  int count_register = END_ADR_REGISTER-BEGIN_ADR_REGISTER+1;
-  if(adrReg>=BEGIN_ADR_REGISTER && adrReg<(BEGIN_ADR_REGISTER+count_register)) return 0;
-  return MARKER_OUTPERIMETR;
+  return controlPerimetr(adrReg, BEGIN_ADR_REGISTER, END_ADR_REGISTER);
 }//privateGetReg2(int adrReg)
 
 int privateACMDSmallGetBit2(int adrBit)
@@ -1845,3 +1854,25 @@ int privateACMDSmallGetBit2(int adrBit)
   //проверить внешний периметр
   return controlPerimetr(adrBit, BEGIN_ADR_BIT, END_ADR_BIT);
 }//privateGetReg2(int adrReg)
+
+int passwordImunitetBitACMDSmallComponent(int adrBit)
+{
+  //имунитетные к паролю адреса bit 0 - есть имунитет
+  if(privateACMDSmallGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
+  switch(adrBit)
+  {
+    case BEGIN_ADR_BIT+IMUNITET_BITACMD528://Включение ВВ
+    case BEGIN_ADR_BIT+IMUNITET_BITACMD529://Отключение ВВ
+
+    case BEGIN_ADR_BIT+IMUNITET_BITACMD562://Сброс индикации
+    case BEGIN_ADR_BIT+IMUNITET_BITACMD563://Сброс реле
+    case BEGIN_ADR_BIT+IMUNITET_BITACMD564://Сброс сработавших функций
+    case BEGIN_ADR_BIT+IMUNITET_BITACMD565://Сброс счетчика ресурса выключателя
+
+    case BEGIN_ADR_BIT+IMUNITET_BITACMD567://Активация конфигурации
+
+    case BEGIN_ADR_BIT+IMUNITET_BITACMD599://Сброс блокировки готовности к ТУ от защит
+    return 0;//есть имунитет
+  }//switch
+  return MARKER_OUTPERIMETR;
+}//passwordImunitetBitACMDSmallComponent(int adrBit)
