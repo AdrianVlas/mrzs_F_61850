@@ -1,9 +1,7 @@
 
-                      //0-adr  1-func   2-ByteCount 3-RefType  4-MFileNumber   5-LFileNumber   6-MRecordNumber  7-LRecordNumber  8-MRecordLen  9-LRecordLen
+//0-adr  1-func   2-ByteCount 3-RefType  4-MFileNumber   5-LFileNumber   6-MRecordNumber  7-LRecordNumber  8-MRecordLen  9-LRecordLen
 //  byte inputPacket[] {0x1,      20,     7,          6,         0x0,               5,             0,             0,                  0,          9};
 
-//#include "variables_external_m.h"
-//#include "const_interfaces.h"
 #include "header.h"
 
 int inputPacketParser(void);
@@ -58,7 +56,7 @@ int inputPacketParser(void)
       globalcntBit      = (unsigned int)inputPacket[5] +256*(unsigned int)inputPacket[4];
       if(globalcntBit>1000) return 0;//слишком длинный пакет
       if((*received_count)!=8) return 0;//нарушено к-во
-      //qDebug()<<"adrUnit="<<adrUnit<<" numFunc="<<numFunc<<" adrBit="<<adrBit<<" cntBit="<<cntBit;
+
       outputPacket[1] = (unsigned char)numFunc;
       sizeOutputPacket = outputFunc1PacketEncoder(adrUnit, globalbeginAdrBit, globalcntBit);
     }
@@ -70,7 +68,7 @@ int inputPacketParser(void)
       globalcntReg      = (unsigned int)inputPacket[5] +256*(unsigned int)inputPacket[4];
       if(globalcntReg>125) return 0;//слишком длинный пакет
       if((*received_count)!=8) return 0;//нарушено к-во
-      //qDebug()<<"adrUnit="<<adrUnit<<" numFunc="<<numFunc<<" adrReg="<<adrReg<<" cntReg="<<cntReg;
+
       outputPacket[1] = (unsigned char)numFunc;
       sizeOutputPacket = outputFunc3PacketEncoder(adrUnit, globalbeginAdrReg, globalcntReg);
     }
@@ -151,15 +149,12 @@ int inputPacketParser(void)
 
       for(item=0; item<40; item++)
         {
-//int cnt = *received_count;
           if(*received_count<(5+(item+1)*7)) break;//подсчет количества item
-          //refType[item]      = inputPacket[3+item*7];
           fileNumber[item]   = (unsigned int)inputPacket[5+item*7] +256*(unsigned int)inputPacket[4+item*7];
           recordNumber[item] = (unsigned int)inputPacket[7+item*7] +256*(unsigned int)inputPacket[6+item*7];
           recordLen[item]    = (unsigned int)inputPacket[9+item*7] +256*(unsigned int)inputPacket[8+item*7];
           recordLenSum += recordLen[item];
-          if(recordLenSum>125)// ||//слишком много регистров захотел
-//              fileNumber[item]<5 || fileNumber[item]>14 || ((unsigned int)recordNumber[item])>9999)// || ((unsigned int)recordLen[item])>9)
+          if(recordLenSum>125)
             {
               sizeOutputPacket = Error_modbus_m(adrUnit, // address,
                                                 inputPacket[1],//function,
@@ -175,11 +170,11 @@ int inputPacketParser(void)
       outputPacket[1] = (unsigned char)numFunc;
       sizeOutputPacket = outputFunc20PacketEncoder(adrUnit, fileNumber, recordNumber, recordLen, item);
       if(sizeOutputPacket<0)
-              sizeOutputPacket = Error_modbus_m(adrUnit, // address,
-                                                inputPacket[1],//function,
-                                                2,//error,
-                                                outputPacket);//output_data
-              break;
+        sizeOutputPacket = Error_modbus_m(adrUnit, // address,
+                                          inputPacket[1],//function,
+                                          2,//error,
+                                          outputPacket);//output_data
+      break;
     }
     break;
 
@@ -258,7 +253,6 @@ int outputFunc16PacketEncoder(int adrUnit, int adrReg, int cntReg)
           flag = 0;
         }
         }//switch
-      //qDebug()<<"result= "<<result;
     }//for
   if(flag)//незначащие пакеты недопустимы
     return Error_modbus_m(adrUnit, // address,
@@ -298,8 +292,7 @@ int outputFunc15PacketEncoder(int adrUnit, int adrBit, int cntBit)
   superPreWriteAction();//action до записи
   for(int i=0; i<cntBit; i++)
     {
-      int idx = i/8;
-      dataBit = tempReadArray[idx];
+      dataBit = tempReadArray[i/8];
       short maska = 1<<(i%8);
       int result = superWriterBit(adrBit+i, dataBit&maska ? 1:0);
       switch(result)
@@ -332,7 +325,6 @@ int outputFunc15PacketEncoder(int adrUnit, int adrBit, int cntBit)
           flag = 0;
         }
         }//switch
-      //qDebug()<<"result= "<<result;
     }//for
   if(flag)//незначащие пакеты недопустимы
     return Error_modbus_m(adrUnit, // address,
@@ -492,12 +484,11 @@ int outputFunc3PacketEncoder(int adrUnit, int adrReg, int cntReg)
       switch(result)
         {
         case MARKER_OUTPERIMETR:
-          dataRegister[idxDataRegister] = -1;
-          dataRegister[idxDataRegister] = 0;//(short) result;
+//          dataRegister[idxDataRegister] = -1;
+//          dataRegister[idxDataRegister] = 0;
           break;
         case MARKER_ERRORPERIMETR://ошибка периметра
-          dataRegister[idxDataRegister] = -2;
-//       break;
+//          dataRegister[idxDataRegister] = -2;
           return Error_modbus_m(adrUnit, // address,
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_ADDRESS,//error,
@@ -508,14 +499,12 @@ int outputFunc3PacketEncoder(int adrUnit, int adrReg, int cntReg)
           flag = 0;
         }
         }//switch
-      //qDebug()<<"result= "<<dataRegister[idxDataRegister];
     }//for
   if(flag)//незначащие пакеты недопустимы
     return Error_modbus_m(adrUnit, // address,
                           outputPacket[1],//function,
                           ERROR_ILLEGAL_DATA_ADDRESS,//error,
                           outputPacket);//output_data
-  //superPostReadAction();//action после чтения
 
   int idxOutputPacket = 0;
 //adrUnit
@@ -551,34 +540,29 @@ int outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
   for(; idxDataBit<cntBit; idxDataBit++)
     {
       int result = superReaderBit(adrBit+ idxDataBit);
-      int idxReg = idxDataBit/16;
 
       switch(result)
         {
         case MARKER_OUTPERIMETR:
-          //dataRegister[idxReg] = 0;
           break;
         case MARKER_ERRORPERIMETR:
-          dataRegister[idxReg] = -2;
-//          break;
+//          dataRegister[idxReg] = -2;
           return Error_modbus_m(adrUnit, // address,
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_ADDRESS,//error,
                                 outputPacket);//output_data
         default:
         {
-          dataRegister[idxReg] |= (result<<(idxDataBit%16));
+          dataRegister[idxDataBit/16] |= (result<<(idxDataBit%16));
           flag = 0;
         }
         }//switch
-      //qDebug()<<"result= "<<dataRegister[idxReg];
     }//for
   if(flag)//незначащие пакеты недопустимы
     return Error_modbus_m(adrUnit, // address,
                           outputPacket[1],//function,
                           ERROR_ILLEGAL_DATA_ADDRESS,//error,
                           outputPacket);//output_data
-  //superPostReadAction();//action после чтения
 
   int idxOutputPacket = 0;
 //adrUnit
@@ -665,14 +649,14 @@ int superPostWriteAction(void)
 
     }//for
 
-    //рестарт таймера 12000 Время активации пароля после простоя
-    restart_timeout_interface |= (1 << pointInterface);//метка интерфейса 0-USB 1-RS485
-    if(!(upravlSetting>0 || upravlSchematic>0)) return 0;
-    _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
-    restart_timeout_idle_new_settings = true;
-    current_settings_interfaces = edition_settings;//утвердить изменения
-    if(upravlSetting==1) type_of_settings_changed |= (1 << SETTINGS_DATA_CHANGED_BIT);
-    if(upravlSchematic==1) type_of_settings_changed |= (1 << RANGUVANNJA_DATA_CHANGED_BIT);
+  //рестарт таймера 12000 Время активации пароля после простоя
+  restart_timeout_interface |= (1 << pointInterface);//метка интерфейса 0-USB 1-RS485
+  if(!(upravlSetting>0 || upravlSchematic>0)) return 0;
+  _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
+  restart_timeout_idle_new_settings = true;
+  current_settings_interfaces = edition_settings;//утвердить изменения
+  if(upravlSetting==1) type_of_settings_changed |= (1 << SETTINGS_DATA_CHANGED_BIT);
+  if(upravlSchematic==1) type_of_settings_changed |= (1 << RANGUVANNJA_DATA_CHANGED_BIT);
 
   return 0;
 }//superPostWriteAction
@@ -701,13 +685,13 @@ int superWriterRegister(int adrReg, int dataReg)
   int result=0;
   int i=0;
   if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-  {
-   if(passwordImunitetReg(adrReg) && password_set_USB) return MARKER_ERRORPAROL;
-  }
+    {
+      if(passwordImunitetReg(adrReg) && password_set_USB) return MARKER_ERRORPAROL;
+    }
   else
-  {
-   if(passwordImunitetReg(adrReg) && password_set_RS485) return MARKER_ERRORPAROL;
-  }
+    {
+      if(passwordImunitetReg(adrReg) && password_set_RS485) return MARKER_ERRORPAROL;
+    }
 
   for(; i<TOTAL_COMPONENT; i++)
     {
@@ -742,13 +726,13 @@ int superWriterBit(int adrBit, int dataBit)
   int result=0;
   int i=0;
   if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-  {
-   if(passwordImunitetBit(adrBit) && password_set_USB) return MARKER_ERRORPAROL;
-  }
+    {
+      if(passwordImunitetBit(adrBit) && password_set_USB) return MARKER_ERRORPAROL;
+    }
   else
-  {
-   if(passwordImunitetBit(adrBit) && password_set_RS485) return MARKER_ERRORPAROL;
-  }
+    {
+      if(passwordImunitetBit(adrBit) && password_set_RS485) return MARKER_ERRORPAROL;
+    }
 
   for(; i<TOTAL_COMPONENT; i++)
     {
@@ -846,15 +830,15 @@ int passwordImunitetBitACMDSmallComponent(int adrBit);
 int passwordImunitetBit(int adrBit)
 {
   if(passwordImunitetBitACMDSmallComponent(adrBit)==MARKER_OUTPERIMETR) return 1;//имунитета нет
-  return 0;//имунитет есть 
+  return 0;//имунитет есть
 }//passwordImunitetBit(int adrBit)
 
 int passwordImunitetReg(int adrReg)
 {
 //  UNUSED(adrReg);
   if(passwordImunitetRegPKVBigComponent(adrReg)==MARKER_OUTPERIMETR &&
-     passwordImunitetRegREGBigComponent(adrReg)==MARKER_OUTPERIMETR) return 1;//имунитета нет
-     return 0;//имунитет есть 
+      passwordImunitetRegREGBigComponent(adrReg)==MARKER_OUTPERIMETR) return 1;//имунитета нет
+  return 0;//имунитет есть
 }//passwordImunitetReg(int adrReg)
 
 

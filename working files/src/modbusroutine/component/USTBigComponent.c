@@ -950,7 +950,7 @@ int getUSTBigModbusRegister(int adrReg)
               if((offset-adresGruppa)&1)
                 return (((uint32_t)(*editValue))/multer)&0xFFFF;
               else
-                return ((*editValue)>>16)&0xFFFF;
+                return (((*editValue)/multer)>>16)&0xFFFF;
             }//if
         }//for(int item=0; item<NUMBER_UP; item++)
     }//for(int gruppa=0; gruppa<NUMBER_UP; gruppa++)

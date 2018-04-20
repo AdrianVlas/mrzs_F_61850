@@ -1039,7 +1039,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 #define  IMUNITET_BITACMD564 564
 #define  IMUNITET_BITACMD565 565
 
-#define  IMUNITET_BITACMD567 567
+#define  BITACMD567 567
 
 #define PASSWORD_SETCMD 568
 
@@ -1512,7 +1512,7 @@ int setACMDSmallModbusBit(int adrBit, int dataBit)
 
   superSetOperativMarker(acmdsmallcomponent, adrBit);
   superSetTempWriteArray(dataBit);//записать в буфер
-  if(adrBit!=50567)//Активация конфигурации
+  if(adrBit!=BEGIN_ADR_BIT+BITACMD567)//Активация конфигурации
   {
     if(dataBit==0) return MARKER_ERRORPERIMETR;
   }//if(adrBit!=50567)
@@ -1868,8 +1868,6 @@ int passwordImunitetBitACMDSmallComponent(int adrBit)
     case BEGIN_ADR_BIT+IMUNITET_BITACMD563://Сброс реле
     case BEGIN_ADR_BIT+IMUNITET_BITACMD564://Сброс сработавших функций
     case BEGIN_ADR_BIT+IMUNITET_BITACMD565://Сброс счетчика ресурса выключателя
-
-    case BEGIN_ADR_BIT+IMUNITET_BITACMD567://Активация конфигурации
 
     case BEGIN_ADR_BIT+IMUNITET_BITACMD599://Сброс блокировки готовности к ТУ от защит
     return 0;//есть имунитет
