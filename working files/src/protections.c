@@ -9444,7 +9444,8 @@ inline void main_protection(void)
        (mutex_interface == false) &&
        (
         (activation_function_from_interface[0] != 0) ||
-        (activation_function_from_interface[1] != 0)
+        (activation_function_from_interface[1] != 0) ||
+        (activation_function_from_interface[2] != 0)
        )
       )
       ||  
