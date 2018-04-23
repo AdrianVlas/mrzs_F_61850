@@ -64,7 +64,9 @@ int getSDISmallModbusBit(int adrBit) {
   //получить содержимое bit
   if(privateSDISmallGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  short tmp   = state_leds;
+  //state_leds = 0x10000;
+  short tmp = state_leds &0xFFFF;
+  if((adrBit-BEGIN_ADR_BIT)>=16) tmp = (state_leds>>16)&0xFFFF;
   short maska = 1<<((adrBit-BEGIN_ADR_BIT)%16);
   if(tmp&maska) return 1;
   return 0;

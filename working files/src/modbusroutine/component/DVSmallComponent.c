@@ -65,12 +65,13 @@ void constructorDVSmallComponent(COMPONENT_OBJ *dvcomp)
 int getDVSmallModbusRegister(int adrReg) {
   //получить содержимое регистра
   if(privateDVSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
+  int  input_dv = state_inputs ^ current_settings_interfaces.type_of_input;
   switch(adrReg-BEGIN_ADR_REGISTER)
   {
     case 0:
-    return (state_inputs) &0xFFFF;
+    return (input_dv) &0xFFFF;
     case 1:
-    return (state_inputs>>16)&0xFFFF;
+    return (input_dv>>16)&0xFFFF;
   }//switch
 
   return 0;
@@ -79,7 +80,9 @@ int getDVSmallModbusBit(int adrBit) {
   //получить содержимое bit
   if(privateDVSmallGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  short tmp   = state_inputs;
+  int  input_dv = state_inputs ^ current_settings_interfaces.type_of_input;
+  short tmp = input_dv &0xFFFF;
+  if((adrBit-BEGIN_ADR_BIT)>=16) tmp = (input_dv>>16)&0xFFFF;
   short maska = 1<<((adrBit-BEGIN_ADR_BIT)%16);
   if(tmp&maska) return 1;
   return 0;
