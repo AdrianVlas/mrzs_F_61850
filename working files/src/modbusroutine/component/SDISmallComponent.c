@@ -53,7 +53,7 @@ int getSDISmallModbusRegister(int adrReg) {
   switch(adrReg-BEGIN_ADR_REGISTER)
   {
     case 0:
-    return state_leds;
+    return (state_leds) &0xFFFF;
     case 1:
     return (state_leds>>16)&0xFFFF;
   }//switch

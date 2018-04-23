@@ -59,7 +59,7 @@ int getDOUTSmallModbusRegister(int adrReg) {
   //получить содержимое регистра
   if(privateDOUTSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return  state_outputs;
+  return  (state_outputs) &0xFFFF;
 }//getDOUTModbusRegister(int adrReg)
 int getDOUTSmallModbusBit(int adrBit) {
   //получить содержимое bit

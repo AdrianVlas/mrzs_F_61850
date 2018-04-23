@@ -59,7 +59,7 @@ int getYustBigModbusRegister(int adrReg)
   case 25:
   case 26:
   case 27:
-    return ustuvannja[offset-20];
+    return (ustuvannja[offset-20]) &0xFFFF;
   case 52-16+0://62000-16 +0
   case 52-16+1://62000-16 +1
   case 52-16+2://62000-16 +2
@@ -68,10 +68,10 @@ int getYustBigModbusRegister(int adrReg)
   case 52-16+5://62000-16 +5
   case 52-16+6://62000-16 +6
   case 52-16+7://62000-16 +7
-    return phi_ustuvannja[offset- (52-16+0)];
+    return (phi_ustuvannja[offset- (52-16+0)]) &0xFFFF;
 
   case 52://62000
-    return current_settings_interfaces.number_iteration_el;//Максимальное количество итераций
+    return (current_settings_interfaces.number_iteration_el) &0xFFFF;//Максимальное количество итераций
   }//switch
 
   return 0;

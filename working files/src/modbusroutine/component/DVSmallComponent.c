@@ -68,7 +68,7 @@ int getDVSmallModbusRegister(int adrReg) {
   switch(adrReg-BEGIN_ADR_REGISTER)
   {
     case 0:
-    return state_inputs;
+    return (state_inputs) &0xFFFF;
     case 1:
     return (state_inputs>>16)&0xFFFF;
   }//switch

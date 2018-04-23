@@ -213,7 +213,7 @@ int getPKVBigModbusRegister(int adrReg)
   case 1://Проверка/установка пароля
     return MARKER_ERRORPERIMETR;
   case 6://Количество стоп-бит
-    return ((unsigned short)*editValue)+1;
+    return (((unsigned short)*editValue)+1) &0xFFFF;
   case 16://Символ 1 и 2
     return (edition_settings.name_of_cell[0]&0xFF) | ((edition_settings.name_of_cell[1]<<8)&0xFF00);
   case 17://Символ 3 и 4
@@ -232,29 +232,29 @@ int getPKVBigModbusRegister(int adrReg)
     return (edition_settings.name_of_cell[14]&0xFF) | ((edition_settings.name_of_cell[15]<<8)&0xFF00);
 
   case 24://Год
-    return  *(label_to_time_array + 6);
+    return  (*(label_to_time_array + 6)) &0xFFFF;
 
   case 25://Месяц
-    return *(label_to_time_array + 5);
+    return (*(label_to_time_array + 5)) &0xFFFF;
 
   case 26://День
-    return *(label_to_time_array + 4);
+    return (*(label_to_time_array + 4)) &0xFFFF;
 
   case 27://Час
-    return *(label_to_time_array + 3);
+    return (*(label_to_time_array + 3)) &0xFFFF;
 
   case 28://Минуты
-    return *(label_to_time_array + 2);
+    return (*(label_to_time_array + 2)) &0xFFFF;
 
   case 29://Секунды
-    return *(label_to_time_array + 1);
+    return (*(label_to_time_array + 1)) &0xFFFF;
 
   case 30://Сотые секунды
-    return *(label_to_time_array + 0);
+    return (*(label_to_time_array + 0)) &0xFFFF;
   }//switch
 
   if(editValue==NULL) return 0;
-  return ((unsigned short)*editValue);
+  return (((unsigned short)*editValue)) &0xFFFF;
 }//getDOUTBigModbusRegister(int adrReg)
 int getPKVBigModbusBit(int x)
 {
@@ -277,7 +277,6 @@ int setPKVBigModbusRegister(int adrReg, int dataReg)
 
   uint32_t *editValue=NULL;
   if(!PKVFunc000(adrReg-BEGIN_ADR_REGISTER, dataReg, &editValue)) return MARKER_ERRORDIAPAZON;
-//  if(editValue==NULL) return 0;
 
   return 0;
 }//getDOUTBigModbusRegister(int adrReg)

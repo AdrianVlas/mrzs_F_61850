@@ -49,10 +49,10 @@ int getPREGBigModbusRegister(int adrReg)
       return MARKER_ERRORPERIMETR;
     case 1://Номер аварии доступной для чтения
       if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-        return number_record_of_pr_err_into_USB;
-      return number_record_of_pr_err_into_RS485;
+        return (number_record_of_pr_err_into_USB) &0xFFFF;
+      return (number_record_of_pr_err_into_RS485) &0xFFFF;
     case 2://Количество событий
-      return info_rejestrator_pr_err.number_records;
+      return (info_rejestrator_pr_err.number_records) &0xFFFF;
     case 3://Окно отображения страницы
     case 4:
     case 5:
@@ -111,68 +111,67 @@ int getPREGBigModbusRegister(int adrReg)
             }
           else
             {
-              //unsigned int temp_address = address_data - MA_FIRST_ADR_PR_ERR_WINDOW;
               switch (offset-3)//temp_address)
                 {
                 case 0:
                 {
-                  return ((*(point_to_buffer + 7))  << 8) | (*(point_to_buffer + 6));
+                  return (((*(point_to_buffer + 7))  << 8) | (*(point_to_buffer + 6))) &0xFFFF;
                 }
                 case 1:
                 {
-                  return (*(point_to_buffer + 5))  << 8;
+                  return ((*(point_to_buffer + 5))  << 8) &0xFFFF;
                 }
                 case 2:
                 {
-                  return ((*(point_to_buffer + 4))  << 8) | (*(point_to_buffer + 3));
+                  return (((*(point_to_buffer + 4))  << 8) | (*(point_to_buffer + 3))) &0xFFFF;
                 }
                 case 3:
                 {
-                  return ((*(point_to_buffer + 2))  << 8) | (*(point_to_buffer + 1));
+                  return (((*(point_to_buffer + 2))  << 8) | (*(point_to_buffer + 1))) &0xFFFF;
                 }
                 case 4:
                 {
-                  return ((*(point_to_buffer + 10))  << 8) | (*(point_to_buffer + 9));
+                  return (((*(point_to_buffer + 10))  << 8) | (*(point_to_buffer + 9))) &0xFFFF;
                 }
                 case 5:
                 {
-                  return ((*(point_to_buffer + 12))  << 8) | (*(point_to_buffer + 11));
+                  return (((*(point_to_buffer + 12))  << 8) | (*(point_to_buffer + 11))) &0xFFFF;
                 }
                 case 6:
                 {
-                  return ((*(point_to_buffer + 14))  << 8) | (*(point_to_buffer + 13));
+                  return (((*(point_to_buffer + 14))  << 8) | (*(point_to_buffer + 13))) &0xFFFF;
                 }
                 case 7:
                 {
-                  return ((*(point_to_buffer + 16))  << 8) | (*(point_to_buffer + 15));
+                  return (((*(point_to_buffer + 16))  << 8) | (*(point_to_buffer + 15))) &0xFFFF;
                 }
                 case 8:
                 {
-                  return ((*(point_to_buffer + 18))  << 8) | (*(point_to_buffer + 17));
+                  return (((*(point_to_buffer + 18))  << 8) | (*(point_to_buffer + 17))) &0xFFFF;
                 }
                 case 9:
                 {
-                  return ((*(point_to_buffer + 20))  << 8) | (*(point_to_buffer + 19));
+                  return (((*(point_to_buffer + 20))  << 8) | (*(point_to_buffer + 19))) &0xFFFF;
                 }
                 case 10:
                 {
-                  return ((*(point_to_buffer + 22))  << 8) | (*(point_to_buffer + 21));
+                  return (((*(point_to_buffer + 22))  << 8) | (*(point_to_buffer + 21))) &0xFFFF;
                 }
                 case 11:
                 {
-                  return ((*(point_to_buffer + 24))  << 8) | (*(point_to_buffer + 23));
+                  return (((*(point_to_buffer + 24))  << 8) | (*(point_to_buffer + 23))) &0xFFFF;
                 }
                 case 12:
                 {
-                  return ((*(point_to_buffer + 26))  << 8) | (*(point_to_buffer + 25));
+                  return (((*(point_to_buffer + 26))  << 8) | (*(point_to_buffer + 25))) &0xFFFF;
                 }
                 case 13:
                 {
-                  return ((*(point_to_buffer + 28))  << 8) | (*(point_to_buffer + 27));
+                  return (((*(point_to_buffer + 28))  << 8) | (*(point_to_buffer + 27))) &0xFFFF;
                 }
                 case 14:
                 {
-                  return ((*(point_to_buffer + 30))  << 8) | (*(point_to_buffer + 29));
+                  return (((*(point_to_buffer + 30))  << 8) | (*(point_to_buffer + 29))) &0xFFFF;
                 }
                 }//switch
 

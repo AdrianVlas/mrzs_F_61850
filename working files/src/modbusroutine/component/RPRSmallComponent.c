@@ -60,7 +60,7 @@ int getRPRSmallModbusRegister(int adrReg)
   int result = superReaderRegister(current_settings_interfaces.user_register[adrReg-BEGIN_ADR_REGISTER]);
   if(result&0xffff0000) return 0;
 
-  return result;
+  return (result) &0xFFFF;
 }//getDOUTModbusRegister(int adrReg)
 int getRPRSmallModbusBit(int x)
 {

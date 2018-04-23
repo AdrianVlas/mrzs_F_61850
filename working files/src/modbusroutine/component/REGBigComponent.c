@@ -58,25 +58,25 @@ int getREGBigModbusRegister(int adrReg)
   switch(offset)
     {
     case 32://Время записи аналогового регистратора (доаварийный массив)
-      return current_settings_interfaces.prefault_number_periods;//*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+      return (current_settings_interfaces.prefault_number_periods) &0xFFFF; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
     case 33://Время записи аналогового регистратора (послеаварый массив)
-      return current_settings_interfaces.postfault_number_periods;//*20; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
+      return (current_settings_interfaces.postfault_number_periods) &0xFFFF; //В таблицю настройок записуємо не мілісекунди, а кількість періодів
     case 34://Количество аналоговых регистраторов
-      return info_rejestrator_ar.number_records;
+      return (info_rejestrator_ar.number_records) &0xFFFF;
 #define IMUNITET_REG35 35
     case IMUNITET_REG35://Текущий аналоговый регистратор
       if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-        return number_record_of_ar_for_USB;
+        return (number_record_of_ar_for_USB) &0xFFFF;
       else
-        return number_record_of_ar_for_RS485;
+        return (number_record_of_ar_for_RS485) &0xFFFF;
     case 70://Количество дискретных регистраторов
-      return info_rejestrator_dr.number_records;
+      return (info_rejestrator_dr.number_records) &0xFFFF;
 #define IMUNITET_REG71 71
     case IMUNITET_REG71://Текущий дискретный регистратор
       if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-        return number_record_of_dr_for_USB;
+        return (number_record_of_dr_for_USB) &0xFFFF;
       else
-        return number_record_of_dr_for_RS485;
+        return (number_record_of_dr_for_RS485) &0xFFFF;
     case 74://Очистить аналоговый регистратор
       return MARKER_ERRORPERIMETR;
     case 75://Очистить дискретный регистратор

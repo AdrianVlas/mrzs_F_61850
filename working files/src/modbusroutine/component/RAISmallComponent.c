@@ -133,7 +133,7 @@ int getRAISmallModbusRegister(int adrReg)
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 3)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 2;
+    return (value >> 2) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_IB_1:
   {
@@ -142,7 +142,7 @@ int getRAISmallModbusRegister(int adrReg)
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 4)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
 
-      return value >> 2;
+      return (value >> 2) &0xFFFF;
     }
     return 0;
   }
@@ -151,42 +151,42 @@ int getRAISmallModbusRegister(int adrReg)
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 5)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 2;
+    return (value >> 2) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_3I0:
   {
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 0)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value;
+    return (value) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_3I0_HIGH_GARM:
   {
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 1)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value;
+    return (value) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_3I0_r:
   {
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 2)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 2;
+    return (value >> 2) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_I1:
   {
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 7)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 2;
+    return (value >> 2) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_I2:
   {
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 6)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 2;
+    return (value >> 2) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_I04_1:
   {
@@ -195,7 +195,7 @@ int getRAISmallModbusRegister(int adrReg)
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 8)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
 
-      return value >> 2;
+      return (value >> 2) &0xFFFF;
     }
     return 0;
   }
@@ -204,21 +204,21 @@ int getRAISmallModbusRegister(int adrReg)
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 15)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 3;
+    return (value >> 3) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_UBC_1:
   {
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 16)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 3;
+    return (value >> 3) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_UCA_1:
   {
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 17)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 3;
+    return (value >> 3) &0xFFFF;
   }
   case MDR_OFFSET_MEASUREMENT_UA_1:
   {
@@ -227,7 +227,7 @@ int getRAISmallModbusRegister(int adrReg)
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 9)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
 
-      return value >> 3;
+      return (value >> 3) &0xFFFF;
     }
     return 0;
   }
@@ -238,7 +238,7 @@ int getRAISmallModbusRegister(int adrReg)
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 10)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
 
-      return value >> 3;
+      return (value >> 3) &0xFFFF;
     }
     return 0;
   }
@@ -249,7 +249,7 @@ int getRAISmallModbusRegister(int adrReg)
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 11)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
 
-      return value >> 3;
+      return (value >> 3) &0xFFFF;
     }
     return 0;
   }
@@ -258,14 +258,14 @@ int getRAISmallModbusRegister(int adrReg)
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 12)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value >> 3;
+    return (value >> 3) &0xFFFF;
   }
   case MDR_OFFSET_FREQUENCY_1:
   {
     index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 18)*sizeof(unsigned int);
     value = *((unsigned int *)(point_to_buffer + index));
 
-    return value / 10;
+    return (value / 10) &0xFFFF;
   }
   case MDR_OFFSET_VMP:
   {
@@ -275,7 +275,7 @@ int getRAISmallModbusRegister(int adrReg)
     if (((unsigned int)value_int) != ((unsigned int)UNDEF_VMP))
     {
       if (abs(value_int) >= 10)
-        return value_int/10;
+        return (value_int/10) &0xFFFF;
       else
       {
         if (value_int >= 0)
@@ -294,11 +294,11 @@ int getRAISmallModbusRegister(int adrReg)
 
     if (offset == MDR_OFFSET_LABEL_TIME_LSW)
     {
-      return (*(point_to_buffer + index + 0)) | ((*(point_to_buffer + index + 1)) << 8 );
+      return ((*(point_to_buffer + index + 0)) | ((*(point_to_buffer + index + 1)) << 8 )) &0xFFFF;
     }
     else if (offset ==MDR_OFFSET_LABEL_TIME_MSW)
     {
-      return  *(point_to_buffer + index + 2);
+      return  (*(point_to_buffer + index + 2)) &0xFFFF;
     }
     else
     {

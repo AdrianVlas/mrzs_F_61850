@@ -48,7 +48,7 @@ int getQAISmallModbusRegister(int adrReg)
     {
     case 3://Ток емкостной 3Io
       {
-        return measurement_low[IM_3I0_i];
+        return (measurement_low[IM_3I0_i]) &0xFFFF;
       }
     }//switch
 

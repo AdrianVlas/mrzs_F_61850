@@ -961,7 +961,7 @@ int getUSTBigModbusRegister(int adrReg)
         {
           if((*editValue) & (1<<key)) buttonsmode |= (1<<(2*key));
         }//for
-      return buttonsmode;
+      return (buttonsmode) &0xFFFF;
     }//if(editValue == (uint32_t*)&edition_settings.buttons_mode)
   if(editValue == (uint32_t*)&edition_settings.setpoint_pochatkovyj_resurs)
     {

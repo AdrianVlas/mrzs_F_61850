@@ -45,7 +45,7 @@ int getRPRBigModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateRPRBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return current_settings_interfaces.user_register[adrReg-BEGIN_ADR_REGISTER];
+  return (current_settings_interfaces.user_register[adrReg-BEGIN_ADR_REGISTER]) &0xFFFF;
 }//getDOUTBigModbusRegister(int adrReg)
 int getRPRBigModbusBit(int x)
 {
