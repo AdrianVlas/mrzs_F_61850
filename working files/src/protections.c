@@ -419,8 +419,8 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
       }
 
       unsigned int porig_Uxy;
-      if (Uxy_bilshe_porogu[i] == 0) porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE*KOEF_POVERNENNJA_SECTOR_BLK/100;
-      else porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE;
+      if (Uxy_bilshe_porogu[i] == 0) porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_SECTOR_BLK/100;
+      else porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
       unsigned int Uxy_bilshe_porogu_tmp = Uxy_bilshe_porogu[i] = (measurement[index_U] >= porig_Uxy);
       
       unsigned int porig_Ix;
@@ -614,8 +614,8 @@ inline void directional_tznp(int ortogonal_local_calc[], unsigned int number_gro
     За розрахунком описаним при розрахунку діючих значень наші ортогональні є у ворматі (15 біт + знак) = 16-розряжне число
     */
     unsigned int porig_U;
-    if (TZNP_3U0_bilshe_porogu == 0) porig_U = PORIG_CHUTLYVOSTI_VOLTAGE*KOEF_POVERNENNJA_SECTOR_BLK/100;
-    else porig_U = PORIG_CHUTLYVOSTI_VOLTAGE;
+    if (TZNP_3U0_bilshe_porogu == 0) porig_U = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_SECTOR_BLK/100;
+    else porig_U = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
     unsigned int U_bilshe_porogu_tmp = TZNP_3U0_bilshe_porogu = (measurement[IM_3U0] >= porig_U);
       
     unsigned int porig_I;
