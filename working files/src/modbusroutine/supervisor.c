@@ -571,19 +571,8 @@ int outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
 //numFunc
   idxOutputPacket++;
 
-  if(cntBit<9)
-    {
 //cnt
-      outputPacket[idxOutputPacket] = (unsigned char)1;
-      idxOutputPacket++;
-//data
-      outputPacket[idxOutputPacket] = (unsigned char)dataRegister[0];
-      idxOutputPacket++;
-    }//if
-  else
-    {
-//cnt
-      int cntByte = cntBit/8;//16;
+      int cntByte = cntBit/8;
       if(cntBit%8) cntByte++;
       outputPacket[idxOutputPacket] = cntByte;
       idxOutputPacket++;
@@ -594,7 +583,7 @@ int outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
           outputPacket[idxOutputPacket] = (unsigned char)(dataRegister[i]&0xFF);
           idxOutputPacket++;
         }//for
-    }
+
   return idxOutputPacket;
 }//outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
 

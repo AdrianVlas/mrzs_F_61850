@@ -135,7 +135,6 @@ int getAISmallModbusRegister(int adrReg)
 #else
         if (S != 0)
           return (cos_phi_x1000) &0xFFFF;
-//        else
           return 0x0;
 #endif
       }
@@ -183,9 +182,7 @@ int getAISmallModbusRegister(int adrReg)
     case 24://Eq4
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-  //      if((offset-13)&1)
         return 345+(offset-13);
-//        return 0;//345+(offset-13);
 #else
         unsigned int enrg = (unsigned int)(energy[(offset-13) >> 1]*1000.0);
         if((offset-13)&1)
@@ -232,7 +229,7 @@ int getAISmallModbusRegister(int adrReg)
 #ifdef TESTZBIRKA_VERSII_PZ
         return 361;
 #else
-        return (measurement_low[IM_3I0_r]) &0xFFFF;
+        return (measurement_low[IM_3I0_r] >> 2) &0xFFFF;
 #endif
       }
     case 30://IM_3I0_other_g
