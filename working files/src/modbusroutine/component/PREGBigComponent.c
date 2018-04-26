@@ -3,7 +3,7 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 61800
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 61808
+#define END_ADR_REGISTER 61818
 
 int privatePREGBigGetReg2(int adrReg);
 
@@ -59,6 +59,16 @@ int getPREGBigModbusRegister(int adrReg)
     case 6:
     case 7:
     case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
       
       if (
         ((pointInterface==USB_RECUEST  ) && (number_record_of_pr_err_into_USB   == 0xffff)) ||
@@ -172,6 +182,10 @@ int getPREGBigModbusRegister(int adrReg)
                 case 14:
                 {
                   return (((*(point_to_buffer + 30))  << 8) | (*(point_to_buffer + 29))) &0xFFFF;
+                }
+                case 15:
+                {
+                  return (((*(point_to_buffer + 32))  << 8) | (*(point_to_buffer + 31))) &0xFFFF;
                 }
                 }//switch
 
