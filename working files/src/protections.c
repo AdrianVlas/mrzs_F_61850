@@ -5410,7 +5410,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
         (current_settings_prt.ctrl_UP_input[n_UP] == UP_CTRL_3I0_others)
        ) 
     {
-      if (_CHECK_SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP)) != 0)
+      if (_CHECK_SET_BIT(p_active_functions, (RANG_PO_UP1 + 3*n_UP)) != 0)
       {
         /*
         Алгебраїчне спрощення виразу
@@ -5426,7 +5426,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     }
     else
     {
-      if (_CHECK_SET_BIT(p_active_functions, (RANG_UP1 + 3*n_UP)) != 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
+      if (_CHECK_SET_BIT(p_active_functions, (RANG_PO_UP1 + 3*n_UP)) != 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
     }
 
     unsigned int more_less = ((current_settings_prt.control_UP & MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
