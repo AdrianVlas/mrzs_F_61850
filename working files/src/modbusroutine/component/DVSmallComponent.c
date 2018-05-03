@@ -6,21 +6,21 @@
 //начальный bit в карте памяти
 #define BEGIN_ADR_BIT 200
 
-#if ZBIRKA_VERSII_PZ == 0
+#if MODYFIKACIA_VERSII_PZ == 0
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 201
 //конечный bit в карте памяти
 #define END_ADR_BIT 219
 #endif
 
-#if ZBIRKA_VERSII_PZ == 1    
+#if MODYFIKACIA_VERSII_PZ == 1    
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 200
 //конечный bit в карте памяти
 #define END_ADR_BIT 215
 #endif
 
-#if ZBIRKA_VERSII_PZ == 2    
+#if MODYFIKACIA_VERSII_PZ == 2    
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 200
 //конечный bit в карте памяти

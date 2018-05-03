@@ -868,13 +868,13 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
         }//switch
     }//if(inOffset>=1005 && inOffset<1021)
 
-#if ZBIRKA_VERSII_PZ == 0
+#if MODYFIKACIA_VERSII_PZ == 0
   if(inOffset>=1056 && inOffset<1076)
 #endif
-#if ZBIRKA_VERSII_PZ == 1
+#if MODYFIKACIA_VERSII_PZ == 1
     if(inOffset>=1056 && inOffset<1072)
 #endif
-#if ZBIRKA_VERSII_PZ == 2
+#if MODYFIKACIA_VERSII_PZ == 2
       if(inOffset>=1056 && inOffset<1064)
 #endif
         {
@@ -987,7 +987,7 @@ int getUSTBigModbusRegister(int adrReg)
     }//if(editValue == (uint32_t*)&edition_settings.setpoint_pochatkova_k_vymk)
   if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
     {
-#if ZBIRKA_VERSII_PZ == 0
+#if MODYFIKACIA_VERSII_PZ == 0
       if(offset==1046)
         {
           return (*editValue) & (uint32_t)0xffff;
@@ -1010,7 +1010,7 @@ int getUSTBigModbusRegister(int adrReg)
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
   if(editValue == (uint32_t*)&edition_settings.type_of_input)
     {
-#if ZBIRKA_VERSII_PZ == 0
+#if MODYFIKACIA_VERSII_PZ == 0
       if(offset==1048)
         {
           return (*editValue) & (uint32_t)0xffff;
