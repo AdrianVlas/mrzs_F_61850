@@ -558,7 +558,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     case 248:
       (*multer) = 1;
       (*editValue) = (uint32_t*)&edition_settings.ctrl_zdz_type;
-      if(regUst<0 || regUst>4) diapazon=0;
+      if(regUst<0 || regUst>5) diapazon=0;
       break;
     case 249:
       (*multer) = 1;

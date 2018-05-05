@@ -50,13 +50,13 @@ int uprFuncValid000(int inOffset, int validData)
 {
   uint32_t uprMaska=0;
   uint32_t *editControl=NULL;
-#ifdef TESTZBIRKA_VERSII_PZ
-  int valid = uprFunc000(inOffset, &uprMaska, validData, &editControl);
-  if((uprMaska) == 0xFFFFFFFF) return 0;
-  return valid;
-#else
+//#ifdef TESTZBIRKA_VERSII_PZ
+//  int valid = uprFunc000(inOffset, &uprMaska, validData, &editControl);
+//  if((uprMaska) == 0xFFFFFFFF) return 0;
+//  return valid;
+//#else
   return uprFunc000(inOffset, &uprMaska, validData, &editControl);
-#endif
+//#endif
 }//uprFuncRead000(int inOffset, uint32_t *uprMaska)
 
 int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editControl)
@@ -203,30 +203,34 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
       (*uprMaska)   = CTR_ZDZ_STATE_BIT;
       break;
     case 98:
-      (*uprMaska)   = CTR_ZDZ_STARTED_FROM_MTZ1_BIT;
+      (*uprMaska)   = (CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));//CTR_ZDZ_STARTED_FROM_MTZ1_BIT;
       if(isValidCONFCondition(**editControl, MTZ_BIT_CONFIGURATION,
                               *uprMaska, validData)) isValid = 0;
       break;
     case 99:
-      (*uprMaska)   = CTR_ZDZ_STARTED_FROM_MTZ2_BIT;
+      (*uprMaska)   = (CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));//CTR_ZDZ_STARTED_FROM_MTZ2_BIT;
       if(isValidCONFCondition(**editControl, MTZ_BIT_CONFIGURATION,
                               *uprMaska, validData)) isValid = 0;
       break;
     case 100:
-      (*uprMaska)   = CTR_ZDZ_STARTED_FROM_MTZ3_BIT;
+      (*uprMaska)   = (CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));//CTR_ZDZ_STARTED_FROM_MTZ3_BIT;
       if(isValidCONFCondition(**editControl, MTZ_BIT_CONFIGURATION,
                               *uprMaska, validData)) isValid = 0;
       break;
     case 101:
-      (*uprMaska)   = CTR_ZDZ_STARTED_FROM_MTZ4_BIT;
+      (*uprMaska)   = (CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));//CTR_ZDZ_STARTED_FROM_MTZ4_BIT;
       if(isValidCONFCondition(**editControl, MTZ_BIT_CONFIGURATION,
                               *uprMaska, validData)) isValid = 0;
       break;
     case 102:
-      (*uprMaska)   = CTR_ZDZ_STARTED_FROM_UMIN1_BIT;
+      (*uprMaska)   = (CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));//CTR_ZDZ_STARTED_FROM_UMIN1_BIT;
+      if(isValidCONFCondition(**editControl, UMIN_BIT_CONFIGURATION,
+                              *uprMaska, validData)) isValid = 0;
       break;
     case 103:
-      (*uprMaska)   = CTR_ZDZ_STARTED_FROM_UMIN2_BIT;
+      (*uprMaska)   = (CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));//CTR_ZDZ_STARTED_FROM_UMIN2_BIT;
+      if(isValidCONFCondition(**editControl, UMIN_BIT_CONFIGURATION,
+                              *uprMaska, validData)) isValid = 0;
       break;
 
 //123456
