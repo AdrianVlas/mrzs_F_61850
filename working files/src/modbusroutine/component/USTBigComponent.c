@@ -1343,7 +1343,6 @@ m1:
     !(((unsigned int)temp1 >= (2*chastka)) && ((unsigned int)temp1 <= edition_settings.setpoint_r_kom_st_Inom))
   ) return ERROR_VALID2;//ошибка валидации
   temp1=edition_settings.setpoint_krytychnyj_resurs;
-//  unsigned int chastka = edition_settings.setpoint_r_kom_st_Inom/edition_settings.setpoint_r_kom_st_Inom_vymk;
   if(
     !(((unsigned int)temp1 >= chastka) && ((unsigned int)temp1 <= 2*chastka))
   ) return ERROR_VALID2;//ошибка валидации
@@ -1352,6 +1351,29 @@ m1:
   if(
     !((unsigned int)temp1 <= edition_settings.setpoint_r_kom_st_Inom)
   ) return ERROR_VALID2;//ошибка валидации
+
+  temp1=edition_settings.ctrl_zdz_type;
+  switch(temp1)
+  {
+   case 0://0-без контроля
+   break;
+   case 1://1-с контролем по току
+    if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) return ERROR_VALID2;
+   break;
+   case 2://2-с контролем по напряжению
+    if(!(edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
+   break;
+   case 3://3-с контролем по току ИЛИ по напряжению
+    if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION) || edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
+   break;
+   case 4://4-с контролем по току И по напряжению
+    if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) return ERROR_VALID2;
+    if(!(edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
+   break;
+   case 5://5-с контролем по 3I0
+    if(!(edition_settings.configuration&(1<<ZZ_BIT_CONFIGURATION))) return ERROR_VALID2;
+   break;
+  }//switch
 
   if(flag) upravlSetting = 1;//флаг Setting
 

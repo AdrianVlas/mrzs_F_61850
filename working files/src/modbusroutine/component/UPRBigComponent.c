@@ -50,13 +50,7 @@ int uprFuncValid000(int inOffset, int validData)
 {
   uint32_t uprMaska=0;
   uint32_t *editControl=NULL;
-//#ifdef TESTZBIRKA_VERSII_PZ
-//  int valid = uprFunc000(inOffset, &uprMaska, validData, &editControl);
-//  if((uprMaska) == 0xFFFFFFFF) return 0;
-//  return valid;
-//#else
   return uprFunc000(inOffset, &uprMaska, validData, &editControl);
-//#endif
 }//uprFuncRead000(int inOffset, uint32_t *uprMaska)
 
 int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editControl)
@@ -873,7 +867,6 @@ int getUPRBigModbusRegister(int adrReg)
       if(begin<0) globalcntReg += begin;
 
       int beginOffset = (adrReg-BEGIN_ADR_REGISTER)*16;
-//    int endOffset   = (adrReg-BEGIN_ADR_REGISTER +globalcntReg)*16 + beginOffset;
       int endOffset   = beginOffset +globalcntReg*16;
 
       loadUPRBigActualDataBit(beginOffset, endOffset); //ActualData
@@ -929,7 +922,7 @@ int setUPRBigModbusRegister(int adrReg, int dataReg)
     }//for
 
   return 0;
-}//getDOUTBigModbusRegister(int adrReg)
+}//setUPRBigModbusRegister(int adrReg, int dataReg)
 int setUPRBigModbusBit(int adrBit, int dataBit)
 {
   //записать содержимое bit
