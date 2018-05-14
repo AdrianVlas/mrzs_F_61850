@@ -1039,6 +1039,11 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 #define  IMUNITET_BITACMD564 564
 #define  IMUNITET_BITACMD565 565
 
+  case 566:
+    (*outMaska) = RANG_SETTINGS_CHANGED;
+//        (*dvMaska) =
+    break;
+
 #define  BITACMD567 567
 
 #define PASSWORD_SETCMD 568
