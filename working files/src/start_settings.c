@@ -585,8 +585,8 @@ void start_settings_peripherals(void)
   /* Конфігурація піну LCD-BL, як Output push-pull */
   GPIO_InitStructure.GPIO_Pin = LCD_BL_PIN;
   GPIO_Init(LCD_BL, &GPIO_InitStructure);
-  /* Виставляємоо пін LCD-BL для того, щоб включити підсвітку LCD*/
-  GPIO_SetBits(LCD_BL, LCD_BL_PIN);
+  /* Знімаємо пін LCD-BL для того, щоб вимкнути підсвітку LCD*/
+  GPIO_ResetBits(LCD_BL, LCD_BL_PIN);
 
   /* Конфігурація піну LCD-R/W, як Output push-pull */
   GPIO_InitStructure.GPIO_Pin = LCD_RW_PIN;

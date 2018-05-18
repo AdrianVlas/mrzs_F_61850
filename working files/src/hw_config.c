@@ -276,12 +276,12 @@ void Interrupts_Config(void)
   /* Переривання від TIM4, обробка клавіатури і інші низькопріоритетні задачі*/
   /*
   Pre-emption пріоритет = 7
-  Subpriority пріоритет = 1 
+  Subpriority пріоритет = 0 
   */
   /*******************************/
   NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 7;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
   /*******************************/
