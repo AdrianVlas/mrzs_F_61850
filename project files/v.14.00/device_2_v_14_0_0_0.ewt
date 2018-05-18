@@ -1494,9 +1494,9 @@
             <group>
                 <name>general</name>
                 <group>
-                    <name>a.b.00.d</name>
+                    <name>a.00.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.b.00.d\const_global.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_global.h</name>
                     </file>
                 </group>
                 <file>
@@ -1545,9 +1545,9 @@
             <group>
                 <name>menu</name>
                 <group>
-                    <name>a.b.00.d</name>
+                    <name>a.00.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.b.00.d\const_menu_outputs.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_menu_outputs.h</name>
                     </file>
                 </group>
                 <file>
@@ -1734,9 +1734,9 @@
             <group>
                 <name>Serial Dataflash</name>
                 <group>
-                    <name>a.b.00.d</name>
+                    <name>a.00.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.b.00.d\const_driver_serial_dataflash.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_driver_serial_dataflash.h</name>
                     </file>
                 </group>
             </group>
