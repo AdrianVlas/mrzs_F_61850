@@ -3,7 +3,7 @@
 #define BACKLIGHTING_ON         1
 #define BACKLIGHTING_OFF        300
 
-uint32_t time_backlighting =    BACKLIGHTING_ON*1000;
+uint32_t time_backlighting =    BACKLIGHTING_ON*100;
 
 /*****************************************************/
 //Перевірка на помилки у процесі транзакції черз I2C
@@ -751,7 +751,7 @@ void TIM4_IRQHandler(void)
     if ((LCD_BL->ODR & LCD_BL_PIN) != (uint32_t)Bit_RESET)
     {
       //Підсвітка ввімкнута
-      if ((new_state_keyboard & maska_all_keys) != 0) time_backlighting = BACKLIGHTING_OFF;
+      if ((new_state_keyboard & maska_all_keys) != 0) time_backlighting = BACKLIGHTING_OFF*100;
       if (
            (time_backlighting > 0) && /*випадок старту з викнутою підсвіткою*/
            (--time_backlighting == 0) /*закінчився час роботи приладу без підсвітки після старту приладу*/
@@ -777,7 +777,7 @@ void TIM4_IRQHandler(void)
       {
         //Умова ввімкнення підсвітки після старту приладу
         LCD_BL->BSRRL = LCD_BL_PIN;
-        time_backlighting = BACKLIGHTING_OFF;
+        time_backlighting = BACKLIGHTING_OFF*100;
         new_state_keyboard &= (unsigned int)(~maska_all_keys);
       }
     }
