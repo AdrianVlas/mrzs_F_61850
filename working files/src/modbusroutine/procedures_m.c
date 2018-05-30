@@ -148,7 +148,8 @@ int outputFunc20PacketEncoder(int adrUnit, int *fileNumberArray, int *recordNumb
 
   for(int item=0; item<cntitem; item++)  //блоки fileNumber, recordNumber, recordLen
     {
-      if(openRegistrator(fileNumberArray[item])) return -1;//открыть данные регистратора AR DR
+     int tmp1 = openRegistrator(fileNumberArray[item]);//открыть данные регистратора AR DR
+     if (tmp1!=0) return tmp1;
 
 //File resp. length
       respDataLength += outputPacket[idxOutputPacket] = (unsigned char)((1+recordLenArray[item]*2)&0xFF);
@@ -281,7 +282,7 @@ int openRegistrator(int number_file)
   )
     {
       //Невірний номер файлу, або не подано команди вичитування відповідного запису
-      return 1;
+      return -1;
     }
   else if (
     (number_file >= 1) &&
@@ -307,7 +308,7 @@ int openRegistrator(int number_file)
     {
       //Зараз іде операція запису/стирання для аналоговго реєстратора, яка може тривати довго (післяаварійний масив становить 20 с), тому читання аналогового реєстратора є тимчасово недоступне
       //error = ERROR_SLAVE_DEVICE_BUSY;
-      return 1;
+      return -2;
       /*
       Тут ми не перевіряємо умову на виставлений біт TASK_MAMORY_READ_DATAFLASH_FOR_AR_INTERFACE,
       бо, оскільки, масиви є великі і зразу весь запис прочитати не можливо, то
@@ -330,7 +331,7 @@ int openRegistrator(int number_file)
     {
       //Зараз іде зчитування для інтерфейсу запису дискретного реєстратора, тому ця операція є тимчасово недоступною
       //error = ERROR_SLAVE_DEVICE_BUSY;
-      return 1;
+      return -2;
     }//if
 
 //ТОЛЬКО AR

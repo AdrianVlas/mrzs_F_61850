@@ -169,11 +169,16 @@ int inputPacketParser(void)
 
       outputPacket[1] = (unsigned char)numFunc;
       sizeOutputPacket = outputFunc20PacketEncoder(adrUnit, fileNumber, recordNumber, recordLen, item);
-      if(sizeOutputPacket<0)
-        sizeOutputPacket = Error_modbus_m(adrUnit, // address,
-                                          inputPacket[1],//function,
-                                          2,//error,
-                                          outputPacket);//output_data
+      if(sizeOutputPacket==-1)
+              sizeOutputPacket = Error_modbus_m(adrUnit, // address,
+                                                inputPacket[1],//function,
+                                                ERROR_ILLEGAL_DATA_ADDRESS,//error,
+                                                outputPacket);//output_data
+      if(sizeOutputPacket==-2)
+              sizeOutputPacket = Error_modbus_m(adrUnit, // address,
+                                                inputPacket[1],//function,
+                                                ERROR_SLAVE_DEVICE_BUSY,//error,
+                                                outputPacket);//output_data
       break;
     }
     break;
