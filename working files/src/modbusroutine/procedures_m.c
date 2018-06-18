@@ -1239,11 +1239,13 @@ m1:
     }//case 3 4
     case 5://Тип данных subObj
       if(recordLen>1) return MARKER_ERRORPERIMETR;
-      if(registrator==DISKRET_REGISTRATOR) return 'B'; //дані - це бінарні числа
-      return (1000000 >> VAGA_NUMBER_POINT_AR)/50; //Період дискретизації
+      //if(registrator==DISKRET_REGISTRATOR) 
+      return 'B'; //дані - це бінарні числа
+      //return (1000000 >> VAGA_NUMBER_POINT_AR)/50; //Період дискретизації
     case 6://Коэффициент временной метки subObj
       if(recordLen>1) return MARKER_ERRORPERIMETR;
-      return (1000000 >> VAGA_NUMBER_POINT_AR)/50;
+    if(registrator==DISKRET_REGISTRATOR) return 1000;
+    return (1000000 >> VAGA_NUMBER_POINT_AR)/50;
     }//switch
 
   return MARKER_ERRORPERIMETR;
