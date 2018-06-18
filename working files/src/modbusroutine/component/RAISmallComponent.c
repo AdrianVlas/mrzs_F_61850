@@ -298,7 +298,7 @@ int getRAISmallModbusRegister(int adrReg)
     }
     else if (offset ==MDR_OFFSET_LABEL_TIME_MSW)
     {
-      return  (*(point_to_buffer + index + 2)) &0xFFFF;
+      return  (*(point_to_buffer + index + 2)) &0xFF;
     }
     else
     {

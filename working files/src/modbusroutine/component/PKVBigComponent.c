@@ -232,25 +232,25 @@ int getPKVBigModbusRegister(int adrReg)
     return (edition_settings.name_of_cell[14]&0xFF) | ((edition_settings.name_of_cell[15]<<8)&0xFF00);
 
   case 24://Год
-    return  (*(label_to_time_array + 6)) &0xFFFF;
+    return  (*(label_to_time_array + 6)) &0xFF;
 
   case 25://Месяц
-    return (*(label_to_time_array + 5)) &0xFFFF;
+    return (*(label_to_time_array + 5)) &0xFF;
 
   case 26://День
-    return (*(label_to_time_array + 4)) &0xFFFF;
+    return (*(label_to_time_array + 4)) &0xFF;
 
   case 27://Час
-    return (*(label_to_time_array + 3)) &0xFFFF;
+    return (*(label_to_time_array + 3)) &0xFF;
 
   case 28://Минуты
-    return (*(label_to_time_array + 2)) &0xFFFF;
+    return (*(label_to_time_array + 2)) &0xFF;
 
   case 29://Секунды
-    return (*(label_to_time_array + 1)) &0xFFFF;
+    return (*(label_to_time_array + 1)) &0xFF;
 
   case 30://Сотые секунды
-    return (*(label_to_time_array + 0)) &0xFFFF;
+    return (*(label_to_time_array + 0)) &0xFF;
   }//switch
 
   if(editValue==NULL) return 0;
