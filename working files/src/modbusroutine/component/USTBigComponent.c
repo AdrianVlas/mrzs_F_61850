@@ -555,7 +555,8 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
 
 //IF ВСТАВКА 213-244
 
-  case 248:
+#define MARKER248  248
+  case MARKER248:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.ctrl_zdz_type;
     if(regUst<0 || regUst>5) diapazon=0;
@@ -643,29 +644,35 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     (*editValue) = (uint32_t*)&edition_settings.setpoint_r_kom_st_Inom_vymk;
     if(regUst<SETPOINT_RKS_Inom_vymk_MIN || regUst>SETPOINT_RKS_Inom_vymk_MAX) diapazon=0;
     break;
-  case 1037:
+#define MARKER1037  1037
+  case MARKER1037:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.setpoint_pochatkovyj_resurs;
     break;
-  case 1038:
+#define MARKER1038  1038
+  case MARKER1038:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.setpoint_pochatkovyj_resurs;
     break;
-  case 1039:
+#define MARKER1039  1039
+  case MARKER1039:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.setpoint_krytychnyj_resurs;
     break;
-  case 1040:
+#define MARKER1040  1040
+  case MARKER1040:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.setpoint_pochatkova_k_vymk;
     break;
-  case 1041:
+#define MARKER1041  1041
+  case MARKER1041:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.setpoint_pochatkova_k_vymk;
     break;
 
 //  count_bit = 9;
-  case 1046:
+#define MARKER1046  1046
+  case MARKER1046:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_input_signal;
 //      if(regUst&(~(0xFFFF))) diapazon=0;
@@ -675,7 +682,8 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     (*editValue) = (uint32_t*)&edition_settings.type_of_input_signal;
     if(regUst&(~(0xF))) diapazon=0;
     break;
-  case 1048:
+#define MARKER1048  1048
+  case MARKER1048:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_input;
 //      if(regUst&(~(0xFFFF))) diapazon=0;
@@ -700,7 +708,8 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     (*editValue) = (uint32_t*)&edition_settings.type_df;
     if(regUst&(~(0xFF))) diapazon=0;
     break;
-  case 1053:
+#define MARKER1053  1053
+  case MARKER1053:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_led;
 //      if(regUst&(~(0xFFFF))) diapazon=0;
@@ -965,7 +974,7 @@ int getUSTBigModbusRegister(int adrReg)
   }//if(editValue == (uint32_t*)&edition_settings.buttons_mode)
   if(editValue == (uint32_t*)&edition_settings.setpoint_pochatkovyj_resurs)
   {
-    if(offset==1037)
+    if(offset==MARKER1037)
     {
       return (*editValue) & (uint32_t)0xffff;
     }
@@ -988,7 +997,7 @@ int getUSTBigModbusRegister(int adrReg)
   if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
   {
 #if MODYFIKACIA_VERSII_PZ == 0
-    if(offset==1046)
+    if(offset==MARKER1046)
     {
       return (*editValue) & (uint32_t)0xffff;
     }
@@ -997,7 +1006,7 @@ int getUSTBigModbusRegister(int adrReg)
       return ((*editValue)>>16)  & (uint32_t)0xffff;
     }//else
 #else
-    if(offset==1046)
+    if(offset==MARKER1046)
     {
       return (*editValue) & (uint32_t)0xffff;
     }
@@ -1011,7 +1020,7 @@ int getUSTBigModbusRegister(int adrReg)
   if(editValue == (uint32_t*)&edition_settings.type_of_input)
   {
 #if MODYFIKACIA_VERSII_PZ == 0
-    if(offset==1048)
+    if(offset==MARKER1048)
     {
       return (*editValue) & (uint32_t)0xffff;
     }
@@ -1020,7 +1029,7 @@ int getUSTBigModbusRegister(int adrReg)
       return ((*editValue)>>16)  & (uint32_t)0xffff;
     }//else
 #else
-    if(offset==1048)
+    if(offset==MARKER1048)
     {
       return (*editValue) & (uint32_t)0xffff;
     }
@@ -1033,7 +1042,7 @@ int getUSTBigModbusRegister(int adrReg)
   }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
   if(editValue == (uint32_t*)&edition_settings.type_of_led)
   {
-    if(offset==1053)
+    if(offset==MARKER1053)
     {
       return (*editValue) & (uint32_t)0xffff;
     }
@@ -1130,7 +1139,7 @@ int postUSTBigWriteAction(void)
 //ОСОБАЯ СБОРКА
     if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
     {
-      if(offset==1046)
+      if(offset==MARKER1046)
       {
         (*editValue) &= (uint32_t)~0xffff;
         (*editValue) |= (value & 0xffff);
@@ -1145,7 +1154,7 @@ int postUSTBigWriteAction(void)
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
     if(editValue == (uint32_t*)&edition_settings.type_of_input)
     {
-      if(offset==1048)
+      if(offset==MARKER1048)
       {
         (*editValue) &= (uint32_t)~0xffff;
         (*editValue) |= (value & 0xffff);
@@ -1160,7 +1169,7 @@ int postUSTBigWriteAction(void)
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
     if(editValue == (uint32_t*)&edition_settings.type_of_led)
     {
-      if(offset==1053)
+      if(offset==MARKER1053)
       {
         (*editValue) &= (uint32_t)~0xffff;
         (*editValue) |= (value & 0xffff);
@@ -1202,7 +1211,7 @@ int postUSTBigWriteAction(void)
 
     if(editValue == (uint32_t*)&edition_settings.setpoint_pochatkovyj_resurs)
     {
-      if(offset==1037)
+      if(offset==MARKER1037)
       {
         (*editValue) &= (uint32_t)~0xffff;
         (*editValue) |= (value & 0xffff);
@@ -1217,7 +1226,7 @@ int postUSTBigWriteAction(void)
     }//if(editValue == (uint32_t*)&edition_settings.setpoint_pochatkovyj_resurs)
     if(editValue == (uint32_t*)&edition_settings.setpoint_pochatkova_k_vymk)
     {
-      if(offset==1040)
+      if(offset==MARKER1040)
       {
         (*editValue) &= (uint32_t)~0xffff;
         (*editValue) |= (value & 0xffff);
@@ -1303,33 +1312,6 @@ int postUSTBigWriteAction(void)
       }//if(editValue == (uint32_t*)&edition_settings.setpoint_UP[item][0][grupa_ustavok])
     }//for(int item=0; item<NUMBER_UP; item++)
 
-//ОСОБАЯ ПРОВЕРКА
-
-    if(editValue == (uint32_t*)&edition_settings.ctrl_zdz_type)
-    {
-      switch(*editValue)
-      {
-      case 0://0-без контроля
-        break;
-      case 1://1-с контролем по току
-        if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) return ERROR_VALID2;
-        break;
-      case 2://2-с контролем по напряжению
-        if(!(edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
-        break;
-      case 3://3-с контролем по току ИЛИ по напряжению
-        if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION) || edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
-        break;
-      case 4://4-с контролем по току И по напряжению
-        if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) return ERROR_VALID2;
-        if(!(edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
-        break;
-      case 5://5-с контролем по 3I0
-        if(!(edition_settings.configuration&(1<<ZZ_BIT_CONFIGURATION))) return ERROR_VALID2;
-        break;
-      }//switch
-    }//if(editValue == (uint32_t*)&edition_settings.ctrl_zdz_type)
-
     (*editValue) = value*multer;
 
 m1:
@@ -1361,13 +1343,12 @@ m1:
         ) return ERROR_VALID2;//ошибка валидации
       break;
     }//switch
-
   }//for(int item=0; item<NUMBER_UP; item++)
 
   for(int i=0; i<countAdr; i++)
   {
     int offset = i+beginAdr-BEGIN_ADR_REGISTER;
-    if(offset==1037 || offset==1038 || offset==1039 || offset==1040 || offset==1041)
+    if(offset==MARKER1037 || offset==MARKER1038 || offset==MARKER1039 || offset==MARKER1040 || offset==MARKER1041)
     {
       temp1=edition_settings.setpoint_pochatkovyj_resurs;
       unsigned int chastka = edition_settings.setpoint_r_kom_st_Inom/edition_settings.setpoint_r_kom_st_Inom_vymk;
@@ -1384,7 +1365,37 @@ m1:
         !((unsigned int)temp1 <= edition_settings.setpoint_r_kom_st_Inom)
       ) return ERROR_VALID2;//ошибка валидации
     }//if
+
+//ОСОБАЯ ПРОВЕРКА
+
+    if(offset==MARKER248)//(uint32_t*)&edition_settings.ctrl_zdz_type
+    {
+      temp1=edition_settings.ctrl_zdz_type;
+      switch(temp1)
+      {
+      case 0://0-без контроля
+        break;
+      case 1://1-с контролем по току
+        if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) return ERROR_VALID2;
+        break;
+      case 2://2-с контролем по напряжению
+        if(!(edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
+        break;
+      case 3://3-с контролем по току ИЛИ по напряжению
+        if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION) || edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
+        break;
+      case 4://4-с контролем по току И по напряжению
+        if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) return ERROR_VALID2;
+        if(!(edition_settings.configuration&(1<<UMIN_BIT_CONFIGURATION))) return ERROR_VALID2;
+        break;
+      case 5://5-с контролем по 3I0
+        if(!(edition_settings.configuration&(1<<ZZ_BIT_CONFIGURATION))) return ERROR_VALID2;
+        break;
+      }//switch
+    }//if(offset==MARKER248)//(uint32_t*)&edition_settings.ctrl_zdz_type
+
   }//for(int i=0; i<countAdr; i++)
+
 
   if(flag) upravlSetting = 1;//флаг Setting
 
