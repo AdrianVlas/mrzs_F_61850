@@ -87,6 +87,8 @@ int setDTRBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(dtrbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
+  //проверка на конфиг
+  if(!(edition_settings.configuration&(1<<EL_BIT_CONFIGURATION))) return MARKER_ERRORPERIMETR;
   //проверка на допустимость
   return validDTRN_BIGACMD(dataReg, (adrReg-BEGIN_ADR_REGISTER)/(PART_REGISTERS_DTR*REGISTERS_DTR));
 }//getDOUTBigModbusRegister(int adrReg)

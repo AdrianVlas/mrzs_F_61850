@@ -84,6 +84,8 @@ int setMFTBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(mftbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
+  //проверка на конфиг
+  if(!(edition_settings.configuration&(1<<EL_BIT_CONFIGURATION))) return MARKER_ERRORPERIMETR;
   //проверка на допустимость
   return validMFTN_BIGACMD(dataReg, (adrReg-BEGIN_ADR_REGISTER)/(REGISTERS_MFT*PART_REGISTERS_MFT));
 }//getDOUTBigModbusRegister(int adrReg)

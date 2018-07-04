@@ -65,6 +65,8 @@ int setNOTBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(notbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
+  //проверка на конфиг
+  if(!(edition_settings.configuration&(1<<EL_BIT_CONFIGURATION))) return MARKER_ERRORPERIMETR;
   return validN_BIGACMD(dataReg);
 }//getDOUTBigModbusRegister(int adrReg)
 int setNOTBigModbusBit(int x, int y)

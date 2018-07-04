@@ -66,6 +66,8 @@ int setXORBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(xorbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
+  //проверка на конфиг
+  if(!(edition_settings.configuration&(1<<EL_BIT_CONFIGURATION))) return MARKER_ERRORPERIMETR;
   //проверка на допустимость
   return validN_BIGACMD(dataReg);
 }//getDOUTBigModbusRegister(int adrReg)
