@@ -1829,12 +1829,19 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
            {
              //Випадок, коли таймер павзи рівний нулю, тобто треба зразу активовувати ОФ і запускати таймер роботи
 
-             //Встановлюємо стан даної ОФ в "АКТИВНИЙ"
-             state_df |= (1 << i);
-             //Запускаємо відраховування таймера роботи
-             global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
-             //Переходимо на відраховування таймеру роботи - протягом цього часу ОФ гарантовано активується (якщо немає умови блокування)
-             etap_execution_df[i] = EXECUTION_DF;
+             if (
+                 (current_settings_prt.timeout_work_df[i] > 0) ||
+                 ((current_settings_prt.type_df & (1<<i)) != 0)
+                )   
+             {
+              //Встановлюємо стан даної ОФ в "АКТИВНИЙ"
+              state_df |= (1 << i);
+              //Запускаємо відраховування таймера роботи
+              global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
+              //Переходимо на відраховування таймеру роботи - протягом цього часу ОФ гарантовано активується (якщо немає умови блокування)
+              etap_execution_df[i] = EXECUTION_DF;
+             }
+             else etap_execution_df[i] = WAITING_DEACTIVATION_SOURCE_DF;
            }
            
            //Фіксація про зміну стану з початком відслідковуванням нової витримки
@@ -1855,12 +1862,20 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
             {
               //Завершився час роботи таймеру павзи
               global_timers[INDEX_TIMER_DF_PAUSE_START + i] = -1;
-              //Встановлюємо стан даної ОФ в "АКТИВНИЙ"
-              state_df |= (1 << i);
-              //Запускаємо відраховування таймера роботи
-              global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
-              //Переходимо на відраховування таймеру роботи - протягом цього часу ОФ гарантовано активується (якщо немає умови блокування)
-              etap_execution_df[i] = EXECUTION_DF;
+  
+              if (
+                  (current_settings_prt.timeout_work_df[i] > 0) ||
+                  ((current_settings_prt.type_df & (1<<i)) != 0)
+                 )   
+              {
+                //Встановлюємо стан даної ОФ в "АКТИВНИЙ"
+                state_df |= (1 << i);
+                //Запускаємо відраховування таймера роботи
+                global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
+                //Переходимо на відраховування таймеру роботи - протягом цього часу ОФ гарантовано активується (якщо немає умови блокування)
+                etap_execution_df[i] = EXECUTION_DF;
+              }
+              else etap_execution_df[i] = WAITING_DEACTIVATION_SOURCE_DF;
            
               //Фіксація про зміну стану з початком відслідковуванням нової витримки
               *p_changed_state_with_start_new_timeout |= (1 << i);
