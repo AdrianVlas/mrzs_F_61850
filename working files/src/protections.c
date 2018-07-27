@@ -4126,7 +4126,7 @@ void umin1_handler(unsigned int *p_active_functions, unsigned int number_group_s
   _Bool Uc_is_smaller_than_Umin1 = measurement[IM_UC] <= setpoint1;
   
   unsigned int setpoint2 = previous_state_po_ublk_umin1 ?
-          KOEF_MIN_UMIN * U_DOWN / 100 : KOEF_MIN_UMIN;
+          KOEF_MIN_UMIN * U_DOWN_1 / 100 : KOEF_MIN_UMIN;
           
   _Bool Ua_or_Ub_or_Uc_is_smaller_than_250mV = (measurement[IM_UA] <= setpoint2) || (measurement[IM_UB] <= setpoint2) || (measurement[IM_UC] <= setpoint2);
   _Bool Uab_or_Ubc_or_Uca_is_smaller_than_250mV = (measurement[IM_UAB] <= setpoint2) || (measurement[IM_UBC] <= setpoint2) || (measurement[IM_UCA] <= setpoint2);
@@ -4238,7 +4238,7 @@ void umin2_handler(unsigned int *p_active_functions, unsigned int number_group_s
   _Bool Uc_is_smaller_than_Umin2 = measurement[IM_UC] <= setpoint1;
   
   unsigned int setpoint2 = previous_state_po_ublk_umin2 ?
-          KOEF_MIN_UMIN * U_DOWN / 100 : KOEF_MIN_UMIN;
+          KOEF_MIN_UMIN * U_DOWN_1 / 100 : KOEF_MIN_UMIN;
           
   _Bool Ua_or_Ub_or_Uc_is_smaller_than_250mV = (measurement[IM_UA] <= setpoint2) || (measurement[IM_UB] <= setpoint2) || (measurement[IM_UC] <= setpoint2);
   _Bool Uab_or_Ubc_or_Uca_is_smaller_than_250mV = (measurement[IM_UAB] <= setpoint2) || (measurement[IM_UBC] <= setpoint2) || (measurement[IM_UCA] <= setpoint2);

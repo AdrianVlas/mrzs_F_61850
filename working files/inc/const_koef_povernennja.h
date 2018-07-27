@@ -10,6 +10,7 @@
 
 #define U_UP                            90
 #define U_DOWN                          110
+#define U_DOWN_1                        125
 
 #define KOEF_POVERNENNJA_MTZ_I_DOWN     105
 #define KOEF_POVERNENNJA_MTZ_I_UP       95
