@@ -843,23 +843,35 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   }//if(inOffset>=213 && inOffset<245)
 
 //IF ÂÑÒÀÂÊÀ 988-1003
+  if(inOffset>=988 && inOffset<1021 && inOffset!=1004)
+  {
+  int item = 0;
+  int direct = 0;
   if(inOffset>=988 && inOffset<1004)
   {
-    int item = inOffset-988;
     (*multer) = 1;
+    item = inOffset-988;
+  }//if(inOffset>=988 && inOffset<1004)
+  if(inOffset>=1005 && inOffset<1021)
+  {
+    (*multer) = 1;
+    item = inOffset-1005;
+    direct = 1;
+  }//if(inOffset>=1005 && inOffset<1021)
     switch(item%2)
     {
     case 0:
-      (*editValue) = (uint32_t*)&edition_settings.dovgyna[0][item%8];
+      (*editValue) = (uint32_t*)&edition_settings.dovgyna[direct][(item/2)%8];
       if(regUst<SETPOINT_DOVGYNA_VMP_MIN || regUst>SETPOINT_DOVGYNA_VMP_MAX) diapazon=0;
       break;
     case 1:
-      (*editValue) = (uint32_t*)&edition_settings.opir[0][item%8];
+      (*editValue) = (uint32_t*)&edition_settings.opir[direct][(item/2)%8];
       if(regUst<SETPOINT_OPIR_VMP_MIN || regUst>SETPOINT_OPIR_VMP_MAX) diapazon=0;
       break;
     }//switch
-  }//if(inOffset>=988 && inOffset<1004)
+  }//if(inOffset>=988 && inOffset<1021 && inOffset!=1004)
 //IF ÂÑÒÀÂÊÀ 1005-1020
+/*
   if(inOffset>=1005 && inOffset<1021)
   {
     int item = inOffset-1005;
@@ -876,6 +888,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
       break;
     }//switch
   }//if(inOffset>=1005 && inOffset<1021)
+*/
 
 #if MODYFIKACIA_VERSII_PZ == 0
   if(inOffset>=1056 && inOffset<1076)
