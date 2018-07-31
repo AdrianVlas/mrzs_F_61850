@@ -606,6 +606,7 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
                                 *uprMaska, validData)) isValid = 0;
       break;
     case 319:
+      (*uprMaska)   =  INDEX_ML_CTRUROV_STARTED_FROM_3I0;
       if(isValidCONFCondition(**editControl, ZZ_BIT_CONFIGURATION,
                               *uprMaska, validData)) isValid = 0;
       break;
