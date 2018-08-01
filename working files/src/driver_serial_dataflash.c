@@ -482,11 +482,14 @@ void dataflash_mamory_write_buffer(int index_chip)
     //Починаємо заповнювати буфер для передачі у буфер мікросхеми DataFlash даними для запису
     number_recods_writing_into_dataflash_now = 0;
     unsigned int head = head_fifo_buffer_pr_err_records, tail = tail_fifo_buffer_pr_err_records;
+    unsigned int owerflow = (_CHECK_SET_BIT(diagnostyka, ERROR_PR_ERR_OVERLOAD_BIT) != 0);
     while(
           ((next_address_into_buffer + SIZE_ONE_RECORD_PR_ERR - 1) < size_page) &&
-          (tail != head)
+          ((tail != head) || (owerflow != 0))
          )
     {
+      owerflow = false; /*якщо ми зайшли по цій умові, то більше вона не має спрацювати*/
+      
       //Заповнюємо дальше буфер даними, які треба записати 
       for (unsigned int i = 0; i < SIZE_ONE_RECORD_PR_ERR; i++ )
         TxBuffer_SPI_EDF[4 + number_recods_writing_into_dataflash_now*SIZE_ONE_RECORD_PR_ERR + i] =

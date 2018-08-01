@@ -1234,7 +1234,13 @@ void TIM4_IRQHandler(void)
              )
           {
             unsigned int head = head_fifo_buffer_pr_err_records, tail = tail_fifo_buffer_pr_err_records;
-            if (head != tail) control_tasks_dataflash |= TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH;  //Є нові записи у буфері подій  
+            if (
+                (head != tail) || 
+                (_CHECK_SET_BIT(diagnostyka, ERROR_PR_ERR_OVERLOAD_BIT) != 0)
+               )
+            {
+              control_tasks_dataflash |= TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH;  //Є нові записи у буфері подій  
+            }
           }
         
           //Аналізуємо прийняті дані, якщо такі є і чекають на аналіз
