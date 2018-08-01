@@ -222,12 +222,11 @@ int inputPacketParser(void)
 int outputFunc16PacketEncoder(int adrUnit, int adrReg, int cntReg)
 {
 //выходной кодировщик 16 функции
-  short dataReg = 0;
   int   flag = 1;
   superPreWriteAction();//action до записи
   for(int i=0; i<cntReg; i++)
     {
-      dataReg = tempReadArray[i];
+      uint32_t dataReg = (unsigned short) tempReadArray[i];
       int result = superWriterRegister(adrReg+i, dataReg);
       switch(result)
         {

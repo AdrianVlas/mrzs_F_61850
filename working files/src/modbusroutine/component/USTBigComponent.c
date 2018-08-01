@@ -858,6 +858,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     item = inOffset-1005;
     direct = 1;
   }//if(inOffset>=1005 && inOffset<1021)
+  //unsigned int uRegUst = regUst&0xFFFF;
     switch(item%2)
     {
     case 0:
