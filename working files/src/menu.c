@@ -11817,7 +11817,7 @@ void main_manu_function(void)
                 else
                 {
                   //Редагування числа
-                  if (current_ekran.index_position == INDEX_ML_TMOAPV1)
+                  if (current_ekran.index_position == INDEX_ML_TMOZDZ)
                     edition_settings.timeout_zdz[group] = edit_setpoint(1, edition_settings.timeout_zdz[group], 1, COL_TMO_ZDZ_COMMA, COL_TMO_ZDZ_END, 1);
                 }
                 //Формуємо екран витримок ЗДЗ
