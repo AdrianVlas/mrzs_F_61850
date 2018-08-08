@@ -360,10 +360,10 @@
 #define SETPOINT_KP_UMAX_MAX          96
 
 #define TIMEOUT_UMAX1_MIN             0
-#define TIMEOUT_UMAX1_MAX             300000
+#define TIMEOUT_UMAX1_MAX             600000
 
 #define TIMEOUT_UMAX2_MIN             0
-#define TIMEOUT_UMAX2_MAX             300000
+#define TIMEOUT_UMAX2_MAX             600000
 
 #define SETPOINT_UP_I_MIN             500
 #define SETPOINT_UP_I_MAX             150000
