@@ -143,8 +143,8 @@ void make_ekran_transformator()
     },
     {
       "  3I0 T Ratio   ",
-      " CT 0.4kV Ratio ",
       "    CT Ratio    ",
+      " CT 0.4kV Ratio ",
       "    VT Ratio    "
     },
     {
