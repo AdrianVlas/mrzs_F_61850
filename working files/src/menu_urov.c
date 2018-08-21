@@ -465,15 +465,6 @@ void make_ekran_control_urov()
         ||
         (
          (
-          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_ACHR1) ||
-          (current_index == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2)
-         )   
-         &&
-         ((current_settings.configuration & (1<<ACHR_CHAPV_BIT_CONFIGURATION)) == 0)
-        )
-        ||
-        (
-         (
           (current_index >= INDEX_ML_CTRUROV_STARTED_FROM_UP1) &&
           (current_index <= INDEX_ML_CTRUROV_STARTED_FROM_UP1 + NUMBER_UP - 1)
          )   
