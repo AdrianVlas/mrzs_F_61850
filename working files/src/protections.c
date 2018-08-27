@@ -1294,8 +1294,9 @@ inline void calc_measurement(unsigned int number_group_stp)
     ortogonal_local_3I0[1] = ((MNOGNYK_3I0_DIJUCHE_D_mA*ortogonal_calc[2*FULL_ORT_3I0 + 1]) << (VAGA_DILENNJA_I_DIJUCHE - (VAGA_DILENNJA_3I0_DIJUCHE_D_mA + 4)))/MNOGNYK_I_DIJUCHE;
 #endif
   
-    _x = ortogonal_calc[2*FULL_ORT_Ib + 0] = ortogonal_local_3I0[0] - (ortogonal_calc[2*FULL_ORT_Ia + 0] + ortogonal_calc[2*FULL_ORT_Ic + 0]);
-    _y = ortogonal_calc[2*FULL_ORT_Ib + 1] = ortogonal_local_3I0[1] - (ortogonal_calc[2*FULL_ORT_Ia + 1] + ortogonal_calc[2*FULL_ORT_Ic + 1]);
+    unsigned int T0 = current_settings_prt.T0, TCurrent = current_settings_prt.TCurrent;
+    _x = ortogonal_calc[2*FULL_ORT_Ib + 0] = T0*ortogonal_local_3I0[0]/TCurrent - (ortogonal_calc[2*FULL_ORT_Ia + 0] + ortogonal_calc[2*FULL_ORT_Ic + 0]);
+    _y = ortogonal_calc[2*FULL_ORT_Ib + 1] = T0*ortogonal_local_3I0[1]/TCurrent - (ortogonal_calc[2*FULL_ORT_Ia + 1] + ortogonal_calc[2*FULL_ORT_Ic + 1]);
     if (copy_to_low_tasks == true)
     {
       ortogonal_calc_low[2*FULL_ORT_3I0_r + 0] = 0;
@@ -1304,7 +1305,7 @@ inline void calc_measurement(unsigned int number_group_stp)
       ortogonal_calc_low[2*FULL_ORT_Ib + 0] = _x;
       ortogonal_calc_low[2*FULL_ORT_Ib + 1] = _y;
     }
-    measurement[IM_IB] = ( MNOGNYK_I_DIJUCHE*(sqrt_32((unsigned int)(_x*_x) + (unsigned int)(_y*_y))) ) >> (VAGA_DILENNJA_I_DIJUCHE + 4);
+    measurement[IM_IB] = ( MNOGNYK_I_DIJUCHE*(sqrt_64((unsigned long long)((long long)_x*(long long)_x) + (unsigned long long)((long long)_y*(long long)_y))) ) >> (VAGA_DILENNJA_I_DIJUCHE + 4);
   }
     
   if ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
