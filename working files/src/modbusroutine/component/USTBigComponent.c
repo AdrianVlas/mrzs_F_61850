@@ -571,7 +571,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case 987:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.lines[0];
-    if(regUst<1 || regUst>8) diapazon=0;
+    if(regUst<NUMBER_LINES_FORWARD_MIN || regUst>NUMBER_LINES_MAX) diapazon=0;
     break;
 
 //IF ÂÑÒÀÂÊÀ 988-1003
@@ -579,7 +579,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case 1004:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.lines[1];
-    if(regUst<0 || regUst>8) diapazon=0;
+    if(regUst<NUMBER_LINES_BACKWARD_MIN || regUst>NUMBER_LINES_MAX) diapazon=0;
     break;
 
 //IF ÂÑÒÀÂÊÀ 1005-1020

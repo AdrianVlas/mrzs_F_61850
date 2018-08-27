@@ -247,6 +247,16 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     (*dvMaska) = RANG_SMALL_BLOCK_USK_MTZ04_2;
     break;
 
+  case 88:
+    (*outMaska) = RANG_NCN_MTZ;
+//        (*dvMaska) =
+    if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) isValid = 0;
+    break;
+  case 89:
+    (*outMaska) = RANG_PO_BLOCK_U_MTZN;
+//        (*dvMaska) =
+    if(!(edition_settings.configuration&(1<<MTZ_BIT_CONFIGURATION))) isValid = 0;
+    break;
 
 //  count_bit = 3;
 #define ZDZ_CONFIGURATION_BEGIN 112
