@@ -269,6 +269,24 @@ void make_ekran_setpoint_UP(unsigned int group)
             calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, vd[index_of_ekran_tmp].comma, view, 0);
           
         }
+        
+        if (
+            (vd[index_of_ekran_tmp].sign >= 0) &&
+            (view == true)
+           )   
+        {
+          //Підтягуємо знак до першої цифри
+          for (int32_t j = vd[index_of_ekran_tmp].sign; j < (int32_t)MAX_COL_LCD; j++)
+          {
+            if (((working_ekran[i][j + 1]) == ' ') && (j < ((int32_t)vd[index_of_ekran_tmp].end - 1)))
+            {
+              working_ekran[i][j + 1] = working_ekran[i][j];
+              working_ekran[i][j] = ' ';
+              vd[index_of_ekran_tmp].sign++;
+            }
+            else break;
+          }
+        }
       }
         
     }
@@ -292,12 +310,7 @@ void make_ekran_setpoint_UP(unsigned int group)
     
     //Підтягуємо курсор до першого символу
     while (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1]) == ' ') && 
-           (current_ekran.position_cursor_x < (last_position_cursor_x -1))) 
-    {
-      working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1] = working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x];
-      working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x] = ' ';
-      current_ekran.position_cursor_x++;
-    }
+           (current_ekran.position_cursor_x < (last_position_cursor_x -1))) current_ekran.position_cursor_x++;
     
     //Курсор ставимо так, щоб він був перед числом
     if (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x]) != ' ') && 
