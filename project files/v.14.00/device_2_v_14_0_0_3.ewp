@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>30</version>
+                <version>31</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.22.2.15993</state>
+                    <state>8.30.2.18207</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -112,7 +112,7 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Full.h</state>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Full.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
@@ -202,6 +202,11 @@
                 </option>
                 <option>
                     <name>TrustZone</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZoneModes</name>
+                    <version>0</version>
                     <state>0</state>
                 </option>
             </data>
@@ -654,7 +659,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>device_2_v_14_0_0_2.bin</state>
+                    <state>device_2_v_14_0_0_3.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -692,7 +697,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>20</version>
+                <version>21</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -709,7 +714,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>device_2_v_14_0_0_2.out</state>
+                    <state>device_2_v_14_0_0_3.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -1003,6 +1008,10 @@
                 <option>
                     <name>IlinkLocaleSelect</name>
                     <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkTrustzoneImportLibraryOut</name>
+                    <state>device_2_v_14_0_0_3_import_lib.o</state>
                 </option>
             </data>
         </settings>
