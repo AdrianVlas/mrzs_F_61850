@@ -205,6 +205,7 @@ extern unsigned int new_state_keyboard_for_db;
 extern unsigned char time_set_keyboard[NUMBER_KEY_KEYBOARD];
 
 extern unsigned int time_rewrite;
+extern unsigned int reinit_LCD;
 
 extern __CURRENT_EKRAN current_ekran;
 extern int position_in_current_level_menu[MAX_LEVEL_MENU];

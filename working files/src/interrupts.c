@@ -1845,6 +1845,7 @@ void EXITI_POWER_IRQHandler(void)
 
       //Виставляємо повідомлення про цю подію
       _SET_BIT(clear_diagnostyka, EVENT_DROP_POWER_BIT);
+      reinit_LCD = true;
     }
     else
     {

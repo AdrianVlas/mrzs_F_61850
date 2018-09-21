@@ -437,6 +437,7 @@ unsigned int new_state_keyboard_for_db/* = 0*/;
 unsigned char time_set_keyboard[NUMBER_KEY_KEYBOARD];
 
 unsigned int time_rewrite/* = 0*/; //Час який пройшов після останнього обновлення
+unsigned int reinit_LCD;
 
 SRAM1 __CURRENT_EKRAN current_ekran;
 SRAM1 int position_in_current_level_menu[MAX_LEVEL_MENU]; //Масив у якому збкрігається індекс текучоїпозиції
