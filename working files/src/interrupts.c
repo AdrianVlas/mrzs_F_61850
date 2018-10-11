@@ -922,15 +922,16 @@ void TIM4_IRQHandler(void)
       if(++number_seconds >= 60)
       {
         number_seconds = 0;
-        if(
-           ((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET) &&
-           (++number_minutes >= PERIOD_SAVE_ENERGY_IN_MINUTES)
-          )   
+        if((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET)
         {
-          number_minutes = 0;
+          reinit_LCD = true;
+          if (++number_minutes >= PERIOD_SAVE_ENERGY_IN_MINUTES)
+          {
+            number_minutes = 0;
           
-          //Запускаємо запис у EEPROM
-          _SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+            //Запускаємо запис у EEPROM
+            _SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+          }
         }
       }
       

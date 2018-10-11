@@ -270,7 +270,6 @@ extern _Bool previous_state_mtz_po_uncn;
 extern unsigned int p_global_trigger_state_mtz2;
 extern unsigned int p_global_trigger_state_mtz04_2;
 
-
 //Визначення періодів у хвилину і більше
 extern unsigned int number_seconds;
 extern unsigned int number_minutes;
