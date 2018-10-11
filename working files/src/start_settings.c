@@ -1433,6 +1433,11 @@ void min_settings(__SETTINGS *target_label)
   
   target_label->grupa_ustavok = SETPOINT_GRUPA_USTAVOK_MIN;
   
+  target_label->type_mtz1 = TYPE_MTZ_SIMPLE;
+  target_label->type_mtz2 = TYPE_MTZ_SIMPLE;
+  target_label->type_mtz3 = TYPE_MTZ_SIMPLE;
+  target_label->type_mtz4 = TYPE_MTZ_SIMPLE;
+  
   for (unsigned int i = 0; i < NUMBER_GROUP_USTAVOK; i++)
   {
     unsigned int angle;
