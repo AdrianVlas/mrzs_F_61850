@@ -178,7 +178,7 @@
   "  Local/Remote  ",                   \
   "  State of CB   ",                   \
   "Откл.от вн.защит",                   \
-  "     On CB  ",                   \
+  "     On CB      ",                   \
   " On CB Control  ",                   \
   "     Off CB     ",                   \
   " Off CB Control ",                   \
