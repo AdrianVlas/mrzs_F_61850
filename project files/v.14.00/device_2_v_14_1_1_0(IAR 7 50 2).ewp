@@ -620,7 +620,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>device_2_v_14_1_0_3(IAR 7 50 2).bin</state>
+          <state>device_2_v_14_1_1_0(IAR 7 50 2).bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -675,7 +675,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>device_2_v_14_1_0_3(IAR 7 50 2).out</state>
+          <state>device_2_v_14_1_1_0(IAR 7 50 2).out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
