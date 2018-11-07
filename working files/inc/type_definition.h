@@ -191,6 +191,9 @@ typedef struct
   //ЗДЗ
   int32_t timeout_zdz[NUMBER_GROUP_USTAVOK];                //Витримка ЗДЗ
   unsigned int control_zdz;                                 //Поле для управління ЗДЗ
+#if MODYFIKACIA_VERSII_PZ == 0
+   int32_t zdz_ovd_porig;                                   //Поріг спрацювання ОВД
+#endif
   int32_t ctrl_zdz_type;                                    //Тип контролю ЗДЗ
                                                             /*
                                                             0 - Без контролю

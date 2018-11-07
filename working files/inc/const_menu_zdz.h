@@ -34,6 +34,8 @@ enum _control_type
   _ZDZ_CTRL_NUMBER
 };
 
+#define ZDZ_CTRL_PORIG_N        16
+
 enum _index_ml_ctrl_zdz
 {
   _CTR_ZDZ_PART_I = 0, 
@@ -42,10 +44,17 @@ enum _index_ml_ctrl_zdz
   CTR_ZDZ_OVD1_STATE_BIT,
   CTR_ZDZ_OVD2_STATE_BIT,
   CTR_ZDZ_OVD3_STATE_BIT,
-#endif
   
   _CTR_ZDZ_PART_II,
+  
+  CTR_ZDZ_PORIG = _CTR_ZDZ_PART_II,
+  CTR_ZDZ_CTRL_TYPE,
+#else
+  
+  _CTR_ZDZ_PART_II,
+  
   CTR_ZDZ_CTRL_TYPE = _CTR_ZDZ_PART_II,
+#endif
   
   _CTR_ZDZ_PART_III,
   CTR_ZDZ_STARTED_FROM_MTZ1_BIT = _CTR_ZDZ_PART_III,

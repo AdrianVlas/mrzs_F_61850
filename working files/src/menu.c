@@ -6338,6 +6338,9 @@ void main_manu_function(void)
                 else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
                 {
                   edition_settings.control_zdz = current_settings.control_zdz;
+#if MODYFIKACIA_VERSII_PZ == 0
+                  edition_settings.zdz_ovd_porig = current_settings.zdz_ovd_porig;
+#endif
                   edition_settings.ctrl_zdz_type = current_settings.ctrl_zdz_type;
                 }
                 else if(
@@ -7423,6 +7426,9 @@ void main_manu_function(void)
                 {
                   if (
                       (edition_settings.control_zdz != current_settings.control_zdz) ||
+#if MODYFIKACIA_VERSII_PZ == 0
+                      (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
+#endif
                       (edition_settings.ctrl_zdz_type != current_settings.ctrl_zdz_type)
                      )
                     found_changes = 1;
@@ -9105,11 +9111,17 @@ void main_manu_function(void)
                 {
                   if (
                       ((edition_settings.control_zdz & ((unsigned int)(~CTR_ZDZ_MASKA))) == 0) &&
+#if MODYFIKACIA_VERSII_PZ == 0
+                      (edition_settings.zdz_ovd_porig < ZDZ_CTRL_PORIG_N) &&
+#endif
                       (edition_settings.ctrl_zdz_type < _ZDZ_CTRL_NUMBER)
                      )   
                   {
                     if (
                         (edition_settings.control_zdz != current_settings.control_zdz) ||
+#if MODYFIKACIA_VERSII_PZ == 0
+                        (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
+#endif
                         (edition_settings.ctrl_zdz_type != current_settings.ctrl_zdz_type)
                        )   
                     {
@@ -9117,6 +9129,9 @@ void main_manu_function(void)
                       changed_settings = CHANGED_ETAP_EXECUTION;
                         
                       current_settings.control_zdz = edition_settings.control_zdz;
+#if MODYFIKACIA_VERSII_PZ == 0
+                      current_settings.zdz_ovd_porig = edition_settings.zdz_ovd_porig;
+#endif
                       current_settings.ctrl_zdz_type = edition_settings.ctrl_zdz_type;
                       //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                       fix_change_settings(0, 1);
@@ -15011,6 +15026,12 @@ void main_manu_function(void)
                         )
                        ); 
                 }
+#if MODYFIKACIA_VERSII_PZ == 0
+                else if (current_ekran.index_position == CTR_ZDZ_PORIG)
+                {
+                  if (++edition_settings.zdz_ovd_porig >= ZDZ_CTRL_PORIG_N) edition_settings.zdz_ovd_porig = 0;
+                }
+#endif
                 else
                 {
                   unsigned int maska = 0;
@@ -16830,6 +16851,12 @@ void main_manu_function(void)
                         )
                        ); 
                 }
+#if MODYFIKACIA_VERSII_PZ == 0
+                else if (current_ekran.index_position == CTR_ZDZ_PORIG)
+                {
+                  if (--edition_settings.zdz_ovd_porig < 0) edition_settings.zdz_ovd_porig = (ZDZ_CTRL_PORIG_N - 1);
+                }
+#endif
                 else
                 {
                   unsigned int maska = 0;

@@ -3075,7 +3075,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   /***/
    
   //Знімаємо стан з оптоприймача
-  uint32_t light = (_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 13) & 0x7;
+  uint32_t light = (_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 12) & 0x7;
 
   /***
   Код програми, який відповідає за діагностику оптичної системи
@@ -3164,7 +3164,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
     //Переходимо на наступний канал
     test = (test << 1) & 0x7;
   }
-  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = test << 13;
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = ((current_settings_prt.zdz_ovd_porig & 0xf) << 8) | ((test & 0xf) << 12);
   /***/
 
 #endif  
@@ -10330,7 +10330,7 @@ inline void main_protection(void)
     {
 #if MODYFIKACIA_VERSII_PZ == 0
       //Вимикаємо можливий режим тестування оптоканалу
-      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
+      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = ((current_settings_prt.zdz_ovd_porig & 0xf) << 8) | (0 << 12);
       if (zdz_ovd_diagnostyka)
       {
         if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(clear_diagnostyka, TEST_OVD1);
