@@ -101,6 +101,8 @@ ERROR_BDVV5_2_FIX,
 ERROR_BDVV5_2_CTLR,
 ERROR_BDV_DZ_FIX,
 ERROR_BDV_DZ_CTLR,
+ERROR_BDZ_FIX,
+ERROR_BDZ_CTLR,
 };
 
 #define MASKA_AVAR_ERROR_0        (unsigned int)(               \
@@ -150,6 +152,8 @@ ERROR_BDV_DZ_CTLR,
   | (1 << (ERROR_BDVV5_2_CTLR - 64))                            \
   | (1 << (ERROR_BDV_DZ_FIX - 64))                              \
   | (1 << (ERROR_BDV_DZ_CTLR - 64))                             \
+  | (1 << (ERROR_BDZ_FIX - 64))                                 \
+  | (1 << (ERROR_BDZ_CTLR - 64))                                \
 )
 
 # define NAME_DIAGN_RU  \
@@ -246,8 +250,8 @@ ERROR_BDV_DZ_CTLR,
   " ÁÄÂÂ5_2 ê.     ",   \
   " ÁÄÂ-ÄÇ ô.      ",   \
   " ÁÄÂ-ÄÇ ê.      ",   \
-  " Îøèáêà 93      ",   \
-  " Îøèáêà 94      ",   \
+  " ÁÄÇ ô.         ",   \
+  " ÁÄÇ ê.         ",   \
   " Îøèáêà 95      "
 
 # define NAME_DIAGN_UA  \
@@ -344,8 +348,8 @@ ERROR_BDV_DZ_CTLR,
   " ÁÄÂÂ5_2 ê.     ",   \
   " ÁÄÂ-ÄÇ ô.      ",   \
   " ÁÄÂ-ÄÇ ê.      ",   \
-  " Ïîìèëêà 93     ",   \
-  " Ïîìèëêà 94     ",   \
+  " ÁÄÇ ô.         ",   \
+  " ÁÄÇ ê.         ",   \
   " Ïîìèëêà 95     "
 
 # define NAME_DIAGN_EN  \
@@ -442,8 +446,8 @@ ERROR_BDV_DZ_CTLR,
   " BDVV5_2 ctrl.  ",   \
   " BDV-DZ f.      ",   \
   " BDV-DZ ctrl.   ",   \
-  " Error 93       ",   \
-  " Error 94       ",   \
+  " BDZ f.         ",   \
+  " BDZ ctrl.      ",   \
   " Error 95       "
 
 # define NAME_DIAGN_KZ  \
@@ -540,8 +544,8 @@ ERROR_BDV_DZ_CTLR,
   " ÁÄÂÂ5_2 ê.     ",   \
   " ÁÄÂ-ÄÇ ô.      ",   \
   " ÁÄÂ-ÄÇ ê.      ",   \
-  " Îøèáêà 93      ",   \
-  " Îøèáêà 94      ",   \
+  " ÁÄÇ ô.         ",   \
+  " ÁÄÇ ê.         ",   \
   " Îøèáêà 95      "
     
 #endif

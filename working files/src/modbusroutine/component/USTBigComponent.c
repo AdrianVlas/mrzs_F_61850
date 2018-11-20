@@ -891,13 +891,16 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   }//if(inOffset>=1005 && inOffset<1021)
 */
 
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (MODYFIKACIA_VERSII_PZ == 0)
   if(inOffset>=1056 && inOffset<1076)
 #endif
-#if MODYFIKACIA_VERSII_PZ == 1
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 1) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
     if(inOffset>=1056 && inOffset<1072)
 #endif
-#if MODYFIKACIA_VERSII_PZ == 2
+#if (MODYFIKACIA_VERSII_PZ == 2)
       if(inOffset>=1056 && inOffset<1064)
 #endif
       {

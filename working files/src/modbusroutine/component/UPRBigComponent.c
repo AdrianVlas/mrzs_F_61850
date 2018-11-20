@@ -228,7 +228,10 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
       break;
 
 //123456
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
 
     case 104:
       (*uprMaska)   = CTR_ZDZ_OVD1_STATE_BIT;

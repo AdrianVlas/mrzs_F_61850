@@ -6338,7 +6338,10 @@ void main_manu_function(void)
                 else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
                 {
                   edition_settings.control_zdz = current_settings.control_zdz;
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                   edition_settings.zdz_ovd_porig = current_settings.zdz_ovd_porig;
 #endif
                   edition_settings.ctrl_zdz_type = current_settings.ctrl_zdz_type;
@@ -7426,7 +7429,10 @@ void main_manu_function(void)
                 {
                   if (
                       (edition_settings.control_zdz != current_settings.control_zdz) ||
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                       (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
 #endif
                       (edition_settings.ctrl_zdz_type != current_settings.ctrl_zdz_type)
@@ -9111,7 +9117,10 @@ void main_manu_function(void)
                 {
                   if (
                       ((edition_settings.control_zdz & ((unsigned int)(~CTR_ZDZ_MASKA))) == 0) &&
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                       (edition_settings.zdz_ovd_porig < ZDZ_CTRL_PORIG_N) &&
 #endif
                       (edition_settings.ctrl_zdz_type < _ZDZ_CTRL_NUMBER)
@@ -9119,7 +9128,10 @@ void main_manu_function(void)
                   {
                     if (
                         (edition_settings.control_zdz != current_settings.control_zdz) ||
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                         (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
 #endif
                         (edition_settings.ctrl_zdz_type != current_settings.ctrl_zdz_type)
@@ -9129,7 +9141,10 @@ void main_manu_function(void)
                       changed_settings = CHANGED_ETAP_EXECUTION;
                         
                       current_settings.control_zdz = edition_settings.control_zdz;
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                       current_settings.zdz_ovd_porig = edition_settings.zdz_ovd_porig;
 #endif
                       current_settings.ctrl_zdz_type = edition_settings.ctrl_zdz_type;
@@ -15026,7 +15041,10 @@ void main_manu_function(void)
                         )
                        ); 
                 }
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                 else if (current_ekran.index_position == CTR_ZDZ_PORIG)
                 {
                   if (++edition_settings.zdz_ovd_porig >= ZDZ_CTRL_PORIG_N) edition_settings.zdz_ovd_porig = 0;
@@ -15038,7 +15056,10 @@ void main_manu_function(void)
           
                   //Виділяємо, який біт треба міняти
                   if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD3_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD3_STATE_BIT);
@@ -16851,7 +16872,10 @@ void main_manu_function(void)
                         )
                        ); 
                 }
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                 else if (current_ekran.index_position == CTR_ZDZ_PORIG)
                 {
                   if (--edition_settings.zdz_ovd_porig < 0) edition_settings.zdz_ovd_porig = (ZDZ_CTRL_PORIG_N - 1);
@@ -16863,7 +16887,10 @@ void main_manu_function(void)
           
                   //Виділяємо, який біт треба міняти
                   if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD3_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD3_STATE_BIT);
@@ -18330,7 +18357,11 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_INPUT_7:
     case EKRAN_RANGUVANNJA_INPUT_8:
 
-#if ((MODYFIKACIA_VERSII_PZ == 0) || (MODYFIKACIA_VERSII_PZ == 1))
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 1) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )
 
     case EKRAN_RANGUVANNJA_INPUT_9:
     case EKRAN_RANGUVANNJA_INPUT_10:
@@ -18348,7 +18379,7 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_OUTPUT_15:
     case EKRAN_RANGUVANNJA_OUTPUT_16:
 
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (MODYFIKACIA_VERSII_PZ == 0)
 
     case EKRAN_RANGUVANNJA_INPUT_17:
     case EKRAN_RANGUVANNJA_INPUT_18:

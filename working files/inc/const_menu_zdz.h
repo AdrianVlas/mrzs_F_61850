@@ -40,7 +40,11 @@ enum _index_ml_ctrl_zdz
 {
   _CTR_ZDZ_PART_I = 0, 
   CTR_ZDZ_STATE_BIT = _CTR_ZDZ_PART_I,
-#if MODYFIKACIA_VERSII_PZ == 0
+
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
   CTR_ZDZ_OVD1_STATE_BIT,
   CTR_ZDZ_OVD2_STATE_BIT,
   CTR_ZDZ_OVD3_STATE_BIT,
@@ -68,7 +72,10 @@ enum _index_ml_ctrl_zdz
   MAX_ROW_FOR_CONTROL_ZDZ = _CTR_ZDZ_NEXT_BIT
 };
 
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
 
 #define CTR_ZDZ_MASKA                 (                                                                                           \
                                        MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT)                                                         | \

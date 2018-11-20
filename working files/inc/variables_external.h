@@ -116,7 +116,10 @@ extern unsigned int Ix_bilshe_porogu[3];
 extern unsigned int temp_states_for_mtz;
 
 //ÇÄÇ
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
 extern uint32_t delta_time_test;
 extern uint32_t zdz_ovd_diagnostyka;
 #endif
