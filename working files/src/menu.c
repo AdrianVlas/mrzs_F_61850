@@ -15017,7 +15017,10 @@ void main_manu_function(void)
           
                   //Виділяємо, який біт треба міняти
                   if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD3_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD3_STATE_BIT);
@@ -16836,7 +16839,10 @@ void main_manu_function(void)
           
                   //Виділяємо, який біт треба міняти
                   if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD3_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD3_STATE_BIT);
@@ -18303,7 +18309,11 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_INPUT_7:
     case EKRAN_RANGUVANNJA_INPUT_8:
 
-#if ((MODYFIKACIA_VERSII_PZ == 0) || (MODYFIKACIA_VERSII_PZ == 1))
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 1) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )
 
     case EKRAN_RANGUVANNJA_INPUT_9:
     case EKRAN_RANGUVANNJA_INPUT_10:
@@ -18321,7 +18331,7 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_OUTPUT_15:
     case EKRAN_RANGUVANNJA_OUTPUT_16:
 
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (MODYFIKACIA_VERSII_PZ == 0)
 
     case EKRAN_RANGUVANNJA_INPUT_17:
     case EKRAN_RANGUVANNJA_INPUT_18:

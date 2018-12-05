@@ -5,12 +5,16 @@
 #define BEGIN_ADR_REGISTER 1100
 #define REGISTERS_OUTPUTS 16
 
-#if (MODYFIKACIA_VERSII_PZ == 0) || (MODYFIKACIA_VERSII_PZ == 1)
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 1) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1355
 #endif
 
-#if MODYFIKACIA_VERSII_PZ == 2    
+#if (MODYFIKACIA_VERSII_PZ == 2)
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1243
 #endif

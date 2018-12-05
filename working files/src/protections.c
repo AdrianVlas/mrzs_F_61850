@@ -1460,7 +1460,7 @@ inline void input_scan(void)
   -----------------------------
   */
   state_inputs_into_pin |=  ( _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36)       & 0xffff)
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (MODYFIKACIA_VERSII_PZ == 0)
                          | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) &    0xf) << 16)
 #endif
                         ;
@@ -3033,7 +3033,10 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   
   uint32_t control_zdz_tmp = current_settings_prt.control_zdz;
 
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
 
   static uint32_t test;
   static uint32_t swiched_on_OVD;
@@ -3183,7 +3186,10 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   else
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_DV);
 
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
   _AND3(logic_zdz_0, 2, light, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
   //"Св.ЗДЗ від ОВД1"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 4))
@@ -10328,7 +10334,10 @@ inline void main_protection(void)
     }
     else
     {
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
       //Вимикаємо можливий режим тестування оптоканалу
       _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
       if (zdz_ovd_diagnostyka)
@@ -11214,6 +11223,11 @@ void TIM2_IRQHandler(void)
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
 
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 1) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )
       if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
       else if (board_register_diff & 0x04)
       {
@@ -11222,14 +11236,34 @@ void TIM2_IRQHandler(void)
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) >> 8) != 0x37)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_CTLR);
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
+#endif
 
-#if MODYFIKACIA_VERSII_PZ == 0
-      if ((board_register_tmp & 0x010) != 0x10) _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )
+    if ((board_register_tmp & 0x010) != 0x10) 
+#if (MODYFIKACIA_VERSII_PZ == 0)
+      _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+#else
+      _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
+#endif
       else if (board_register_diff & 0x10)
       {
+#if (MODYFIKACIA_VERSII_PZ == 0)
         _SET_BIT(clear_diagnostyka, ERROR_BDV_DZ_FIX);
+#else
+        _SET_BIT(clear_diagnostyka, ERROR_BDZ_FIX);
+#endif
+
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
+
+#if (MODYFIKACIA_VERSII_PZ == 0)
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
+#else
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
+#endif
+
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
 #endif

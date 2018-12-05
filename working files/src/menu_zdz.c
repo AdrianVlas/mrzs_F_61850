@@ -102,7 +102,10 @@ void make_ekran_control_zdz()
   {
     {
       "      ÇÄÇ       ",
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
       "      ÎÂÄ1      ",
       "      ÎÂÄ2      ",
       "      ÎÂÄ3      ",
@@ -117,7 +120,10 @@ void make_ekran_control_zdz()
     },
     {
       "      ÇÄÇ       ",
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
       "      ÎÂÄ1      ",
       "      ÎÂÄ2      ",
       "      ÎÂÄ3      ",
@@ -132,7 +138,10 @@ void make_ekran_control_zdz()
     },
     {
       "      ÇÄÇ       ",
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
       "      ÎÂÄ1      ",
       "      ÎÂÄ2      ",
       "      ÎÂÄ3      ",
@@ -147,7 +156,10 @@ void make_ekran_control_zdz()
     },
     {
       "      ÇÄÇ       ",
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
       "      ÎÂÄ1      ",
       "      ÎÂÄ2      ",
       "      ÎÂÄ3      ",
@@ -197,7 +209,10 @@ void make_ekran_control_zdz()
   __ctrl_info ctrl_info[MAX_ROW_FOR_CONTROL_ZDZ] =
   {
     {information_1[index_language][(point->control_zdz >> CTR_ZDZ_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_STATE_BIT) & 0x1]},
-#if MODYFIKACIA_VERSII_PZ == 0
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
     {information_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD1_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD1_STATE_BIT) & 0x1]},
     {information_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD2_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD2_STATE_BIT) & 0x1]},
     {information_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD3_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD3_STATE_BIT) & 0x1]},
