@@ -11202,15 +11202,14 @@ void TIM2_IRQHandler(void)
             if (error_rele[index] >= 3 ) _SET_BIT(set_diagnostyka, (ERROR_DIGITAL_OUTPUT_1_BIT + index));
           }
           else error_rele[index] = 0;
-              
         }
       }
       else
       {
         for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++) error_rele[index] = 0;
       }
-      
     }
+    
     //Діагностика необхідно-приєднаних плат
     {
       uint32_t board_register_tmp = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47);
