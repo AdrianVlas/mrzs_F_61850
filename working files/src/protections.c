@@ -11189,15 +11189,27 @@ void TIM2_IRQHandler(void)
     {
       unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)))) & 0xffff);
 
+      static uint32_t error_rele[NUMBER_OUTPUTS];
       if (control_state_outputs != state_outputs_raw) 
       {
         for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++)
         {
           uint32_t maska = 1 << index;
         
-          if ((control_state_outputs & maska) != (state_outputs_raw & maska)) _SET_BIT(set_diagnostyka, (ERROR_DIGITAL_OUTPUT_1_BIT + index));
+          if ((control_state_outputs & maska) != (state_outputs_raw & maska))
+          {
+            if (error_rele[index] < 3) error_rele[index]++;
+            if (error_rele[index] >= 3 ) _SET_BIT(set_diagnostyka, (ERROR_DIGITAL_OUTPUT_1_BIT + index));
+          }
+          else error_rele[index] = 0;
+              
         }
       }
+      else
+      {
+        for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++) error_rele[index] = 0;
+      }
+      
     }
     //Діагностика необхідно-приєднаних плат
     {
