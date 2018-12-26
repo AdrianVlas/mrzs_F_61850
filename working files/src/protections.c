@@ -1680,7 +1680,7 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
       }
     }
 
-    if (i < NUMBER_DEFINED_FUNCTIONS/*current_settings_prt.number_defined_df*/)
+//    if (i < NUMBER_DEFINED_FUNCTIONS/*current_settings_prt.number_defined_df*/)
     {
       /***
       Джерело активації ОФ-ії
@@ -1706,18 +1706,18 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
       /***
       Формування маски до цього часу активних ОФ-ій
       ***/
-      state_df |= ((p_active_functions[number_byte_out] & ((unsigned int)(1 << number_bit_out))) != 0) << i;
+      state_df |= (((p_active_functions[number_byte_out] & ((unsigned int)(1 << number_bit_out))) != 0) || (etap_execution_df[i] == EXECUTION_DF)) << i;
       /***/
     }
-    else
-    {
-      //Таймери, які не задіяні скидаємо з роботи
-      global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] = -1;
-      global_timers[INDEX_TIMER_DF_PAUSE_START + i] = -1;
-      global_timers[INDEX_TIMER_DF_WORK_START + i] = -1;
-      
-      etap_execution_df[i] = NONE_DF;
-    }
+//    else
+//    {
+//      //Таймери, які не задіяні скидаємо з роботи
+//      global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] = -1;
+//      global_timers[INDEX_TIMER_DF_PAUSE_START + i] = -1;
+//      global_timers[INDEX_TIMER_DF_WORK_START + i] = -1;
+//      
+//      etap_execution_df[i] = NONE_DF;
+//    }
   }
   
   //Визначаємо, чи активовуються опреділювані функції через свої ранжовані функції-джерела
