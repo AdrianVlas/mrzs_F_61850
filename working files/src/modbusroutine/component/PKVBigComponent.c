@@ -344,12 +344,11 @@ int postPKVBigWriteAction(void)
       {
         passwordS = password_set_RS485;//Пароль установлен
       }
+      unsigned short new_parol = tempWriteArray[offsetTempWriteArray+i];
       if(passwordS==1) //пароль не снят
       {
         //режим check parol
-        //int tt1 = (*editValue);
-        //int tt2 = (unsigned short)(tempWriteArray[offsetTempWriteArray+i]);
-        if((*editValue) == (unsigned short)(tempWriteArray[offsetTempWriteArray+i]))
+        if((*editValue) == new_parol)
         {
           //обнулить флажок пароля
           if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
@@ -364,6 +363,23 @@ int postPKVBigWriteAction(void)
         else return ERROR_VALID2;//неправильный пароль
         break;
       }//if(passwordS==1) //пароль не снят
+      else
+      {//пароль снят
+        //режим check parol
+        if((*editValue) == new_parol)
+        {
+          if(new_parol==0) break;//повторная запись нулевого пароля не активирует флаг
+          //активир флажок пароля
+          if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+          {
+            password_set_USB=1;//Пароль установлен
+          }//if
+          else
+          {
+            password_set_RS485=1;//Пароль установлен
+          }
+        }//if
+      }//else
       //записать новый пароль
       *editValue = (unsigned short)(tempWriteArray[offsetTempWriteArray+i]);
       upravlSetting = 1;//флаг Setting
