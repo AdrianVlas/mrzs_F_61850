@@ -282,10 +282,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     break;
 
 //123456
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
-    )   
+#if MODYFIKACIA_VERSII_PZ == 0
   case 117:
     (*outMaska) = RANG_LIGHT_ZDZ_FROM_OVD1;
 //        (*dvMaska) =
@@ -1208,14 +1205,35 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
     int tsdata = 0;
     if(item>=beginOffset && item<endOffset)
     {
-     if(item==PASSWORD_SETCMD)//Пароль установлен
+     switch(item)
      {
+      case PASSWORD_SETCMD://Пароль установлен
+      {
       if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-                 value = password_set_USB;//Пароль установлен
-      else
-                 value = password_set_RS485;//Пароль установлен
+            value = password_set_USB;//Пароль установлен
+      else  value = password_set_RS485;//Пароль установлен
       goto m1;
-     }//if
+      }//if
+      case IMUNITET_BITACMD565://Сброс счетчика ресурса выключателя
+      {
+        value = 0;
+        if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
+        if(cmdSwitch==1) //GCMD
+        { 
+          if(information_about_restart_counter & /*(1 << USB_RECUEST)|*/(1 << RS485_RECUEST))
+                 value = 1;
+          goto m1;
+        }//if
+        if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+        if(cmdSwitch==1) //GCMD
+        { 
+          if(information_about_restart_counter & (1 << USB_RECUEST)/*(1 << RS485_RECUEST)*/)
+                 value = 1;
+          goto m1;
+        }//if
+        goto m1;
+      }//if
+     }//switch
       value = encoderN_BIGACMD(item);//кодировщик адреса modbus в индекс бита для реле
       if(value==-1) value=0;
       else {
