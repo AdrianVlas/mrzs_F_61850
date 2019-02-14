@@ -778,7 +778,16 @@ void TIM4_IRQHandler(void)
         //Умова ввімкнення підсвітки після старту приладу
         LCD_BL->BSRRL = LCD_BL_PIN;
         time_backlighting = BACKLIGHTING_OFF*100;
-        new_state_keyboard &= (unsigned int)(~maska_all_keys);
+
+        uint32_t  maska_wake_up_keys = (uint32_t)(
+                                                  (1<<BIT_KEY_ENTER) |
+                                                  (1<<BIT_KEY_DOWN) |
+                                                  (1<<BIT_KEY_RIGHT) |
+                                                  (1<<BIT_KEY_ESC) |
+                                                  (1<<BIT_KEY_LEFT) |
+                                                  (1<<BIT_KEY_UP)
+                                                 );
+        new_state_keyboard &= (unsigned int)(~maska_wake_up_keys);
       }
     }
 
