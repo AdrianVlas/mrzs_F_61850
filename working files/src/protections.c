@@ -1585,6 +1585,8 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
   Джерела активації формуємо в source_activation_df
   Формуємо маску вже активних функцій у maska_active_df
   */
+  static unsigned int source_activation_df_prev;
+  
   unsigned int source_activation_df = 0;
   unsigned int state_df = 0;
   for (unsigned int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
@@ -1811,7 +1813,7 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
       }
     }
     
-    //Запускаємо у роботу лоргічну хему роботи опреділюваної функції
+    //Запускаємо у роботу лоргічну схему роботи опреділюваної функції
     switch (etap_execution_df[i])
     {
     case NONE_DF:
@@ -1890,7 +1892,7 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
           etap_execution_df[i] = NONE_DF;
            
           //Відміна фіксації про зміну стану з початком відслідковуванням нової витримки
-          *p_changed_state_with_start_new_timeout &= (unsigned int)(1 << i);
+          *p_changed_state_with_start_new_timeout &= (unsigned int)(~(1 << i));
         }
         break;
       }
@@ -1903,7 +1905,19 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
           //Згідно логічної схеми утримуємо ОФ таймер роботи має запуститися після деактивації джерела
           if ((source_activation_df & (1<< i)) != 0)
           {
-            //Джерело ще є активне, а тому таймер роботи утримуємо у нульовому значенні
+            //Джерело ще є активне, а тому таймер роботи утримуємо/повертаємо у нульовому значенні
+            global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
+          }
+        }
+        else
+        {
+          //Дана ОФ ПРЯМА
+          if (
+              ((source_activation_df_prev & (1 << i)) == 0) &&
+              ((source_activation_df      & (1 << i)) != 0)
+             )   
+          {
+            //Джерело ще наново активувалося, а тому таймер роботи повертаємо у нульовому значенні
             global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
           }
         }
@@ -1963,6 +1977,7 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
     default: break;
     }
   }
+  source_activation_df_prev = source_activation_df;
 
   //Установлюємо, або скидаємо ОФ у масиві функцій, які зараз будуть активовуватися
   /*
