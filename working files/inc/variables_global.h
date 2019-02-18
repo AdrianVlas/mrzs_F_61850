@@ -685,6 +685,7 @@ unsigned int max_number_records_ar/* = 0*/; //Максимальна кількість записів в ан
 unsigned int semaphore_read_state_ar_record/* = 0*/; //Коли цей симафор встановлений, то якщо не йде запис, то новий запис не можна починати, а якщо іде, то можна продовжувати запис
 unsigned int continue_previous_record_ar/* = 0*/; //Сигналізує, не зняті вще всі джерела запуску аналогового реєстратора після його попе6реднього запуску
 int state_ar_record = STATE_AR_NO_RECORD;
+unsigned int state_ar_record_prt = STATE_AR_NO_RECORD;
 SRAM1_AR short int array_ar[SIZE_BUFFER_FOR_AR];
 SRAM1 short int word_SRAM1;
 unsigned int index_array_ar_current/* = 0*/;
