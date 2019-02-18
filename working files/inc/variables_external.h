@@ -348,6 +348,7 @@ extern unsigned int max_number_records_ar;
 extern unsigned int semaphore_read_state_ar_record;
 extern unsigned int continue_previous_record_ar;
 extern int state_ar_record;
+extern unsigned int state_ar_record_prt;
 extern short int array_ar[SIZE_BUFFER_FOR_AR];
 extern short int word_SRAM1;
 extern unsigned int index_array_ar_current;
