@@ -10354,7 +10354,7 @@ inline void main_protection(void)
      (MODYFIKACIA_VERSII_PZ == 3)       \
     )   
       //Вимикаємо можливий режим тестування оптоканалу
-      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = ((current_settings_prt.zdz_ovd_porig & 0xf) << 8) | (0 << 12);
+      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
       if (zdz_ovd_diagnostyka)
       {
         if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(clear_diagnostyka, TEST_OVD1);

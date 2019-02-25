@@ -213,7 +213,6 @@ void make_ekran_control_zdz()
     )   
   const uint8_t information_3[ZDZ_CTRL_PORIG_N][MAX_COL_LCD] = 
   {
-    "       0        ",
     "       1        ",
     "       2        ",
     "       3        ",
@@ -230,7 +229,7 @@ void make_ekran_control_zdz()
     "       14       ",
     "       15       "
   };
-  const uint32_t cursor_x_3[ZDZ_CTRL_PORIG_N] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
+  const uint32_t cursor_x_3[ZDZ_CTRL_PORIG_N] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
 #endif
   
   int index_language = index_language_in_array(current_settings.language);

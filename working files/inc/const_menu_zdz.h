@@ -34,7 +34,7 @@ enum _control_type
   _ZDZ_CTRL_NUMBER
 };
 
-#define ZDZ_CTRL_PORIG_N        16
+#define ZDZ_CTRL_PORIG_N        15
 
 enum _index_ml_ctrl_zdz
 {
