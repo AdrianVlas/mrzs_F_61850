@@ -3182,7 +3182,8 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
     //Переходимо на наступний канал
     test = (test << 1) & 0x7;
   }
-  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = ((current_settings_prt.zdz_ovd_porig & 0xf) << 8) | ((test & 0xf) << 12);
+  if (test != 0) _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (1 << 8) | ((test & 0xf) << 12);
+  else _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = ((current_settings_prt.zdz_ovd_porig & 0xf) << 8);
   /***/
 
 #endif  
