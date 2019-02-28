@@ -224,12 +224,9 @@ void make_ekran_control_zdz()
     "       9        ",
     "       10       ",
     "       11       ",
-    "       12       ",
-    "       13       ",
-    "       14       ",
-    "       15       "
+    "       12       "
   };
-  const uint32_t cursor_x_3[ZDZ_CTRL_PORIG_N] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
+  const uint32_t cursor_x_3[ZDZ_CTRL_PORIG_N] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
 #endif
   
   int index_language = index_language_in_array(current_settings.language);

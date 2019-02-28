@@ -3055,10 +3055,11 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
 
   static uint32_t test;
   static uint32_t swiched_on_OVD;
+  static uint32_t new_OVD;
 
   uint32_t swiched_on_OVD_tmp = (control_zdz_tmp & ((1 << CTR_ZDZ_OVD1_STATE_BIT) | (1 << CTR_ZDZ_OVD2_STATE_BIT) | (1 << CTR_ZDZ_OVD3_STATE_BIT))) >> CTR_ZDZ_OVD1_STATE_BIT;
 
-  uint32_t new_OVD = (swiched_on_OVD ^ swiched_on_OVD_tmp) & swiched_on_OVD_tmp;
+  new_OVD |= (swiched_on_OVD ^ swiched_on_OVD_tmp) & swiched_on_OVD_tmp;
   swiched_on_OVD = swiched_on_OVD_tmp;
 
   /***
@@ -3105,41 +3106,20 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
     if ((state_test = (light ^ test) & test) != 0) zdz_ovd_diagnostyka |= state_test;
     else zdz_ovd_diagnostyka &= (uint32_t)(~state_test);
     
-    switch (test)
-    {
-    case 0x1:
-      {
-        if (state_test) _SET_BIT(set_diagnostyka, TEST_OVD1);
-        else _SET_BIT(clear_diagnostyka, TEST_OVD1);
-        
-        break;
-      }
-    case 0x2:
-      {
-        if (state_test) _SET_BIT(set_diagnostyka, TEST_OVD2);
-        else _SET_BIT(clear_diagnostyka, TEST_OVD2);
-        
-        break;
-      }
-    case 0x4:
-      {
-        if (state_test) _SET_BIT(set_diagnostyka, TEST_OVD3);
-        else _SET_BIT(clear_diagnostyka, TEST_OVD3);
-        
-        break;
-      }
-    default:
-      {
-        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
-        total_error_sw_fixed(85);
-      }
-    }
-    
+    if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(set_diagnostyka, TEST_OVD1);
+    else _SET_BIT(clear_diagnostyka, TEST_OVD1);
+      
+    if (zdz_ovd_diagnostyka & (1 << 1)) _SET_BIT(set_diagnostyka, TEST_OVD2);
+    else _SET_BIT(clear_diagnostyka, TEST_OVD2);
+      
+    if (zdz_ovd_diagnostyka & (1 << 2)) _SET_BIT(set_diagnostyka, TEST_OVD3);
+    else _SET_BIT(clear_diagnostyka, TEST_OVD3);
+      
     //Так, як світло випромінювали ми своїм випромінювачем, то для логіки ми  його не приймаємо
     light &= (uint32_t)(~test);
     
-    //Переходимо на тест наступного оптоканалу
-    test = (test << 1) & 0x7;
+    //Скидаємо тест
+    test = 0;
   }
   
   //Відлік часу між послідовними запусками тестів ОВД
@@ -3147,43 +3127,23 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   
   //Фіксація початку нового тесту всіх ОВД
   if (
-      (new_OVD) ||
-      ( delta_time_test >= PERIOD_ZDZ_TEST)
+      (light == 0)
+      &&  
+      (
+       (new_OVD) ||
+       ( delta_time_test >= PERIOD_ZDZ_TEST)
+      )   
      )   
   {
+    new_OVD = 0; /*скидаємо фіксацію введення в роботу нового каналу*/
     delta_time_test = 0;
-    if (test == 0) 
-    {
-      test = 0x1;
-    }
-    else
-    {
-      //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
-      total_error_sw_fixed(84);
-    }
+    
+    //Починаємо тест
+    test = swiched_on_OVD & 0x7;
   }
-  
-  /*
-  Корекція каналів тестування проводиться, коли:
-  1) запущена процедура тестування
-  
-  і корекція полягає в:
-  1)вимкнуті канали не тестуються
-  2)на пропонованому для тестуванню каналу зараз зафіксовано світло
-  */
-  while (
-         (test != 0) && 
-         (
-          ((test & swiched_on_OVD) == 0) ||
-          ((test & light) != 0)
-         )   
-        )
-  {
-    //Переходимо на наступний канал
-    test = (test << 1) & 0x7;
-  }
+
   if (test != 0) _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (1 << 8) | ((test & 0xf) << 12);
-  else _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = ((current_settings_prt.zdz_ovd_porig & 0xf) << 8);
+  else _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8);
   /***/
 
 #endif  

@@ -88,7 +88,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.32.2.19370</state>
+                    <state>8.32.3.20186</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -773,7 +773,7 @@
                 </option>
                 <option>
                     <name>CCJLinkTCPIP</name>
-                    <state>aaa.bbb.ccc.ddd</state>
+                    <state>10.10.10.97</state>
                 </option>
                 <option>
                     <name>CCJLinkSpeedRadioV2</name>
