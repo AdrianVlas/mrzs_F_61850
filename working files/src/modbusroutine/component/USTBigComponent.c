@@ -2,8 +2,18 @@
 
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 10300
+
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 11900
+
+#else
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 11395
+#endif
 
 int privateUSTBigGetReg2(int adrReg);
 
@@ -748,6 +758,17 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
 //IF ВСТАВКА 1076-1083
 //IF ВСТАВКА 1086-1093
 
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3)       \
+    )   
+  case 1600:
+    (*multer) = 1;
+    (*editValue) = (uint32_t*)&edition_settings.zdz_ovd_porig;
+    if(regUst<0 || regUst>(ZDZ_CTRL_PORIG_N-1)) diapazon=0;
+    break;
+#endif
+
   }//switch
   if(inOffset>=7 && inOffset<15)
   {
@@ -871,25 +892,6 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
       break;
     }//switch
   }//if(inOffset>=988 && inOffset<1021 && inOffset!=1004)
-//IF ВСТАВКА 1005-1020
-/*
-  if(inOffset>=1005 && inOffset<1021)
-  {
-    int item = inOffset-1005;
-    (*multer) = 1;
-    switch(item%2)
-    {
-    case 0:
-      (*editValue) = (uint32_t*)&edition_settings.dovgyna[1][item%8];
-      if(regUst<SETPOINT_DOVGYNA_VMP_MIN || regUst>SETPOINT_DOVGYNA_VMP_MAX) diapazon=0;
-      break;
-    case 1:
-      (*editValue) = (uint32_t*)&edition_settings.opir[1][item%8];
-      if(regUst<SETPOINT_OPIR_VMP_MIN || regUst>SETPOINT_OPIR_VMP_MAX) diapazon=0;
-      break;
-    }//switch
-  }//if(inOffset>=1005 && inOffset<1021)
-*/
 
 #if (MODYFIKACIA_VERSII_PZ == 0)
   if(inOffset>=1056 && inOffset<1076)

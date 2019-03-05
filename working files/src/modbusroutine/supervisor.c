@@ -550,7 +550,6 @@ int outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
         case MARKER_OUTPERIMETR:
           break;
         case MARKER_ERRORPERIMETR:
-//          dataRegister[idxReg] = -2;
           return Error_modbus_m(adrUnit, // address,
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_ADDRESS,//error,

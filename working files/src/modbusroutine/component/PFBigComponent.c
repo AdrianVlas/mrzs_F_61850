@@ -88,6 +88,9 @@ int setPFBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(pfbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
+  //проверка на конфиг
+  if(!(edition_settings.configuration&(1<<EL_BIT_CONFIGURATION))) return MARKER_ERRORPERIMETR;
+
   int offset = adrReg-BEGIN_ADR_REGISTER;
   switch(offset%REGISTERS_PF)
   {
