@@ -765,7 +765,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case 1600:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.zdz_ovd_porig;
-    if(regUst<0 || regUst>(ZDZ_CTRL_PORIG_N-1)) diapazon=0;
+    if(regUst<1 || regUst>ZDZ_CTRL_PORIG_N) diapazon=0;
     break;
 #endif
 
@@ -968,7 +968,10 @@ int getUSTBigModbusRegister(int adrReg)
   ustFunc000(offset -adresGruppa, grupa_ustavok, &multer, 0, &editValue);
   if(editValue==NULL) return 0;
 
+  if(editValue == (uint32_t*)&edition_settings.zdz_ovd_porig) return (*editValue)+1;
+
   if(editValue == (uint32_t*)&edition_settings.type_mtz04_2 && (*editValue)!=0) return (*editValue)-2;
+
   for(int gruppa=0; gruppa<4; gruppa++)
   {
     for(int item=0; item<NUMBER_UP; item++)
@@ -1201,6 +1204,13 @@ int postUSTBigWriteAction(void)
         goto m1;
       }//else
     }//if(editValue == (uint32_t*)&edition_settings.type_of_led)
+
+    if(editValue == (uint32_t*)&edition_settings.zdz_ovd_porig)
+    {
+      value -= 1;
+      (*editValue) = value;
+      goto m1;
+    }//if(editValue == (uint32_t*)&edition_settings.zdz_ovd_porig)
 
     if(editValue == (uint32_t*)&edition_settings.type_mtz04_2)
     {
