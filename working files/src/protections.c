@@ -3102,9 +3102,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   if (test != 0)
   {
     //Стан діагностики
-    uint32_t state_test;
-    if ((state_test = (light ^ test) & test) != 0) zdz_ovd_diagnostyka |= state_test;
-    else zdz_ovd_diagnostyka &= (uint32_t)(~state_test);
+    zdz_ovd_diagnostyka = (light ^ test) & test;
     
     if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(set_diagnostyka, TEST_OVD1);
     else _SET_BIT(clear_diagnostyka, TEST_OVD1);
