@@ -6192,7 +6192,7 @@ inline void vmp_handler(unsigned int p_active_functions[])
     VMP_last_KZ = UNDEF_VMP; /*Помічаємо, що визначення місця до пошкодження ще не визначене*/
     
     //Перевіряємо чи подається команда на вимкнення ВВ ("Робота БО")
-    vymknennja_vid_KZ_prt = _CHECK_SET_BIT(p_active_functions, RANG_WORK_BO);
+    vymknennja_vid_KZ_prt |= (_CHECK_SET_BIT(p_active_functions, RANG_WORK_BO) != 0);
 
     
     //Фіксуємо максимальний фазний струм при КЗ
@@ -6212,7 +6212,7 @@ inline void vmp_handler(unsigned int p_active_functions[])
       if (measurement[IM_IA] >= I_max_KZ_0_9) number_of_phases_tmp++;
       if (measurement[IM_IB] >= I_max_KZ_0_9) number_of_phases_tmp++;
       if (measurement[IM_IC] >= I_max_KZ_0_9) number_of_phases_tmp++;
-      number_of_phases_KZ_prt = number_of_phases_tmp;
+      if (number_of_phases_KZ_prt < number_of_phases_tmp) number_of_phases_KZ_prt = number_of_phases_tmp;
         
       int X_resistance[3] = {resistance[X_AB], resistance[X_BC], resistance[X_CA]};
       if (
@@ -6266,20 +6266,20 @@ inline void vmp_handler(unsigned int p_active_functions[])
           R_KZ_tmp = resistance[R_CA];
         }
       
-        //Зафіксовано мінімальное значення міжфазного опору при КЗ
-        X_min_KZ_prt = min_interphase_X;
-        R_KZ_prt = R_KZ_tmp; //Поки що це число потрібно тільки для визначення знаку (щоб визначити у якому напямку відбулося КЗ)
-
-//        //Етап 3: Перевіряємо чи мінімальний опір на цей момент не є мінімальним з початку виникнення КЗ
-//        if (
-//            (X_min_KZ_prt == ((unsigned int)UNDEF_RESISTANCE)) || /*Це є ознакою, що для даного КЗ ми перший раз фіксуємо мінімальний опір, тому і його значення помічаємо як мінімальне*/
-//            (X_min_KZ_prt > min_interphase_X)
-//           )
-//        {
-//          //Зафіксовано нове значення мінімального міжфазного опору при КЗ
-//          X_min_KZ_prt = min_interphase_X;
-//          R_KZ_prt = R_KZ_tmp; //Поки що це число потрібно тільки для визначення знаку (щоб визначити у якому напямку відбулося КЗ)
-//        }
+        //Етап 3: Перевіряємо чи мінімальний опір на цей момент не є мінімальним з початку виникнення КЗ
+        if (
+            (min_interphase_X != ((unsigned int)UNDEF_RESISTANCE))
+            &&
+            (
+             (X_min_KZ_prt == ((unsigned int)UNDEF_RESISTANCE)) || /*Це є ознакою, що для даного КЗ ми перший раз фіксуємо мінімальний опір, тому і його значення помічаємо як мінімальне*/
+             (X_min_KZ_prt > min_interphase_X)
+            )   
+           )
+        {
+          //Зафіксовано нове значення мінімального міжфазного опору при КЗ
+          X_min_KZ_prt = min_interphase_X;
+          R_KZ_prt = R_KZ_tmp; //Поки що це число потрібно тільки для визначення знаку (щоб визначити у якому напямку відбулося КЗ)
+        }
       }
       else
       {
