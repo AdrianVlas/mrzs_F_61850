@@ -140,7 +140,7 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
       (*editControl) = &edition_settings.configuration;
       if(actControl)
         {
-          if(!(edition_settings.control_extra_settings_1&(1<<INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04))) isValid = 0;
+          if(validData)if(!(edition_settings.control_extra_settings_1&(1<<INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04))) isValid = 0;
           if(!(edition_settings.configuration&(1<<MTZ04_BIT_CONFIGURATION)))
             {
               //Функція обновлення змінних при зміні конфігурації
@@ -295,7 +295,7 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
       (*editControl) = &edition_settings.configuration;
       if(actControl)
         {
-          if((edition_settings.control_extra_settings_1&(1<<INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04))) isValid = 0;
+          if(validData)if((edition_settings.control_extra_settings_1&(1<<INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04))) isValid = 0;
           if(!(edition_settings.configuration&(1<<TZNP_BIT_CONFIGURATION)))
             {
               //Функція обновлення змінних при зміні конфігурації
@@ -987,14 +987,16 @@ int postUPRBigWriteAction(void)
 
           //actControl
           if(value)//валидация на включение
-            if(!uprFuncValidWrite000(-offset, &uprMaska, &editControl)) return ERROR_VALID3;//ошибка валидации
+                if(!uprFunc000(-offset, &uprMaska, 1, &editControl)) return ERROR_VALID3;//ошибка валидации
+          //  if(!uprFuncValidWrite000(-offset, &uprMaska, &editControl)) return ERROR_VALID3;//ошибка валидации
           //ОСОБАЯ СБОРКА
           if((editControl == (uint32_t*)&edition_settings.control_extra_settings_1) ||
               (editControl == (uint32_t*)&edition_settings.configuration)
             )
             {
              if(!value)//валидация на отключение
-              if(!uprFuncValidWrite000(-offset, &uprMaska, &editControl)) return ERROR_VALID3;//ошибка валидации
+                if(!uprFunc000(-offset, &uprMaska, 0, &editControl)) return ERROR_VALID3;//ошибка валидации
+//              if(!uprFuncValidWrite000(-offset, &uprMaska, &editControl)) return ERROR_VALID3;//ошибка валидации
               upravlSchematic = 1;//флаг Rang
             }//if
           //установка изменений
@@ -1021,14 +1023,16 @@ int postUPRBigWriteAction(void)
               if(value&(1<<bit)) temp = 1;
 
               if(temp)//валидация на включение
-                if(!uprFuncValidWrite000(-offset*16-bit, &uprMaska, &editControl)) return ERROR_VALID3;//ошибка валидации
+                if(!uprFunc000(-offset*16-bit, &uprMaska, 1, &editControl)) return ERROR_VALID3;//ошибка валидации
+//                if(!uprFuncValidWrite000(-offset*16-bit, &uprMaska, &editControl)) return ERROR_VALID3;//ошибка валидации
               //ОСОБАЯ СБОРКА
               if((editControl == (uint32_t*)&edition_settings.control_extra_settings_1) ||
                   (editControl == (uint32_t*)&edition_settings.configuration)
                 )
                 {
                  if(!temp)//валидация на отключение
-                  if(!uprFuncValidWrite000(-offset*16-bit, &uprMaska, &editControl)) return ERROR_VALID3;//ошибка валидации
+                if(!uprFunc000(-offset*16-bit, &uprMaska, 0, &editControl)) return ERROR_VALID3;//ошибка валидации
+//                  if(!uprFuncValidWrite000(-offset*16-bit, &uprMaska, &editControl)) return ERROR_VALID3;//ошибка валидации
                   upravlSchematic = 1;//флаг Rang
                 }//if
               //установка изменений
