@@ -2078,15 +2078,14 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
               
-              if (
-                  (diagnostyka[0] == 0) &&
-                  (diagnostyka[1] == 0) &&
-                  ((diagnostyka[2]/* & USED_BITS_IN_LAST_INDEX*/) == 0)
-                 )
+              unsigned int not_null = false;
+              for (size_t i = 0; i < N_DIAGN; i++) 
               {
-                current_ekran.index_position = 0;
+                not_null |= (diagnostyka[i] != 0);
+                if (not_null) break;
               }
-              else
+              
+              if (not_null)
               {
                 while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
                 {
@@ -2094,6 +2093,11 @@ void main_manu_function(void)
                   if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
                 }
               }
+              else
+              {
+                current_ekran.index_position = 0;
+              }
+              
               position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
               //Формуємо екран діагностики
               make_ekran_diagnostyka(diagnostyka);
@@ -4220,15 +4224,14 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_DIAGNOSTYKA)
               {
-                if (
-                    (diagnostyka[0] == 0) &&
-                    (diagnostyka[1] == 0) &&
-                    ((diagnostyka[2]/* & USED_BITS_IN_LAST_INDEX*/) == 0)
-                   )
+                unsigned int not_null = false;
+                for (size_t i = 0; i < N_DIAGN; i++) 
                 {
-                  current_ekran.index_position = 0;
+                  not_null |= (diagnostyka[i] != 0);
+                  if (not_null) break;
                 }
-                else
+              
+                if (not_null)
                 {
                   if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_DIAGNOSTYKA - 1;
                   while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
@@ -4237,6 +4240,11 @@ void main_manu_function(void)
                     if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_DIAGNOSTYKA - 1;
                   }
                 }
+                else
+                {
+                  current_ekran.index_position = 0;
+                }
+
                 position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
                 //Формуємо екран діагностики
                 make_ekran_diagnostyka(diagnostyka);
@@ -4924,15 +4932,14 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_DIAGNOSTYKA)
               {
-                if (
-                    (diagnostyka[0] == 0) &&
-                    (diagnostyka[1] == 0) &&
-                    ((diagnostyka[2]/* & USED_BITS_IN_LAST_INDEX*/) == 0)
-                   )
+                unsigned int not_null = false;
+                for (size_t i = 0; i < N_DIAGN; i++) 
                 {
-                  current_ekran.index_position = 0;
+                  not_null |= (diagnostyka[i] != 0);
+                  if (not_null) break;
                 }
-                else
+              
+                if (not_null)
                 {
                   if(++current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
                   while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
@@ -4941,6 +4948,11 @@ void main_manu_function(void)
                     if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
                   }
                 }
+                else
+                {
+                  current_ekran.index_position = 0;
+                }
+
                 position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
                 //Формуємо екран діагностики
                 make_ekran_diagnostyka(diagnostyka);
@@ -6340,7 +6352,8 @@ void main_manu_function(void)
                   edition_settings.control_zdz = current_settings.control_zdz;
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                   edition_settings.zdz_ovd_porig = current_settings.zdz_ovd_porig;
 #endif
@@ -7431,7 +7444,8 @@ void main_manu_function(void)
                       (edition_settings.control_zdz != current_settings.control_zdz) ||
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                       (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
 #endif
@@ -9119,7 +9133,8 @@ void main_manu_function(void)
                       ((edition_settings.control_zdz & ((unsigned int)(~CTR_ZDZ_MASKA))) == 0) &&
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                       (edition_settings.zdz_ovd_porig < ZDZ_CTRL_PORIG_N) &&
 #endif
@@ -9130,7 +9145,8 @@ void main_manu_function(void)
                         (edition_settings.control_zdz != current_settings.control_zdz) ||
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                         (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
 #endif
@@ -9143,7 +9159,8 @@ void main_manu_function(void)
                       current_settings.control_zdz = edition_settings.control_zdz;
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                       current_settings.zdz_ovd_porig = edition_settings.zdz_ovd_porig;
 #endif
@@ -15043,7 +15060,8 @@ void main_manu_function(void)
                 }
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                 else if (current_ekran.index_position == CTR_ZDZ_PORIG)
                 {
@@ -15058,7 +15076,8 @@ void main_manu_function(void)
                   if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
@@ -16874,7 +16893,8 @@ void main_manu_function(void)
                 }
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                 else if (current_ekran.index_position == CTR_ZDZ_PORIG)
                 {
@@ -16889,7 +16909,8 @@ void main_manu_function(void)
                   if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
@@ -18357,10 +18378,11 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_INPUT_7:
     case EKRAN_RANGUVANNJA_INPUT_8:
 
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 1) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 4)    \
     )
 
     case EKRAN_RANGUVANNJA_INPUT_9:
@@ -18379,7 +18401,10 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_OUTPUT_15:
     case EKRAN_RANGUVANNJA_OUTPUT_16:
 
-#if (MODYFIKACIA_VERSII_PZ == 0)
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
+    )                                   
 
     case EKRAN_RANGUVANNJA_INPUT_17:
     case EKRAN_RANGUVANNJA_INPUT_18:

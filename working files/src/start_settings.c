@@ -444,9 +444,10 @@ void start_settings_peripherals(void)
   FSMC_SRAM_Init();
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = 0;
 #if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
-    )   
+       (MODYFIKACIA_VERSII_PZ == 0) ||  \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4)     \
+      )   
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
 #endif
   /**********************/
@@ -534,9 +535,10 @@ void start_settings_peripherals(void)
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0;
   uint32_t board_register_tmp = board_register = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47);
 #if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
-    )   
+       (MODYFIKACIA_VERSII_PZ == 0) ||  \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4)     \
+      )   
   if ((board_register_tmp & 0x17) != 0x17)
 #elif (MODYFIKACIA_VERSII_PZ == 1)
   if ((board_register_tmp & 0x07) != 0x07)
@@ -547,19 +549,24 @@ void start_settings_peripherals(void)
     if ((board_register_tmp &  0x01) !=  0x1) _SET_BIT(set_diagnostyka, ERROR_BA_1_FIX);
     if ((board_register_tmp &  0x02) !=  0x2) _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_FIX);
     
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 1) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 4)    \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
-    )
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
+    )   
     if ((board_register_tmp & 0x010) != 0x10) 
-#if (MODYFIKACIA_VERSII_PZ == 0)
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
+    )                                   
       _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
 #else
       _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
@@ -582,10 +589,11 @@ void start_settings_peripherals(void)
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) & 0xff) != 0x25)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_CTLR);
   }
 
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 1) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 4)    \
     )
   if ((board_register_tmp & 0x04) == 0x04)
   {
@@ -594,13 +602,17 @@ void start_settings_peripherals(void)
   }
   
 #if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
-    )
+       (MODYFIKACIA_VERSII_PZ == 0) ||  \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4)     \
+      )   
   if ((board_register_tmp & 0x10) == 0x10)
   {
     _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
-#if (MODYFIKACIA_VERSII_PZ == 0)
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
+    )                                   
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
 #else
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
@@ -1449,9 +1461,10 @@ void min_settings(__SETTINGS *target_label)
   
   target_label->ctrl_zdz_type = ZDZ_CTRL_MIN;
 #if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
-    )   
+       (MODYFIKACIA_VERSII_PZ == 0) ||  \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4)     \
+      )   
   target_label->zdz_ovd_porig = 0;
 #endif
   for (size_t i = 0; i < NUMBER_UP; i++) target_label->ctrl_UP_input[i] = UP_CTRL_Ia_Ib_Ic;

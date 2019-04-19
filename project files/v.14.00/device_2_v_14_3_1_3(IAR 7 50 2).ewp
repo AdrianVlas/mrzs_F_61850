@@ -620,7 +620,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>device_2_v_14_3_1_2(IAR 7 50 2).bin</state>
+          <state>device_2_v_14_3_1_3(IAR 7 50 2).bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -4430,6 +4430,9 @@
         <group>
           <name>a.00.c.d</name>
           <file>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.03.c.d\const_menu_diagnostyka.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_menu_outputs.h</name>
           </file>
         </group>
@@ -4486,9 +4489,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_df.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\working files\inc\const_menu_diagnostyka.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_dt.h</name>

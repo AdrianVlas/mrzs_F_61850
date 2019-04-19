@@ -118,7 +118,8 @@ extern unsigned int temp_states_for_mtz;
 //ÇÄÇ
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
 extern uint32_t delta_time_test;
 extern uint32_t zdz_ovd_diagnostyka;
@@ -168,10 +169,10 @@ extern unsigned int fix_active_buttons, fix_active_buttons_ctrl;
 extern unsigned int mutex_interface;
 extern unsigned int activation_function_from_interface[N_SMALL];
 extern unsigned int reset_trigger_function_from_interface;
-extern unsigned int diagnostyka_before[3];
-extern volatile unsigned int diagnostyka[3];
-extern unsigned int set_diagnostyka[3];
-extern unsigned int clear_diagnostyka[3];
+extern unsigned int diagnostyka_before[N_DIAGN];
+extern volatile unsigned int diagnostyka[N_DIAGN];
+extern unsigned int set_diagnostyka[N_DIAGN];
+extern unsigned int clear_diagnostyka[N_DIAGN];
 
 extern uint32_t board_register;
 

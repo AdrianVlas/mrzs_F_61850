@@ -4,7 +4,10 @@
 #define BEGIN_ADR_REGISTER 1356
 #define REGISTERS_DV 8
 
-#if (MODYFIKACIA_VERSII_PZ == 0)
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
+    )                                   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1515
 #endif

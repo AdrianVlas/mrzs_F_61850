@@ -345,7 +345,8 @@ unsigned int temp_states_for_mtz/* = 0*/;
 //ÇÄÇ
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
 uint32_t delta_time_test = PERIOD_ZDZ_TEST;
 uint32_t zdz_ovd_diagnostyka;
@@ -403,10 +404,10 @@ unsigned int fix_active_buttons/* = 0*/, fix_active_buttons_ctrl;
 unsigned int mutex_interface/* = false*/;
 unsigned int activation_function_from_interface[N_SMALL]/* = {0, 0}*/;
 unsigned int reset_trigger_function_from_interface/* = 0*/;
-unsigned int diagnostyka_before[3]/* = {0, 0, 0}*/;
-volatile unsigned int diagnostyka[3]/* = {0, 0, 0}*/;
-unsigned int set_diagnostyka[3]/* = {0, 0, 0}*/;
-unsigned int clear_diagnostyka[3]/* = {0, 0, 0}*/;
+unsigned int diagnostyka_before[N_DIAGN];
+volatile unsigned int diagnostyka[N_DIAGN];
+unsigned int set_diagnostyka[N_DIAGN];
+unsigned int clear_diagnostyka[N_DIAGN];
 
 uint32_t board_register;
 
@@ -454,10 +455,11 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
 {
   { 2, 1},
   { 9, 4}
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 1) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 4)    \
     )
   ,
   {16, 5}
@@ -466,14 +468,18 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
 const uint32_t input_boards[N_INPUT_BOARDS][2] = 
 {
   { 8, 4}
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 1) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 4)    \
     )
   ,
   {16, 5}
-#if (MODYFIKACIA_VERSII_PZ == 0)
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
+    )                                   
   ,
   {20, 7}
 #endif

@@ -17,15 +17,15 @@
         <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>Flash-Debug\IAR old\a.00.c.d\Exe</state>
+          <state>Flash-Debug\IAR old\a.04.c.d\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Flash-Debug\IAR old\a.00.c.d\Obj</state>
+          <state>Flash-Debug\IAR old\a.04.c.d\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Flash-Debug\IAR old\a.00.c.d\List</state>
+          <state>Flash-Debug\IAR old\a.04.c.d\List</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -318,7 +318,7 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\..\working files\inc</state>
-          <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+          <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
           <state>$PROJ_DIR$\..\..\working files\usb</state>
           <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
           <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -1216,7 +1216,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -1480,7 +1480,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -1744,7 +1744,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -2011,7 +2011,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -2275,7 +2275,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -2572,7 +2572,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -2861,7 +2861,7 @@
                   <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                    <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                    <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -3150,7 +3150,7 @@
                 <option>
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
-                  <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                  <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
                   <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -3417,7 +3417,7 @@
                 <option>
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
-                  <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                  <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
                   <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -3709,7 +3709,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -3973,7 +3973,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -4237,7 +4237,7 @@
               <option>
                 <name>CCIncludePath2</name>
                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -4430,6 +4430,9 @@
         <group>
           <name>a.04.c.d</name>
           <file>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.04.c.d\const_menu_diagnostyka.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\working files\inc\a.04.c.d\const_menu_outputs.h</name>
           </file>
         </group>
@@ -4486,9 +4489,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_df.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\working files\inc\const_menu_diagnostyka.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_dt.h</name>
@@ -5080,7 +5080,7 @@
                 <option>
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
-                  <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                  <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
                   <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -5380,7 +5380,7 @@
                 <option>
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
-                  <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                  <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
                   <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -5645,7 +5645,7 @@
                 <option>
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
-                  <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                  <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
                   <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -5909,7 +5909,7 @@
                 <option>
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
-                  <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                  <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
                   <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -6173,7 +6173,7 @@
                 <option>
                   <name>CCIncludePath2</name>
                   <state>$PROJ_DIR$\..\..\working files\inc</state>
-                  <state>$PROJ_DIR$\..\..\working files\inc\a.00.c.d</state>
+                  <state>$PROJ_DIR$\..\..\working files\inc\a.04.c.d</state>
                   <state>$PROJ_DIR$\..\..\working files\usb</state>
                   <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>

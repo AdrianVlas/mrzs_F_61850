@@ -3,9 +3,9 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4))  /*2 слова типу unsigned int + ще одне слово але з трьох байт. щоб розмір одного запису реєстратора програмних подій не був більшим 32 байти. А коли треба - то змінимо*/  
-
-//#define USED_BITS_IN_LAST_INDEX  0x00ffffff  
+#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4))
+#define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
+#define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
 enum _error_id 
 {
@@ -92,27 +92,6 @@ LOSE_ENERGY_DATA,
 TEST_OVD1,
 TEST_OVD2,
 TEST_OVD3,
-
-#if (MODYFIKACIA_VERSII_PZ == 4)
-
-ERROR_CPU_RECEIVING_CANAL_1,
-ERROR_CPU_RECEIVED_PACKET_CANAL_1,
-ERROR_CPU_ANSWER_CANAL_1,
-ERROR_CPU_NO_ANSWER_CANAL_1,
-ERROR_IEC_RECEIVING_CANAL_1,
-ERROR_IEC_RECEIVED_PACKET_CANAL_1,
-ERROR_IEC_REQUEST_CANAL_1,
-ERROR_IEC_NO_ANSWER_CANAL_1,
-
-ERROR_CPU_RECEIVING_CANAL_2,
-ERROR_CPU_RECEIVED_PACKET_CANAL_2,
-ERROR_CPU_ANSWER_CANAL_2,
-ERROR_CPU_NO_ANSWER_CANAL_2,
-ERROR_IEC_RECEIVING_CANAL_2,
-ERROR_IEC_RECEIVED_PACKET_CANAL_2,
-ERROR_IEC_REQUEST_CANAL_2,
-
-#endif
 
 ERROR_BA_1_FIX,
 ERROR_BA_1_CTLR,

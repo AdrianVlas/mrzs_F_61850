@@ -12,7 +12,8 @@
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3)       \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
 
 #define OFFSET_DD26_DD29                0x0C00000
