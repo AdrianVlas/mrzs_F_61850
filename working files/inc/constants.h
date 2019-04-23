@@ -71,6 +71,11 @@
 
 #include "const_interfaces.h"
 
+#if (MODYFIKACIA_VERSII_PZ == 4)
+#include "const_MO.h"
+#include "diagnostyka_mo.h"
+#endif
+
 #include "SEGGER_SYSVIEW.h"
 
 #endif 

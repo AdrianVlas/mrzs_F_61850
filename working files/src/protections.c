@@ -5434,6 +5434,8 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     
     int32_t analog_value;
     uint32_t PQ = false;
+    uint32_t bank_for_calc_power_tmp = (state_calc_power == false ) ? bank_for_calc_power : ((bank_for_calc_power ^ 0x1) & 0x1);
+
     switch (current_settings_prt.ctrl_UP_input[n_UP])
     {
     case UP_CTRL_Ia_Ib_Ic:
@@ -5577,20 +5579,20 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     case UP_CTRL_P:
       {
         PQ = true;
-        analog_value = P[mutex_power != 0];
+        analog_value = P[bank_for_calc_power_tmp];
         
         break;
       }
     case UP_CTRL_Q:
       {
         PQ = true;
-        analog_value = Q[mutex_power != 0];
+        analog_value = Q[bank_for_calc_power_tmp];
         
         break;
       }
     case UP_CTRL_S:
       {
-        analog_value = S[mutex_power != 0];
+        analog_value = S[bank_for_calc_power_tmp];
         
         break;
       }

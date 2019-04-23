@@ -1652,6 +1652,9 @@ void calc_angle(void)
   //Знімаємо семафор заборони обновлення значень з системи захистів
   semaphore_measure_values_low = 0;
   
+  state_calc_phi_angle = true;
+  bank_for_calc_phi_angle = (bank_for_calc_phi_angle ^ 0x1) & 0x1;
+
   //Визначаємо, який вектор беремо за осному
   __full_ort_index index_base;
   if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0) index_base = FULL_ORT_Ua;
@@ -1660,7 +1663,7 @@ void calc_angle(void)
     index_base = FULL_ORT_Uab;
     
     //У цьому випадку кути між фазними напругами невизначкені
-    phi_angle[FULL_ORT_Uc] = phi_angle[FULL_ORT_Ub] = phi_angle[FULL_ORT_Ua] = -1;
+    phi_angle[bank_for_calc_phi_angle][FULL_ORT_Uc] = phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ub] = phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ua] = -1;
   }
 
   /***
@@ -1742,7 +1745,7 @@ void calc_angle(void)
       {
         if (index_tmp == index)
         {
-          phi_angle[index_tmp] = 0;
+          phi_angle[bank_for_calc_phi_angle][index_tmp] = 0;
           continue;
         }
         else
@@ -1885,19 +1888,19 @@ void calc_angle(void)
               if (angle_int >= 3600) angle_int -= 3600;
               else if (angle_int < 0) angle_int += 3600;
       
-              phi_angle[index_tmp] = angle_int;
+              phi_angle[bank_for_calc_phi_angle][index_tmp] = angle_int;
       
             }
             else
             {
-              phi_angle[index_tmp] = -1;
+              phi_angle[bank_for_calc_phi_angle][index_tmp] = -1;
             }
 
           }
           else
           {
             //Модуль досліджуваного вектора менше порогу - кут невизначений
-            phi_angle[index_tmp] = -1;
+            phi_angle[bank_for_calc_phi_angle][index_tmp] = -1;
           }
         }
       }
@@ -1905,7 +1908,7 @@ void calc_angle(void)
     else
     {
       //Амплітуда базового вектору вимірювання по незрозумілій для мене причини рівна 0 (я думаю, що сюди програма не мала б ніколи заходити). Це перестарховка.
-      for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp < FULL_ORT_MAX; index_tmp++) phi_angle[index_tmp] = -1;
+      for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp < FULL_ORT_MAX; index_tmp++) phi_angle[bank_for_calc_phi_angle][index_tmp] = -1;
     }
 
 #undef SIN_BASE
@@ -1915,8 +1918,10 @@ void calc_angle(void)
   else
   {
     //Не зафіксовано вектора вимірювання, відносно якого можна розраховувати кути
-    for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp < FULL_ORT_MAX; index_tmp++) phi_angle[index_tmp] = -1;
+    for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp < FULL_ORT_MAX; index_tmp++) phi_angle[bank_for_calc_phi_angle][index_tmp] = -1;
   }
+
+  state_calc_phi_angle = false;
 }
 
 /*****************************************************/
@@ -1949,9 +1954,12 @@ void calc_power_and_energy(void)
     information_about_clean_energy |= ((1 << USB_RECUEST)|(1 << RS485_RECUEST));
   }
   
+  state_calc_energy = true;
+  uint32_t bank_for_calc_energy_prev = bank_for_calc_energy;
+  bank_for_calc_energy = (bank_for_calc_energy ^ 0x1) & 0x1;
   for (__index_energy i = INDEX_EA_PLUS; i < MAX_NUMBER_INDEXES_ENERGY; i++)
   {
-    if (clean_energy_tmp != 0) energy[i] = 0;
+    if (clean_energy_tmp != 0) energy[bank_for_calc_energy][i] = 0;
     
     int power_data;
     switch (i)
@@ -1996,34 +2004,30 @@ void calc_power_and_energy(void)
     if (power_data >= (PORIG_POWER_ENERGY*MAIN_FREQUENCY)) /*бо у power_data є сума миттєвих потужностей за 1с, які розраховувалися кожні 20мс*/
     {
       double power_quantum = ((double)power_data)/(((double)MAIN_FREQUENCY)*DIV_kWh);
-      double erergy_tmp = energy[i] + power_quantum;
+      double erergy_tmp = energy[bank_for_calc_energy_prev][i] + power_quantum;
       if (erergy_tmp > 999999.999) erergy_tmp = erergy_tmp - 999999.999;
-      energy[i] = erergy_tmp;
+      energy[bank_for_calc_energy][i] = erergy_tmp;
     }
   }
+  state_calc_energy = false;
   
   float P_float = ((float)P_tmp)/((float)MAIN_FREQUENCY);
   float Q_float = ((float)Q_tmp)/((float)MAIN_FREQUENCY);
   
-  mutex_power = 0xff;
-  P[0] = (int)P_float;
-  Q[0] = (int)Q_float;
-  mutex_power = 0;
-  P[1] = P[0];
-  Q[1] = Q[0];
+  state_calc_power = true;
+  bank_for_calc_power = (bank_for_calc_power ^ 0x1) & 0x1;
+  P[bank_for_calc_power] = (int)P_float;
+  Q[bank_for_calc_power] = (int)Q_float;
   
   //Повна потужність
-  if ( (P[0] != 0) || (Q[0] != 0))
+  if ( (P[bank_for_calc_power] != 0) || (Q[bank_for_calc_power] != 0))
   {
     float in_square_root, S_float;
     in_square_root = P_float*P_float + Q_float*Q_float;
     
     if (arm_sqrt_f32(in_square_root, &S_float) == ARM_MATH_SUCCESS)
     {
-      mutex_power = 0xff;
-      S[0] = (unsigned int)S_float;
-      mutex_power = 0;
-      S[1] = S[0];
+      S[bank_for_calc_power] = (unsigned int)S_float;
     }
     else
     {
@@ -2031,17 +2035,14 @@ void calc_power_and_energy(void)
       total_error_sw_fixed(53);
     }
     
-    cos_phi_x1000 = (int)(1000.0f*P_float/S_float);
+    cos_phi_x1000[bank_for_calc_power] = (int)(1000.0f*P_float/S_float);
   }
   else
   {
-    mutex_power = 0xff;
-    S[0] = 0;
-    mutex_power = 0;
-    S[1] = S[0];
-    
-    cos_phi_x1000 = 0;
+    S[bank_for_calc_power] = 0;
+    cos_phi_x1000[bank_for_calc_power] = 0;
   }
+  state_calc_power = false;
   
 }
 /*****************************************************/

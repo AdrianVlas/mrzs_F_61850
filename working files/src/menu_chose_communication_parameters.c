@@ -9,23 +9,23 @@ void make_ekran_chose_communication_parameters(void)
   {
     {
       " Имя ячейки     ",
-      " Адрес ячейки   ",
-      " Настр.RS-485   "
+      " RS-485         ",
+      " Ethernet       "
     },
     {
       " Ім'я комірки   ",
-      " Адреса комірки ",
-      " Налашт.RS-485  "
+      " RS-485         ",
+      " Ethernet       "
     },
     {
       " Bay name       ",
-      " Bay Address    ",
-      " RS-485 Settings"
+      " RS-485         ",
+      " Ethernet       "
     },
     {
       " Имя ячейки     ",
-      " Адрес ячейки   ",
-      " Настр.RS-485   "
+      " RS-485         ",
+      " Ethernet       "
     }
   };
   int index_language = index_language_in_array(current_settings.language);
@@ -195,6 +195,64 @@ void make_ekran_chose_setting_rs485(void)
   const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTING_RS485][MAX_COL_LCD] = 
   {
     {
+      " Физический ур. ",
+      " Протокол       "
+    },
+    {
+      " Фізичний рівень",
+      " Протокол       "
+    },
+    {
+      " Physical layer ",
+      " Protocol       "
+    },
+    {
+      " Физический ур. ",
+      " Протокол       "
+    }
+  };
+  int index_language = index_language_in_array(current_settings.language);
+  
+  unsigned int position_temp = current_ekran.index_position;
+  unsigned int index_of_ekran;
+  
+  
+  index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+
+  
+  //Копіюємо  рядки у робочий екран
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+    if (index_of_ekran < MAX_ROW_FOR_CHOSE_SETTING_RS485)
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran][j];
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Курсор по горизонталі відображається на першій позиції
+  current_ekran.position_cursor_x = 0;
+  //Відображення курору по вертикалі
+  current_ekran.position_cursor_y = position_temp & (MAX_ROW_LCD - 1);
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  current_ekran.cursor_blinking_on = 0;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+
+/*****************************************************/
+//Формуємо екран відображення заголовків настроювання фізичного рівня RS-485
+/*****************************************************/
+void make_ekran_phy_layer_rs485(void)
+{
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_PHY_LAYER_RS485][MAX_COL_LCD] = 
+  {
+    {
       " Скорость обмена",
       " Контр.четности ",
       " Колич.стоп-бит ",
@@ -232,7 +290,53 @@ void make_ekran_chose_setting_rs485(void)
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
     //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-    if (index_of_ekran < MAX_ROW_FOR_CHOSE_SETTING_RS485)
+    if (index_of_ekran < MAX_ROW_FOR_PHY_LAYER_RS485)
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran][j];
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Курсор по горизонталі відображається на першій позиції
+  current_ekran.position_cursor_x = 0;
+  //Відображення курору по вертикалі
+  current_ekran.position_cursor_y = position_temp & (MAX_ROW_LCD - 1);
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  current_ekran.cursor_blinking_on = 0;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+
+/*****************************************************/
+//Формуємо екран відображення заголовків настроювання протоколів для RS-485
+/*****************************************************/
+void make_ekran_protocols_rs485(void)
+{
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_PROTOCOLS_RS485][MAX_COL_LCD] = 
+  {
+    " Адрес Modbus   ",
+    " Адреса Modbus  ",
+    " Address Modbus ",
+    " Адрес Modbus   "
+  };
+  int index_language = index_language_in_array(current_settings.language);
+  
+  unsigned int position_temp = current_ekran.index_position;
+  unsigned int index_of_ekran;
+  
+  
+  index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+
+  
+  //Копіюємо  рядки у робочий екран
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+    if (index_of_ekran < MAX_ROW_FOR_PROTOCOLS_RS485)
       for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran][j];
     else
       for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
@@ -614,6 +718,230 @@ void make_ekran_timeout_interface()
   current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
 }
 /*****************************************************/
+
+/*****************************************************/
+//Формуємо екран відображення заголовків настроювання Ethernet
+/*****************************************************/
+void make_ekran_chose_setting_Ethernet(void)
+{
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTING_ETHERNET][MAX_COL_LCD] = 
+  {
+    {
+      " Сетевой ур.    "/*,
+      " Протокол       "*/
+    },
+    {
+      " Мережевий р-нь "/*,
+      " Протокол       "*/
+    },
+    {
+      " Network layer  "/*,
+      " Protocol       "*/
+    },
+    {
+      " Сетевой ур.    "/*,
+      " Протокол       "*/
+    }
+  };
+  int index_language = index_language_in_array(current_settings.language);
+  
+  unsigned int position_temp = current_ekran.index_position;
+  unsigned int index_of_ekran;
+  
+  
+  index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+
+  
+  //Копіюємо  рядки у робочий екран
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+    if (index_of_ekran < MAX_ROW_FOR_CHOSE_SETTING_ETHERNET)
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran][j];
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Курсор по горизонталі відображається на першій позиції
+  current_ekran.position_cursor_x = 0;
+  //Відображення курору по вертикалі
+  current_ekran.position_cursor_y = position_temp & (MAX_ROW_LCD - 1);
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  current_ekran.cursor_blinking_on = 0;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+
+#if (MODYFIKACIA_VERSII_PZ == 4)
+/*****************************************************/
+//Формуємо екран відображення налаштувань мережевого рівня Ethernet
+/*****************************************************/
+void make_ekran_settings_network_layer_Ethernet()
+{
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET][MAX_COL_LCD] = 
+  {
+    {
+      "      IPv4      ",
+      "     Маска      ",
+      "      Шлюз      "
+    }, 
+    {
+      "      IPv4      ",
+      "     Маска      ",
+      "      Шлюз      "
+    }, 
+    {
+      "      IPv4      ",
+      "      Mask      ",
+      "    Geteway     "
+    },
+    {
+      "      IPv4      ",
+      "     Маска      ",
+      "      Шлюз      "
+    }  
+  };
+  int index_language = index_language_in_array(current_settings.language);
+  
+  unsigned int position_temp = current_ekran.index_position;
+  unsigned int index_of_ekran;
+  
+  //Множення на два величини position_temp потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+  index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+
+  
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    if (index_of_ekran < (MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET<<1))//Множення на два константи MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    {
+      uint32_t index_tmp = index_of_ekran >> 1;
+      if ((i & 0x1) == 0)
+      {
+        //У непарному номері рядку виводимо заголовок
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_tmp][j];
+      }
+      else
+      {
+        //У парному номері рядку виводимо значення
+        const uint8_t string[] = "0123456789";
+        __SETTINGS *point_1 = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+        
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+        if (
+            (index_tmp == INDEX_ML_NL_IPV4) ||
+            (index_tmp == INDEX_ML_NL_GATEWAY)
+           )   
+        {
+          uint16_t *point_2;
+          if (index_tmp == INDEX_ML_NL_IPV4) point_2 = point_1->IP4;
+          else if (index_tmp == INDEX_ML_NL_GATEWAY) point_2 = point_1->gateway;
+          uint16_t array[4] = {point_2[0], point_2[1], point_2[2], point_2[3]};
+          
+          working_ekran[i][4] = working_ekran[i][8] = working_ekran[i][12] = '.';
+
+          uint32_t j = COL_IP4_GATEWAY_BEGIN + 3 - 1;
+          for (size_t k1 = 0; k1 < 4; k1++)
+          {
+            for (size_t k2 = 0; k2 < 3; k2++)
+            {
+              uint32_t val = array[k1] % 10;
+              array[k1] /= 10;
+              if (
+                  (current_ekran.edition != 0) ||
+                  (k2 == 0) ||
+                  (val != 0) ||
+                  (array[k1] != 0)  
+                 )
+              {
+                working_ekran[i][j--] = string[val];
+              }
+              else
+              {
+                 working_ekran[i][j--] = ' ';
+              }
+            }
+            j += (3 + 1 + 3);
+          }
+        }
+        else if (index_tmp == INDEX_ML_NL_MASK)
+        {
+          uint32_t maska_tmp = point_1->mask;
+        
+          uint32_t j = COL_MASK_BEGIN + 2 - 1;
+          for (size_t k2 = 0; k2 < 2; k2++)
+          {
+            uint32_t val = maska_tmp % 10;
+            maska_tmp /= 10;
+            if (
+                (current_ekran.edition != 0) ||
+                (k2 == 0) ||
+                (val != 0) ||
+                (maska_tmp != 0)  
+               )
+            {
+              working_ekran[i][j--] = string[val];
+            }
+            else
+            {
+               working_ekran[i][j--] = ' ';
+            }
+          }
+        }
+      }
+        
+    }
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
+  current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+  //Курсор по горизонталі відображається на першому символі у випадку, коли ми не в режимі редагування, інакше позиція буде визначена у функцї main_manu_function
+  if (current_ekran.edition == 0)
+  {
+    int last_position_cursor_x = MAX_COL_LCD;
+    if (
+        (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+        (current_ekran.index_position == INDEX_ML_NL_GATEWAY) 
+       )   
+    {
+      current_ekran.position_cursor_x = COL_IP4_GATEWAY_BEGIN;
+      last_position_cursor_x = COL_IP4_GATEWAY_END;
+    }
+    else if (current_ekran.index_position == INDEX_ML_NL_MASK) 
+    {
+      current_ekran.position_cursor_x = COL_MASK_BEGIN;
+      last_position_cursor_x = COL_MASK_END;
+    }
+
+    //Підтягуємо курсор до першого символу
+    while (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1]) == ' ') && 
+           (current_ekran.position_cursor_x < (last_position_cursor_x -1))) current_ekran.position_cursor_x++;
+
+    //Курсор ставимо так, щоб він був перед числом
+    if (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x]) != ' ') && 
+        (current_ekran.position_cursor_x > 0)) current_ekran.position_cursor_x--;
+  }
+
+  //Курсор видимий, якщо ми у режимі редагування
+  if (current_ekran.edition == 0) current_ekran.cursor_on = 0;
+  else current_ekran.cursor_on = 1;
+  
+  //Курсор не мигає
+  if(current_ekran.edition == 0)current_ekran.cursor_blinking_on = 0;
+  else current_ekran.cursor_blinking_on = 1;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+#endif
 
 /*****************************************************/
 //

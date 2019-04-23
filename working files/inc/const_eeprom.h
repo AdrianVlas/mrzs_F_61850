@@ -8,7 +8,7 @@
 
 #define SIZE_USTUVANNJA         (sizeof(unsigned int) + sizeof(ustuvannja) + sizeof(phi_ustuvannja) + sizeof(phi_ustuvannja_sin_cos) + sizeof(serial_number_dev))
 #define SIZE_SETTINGS            sizeof(__SETTINGS)
-#define SIZE_ENERGY              sizeof(energy)
+#define SIZE_ENERGY              (sizeof(energy) >> 1)
 
 /*
 ќск≥льки на сьогодн≥шн≥й день розм≥р __SETTINGS становить xxxx байти, що на багато

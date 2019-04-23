@@ -8,7 +8,7 @@ void make_ekran_chose_settings(void)
   const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS][MAX_COL_LCD] = 
   {
     {
-      " Версия ПО и КП ",
+      " Инфо.          ",
       " Метка настроек ",
       " Входы          ",
       " Выходы         ",
@@ -25,7 +25,7 @@ void make_ekran_chose_settings(void)
       " Пароли         "
     },
     {
-      " Версія ПЗ і КП ",
+      " Інфо.          ",
       " Мітка налашт.  ",
       " Входи          ",
       " Виходи         ",
@@ -42,7 +42,7 @@ void make_ekran_chose_settings(void)
       " Паролі         "
     },
     {
-      " VER.of F/W & MM",
+      " Info.          ",
       " Settings Mark  ",
       " Inputs         ",
       " Outputs        ",
@@ -59,7 +59,7 @@ void make_ekran_chose_settings(void)
       " Passwords      "
     },
     {
-      " Версия ПО и КП ",
+      " Инфо.          ",
       " Метка настроек ",
       " Входы          ",
       " Выходы         ",

@@ -424,6 +424,10 @@
 #define KOEF_ADDRESS_MIN              1
 #define KOEF_ADDRESS_MAX              247
 
+#define NETWORK_MASK_MIN              8
+#define NETWORK_MASK_DEFAULT          24
+#define NETWORK_MASK_MAX              32
+
 #define MAX_NUMBER_SPEEDS_INTERFACE    7
 #define VALUE_SPEED_INTERFACE_MIN      0
 #define VALUE_SPEED_INTERFACE_MAX      (MAX_NUMBER_SPEEDS_INTERFACE - 1)

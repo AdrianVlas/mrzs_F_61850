@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.32.3.20186</state>
+                    <state>8.32.4.20866</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -4733,6 +4733,15 @@
                 </file>
             </group>
             <group>
+                <name>MO</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\const_MO.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\diagnostyka_mo.h</name>
+                </file>
+            </group>
+            <group>
                 <name>protection</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_df.h</name>
@@ -5335,6 +5344,12 @@
                             </data>
                         </settings>
                     </configuration>
+                </file>
+            </group>
+            <group>
+                <name>MO</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\mo.c</name>
                 </file>
             </group>
             <group>

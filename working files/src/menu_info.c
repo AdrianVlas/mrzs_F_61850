@@ -9,19 +9,39 @@ void make_ekran_info()
   {
     {
       "   Версия ПО    ",
-      "   Версия КП    "
+      "   Версия КП    ",
+      " Серийный номер "
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        ,
+      "   MAC-адрес    "
+#endif
     },
     {
       "   Версія ПЗ    ",
-      "   Версія КП    "
+      "   Версія КП    ",
+      " Серійний номер "
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        ,
+      "   MAC-адреса   "
+#endif
     },
     {
       "   VER.of F/W   ",
-      "   VER.of MM    "
+      "   VER.of MM    ",
+      " Serial number  "
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        ,
+      "  MAC address   "
+#endif
     },
     {
       "   Версия ПО    ",
-      "   Версия КП    "
+      "   Версия КП    ",
+      " Серийный номер "
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        ,
+      "   MAC-адрес    "
+#endif
     }
   };
   int index_language = index_language_in_array(current_settings.language);
@@ -116,7 +136,47 @@ void make_ekran_info()
           value_str[COL_INFO_BEGIN_2 + 4] = ' ';
 #endif
         }
-        
+        else if ((index_of_ekran>>1) == INDEX_ML_INFO_SERIAL_NUMBER)
+        {
+          uint32_t value = serial_number_dev;
+          uint32_t value_tmp = value;
+          uint32_t number_digits = 0;
+          do
+          {
+            number_digits++;
+            value_tmp /= 10;
+          }
+          while(value_tmp != 0);
+          
+          first_char_row1 = (MAX_COL_LCD - number_digits) >> 1;
+          last_chat_row1 = first_char_row1 + number_digits;
+          uint32_t index = last_chat_row1 - 1;
+          for (uint32_t j = 0; j < number_digits; j++)
+          {
+            value_tmp = value % 10;
+            value_str[index--] = value_tmp + 0x30;
+            value /= 10;
+          }
+        }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+        else if ((index_of_ekran>>1) == INDEX_ML_INFO_MAC_ADDRESS)
+        {
+          uint16_t MAC_address_tmp[3] = {0x0080, 0xE100, serial_number_dev};
+          const uint8_t string[] = "0123456789ABCDEF";
+          
+          value_str[5] = value_str[10] = ':';
+          uint32_t index = 4;
+          for (size_t k1 = 0; k1 < 3; k1++)
+          {
+            for (size_t k2 = 0; k2 < 4; k2++)
+            {
+              value_str[index--] = string[MAC_address_tmp[k1] & 0xf];
+              MAC_address_tmp[k1] >>= 4;
+            }
+            index += (4 + 1 + 4);
+          }
+        }
+#endif        
       }
       else
       {
@@ -135,15 +195,23 @@ void make_ekran_info()
   int last_position_cursor_x = MAX_COL_LCD;
 
   //Курсор по горизонталі відображається на першому символі у випадку, коли ми не в режимі редагування, інакше позиція буде визначена у функцї main_manu_function
-  if (current_ekran.index_position == INDEX_ML_INFO_FIRMWARE)
+  if (
+      (current_ekran.index_position == INDEX_ML_INFO_FIRMWARE) ||
+      (current_ekran.index_position == INDEX_ML_INFO_SERIAL_NUMBER)
+     )  
   {
     current_ekran.position_cursor_x = first_char_row1;
     last_position_cursor_x = last_chat_row1;
   }
-  else
+  else if (current_ekran.index_position == INDEX_ML_INFO_MEMORY_MAP)
   {
     current_ekran.position_cursor_x = COL_INFO_BEGIN_2;
     last_position_cursor_x = COL_END_END_2;
+  }
+  else 
+  {
+    current_ekran.position_cursor_x = 0;
+    last_position_cursor_x = MAX_COL_LCD;
   }
 
   //Підтягуємо курсор до першого символу

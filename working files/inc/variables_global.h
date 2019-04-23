@@ -228,7 +228,8 @@ const unsigned int index_converter_Ib_l[NUMBER_ANALOG_CANALES]  = {FULL_ORT_3I0,
 const unsigned int index_converter_I04_l[NUMBER_ANALOG_CANALES] = {FULL_ORT_3I0, FULL_ORT_Ia, FULL_ORT_I04, FULL_ORT_Ic, FULL_ORT_Uab, FULL_ORT_Ubc, FULL_ORT_Uca, FULL_ORT_3U0};
 int ortogonal_calc[2*FULL_ORT_MAX];
 int ortogonal_calc_low[2*FULL_ORT_MAX];
-int phi_angle[FULL_ORT_MAX]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
+int phi_angle[2][FULL_ORT_MAX];
+uint32_t bank_for_calc_phi_angle, state_calc_phi_angle;
 int base_index_for_angle = -1;
 
 int P_plus[2]/* = {0, 0}*/;
@@ -239,10 +240,11 @@ int Q_3q[2]/* = {0, 0}*/;
 int Q_4q[2]/* = {0, 0}*/;
 unsigned int lichylnyk_1s_po_20ms/* = 0*/;
 unsigned int bank_for_enegry/* = 0*/;
-unsigned int mutex_power;
-int P[2]/* = 0*/, Q[2]/* = 0*/, cos_phi_x1000/* = 0*/;
-unsigned int S[2]/* = 0*/;
-double energy[MAX_NUMBER_INDEXES_ENERGY]/* = {0, 0, 0, 0, 0, 0}*/;
+int P[2], Q[2], cos_phi_x1000[2];
+unsigned int S[2];
+uint32_t bank_for_calc_power, state_calc_power;
+double energy[2][MAX_NUMBER_INDEXES_ENERGY];
+uint32_t bank_for_calc_energy, state_calc_energy;
 unsigned int clean_energy/* = 0*/;
 unsigned int information_about_clean_energy/* = 0*/;
 
@@ -576,8 +578,8 @@ const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE
 
 
 unsigned int fixed_power_down_into_RTC/* = 0*/; 
-unsigned char time[7]; 
-unsigned char time_copy[7]; 
+unsigned char time[7], thousandths_time; 
+unsigned char time_copy[7], thousandths_time_copy; 
 unsigned char calibration;
 unsigned char calibration_copy;
 unsigned int copying_time/* = 0*/;
@@ -862,6 +864,25 @@ unsigned int control_word_of_watchdog/* = 0*/;
  * protections.c --> setpoints_selecting()
  **************************************************************/
 unsigned int gr_ustavok_tmp = 0xf;
+
+#if (MODYFIKACIA_VERSII_PZ == 4)
+//Міжпроцесорний обмін
+uint8_t Canal1_MO_Transmit[BUFFER_CANAL1_MO];
+uint8_t Canal1_MO_Received[BUFFER_CANAL1_MO];
+uint32_t confirm_diagnostyka_mo;
+uint8_t Canal2_MO_Transmit[BUFFER_CANAL2_MO];
+uint8_t Canal2_MO_Received[BUFFER_CANAL2_MO];
+unsigned int Canal1, Canal2;
+const uint8_t my_address_mo = 0;
+uint32_t IEC_board_present = false;
+uint32_t IEC_board_address;
+uint32_t queue_mo, queue_mo_irq;
+uint32_t state_array_control_state;
+uint8_t IEC_time_edit[7]; 
+uint32_t IEC_save_time; 
+uint32_t IEC_active_functions[N_SMALL];
+uint32_t IEC_goose_active_functions[N_SMALL];
+#endif
 
 //Змінна глобальної помилки
 unsigned int total_error;

@@ -81,7 +81,8 @@ extern const unsigned int index_converter_Ib_l[NUMBER_ANALOG_CANALES];
 extern const unsigned int index_converter_I04_l[NUMBER_ANALOG_CANALES];
 extern int ortogonal_calc[2*FULL_ORT_MAX];
 extern int ortogonal_calc_low[2*FULL_ORT_MAX];
-extern int phi_angle[FULL_ORT_MAX];
+extern int phi_angle[2][FULL_ORT_MAX];
+extern uint32_t bank_for_calc_phi_angle, state_calc_phi_angle;
 extern int base_index_for_angle;
 
 extern int P_plus[2];
@@ -92,10 +93,11 @@ extern int Q_3q[2];
 extern int Q_4q[2];
 extern unsigned int lichylnyk_1s_po_20ms;
 extern unsigned int bank_for_enegry;
-extern unsigned int mutex_power;
-extern int P[2], Q[2], cos_phi_x1000;
+extern int P[2], Q[2], cos_phi_x1000[2];
 extern unsigned int S[2];
-extern double energy[MAX_NUMBER_INDEXES_ENERGY];
+extern uint32_t bank_for_calc_power, state_calc_power;
+extern double energy[2][MAX_NUMBER_INDEXES_ENERGY];
+extern uint32_t bank_for_calc_energy, state_calc_energy;
 extern unsigned int clean_energy;
 extern unsigned int information_about_clean_energy;
 
@@ -239,8 +241,8 @@ extern const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODY
 extern const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
 
 extern unsigned int fixed_power_down_into_RTC; 
-extern unsigned char time[7]; 
-extern unsigned char time_copy[7]; 
+extern unsigned char time[7], thousandths_time; 
+extern unsigned char time_copy[7], thousandths_time_copy; 
 extern unsigned char calibration;
 extern unsigned char calibration_copy;
 extern unsigned int copying_time;
@@ -524,6 +526,25 @@ extern unsigned int control_word_of_watchdog;
  * protections.c --> setpoints_selecting()
  **************************************************************/
 extern unsigned int gr_ustavok_tmp;
+
+#if (MODYFIKACIA_VERSII_PZ == 4)
+//Міжпроцесорний обмін
+extern uint8_t Canal1_MO_Transmit[BUFFER_CANAL1_MO];
+extern uint8_t Canal1_MO_Received[BUFFER_CANAL1_MO];
+extern uint32_t confirm_diagnostyka_mo;
+extern uint8_t Canal2_MO_Transmit[BUFFER_CANAL2_MO];
+extern uint8_t Canal2_MO_Received[BUFFER_CANAL2_MO];
+extern unsigned int Canal1, Canal2;
+extern const uint8_t my_address_mo;
+extern uint32_t IEC_board_present;
+extern uint32_t IEC_board_address;
+extern uint32_t queue_mo, queue_mo_irq;
+extern uint32_t state_array_control_state;
+extern uint8_t IEC_time_edit[7]; 
+extern uint32_t IEC_save_time; 
+extern uint32_t IEC_active_functions[N_SMALL];
+extern uint32_t IEC_goose_active_functions[N_SMALL];
+#endif
 
 //Змінна глобальної помилки
 extern unsigned int total_error;

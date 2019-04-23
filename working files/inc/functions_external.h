@@ -138,10 +138,14 @@ extern void make_ekran_chose_communication_parameters(void);
 extern void make_ekran_name_of_cell(void);
 extern void make_ekran_address(void);
 extern void make_ekran_chose_setting_rs485(void);
+extern void make_ekran_chose_setting_Ethernet(void);
+extern void make_ekran_phy_layer_rs485(void);
+extern void make_ekran_protocols_rs485(void);
 extern void make_ekran_speed_interface(void);
 extern void make_ekran_pare_interface(void);
 extern void make_ekran_stopbits_interface(void);
 extern void make_ekran_timeout_interface(void);
+extern void make_ekran_settings_network_layer_Ethernet(void);
 extern void make_ekran_chose_registrators(void);
 extern void make_ekran_settings_analog_registrators(void);
 extern void make_ekran_timeout_analog_registrator(void);
@@ -340,6 +344,12 @@ extern void EXITI_POWER_IRQHandler(void);
 extern void setpoints_selecting(unsigned int*, unsigned int);
 
 extern int str_to_int_DATE_Mmm(void);
+
+#if (MODYFIKACIA_VERSII_PZ == 4)
+extern void start_transmint_data_via_CANAL1_MO(void);
+extern void start_receive_data_via_CANAL1_MO(void);
+extern void CANAL2_MO_routine(void);
+#endif
 
 extern void inputPacketParserUSB(void);
 extern void inputPacketParserRS485(void);

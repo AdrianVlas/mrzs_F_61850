@@ -153,6 +153,18 @@ void make_ekran_time_settings(unsigned int kind)
     name_string[ROW_T_][MAX_COL_LCD - 2] = '8';
     name_string[ROW_T_][MAX_COL_LCD - 1] = '5';
   }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+  else if((*(point_to_target + 7)) == 4)
+  {
+    name_string[ROW_T_][MAX_COL_LCD - 7] = ' ';
+    name_string[ROW_T_][MAX_COL_LCD - 6] = ' ';
+    name_string[ROW_T_][MAX_COL_LCD - 5] = ' ';
+    name_string[ROW_T_][MAX_COL_LCD - 4] = ' ';
+    name_string[ROW_T_][MAX_COL_LCD - 3] = 'N';
+    name_string[ROW_T_][MAX_COL_LCD - 2] = 'e';
+    name_string[ROW_T_][MAX_COL_LCD - 1] = 't';
+  }
+#endif
   else
   {
     //теоретично ми сюди б не мали ніколи заходити, але якщо ми сюди зайшли, то виводимо сигналізацію про помилку на екран

@@ -7,7 +7,7 @@
 #define EKRAN_TYPE_INPUT_SIGNAL_UVV      (EKRAN_TYPE_INPUT_UVV + 1)
 #define EKRAN_TYPE_OUTPUT_UVV            (EKRAN_TYPE_INPUT_SIGNAL_UVV + 1)
 #define EKRAN_TYPE_LED_UVV               (EKRAN_TYPE_OUTPUT_UVV + 1)
-#define EKRAN_TYPE_BUTTON_UVV               (EKRAN_TYPE_LED_UVV + 1)
+#define EKRAN_TYPE_BUTTON_UVV            (EKRAN_TYPE_LED_UVV + 1)
 
 enum _index_ml_uvv
 {

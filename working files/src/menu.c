@@ -1498,6 +1498,13 @@ void main_manu_function(void)
     case EKRAN_CHOSE_COMMUNICATION_PARAMETERS:
     case EKRAN_VIEW_NAME_OF_CELL:
     case EKRAN_CHOSE_SETTING_RS485:
+    case EKRAN_PHY_LAYER_RS485:
+    case EKRAN_PROTOCOL_RS485:
+      
+#if (MODYFIKACIA_VERSII_PZ == 4)
+    case EKRAN_CHOSE_SETTING_ETHERNET:
+#endif
+      
     case EKRAN_VIEW_LIST_OF_REGISTRATORS:
     case EKRAN_VIEW_SETTINGS_OF_ANALOG_REGISTRATORS:
     case EKRAN_EXTENDED_LIGIC:
@@ -1912,6 +1919,29 @@ void main_manu_function(void)
               //Формуємо екран відображення списку настройок для інтерфейсу RS-485
               make_ekran_chose_setting_rs485();
             }
+            else if (current_ekran.current_level == EKRAN_PHY_LAYER_RS485)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_PHY_LAYER_RS485) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_PHY_LAYER_RS485] = current_ekran.index_position;
+              //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
+              make_ekran_phy_layer_rs485();
+            }
+            else if (current_ekran.current_level == EKRAN_PROTOCOL_RS485)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_PROTOCOLS_RS485) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_PROTOCOL_RS485] = current_ekran.index_position;
+              //Формуємо екран відображення списку налаштувань протоколу RS-485
+              make_ekran_protocols_rs485();
+            }
+#if (MODYFIKACIA_VERSII_PZ == 4)            
+            else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTING_ETHERNET) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_CHOSE_SETTING_ETHERNET] = current_ekran.index_position;
+              //Формуємо екран відображення списку настройок для інтерфейсу Ethernet
+              make_ekran_chose_setting_Ethernet();
+            }
+#endif
             else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_LIST_OF_REGISTRATORS) current_ekran.index_position = 0;
@@ -2078,16 +2108,19 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
               
+              unsigned int diagnostyka_tmp[N_DIAGN];
+              for (size_t i = 0; i < N_DIAGN; i++) diagnostyka_tmp[i] = diagnostyka[i];
+              
               unsigned int not_null = false;
               for (size_t i = 0; i < N_DIAGN; i++) 
               {
-                not_null |= (diagnostyka[i] != 0);
+                not_null |= (diagnostyka_tmp[i] != 0);
                 if (not_null) break;
               }
               
               if (not_null)
               {
-                while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
+                while (_CHECK_SET_BIT(diagnostyka_tmp, current_ekran.index_position) ==0)
                 {
                   current_ekran.index_position++;
                   if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
@@ -2100,7 +2133,7 @@ void main_manu_function(void)
               
               position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
               //Формуємо екран діагностики
-              make_ekran_diagnostyka(diagnostyka);
+              make_ekran_diagnostyka(diagnostyka_tmp);
             }
             else if (current_ekran.current_level == EKRAN_LIST_INPUTS_OUTPUTS)
             {
@@ -3171,24 +3204,44 @@ void main_manu_function(void)
                   //Переходимо на меню відображення імені ячейки
                   current_ekran.current_level = EKRAN_VIEW_NAME_OF_CELL;
                 }
-                else if(current_ekran.index_position == INDEX_ML_CHCP_ADDRESS)
-                {
-                  //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення мережевої адреси
-                  current_ekran.current_level = EKRAN_ADDRESS;
-                }
                 else if(current_ekran.index_position == INDEX_ML_CHCP_SETTING_RS485)
                 {
                   //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення мережевої адреси
+                  //Переходимо на меню відображення списку нашаштувань RS-485
                   current_ekran.current_level = EKRAN_CHOSE_SETTING_RS485;
                 }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                else if(current_ekran.index_position == INDEX_ML_CHCP_SETTING_ETHERNET)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку нашаштувань Ethernet
+                  current_ekran.current_level = EKRAN_CHOSE_SETTING_ETHERNET;
+                }
+#endif
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_RS485)
               {
                 //Натисну кнопка Enter у вікні вибору вікна настройок RS-485
+                if(current_ekran.index_position == INDEX_ML_PHY_LAYER_RS485)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення налаштувань фізичного рівня RS-485
+                  current_ekran.current_level = EKRAN_PHY_LAYER_RS485;
+                }
+                else if(current_ekran.index_position == INDEX_ML_PROTOCOL_RS485)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення протоколів RS-485
+                  current_ekran.current_level = EKRAN_PROTOCOL_RS485;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_PHY_LAYER_RS485)
+              {
+                //Натисну кнопка Enter у вікні вибору вікна настройок фізичного рівня RS-485
                 if(current_ekran.index_position == INDEX_ML_CHSRS485_SPEED)
                 {
                   //Запам'ятовуємо поперердній екран
@@ -3216,6 +3269,32 @@ void main_manu_function(void)
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
+              else if (current_ekran.current_level == EKRAN_PROTOCOL_RS485)
+              {
+                //Натисну кнопка Enter у вікні вибору налаштувань протоколу RS-485
+                if(current_ekran.index_position == INDEX_ML_ADDRESS)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення мережевої адреси
+                  current_ekran.current_level = EKRAN_ADDRESS_RS485;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+              else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
+              {
+                //Натисну кнопка Enter у вікні вибору налаштувань Ethernet
+                if(current_ekran.index_position == INDEX_ML_NETWORK_LAYER_ETHERNET)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення мережевих налаштувань
+                  current_ekran.current_level = EKRAN_SETTING_NETWORK_LAYER_ETHERNET;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+#endif
               else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
               {
                 if(current_ekran.index_position == INDEX_ML_DIGITAL_REGISTRATOR)
@@ -4063,6 +4142,29 @@ void main_manu_function(void)
                //Формуємо екран відображення списку настройок для інтерфейсу RS-485
                make_ekran_chose_setting_rs485();
               }
+              else if (current_ekran.current_level == EKRAN_PHY_LAYER_RS485)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_PHY_LAYER_RS485 - 1;
+                position_in_current_level_menu[EKRAN_PHY_LAYER_RS485] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
+               make_ekran_phy_layer_rs485();
+              }
+              else if (current_ekran.current_level == EKRAN_PROTOCOLS_RS485)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_PROTOCOLS_RS485 - 1;
+                position_in_current_level_menu[EKRAN_PROTOCOLS_RS485] = current_ekran.index_position;
+               //Формуємо екран відображення списку налаштувань протоколу RS-485
+               make_ekran_protocols_rs485();
+              }
+#if (MODYFIKACIA_VERSII_PZ == 4)              
+              else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTING_ETHERNET - 1;
+                position_in_current_level_menu[EKRAN_CHOSE_SETTING_ETHERNET] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок для інтерфейсу Ethernet
+               make_ekran_chose_setting_Ethernet();
+              }
+#endif
               else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_LIST_OF_REGISTRATORS - 1;
@@ -4224,17 +4326,20 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_DIAGNOSTYKA)
               {
+                unsigned int diagnostyka_tmp[N_DIAGN];
+                for (size_t i = 0; i < N_DIAGN; i++) diagnostyka_tmp[i] = diagnostyka[i];
+              
                 unsigned int not_null = false;
                 for (size_t i = 0; i < N_DIAGN; i++) 
                 {
-                  not_null |= (diagnostyka[i] != 0);
+                  not_null |= (diagnostyka_tmp[i] != 0);
                   if (not_null) break;
                 }
               
                 if (not_null)
                 {
                   if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_DIAGNOSTYKA - 1;
-                  while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
+                  while (_CHECK_SET_BIT(diagnostyka_tmp, current_ekran.index_position) ==0)
                   {
                     current_ekran.index_position--;
                     if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_DIAGNOSTYKA - 1;
@@ -4247,7 +4352,7 @@ void main_manu_function(void)
 
                 position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
                 //Формуємо екран діагностики
-                make_ekran_diagnostyka(diagnostyka);
+                make_ekran_diagnostyka(diagnostyka_tmp);
               }
               else if(current_ekran.current_level == EKRAN_LIST_INPUTS_OUTPUTS)
               {
@@ -4768,6 +4873,29 @@ void main_manu_function(void)
                //Формуємо екран відображення списку настройок для інтерфейсу RS-485
                 make_ekran_chose_setting_rs485();
               }
+              else if (current_ekran.current_level == EKRAN_PHY_LAYER_RS485)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_PHY_LAYER_RS485) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_PHY_LAYER_RS485] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
+                make_ekran_phy_layer_rs485();
+              }
+              else if (current_ekran.current_level == EKRAN_PROTOCOLS_RS485)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_PROTOCOLS_RS485) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_PROTOCOLS_RS485] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
+                make_ekran_protocols_rs485();
+              }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+              else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTING_ETHERNET) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_CHOSE_SETTING_ETHERNET] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок для інтерфейсу Ethernet
+                make_ekran_chose_setting_Ethernet();
+              }
+#endif
               else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_OF_REGISTRATORS) current_ekran.index_position = 0;
@@ -4932,17 +5060,20 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_DIAGNOSTYKA)
               {
+                unsigned int diagnostyka_tmp[N_DIAGN];
+                for (size_t i = 0; i < N_DIAGN; i++) diagnostyka_tmp[i] = diagnostyka[i];
+              
                 unsigned int not_null = false;
                 for (size_t i = 0; i < N_DIAGN; i++) 
                 {
-                  not_null |= (diagnostyka[i] != 0);
+                  not_null |= (diagnostyka_tmp[i] != 0);
                   if (not_null) break;
                 }
               
                 if (not_null)
                 {
                   if(++current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
-                  while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
+                  while (_CHECK_SET_BIT(diagnostyka_tmp, current_ekran.index_position) ==0)
                   {
                     current_ekran.index_position++;
                     if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
@@ -4955,7 +5086,7 @@ void main_manu_function(void)
 
                 position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
                 //Формуємо екран діагностики
-                make_ekran_diagnostyka(diagnostyka);
+                make_ekran_diagnostyka(diagnostyka_tmp);
               }
               else if(current_ekran.current_level == EKRAN_LIST_INPUTS_OUTPUTS)
               {
@@ -5236,11 +5367,16 @@ void main_manu_function(void)
     case EKRAN_TYPE_OUTPUT_UVV:
     case EKRAN_TYPE_LED_UVV:
     case EKRAN_TYPE_BUTTON_UVV:
-    case EKRAN_ADDRESS:
+    case EKRAN_ADDRESS_RS485:
     case EKRAN_VIEW_SPEED_RS485:
     case EKRAN_VIEW_PARE_RS485:
     case EKRAN_VIEW_STOP_BITS_RS485:
     case EKRAN_VIEW_TIMEOUT_RS485:
+      
+#if (MODYFIKACIA_VERSII_PZ == 4)      
+    case EKRAN_SETTING_NETWORK_LAYER_ETHERNET:
+#endif
+      
     case EKRAN_GENERAL_PICKUPS_EL:
     case EKRAN_LIST_TYPE_DF:
     case EKRAN_TIMEOUT_DF1:
@@ -5930,10 +6066,10 @@ void main_manu_function(void)
               //Формуємо екран типу ФК
               make_ekran_type_button_uvv();
             }
-            else if(current_ekran.current_level == EKRAN_ADDRESS)
+            else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_ADDRESS) current_ekran.index_position = 0;
-              position_in_current_level_menu[EKRAN_ADDRESS] = current_ekran.index_position;
+              position_in_current_level_menu[EKRAN_ADDRESS_RS485] = current_ekran.index_position;
               //Формуємо екран інфтрмації по комунікаційній адресі
               make_ekran_address();
             }
@@ -5965,6 +6101,15 @@ void main_manu_function(void)
               //Формуємо екран інформації по time-out наступного символу
               make_ekran_timeout_interface();
             }
+#if (MODYFIKACIA_VERSII_PZ == 4)            
+            else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_SETTING_NETWORK_LAYER_ETHERNET] = current_ekran.index_position;
+              //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
+              make_ekran_settings_network_layer_Ethernet();
+            }
+#endif
             else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_GENERAL_PICKUPS_EL) current_ekran.index_position = 0;
@@ -7041,7 +7186,7 @@ void main_manu_function(void)
                 {
                   edition_settings.buttons_mode = current_settings.buttons_mode;
                 }
-                else if(current_ekran.current_level == EKRAN_ADDRESS)
+                else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
                 {
                   edition_settings.address = current_settings.address;
                   current_ekran.position_cursor_x = COL_ADDRESS_BEGIN;
@@ -7063,6 +7208,35 @@ void main_manu_function(void)
                   edition_settings.time_out_1_RS485 = current_settings.time_out_1_RS485;
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_BEGIN;
                 }
+#if (MODYFIKACIA_VERSII_PZ == 4)                
+                else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+                {
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target, *point_source;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                      point_source = current_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                      point_source = current_settings.gateway;
+                    }
+                    for (size_t i = 0; i < 4; i++) point_target[i] = point_source[i];
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_BEGIN;
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    edition_settings.mask = current_settings.mask;
+                    current_ekran.position_cursor_x = COL_MASK_BEGIN;
+                  }
+                }
+#endif
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
                   if (current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -8015,7 +8189,7 @@ void main_manu_function(void)
                 {
                   if (edition_settings.buttons_mode != current_settings.buttons_mode) found_changes = 1;
                 }
-                else if(current_ekran.current_level == EKRAN_ADDRESS)
+                else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
                 {
                   unsigned int edit_value = edition_settings.address;
                   if (edit_value != current_settings.address) found_changes = 1;
@@ -8036,6 +8210,40 @@ void main_manu_function(void)
                 {
                   if (edition_settings.time_out_1_RS485 != current_settings.time_out_1_RS485) found_changes = 1;
                 }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+                {
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target, *point_source;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                      point_source = current_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                      point_source = current_settings.gateway;
+                    }
+                    for (size_t i = 0; i < 4; i++) 
+                    {
+                      if (point_target[i] != point_source[i])
+                      {
+                        found_changes = 1;
+                        break;
+                      }
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    if (edition_settings.mask != current_settings.mask) found_changes = 1;
+                  }
+                }
+#endif
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
                   if (current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -11158,7 +11366,7 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
-                else if(current_ekran.current_level == EKRAN_ADDRESS)
+                else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
                 {
                   if (check_data_setpoint(edition_settings.address, KOEF_ADDRESS_MIN, KOEF_ADDRESS_MAX) == 1)
                   {
@@ -11258,6 +11466,78 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+                {
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target, *point_source;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                      point_source = current_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                      point_source = current_settings.gateway;
+                    }
+                   
+                    
+                    enum comp {EQUAL, OUT_OF_RANGE, IN_RANGE} comparation = EQUAL;
+                    for (size_t i = 0; i < 4; i++) 
+                    {
+                      if (point_target[i] != point_source[i])
+                      {
+                        comparation = IN_RANGE;
+                        if ((point_target[i] >> 8) != 0)
+                        {
+                          comparation = OUT_OF_RANGE;
+                          break;
+                        }
+                      }
+                    }
+                    
+                    if (comparation != OUT_OF_RANGE)
+                    {
+                      if (comparation == IN_RANGE)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        for (size_t i = 0; i < 4; i++) point_source[i] = point_target[i];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба передати налаштування у комунікаційну плату
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    if (check_data_setpoint(edition_settings.mask, NETWORK_MASK_MIN, NETWORK_MASK_MAX) == 1)
+                    {
+                      if (edition_settings.mask != current_settings.mask)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        current_settings.mask = edition_settings.mask;
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                }
+#endif                
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
                   if (current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -12858,12 +13138,12 @@ void main_manu_function(void)
                 //Формуємо екран типу ФК
                 make_ekran_type_button_uvv();
               }
-              else if(current_ekran.current_level == EKRAN_ADDRESS)
+              else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
               {
                 if(current_ekran.edition == 0)
                 {
                   if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_ADDRESS - 1;
-                  position_in_current_level_menu[EKRAN_ADDRESS] = current_ekran.index_position;
+                  position_in_current_level_menu[EKRAN_ADDRESS_RS485] = current_ekran.index_position;
                 }
                 else
                 {
@@ -12939,6 +13219,45 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+              else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET - 1;
+                  position_in_current_level_menu[EKRAN_SETTING_NETWORK_LAYER_ETHERNET] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                    }
+                    
+                    size_t index = (current_ekran.position_cursor_x - COL_IP4_GATEWAY_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                    point_target[index] = edit_setpoint(1, point_target[index], 0, 0, COL_IP4_GATEWAY_BEGIN + (3 + 1)*(index + 1) - 1 - 1, 1);
+                    
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    edition_settings.mask = edit_setpoint(1, edition_settings.mask, 0, 0, COL_MASK_END, 1);
+                  }
+                }
+                //Формуємо екран інфтрмації по комунікаційній адресі
+                make_ekran_settings_network_layer_Ethernet();
+              }
+#endif              
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.edition == 0)
@@ -14298,12 +14617,12 @@ void main_manu_function(void)
                 //Формуємо екран типу ФК
                 make_ekran_type_button_uvv();
               }
-              else if(current_ekran.current_level == EKRAN_ADDRESS)
+              else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
               {
                 if(current_ekran.edition == 0)
                 {
                   if(++current_ekran.index_position >= MAX_ROW_FOR_ADDRESS) current_ekran.index_position = 0;
-                  position_in_current_level_menu[EKRAN_ADDRESS] = current_ekran.index_position;
+                  position_in_current_level_menu[EKRAN_ADDRESS_RS485] = current_ekran.index_position;
                 }
                 else
                 {
@@ -14379,6 +14698,45 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+              else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET) current_ekran.index_position = 0;
+                  position_in_current_level_menu[EKRAN_SETTING_NETWORK_LAYER_ETHERNET] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                    }
+                    
+                    size_t index = (current_ekran.position_cursor_x - COL_IP4_GATEWAY_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                    point_target[index] = edit_setpoint(0, point_target[index], 0, 0, COL_IP4_GATEWAY_BEGIN + (3 + 1)*(index + 1) - 1 - 1, 1);
+                    
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    edition_settings.mask = edit_setpoint(0, edition_settings.mask, 0, 0, COL_MASK_END, 1);
+                  }
+                }
+                //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
+                make_ekran_settings_network_layer_Ethernet();
+              }
+#endif              
               else if (current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.edition == 0)
@@ -16217,7 +16575,7 @@ void main_manu_function(void)
                 edition_settings.buttons_mode ^= (1 << current_ekran.index_position);
                 make_ekran_type_button_uvv();
               }
-              else if(current_ekran.current_level == EKRAN_ADDRESS)
+              else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
               {
                 if ((current_ekran.position_cursor_x < COL_ADDRESS_BEGIN) ||
                     (current_ekran.position_cursor_x > COL_ADDRESS_END))
@@ -16234,6 +16592,35 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+              else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+              {
+                if (
+                    (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                    (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                   )   
+                {
+                  if ((current_ekran.position_cursor_x < COL_IP4_GATEWAY_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_GATEWAY_END))
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_BEGIN;
+
+                  size_t index = (current_ekran.position_cursor_x - COL_IP4_GATEWAY_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                  if (current_ekran.position_cursor_x == (COL_IP4_GATEWAY_BEGIN + (3 + 1)*(index + 1) - 1)) current_ekran.position_cursor_x++;
+
+                  if ((current_ekran.position_cursor_x < COL_IP4_GATEWAY_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_GATEWAY_END))
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_BEGIN;
+                }
+                else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                {
+                  if ((current_ekran.position_cursor_x < COL_MASK_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_MASK_END))
+                    current_ekran.position_cursor_x = COL_MASK_BEGIN;
+                }
+                //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
+                make_ekran_settings_network_layer_Ethernet();
+              }
+#endif              
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -18055,7 +18442,7 @@ void main_manu_function(void)
                 edition_settings.buttons_mode ^= (1 << current_ekran.index_position);
                 make_ekran_type_button_uvv();
               }
-              else if(current_ekran.current_level == EKRAN_ADDRESS)
+              else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
               {
                   if ((current_ekran.position_cursor_x < COL_ADDRESS_BEGIN) ||
                       (current_ekran.position_cursor_x > COL_ADDRESS_END))
@@ -18072,6 +18459,35 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
+#if (MODYFIKACIA_VERSII_PZ == 4)
+              else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+              {
+                if (
+                    (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                    (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                   )   
+                {
+                  if ((current_ekran.position_cursor_x < COL_IP4_GATEWAY_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_GATEWAY_END))
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_END;
+
+                  size_t index = (current_ekran.position_cursor_x - COL_IP4_GATEWAY_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                  if (current_ekran.position_cursor_x == (COL_IP4_GATEWAY_BEGIN + (3 + 1)*(index + 1) - 1)) current_ekran.position_cursor_x--;
+
+                  if ((current_ekran.position_cursor_x < COL_IP4_GATEWAY_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_GATEWAY_END))
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_END;
+                }
+                else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                {
+                  if ((current_ekran.position_cursor_x < COL_MASK_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_MASK_END))
+                    current_ekran.position_cursor_x = COL_MASK_END;
+                }
+                //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
+                make_ekran_settings_network_layer_Ethernet();
+              }
+#endif              
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
