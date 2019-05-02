@@ -782,7 +782,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\stm32f2xx_flash.icf</state>
+                    <state>$PROJ_DIR$\..\a.04.c.d\stm32f2xx_flash.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1070,11 +1070,14 @@
     </group>
     <group>
         <name>Linker</name>
+        <group>
+            <name>a.04.c.d</name>
+            <file>
+                <name>$PROJ_DIR$\..\a.04.c.d\stm32f2xx_flash.icf</name>
+            </file>
+        </group>
         <file>
             <name>$PROJ_DIR$\..\StackDepth.suc</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\stm32f2xx_flash.icf</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\stm32f2xx_flash_extsram.icf</name>

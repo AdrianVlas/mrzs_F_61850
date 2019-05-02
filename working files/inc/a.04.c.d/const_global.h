@@ -30,6 +30,10 @@
 
 #define NUMBER_UP                       8
 
+#define N_IN_GOOSE                      16
+#define N_IN_MMS                        4
+#define N_OUT_LAN                       4
+
 //#define NUMBER_DEFINED_ELEMENTS         6
 #define NUMBER_DEFINED_FUNCTIONS        8
 #define NUMBER_DEFINED_TRIGGERS         4
@@ -49,7 +53,8 @@
 #define N_INPUT_BOARDS          3
 #define N_OUTPUT_BOARDS         3
 
-enum _configuration {
+enum _configuration 
+{
 MTZ_BIT_CONFIGURATION = 0,
 MTZ04_BIT_CONFIGURATION,
 ZDZ_BIT_CONFIGURATION,
@@ -71,7 +76,8 @@ TOTAL_NUMBER_PROTECTION
 /*****************************************/
 //Константи для ранжування дискретних входів
 /*****************************************/
-enum __rang_small {
+enum __rang_small 
+{
 RANG_SMALL_BLOCK_VKL_VV = 0,
 RANG_SMALL_RESET_LEDS,
 RANG_SMALL_RESET_RELES,
@@ -88,7 +94,13 @@ RANG_SMALL_3_GRUPA_USTAVOK,
 RANG_SMALL_4_GRUPA_USTAVOK,
 RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV,
 
-RANG_SMALL_BLOCK_MTZ1,
+RANG_SMALL_BLOCK_IN_GOOSE1,
+
+RANG_SMALL_BLOCK_IN_MMS1 = (RANG_SMALL_BLOCK_IN_GOOSE1 + N_IN_GOOSE),
+
+RANG_SMALL_BLOCK_OUT_LAN1 = (RANG_SMALL_BLOCK_IN_MMS1 + N_IN_MMS),
+
+RANG_SMALL_BLOCK_MTZ1 = (RANG_SMALL_BLOCK_OUT_LAN1 + N_OUT_LAN),
 RANG_SMALL_BLOCK_MTZ2,
 RANG_SMALL_BLOCK_USK_MTZ2,
 RANG_SMALL_BLOCK_MTZ3,
@@ -145,7 +157,7 @@ RANG_SMALL_DT4_SET,
 RANG_SMALL_DT4_RESET,
 };
 
-#define NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL     15
+#define NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL     (15 + N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)
 #define NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL         5
 #define NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL       3
 #define NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL         2
@@ -516,26 +528,25 @@ enum __mtz_abc_direction_const {
   | (1 << (RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV - 0)) \
 )
 
-#define MASKA_BUTTON_MODE_0_SIGNALS_1 (unsigned int)(         \
-    (1 << (RANG_SMALL_DF1_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF2_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF3_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF4_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF5_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF6_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF7_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF8_IN - 32))                           \
-  | (1 << (RANG_SMALL_DT1_SET - 32))                          \
-  | (1 << (RANG_SMALL_DT1_RESET - 32))                        \
-  | (1 << (RANG_SMALL_DT2_SET - 32))                          \
-  | (1 << (RANG_SMALL_DT2_RESET - 32))                        \
-  | (1 << (RANG_SMALL_DT3_SET - 32))                          \
-  | (1 << (RANG_SMALL_DT3_RESET - 32))                        \
-  | (1 << (RANG_SMALL_DT4_SET - 32))                          \
-)
+#define MASKA_BUTTON_MODE_0_SIGNALS_1           0
 
 #define MASKA_BUTTON_MODE_0_SIGNALS_2 (unsigned int)(         \
-    (1 << (RANG_SMALL_DT4_RESET - 64))                        \
+    (1 << (RANG_SMALL_DF1_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF2_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF3_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF4_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF5_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF6_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF7_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF8_IN - 64))                           \
+  | (1 << (RANG_SMALL_DT1_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT1_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT2_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT2_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT3_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT3_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT4_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT4_RESET - 64))                        \
 )
 /*****************************************/
 
@@ -549,57 +560,81 @@ enum __mtz_abc_direction_const {
   | (1 << (RANG_SMALL_2_GRUPA_USTAVOK - 0))                   \
   | (1 << (RANG_SMALL_3_GRUPA_USTAVOK - 0))                   \
   | (1 << (RANG_SMALL_4_GRUPA_USTAVOK - 0))                   \
-  | (1 << (RANG_SMALL_BLOCK_MTZ1 - 0))                        \
-  | (1 << (RANG_SMALL_BLOCK_MTZ2 - 0))                        \
-  | (1 << (RANG_SMALL_BLOCK_USK_MTZ2 - 0))                    \
-  | (1 << (RANG_SMALL_BLOCK_MTZ3 - 0))                        \
-  | (1 << (RANG_SMALL_BLOCK_MTZ4 - 0))                        \
-  | (1 << (RANG_SMALL_BLOCK_MTZ04_1 - 0))                     \
-  | (1 << (RANG_SMALL_BLOCK_MTZ04_2 - 0))                     \
-  | (1 << (RANG_SMALL_BLOCK_USK_MTZ04_2 - 0))                 \
-  | (1 << (RANG_SMALL_BLOCK_ZDZ - 0))                         \
-  | (1 << (RANG_SMALL_BLOCK_NZZ - 0))                         \
-  | (1 << (RANG_SMALL_BLOCK_TZNP1 - 0))                       \
-  | (1 << (RANG_SMALL_BLOCK_TZNP2 - 0))                       \
-  | (1 << (RANG_SMALL_BLOCK_TZNP3 - 0))                       \
-  | (1 << (RANG_SMALL_STAT_BLK_APV - 0))                      \
-  | (1 << (RANG_SMALL_BLOCK_ACHR1 - 0))                       \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  0 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  1 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  2 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  3 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  4 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  5 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  6 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  7 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  8 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  9 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 10 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 11 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 12 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 13 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 14 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 15 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_MMS1 + 0 - 0))                 \
 )
 
 #define MASKA_BUTTON_MODE_1_SIGNALS_1 (unsigned int)(         \
-    (1 << (RANG_SMALL_BLOCK_ACHR2 - 32))                      \
+    (1 << (RANG_SMALL_BLOCK_IN_MMS1 + 1 - 32))                \
+  | (1 << (RANG_SMALL_BLOCK_IN_MMS1 + 2 - 32))                \
+  | (1 << (RANG_SMALL_BLOCK_IN_MMS1 + 3 - 32))                \
+  | (1 << (RANG_SMALL_BLOCK_OUT_LAN1 + 0 - 32))               \
+  | (1 << (RANG_SMALL_BLOCK_OUT_LAN1 + 1 - 32))               \
+  | (1 << (RANG_SMALL_BLOCK_OUT_LAN1 + 2 - 32))               \
+  | (1 << (RANG_SMALL_BLOCK_OUT_LAN1 + 3 - 32))               \
+  | (1 << (RANG_SMALL_BLOCK_MTZ1 - 32))                       \
+  | (1 << (RANG_SMALL_BLOCK_MTZ2 - 32))                       \
+  | (1 << (RANG_SMALL_BLOCK_USK_MTZ2 - 32))                   \
+  | (1 << (RANG_SMALL_BLOCK_MTZ3 - 32))                       \
+  | (1 << (RANG_SMALL_BLOCK_MTZ4 - 32))                       \
+  | (1 << (RANG_SMALL_BLOCK_MTZ04_1 - 32))                    \
+  | (1 << (RANG_SMALL_BLOCK_MTZ04_2 - 32))                    \
+  | (1 << (RANG_SMALL_BLOCK_USK_MTZ04_2 - 32))                \
+  | (1 << (RANG_SMALL_BLOCK_ZDZ - 32))                        \
+  | (1 << (RANG_SMALL_BLOCK_NZZ - 32))                        \
+  | (1 << (RANG_SMALL_BLOCK_TZNP1 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_TZNP2 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_TZNP3 - 32))                      \
+  | (1 << (RANG_SMALL_STAT_BLK_APV - 32))                     \
+  | (1 << (RANG_SMALL_BLOCK_ACHR1 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_ACHR2 - 32))                      \
   | (1 << (RANG_SMALL_BLOCK_ZOP - 32))                        \
   | (1 << (RANG_SMALL_BLOCK_UMIN1 - 32))                      \
   | (1 << (RANG_SMALL_BLOCK_UMIN2 - 32))                      \
   | (1 << (RANG_SMALL_BLOCK_UMAX1 - 32))                      \
-  | (1 << (RANG_SMALL_BLOCK_UMAX2 - 32))                      \
-  | (1 << (RANG_SMALL_BLOCK_UP1 + 0 - 32))                    \
-  | (1 << (RANG_SMALL_BLOCK_UP1 + 1 - 32))                    \
-  | (1 << (RANG_SMALL_BLOCK_UP1 + 2 - 32))                    \
-  | (1 << (RANG_SMALL_BLOCK_UP1 + 3 - 32))                    \
-  | (1 << (RANG_SMALL_BLOCK_UP1 + 4 - 32))                    \
-  | (1 << (RANG_SMALL_BLOCK_UP1 + 5 - 32))                    \
-  | (1 << (RANG_SMALL_BLOCK_UP1 + 6 - 32))                    \
-  | (1 << (RANG_SMALL_BLOCK_UP1 + 7 - 32))                    \
-  | (1 << (RANG_SMALL_DF1_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF2_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF3_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF4_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF5_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF6_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF7_IN - 32))                           \
-  | (1 << (RANG_SMALL_DF8_IN - 32))                           \
-  | (1 << (RANG_SMALL_DT1_SET - 32))                          \
-  | (1 << (RANG_SMALL_DT1_RESET - 32))                        \
-  | (1 << (RANG_SMALL_DT2_SET - 32))                          \
-  | (1 << (RANG_SMALL_DT2_RESET - 32))                        \
-  | (1 << (RANG_SMALL_DT3_SET - 32))                          \
-  | (1 << (RANG_SMALL_DT3_RESET - 32))                        \
-  | (1 << (RANG_SMALL_DT4_SET - 32))                          \
 )
 
 #define MASKA_BUTTON_MODE_1_SIGNALS_2 (unsigned int)(         \
-    (1 << (RANG_SMALL_DT4_RESET - 64))                        \
+    (1 << (RANG_SMALL_BLOCK_UMAX2 - 64))                      \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 0 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 1 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 2 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 3 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 4 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 5 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 6 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 7 - 64))                    \
+  | (1 << (RANG_SMALL_DF1_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF2_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF3_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF4_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF5_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF6_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF7_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF8_IN - 64))                           \
+  | (1 << (RANG_SMALL_DT1_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT1_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT2_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT2_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT3_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT3_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT4_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT4_RESET - 64))                        \
 )
 /*****************************************/
 

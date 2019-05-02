@@ -592,7 +592,15 @@ unsigned char temp_register_rtc[2];
 
 unsigned int changed_settings = CHANGED_ETAP_NONE; 
 unsigned char crc_settings;
-__SETTINGS current_settings_prt, current_settings, edition_settings, current_settings_interfaces;
+__SETTINGS current_settings_prt, current_settings;
+
+#if (MODYFIKACIA_VERSII_PZ < 4)
+__SETTINGS edition_settings, current_settings_interfaces;
+#else
+SRAM1 __SETTINGS edition_settings, current_settings_interfaces;
+#endif
+
+
 unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
 unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
 int * type_mtz_arr[NUMBER_LEVEL_MTZ];
