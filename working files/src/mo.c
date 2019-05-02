@@ -9,6 +9,7 @@ void start_receive_data_via_CANAL1_MO(void)
   clear_diagnostyka[0] |= WORD_0_MASKA_ERRORS_FROM_CANAL_1;
   clear_diagnostyka[1] |= WORD_1_MASKA_ERRORS_FROM_CANAL_1;
   clear_diagnostyka[2] |= WORD_2_MASKA_ERRORS_FROM_CANAL_1;
+  clear_diagnostyka[3] |= WORD_3_MASKA_ERRORS_FROM_CANAL_1;
   
   //Зупиняэмо канал приймання
   if ((DMA_StreamCANAL1_MO_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL1_MO_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;  
@@ -267,27 +268,27 @@ void start_transmint_data_via_CANAL1_MO(void)
       sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)resistance) + i);
     }
     
-    uint32_t bank_for_calc_poswer_tmp = (state_calc_power == false ) ? bank_for_calc_poswer : ((bank_for_calc_poswer ^ 0x1) & 0x1);
+    uint32_t bank_for_calc_power_tmp = (state_calc_power == false ) ? bank_for_calc_power : ((bank_for_calc_power ^ 0x1) & 0x1);
     
-    point = (uint8_t*)(&P[bank_for_calc_poswer_tmp]);
+    point = (uint8_t*)(&P[bank_for_calc_power_tmp]);
     for (uint32_t i = 0; i < (sizeof(P) >> 1); i++) 
     {
       sum += Canal1_MO_Transmit[index++] = *(point++);
     }
     
-    point = (uint8_t*)(&Q[bank_for_calc_poswer_tmp]);
+    point = (uint8_t*)(&Q[bank_for_calc_power_tmp]);
     for (uint32_t i = 0; i < (sizeof(Q) >> 1); i++) 
     {
       sum += Canal1_MO_Transmit[index++] = *(point++);
     }
     
-    point = (uint8_t*)(&S[bank_for_calc_poswer_tmp]);
+    point = (uint8_t*)(&S[bank_for_calc_power_tmp]);
     for (uint32_t i = 0; i < (sizeof(S) >> 1); i++) 
     {
       sum += Canal1_MO_Transmit[index++] = *(point++);
     }
     
-    point = (uint8_t*)(&cos_phi_x1000[bank_for_calc_poswer_tmp]);
+    point = (uint8_t*)(&cos_phi_x1000[bank_for_calc_power_tmp]);
     for (uint32_t i = 0; i < (sizeof(cos_phi_x1000) >> 1); i++) 
     {
       sum += Canal1_MO_Transmit[index++] = *(point++);
@@ -559,6 +560,7 @@ void CANAL2_MO_routine()
         clear_diagnostyka[0] |= WORD_0_MASKA_RECEIVING_ERRORS_CANAL_2;
         clear_diagnostyka[1] |= WORD_1_MASKA_RECEIVING_ERRORS_CANAL_2;
         clear_diagnostyka[2] |= WORD_2_MASKA_RECEIVING_ERRORS_CANAL_2;
+        clear_diagnostyka[3] |= WORD_3_MASKA_RECEIVING_ERRORS_CANAL_2;
 
         int32_t size_packet = BUFFER_CANAL2_MO - rx_ndtr;
         if(size_packet != 0)

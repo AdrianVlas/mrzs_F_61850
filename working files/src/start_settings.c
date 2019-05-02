@@ -765,6 +765,7 @@ void start_settings_peripherals(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_TxPin_RS485 | GPIO_RxPin_RS485;
   GPIO_Init(GPIO_USART_RS485, &GPIO_InitStructure);
 
+#if (MODYFIKACIA_VERSII_PZ == 4)
   //Перекидаємо піни PA9/Tx_CANAL1_MO, PA10/Rx_CANAL1_MO
   GPIO_PinAFConfig(GPIO_CANAL1_MO, GPIO_TxPin_CANAL1_MOSource, GPIO_AF_CANAL1_MO);
   GPIO_PinAFConfig(GPIO_CANAL1_MO, GPIO_RxPin_CANAL1_MOSource, GPIO_AF_CANAL1_MO);
@@ -780,6 +781,7 @@ void start_settings_peripherals(void)
   /* Configure CANAL2_MO Rx/Tx as alternate function push-pull */
   GPIO_InitStructure.GPIO_Pin = GPIO_TxPin_CANAL2_MO | GPIO_RxPin_CANAL2_MO;
   GPIO_Init(GPIO_CANAL2_MO, &GPIO_InitStructure);
+#endif
   /**********************/
 
   /* Під'єднання EXTI Line0 to POWER_CTRL_PIN піну */
@@ -1871,6 +1873,22 @@ void min_settings(__SETTINGS *target_label)
   target_label->language = LANGUAGE_EN;
   
   target_label->control_extra_settings_1 = 0;
+
+#if (MODYFIKACIA_VERSII_PZ == 4)
+  
+  target_label->IP4[0] = 192;
+  target_label->IP4[1] = 168;
+  target_label->IP4[2] = 0;
+  target_label->IP4[3] = 11;
+
+  target_label->mask = NETWORK_MASK_DEFAULT;
+
+  target_label->gateway[0] = 0;
+  target_label->gateway[1] = 0;
+  target_label->gateway[2] = 0;
+  target_label->gateway[3] = 0;
+  
+#endif  
 
   for(unsigned int i = 0; i < (7+1); i++)
   {

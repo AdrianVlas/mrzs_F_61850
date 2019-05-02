@@ -133,10 +133,14 @@ ERROR_BDZ_CTLR,
            (1 << (ERROR_IEC_RECEIVING_CANAL_1 - 64))         |\
            (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_1 - 64))   |\
            (1 << (ERROR_IEC_REQUEST_CANAL_1 - 64))           |\
-           (1 << (ERROR_IEC_NO_ANSWER_CANAL_1 - 64))         |\
-           (1 << (ERROR_IEC_RECEIVING_CANAL_2 - 64))         |\
-           (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_2 - 64))   |\
-           (1 << (ERROR_IEC_REQUEST_CANAL_2 - 64))            \
+           (1 << (ERROR_IEC_NO_ANSWER_CANAL_1 - 64))          \
+          )   
+
+#define WORD_3_MASKA_ERRORS_FROM_CANAL_1 (unsigned int)       \
+          (                                                   \
+           (1 << (ERROR_IEC_RECEIVING_CANAL_2 - 96))         |\
+           (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_2 - 96))   |\
+           (1 << (ERROR_IEC_REQUEST_CANAL_2 - 96))            \
           )   
 
 
@@ -146,8 +150,12 @@ ERROR_BDZ_CTLR,
           (                                                   \
            (1 << (ERROR_CPU_RECEIVING_CANAL_2 - 64))         |\
            (1 << (ERROR_CPU_RECEIVED_PACKET_CANAL_2 - 64))   |\
-           (1 << (ERROR_CPU_ANSWER_CANAL_2 - 64))            |\
-           (1 << (ERROR_CPU_NO_ANSWER_CANAL_2 - 64))          \
+           (1 << (ERROR_CPU_ANSWER_CANAL_2 - 64))             \
+          ) 
+
+#define WORD_3_MASKA_RECEIVING_ERRORS_CANAL_2 (unsigned int)  \
+          (                                                   \
+           (1 << (ERROR_CPU_NO_ANSWER_CANAL_2 - 96))          \
           ) 
 
 #define MASKA_AVAR_ERROR_0        (unsigned int)(               \

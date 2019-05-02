@@ -2687,17 +2687,34 @@ void fix_change_settings(unsigned int setting_rang, unsigned int source)
 {
   if (setting_rang < 2)
   {
-    unsigned char *point_to_target;
-  
-    if (setting_rang == 0) point_to_target = (&current_settings)->time_setpoints;
-    else point_to_target = (&current_settings)->time_ranguvannja;
-    
     //Записуємо час останніх змін
     unsigned char *label_to_time_array;
     if (copying_time == 2) label_to_time_array = time_copy;
     else label_to_time_array = time;
-    for (unsigned int i = 0; i < 7; i++) *(point_to_target + i) = *(label_to_time_array + i);
-    *(point_to_target + 7) = (unsigned char)(source & 0xff);
+
+    unsigned char *point_to_target;
+  
+    if (/*(source != 4) && */(source != 0))
+    {
+      if (setting_rang == 0) point_to_target = (&current_settings)->time_setpoints;
+      else point_to_target = (&current_settings)->time_ranguvannja;
+    
+      for (unsigned int i = 0; i < 7; i++) *(point_to_target + i) = *(label_to_time_array + i);
+      *(point_to_target + 7) = (unsigned char)(source & 0xff);
+    }
+    else
+    {
+      for (unsigned int i = 0; i < 7; i++) 
+      {
+        current_settings.time_ranguvannja[i] = current_settings.time_setpoints[i] = *(label_to_time_array + i);
+      }
+      current_settings.time_ranguvannja[7] = current_settings.time_setpoints[7] = (unsigned char)(source & 0xff);
+
+#if (MODYFIKACIA_VERSII_PZ == 4)
+      //Помічаємо, що треба передати налаштування у комунікаційну плату
+      _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
+#endif
+    }
   }
   
   //Запускаємо запис у EEPROM

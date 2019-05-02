@@ -9,23 +9,35 @@ void make_ekran_chose_communication_parameters(void)
   {
     {
       " Имя ячейки     ",
-      " RS-485         ",
+      " RS-485         "
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        ,
       " Ethernet       "
+#endif
     },
     {
       " Ім'я комірки   ",
-      " RS-485         ",
+      " RS-485         "
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        ,
       " Ethernet       "
+#endif
     },
     {
       " Bay name       ",
-      " RS-485         ",
+      " RS-485         "
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        ,
       " Ethernet       "
+#endif
     },
     {
       " Имя ячейки     ",
-      " RS-485         ",
+      " RS-485         "
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        ,
       " Ethernet       "
+#endif
     }
   };
   int index_language = index_language_in_array(current_settings.language);

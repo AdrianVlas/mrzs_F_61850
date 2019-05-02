@@ -9496,6 +9496,25 @@ inline void main_protection(void)
     temp_value_for_activated_function[1] |= temp_value_for_activated_function_button_interface[1];
     temp_value_for_activated_function[2] |= temp_value_for_activated_function_button_interface[2];
 
+#if (MODYFIKACIA_VERSII_PZ == 4)
+    /**************************/
+    //Опрацьовуємо cигнали з IEC-61850
+    /**************************/
+    static unsigned int temp_goose[N_SMALL];
+    for (unsigned int i = 0; i < N_SMALL; i++) 
+    {
+      unsigned int temp_value_for_activated_function_IEC;
+      temp_value_for_activated_function_IEC  = (unsigned int)(                IEC_goose_active_functions[i]  & IEC_active_functions[i]);
+      temp_value_for_activated_function_IEC |= (unsigned int)((unsigned int)(~IEC_goose_active_functions[i]) & temp_goose[i]);
+      temp_goose[i] = temp_value_for_activated_function_IEC;
+      temp_value_for_activated_function[i] |= temp_value_for_activated_function_IEC;
+
+      //Скидаємо використану інформацію
+      IEC_active_functions[i] = IEC_goose_active_functions[i] = 0;
+    }
+    /**************************/
+#endif
+
     //Активація з Д.Входу
     unsigned int vvimk_VV_vid_DV = false;
     unsigned int vymk_VV_vid_DV = false;
@@ -11060,6 +11079,7 @@ void TIM2_IRQHandler(void)
     TIM2->SR = (uint16_t)((~(uint32_t)TIM_IT_CC1) & 0xffff);
     uint32_t current_tick = TIM2->CCR1;
     
+#if (MODYFIKACIA_VERSII_PZ == 4)
     /***********************************************************/
     //Прийом інформації з комунікаційної плати
     /***********************************************************/
@@ -11068,6 +11088,7 @@ void TIM2_IRQHandler(void)
     start_receive_data_via_CANAL1_MO();
     GPIO_CANAL1_MO_Out1->BSRRH = GPIO_PIN_CANAL1_MO_Out1; //Переводимо пін canal1_Out1 в стан "0"
     /***********************************************************/
+#endif
 
     /***********************************************************/
     //Перевіряємо, чи відбувалися зміни настройок
@@ -11322,9 +11343,28 @@ void TIM2_IRQHandler(void)
 
     //Функції захистів
     main_protection();
+    
+#if (MODYFIKACIA_VERSII_PZ == 4)
+    /***
+    Очікування, щоб попередній пакет гарантовано завершив передаватися
+    ***/
+//    while ((DMA_StreamCANAL1_MO_Tx->CR & DMA_IT_TC) != 0);
+    while (DMA_StreamCANAL1_MO_Tx->NDTR != 0);
+
+//    uint32_t tick_for_Canal_1_tmp = tick_for_Canal_1;
+    uint32_t tick_for_Canal_1_tmp = TIM2->CNT;
+    uint64_t delta_tmp = 0;
+    do
+    {
+      uint32_t tick_tmp = TIM2->CNT;
+      delta_tmp = (tick_tmp < tick_for_Canal_1_tmp) ? (tick_tmp + 0x100000000 - tick_for_Canal_1_tmp) : (tick_tmp - tick_for_Canal_1_tmp);
+    }
+    while(delta_tmp < 2);
+    /***/
 
     //Ініціюємо передачу даних по каналу CANAL1_MO у комунікаційну плату
     start_transmint_data_via_CANAL1_MO();
+#endif
     /***********************************************************/
 
     /***********************************************************/
