@@ -28,7 +28,13 @@
 #include "const_menu_Umin.h"
 #include "const_menu_Umax.h"
 #include "const_menu_UP.h"
+
+#if (MODYFIKACIA_VERSII_PZ < 4)
 #include "const_menu_inputs.h"
+#else
+#include "with iec61850/const_menu_inputs.h"
+#endif
+
 #include "const_menu_outputs.h"
 #include "const_menu_leds.h"
 #include "const_menu_transformator.h"
