@@ -313,7 +313,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       index_row = index_1;
 #endif        
     }
-    else if (index_1 < RANG_SMALL_BLOCK_UP1) 
+    else if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1)) 
     {
       index_row = index_1
 #if (MODYFIKACIA_VERSII_PZ == 4)
@@ -321,9 +321,13 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
 #endif        
                   ;
     }
-    else if (index_1 < (RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL))
+    else if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL))
     {
-      index_row = NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1 + ((index_1 - RANG_SMALL_BLOCK_UP1) % 1);
+      index_row = NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                   + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif
+                   + ((index_1 - (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1)) % 1);
     }
     else
     {
@@ -380,8 +384,8 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
 #endif
       {
         if (
-            (index_1 >= RANG_SMALL_BLOCK_UP1)  &&
-            (index_1 <  (RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL)) &&
+            (index_1 >= (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1))  &&
+            (index_1 <  (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL)) &&
             (index_2 == index_number_UP[index_language][(index_1 - (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1)) % 1]) 
            )   
         {
@@ -403,11 +407,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     };
     for (size_t index_1 = 0; index_1 < MAX_COL_LCD; index_1++)
     {
-#if (MODYFIKACIA_VERSII_PZ == 4)
-      name_string_tmp[NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_NZZ + (1 - N_IN_GOOSE) + (1 - N_IN_MMS) + (1 - N_OUT_LAN)][index_1] = name_block_zz[index_language][index_1];
-#else
       name_string_tmp[NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_NZZ][index_1] = name_block_zz[index_language][index_1];
-#endif
     }
   }
   
