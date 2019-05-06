@@ -38,6 +38,34 @@ void make_ekran_list_source_tf(void)
     {"     Empty      ", NAME_RANG_SMALL_EN},
     {"     Пусто      ", NAME_RANG_SMALL_KZ}
   };
+
+#if (MODYFIKACIA_VERSII_PZ == 4)
+
+  const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1] = 
+  {
+    {14}, 
+    {14}, 
+    {13}, 
+    {14} 
+  };
+
+  const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1] = 
+  {
+    {13}, 
+    {13}, 
+    {12}, 
+    {13} 
+  };
+
+  const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1] = 
+  {
+    {11}, 
+    {11}, 
+    {11}, 
+    {11} 
+  };
+#endif  
+  
   const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] = 
   {
     {11, 10, 8}, 
@@ -80,33 +108,112 @@ void make_ekran_list_source_tf(void)
   }
 
   uint8_t output_signals_tmp[1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL][MAX_COL_LCD];
-  for(int index_1 = 0; index_1 < (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL); index_1++)
+  for(size_t index_1 = 0; index_1 < (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL); index_1++)
   {
-    unsigned int index_row;
-    if (index_1 < (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_EL_SIGNAL_FOR_RANG_SMALL - NUMBER_VMP_SIGNAL_FOR_RANG_SMALL - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)) 
+    size_t index_row;
+    if (index_1 < (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL)) 
     {
+#if (MODYFIKACIA_VERSII_PZ == 4)
+      if (index_1 < (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
+      {
+        index_row = index_1;
+      }
+      else if (index_1 < (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_MMS + N_OUT_LAN))) 
+      {
+        index_row = 1 + RANG_SMALL_BLOCK_IN_GOOSE1 + ((index_1 - (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) % 1);
+      }
+      else if (index_1 < (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_OUT_LAN))) 
+      {
+        index_row = 1 + RANG_SMALL_BLOCK_IN_MMS1 + (1 - N_IN_GOOSE) + ((index_1 - (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_MMS + N_OUT_LAN))) % 1);
+      }
+      else
+      {
+        index_row = 1 + RANG_SMALL_BLOCK_OUT_LAN1 + (1 - N_IN_GOOSE) + (1 - N_IN_MMS) + ((index_1 - (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_OUT_LAN))) % 1);
+      }
+#else
       index_row = index_1;
+#endif        
     }
-    else if (index_1 < (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_EL_SIGNAL_FOR_RANG_SMALL - NUMBER_VMP_SIGNAL_FOR_RANG_SMALL))
+    else if (index_1 < (1 + RANG_SMALL_BLOCK_UP1)) 
     {
-      index_row = (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_EL_SIGNAL_FOR_RANG_SMALL - NUMBER_VMP_SIGNAL_FOR_RANG_SMALL - NUMBER_UP_SIGNAL_FOR_RANG_SMALL) + ((index_1 - (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_EL_SIGNAL_FOR_RANG_SMALL - NUMBER_VMP_SIGNAL_FOR_RANG_SMALL - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)) % 1);
+      index_row = index_1
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                   + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                  ;
+    }
+    else if (index_1 < (1 + RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL))
+    {
+      index_row = 1 + RANG_SMALL_BLOCK_UP1
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                   + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif
+                   + ((index_1 - (1 + RANG_SMALL_BLOCK_UP1)) % 1);
     }
     else
     {
-      index_row = index_1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL + 1;
+      index_row = index_1 
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                  + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                  + 1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL;
     }
       
-    for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+    for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
     {
+#if (MODYFIKACIA_VERSII_PZ == 4)
       if (
-          (index_1 >= (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_EL_SIGNAL_FOR_RANG_SMALL - NUMBER_VMP_SIGNAL_FOR_RANG_SMALL - NUMBER_UP_SIGNAL_FOR_RANG_SMALL))  &&
-          (index_1 <  (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_EL_SIGNAL_FOR_RANG_SMALL - NUMBER_VMP_SIGNAL_FOR_RANG_SMALL)) &&
-          (index_2 == index_number_UP[index_language][(index_1 - (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_EL_SIGNAL_FOR_RANG_SMALL - NUMBER_VMP_SIGNAL_FOR_RANG_SMALL - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)) % 1]) 
-         )
+          (index_1 >= (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
+          (index_1 <  (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_MMS + N_OUT_LAN))) &&
+          (index_2 >=  index_n_In_GOOSE[index_language][(index_1 - (1 + RANG_SMALL_BLOCK_IN_GOOSE1)) % 1]) &&
+          (index_2 <= (index_n_In_GOOSE[index_language][(index_1 - (1 + RANG_SMALL_BLOCK_IN_GOOSE1)) % 1] + 1)) 
+         )   
       {
-        output_signals_tmp[index_1][index_2] = 0x30 + ((index_1 - (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - NUMBER_EL_SIGNAL_FOR_RANG_SMALL - NUMBER_VMP_SIGNAL_FOR_RANG_SMALL - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)) / 1 + 1);
+        unsigned int n = index_1 - (1 + RANG_SMALL_BLOCK_IN_GOOSE1);
+        if ((n + 1) < 10)
+        {
+          if (index_2 == index_n_In_GOOSE[index_language][n % 1])
+            output_signals_tmp[index_1][index_2] = 0x30 + (n + 1);
+          else
+            output_signals_tmp[index_1][index_2] = ' ';
+        }
+        else
+        {
+          if (index_2 == index_n_In_GOOSE[index_language][n % 1])
+            output_signals_tmp[index_1][index_2] = 0x30 + (n / 1 + 1) / 10;
+          else
+            output_signals_tmp[index_1][index_2] = 0x30 + (n / 1 + 1) % 10;
+        }
       }
-      else output_signals_tmp[index_1][index_2] = output_signals[index_language][index_row][index_2];
+      else if (
+               (index_1 >= (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_MMS + N_OUT_LAN)))  &&
+               (index_1 <  (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_OUT_LAN))) &&
+               (index_2 == index_n_In_MMS[index_language][(index_1 - (1 + RANG_SMALL_BLOCK_IN_MMS1)) % 1]) 
+              )   
+      {
+        output_signals_tmp[index_1][index_2] = 0x30 + ((index_1 - (1 + RANG_SMALL_BLOCK_IN_MMS1)) / 1 + 1);
+      }
+      else if (
+               (index_1 >= (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_OUT_LAN)))  &&
+               (index_1 <  (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL)) &&
+               (index_2 == index_n_Out_LAN[index_language][(index_1 - (1 + RANG_SMALL_BLOCK_OUT_LAN1)) % 1]) 
+              )   
+      {
+        output_signals_tmp[index_1][index_2] = 0x30 + ((index_1 - (1 + RANG_SMALL_BLOCK_OUT_LAN1)) / 1 + 1);
+      }
+      else 
+#endif
+      {
+        if (
+            (index_1 >= (1 + RANG_SMALL_BLOCK_UP1))  &&
+            (index_1 <  (1 + RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL)) &&
+            (index_2 == index_number_UP[index_language][(index_1 - (1 + RANG_SMALL_BLOCK_UP1)) % 1]) 
+           )   
+        {
+          output_signals_tmp[index_1][index_2] = 0x30 + ((index_1 - (1 + RANG_SMALL_BLOCK_UP1)) / 1 + 1);
+        }
+        else output_signals_tmp[index_1][index_2] = output_signals[index_language][index_row][index_2];
+      }
     }
   }
 
