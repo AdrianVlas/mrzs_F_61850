@@ -187,8 +187,10 @@ inline void detector_kuta_nzz(int ortogonal_local_calc[])
   /***
   Тригонометричні координати вектора різниці 
   ***/
-  cos_fi = COS_3I0*COS_3U0 + SIN_3I0*SIN_3U0;
-  sin_fi = -(SIN_3I0*COS_3U0 - COS_3I0*SIN_3U0);//З розділу: "Неймовірно, але факт", тобто що я не можу пояснити
+//  cos_fi = COS_3I0*COS_3U0 + SIN_3I0*SIN_3U0;
+//  sin_fi = -(SIN_3I0*COS_3U0 - COS_3I0*SIN_3U0);//З розділу: "Неймовірно, але факт", тобто що я не можу пояснити
+  cos_fi = COS_3U0*COS_3I0 + SIN_3U0*SIN_3I0;
+  sin_fi = -(COS_3U0*SIN_3I0 - SIN_3U0*COS_3I0);//З розділу: "Неймовірно, але факт", тобто що я не можу пояснити
   /***/
 
 #undef SIN_3I0
