@@ -1355,9 +1355,9 @@
       <group>
         <name>general</name>
         <group>
-          <name>a.00.c.d</name>
+          <name>a.05.c.d</name>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_global.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.05.c.d\const_global.h</name>
           </file>
         </group>
         <file>
@@ -1409,18 +1409,18 @@
       <group>
         <name>menu</name>
         <group>
-          <name>a.00.c.d</name>
+          <name>a.05.c.d</name>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.03.c.d\const_menu_diagnostyka.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.05.c.d\const_menu_diagnostyka.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_menu_outputs.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.05.c.d\const_menu_outputs.h</name>
           </file>
         </group>
         <group>
-          <name>without iec61850</name>
+          <name>with iec61850</name>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_inputs.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_inputs.h</name>
           </file>
         </group>
         <file>
@@ -1600,9 +1600,12 @@
       </group>
       <group>
         <name>Serial Dataflash</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\working files\inc\const_driver_serial_dataflash.h</name>
-        </file>
+        <group>
+          <name>a.05.c.d</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.05.c.d\const_driver_serial_dataflash.h</name>
+          </file>
+        </group>
       </group>
     </group>
     <group>

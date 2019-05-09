@@ -1207,11 +1207,14 @@
     </group>
     <group>
         <name>Linker</name>
+        <group>
+            <name>a.04.c.d</name>
+            <file>
+                <name>$PROJ_DIR$\..\a.04.c.d\stm32f2xx_flash.icf</name>
+            </file>
+        </group>
         <file>
             <name>$PROJ_DIR$\..\StackDepth.suc</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\stm32f2xx_flash.icf</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\stm32f2xx_flash_extsram.icf</name>
@@ -1494,9 +1497,9 @@
             <group>
                 <name>general</name>
                 <group>
-                    <name>a.00.c.d</name>
+                    <name>a.04.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_global.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.04.c.d\const_global.h</name>
                     </file>
                 </group>
                 <file>
@@ -1545,18 +1548,18 @@
             <group>
                 <name>menu</name>
                 <group>
-                    <name>a.00.c.d</name>
+                    <name>a.04.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_menu_diagnostyka.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.04.c.d\const_menu_diagnostyka.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_menu_outputs.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.04.c.d\const_menu_outputs.h</name>
                     </file>
                 </group>
                 <group>
-                    <name>without iec61850</name>
+                    <name>with iec61850</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_inputs.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_inputs.h</name>
                     </file>
                 </group>
                 <file>
@@ -1717,6 +1720,15 @@
                 </file>
             </group>
             <group>
+                <name>MO</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\const_MO.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\diagnostyka_mo.h</name>
+                </file>
+            </group>
+            <group>
                 <name>protection</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_df.h</name>
@@ -1737,9 +1749,9 @@
             <group>
                 <name>Serial Dataflash</name>
                 <group>
-                    <name>a.00.c.d</name>
+                    <name>a.04.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_driver_serial_dataflash.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.04.c.d\const_driver_serial_dataflash.h</name>
                     </file>
                 </group>
             </group>
@@ -2056,6 +2068,12 @@
                     <configuration>
                         <name>Flash-Debug</name>
                     </configuration>
+                </file>
+            </group>
+            <group>
+                <name>MO</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\mo.c</name>
                 </file>
             </group>
             <group>

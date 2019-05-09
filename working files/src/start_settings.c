@@ -446,7 +446,8 @@ void start_settings_peripherals(void)
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
 #endif
@@ -537,13 +538,17 @@ void start_settings_peripherals(void)
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
   if ((board_register_tmp & 0x17) != 0x17)
 #elif (MODYFIKACIA_VERSII_PZ == 1)
   if ((board_register_tmp & 0x07) != 0x07)
-#else
+#elif (MODYFIKACIA_VERSII_PZ == 2)
   if ((board_register_tmp & 0x03) != 0x03)
+#elif (MODYFIKACIA_VERSII_PZ == 4)
+  if ((board_register_tmp & 0x13) != 0x13)
+#else
+ #error  "UDEFINED MODIFIKACIA"
 #endif
   {
     if ((board_register_tmp &  0x01) !=  0x1) _SET_BIT(set_diagnostyka, ERROR_BA_1_FIX);
@@ -553,19 +558,20 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 4)    \
+     (MODYFIKACIA_VERSII_PZ == 5)    \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )   
     if ((board_register_tmp & 0x010) != 0x10) 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
       _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
 #else
@@ -593,7 +599,7 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 4)    \
+     (MODYFIKACIA_VERSII_PZ == 5)    \
     )
   if ((board_register_tmp & 0x04) == 0x04)
   {
@@ -604,14 +610,15 @@ void start_settings_peripherals(void)
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
   if ((board_register_tmp & 0x10) == 0x10)
   {
     _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
 #else
@@ -701,7 +708,7 @@ void start_settings_peripherals(void)
   /* Знімаємо пін 485DE */
   GPIO_ResetBits(GPIO_485DE, GPIO_PIN_485DE);
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
   /* Canal1_MO_Out1*/
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_CANAL1_MO_Out1;
   GPIO_Init(GPIO_CANAL1_MO_Out1, &GPIO_InitStructure);
@@ -765,7 +772,7 @@ void start_settings_peripherals(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_TxPin_RS485 | GPIO_RxPin_RS485;
   GPIO_Init(GPIO_USART_RS485, &GPIO_InitStructure);
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
   //Перекидаємо піни PA9/Tx_CANAL1_MO, PA10/Rx_CANAL1_MO
   GPIO_PinAFConfig(GPIO_CANAL1_MO, GPIO_TxPin_CANAL1_MOSource, GPIO_AF_CANAL1_MO);
   GPIO_PinAFConfig(GPIO_CANAL1_MO, GPIO_RxPin_CANAL1_MOSource, GPIO_AF_CANAL1_MO);
@@ -889,7 +896,7 @@ void start_settings_peripherals(void)
   DMA_ClearFlag(DMA_StreamRS485_Tx, DMA_FLAG_TCRS485_Tx | DMA_FLAG_HTRS485_Tx | DMA_FLAG_TEIRS485_Tx | DMA_FLAG_DMEIRS485_Tx | DMA_FLAG_FEIRS485_Tx);
   /**********************/
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
   /* Прийом по CANAL1_MO*/
   DMA_DeInit(DMA_StreamCANAL1_MO_Rx);
   while (DMA_GetCmdStatus(DMA_StreamCANAL1_MO_Rx) != DISABLE);
@@ -1323,7 +1330,7 @@ void start_settings_peripherals(void)
   }
   /**********************/
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
   /**********************/
   //Ініціалізація CANAL1_MO і CANAL2_MO: 6.75Мбіт/с, контроль парності, один стоп біт
   /**********************/
@@ -1595,7 +1602,8 @@ void min_settings(__SETTINGS *target_label)
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
   target_label->zdz_ovd_porig = 0;
 #endif
@@ -1874,7 +1882,7 @@ void min_settings(__SETTINGS *target_label)
   
   target_label->control_extra_settings_1 = 0;
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
   
   target_label->IP4[0] = 192;
   target_label->IP4[1] = 168;

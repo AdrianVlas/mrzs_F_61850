@@ -1464,7 +1464,7 @@ inline void input_scan(void)
   state_inputs_into_pin |=  ( _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36)       & 0xffff)
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
                          | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) &    0xf) << 16)
 #endif
@@ -3056,7 +3056,8 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
 
   static uint32_t test;
@@ -3169,7 +3170,8 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
   _AND3(logic_zdz_0, 2, light, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
   //"Св.ЗДЗ від ОВД1"
@@ -9498,7 +9500,7 @@ inline void main_protection(void)
     temp_value_for_activated_function[1] |= temp_value_for_activated_function_button_interface[1];
     temp_value_for_activated_function[2] |= temp_value_for_activated_function_button_interface[2];
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
     /**************************/
     //Опрацьовуємо cигнали з IEC-61850
     /**************************/
@@ -10343,7 +10345,8 @@ inline void main_protection(void)
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
       //Вимикаємо можливий режим тестування оптоканалу
       _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
@@ -11081,7 +11084,7 @@ void TIM2_IRQHandler(void)
     TIM2->SR = (uint16_t)((~(uint32_t)TIM_IT_CC1) & 0xffff);
     uint32_t current_tick = TIM2->CCR1;
     
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
     /***********************************************************/
     //Прийом інформації з комунікаційної плати
     /***********************************************************/
@@ -11261,7 +11264,7 @@ void TIM2_IRQHandler(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 4)    \
+     (MODYFIKACIA_VERSII_PZ == 5)    \
     )
       if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
       else if (board_register_diff & 0x04)
@@ -11276,12 +11279,13 @@ void TIM2_IRQHandler(void)
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
     if ((board_register_tmp & 0x010) != 0x10) 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
       _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
 #else
@@ -11291,7 +11295,7 @@ void TIM2_IRQHandler(void)
       {
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
         _SET_BIT(clear_diagnostyka, ERROR_BDV_DZ_FIX);
 #else
@@ -11302,7 +11306,7 @@ void TIM2_IRQHandler(void)
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
 #else
@@ -11346,7 +11350,7 @@ void TIM2_IRQHandler(void)
     //Функції захистів
     main_protection();
     
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
     /***
     Очікування, щоб попередній пакет гарантовано завершив передаватися
     ***/

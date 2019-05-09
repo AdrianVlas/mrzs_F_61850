@@ -12,8 +12,15 @@
 #define EKRAN_RANGUVANNJA_OUTPUT_7                (EKRAN_RANGUVANNJA_OUTPUT_6 + 1)
 #define EKRAN_RANGUVANNJA_OUTPUT_8                (EKRAN_RANGUVANNJA_OUTPUT_7 + 1)
 #define EKRAN_RANGUVANNJA_OUTPUT_9                (EKRAN_RANGUVANNJA_OUTPUT_8 + 1)
+#define EKRAN_RANGUVANNJA_OUTPUT_10               (EKRAN_RANGUVANNJA_OUTPUT_9 + 1)
+#define EKRAN_RANGUVANNJA_OUTPUT_11               (EKRAN_RANGUVANNJA_OUTPUT_10 + 1)
+#define EKRAN_RANGUVANNJA_OUTPUT_12               (EKRAN_RANGUVANNJA_OUTPUT_11 + 1)
+#define EKRAN_RANGUVANNJA_OUTPUT_13               (EKRAN_RANGUVANNJA_OUTPUT_12 + 1)
+#define EKRAN_RANGUVANNJA_OUTPUT_14               (EKRAN_RANGUVANNJA_OUTPUT_13 + 1)
+#define EKRAN_RANGUVANNJA_OUTPUT_15               (EKRAN_RANGUVANNJA_OUTPUT_14 + 1)
+#define EKRAN_RANGUVANNJA_OUTPUT_16               (EKRAN_RANGUVANNJA_OUTPUT_15 + 1)
 
-#define EKRAN_RANGUVANNJA_OUTPUT_LAST             EKRAN_RANGUVANNJA_OUTPUT_9
+#define EKRAN_RANGUVANNJA_OUTPUT_LAST             EKRAN_RANGUVANNJA_OUTPUT_16
 
 #define MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA       NUMBER_OUTPUTS
 #define MAX_ROW_RANGUVANNJA_OUTPUT                 NUMBER_TOTAL_SIGNAL_FOR_RANG
@@ -49,6 +56,9 @@
   " С.блк.Гот.к ТУ ",   \
   " Готовность к ТУ",   \
   "  Изм.настроек  ",   \
+  " Блок.Вх.GOOSExx",   \
+  "  Блок.Вх.MMSx  ",   \
+  "   Блок.ВСБx    ",   \
   "   Блок.МТЗ1    ",   \
   "   Блок.МТЗ2    ",   \
   " Блок.уск.МТЗ2  ",   \
@@ -287,6 +297,9 @@
   " С.блк.Гот.до ТУ",   \
   "Готовність до ТУ",   \
   " Зм.налаштування",   \
+  " Блок.Вх.GOOSExx",   \
+  "  Блок.Вх.MMSx  ",   \
+  "   Блок.ВМБx    ",   \
   "   Блок.МСЗ1    ",   \
   "   Блок.МСЗ2    ",   \
   " Блок.приск.МСЗ2",   \
@@ -525,6 +538,9 @@
   " С.блк.Гот.к ТУ ",   \
   " Готовность к ТУ",   \
   "Changed settings",   \
+  " Blc.In.GOOSExx ",   \
+  "  Blc.In.MMSx   ",   \
+  "    Blc.ВСБx    ",   \
   "  Blc.of OCP1   ",   \
   "  Blc.of OCP2   ",   \
   "  OCP2 Acc.Blc. ",   \
@@ -763,6 +779,9 @@
   " С.блк.Гот.к ТУ ",   \
   " Готовность к ТУ",   \
   "  Изм.настроек  ",   \
+  " Блок.Вх.GOOSExx",   \
+  "  Блок.Вх.MMSx  ",   \
+  "   Блок.ВСБx    ",   \
   "   Блок.МТЗ1    ",   \
   "   Блок.МТЗ2    ",   \
   " Блок.уск.МТЗ2  ",   \

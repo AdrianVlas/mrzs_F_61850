@@ -194,7 +194,8 @@ typedef struct
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )   
    int32_t zdz_ovd_porig;                                   //Поріг спрацювання ОВД
 #endif
@@ -374,7 +375,7 @@ typedef struct
   
   unsigned int control_extra_settings_1;                //Поле для додаткових налаштувань
   
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
   //IP4
   uint16_t IP4[4];                                      //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
   uint32_t mask;                                        //XX

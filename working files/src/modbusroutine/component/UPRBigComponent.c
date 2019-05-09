@@ -231,7 +231,8 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
 
     case 104:

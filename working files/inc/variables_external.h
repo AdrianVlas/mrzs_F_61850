@@ -121,7 +121,8 @@ extern unsigned int temp_states_for_mtz;
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )   
 extern uint32_t delta_time_test;
 extern uint32_t zdz_ovd_diagnostyka;
@@ -220,7 +221,7 @@ extern const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL];
 extern const uint32_t output_boards[N_OUTPUT_BOARDS][2];
 extern const uint32_t input_boards[N_INPUT_BOARDS][2];
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
 
 extern const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1];
 extern const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1];
@@ -537,7 +538,7 @@ extern unsigned int control_word_of_watchdog;
  **************************************************************/
 extern unsigned int gr_ustavok_tmp;
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
 //Міжпроцесорний обмін
 extern uint8_t Canal1_MO_Transmit[BUFFER_CANAL1_MO];
 extern uint8_t Canal1_MO_Received[BUFFER_CANAL1_MO];

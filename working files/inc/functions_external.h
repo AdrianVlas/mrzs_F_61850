@@ -345,7 +345,7 @@ extern void setpoints_selecting(unsigned int*, unsigned int);
 
 extern int str_to_int_DATE_Mmm(void);
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
 extern void start_transmint_data_via_CANAL1_MO(void);
 extern void start_receive_data_via_CANAL1_MO(void);
 extern void CANAL2_MO_routine(void);

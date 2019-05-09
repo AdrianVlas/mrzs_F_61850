@@ -10,7 +10,7 @@ void make_ekran_chose_communication_parameters(void)
     {
       " »м€ €чейки     ",
       " RS-485         "
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                         ,
       " Ethernet       "
 #endif
@@ -18,7 +18,7 @@ void make_ekran_chose_communication_parameters(void)
     {
       " ≤м'€ ком≥рки   ",
       " RS-485         "
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                         ,
       " Ethernet       "
 #endif
@@ -26,7 +26,7 @@ void make_ekran_chose_communication_parameters(void)
     {
       " Bay name       ",
       " RS-485         "
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                         ,
       " Ethernet       "
 #endif
@@ -34,7 +34,7 @@ void make_ekran_chose_communication_parameters(void)
     {
       " »м€ €чейки     ",
       " RS-485         "
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                         ,
       " Ethernet       "
 #endif
@@ -789,7 +789,7 @@ void make_ekran_chose_setting_Ethernet(void)
 }
 /*****************************************************/
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
 /*****************************************************/
 //‘ормуЇмо екран в≥дображенн€ налаштувань мережевого р≥вн€ Ethernet
 /*****************************************************/

@@ -11,7 +11,7 @@ void make_ekran_info()
       "   Версия ПО    ",
       "   Версия КП    ",
       " Серийный номер "
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                         ,
       "   MAC-адрес    "
 #endif
@@ -20,7 +20,7 @@ void make_ekran_info()
       "   Версія ПЗ    ",
       "   Версія КП    ",
       " Серійний номер "
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                         ,
       "   MAC-адреса   "
 #endif
@@ -29,7 +29,7 @@ void make_ekran_info()
       "   VER.of F/W   ",
       "   VER.of MM    ",
       " Serial number  "
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                         ,
       "  MAC address   "
 #endif
@@ -38,7 +38,7 @@ void make_ekran_info()
       "   Версия ПО    ",
       "   Версия КП    ",
       " Серийный номер "
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                         ,
       "   MAC-адрес    "
 #endif
@@ -158,7 +158,7 @@ void make_ekran_info()
             value /= 10;
           }
         }
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
         else if ((index_of_ekran>>1) == INDEX_ML_INFO_MAC_ADDRESS)
         {
           uint16_t MAC_address_tmp[3] = {0x0080, 0xE100, serial_number_dev};

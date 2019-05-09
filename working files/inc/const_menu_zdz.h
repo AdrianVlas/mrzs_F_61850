@@ -44,7 +44,8 @@ enum _index_ml_ctrl_zdz
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )   
   CTR_ZDZ_OVD1_STATE_BIT,
   CTR_ZDZ_OVD2_STATE_BIT,
@@ -76,7 +77,8 @@ enum _index_ml_ctrl_zdz
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )   
 
 #define CTR_ZDZ_MASKA                 (                                                                                           \

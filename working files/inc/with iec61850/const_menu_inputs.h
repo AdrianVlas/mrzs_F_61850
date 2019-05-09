@@ -13,7 +13,7 @@
 #define EKRAN_RANGUVANNJA_INPUT_8                (EKRAN_RANGUVANNJA_INPUT_7 + 1)
 
 #if (                                \
-     (MODYFIKACIA_VERSII_PZ == 4)    \
+     (MODYFIKACIA_VERSII_PZ == 5)    \
     )
 
 #define EKRAN_RANGUVANNJA_INPUT_9                (EKRAN_RANGUVANNJA_INPUT_8 + 1)
@@ -26,7 +26,7 @@
 #define EKRAN_RANGUVANNJA_INPUT_16               (EKRAN_RANGUVANNJA_INPUT_15 + 1)
 
 #if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
 
 #define EKRAN_RANGUVANNJA_INPUT_17               (EKRAN_RANGUVANNJA_INPUT_16 + 1)
@@ -39,7 +39,7 @@
 #endif
 
 #if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
 
 #define EKRAN_RANGUVANNJA_INPUT_LAST             EKRAN_RANGUVANNJA_INPUT_20

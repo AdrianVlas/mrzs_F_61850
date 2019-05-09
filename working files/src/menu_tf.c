@@ -24,7 +24,7 @@ void make_ekran_list_source_tf(void)
       "     Выход      "
     }
   };
-#if (MODYFIKACIA_VERSII_PZ < 4)
+#if (MODYFIKACIA_VERSII_PZ < 5)
   const uint8_t input_signals[MAX_NAMBER_LANGUAGE][1 + NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #else
   const uint8_t input_signals[MAX_NAMBER_LANGUAGE][1 + NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
@@ -35,7 +35,7 @@ void make_ekran_list_source_tf(void)
     {"     Empty      ", NAME_RANG_EN},
     {"     Пусто      ", NAME_RANG_KZ}
   };
-#if (MODYFIKACIA_VERSII_PZ < 4)
+#if (MODYFIKACIA_VERSII_PZ < 5)
   const uint8_t output_signals[MAX_NAMBER_LANGUAGE][1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
 #else
   const uint8_t output_signals[MAX_NAMBER_LANGUAGE][1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
@@ -55,7 +55,7 @@ void make_ekran_list_source_tf(void)
     size_t index_row;
     if (index_1 < (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG)) 
     {
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
       if (index_1 < (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
       {
         index_row = index_1;
@@ -79,7 +79,7 @@ void make_ekran_list_source_tf(void)
     else if (index_1 < (1 + RANG_BLOCK_UP1)) 
     {
       index_row = index_1
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                   ;
@@ -87,7 +87,7 @@ void make_ekran_list_source_tf(void)
     else if (index_1 < (1 + RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
     {
       index_row = 1 + RANG_BLOCK_UP1
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif
                    + ((index_1 - (1 + RANG_BLOCK_UP1)) % 3);
@@ -95,7 +95,7 @@ void make_ekran_list_source_tf(void)
     else
     {
       index_row = index_1 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                   + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                   + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
@@ -103,7 +103,7 @@ void make_ekran_list_source_tf(void)
       
     for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
     {
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
       if (
           (index_1 >= (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
           (index_1 <  (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&
@@ -165,7 +165,7 @@ void make_ekran_list_source_tf(void)
     size_t index_row;
     if (index_1 < (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL)) 
     {
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
       if (index_1 < (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
       {
         index_row = index_1;
@@ -189,7 +189,7 @@ void make_ekran_list_source_tf(void)
     else if (index_1 < (1 + RANG_SMALL_BLOCK_UP1)) 
     {
       index_row = index_1
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                   ;
@@ -197,7 +197,7 @@ void make_ekran_list_source_tf(void)
     else if (index_1 < (1 + RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL))
     {
       index_row = 1 + RANG_SMALL_BLOCK_UP1
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif
                    + ((index_1 - (1 + RANG_SMALL_BLOCK_UP1)) % 1);
@@ -205,7 +205,7 @@ void make_ekran_list_source_tf(void)
     else
     {
       index_row = index_1 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
                   + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                   + 1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL;
@@ -213,7 +213,7 @@ void make_ekran_list_source_tf(void)
       
     for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
     {
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
       if (
           (index_1 >= (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
           (index_1 <  (1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_MMS + N_OUT_LAN))) &&

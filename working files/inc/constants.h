@@ -29,8 +29,8 @@
 #include "const_menu_Umax.h"
 #include "const_menu_UP.h"
 
-#if (MODYFIKACIA_VERSII_PZ < 4)
-#include "const_menu_inputs.h"
+#if (MODYFIKACIA_VERSII_PZ < 5)
+#include "without iec61850/const_menu_inputs.h"
 #else
 #include "with iec61850/const_menu_inputs.h"
 #endif
@@ -77,7 +77,7 @@
 
 #include "const_interfaces.h"
 
-#if (MODYFIKACIA_VERSII_PZ == 4)
+#if (MODYFIKACIA_VERSII_PZ == 5)
 #include "const_MO.h"
 #include "diagnostyka_mo.h"
 #endif

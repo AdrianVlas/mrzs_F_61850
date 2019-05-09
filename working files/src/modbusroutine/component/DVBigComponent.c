@@ -6,7 +6,7 @@
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 5)       \
     )                                   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1515
@@ -20,7 +20,10 @@
 #define END_ADR_REGISTER 1483
 #endif
 
-#if (MODYFIKACIA_VERSII_PZ == 2)
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 2) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4)       \
+    )   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1419
 #endif

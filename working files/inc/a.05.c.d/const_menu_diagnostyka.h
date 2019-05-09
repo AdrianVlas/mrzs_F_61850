@@ -3,7 +3,7 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4))
+#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 2))
 #define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
 #define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
@@ -93,6 +93,23 @@ TEST_OVD1,
 TEST_OVD2,
 TEST_OVD3,
 
+ERROR_CPU_RECEIVING_CANAL_1,
+ERROR_CPU_RECEIVED_PACKET_CANAL_1,
+ERROR_CPU_ANSWER_CANAL_1,
+ERROR_CPU_NO_ANSWER_CANAL_1,
+ERROR_IEC_RECEIVING_CANAL_1,
+ERROR_IEC_RECEIVED_PACKET_CANAL_1,
+ERROR_IEC_REQUEST_CANAL_1,
+ERROR_IEC_NO_ANSWER_CANAL_1,
+
+ERROR_CPU_RECEIVING_CANAL_2,
+ERROR_CPU_RECEIVED_PACKET_CANAL_2,
+ERROR_CPU_ANSWER_CANAL_2,
+ERROR_CPU_NO_ANSWER_CANAL_2,
+ERROR_IEC_RECEIVING_CANAL_2,
+ERROR_IEC_RECEIVED_PACKET_CANAL_2,
+ERROR_IEC_REQUEST_CANAL_2,
+
 ERROR_BA_1_FIX,
 ERROR_BA_1_CTLR,
 ERROR_BDVV5_1_FIX,
@@ -104,6 +121,42 @@ ERROR_BDV_DZ_CTLR,
 ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
 };
+
+#define WORD_0_MASKA_ERRORS_FROM_CANAL_1 0
+#define WORD_1_MASKA_ERRORS_FROM_CANAL_1 0
+#define WORD_2_MASKA_ERRORS_FROM_CANAL_1 (unsigned int)       \
+          (                                                   \
+           (1 << (ERROR_CPU_RECEIVING_CANAL_1 - 64))         |\
+           (1 << (ERROR_CPU_RECEIVED_PACKET_CANAL_1 - 64))   |\
+           (1 << (ERROR_CPU_ANSWER_CANAL_1 - 64))            |\
+           (1 << (ERROR_CPU_NO_ANSWER_CANAL_1 - 64))         |\
+           (1 << (ERROR_IEC_RECEIVING_CANAL_1 - 64))         |\
+           (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_1 - 64))   |\
+           (1 << (ERROR_IEC_REQUEST_CANAL_1 - 64))           |\
+           (1 << (ERROR_IEC_NO_ANSWER_CANAL_1 - 64))          \
+          )   
+
+#define WORD_3_MASKA_ERRORS_FROM_CANAL_1 (unsigned int)       \
+          (                                                   \
+           (1 << (ERROR_IEC_RECEIVING_CANAL_2 - 96))         |\
+           (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_2 - 96))   |\
+           (1 << (ERROR_IEC_REQUEST_CANAL_2 - 96))            \
+          )   
+
+
+#define WORD_0_MASKA_RECEIVING_ERRORS_CANAL_2 0
+#define WORD_1_MASKA_RECEIVING_ERRORS_CANAL_2 0
+#define WORD_2_MASKA_RECEIVING_ERRORS_CANAL_2 (unsigned int)  \
+          (                                                   \
+           (1 << (ERROR_CPU_RECEIVING_CANAL_2 - 64))         |\
+           (1 << (ERROR_CPU_RECEIVED_PACKET_CANAL_2 - 64))   |\
+           (1 << (ERROR_CPU_ANSWER_CANAL_2 - 64))             \
+          ) 
+
+#define WORD_3_MASKA_RECEIVING_ERRORS_CANAL_2 (unsigned int)  \
+          (                                                   \
+           (1 << (ERROR_CPU_NO_ANSWER_CANAL_2 - 96))          \
+          ) 
 
 #define MASKA_AVAR_ERROR_0        (unsigned int)(               \
     (1 << (ERROR_SETTINGS_EEPROM_BIT))                          \
@@ -144,16 +197,19 @@ ERROR_BDZ_CTLR,
 
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
     (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
-  | (1 << (ERROR_BA_1_FIX - 64))                                \
-  | (1 << (ERROR_BA_1_CTLR - 64))                               \
-  | (1 << (ERROR_BDVV5_1_FIX - 64))                             \
-  | (1 << (ERROR_BDVV5_1_CTLR - 64))                            \
-  | (1 << (ERROR_BDVV5_2_FIX - 64))                             \
-  | (1 << (ERROR_BDVV5_2_CTLR - 64))                            \
-  | (1 << (ERROR_BDV_DZ_FIX - 64))                              \
-  | (1 << (ERROR_BDV_DZ_CTLR - 64))                             \
-  | (1 << (ERROR_BDZ_FIX - 64))                                 \
-  | (1 << (ERROR_BDZ_CTLR - 64))                                \
+)
+
+#define MASKA_AVAR_ERROR_3        (unsigned int)(               \
+    (1 << (ERROR_BA_1_FIX - 96))                                \
+  | (1 << (ERROR_BA_1_CTLR - 96))                               \
+  | (1 << (ERROR_BDVV5_1_FIX - 96))                             \
+  | (1 << (ERROR_BDVV5_1_CTLR - 96))                            \
+  | (1 << (ERROR_BDVV5_2_FIX - 96))                             \
+  | (1 << (ERROR_BDVV5_2_CTLR - 96))                            \
+  | (1 << (ERROR_BDV_DZ_FIX - 96))                              \
+  | (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
+  | (1 << (ERROR_BDZ_FIX - 96))                                 \
+  | (1 << (ERROR_BDZ_CTLR - 96))                                \
 )
 
 # define NAME_DIAGN_RU  \
@@ -242,6 +298,21 @@ ERROR_BDZ_CTLR,
   " Òåñò ÎÂÄ1      ",   \
   " Òåñò ÎÂÄ2      ",   \
   " Òåñò ÎÂÄ3      ",   \
+  "ÖÏ:Îø.ïðèåìà ê.1",   \
+  "ÖÏ:Îø.ïàêåòà ê.1",   \
+  "ÖÏ:Îø.îòâåòà ê.1",   \
+  " ÖÏ:Íåò îòâ.ê.1 ",   \
+  "ÊÏ:Îø.ïðèåìà ê.1",   \
+  "ÊÏ:Îø.ïàêåòà ê.1",   \
+  " ÊÏ:Îø.çàïð.ê.1 ",   \
+  " ÊÏ:Íåò çàïð.ê.1",   \
+  "ÖÏ:Îø.ïðèåìà ê.2",   \
+  "ÖÏ:Îø.ïàêåòà ê.2",   \
+  "ÖÏ:Îø.îòâåòà ê.2",   \
+  " ÖÏ:Íåò îòâ.ê.2 ",   \
+  "ÊÏ:Îø.ïðèåìà ê.2",   \
+  "ÊÏ:Îø.ïàêåòà ê.2",   \
+  " ÊÏ:Îø.çàïð.ê.2 ",   \
   " ÁÀ1 ô.         ",   \
   " ÁÀ1 ê.         ",   \
   " ÁÄÂÂ5_1 ô.     ",   \
@@ -340,6 +411,21 @@ ERROR_BDZ_CTLR,
   " Òåñò ÎÂÄ1      ",   \
   " Òåñò ÎÂÄ2      ",   \
   " Òåñò ÎÂÄ3      ",   \
+  "ÖÏ:Ïîì.ïðèéì.ê.1",   \
+  " ÖÏ:Ïîì.ï-òó ê.1",   \
+  " ÖÏ:Ïîì.â³äï.ê.1",   \
+  " ÖÏ:Íåìà â.ê.1  ",   \
+  "ÊÏ:Ïîì.ïðèéì.ê.1",   \
+  " ÊÏ:Ïîì.ï-òó ê.1",   \
+  " ÊÏ:Ïîì.çàï.ê.1 ",   \
+  " ÊÏ:Íåìà çàï.ê.1",   \
+  "ÖÏ:Ïîì.ïðèéì.ê.2",   \
+  " ÖÏ:Ïîì.ï-òó ê.2",   \
+  " ÖÏ:Ïîì.â³äï.ê.2",   \
+  " ÖÏ:Íåìà â.ê.2  ",   \
+  "ÊÏ:Ïîì.ïðèéì.ê.2",   \
+  " ÊÏ:Ïîì.ï-òó ê.2",   \
+  " ÊÏ:Ïîì.çàï.ê.2 ",   \
   " ÁÀ1 ô.         ",   \
   " ÁÀ1 ê.         ",   \
   " ÁÄÂÂ5_1 ô.     ",   \
@@ -438,6 +524,21 @@ ERROR_BDZ_CTLR,
   " Test ÎÂÄ1      ",   \
   " Test ÎÂÄ2      ",   \
   " Test ÎÂÄ3      ",   \
+  "ÖÏ:Îø.ïðèåìà ê.1",   \
+  "ÖÏ:Îø.ïàêåòà ê.1",   \
+  "ÖÏ:Îø.îòâåòà ê.1",   \
+  " ÖÏ:Íåò îòâ.ê.1 ",   \
+  "ÊÏ:Îø.ïðèåìà ê.1",   \
+  "ÊÏ:Îø.ïàêåòà ê.1",   \
+  " ÊÏ:Îø.çàïð.ê.1 ",   \
+  " ÊÏ:Íåò çàïð.ê.1",   \
+  "ÖÏ:Îø.ïðèåìà ê.2",   \
+  "ÖÏ:Îø.ïàêåòà ê.2",   \
+  "ÖÏ:Îø.îòâåòà ê.2",   \
+  " ÖÏ:Íåò îòâ.ê.2 ",   \
+  "ÊÏ:Îø.ïðèåìà ê.2",   \
+  "ÊÏ:Îø.ïàêåòà ê.2",   \
+  " ÊÏ:Îø.çàïð.ê.2 ",   \
   " BA1 f.         ",   \
   " BA1 ctrl.      ",   \
   " BDVV5_1 f.     ",   \
@@ -536,6 +637,21 @@ ERROR_BDZ_CTLR,
   " Òåñò ÎÂÄ1      ",   \
   " Òåñò ÎÂÄ2      ",   \
   " Òåñò ÎÂÄ3      ",   \
+  "ÖÏ:Îø.ïðèåìà ê.1",   \
+  "ÖÏ:Îø.ïàêåòà ê.1",   \
+  "ÖÏ:Îø.îòâåòà ê.1",   \
+  " ÖÏ:Íåò îòâ.ê.1 ",   \
+  "ÊÏ:Îø.ïðèåìà ê.1",   \
+  "ÊÏ:Îø.ïàêåòà ê.1",   \
+  " ÊÏ:Îø.çàïð.ê.1 ",   \
+  " ÊÏ:Íåò çàïð.ê.1",   \
+  "ÖÏ:Îø.ïðèåìà ê.2",   \
+  "ÖÏ:Îø.ïàêåòà ê.2",   \
+  "ÖÏ:Îø.îòâåòà ê.2",   \
+  " ÖÏ:Íåò îòâ.ê.2 ",   \
+  "ÊÏ:Îø.ïðèåìà ê.2",   \
+  "ÊÏ:Îø.ïàêåòà ê.2",   \
+  " ÊÏ:Îø.çàïð.ê.2 ",   \
   " ÁÀ1 ô.         ",   \
   " ÁÀ1 ê.         ",   \
   " ÁÄÂÂ5_1 ô.     ",   \
