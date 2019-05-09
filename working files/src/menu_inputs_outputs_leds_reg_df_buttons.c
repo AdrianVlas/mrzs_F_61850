@@ -249,34 +249,8 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       NAME_RANG_SMALL_KZ
     }
   };
-#if (MODYFIKACIA_VERSII_PZ == 4)
-
-  const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1] = 
-  {
-    {14}, 
-    {14}, 
-    {13}, 
-    {14} 
-  };
-
-  const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1] = 
-  {
-    {13}, 
-    {13}, 
-    {12}, 
-    {13} 
-  };
-
-  const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1] = 
-  {
-    {11}, 
-    {11}, 
-    {11}, 
-    {11} 
-  };
-#endif  
   
-  const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][1] = 
+  const uint32_t index_number_UP_small[MAX_NAMBER_LANGUAGE][1] = 
   {
     {11}, 
     {11}, 
@@ -386,7 +360,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
         if (
             (index_1 >= (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1))  &&
             (index_1 <  (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL)) &&
-            (index_2 == index_number_UP[index_language][(index_1 - (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1)) % 1]) 
+            (index_2 == index_number_UP_small[index_language][(index_1 - (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1)) % 1]) 
            )   
         {
           name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1)) / 1 + 1);
@@ -917,40 +891,6 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
       "  ранжирования  ",
       NAME_RANG_KZ
     }
-  };
-#if (MODYFIKACIA_VERSII_PZ == 4)
-
-  const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1] = 
-  {
-    {14}, 
-    {14}, 
-    {13}, 
-    {14} 
-  };
-
-  const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1] = 
-  {
-    {13}, 
-    {13}, 
-    {12}, 
-    {13} 
-  };
-
-  const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1] = 
-  {
-    {11}, 
-    {11}, 
-    {11}, 
-    {11} 
-  };
-#endif  
-  
-  const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] = 
-  {
-    {11, 10, 8}, 
-    {11, 10, 8}, 
-    {12,  7, 8}, 
-    {11, 10, 8}, 
   };
   unsigned char name_string_tmp[NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG][MAX_COL_LCD];
 

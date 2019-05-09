@@ -220,6 +220,16 @@ extern const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL];
 extern const uint32_t output_boards[N_OUTPUT_BOARDS][2];
 extern const uint32_t input_boards[N_INPUT_BOARDS][2];
 
+#if (MODYFIKACIA_VERSII_PZ == 4)
+
+extern const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1];
+extern const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1];
+extern const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1];
+
+#endif  
+  
+extern const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3];
+
 extern unsigned int periodical_tasks_TEST_SETTINGS;
 extern unsigned int periodical_tasks_TEST_USTUVANNJA;
 extern unsigned int periodical_tasks_TEST_TRG_FUNC;

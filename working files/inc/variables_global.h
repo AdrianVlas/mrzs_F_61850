@@ -488,6 +488,41 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
 #endif
 };
 
+#if (MODYFIKACIA_VERSII_PZ == 4)
+
+const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1] = 
+{
+  {14}, 
+  {14}, 
+  {13}, 
+  {14} 
+};
+
+const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1] = 
+{
+  {13}, 
+  {13}, 
+  {12}, 
+  {13} 
+};
+
+const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1] = 
+{
+  {11}, 
+  {11}, 
+  {11}, 
+  {11} 
+};
+#endif  
+  
+const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] = 
+{
+  {11, 10, 8}, 
+  {11, 10, 8}, 
+  {12,  7, 8}, 
+  {11, 10, 8}, 
+};
+
 unsigned int periodical_tasks_TEST_SETTINGS/* = false*/;
 unsigned int periodical_tasks_TEST_USTUVANNJA/* = false*/;
 unsigned int periodical_tasks_TEST_TRG_FUNC/* = false*/;

@@ -35,7 +35,11 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
 int superReader20(int offsetRegister, int fileNumber, int recordNumber, int recordLen);
 
 //Ідентитифікатор каналу - 16 ASCII символів
-const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG + 3][16] =
+#if (MODYFIKACIA_VERSII_PZ < 4)
+const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
+#else
+const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
+#endif
 {
   {NAME_RANG_RU},
   {NAME_RANG_UA},
@@ -891,44 +895,122 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
     case 7://Идентификатор канала6 offsetRegister
     case 8://Идентификатор канала7 offsetRegister
     {
-      const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] =
-      {
-        {11, 10, 8},
-        {11, 10, 8},
-        {12,  7, 8},
-        {11, 10, 8},
-      };
-
+//      const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] =
+//      {
+//        {11, 10, 8},
+//        {11, 10, 8},
+//        {12,  7, 8},
+//        {11, 10, 8},
+//      };
+//
       int index_language = index_language_in_array(current_settings.language);
 
       unsigned int index_cell =  (offsetRegister - 1)<<1;
       unsigned int temp_data = 0;
       for (size_t sym = 0; sym < 2; sym++)
         {
-          unsigned int index_row;
-          if (subObj < (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG))
+          size_t index_row;
+          if (subObj < NUMBER_GENERAL_SIGNAL_FOR_RANG) 
+          {
+#if (MODYFIKACIA_VERSII_PZ == 4)
+            if (subObj < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
             {
               index_row = subObj;
             }
-          else if (subObj < (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG))
+            else if (subObj < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) 
             {
-              index_row = (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG) +
-                          ((subObj - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) % 3);
+              index_row = RANG_BLOCK_IN_GOOSE1 + ((subObj - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) % 1);
             }
+            else if (subObj < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) 
+            {
+              index_row = RANG_BLOCK_IN_MMS1 + (1 - N_IN_GOOSE) + ((subObj - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) % 1);
+            }
+            else
+            {
+              index_row = RANG_BLOCK_OUT_LAN1 + (1 - N_IN_GOOSE) + (1 - N_IN_MMS) + ((subObj - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) % 1);
+            }
+#else
+            index_row = subObj;
+#endif        
+          }
+          else if (subObj < RANG_BLOCK_UP1) 
+          {
+            index_row = subObj
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                         + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                         ;
+          }
+          else if (subObj < (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
+          {
+            index_row = RANG_BLOCK_UP1
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                         + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif
+                         + ((subObj - RANG_BLOCK_UP1) % 3);
+          }
           else
-            {
-              index_row = subObj - NUMBER_UP_SIGNAL_FOR_RANG + 3;
-            }
+          {
+            index_row = subObj 
+#if (MODYFIKACIA_VERSII_PZ == 4)
+                        + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                        + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
+          }
 
+#if (MODYFIKACIA_VERSII_PZ == 4)
           if (
-            (subObj >= (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG))  &&
-            (subObj <  (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG)) &&
-            ((index_cell + sym) == index_number_UP[index_language][(subObj - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) % 3])
-          )
+              (subObj >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
+              (subObj <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&
+              ((index_cell + sym) >=  index_n_In_GOOSE[index_language][(subObj - RANG_BLOCK_IN_GOOSE1) % 1]) &&
+              ((index_cell + sym) <= (index_n_In_GOOSE[index_language][(subObj - RANG_BLOCK_IN_GOOSE1) % 1] + 1)) 
+             )   
+          {
+            unsigned int n = subObj - RANG_BLOCK_IN_GOOSE1;
+            if ((n + 1) < 10)
             {
-              temp_data |= (0x30 + ((subObj - (NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_EL_SIGNAL_FOR_RANG - NUMBER_VMP_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG)) / 3 + 1)) << (8*sym);
+              if ((index_cell + sym) == index_n_In_GOOSE[index_language][n % 1])
+                temp_data |= (0x30 + (n + 1)) << (8*sym);
+              else
+                temp_data |= (' ') << (8*sym);
             }
-          else temp_data |= (idetyficator_rang[index_language][index_row][(index_cell + sym)]) << (8*sym);
+            else
+            {
+              if ((index_cell + sym) == index_n_In_GOOSE[index_language][n % 1])
+                temp_data |= (0x30 + (n / 1 + 1) / 10) << (8*sym);
+              else
+                temp_data |= (0x30 + (n / 1 + 1) % 10) << (8*sym);
+            }
+          }
+          else if (
+                   (subObj >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN)))  &&
+                   (subObj <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) &&
+                   ((index_cell + sym) == index_n_In_MMS[index_language][(subObj - RANG_BLOCK_IN_MMS1) % 1]) 
+                  )   
+          {
+            temp_data |= (0x30 + ((subObj - RANG_BLOCK_IN_MMS1) / 1 + 1)) << (8*sym);
+          }
+          else if (
+                   (subObj >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN)))  &&
+                   (subObj <  (NUMBER_GENERAL_SIGNAL_FOR_RANG)) &&
+                   ((index_cell + sym) == index_n_Out_LAN[index_language][(subObj - RANG_BLOCK_OUT_LAN1) % 1]) 
+                  )   
+          {
+            temp_data |= (0x30 + ((subObj - RANG_BLOCK_OUT_LAN1) / 1 + 1)) << (8*sym);
+          }
+          else 
+#endif
+          {
+            if (
+                (subObj >=  RANG_BLOCK_UP1)  &&
+                (subObj <  (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG)) &&
+                ((index_cell + sym) == index_number_UP[index_language][(subObj - RANG_BLOCK_UP1) % 3]) 
+               )   
+            {
+              temp_data |= (0x30 + ((subObj - RANG_BLOCK_UP1) / 3 + 1)) << (8*sym);
+            }
+            else temp_data |= (idetyficator_rang[index_language][index_row][(index_cell + sym)]) << (8*sym);
+          }
         }
       return temp_data;
     }//case 1-8
