@@ -188,6 +188,7 @@ extern unsigned int etap_execution_df[NUMBER_DEFINED_FUNCTIONS];
 //12345
 extern unsigned int  previous_states_MTZ04_vvid_pr_0;
 
+extern unsigned int static_logic_APV_0;
 extern unsigned int previous_states_APV_0;
 extern unsigned int trigger_APV_0;
 

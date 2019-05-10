@@ -190,7 +190,7 @@ inline void detector_kuta_nzz(int ortogonal_local_calc[])
 //  cos_fi = COS_3I0*COS_3U0 + SIN_3I0*SIN_3U0;
 //  sin_fi = -(SIN_3I0*COS_3U0 - COS_3I0*SIN_3U0);//З розділу: "Неймовірно, але факт", тобто що я не можу пояснити
   cos_fi = COS_3U0*COS_3I0 + SIN_3U0*SIN_3I0;
-  sin_fi = -(COS_3U0*SIN_3I0 - SIN_3U0*COS_3I0);//З розділу: "Неймовірно, але факт", тобто що я не можу пояснити
+  sin_fi = -(SIN_3U0*COS_3I0 - COS_3U0*SIN_3I0);//З розділу: "Неймовірно, але факт", тобто що я не можу пояснити
   /***/
 
 #undef SIN_3I0
@@ -5183,11 +5183,17 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
 {
   unsigned int logic_APV_0 = 0;
   unsigned int logic_APV_1 = 0;
+  
+  unsigned int extra_logic_APV_0 = 0;
 
   //Рестарт пристрою
   logic_APV_1 |= (start_restart != 0) << 19;
   //Очищаємо повідомлення про рестрат пристрою
   start_restart = 0;
+
+  //"Стан вимикача"
+  logic_APV_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV) != 0) << 21;
+  _TIMER_IMPULSE(INDEX_TIMER_APV_BLOCK_VID_VV, current_settings_prt.timeout_apv_block_vid_VV[number_group_stp], previous_states_APV_0, 0, logic_APV_0, 21, logic_APV_0, 22);
 
   //"Статичне блокування"
   logic_APV_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_STAT_BLK_APV) != 0) << 0;
@@ -5216,9 +5222,13 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
   //"МТЗ4"
   logic_APV_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_MTZ4) != 0) << 12;
   _AND2(logic_APV_0, 11, logic_APV_0, 12, logic_APV_0, 13);
-  
+
   _OR4(logic_APV_0, 4, logic_APV_0, 7, logic_APV_0, 10, logic_APV_0, 13, logic_APV_0, 14);
-  _TIMER_0_T(INDEX_TIMER_APV_TMP1, 1, logic_APV_0, 14, logic_APV_0, 15);
+
+  _OR2(logic_APV_0, 21, static_logic_APV_0, 0, extra_logic_APV_0, 0);
+  _AND2(logic_APV_0, 14, extra_logic_APV_0, 0, static_logic_APV_0, 0);
+  
+  _TIMER_0_T(INDEX_TIMER_APV_TMP1, 1, static_logic_APV_0, 0, logic_APV_0, 15);
 
   //М:"ЧАПВ 1"
   logic_APV_0 |= ((current_settings_prt.control_achr_chapv & CTR_CHAPV1) != 0) << 16;
@@ -5249,10 +5259,6 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
 
   _OR2_INVERTOR(logic_APV_0, 15, logic_APV_0, 19, logic_APV_0, 20);
 
-  //"Стан вимикача"
-  logic_APV_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV) != 0) << 21;
-  _TIMER_IMPULSE(INDEX_TIMER_APV_BLOCK_VID_VV, current_settings_prt.timeout_apv_block_vid_VV[number_group_stp], previous_states_APV_0, 0, logic_APV_0, 21, logic_APV_0, 22);
-
   //М:"АПВ"
   logic_APV_0 |= ((current_settings_prt.control_apv & CTR_APV_STAGE_1) != 0) << 23;
   _INVERTOR(logic_APV_0, 23, logic_APV_0, 24);
@@ -5275,6 +5281,10 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
   logic_APV_1 |= _GET_OUTPUT_STATE(previous_states_APV_0, 3) <<  1;
   logic_APV_1 |= _GET_OUTPUT_STATE(previous_states_APV_0, 4) <<  2;
   
+  extra_logic_APV_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_UROV2) != 0) << 1;
+  _TIMER_0_T(INDEX_TIMER_APV_TMP2, 40, extra_logic_APV_0, 1, extra_logic_APV_0, 2);
+  _INVERTOR(extra_logic_APV_0, 2, extra_logic_APV_0, 3);
+
   unsigned int previous_trigger_APV_0;
   
   /*
@@ -5310,9 +5320,10 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
     
     
     //АПВ1
-    _OR6(logic_APV_1, 19, logic_APV_0, 14,                   trigger_APV_0, 1, trigger_APV_0, 2, trigger_APV_0, 3, logic_APV_0, 31, logic_APV_1, 4);
+    _OR6(logic_APV_1, 19, static_logic_APV_0, 0, trigger_APV_0, 1, trigger_APV_0, 2, trigger_APV_0, 3, logic_APV_0, 31, logic_APV_1, 4);
     _OR6(logic_APV_1, 26, logic_APV_0, 22, logic_APV_0, 24, logic_APV_1, 3, logic_APV_1, 0, logic_APV_1, 4, logic_APV_1, 8);
-    _D_TRIGGER(_GET_OUTPUT_STATE(logic_APV_0, 1),  0, _GET_OUTPUT_STATE(logic_APV_1, 8), previous_states_APV_0, 5, logic_APV_0, 20, trigger_APV_0, 0);                 
+    _OR2(logic_APV_1, 8, extra_logic_APV_0, 3, extra_logic_APV_0, 4);
+    _D_TRIGGER(_GET_OUTPUT_STATE(logic_APV_0, 1),  0, _GET_OUTPUT_STATE(extra_logic_APV_0, 4), previous_states_APV_0, 5, logic_APV_0, 20, trigger_APV_0, 0);                 
     _TIMER_T_0(INDEX_TIMER_APV_1, current_settings_prt.timeout_apv_1[number_group_stp], trigger_APV_0, 0, logic_APV_1, 9);
     /*
     Цей сигнал встановлюмо в масив p_active_functions в циклі з післяумовою
@@ -5327,9 +5338,10 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
 
     //АПВ2
     _AND2_INVERTOR(logic_APV_0, 31, logic_APV_0, 15, logic_APV_1, 10);
-    _OR6(logic_APV_1, 19, logic_APV_0, 14, trigger_APV_0, 0,                   trigger_APV_0, 2, trigger_APV_0, 3, logic_APV_1,  0, logic_APV_1, 5);
+    _OR6(logic_APV_1, 19, static_logic_APV_0, 0, trigger_APV_0, 0, trigger_APV_0, 2, trigger_APV_0, 3, logic_APV_1,  0, logic_APV_1, 5);
     _OR6(logic_APV_1, 26, logic_APV_0, 24, logic_APV_0, 26, logic_APV_1, 2, logic_APV_1, 1, logic_APV_1, 5, logic_APV_1, 11);
-    _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(logic_APV_1, 11), previous_states_APV_0, 6, logic_APV_1, 10, trigger_APV_0, 1);    
+    _OR2(logic_APV_1, 11, extra_logic_APV_0, 3, extra_logic_APV_0, 5);
+    _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(extra_logic_APV_0, 5), previous_states_APV_0, 6, logic_APV_1, 10, trigger_APV_0, 1);    
     _TIMER_T_0(INDEX_TIMER_APV_2, current_settings_prt.timeout_apv_2[number_group_stp], trigger_APV_0, 1, logic_APV_1, 12);
     /*
     Цей сигнал встановлюмо в масив p_active_functions в циклі з післяумовою
@@ -5344,9 +5356,10 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
 
     //АПВ3
     _AND2_INVERTOR(logic_APV_1, 0, logic_APV_0, 15, logic_APV_1, 13);
-    _OR6(logic_APV_1, 19, logic_APV_0, 14, trigger_APV_0, 0, trigger_APV_0, 1,                   trigger_APV_0, 3, logic_APV_1,  1, logic_APV_1, 6);
+    _OR6(logic_APV_1, 19, static_logic_APV_0, 0, trigger_APV_0, 0, trigger_APV_0, 1, trigger_APV_0, 3, logic_APV_1,  1, logic_APV_1, 6);
     _OR5(logic_APV_1, 26, logic_APV_0, 24, logic_APV_0, 28, logic_APV_1, 2, logic_APV_1, 6, logic_APV_1, 14);
-    _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(logic_APV_1, 14), previous_states_APV_0, 7, logic_APV_1, 13, trigger_APV_0, 2);                 
+    _OR2(logic_APV_1, 14, extra_logic_APV_0, 3, extra_logic_APV_0, 6);
+    _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(extra_logic_APV_0, 6), previous_states_APV_0, 7, logic_APV_1, 13, trigger_APV_0, 2);                 
     _TIMER_T_0(INDEX_TIMER_APV_3, current_settings_prt.timeout_apv_3[number_group_stp], trigger_APV_0, 2, logic_APV_1, 15);
     /*
     Цей сигнал встановлюмо в масив p_active_functions в циклі з післяумовою
@@ -5361,9 +5374,10 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
 
     //АПВ4
     _AND2_INVERTOR(logic_APV_1, 1, logic_APV_0, 15, logic_APV_1, 16);
-    _OR6(logic_APV_1, 19, logic_APV_0, 14, trigger_APV_0, 0, trigger_APV_0, 1, trigger_APV_0, 2,                   logic_APV_1,  2, logic_APV_1, 7);
+    _OR6(logic_APV_1, 19, static_logic_APV_0, 0, trigger_APV_0, 0, trigger_APV_0, 1, trigger_APV_0, 2, logic_APV_1,  2, logic_APV_1, 7);
     _OR4(logic_APV_1, 26, logic_APV_0, 24, logic_APV_0, 30, logic_APV_1, 7, logic_APV_1, 17);
-    _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(logic_APV_1, 17), previous_states_APV_0, 8, logic_APV_1, 16, trigger_APV_0, 3);                 
+    _OR2(logic_APV_1, 17, extra_logic_APV_0, 3, extra_logic_APV_0, 7);
+    _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(extra_logic_APV_0, 7), previous_states_APV_0, 8, logic_APV_1, 16, trigger_APV_0, 3);                 
     _TIMER_T_0(INDEX_TIMER_APV_4, current_settings_prt.timeout_apv_4[number_group_stp], trigger_APV_0, 3, logic_APV_1, 18);
     /*
     Цей сигнал встановлюмо в масив p_active_functions в циклі з післяумовою
@@ -10317,13 +10331,15 @@ inline void main_protection(void)
       for (unsigned int i = 0; i < N_BIG; i++) active_functions[i] &= (unsigned int)(~maska_achr_chapv_signals[i]);
 
       global_timers[INDEX_TIMER_ACHR_CHAPV_100MS_1] = -1;
-      global_timers[INDEX_TIMER_ACHR1] = -1;
-      global_timers[INDEX_TIMER_CHAPV1] = -1;
-      global_timers[INDEX_TIMER_ACHR_CHAPV_100MS_1] = -1;
       global_timers[INDEX_TIMER_CHAPV1_1MS] = -1;
       global_timers[INDEX_TIMER_CHAPV2_1MS] = -1;
       global_timers[INDEX_TIMER_BLOCK_CHAPV1_5MS] = -1;
       global_timers[INDEX_TIMER_BLOCK_CHAPV2_5MS] = -1;
+      global_timers[INDEX_TIMER_ACHR1] = -1;
+      global_timers[INDEX_TIMER_CHAPV1] = -1;
+      global_timers[INDEX_TIMER_ACHR2] = -1;
+      global_timers[INDEX_TIMER_CHAPV2] = -1;
+
       previous_state_po_achr_chapv_uaf1 = 0;
       previous_state_po_achr_chapv_ubf1 = 0;
       previous_state_po_achr_chapv_ucf1 = 0;
@@ -10443,7 +10459,10 @@ inline void main_protection(void)
       global_timers[INDEX_TIMER_APV_BLOCK_VID_APV4] = -1;
       global_timers[INDEX_TIMER_APV_BLOCK_VID_VV] = -1;
       global_timers[INDEX_TIMER_APV_TMP1] = -1;
+      global_timers[INDEX_TIMER_ACHR_CHAPV] = -1;
+      global_timers[INDEX_TIMER_APV_TMP2] = -1;
 
+      static_logic_APV_0 = 0;
       previous_states_APV_0 = 0;
       trigger_APV_0 = 0;
     }
@@ -10617,6 +10636,7 @@ inline void main_protection(void)
     state_outputs = 0;
     
     //Переводимо у початковий стан деякі глобальні змінні
+    static_logic_APV_0 = 0;
     previous_states_APV_0 = 0;
     trigger_APV_0 = 0;
     previous_state_po_achr_chapv_uaf1 = 0;

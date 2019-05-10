@@ -16710,14 +16710,30 @@ void main_manu_function(void)
                 int32_t index_position = current_ekran.index_position;
                 uint32_t value = (edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] >> (16*index_position)) & 0xffff;
                   
-                if (++value >= max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION - 1][index_position]) value = 0;
+                value++;
+                if (
+                    ((current_settings.control_zz & CTR_ZZ1_TYPE) != 0) &&
+                    (index_position == INDEX_ML_LIST_SOURCE_INPUT_TF)
+                   )
+                {
+                  while(
+                        (value == (1 + RANG_PO_NZZ)) ||
+                        (value == (1 + RANG_NZZ)) ||
+                        (value == (1 + RANG_SECTOR_NZZ))
+                       ) 
+                  {
+                    value++;
+                  }
+                }
+
+                if (value >= max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION - 1][index_position]) value = 0;
                 for (size_t i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
                 {
                   if (
                       ((current_settings.configuration & (1 << i)) == 0) &&
                       (value >= max_value_for_tf[1 + i - 1][index_position]) &&
                       (value <= max_value_for_tf[1 + i    ][index_position])
-                     ) 
+                     )
                   {
                     value = (i < (TOTAL_NUMBER_PROTECTION - 1)) ? max_value_for_tf[1 + i][index_position] : 0;
                   }
@@ -18579,7 +18595,23 @@ void main_manu_function(void)
                 int32_t index_position = current_ekran.index_position;
                 int32_t value = (edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] >> (16*index_position)) & 0xffff;
                   
-                if (--value < 0) value = max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION - 1][index_position] - 1;
+                value--;
+                if (
+                    ((current_settings.control_zz & CTR_ZZ1_TYPE) != 0) &&
+                    (index_position == INDEX_ML_LIST_SOURCE_INPUT_TF)
+                   )
+                {
+                  while(
+                        (value == (1 + RANG_PO_NZZ)) ||
+                        (value == (1 + RANG_NZZ)) ||
+                        (value == (1 + RANG_SECTOR_NZZ))
+                       ) 
+                  {
+                    value--;
+                  }
+                }
+
+                if (value < 0) value = max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION - 1][index_position] - 1;
                 for (intptr_t i = (TOTAL_NUMBER_PROTECTION - 1); i >= 0; i--)
                 {
                   if (
