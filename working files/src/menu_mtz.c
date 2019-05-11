@@ -1425,7 +1425,7 @@ void make_ekran_control_mtz()
       "   OCP2 Acc.    ",
       "Accelerated OCP2",
       "  OCP Stage 3   ",
-      " Option of OCP2 ",
+      " Option of OCP3 ",
       "  МТЗН3 Прямой  ",
       " МТЗН3 Обратный ",
       "  OCP Stage 4   ",
