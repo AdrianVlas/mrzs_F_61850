@@ -395,10 +395,10 @@ void make_ekran_control_zz()
       {4, 4}
     },
     {
-      {4, 3},
-      {4, 3},
-      {4, 3},
-      {4, 3}
+      {3, 4},
+      {2, 4},
+      {3, 4},
+      {3, 4}
     }
   };
   unsigned int cursor_x_tmp[MAX_ROW_FOR_CONTROL_ZZ][2]; 
