@@ -319,7 +319,7 @@ void setpoints_selecting(unsigned int*, unsigned int);
 
 int str_to_int_DATE_Mmm(void);
 
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
 void start_transmint_data_via_CANAL1_MO(void);
 void start_receive_data_via_CANAL1_MO(void);
 void CANAL2_MO_routine(void);

@@ -8,7 +8,7 @@
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 201

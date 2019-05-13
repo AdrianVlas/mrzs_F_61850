@@ -349,7 +349,7 @@ unsigned int temp_states_for_mtz/* = 0*/;
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
 uint32_t delta_time_test = PERIOD_ZDZ_TEST;
 uint32_t zdz_ovd_diagnostyka;
@@ -463,7 +463,7 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 5)    \
+     (MODYFIKACIA_VERSII_PZ == 10)   \
     )
   ,
   {16, 5}
@@ -476,13 +476,13 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 5)    \
+     (MODYFIKACIA_VERSII_PZ == 10)   \
     )
   ,
   {16, 5}
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
   ,
   {20, 7}
@@ -490,7 +490,7 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
 #endif
 };
 
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
 
 const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1] = 
 {
@@ -631,7 +631,7 @@ unsigned int changed_settings = CHANGED_ETAP_NONE;
 unsigned char crc_settings;
 __SETTINGS current_settings_prt, current_settings;
 
-#if (MODYFIKACIA_VERSII_PZ < 5)
+#if (MODYFIKACIA_VERSII_PZ < 10)
 __SETTINGS edition_settings, current_settings_interfaces;
 #else
 SRAM1 __SETTINGS edition_settings, current_settings_interfaces;
@@ -910,7 +910,7 @@ unsigned int control_word_of_watchdog/* = 0*/;
  **************************************************************/
 unsigned int gr_ustavok_tmp = 0xf;
 
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
 //Міжпроцесорний обмін
 uint8_t Canal1_MO_Transmit[BUFFER_CANAL1_MO];
 uint8_t Canal1_MO_Received[BUFFER_CANAL1_MO];

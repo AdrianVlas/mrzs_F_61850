@@ -106,7 +106,7 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
       "      ÎÂÄ1      ",
       "      ÎÂÄ2      ",
@@ -127,7 +127,7 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
       "      ÎÂÄ1      ",
       "      ÎÂÄ2      ",
@@ -148,7 +148,7 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
       "      ÎÂÄ1      ",
       "      ÎÂÄ2      ",
@@ -169,7 +169,7 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
       "      ÎÂÄ1      ",
       "      ÎÂÄ2      ",
@@ -219,7 +219,7 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
   const uint8_t information_3[ZDZ_CTRL_PORIG_N][MAX_COL_LCD] = 
   {
@@ -249,7 +249,7 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
     {information_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD1_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD1_STATE_BIT) & 0x1]},
     {information_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD2_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD2_STATE_BIT) & 0x1]},

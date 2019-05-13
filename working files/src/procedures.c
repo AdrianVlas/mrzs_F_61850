@@ -2710,7 +2710,7 @@ void fix_change_settings(unsigned int setting_rang, unsigned int source)
       }
       current_settings.time_ranguvannja[7] = current_settings.time_setpoints[7] = (unsigned char)(source & 0xff);
 
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
       //Помічаємо, що треба передати налаштування у комунікаційну плату
       _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
 #endif

@@ -1137,7 +1137,7 @@ void make_ekran_changing_signals_digital_registrator(void)
   if (buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] == LABEL_START_RECORD_DR)
   {
     //Пеший байт сходиться із міткою початку запису - вважаємо, що у буфері достовірні дані
-#if (MODYFIKACIA_VERSII_PZ < 5)
+#if (MODYFIKACIA_VERSII_PZ < 10)
     const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #else
     const unsigned char name_string[MAX_NAMBER_LANGUAGE][ NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
@@ -1155,7 +1155,7 @@ void make_ekran_changing_signals_digital_registrator(void)
       size_t index_row;
       if (index_1 < NUMBER_GENERAL_SIGNAL_FOR_RANG) 
       {
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
         if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
         {
           index_row = index_1;
@@ -1179,7 +1179,7 @@ void make_ekran_changing_signals_digital_registrator(void)
       else if (index_1 < RANG_BLOCK_UP1) 
       {
         index_row = index_1
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                      + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                      ;
@@ -1187,7 +1187,7 @@ void make_ekran_changing_signals_digital_registrator(void)
       else if (index_1 < (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
       {
         index_row = RANG_BLOCK_UP1
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                      + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif
                      + ((index_1 - RANG_BLOCK_UP1) % 3);
@@ -1195,7 +1195,7 @@ void make_ekran_changing_signals_digital_registrator(void)
       else
       {
         index_row = index_1 
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                     + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                     + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
@@ -1203,7 +1203,7 @@ void make_ekran_changing_signals_digital_registrator(void)
       
       for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
       {
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
         if (
             (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
             (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&

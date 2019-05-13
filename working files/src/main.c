@@ -179,7 +179,7 @@ inline void periodical_operations(void)
     }
   }
 
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
   /*******************/
   //Управління Каналом 2 міжпроцесорного обміну між БАв і комунікаційною платою
   /*******************/

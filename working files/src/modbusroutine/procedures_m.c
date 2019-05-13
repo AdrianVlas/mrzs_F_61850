@@ -35,7 +35,7 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
 int superReader20(int offsetRegister, int fileNumber, int recordNumber, int recordLen);
 
 //Ідентитифікатор каналу - 16 ASCII символів
-#if (MODYFIKACIA_VERSII_PZ < 5)
+#if (MODYFIKACIA_VERSII_PZ < 10)
 const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
 #else
 const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
@@ -912,7 +912,7 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
           size_t index_row;
           if (subObj < NUMBER_GENERAL_SIGNAL_FOR_RANG) 
           {
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
             if (subObj < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
             {
               index_row = subObj;
@@ -936,7 +936,7 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
           else if (subObj < RANG_BLOCK_UP1) 
           {
             index_row = subObj
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                          + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                          ;
@@ -944,7 +944,7 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
           else if (subObj < (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
           {
             index_row = RANG_BLOCK_UP1
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                          + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif
                          + ((subObj - RANG_BLOCK_UP1) % 3);
@@ -952,13 +952,13 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
           else
           {
             index_row = subObj 
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                         + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                         + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
           }
 
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
           if (
               (subObj >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
               (subObj <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&

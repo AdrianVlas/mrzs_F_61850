@@ -1501,7 +1501,7 @@ void main_manu_function(void)
     case EKRAN_PHY_LAYER_RS485:
     case EKRAN_PROTOCOL_RS485:
       
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
     case EKRAN_CHOSE_SETTING_ETHERNET:
 #endif
       
@@ -1933,7 +1933,7 @@ void main_manu_function(void)
               //Формуємо екран відображення списку налаштувань протоколу RS-485
               make_ekran_protocols_rs485();
             }
-#if (MODYFIKACIA_VERSII_PZ == 5)            
+#if (MODYFIKACIA_VERSII_PZ >= 10)            
             else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTING_ETHERNET) current_ekran.index_position = 0;
@@ -3210,7 +3210,7 @@ void main_manu_function(void)
                   //Переходимо на меню відображення списку нашаштувань RS-485
                   current_ekran.current_level = EKRAN_CHOSE_SETTING_RS485;
                 }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                 else if(current_ekran.index_position == INDEX_ML_CHCP_SETTING_ETHERNET)
                 {
                   //Запам'ятовуємо поперердній екран
@@ -3281,7 +3281,7 @@ void main_manu_function(void)
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
               {
                 //Натисну кнопка Enter у вікні вибору налаштувань Ethernet
@@ -4156,7 +4156,7 @@ void main_manu_function(void)
                //Формуємо екран відображення списку налаштувань протоколу RS-485
                make_ekran_protocols_rs485();
               }
-#if (MODYFIKACIA_VERSII_PZ == 5)              
+#if (MODYFIKACIA_VERSII_PZ >= 10)              
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTING_ETHERNET - 1;
@@ -4887,7 +4887,7 @@ void main_manu_function(void)
                //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
                 make_ekran_protocols_rs485();
               }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTING_ETHERNET) current_ekran.index_position = 0;
@@ -5373,7 +5373,7 @@ void main_manu_function(void)
     case EKRAN_VIEW_STOP_BITS_RS485:
     case EKRAN_VIEW_TIMEOUT_RS485:
       
-#if (MODYFIKACIA_VERSII_PZ == 5)      
+#if (MODYFIKACIA_VERSII_PZ >= 10)      
     case EKRAN_SETTING_NETWORK_LAYER_ETHERNET:
 #endif
       
@@ -6101,7 +6101,7 @@ void main_manu_function(void)
               //Формуємо екран інформації по time-out наступного символу
               make_ekran_timeout_interface();
             }
-#if (MODYFIKACIA_VERSII_PZ == 5)            
+#if (MODYFIKACIA_VERSII_PZ >= 10)            
             else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET) current_ekran.index_position = 0;
@@ -6499,7 +6499,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                   edition_settings.zdz_ovd_porig = current_settings.zdz_ovd_porig;
 #endif
@@ -7209,7 +7209,7 @@ void main_manu_function(void)
                   edition_settings.time_out_1_RS485 = current_settings.time_out_1_RS485;
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_BEGIN;
                 }
-#if (MODYFIKACIA_VERSII_PZ == 5)                
+#if (MODYFIKACIA_VERSII_PZ >= 10)                
                 else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
                 {
                   if (
@@ -7621,7 +7621,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                       (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
 #endif
@@ -8212,7 +8212,7 @@ void main_manu_function(void)
                 {
                   if (edition_settings.time_out_1_RS485 != current_settings.time_out_1_RS485) found_changes = 1;
                 }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                 else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
                 {
                   if (
@@ -9345,7 +9345,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                       (edition_settings.zdz_ovd_porig < ZDZ_CTRL_PORIG_N) &&
 #endif
@@ -9358,7 +9358,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                         (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
 #endif
@@ -9373,7 +9373,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                       current_settings.zdz_ovd_porig = edition_settings.zdz_ovd_porig;
 #endif
@@ -11471,7 +11471,7 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                 else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
                 {
                   if (
@@ -13224,7 +13224,7 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
               else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
               {
                 if(current_ekran.edition == 0)
@@ -14703,7 +14703,7 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
               else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
               {
                 if(current_ekran.edition == 0)
@@ -15425,7 +15425,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                 else if (current_ekran.index_position == CTR_ZDZ_PORIG)
                 {
@@ -15442,7 +15442,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
@@ -16599,7 +16599,7 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
               else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
               {
                 if (
@@ -17305,7 +17305,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                 else if (current_ekran.index_position == CTR_ZDZ_PORIG)
                 {
@@ -17322,7 +17322,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )   
                   else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
                   else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
@@ -18484,7 +18484,7 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
-#if (MODYFIKACIA_VERSII_PZ == 5)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
               else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
               {
                 if (
@@ -18839,7 +18839,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 5)    \
+     (MODYFIKACIA_VERSII_PZ == 10)   \
     )
 
     case EKRAN_RANGUVANNJA_INPUT_9:
@@ -18853,7 +18853,7 @@ void main_manu_function(void)
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
 
     case EKRAN_RANGUVANNJA_INPUT_17:
@@ -18879,7 +18879,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 5)    \
+     (MODYFIKACIA_VERSII_PZ == 10)   \
     )
 
     case EKRAN_RANGUVANNJA_OUTPUT_10:

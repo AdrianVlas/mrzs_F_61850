@@ -7,7 +7,7 @@
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 5)     \
+       (MODYFIKACIA_VERSII_PZ == 10)    \
       )   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 11900
@@ -764,7 +764,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 5)     \
+       (MODYFIKACIA_VERSII_PZ == 10)    \
       )   
   case 1600:
     (*multer) = 1;
@@ -899,7 +899,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
   if(inOffset>=1056 && inOffset<1076)
 #endif
@@ -982,7 +982,7 @@ int getUSTBigModbusRegister(int adrReg)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 5)     \
+       (MODYFIKACIA_VERSII_PZ == 10)    \
       )   
   if(editValue == (uint32_t*)&edition_settings.zdz_ovd_porig) return (*editValue)+1;
 #endif
@@ -1037,7 +1037,7 @@ int getUSTBigModbusRegister(int adrReg)
   {
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
     if(offset==MARKER1046)
     {
@@ -1063,7 +1063,7 @@ int getUSTBigModbusRegister(int adrReg)
   {
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5)       \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
     if(offset==MARKER1048)
     {
@@ -1232,7 +1232,7 @@ int postUSTBigWriteAction(void)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 5)     \
+       (MODYFIKACIA_VERSII_PZ == 10)    \
       )   
     if(editValue == (uint32_t*)&edition_settings.zdz_ovd_porig)
     {
