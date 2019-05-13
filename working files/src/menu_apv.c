@@ -335,7 +335,8 @@ void make_ekran_control_apv()
       "  ѕуск от ћ“«1  ",
       "  ѕуск от ћ“«2  ",
       "  ѕуск от ћ“«3  ",
-      "  ѕуск от ћ“«4  "
+      "  ѕуск от ћ“«4  ",
+      " Ѕл.контр.пол ¬¬"
     },
     {
       "      јѕ¬       ",
@@ -345,7 +346,8 @@ void make_ekran_control_apv()
       " ѕуск в≥д ћ—«1  ",
       " ѕуск в≥д ћ—«2  ",
       " ѕуск в≥д ћ—«3  ",
-      " ѕуск в≥д ћ—«4  "
+      " ѕуск в≥д ћ—«4  ",
+      " Ѕл.контр.ст ¬¬ "
     },
     {
       "       AR       ",
@@ -355,7 +357,8 @@ void make_ekran_control_apv()
       " Start from OCP1",
       " Start from OCP2",
       " Start from OCP3",
-      " Start from OCP4"
+      " Start from OCP4",
+      " Ѕл.контр.пол ¬¬"
     },
     {
       "      јѕ¬       ",
@@ -365,7 +368,8 @@ void make_ekran_control_apv()
       "  ѕуск от ћ“«1  ",
       "  ѕуск от ћ“«2  ",
       "  ѕуск от ћ“«3  ",
-      "  ѕуск от ћ“«4  "
+      "  ѕуск от ћ“«4  ",
+      " Ѕл.контр.пол ¬¬"
     }
   };
   unsigned char name_string_tmp[MAX_ROW_FOR_CONTROL_APV][MAX_COL_LCD];

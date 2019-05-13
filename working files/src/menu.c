@@ -15802,6 +15802,7 @@ void main_manu_function(void)
                 else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) maska = CTR_APV_STARTED_FROM_MTZ2;
                 else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) maska = CTR_APV_STARTED_FROM_MTZ3;
                 else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4) maska = CTR_APV_STARTED_FROM_MTZ4;
+                else if (current_ekran.index_position == INDEX_ML_CTRAPV_BLK_CTRL_VV) maska = CTR_APV_CTRAPV_BLK_CTRL_VV;
                 
                 //Міняємо на протилежний відповідний біт для вибраної позиції
                 edition_settings.control_apv ^= maska;
@@ -17682,7 +17683,8 @@ void main_manu_function(void)
                 else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) maska = CTR_APV_STARTED_FROM_MTZ2;
                 else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) maska = CTR_APV_STARTED_FROM_MTZ3;
                 else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4) maska = CTR_APV_STARTED_FROM_MTZ4;
-                
+                else if (current_ekran.index_position == INDEX_ML_CTRAPV_BLK_CTRL_VV) maska = CTR_APV_CTRAPV_BLK_CTRL_VV;
+
                 //Міняємо на протилежний відповідний біт для вибраної позиції
                 edition_settings.control_apv ^= maska;
 
