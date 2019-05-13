@@ -1068,11 +1068,14 @@
   </group>
   <group>
     <name>Linker</name>
+    <group>
+      <name>without iec61850</name>
+      <file>
+        <name>$PROJ_DIR$\..\without iec61850\stm32f2xx_flash.icf</name>
+      </file>
+    </group>
     <file>
       <name>$PROJ_DIR$\..\StackDepth.suc</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\stm32f2xx_flash.icf</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\stm32f2xx_flash_extsram.icf</name>

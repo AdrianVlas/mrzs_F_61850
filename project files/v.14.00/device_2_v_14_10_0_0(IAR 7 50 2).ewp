@@ -620,7 +620,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>device_2_v_14_5_0_0(IAR 7 50 2).bin</state>
+          <state>device_2_v_14_10_0_0(IAR 7 50 2).bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -739,7 +739,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\stm32f2xx_flash.icf</state>
+          <state>$PROJ_DIR$\..\with iec61850\stm32f2xx_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -991,11 +991,14 @@
   </group>
   <group>
     <name>Linker</name>
+    <group>
+      <name>with iec61850</name>
+      <file>
+        <name>$PROJ_DIR$\..\with iec61850\stm32f2xx_flash.icf</name>
+      </file>
+    </group>
     <file>
       <name>$PROJ_DIR$\..\StackDepth.suc</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\stm32f2xx_flash.icf</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\stm32f2xx_flash_extsram.icf</name>
