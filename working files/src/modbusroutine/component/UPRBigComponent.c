@@ -521,13 +521,16 @@ int uprFunc000(int inOffset, uint32_t *uprMaska, int validData, uint32_t **editC
       if(isValidCONFCondition(**editControl, MTZ_BIT_CONFIGURATION,
                               *uprMaska, validData)) isValid = 0;
       break;
-#define APV_CONFIGURATION_END 296
-    case APV_CONFIGURATION_END:
+    case 296:
       (*uprMaska)   = INDEX_ML_CTRAPV_STARTED_FROM_MTZ4;
       if(isValidCONFCondition(**editControl, MTZ_BIT_CONFIGURATION,
                               *uprMaska, validData)) isValid = 0;
       break;
-
+//  count_bit = 6;
+#define APV_CONFIGURATION_END 300
+    case APV_CONFIGURATION_END:
+      (*uprMaska)   = INDEX_ML_CTRAPV_BLK_CTRL_VV;
+      break;
 
 //  count_bit = 6;
     case 304:
