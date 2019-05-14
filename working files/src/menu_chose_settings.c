@@ -10,6 +10,9 @@ void make_ekran_chose_settings(void)
     {
       " Инфо.          ",
       " Метка настроек ",
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      " IEC 61850      ",
+#endif
       " Входы          ",
       " Выходы         ",
       " Светоиндикаторы",
@@ -27,6 +30,9 @@ void make_ekran_chose_settings(void)
     {
       " Інфо.          ",
       " Мітка налашт.  ",
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      " IEC 61850      ",
+#endif
       " Входи          ",
       " Виходи         ",
       " Світлоіндикат. ",
@@ -44,6 +50,9 @@ void make_ekran_chose_settings(void)
     {
       " Info.          ",
       " Settings Mark  ",
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      " IEC 61850      ",
+#endif
       " Inputs         ",
       " Outputs        ",
       " LED            ",
@@ -61,6 +70,9 @@ void make_ekran_chose_settings(void)
     {
       " Инфо.          ",
       " Метка настроек ",
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      " IEC 61850      ",
+#endif
       " Входы          ",
       " Выходы         ",
       " Светоиндикаторы",

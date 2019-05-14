@@ -4578,6 +4578,9 @@
                 <group>
                     <name>with iec61850</name>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_IEC61850.h</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_inputs.h</name>
                     </file>
                 </group>
@@ -4997,6 +5000,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\menu_general_pickups_el.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\menu_iec61850.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\menu_info.c</name>

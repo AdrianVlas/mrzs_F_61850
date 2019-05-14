@@ -1502,6 +1502,7 @@ void main_manu_function(void)
     case EKRAN_PROTOCOL_RS485:
       
 #if (MODYFIKACIA_VERSII_PZ >= 10)
+    case EKRAN_LIST_TYPE_IEC61850_NODES:
     case EKRAN_CHOSE_SETTING_ETHERNET:
 #endif
       
@@ -1934,6 +1935,14 @@ void main_manu_function(void)
               make_ekran_protocols_rs485();
             }
 #if (MODYFIKACIA_VERSII_PZ >= 10)            
+            else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_TYPE_IEC61850_NODES) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_LIST_TYPE_IEC61850_NODES] = current_ekran.index_position;
+            
+              //Формуємо екран заголовків для типів логічних вузлів для IEC 61850
+              make_ekran_type_IEC61850_nodes();
+            }
             else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTING_ETHERNET) current_ekran.index_position = 0;
@@ -3016,6 +3025,12 @@ void main_manu_function(void)
                   //Переходимо на меню відображення вибору міток настройок
                   current_ekran.current_level = EKRAN_POINT_TIME_SETTINGS;
                 }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if(current_ekran.index_position == INDEX_OF_IEC61850)
+                {
+                  current_ekran.current_level = EKRAN_LIST_TYPE_IEC61850_NODES;
+                }
+#endif
                 else if(current_ekran.index_position == INDEX_OF_INPUTS_RANGUVANNJA)
                 {
                   //Запам'ятовуємо поперердній екран
@@ -3282,6 +3297,30 @@ void main_manu_function(void)
                 current_ekran.edition = 0;
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
+              {
+                //Натисну кнопка Enter у вікні вибору вікна настройок УВВ
+                if(current_ekran.index_position == INDEX_TYPE_IEC61850_IN_GOOSE)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку вхідних GOOSE блоків
+//                  current_ekran.current_level = ;
+                }
+                else if(current_ekran.index_position == INDEX_TYPE_IEC61850_IN_MMS)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку вхідних MMS блоків
+//                  current_ekran.current_level = ;
+                }
+                else if(current_ekran.index_position == INDEX_TYPE_IEC61850_OUT_LAN)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку вихідних мережевих блоків
+//                  current_ekran.current_level = ;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
               {
                 //Натисну кнопка Enter у вікні вибору налаштувань Ethernet
@@ -4157,6 +4196,14 @@ void main_manu_function(void)
                make_ekran_protocols_rs485();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)              
+              else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TYPE_IEC61850_NODES - 1;
+                position_in_current_level_menu[EKRAN_LIST_TYPE_IEC61850_NODES] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків для типів логічних вузлів для IEC 61850
+                make_ekran_type_IEC61850_nodes();
+              }
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTING_ETHERNET - 1;
@@ -4888,6 +4935,14 @@ void main_manu_function(void)
                 make_ekran_protocols_rs485();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TYPE_IEC61850_NODES) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_LIST_TYPE_IEC61850_NODES] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків для типів логічних вузлів для IEC 61850
+                make_ekran_type_IEC61850_nodes();
+              }
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTING_ETHERNET) current_ekran.index_position = 0;

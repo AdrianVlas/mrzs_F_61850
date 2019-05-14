@@ -33,6 +33,7 @@
 #include "without iec61850/const_menu_inputs.h"
 #else
 #include "with iec61850/const_menu_inputs.h"
+#include "with iec61850/const_menu_IEC61850.h"
 #endif
 
 #include "const_menu_outputs.h"
