@@ -5287,7 +5287,6 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
   
   extra_logic_APV_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_UROV2) != 0) << 1;
   _TIMER_0_T(INDEX_TIMER_APV_TMP2, 40, extra_logic_APV_0, 1, extra_logic_APV_0, 2);
-  _INVERTOR(extra_logic_APV_0, 2, extra_logic_APV_0, 3);
 
   unsigned int previous_trigger_APV_0;
   
@@ -5326,7 +5325,7 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
     //ÀÏÂ1
     _OR6(logic_APV_1, 19, static_logic_APV_0, 0, trigger_APV_0, 1, trigger_APV_0, 2, trigger_APV_0, 3, logic_APV_0, 31, logic_APV_1, 4);
     _OR6(logic_APV_1, 26, logic_APV_0, 22, logic_APV_0, 24, logic_APV_1, 3, logic_APV_1, 0, logic_APV_1, 4, logic_APV_1, 8);
-    _OR2(logic_APV_1, 8, extra_logic_APV_0, 3, extra_logic_APV_0, 4);
+    _OR2(logic_APV_1, 8, extra_logic_APV_0, 2, extra_logic_APV_0, 4);
     _D_TRIGGER(_GET_OUTPUT_STATE(logic_APV_0, 1),  0, _GET_OUTPUT_STATE(extra_logic_APV_0, 4), previous_states_APV_0, 5, logic_APV_0, 20, trigger_APV_0, 0);                 
     _TIMER_T_0(INDEX_TIMER_APV_1, current_settings_prt.timeout_apv_1[number_group_stp], trigger_APV_0, 0, logic_APV_1, 9);
     /*
@@ -5344,7 +5343,7 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
     _AND2_INVERTOR(logic_APV_0, 31, logic_APV_0, 15, logic_APV_1, 10);
     _OR6(logic_APV_1, 19, static_logic_APV_0, 0, trigger_APV_0, 0, trigger_APV_0, 2, trigger_APV_0, 3, logic_APV_1,  0, logic_APV_1, 5);
     _OR6(logic_APV_1, 26, logic_APV_0, 24, logic_APV_0, 26, logic_APV_1, 2, logic_APV_1, 1, logic_APV_1, 5, logic_APV_1, 11);
-    _OR2(logic_APV_1, 11, extra_logic_APV_0, 3, extra_logic_APV_0, 5);
+    _OR2(logic_APV_1, 11, extra_logic_APV_0, 2, extra_logic_APV_0, 5);
     _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(extra_logic_APV_0, 5), previous_states_APV_0, 6, logic_APV_1, 10, trigger_APV_0, 1);    
     _TIMER_T_0(INDEX_TIMER_APV_2, current_settings_prt.timeout_apv_2[number_group_stp], trigger_APV_0, 1, logic_APV_1, 12);
     /*
@@ -5362,7 +5361,7 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
     _AND2_INVERTOR(logic_APV_1, 0, logic_APV_0, 15, logic_APV_1, 13);
     _OR6(logic_APV_1, 19, static_logic_APV_0, 0, trigger_APV_0, 0, trigger_APV_0, 1, trigger_APV_0, 3, logic_APV_1,  1, logic_APV_1, 6);
     _OR5(logic_APV_1, 26, logic_APV_0, 24, logic_APV_0, 28, logic_APV_1, 2, logic_APV_1, 6, logic_APV_1, 14);
-    _OR2(logic_APV_1, 14, extra_logic_APV_0, 3, extra_logic_APV_0, 6);
+    _OR2(logic_APV_1, 14, extra_logic_APV_0, 2, extra_logic_APV_0, 6);
     _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(extra_logic_APV_0, 6), previous_states_APV_0, 7, logic_APV_1, 13, trigger_APV_0, 2);                 
     _TIMER_T_0(INDEX_TIMER_APV_3, current_settings_prt.timeout_apv_3[number_group_stp], trigger_APV_0, 2, logic_APV_1, 15);
     /*
@@ -5380,7 +5379,7 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
     _AND2_INVERTOR(logic_APV_1, 1, logic_APV_0, 15, logic_APV_1, 16);
     _OR6(logic_APV_1, 19, static_logic_APV_0, 0, trigger_APV_0, 0, trigger_APV_0, 1, trigger_APV_0, 2, logic_APV_1,  2, logic_APV_1, 7);
     _OR4(logic_APV_1, 26, logic_APV_0, 24, logic_APV_0, 30, logic_APV_1, 7, logic_APV_1, 17);
-    _OR2(logic_APV_1, 17, extra_logic_APV_0, 3, extra_logic_APV_0, 7);
+    _OR2(logic_APV_1, 17, extra_logic_APV_0, 2, extra_logic_APV_0, 7);
     _D_TRIGGER(1,  0, _GET_OUTPUT_STATE(extra_logic_APV_0, 7), previous_states_APV_0, 8, logic_APV_1, 16, trigger_APV_0, 3);                 
     _TIMER_T_0(INDEX_TIMER_APV_4, current_settings_prt.timeout_apv_4[number_group_stp], trigger_APV_0, 3, logic_APV_1, 18);
     /*
