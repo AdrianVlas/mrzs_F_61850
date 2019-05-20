@@ -1203,6 +1203,9 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Виводим УРОВ
       target_label->control_urov &= (unsigned int)(~MASKA_FOR_BIT(INDEX_ML_CTRUROV_STATE));
    
+      //Виводим контроль ПРВВ2 з АПВ
+      target_label->control_apv &= (unsigned int)(~MASKA_FOR_BIT(INDEX_ML_CTRAPV_BLK_CTRL_PRVV2));
+   
         //Формуємо маки функцій УРОВ
       for (unsigned int i = 0; i < N_SMALL; i++ ) maska[i] = 0;
       for (int i = 0; i < NUMBER_UROV_SIGNAL_FOR_RANG_SMALL; i++)

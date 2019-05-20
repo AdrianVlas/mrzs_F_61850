@@ -336,7 +336,8 @@ void make_ekran_control_apv()
       "  Пуск от МТЗ2  ",
       "  Пуск от МТЗ3  ",
       "  Пуск от МТЗ4  ",
-      " Бл.контр.пол ВВ"
+      " Бл.контр.пол ВВ",
+      " Бл.АПВ от УРОВ2"
     },
     {
       "      АПВ       ",
@@ -347,7 +348,8 @@ void make_ekran_control_apv()
       " Пуск від МСЗ2  ",
       " Пуск від МСЗ3  ",
       " Пуск від МСЗ4  ",
-      " Бл.контр.ст ВВ "
+      " Бл.контр.ст ВВ ",
+      "Бл.АПВ від ПРВВ2"
     },
     {
       "       AR       ",
@@ -358,7 +360,8 @@ void make_ekran_control_apv()
       " Start from OCP2",
       " Start from OCP3",
       " Start from OCP4",
-      " Бл.контр.пол ВВ"
+      " Бл.контр.пол ВВ",
+      " Бл.АПВ от УРОВ2"
     },
     {
       "      АПВ       ",
@@ -369,7 +372,8 @@ void make_ekran_control_apv()
       "  Пуск от МТЗ2  ",
       "  Пуск от МТЗ3  ",
       "  Пуск от МТЗ4  ",
-      " Бл.контр.пол ВВ"
+      " Бл.контр.пол ВВ",
+      " Бл.АПВ от УРОВ2"
     }
   };
   unsigned char name_string_tmp[MAX_ROW_FOR_CONTROL_APV][MAX_COL_LCD];
@@ -389,7 +393,7 @@ void make_ekran_control_apv()
   /******************************************/
   //Виключаємо поля, які не треба відображати
   /******************************************/
-  int additional_current_mtz = 0;
+  int additional_current = 0;
   int position_temp = current_ekran.index_position;
   int index_of_ekran;
   
@@ -397,7 +401,7 @@ void make_ekran_control_apv()
   {
     for (int current_index = INDEX_ML_CTRAPV_STARTED_FROM_MTZ1; current_index <= INDEX_ML_CTRAPV_STARTED_FROM_MTZ4; current_index++ )
     {
-      int i = current_index - additional_current_mtz;
+      int i = current_index - additional_current;
       unsigned int maska_1, maska_2;
       maska_1 = (1 << i) - 1;
       maska_2 = (unsigned int)(~maska_1);
@@ -407,17 +411,44 @@ void make_ekran_control_apv()
       {
         for(unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((i+1) < (MAX_ROW_FOR_CONTROL_APV - additional_current_mtz)) name_string_tmp[i][j] = name_string_tmp[i + 1][j];
+          if ((i+1) < (MAX_ROW_FOR_CONTROL_APV - additional_current)) name_string_tmp[i][j] = name_string_tmp[i + 1][j];
           else name_string_tmp[i][j] = ' ';
         }
         i++;
       }
-      while (i < (MAX_ROW_FOR_CONTROL_APV - additional_current_mtz));
+      while (i < (MAX_ROW_FOR_CONTROL_APV - additional_current));
     
       unsigned int temp_data_1 = (temp_data >> 1) & maska_2;
       temp_data = (temp_data & maska_1) | temp_data_1;
 
-      additional_current_mtz++;
+      additional_current++;
+    }
+  }
+
+  if ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
+  {
+    {
+      int i = INDEX_ML_CTRAPV_BLK_CTRL_PRVV2 - additional_current;
+      unsigned int maska_1, maska_2;
+      maska_1 = (1 << i) - 1;
+      maska_2 = (unsigned int)(~maska_1);
+    
+      if ((i+1) <= position_temp) position_temp--;
+      do
+      {
+        for(unsigned int j = 0; j<MAX_COL_LCD; j++)
+        {
+          if ((i+1) < (MAX_ROW_FOR_CONTROL_APV - additional_current)) name_string_tmp[i][j] = name_string_tmp[i + 1][j];
+          else name_string_tmp[i][j] = ' ';
+        }
+        i++;
+      }
+      while (i < (MAX_ROW_FOR_CONTROL_APV - additional_current));
+    
+      unsigned int temp_data_1 = (temp_data >> 1) & maska_2;
+      temp_data = (temp_data & maska_1) | temp_data_1;
+
+      additional_current++;
     }
   }
   /******************************************/
@@ -428,7 +459,7 @@ void make_ekran_control_apv()
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
     int index_of_ekran_tmp = index_of_ekran >> 1;
-    if (index_of_ekran_tmp < (MAX_ROW_FOR_CONTROL_APV - additional_current_mtz))
+    if (index_of_ekran_tmp < (MAX_ROW_FOR_CONTROL_APV - additional_current))
     {
       if ((i & 0x1) == 0)
       {

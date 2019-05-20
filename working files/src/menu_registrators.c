@@ -1630,19 +1630,32 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
     unsigned int max_number_changers_in_record = buffer_for_manu_read_record[8];
     unsigned int position_temp;
     unsigned int index_of_ekran;
-    unsigned int diagnostic_old[3], diagnostic_new[3], diagnostic_changing[3];
+    unsigned int diagnostic_old[N_DIAGN], diagnostic_new[N_DIAGN], diagnostic_changing[N_DIAGN];
 
-    diagnostic_old[0] = buffer_for_manu_read_record[ 9] + (buffer_for_manu_read_record[10]<<8) + (buffer_for_manu_read_record[11]<<16) + (buffer_for_manu_read_record[12]<<24);
-    diagnostic_old[1] = buffer_for_manu_read_record[13] + (buffer_for_manu_read_record[14]<<8) + (buffer_for_manu_read_record[15]<<16) + (buffer_for_manu_read_record[16]<<24);
-    diagnostic_old[2] = buffer_for_manu_read_record[17] + (buffer_for_manu_read_record[18]<<8) + (buffer_for_manu_read_record[19]<<16) + (buffer_for_manu_read_record[20]<<24);
-    diagnostic_new[0] = buffer_for_manu_read_record[21] + (buffer_for_manu_read_record[22]<<8) + (buffer_for_manu_read_record[23]<<16) + (buffer_for_manu_read_record[24]<<24);
-    diagnostic_new[1] = buffer_for_manu_read_record[25] + (buffer_for_manu_read_record[26]<<8) + (buffer_for_manu_read_record[27]<<16) + (buffer_for_manu_read_record[28]<<24);
-    diagnostic_new[2] = buffer_for_manu_read_record[29] + (buffer_for_manu_read_record[30]<<8) + (buffer_for_manu_read_record[31]<<16) + (buffer_for_manu_read_record[32]<<24);
+    for (size_t i = 0; i < N_DIAGN_BYTES; i ++)
+    {
+      size_t n_word = i >> 2;
+      size_t n_byte = i & 0x3;
+      if (n_byte == 0)
+      {
+        diagnostic_old[n_word] = 0;
+        diagnostic_new[n_word] = 0;
+      }
+      diagnostic_old[n_word] |= buffer_for_manu_read_record[9                 + i] << (8*n_byte);
+      diagnostic_new[n_word] |= buffer_for_manu_read_record[9 + N_DIAGN_BYTES + i] << (8*n_byte);
+    }
+//    diagnostic_old[0] = buffer_for_manu_read_record[ 9] + (buffer_for_manu_read_record[10]<<8) + (buffer_for_manu_read_record[11]<<16) + (buffer_for_manu_read_record[12]<<24);
+//    diagnostic_old[1] = buffer_for_manu_read_record[13] + (buffer_for_manu_read_record[14]<<8) + (buffer_for_manu_read_record[15]<<16) + (buffer_for_manu_read_record[16]<<24);
+//    diagnostic_old[2] = buffer_for_manu_read_record[17] + (buffer_for_manu_read_record[18]<<8) + (buffer_for_manu_read_record[19]<<16) + (buffer_for_manu_read_record[20]<<24);
+//    diagnostic_new[0] = buffer_for_manu_read_record[21] + (buffer_for_manu_read_record[22]<<8) + (buffer_for_manu_read_record[23]<<16) + (buffer_for_manu_read_record[24]<<24);
+//    diagnostic_new[1] = buffer_for_manu_read_record[25] + (buffer_for_manu_read_record[26]<<8) + (buffer_for_manu_read_record[27]<<16) + (buffer_for_manu_read_record[28]<<24);
+//    diagnostic_new[2] = buffer_for_manu_read_record[29] + (buffer_for_manu_read_record[30]<<8) + (buffer_for_manu_read_record[31]<<16) + (buffer_for_manu_read_record[32]<<24);
         
     //Визначаємо, які сигнали змінилися
-    diagnostic_changing[0] = diagnostic_new[0] ^ diagnostic_old[0];
-    diagnostic_changing[1] = diagnostic_new[1] ^ diagnostic_old[1];
-    diagnostic_changing[2] = diagnostic_new[2] ^ diagnostic_old[2];
+    for (size_t i = 0; i < N_DIAGN; i ++) diagnostic_changing[i] = diagnostic_new[i] ^ diagnostic_old[i];
+//    diagnostic_changing[0] = diagnostic_new[0] ^ diagnostic_old[0];
+//    diagnostic_changing[1] = diagnostic_new[1] ^ diagnostic_old[1];
+//    diagnostic_changing[2] = diagnostic_new[2] ^ diagnostic_old[2];
     
     //Перевіряємо, чи ми не вийшли за границі
     if (current_ekran.index_position < 0) current_ekran.index_position = max_number_changers_in_record - 1;
