@@ -5638,13 +5638,21 @@ void main_manu_function(void)
               if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_APV) current_ekran.index_position = 0;
               while(
                     (
-                     (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
-                     (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
-                     (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
-                     (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
-                    )   
-                    &&
-                    ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                     (
+                      (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
+                      (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
+                      (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
+                      (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
+                     )   
+                     &&
+                     ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                    )
+                    ||  
+                    (
+                     (current_ekran.index_position == INDEX_ML_CTRAPV_BLK_CTRL_PRVV2)
+                     &&
+                     ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
+                    )
                    )
               {
                 current_ekran.index_position++;
@@ -12410,15 +12418,23 @@ void main_manu_function(void)
                 
                 if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CONTROL_APV - 1;
                 while(
-                      (  
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
-                      )   
-                      &&
-                      ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
-                    )
+                      (
+                       (
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      )
+                      ||  
+                      (
+                       (current_ekran.index_position == INDEX_ML_CTRAPV_BLK_CTRL_PRVV2)
+                       &&
+                       ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
+                      )
+                     )
                 {
                   current_ekran.index_position--;
                   if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CONTROL_APV - 1;
@@ -13890,14 +13906,22 @@ void main_manu_function(void)
                 
                 if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_APV) current_ekran.index_position = 0;
                 while(
-                      (  
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
-                      )   
-                      &&
-                      ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      (
+                       (
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      )
+                      ||  
+                      (
+                       (current_ekran.index_position == INDEX_ML_CTRAPV_BLK_CTRL_PRVV2)
+                       &&
+                       ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
+                      )
                      )
                 {
                   current_ekran.index_position++;
