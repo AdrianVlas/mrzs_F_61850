@@ -5228,8 +5228,8 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
   //М:"Блок.контр.ст.ВВ"
   extra_logic_APV_0 |= ((current_settings_prt.control_apv & CTR_APV_CTRAPV_BLK_CTRL_VV) != 0) << 8;
   _INVERTOR(extra_logic_APV_0, 8, extra_logic_APV_0, 9);
-  _AND2(logic_APV_0, 21, extra_logic_APV_0, 9, extra_logic_APV_0, 10);
-  _OR3(extra_logic_APV_0, 10, extra_logic_APV_0, 8, static_logic_APV_0, 0, extra_logic_APV_0, 0);
+  _AND2(logic_APV_0, 21, extra_logic_APV_0, 8, extra_logic_APV_0, 10);
+  _OR3(extra_logic_APV_0, 10, extra_logic_APV_0, 9, static_logic_APV_0, 0, extra_logic_APV_0, 0);
   _AND2(logic_APV_0, 14, extra_logic_APV_0, 0, static_logic_APV_0, 0);
   
   _TIMER_0_T(INDEX_TIMER_APV_TMP1, 1, static_logic_APV_0, 0, logic_APV_0, 15);
@@ -5286,7 +5286,9 @@ inline void apv_handler(unsigned int *p_active_functions, unsigned int number_gr
   logic_APV_1 |= _GET_OUTPUT_STATE(previous_states_APV_0, 4) <<  2;
   
   extra_logic_APV_0 |= (_CHECK_SET_BIT(p_active_functions, RANG_UROV2) != 0) << 1;
-  _TIMER_0_T(INDEX_TIMER_APV_TMP2, 40, extra_logic_APV_0, 1, extra_logic_APV_0, 2);
+  extra_logic_APV_0 |= ((current_settings_prt.control_apv & CTR_APV_CTRAPV_BLK_CTRL_PRVV2) != 0) << 3;
+  _AND2(extra_logic_APV_0, 1, extra_logic_APV_0, 3, extra_logic_APV_0, 11);
+  _TIMER_0_T(INDEX_TIMER_APV_TMP2, 40, extra_logic_APV_0, 11, extra_logic_APV_0, 2);
 
   unsigned int previous_trigger_APV_0;
   
