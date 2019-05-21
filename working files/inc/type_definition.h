@@ -590,7 +590,17 @@ typedef enum _id_input_output
   ID_OR,
   ID_XOR,
   ID_NOT,
-  ID_TF
+  ID_TF,
+
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  
+  ID_IN_GOOSE,
+  ID_IN_MMS,
+  ID_OUT_LAN,
+#endif
+  
+  _MAX_ID_INPUT_OUPUT
   
 } __id_input_output;
 

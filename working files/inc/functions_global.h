@@ -115,7 +115,7 @@ void make_ekran_control_Umax(void);
 void make_ekran_setpoint_UP(unsigned int);
 void make_ekran_timeout_UP(unsigned int);
 void make_ekran_control_UP(void);
-void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(__id_input_output);
+void make_ekran_chose_of_list_for_ranguvannja(__id_input_output);
 void make_ekran_transformator(void);
 void make_ekran_transformator_control(void);
 void make_ekran_set_function_in_bi(unsigned int, unsigned int);

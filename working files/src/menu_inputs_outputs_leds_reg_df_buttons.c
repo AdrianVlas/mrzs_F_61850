@@ -16,28 +16,119 @@
 8  - âèçíà÷óâàí³ "Âèêë.ÀÁÎ"
 9  - âèçíà÷óâàí³ "ÍÅ"
 10 - Ïåðåäàâàëüí³ ôóíêö³¿
+11 - Âõ³äíèé GOOSE áëîê
+12 - Âõ³äíèé MMS áëîê
+13 - Âèõ³äíèé ìåðåæåâèé áëîê
 -------------------------------------------------------
 */
 /*****************************************************/
-void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(__id_input_output type_of_window)
+void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 {
-  const unsigned char information[MAX_NAMBER_LANGUAGE][11][MAX_COL_LCD] = 
+  const unsigned char information[MAX_NAMBER_LANGUAGE][_MAX_ID_INPUT_OUPUT][MAX_COL_LCD] = 
   {
-    {" Äâõ.           ", " Äâûõ.          ", " Ñâ             ", " Î-ôóíêöèÿ      ", " F              ", " Î-òðèããåð      ", " Î-È            ", " Î-ÈËÈ          ", " Î-Èñêë.ÈËÈ     ", " Î-ÍÅ           ", " Ïåð.ô.         "},
-    {" Äâõ.           ", " Äâèõ.          ", " Ñâ             ", " Â-ôóíêö³ÿ      ", " F              ", " Â-òðè´åð       ", " Â-²            ", " Â-ÀÁÎ          ", " Â-Âèêë.ÀÁÎ     ", " Â-ÍÅ           ", " Ïåð.ô.         "},
-    {" DI.            ", " DO.            ", " LED            ", " UD Function    ", " F              ", " UD Flip-Flop   ", " UD AND         ", " UD OR          ", " UD XOR         ", " UD NOT         ", " Tr.F.          "},
-    {" Äâõ.           ", " Äâûõ.          ", " Ñâ             ", " Î-ôóíêöèÿ      ", " F              ", " Î-òðèããåð      ", " Î-È            ", " Î-ÈËÈ          ", " Î-Èñêë.ÈËÈ     ", " Î-ÍÅ           ", " Ïåð.ô.         "}
+    {
+      " Äâõ.           ", 
+      " Äâûõ.          ", 
+      " Ñâ             ", 
+      " Î-ôóíêöèÿ      ", 
+      " F              ", 
+      " Î-òðèããåð      ", 
+      " Î-È            ", 
+      " Î-ÈËÈ          ", 
+      " Î-Èñêë.ÈËÈ     ", 
+      " Î-ÍÅ           ",
+      " Ïåð.ô.         " 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      , 
+      " Âõ.GOOSE Áëîê  ", 
+      " Âõ.MMS Áëîê    ", 
+      " ÂÌÁ            "
+#endif
+    },
+    {
+      " Äâõ.           ",
+      " Äâèõ.          ",
+      " Ñâ             ",
+      " Â-ôóíêö³ÿ      ",
+      " F              ",
+      " Â-òðè´åð       ",
+      " Â-²            ",
+      " Â-ÀÁÎ          ",
+      " Â-Âèêë.ÀÁÎ     ",
+      " Â-ÍÅ           ",
+      " Ïåð.ô.         "
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      , 
+      " Âõ.GOOSE Áëîê  ",
+      " Âõ.MMS Áëîê    ", 
+      " ÂÌÁ            "
+#endif
+    },
+    {
+      " DI.            ",
+      " DO.            ",
+      " LED            ",
+      " UD Function    ",
+      " F              ",
+      " UD Flip-Flop   ",
+      " UD AND         ",
+      " UD OR          ",
+      " UD XOR         ",
+      " UD NOT         ",
+      " Tr.F.          "
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      ,
+      " In.GOOSE Bl.   ",
+      " In.MMS Block   ",
+      " ÂÌÁ            "
+#endif
+    },
+    {
+      " Äâõ.           ", 
+      " Äâûõ.          ",
+      " Ñâ             ",
+      " Î-ôóíêöèÿ      ", 
+      " F              ", 
+      " Î-òðèããåð      ", 
+      " Î-È            ",
+      " Î-ÈËÈ          ",
+      " Î-Èñêë.ÈËÈ     ",
+      " Î-ÍÅ           ",
+      " Ïåð.ô.         "
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ,
+      " Âõ.GOOSE Áëîê  ",
+      " Âõ.MMS Áëîê    ",
+      " ÂÌÁ            "
+#endif
+    }
   };
 
-  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE][11] = 
+  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE][_MAX_ID_INPUT_OUPUT] = 
   {
-    {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7},
-    {5, 6, 3, 10, 2,  9, 4, 6, 11, 5, 7},
-    {4, 4, 4, 12, 2, 13, 7, 6,  7, 6, 6},
-    {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7}
+    {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      , 14, 12, 4 
+#endif
+    },
+    {5, 6, 3, 10, 2,  9, 4, 6, 11, 5, 7
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      , 14, 12, 4
+#endif
+    },
+    {4, 4, 4, 12, 2, 13, 7, 6,  7, 6, 6
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      , 13, 13, 4
+#endif
+    },
+    {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      , 14, 12, 4
+#endif
+    }
   };
   
-  const unsigned int max_row[11] =
+  const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
   {
     MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA,
     MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA,
@@ -50,7 +141,15 @@ void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(__id_inp
     MAX_ROW_FOR_LIST_D_XOR,
     MAX_ROW_FOR_LIST_D_NOT,
     MAX_ROW_FOR_LIST_TF
+      
+#if (MODYFIKACIA_VERSII_PZ >= 10)    
+    ,
+    N_IN_GOOSE,
+    N_IN_MMS,
+    N_OUT_LAN
+#endif
   };
+  
   int index_language = index_language_in_array(current_settings.language);
   unsigned int first_index_number_1 = first_index_number[index_language][type_of_window];
         
@@ -100,7 +199,7 @@ void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(__id_inp
     {
       for (unsigned int j = 0; j<MAX_COL_LCD; j++)
       {
-        if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3 + 3)))
+        if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3)))
            working_ekran[i][j] = information[index_language][type_of_window][j];
         else
         {
@@ -159,36 +258,11 @@ void make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(__id_inp
               else
               {
                 working_ekran[i][j - 1] = tmp_2 + 0x30;
-                working_ekran[i][j] = '.';
+                working_ekran[i][j] = ' ';
               }
             }
           }
-          else   
-          {
-            if (
-                (
-                 (type_of_window == ID_INPUT) ||
-                 (type_of_window == ID_OUTPUT)
-                )
-                ||  
-                ( j < (first_index_number_1 + 2 + 3 - 1))
-                ||  
-                (
-                 ( j == (first_index_number_1 + 2 + 3 - 1)) && 
-                 (
-                  (tmp_1 > 0 ) ||
-                  (tmp_1 < 0 )  
-                 ) 
-                )   
-               )  
-            {
-              working_ekran[i][j] = '.';
-            }
-            else
-            {
-              working_ekran[i][j] = ' ';
-            }
-          }
+          else working_ekran[i][j] = ' ';  
         }
       }
     }
