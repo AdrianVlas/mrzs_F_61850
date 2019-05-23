@@ -1810,6 +1810,13 @@ enum _leds_colors
 #define MAX_FUNCTIONS_IN_OFF_CB                 (1 << VAGA_MAX_FUNCTIONS_IN_OFF_CB)
 #define VAGA_MAX_FUNCTIONS_IN_ON_CB             5
 #define MAX_FUNCTIONS_IN_ON_CB                  (1 << VAGA_MAX_FUNCTIONS_IN_ON_CB)
+#define VAGA_MAX_FUNCTIONS_IN_IN_GOOSE          3
+#define MAX_FUNCTIONS_IN_IN_GOOSE               (1 << VAGA_MAX_FUNCTIONS_IN_IN_GOOSE)
+#define VAGA_MAX_FUNCTIONS_IN_IN_MMS            3
+#define MAX_FUNCTIONS_IN_IN_MMS                 (1 << VAGA_MAX_FUNCTIONS_IN_IN_MMS)
+#define VAGA_MAX_FUNCTIONS_IN_OUT_LAN           3
+#define MAX_FUNCTIONS_IN_OUT_LAN                (1 << VAGA_MAX_FUNCTIONS_IN_OUT_LAN)
+
 /*****************************************/
 
 

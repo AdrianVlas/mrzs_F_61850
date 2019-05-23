@@ -290,12 +290,10 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 /*****************************************************/
 //Формуємо екран відображення зранжованих сигналів на вибраний вхід
 /*****************************************************/
-void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran)
+void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran, uint32_t state_viewing_input[], unsigned int max_row_ranguvannja)
 {
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
-  unsigned int state_viewing_input[N_SMALL];
-  unsigned int max_row_ranguvannja;
 #if (MODYFIKACIA_VERSII_PZ < 10)
   const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
 #else
@@ -459,43 +457,6 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     }
   }
   
-  if (type_ekran == INDEX_VIEWING_BUTTON)
-  {
-    if(current_ekran.edition == 0)
-    {
-      for (unsigned int i = 0; i < N_SMALL; i++)
-      {
-        state_viewing_input[i] = current_settings.ranguvannja_buttons[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_BUTTON_1) + i];
-      }
-    }
-    else
-    {
-      for (unsigned int i = 0; i < N_SMALL; i++)
-      {
-        state_viewing_input[i] = edition_settings.ranguvannja_buttons[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_BUTTON_1) + i];
-      }
-    }
-    max_row_ranguvannja = MAX_ROW_RANGUVANNJA_BUTTON;
-  }
-  else if (type_ekran == INDEX_VIEWING_INPUT)
-  {
-    if(current_ekran.edition == 0)
-    {
-      for (unsigned int i = 0; i < N_SMALL; i++)
-      {
-        state_viewing_input[i] = current_settings.ranguvannja_inputs[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_INPUT_1) + i];
-      }
-    }
-    else
-    {
-      for (unsigned int i = 0; i < N_SMALL; i++)
-      {
-        state_viewing_input[i] = edition_settings.ranguvannja_inputs[N_SMALL*(number_ekran - EKRAN_RANGUVANNJA_INPUT_1) + i];
-      }
-    }
-    max_row_ranguvannja = MAX_ROW_RANGUVANNJA_INPUT;
-  }
-
   if(current_ekran.edition == 0)
   {
     //Випадок, коли ми продивляємося зранжовані функції на вході

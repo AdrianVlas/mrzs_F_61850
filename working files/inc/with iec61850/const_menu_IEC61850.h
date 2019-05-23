@@ -34,14 +34,7 @@
 #define EKRAN_OUT_LAN3                          (EKRAN_OUT_LAN2 + 1)
 #define EKRAN_OUT_LAN4                          (EKRAN_OUT_LAN3 + 1)
 
-#define EKRAN_LN_FOR_IEC61850_OUT1              (EKRAN_OUT_LAN4 + 1)
-#define EKRAN_LN_FOR_IEC61850_OUT2              (EKRAN_LN_FOR_IEC61850_OUT1 + 1)
-#define EKRAN_LN_FOR_IEC61850_OUT3              (EKRAN_LN_FOR_IEC61850_OUT2 + 1)
-#define EKRAN_LN_FOR_IEC61850_OUT4              (EKRAN_LN_FOR_IEC61850_OUT3 + 1)
-#define EKRAN_LN_FOR_IEC61850_OUT5              (EKRAN_LN_FOR_IEC61850_OUT4 + 1)
-#define EKRAN_LN_FOR_IEC61850_OUT6              (EKRAN_LN_FOR_IEC61850_OUT5 + 1)
-#define EKRAN_LN_FOR_IEC61850_OUT7              (EKRAN_LN_FOR_IEC61850_OUT6 + 1)
-#define EKRAN_LN_FOR_IEC61850_OUT8              (EKRAN_LN_FOR_IEC61850_OUT7 + 1)
+#define EKRAN_LN_FOR_IEC61850_RANG              (EKRAN_OUT_LAN4 + 1)
 
 enum _index_ml_type_iec61850_notes
 {
