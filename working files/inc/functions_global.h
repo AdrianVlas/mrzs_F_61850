@@ -321,6 +321,7 @@ int str_to_int_DATE_Mmm(void);
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
 void make_ekran_type_IEC61850_nodes(void);
+void make_ekran_list_in_out_for_iec61850(unsigned int, size_t);
 void start_transmint_data_via_CANAL1_MO(void);
 void start_receive_data_via_CANAL1_MO(void);
 void CANAL2_MO_routine(void);

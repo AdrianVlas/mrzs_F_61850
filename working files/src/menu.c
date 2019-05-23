@@ -1506,6 +1506,30 @@ void main_manu_function(void)
     case EKRAN_LIST_IN_GOOSE:
     case EKRAN_LIST_IN_MMS:
     case EKRAN_LIST_OUT_LAN:
+    case EKRAN_IN_GOOSE1:
+    case EKRAN_IN_GOOSE2:
+    case EKRAN_IN_GOOSE3:
+    case EKRAN_IN_GOOSE4:
+    case EKRAN_IN_GOOSE5:
+    case EKRAN_IN_GOOSE6:
+    case EKRAN_IN_GOOSE7:
+    case EKRAN_IN_GOOSE8:
+    case EKRAN_IN_GOOSE9:
+    case EKRAN_IN_GOOSE10:
+    case EKRAN_IN_GOOSE11:
+    case EKRAN_IN_GOOSE12:
+    case EKRAN_IN_GOOSE13:
+    case EKRAN_IN_GOOSE14:
+    case EKRAN_IN_GOOSE15:
+    case EKRAN_IN_GOOSE16:
+    case EKRAN_IN_MMS1:
+    case EKRAN_IN_MMS2:
+    case EKRAN_IN_MMS3:
+    case EKRAN_IN_MMS4:
+    case EKRAN_OUT_LAN1:
+    case EKRAN_OUT_LAN2:
+    case EKRAN_OUT_LAN3:
+    case EKRAN_OUT_LAN4:
     case EKRAN_CHOSE_SETTING_ETHERNET:
 #endif
       
@@ -1969,6 +1993,23 @@ void main_manu_function(void)
             
               //Формуємо екран заголовків вихідний мережевий блок
               make_ekran_chose_of_list_for_ranguvannja(ID_OUT_LAN);
+            }
+            else if (
+                     ((current_ekran.current_level >= EKRAN_IN_GOOSE1) && (current_ekran.current_level <= EKRAN_IN_GOOSE16)) ||
+                     ((current_ekran.current_level >= EKRAN_IN_MMS1  ) && (current_ekran.current_level <= EKRAN_IN_MMS4))
+                    )   
+            {
+              if(current_ekran.index_position >= N_IN_GOOSE_MMS_OUT) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+              //Формуємо екран заголовків виходів
+              make_ekran_list_in_out_for_iec61850(0, N_IN_GOOSE_MMS_OUT);
+            }
+            else if ((current_ekran.current_level >= EKRAN_OUT_LAN1) && (current_ekran.current_level <= EKRAN_OUT_LAN4))
+            {
+              if(current_ekran.index_position >= N_OUT_LAN_IN) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+              //Формуємо екран заголовків виходів
+              make_ekran_list_in_out_for_iec61850(1, N_OUT_LAN_IN);
             }
             else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
             {
@@ -3360,6 +3401,30 @@ void main_manu_function(void)
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
+              else if (current_ekran.current_level == EKRAN_LIST_IN_GOOSE)
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення вибору списку виходів Вх.GOOSE блоку
+                current_ekran.current_level = EKRAN_IN_GOOSE1 + current_ekran.index_position;
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_IN_MMS)
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення вибору  списку виходів Вх.MMS блоку
+                current_ekran.current_level = EKRAN_IN_MMS1 + current_ekran.index_position;
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_OUT_LAN)
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення вибору  списку входів Вих. мережевого блоку
+                current_ekran.current_level = EKRAN_OUT_LAN1 + current_ekran.index_position;
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
 #endif
               else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
               {
@@ -4255,6 +4320,23 @@ void main_manu_function(void)
                 //Формуємо екран заголовків вихідний мережевий блок
                 make_ekran_chose_of_list_for_ranguvannja(ID_OUT_LAN);
               }
+              else if (
+                       ((current_ekran.current_level >= EKRAN_IN_GOOSE1) && (current_ekran.current_level <= EKRAN_IN_GOOSE16)) ||
+                       ((current_ekran.current_level >= EKRAN_IN_MMS1  ) && (current_ekran.current_level <= EKRAN_IN_MMS4))
+                      )   
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = N_IN_GOOSE_MMS_OUT - 1;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків виходів
+                make_ekran_list_in_out_for_iec61850(0, N_IN_GOOSE_MMS_OUT);
+              }
+              else if ((current_ekran.current_level >= EKRAN_OUT_LAN1) && (current_ekran.current_level <= EKRAN_OUT_LAN4))
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = N_OUT_LAN_IN - 1;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків виходів
+                make_ekran_list_in_out_for_iec61850(1, N_OUT_LAN_IN);
+              }
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTING_ETHERNET - 1;
@@ -5017,6 +5099,23 @@ void main_manu_function(void)
             
                 //Формуємо екран заголовків вихідний мережевий блок
                 make_ekran_chose_of_list_for_ranguvannja(ID_OUT_LAN);
+              }
+              else if (
+                       ((current_ekran.current_level >= EKRAN_IN_GOOSE1) && (current_ekran.current_level <= EKRAN_IN_GOOSE16)) ||
+                       ((current_ekran.current_level >= EKRAN_IN_MMS1  ) && (current_ekran.current_level <= EKRAN_IN_MMS4))
+                      )   
+              {
+                if(++current_ekran.index_position >= N_IN_GOOSE_MMS_OUT) current_ekran.index_position = 0;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків виходів
+                make_ekran_list_in_out_for_iec61850(0, N_IN_GOOSE_MMS_OUT);
+              }
+              else if ((current_ekran.current_level >= EKRAN_OUT_LAN1) && (current_ekran.current_level <= EKRAN_OUT_LAN4))
+              {
+                if(++current_ekran.index_position >= N_OUT_LAN_IN) current_ekran.index_position = 0;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків виходів
+                make_ekran_list_in_out_for_iec61850(1, N_OUT_LAN_IN);
               }
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
               {

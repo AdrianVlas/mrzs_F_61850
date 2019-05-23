@@ -34,6 +34,9 @@
 #define N_IN_MMS                        4
 #define N_OUT_LAN                       4
 
+#define N_IN_GOOSE_MMS_OUT              8
+#define N_OUT_LAN_IN                    8
+
 //#define NUMBER_DEFINED_ELEMENTS         6
 #define NUMBER_DEFINED_FUNCTIONS        8
 #define NUMBER_DEFINED_TRIGGERS         4
