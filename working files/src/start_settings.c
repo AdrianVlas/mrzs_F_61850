@@ -1601,7 +1601,7 @@ void min_settings(__SETTINGS *target_label)
   {
     for(size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++) 
     {
-      for(size_t k = 0; k < MAX_FUNCTIONS_IN_IN_GOOSE; k++) target_label->ranguvannja_In_GOOSE[i][j][k] = 0;
+      for(size_t k = 0; k < N_SMALL; k++) target_label->ranguvannja_In_GOOSE[i][j][k] = 0;
     }
   }
 
@@ -1609,7 +1609,7 @@ void min_settings(__SETTINGS *target_label)
   {
     for(size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
     {
-      for(size_t k = 0; k < MAX_FUNCTIONS_IN_IN_MMS; k++) target_label->ranguvannja_In_MMS[i][j][k] = 0;
+      for(size_t k = 0; k < N_SMALL; k++) target_label->ranguvannja_In_MMS[i][j][k] = 0;
     }
   }
 
@@ -1617,7 +1617,7 @@ void min_settings(__SETTINGS *target_label)
   {
     for(size_t j = 0; j < N_OUT_LAN_IN; j++) 
     {
-      for(size_t k = 0; k < MAX_FUNCTIONS_IN_OUT_LAN; k++) target_label->ranguvannja_Out_LAN[i][j][k] = 0;
+      for(size_t k = 0; k < N_SMALL; k++) target_label->ranguvannja_Out_LAN[i][j][k] = 0;
     }
   }
 #endif

@@ -290,7 +290,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 /*****************************************************/
 //Формуємо екран відображення зранжованих сигналів на вибраний вхід
 /*****************************************************/
-void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran, uint32_t state_viewing_input[], unsigned int max_row_ranguvannja)
+void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran, uint32_t state_viewing_input[])
 {
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
@@ -497,15 +497,15 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       unsigned int i = 0, offset = 0;
       unsigned int state_current_bit;
 
-      while ((i + offset) < max_row_ranguvannja)
+      while ((i + offset) < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)
       {
         state_current_bit = state_viewing_input[(i + offset)>>5] & (1<<((i + offset) & 0x1f));
 
         if (state_current_bit == 0)
         {
-          for (unsigned int j = i; j < (max_row_ranguvannja - offset); j++)
+          for (unsigned int j = i; j < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset); j++)
           {
-            if ((j + 1) < (max_row_ranguvannja - offset))
+            if ((j + 1) < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset))
             {
               for (unsigned int k = 0; k<MAX_COL_LCD; k++)
                 name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
@@ -529,7 +529,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       for (i=0; i< MAX_ROW_LCD; i++)
       {
         //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-        if (index_of_ekran < max_row_ranguvannja)
+        if (index_of_ekran < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)
         {
           for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[index_of_ekran + NUMBER_ROW_FOR_NOTHING_INFORMATION][j];
 
@@ -674,9 +674,9 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
             state_viewing_input[k] = new_temp_data_1[k] | new_temp_data_2[k];
           }
           /***/
-          for (unsigned int j = (index_deleted_function - offset); j < (max_row_ranguvannja - offset); j++)
+          for (unsigned int j = (index_deleted_function - offset); j < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset); j++)
           {
-            if ((j + 1) < (max_row_ranguvannja - offset))
+            if ((j + 1) < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset))
             {
               for (unsigned int k = 0; k < MAX_COL_LCD; k++)
                 name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
@@ -749,9 +749,9 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
                   state_viewing_input[k] = new_temp_data_1[k] | new_temp_data_2[k];
                 }
                 /***/
-                for (unsigned int j = (index_in_list - offset); j < (max_row_ranguvannja - offset); j++)
+                for (unsigned int j = (index_in_list - offset); j < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset); j++)
                 {
-                  if ((j + 1) < (max_row_ranguvannja - offset))
+                  if ((j + 1) < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset))
                   {
                     for (unsigned int k = 0; k < MAX_COL_LCD; k++)
                       name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
@@ -812,9 +812,9 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
             state_viewing_input[k] = new_temp_data_1[k] | new_temp_data_2[k];
            }
           /***/
-          for (unsigned int j = (index_in_list - offset); j < (max_row_ranguvannja - offset); j++)
+          for (unsigned int j = (index_in_list - offset); j < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset); j++)
           {
-            if ((j + 1) < (max_row_ranguvannja - offset))
+            if ((j + 1) < (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset))
             {
               for (unsigned int k = 0; k<MAX_COL_LCD; k++)
                 name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
@@ -839,7 +839,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
 
     for (i=0; i< MAX_ROW_LCD; i++)
     {
-     if (index_of_ekran < ((max_row_ranguvannja - offset) <<1))//Множення на два константи  max_row_ranguvannja потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+     if (index_of_ekran < ((NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - offset) <<1))//Множення на два константи  NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
      {
        if ((i & 0x1) == 0)
        {

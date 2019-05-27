@@ -107,9 +107,9 @@ typedef struct
   unsigned int ranguvannja_buttons[N_SMALL*NUMBER_DEFINED_BUTTONS];             //Ранжування опреділюваних кнопок
   
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-  uint8_t ranguvannja_In_GOOSE[N_IN_GOOSE][N_IN_GOOSE_MMS_OUT][MAX_FUNCTIONS_IN_IN_GOOSE];      //Ранжування виходів Вхідних GOOSE блоків
-  uint8_t ranguvannja_In_MMS[N_IN_MMS][N_IN_GOOSE_MMS_OUT][MAX_FUNCTIONS_IN_IN_MMS];            //Ранжування виходів Вхідних MMS блоків
-  uint8_t ranguvannja_Out_LAN[N_OUT_LAN][N_OUT_LAN_IN][MAX_FUNCTIONS_IN_OUT_LAN];               //Ранжування входів  Вихідних мережевих блоків
+  uint32_t ranguvannja_In_GOOSE[N_IN_GOOSE][N_IN_GOOSE_MMS_OUT][N_SMALL];      //Ранжування виходів Вхідних GOOSE блоків
+  uint32_t ranguvannja_In_MMS[N_IN_MMS][N_IN_GOOSE_MMS_OUT][N_SMALL];            //Ранжування виходів Вхідних MMS блоків
+  uint32_t ranguvannja_Out_LAN[N_OUT_LAN][N_OUT_LAN_IN][N_SMALL];               //Ранжування входів  Вихідних мережевих блоків
 #endif  
   
   unsigned int configuration;         //Конфігурація приладу
