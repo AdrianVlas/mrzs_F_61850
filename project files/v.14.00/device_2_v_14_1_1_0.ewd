@@ -76,11 +76,11 @@
                 </option>
                 <option>
                     <name>OCDownloadVerifyAll</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OCProductVersion</name>
-                    <state>8.20.2.14834</state>
+                    <state>8.32.4.20866</state>
                 </option>
                 <option>
                     <name>OCDynDriverList</name>
@@ -769,7 +769,7 @@
                 </option>
                 <option>
                     <name>CCJLinkCommRadio</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCJLinkTCPIP</name>
