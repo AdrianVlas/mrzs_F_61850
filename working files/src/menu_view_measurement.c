@@ -1252,7 +1252,7 @@ void make_ekran_power(unsigned int pervynna_vtorynna)
       else
       {
         unsigned int position = start_position;
-        if (S != 0)
+        if (S[bank_for_calc_power] != 0)
         {
           unsigned int dilnyk = 1000;
           for (unsigned int j = 0; j < 4; j++)
