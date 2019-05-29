@@ -3145,7 +3145,7 @@ void changing_diagnostyka_state(void)
       
         for (size_t i = 0; i < N_DIAGN_BYTES; i ++)
         {
-          unsigned int n_word = i >> 3;
+          unsigned int n_word = i >> 2;
           unsigned int shift = 8*(i & 0x3);
           
           //Записуємо попередній стан діагностики
