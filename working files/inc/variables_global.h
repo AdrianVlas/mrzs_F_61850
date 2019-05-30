@@ -515,6 +515,8 @@ const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1] =
   {11}, 
   {11} 
 };
+
+unsigned int edit_rang_Out_LAN[N_BIG];
 #endif  
   
 const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] = 

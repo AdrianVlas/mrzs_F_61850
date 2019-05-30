@@ -4442,6 +4442,9 @@
         <group>
           <name>with iec61850</name>
           <file>
+            <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_IEC61850.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_inputs.h</name>
           </file>
         </group>
@@ -4600,6 +4603,15 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\inc\stm32f2xx_it.h</name>
+        </file>
+      </group>
+      <group>
+        <name>MO</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\inc\const_MO.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\inc\diagnostyka_mo.h</name>
         </file>
       </group>
       <group>
@@ -4852,6 +4864,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\menu_general_pickups_el.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\menu_iec61850.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\menu_info.c</name>
@@ -5201,6 +5216,12 @@
               </data>
             </settings>
           </configuration>
+        </file>
+      </group>
+      <group>
+        <name>MO</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\mo.c</name>
         </file>
       </group>
       <group>

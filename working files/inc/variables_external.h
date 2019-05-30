@@ -228,6 +228,7 @@ extern const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1];
 extern const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1];
 extern const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1];
 
+extern unsigned int edit_rang_Out_LAN[N_BIG];
 #endif  
   
 extern const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3];
