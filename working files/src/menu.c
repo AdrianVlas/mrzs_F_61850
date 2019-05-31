@@ -19284,6 +19284,9 @@ void main_manu_function(void)
               )   
             {
               unsigned int temp_state[N_SMALL];
+#if (MODYFIKACIA_VERSII_PZ >= 10)              
+              int type_LN = -1;
+#endif
               
               if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
               {
@@ -19317,7 +19320,7 @@ void main_manu_function(void)
                         (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
                        )   
                     {
-                      int type_LN = position_in_current_level_menu[prev_ekran];
+                      type_LN = position_in_current_level_menu[prev_ekran];
                         
                       if(
                          (type_LN >= 0)
@@ -19426,6 +19429,20 @@ void main_manu_function(void)
                         current_ekran.index_position++;
                       }
                     }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                    {
+                      if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS))
+                      {
+                        if (_CHECK_SET_BIT(rang_iec61850_blocks[type_LN], current_ekran.index_position) == 0)
+                        {
+                          found_new_index = 0;
+                          current_ekran.index_position++;
+                        }
+                      }
+                      else total_error_sw_fixed(181);
+                    }
+#endif                    
                     
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
                     if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)
@@ -19439,12 +19456,20 @@ void main_manu_function(void)
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
               //Формуємо екран відображення зранжованих функцій
               if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
-                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state);
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN
+#endif
+                                                                                                                      );
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
-                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state);
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN
+#endif
+                                                                                                                      );
 #if (MODYFIKACIA_VERSII_PZ >= 10)
               else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
-                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state);
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state, type_LN);
 #endif
             }
             else if(
@@ -21310,6 +21335,10 @@ void main_manu_function(void)
                 )   
               {
                 unsigned int temp_state[N_SMALL];
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                int type_LN = -1;
+#endif
+                
                 if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                 {
                   uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_buttons :  edition_settings.ranguvannja_buttons;
@@ -21342,7 +21371,7 @@ void main_manu_function(void)
                           (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
                          )   
                       {
-                        int type_LN = position_in_current_level_menu[prev_ekran];
+                        type_LN = position_in_current_level_menu[prev_ekran];
                         
                         if(
                            (type_LN >= 0)
@@ -21453,6 +21482,20 @@ void main_manu_function(void)
                         current_ekran.index_position--;
                       }
                     }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                    {
+                      if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS))
+                      {
+                        if (_CHECK_SET_BIT(rang_iec61850_blocks[type_LN], current_ekran.index_position) == 0)
+                        {
+                          found_new_index = 0;
+                          current_ekran.index_position--;
+                        }
+                      }
+                      else total_error_sw_fixed(182);
+                    }
+#endif
                     
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
                     if(current_ekran.index_position < 0)
@@ -21466,12 +21509,21 @@ void main_manu_function(void)
                 
                 //Формуємо екран відображення зранжованих функцій
                 if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
-                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state);
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN
+#endif
+                                                                                                                        );
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
-                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state);
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN
+#endif
+                                                                                                                        );
+                                                
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                 else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
-                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state);
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state, type_LN);
 #endif
               }
               else if(
@@ -22050,6 +22102,9 @@ void main_manu_function(void)
                 )   
               {
                 unsigned int temp_state[N_SMALL];
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                int type_LN = -1;
+#endif
                 
                 if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                 {
@@ -22083,7 +22138,7 @@ void main_manu_function(void)
                           (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
                          )   
                       {
-                        int type_LN = position_in_current_level_menu[prev_ekran];
+                        type_LN = position_in_current_level_menu[prev_ekran];
                         
                         if(
                            (type_LN >= 0)
@@ -22194,6 +22249,20 @@ void main_manu_function(void)
                         current_ekran.index_position++;
                       }
                     }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                    {
+                      if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS))
+                      {
+                        if (_CHECK_SET_BIT(rang_iec61850_blocks[type_LN], current_ekran.index_position) == 0)
+                        {
+                          found_new_index = 0;
+                          current_ekran.index_position++;
+                        }
+                      }
+                      else total_error_sw_fixed(183);
+                    }
+#endif
                     
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
                     if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)
@@ -22207,12 +22276,21 @@ void main_manu_function(void)
                 
                 //Формуємо екран відображення зранжованих функцій
                 if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
-                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state);
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN
+#endif
+                                                                                                                        );
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
-                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state);
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN
+#endif
+                                                                                                                        );
+                                                
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                 else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
-                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state);
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state, type_LN);
 #endif
               }
               else if(
@@ -22792,7 +22870,12 @@ void main_manu_function(void)
                 *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, p_rang);
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, p_rang
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , -1
+#endif
+                                                                                                                        );
+                                              
               }
               else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
               {
@@ -22804,7 +22887,12 @@ void main_manu_function(void)
                 *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, p_rang);
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, p_rang
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , -1
+#endif
+                                                                                                                        );
+                                              
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
               else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
@@ -22861,7 +22949,7 @@ void main_manu_function(void)
                         *(p_rang_edit + offset) ^= (1 << shift);
 
                         //Формуємо екран відображення зранжованих функцій
-                        make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, p_rang_edit);
+                        make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, p_rang_edit, type_LN);
                       }
                       else total_error_sw_fixed(146);
                     }

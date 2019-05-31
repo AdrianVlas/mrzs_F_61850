@@ -290,7 +290,11 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 /*****************************************************/
 //Формуємо екран відображення зранжованих сигналів на вибраний вхід
 /*****************************************************/
-void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran, uint32_t temp_state[])
+void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran, uint32_t temp_state[]
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , int type_LN
+#endif
+                                                                                                                          )
 {
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
@@ -634,16 +638,30 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     /*************************************************************/
     //Фільтруємо сигнали, яких у даній конфігурації неприсутні
     /*************************************************************/
-    if(type_ekran == INDEX_VIEWING_BUTTON)
+    if(
+       (type_ekran == INDEX_VIEWING_BUTTON)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+       ||
+       (type_ekran == INDEX_VIEWING_IEC61850_RANG)
+#endif
+      )   
     {
       /*************************************************************/
-      //У випадку, якщо відображення здійснюється вікна функціональних кнопок
+      //У випадку, якщо відображення здійснюється вікна функціональних кнопок, Вх.GOOSE блоіків, або  Вх.MMS блоіків
       /*************************************************************/
-      uint32_t mode = (current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+      const uint32_t *p_array;
+      if (type_ekran == INDEX_VIEWING_BUTTON) p_array = buttons_mode[(current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1];
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      else 
+      {
+        if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS)) p_array = rang_iec61850_blocks[type_LN];
+        else total_error_sw_fixed(184);
+      }
+#endif
 
       for (unsigned int index_deleted_function = 0; index_deleted_function < NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL; index_deleted_function++)
       {
-        if (_CHECK_SET_BIT(buttons_mode[mode], index_deleted_function) == 0)
+        if (_CHECK_SET_BIT(p_array, index_deleted_function) == 0)
         {
           /*************************************************************/
           //Відкидаємо ім'я даної функції і зміщаємо біти
@@ -710,12 +728,26 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
         //бо інкаше ми вже знаходимося на індексі наступного захисту
         if(min_max_number[i][0] >=0)
         {
-          if(type_ekran == INDEX_VIEWING_BUTTON)
+          if(
+             (type_ekran == INDEX_VIEWING_BUTTON)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+             ||
+             (type_ekran == INDEX_VIEWING_IEC61850_RANG)
+#endif
+            )   
           {
             /*
             Випадок коли деякі сигнали треба відфільтрувати
             */
-            uint32_t mode = (current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+            const uint32_t *p_array;
+            if (type_ekran == INDEX_VIEWING_BUTTON) p_array = buttons_mode[(current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1];
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            else 
+            {
+              if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS)) p_array = rang_iec61850_blocks[type_LN];
+              else total_error_sw_fixed(185);
+            }
+#endif
 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
             //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
@@ -726,7 +758,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
             //Відкидаємо назви функцій із списку, які є зайвими
             while(index_in_list <= min_max_number[i][1])
             {
-              if (_CHECK_SET_BIT(buttons_mode[mode], index_in_list) == 0) 
+              if (_CHECK_SET_BIT(p_array, index_in_list) == 0) 
               {
                 /***/
                 //Зміщуємо біти стану реанжування функцій разом із їх назвами

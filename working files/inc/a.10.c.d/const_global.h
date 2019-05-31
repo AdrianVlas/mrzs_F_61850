@@ -648,6 +648,130 @@ enum __mtz_abc_direction_const {
 /*****************************************/
 
 /*****************************************/
+//Макски сигналів, які можна зранжувати на виходи Вхідного GOOSE блоку
+/*****************************************/
+#define MASKA_IN_GOOSE_SIGNALS_0 (unsigned int)(              \
+    (1 << (RANG_SMALL_BLOCK_VKL_VV - 0))                      \
+  | (1 << (RANG_SMALL_STATE_VV - 0))                          \
+  | (1 << (RANG_SMALL_OTKL_VID_ZOVN_ZAHYSTIV - 0))            \
+  | (1 << (RANG_SMALL_VKL_VV - 0))                            \
+  | (1 << (RANG_SMALL_CTRL_VKL - 0))                          \
+  | (1 << (RANG_SMALL_OTKL_VV - 0))                           \
+  | (1 << (RANG_SMALL_CTRL_OTKL - 0))                         \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  0 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  1 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  2 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  3 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  4 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  5 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  6 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  7 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  8 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 +  9 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 10 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 11 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 12 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 13 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 14 - 0))              \
+  | (1 << (RANG_SMALL_BLOCK_IN_GOOSE1 + 15 - 0))              \
+)
+
+#define MASKA_IN_GOOSE_SIGNALS_1 (unsigned int)(              \
+    (1 << (RANG_SMALL_BLOCK_OUT_LAN1 + 0 - 32))               \
+  | (1 << (RANG_SMALL_BLOCK_OUT_LAN1 + 1 - 32))               \
+  | (1 << (RANG_SMALL_BLOCK_OUT_LAN1 + 2 - 32))               \
+  | (1 << (RANG_SMALL_BLOCK_OUT_LAN1 + 3 - 32))               \
+  | (1 << (RANG_SMALL_BLOCK_MTZ1 - 32))                       \
+  | (1 << (RANG_SMALL_BLOCK_MTZ2 - 32))                       \
+  | (1 << (RANG_SMALL_BLOCK_USK_MTZ2 - 32))                   \
+  | (1 << (RANG_SMALL_BLOCK_MTZ3 - 32))                       \
+  | (1 << (RANG_SMALL_BLOCK_MTZ4 - 32))                       \
+  | (1 << (RANG_SMALL_BLOCK_MTZ04_1 - 32))                    \
+  | (1 << (RANG_SMALL_BLOCK_MTZ04_2 - 32))                    \
+  | (1 << (RANG_SMALL_BLOCK_USK_MTZ04_2 - 32))                \
+  | (1 << (RANG_SMALL_BLOCK_ZDZ - 32))                        \
+  | (1 << (RANG_SMALL_PUSK_ZDZ_VID_DV - 32))                  \
+  | (1 << (RANG_SMALL_BLOCK_NZZ - 32))                        \
+  | (1 << (RANG_SMALL_BLOCK_TZNP1 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_TZNP2 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_TZNP3 - 32))                      \
+  | (1 << (RANG_SMALL_STAT_BLK_APV - 32))                     \
+  | (1 << (RANG_SMALL_ACHR_CHAPV_VID_DV - 32))                \
+  | (1 << (RANG_SMALL_BLOCK_ACHR1 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_ACHR2 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_ZOP - 32))                        \
+  | (1 << (RANG_SMALL_PUSK_UROV_VID_DV - 32))                 \
+  | (1 << (RANG_SMALL_BLOCK_UMIN1 - 32))                      \
+  | (1 << (RANG_SMALL_START_UMIN1 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_UMIN2 - 32))                      \
+  | (1 << (RANG_SMALL_START_UMIN2 - 32))                      \
+  | (1 << (RANG_SMALL_BLOCK_UMAX1 - 32))                      \
+)
+
+#define MASKA_IN_GOOSE_SIGNALS_2 (unsigned int)(              \
+    (1 << (RANG_SMALL_BLOCK_UMAX2 - 64))                      \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 0 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 1 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 2 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 3 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 4 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 5 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 6 - 64))                    \
+  | (1 << (RANG_SMALL_BLOCK_UP1 + 7 - 64))                    \
+  | (1 << (RANG_SMALL_DF1_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF2_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF3_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF4_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF5_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF6_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF7_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF8_IN - 64))                           \
+  | (1 << (RANG_SMALL_DT1_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT1_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT2_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT2_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT3_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT3_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT4_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT4_RESET - 64))                        \
+)
+/*****************************************/
+
+/*****************************************/
+//Макски сигналів, які можна зранжувати на виходи Вхідного MMS блоку
+/*****************************************/
+#define MASKA_IN_MMS_SIGNALS_0 (unsigned int)(                \
+    (1 << (RANG_SMALL_RESET_LEDS - 0))                        \
+  | (1 << (RANG_SMALL_RESET_RELES - 0))                       \
+  | (1 << (RANG_SMALL_VKL_VV - 0))                            \
+  | (1 << (RANG_SMALL_OTKL_VV - 0))                           \
+  | (1 << (RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV - 0)) \
+)
+
+#define MASKA_IN_MMS_SIGNALS_1           0
+
+#define MASKA_IN_MMS_SIGNALS_2 (unsigned int)(                \
+    (1 << (RANG_SMALL_DF1_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF2_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF3_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF4_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF5_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF6_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF7_IN - 64))                           \
+  | (1 << (RANG_SMALL_DF8_IN - 64))                           \
+  | (1 << (RANG_SMALL_DT1_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT1_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT2_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT2_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT3_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT3_RESET - 64))                        \
+  | (1 << (RANG_SMALL_DT4_SET - 64))                          \
+  | (1 << (RANG_SMALL_DT4_RESET - 64))                        \
+)
+/*****************************************/
+
+
+/*****************************************/
 //Макски сигналів, які активовуються або з д.входів, або з інтирфейсів чи функціональних кнопок
 /*****************************************/
 

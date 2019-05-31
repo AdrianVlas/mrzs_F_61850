@@ -455,6 +455,7 @@ const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL] =
   {MASKA_BUTTON_MODE_0_SIGNALS_0, MASKA_BUTTON_MODE_0_SIGNALS_1, MASKA_BUTTON_MODE_0_SIGNALS_2},
   {MASKA_BUTTON_MODE_1_SIGNALS_0, MASKA_BUTTON_MODE_1_SIGNALS_1, MASKA_BUTTON_MODE_1_SIGNALS_2}
 };
+
 const uint32_t output_boards[N_OUTPUT_BOARDS][2] = 
 {
   { 2, 1},
@@ -517,6 +518,13 @@ const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1] =
 };
 
 unsigned int edit_rang_Out_LAN[N_BIG];
+
+const uint32_t rang_iec61850_blocks[2][N_SMALL] = 
+{
+  {MASKA_IN_GOOSE_SIGNALS_0, MASKA_IN_GOOSE_SIGNALS_1, MASKA_IN_GOOSE_SIGNALS_2},
+  {MASKA_IN_MMS_SIGNALS_0  , MASKA_IN_MMS_SIGNALS_1  , MASKA_IN_MMS_SIGNALS_2  }
+};
+
 #endif  
   
 const uint32_t index_number_UP[MAX_NAMBER_LANGUAGE][3] = 
