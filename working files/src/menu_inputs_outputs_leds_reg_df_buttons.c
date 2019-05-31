@@ -292,7 +292,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 /*****************************************************/
 void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran, uint32_t temp_state[]
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-                                                                                                            , int type_LN
+                                                                                                            , int type_LN, int n_LN
 #endif
                                                                                                                           )
 {
@@ -661,7 +661,15 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
 
       for (unsigned int index_deleted_function = 0; index_deleted_function < NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL; index_deleted_function++)
       {
-        if (_CHECK_SET_BIT(p_array, index_deleted_function) == 0)
+        if (
+            (_CHECK_SET_BIT(p_array, index_deleted_function) == 0) 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            ||
+            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (index_deleted_function == (RANG_SMALL_BLOCK_IN_GOOSE1 + n_LN)))
+            ||
+            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS) && (index_deleted_function == (RANG_SMALL_BLOCK_IN_MMS1 + n_LN)))
+#endif
+           )   
         {
           /*************************************************************/
           //Відкидаємо ім'я даної функції і зміщаємо біти

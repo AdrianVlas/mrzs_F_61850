@@ -120,7 +120,7 @@ extern void make_ekran_transformator(void);
 extern void make_ekran_transformator_control(void);
 extern void make_ekran_set_function_in_bi(unsigned int, unsigned int, unsigned int * 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-                                                                                    , int
+                                                                                    , int, int
 #endif
 );
 extern void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int, unsigned int, unsigned int *);

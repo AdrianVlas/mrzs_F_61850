@@ -71,7 +71,8 @@ TOTAL_NUMBER_PROTECTION
 /*****************************************/
 //Константи для ранжування дискретних входів
 /*****************************************/
-enum __rang_small {
+enum __rang_small 
+{
 RANG_SMALL_BLOCK_VKL_VV = 0,
 RANG_SMALL_RESET_LEDS,
 RANG_SMALL_RESET_RELES,
