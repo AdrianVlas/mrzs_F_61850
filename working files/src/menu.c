@@ -20910,7 +20910,7 @@ void main_manu_function(void)
                           changed_settings = CHANGED_ETAP_EXECUTION;
 
                           uint16_t *p_rang = current_settings.ranguvannja_Out_LAN[n_LN][n_out_in];
-                          for (size_t i = 0; i < N_BIG; i++) p_rang[i] = 0;
+                          for (size_t i = 0; i < MAX_FUNCTIONS_IN_OUT_LAN; i++) p_rang[i] = 0;
                           
                           unsigned int n_signals = 0;
                           for (size_t i = 0; i < NUMBER_TOTAL_SIGNAL_FOR_RANG; i++)
