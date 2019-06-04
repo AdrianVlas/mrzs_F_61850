@@ -184,7 +184,7 @@ int getAISmallModbusRegister(int adrReg)
 #ifdef TESTZBIRKA_VERSII_PZ
         return 345+(offset-13);
 #else
-        unsigned int enrg = (unsigned int)(energy[bank_for_calc_energy][(offset-13) >> 1]*1000.0);
+        unsigned int enrg = (unsigned int)(energy[0][(offset-13) >> 1]*1000.0);
         if((offset-13)&1)
           //Передаємо старше слово
         return (enrg>> 16)& 0xffff;

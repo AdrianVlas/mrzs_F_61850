@@ -294,7 +294,7 @@ void start_transmint_data_via_CANAL1_MO(void)
       sum += Canal1_MO_Transmit[index++] = *(point++);
     }
 
-    uint32_t bank_for_calc_energy_tmp = (state_calc_energy == false ) ? bank_for_calc_energy : ((bank_for_calc_energy ^ 0x1) & 0x1);
+    uint32_t bank_for_calc_energy_tmp = (state_calc_energy == false ) ? 0 : 1;
     
     point = (uint8_t*)(&energy[bank_for_calc_energy_tmp]);
     for (uint32_t i = 0; i < (sizeof(energy) >> 1); i++) 

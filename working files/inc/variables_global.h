@@ -244,7 +244,7 @@ int P[2], Q[2], cos_phi_x1000[2];
 unsigned int S[2];
 uint32_t bank_for_calc_power, state_calc_power;
 double energy[2][MAX_NUMBER_INDEXES_ENERGY];
-uint32_t bank_for_calc_energy, state_calc_energy;
+uint32_t state_calc_energy;
 unsigned int clean_energy/* = 0*/;
 unsigned int information_about_clean_energy/* = 0*/;
 

@@ -583,7 +583,7 @@ void main_routines_for_spi1(void)
       unsigned int offset = 3;
       
       //Додаємо енергії
-      point_1 = (unsigned char*)(&energy[bank_for_calc_energy]); 
+      point_1 = (unsigned char*)(&energy[0]); 
       point_2 = (unsigned char*)(&energy_comp);
       for (unsigned int i =0; i < SIZE_ENERGY; i++)
       {
@@ -1268,13 +1268,10 @@ void main_routines_for_spi1(void)
             //Виконувалося зчитування енергій у масив енергій
             
             //Перекидаємо масив юстування з тимчасового масиву у робочий масив
-            for(unsigned int k = 0; k < MAX_NUMBER_INDEXES_ENERGY; k++) 
-            {
-              state_calc_energy = true;
-              bank_for_calc_energy = (bank_for_calc_energy ^ 0x1) & 0x1;
-              energy[bank_for_calc_energy][k] = energy_tmp[k];
-              state_calc_energy = false;
-            }
+            state_calc_energy = true;
+            for(unsigned int k = 0; k < MAX_NUMBER_INDEXES_ENERGY; k++) energy[0][k] = energy_tmp[k];
+            state_calc_energy = false;
+            for(unsigned int k = 0; k < MAX_NUMBER_INDEXES_ENERGY; k++) energy[1][k] = energy[0][k];
           }
           else
           {

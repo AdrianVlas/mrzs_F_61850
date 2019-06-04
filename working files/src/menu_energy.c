@@ -82,7 +82,7 @@ void make_ekran_energy(unsigned int pervynna_vtorynna)
       else
       {
         //У парному номері рядку виводимо значення
-        double value_double = energy[bank_for_calc_energy][index_of_ekran>>1];
+        double value_double = energy[0][index_of_ekran>>1];
         if (pervynna_vtorynna == 0) 
           value_double *= 1000.0;
         else
