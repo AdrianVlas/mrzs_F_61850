@@ -1955,11 +1955,9 @@ void calc_power_and_energy(void)
   }
   
   state_calc_energy = true;
-  uint32_t bank_for_calc_energy_prev = bank_for_calc_energy;
-  bank_for_calc_energy = (bank_for_calc_energy ^ 0x1) & 0x1;
   for (__index_energy i = INDEX_EA_PLUS; i < MAX_NUMBER_INDEXES_ENERGY; i++)
   {
-    if (clean_energy_tmp != 0) energy[bank_for_calc_energy][i] = 0;
+    if (clean_energy_tmp != 0) energy[0][i] = 0;
     
     int power_data;
     switch (i)
@@ -2004,12 +2002,13 @@ void calc_power_and_energy(void)
     if (power_data >= (PORIG_POWER_ENERGY*MAIN_FREQUENCY)) /*бо у power_data є сума миттєвих потужностей за 1с, які розраховувалися кожні 20мс*/
     {
       double power_quantum = ((double)power_data)/(((double)MAIN_FREQUENCY)*DIV_kWh);
-      double erergy_tmp = energy[bank_for_calc_energy_prev][i] + power_quantum;
+      double erergy_tmp = energy[0][i] + power_quantum;
       if (erergy_tmp > 999999.999) erergy_tmp = erergy_tmp - 999999.999;
-      energy[bank_for_calc_energy][i] = erergy_tmp;
+      energy[0][i] = erergy_tmp;
     }
   }
   state_calc_energy = false;
+  for (__index_energy i = INDEX_EA_PLUS; i < MAX_NUMBER_INDEXES_ENERGY; i++) energy[1][i] = energy[0][i];
   
   float P_float = ((float)P_tmp)/((float)MAIN_FREQUENCY);
   float Q_float = ((float)Q_tmp)/((float)MAIN_FREQUENCY);

@@ -97,7 +97,7 @@ extern int P[2], Q[2], cos_phi_x1000[2];
 extern unsigned int S[2];
 extern uint32_t bank_for_calc_power, state_calc_power;
 extern double energy[2][MAX_NUMBER_INDEXES_ENERGY];
-extern uint32_t bank_for_calc_energy, state_calc_energy;
+extern uint32_t state_calc_energy;
 extern unsigned int clean_energy;
 extern unsigned int information_about_clean_energy;
 
