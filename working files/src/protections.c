@@ -9335,6 +9335,13 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
 /*****************************************************/
 inline void main_protection(void)
 {
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  /***
+  Зафіксувати чи є активними сигнали блокування Вх.GOOSE блоків і Вх.MMS блоків
+  ***/
+  /***/
+#endif
+
   copying_active_functions = 1; //Помічаємо, що зараз обновляємо значення активних функцій
   
   //Скижаємо ті сигнали, які відповідають за входи, кнопки і активацію з інтерфейсу
@@ -9462,7 +9469,14 @@ inline void main_protection(void)
     }
   }
 
-  //Перевіряємо чи є зараз активні входи
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  /***
+  Зафіксувати чи є активними виходи Вх.GOOSE блоків (з врахуванням, що вхід міг бути активований попердньо а зараз утримуєтьсґя у активному стані) і Вх.MMS блоків
+  ***/
+  /***/
+#endif
+
+  //Перевіряємо чи є зараз активація вхідних функцій
   if (
       (pressed_buttons_united !=0)
       ||  
@@ -9476,11 +9490,32 @@ inline void main_protection(void)
       )
       ||  
       (active_inputs !=0)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+     /* якщо є активація виходів від Вх.GOOSE блоків і Вх.MMS блоків*/   
+#endif
      )   
   {
     unsigned int temp_value_for_activated_function_button_interface[N_SMALL] = {0, 0, 0};
     unsigned int temp_value_for_activated_function[N_SMALL] = {0, 0, 0};
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    /***
+    Опрацювати логіку Вх.GOOSE блоків і Вх.MMS блоків і виставити сигнали, які ними активуються
+    ***/
+  
+    /**************************/
+    //Опрацьовуємо входи для Вх.GOOSE блоків і виставити потрібний біт у temp_value_for_activated_function масиві
+    /**************************/
+    /**************************/
+
+    /**************************/
+    //Опрацьовуємо входи для Вх.MMS блоківі виставити потрібний біт у temp_value_for_activated_function_button_interface масиві
+    /**************************/
+    /**************************/
+  
+    /***/
+#endif
+  
     //Активація з кнопуки
     if (pressed_buttons_united != 0)
     {
@@ -9518,25 +9553,6 @@ inline void main_protection(void)
     temp_value_for_activated_function[0] |= temp_value_for_activated_function_button_interface[0];
     temp_value_for_activated_function[1] |= temp_value_for_activated_function_button_interface[1];
     temp_value_for_activated_function[2] |= temp_value_for_activated_function_button_interface[2];
-
-#if (MODYFIKACIA_VERSII_PZ >= 10)
-    /**************************/
-    //Опрацьовуємо cигнали з IEC-61850
-    /**************************/
-    static unsigned int temp_goose[N_SMALL];
-    for (unsigned int i = 0; i < N_SMALL; i++) 
-    {
-      unsigned int temp_value_for_activated_function_IEC;
-      temp_value_for_activated_function_IEC  = (unsigned int)(                IEC_goose_active_functions[i]  & IEC_active_functions[i]);
-      temp_value_for_activated_function_IEC |= (unsigned int)((unsigned int)(~IEC_goose_active_functions[i]) & temp_goose[i]);
-      temp_goose[i] = temp_value_for_activated_function_IEC;
-      temp_value_for_activated_function[i] |= temp_value_for_activated_function_IEC;
-
-      //Скидаємо використану інформацію
-      IEC_active_functions[i] = IEC_goose_active_functions[i] = 0;
-    }
-    /**************************/
-#endif
 
     //Активація з Д.Входу
     unsigned int vvimk_VV_vid_DV = false;
@@ -9940,34 +9956,6 @@ inline void main_protection(void)
   /***********************************************************/
   calc_measurement(number_group_stp);
 
-#ifdef DEBUG_TEST
-  /***/
-  //Тільки для відладки
-  /***/
-  if (temp_value_3I0_1 != 0)
-    measurement[IM_3I0]         = temp_value_3I0_1;
-  if (temp_value_3I0_other != 0)
-    measurement[IM_3I0_other_g] = temp_value_3I0_other;
-  if (temp_value_IA != 0)
-    measurement[IM_IA]          = temp_value_IA;
-  if (temp_value_IC != 0)
-    measurement[IM_IC]          = temp_value_IC;
-  if (temp_value_UA != 0)
-    measurement[IM_UA]          = temp_value_UA;
-  if (temp_value_UB != 0)
-    measurement[IM_UB]          = temp_value_UB;
-  if (temp_value_UC != 0)
-    measurement[IM_UC]          = temp_value_UC;
-  if (temp_value_3U0 != 0)
-    measurement[IM_3U0]         = temp_value_3U0;
-  if (temp_value_I2 != 0)
-    measurement[IM_I2]          = temp_value_I2;
-  if (temp_value_I1 != 0)
-    measurement[IM_I1]          = temp_value_I1;
-  /***/
-#endif
-    
-      
 //  //Діагностика справності раз на період
 //  diagnostyca_adc_execution();
   
@@ -10678,6 +10666,13 @@ inline void main_protection(void)
   digital_registrator(active_functions);
   /**************************/
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  /***
+  Опрацювати логіку Вихідного Мережевого Блоку
+  ***/
+  /***/
+#endif
+  
   /**************************/
   //Робота з функціями, які мають записуватися у енергонезалежну пам'ять
   /**************************/
