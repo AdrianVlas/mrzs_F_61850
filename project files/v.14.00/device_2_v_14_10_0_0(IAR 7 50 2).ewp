@@ -4433,14 +4433,14 @@
         <group>
           <name>a.10.c.d</name>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.10.c.d\const_menu_diagnostyka.h</name>
-          </file>
-          <file>
             <name>$PROJ_DIR$\..\..\working files\inc\a.10.c.d\const_menu_outputs.h</name>
           </file>
         </group>
         <group>
           <name>with iec61850</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_diagnostyka.h</name>
+          </file>
           <file>
             <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_IEC61850.h</name>
           </file>
