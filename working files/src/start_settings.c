@@ -541,11 +541,18 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 10)    \
       )   
   if ((board_register_tmp & 0x17) != 0x17)
-#elif (MODYFIKACIA_VERSII_PZ == 1)
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 1)  || \
+       (MODYFIKACIA_VERSII_PZ == 11)    \
+      )   
   if ((board_register_tmp & 0x07) != 0x07)
-#elif (MODYFIKACIA_VERSII_PZ == 2)
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 2)     \
+      )   
   if ((board_register_tmp & 0x03) != 0x03)
-#elif (MODYFIKACIA_VERSII_PZ == 4)
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 4)     \
+      )   
   if ((board_register_tmp & 0x13) != 0x13)
 #else
  #error  "UDEFINED MODIFIKACIA"
@@ -558,7 +565,8 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 10)   \
+     (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)   \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
 
@@ -599,7 +607,8 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 10)    \
+     (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)   \
     )
   if ((board_register_tmp & 0x04) == 0x04)
   {
@@ -1596,7 +1605,7 @@ void min_settings(__SETTINGS *target_label)
     target_label->ranguvannja_buttons[N_SMALL*i+2] = 0x0;
   }
 
-#if (MODYFIKACIA_VERSII_PZ == 10)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
   for(size_t i = 0; i < N_IN_GOOSE; i++)
   {
     for(size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++) 

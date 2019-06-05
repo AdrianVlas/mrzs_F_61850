@@ -31,9 +31,11 @@
 
 #if (MODYFIKACIA_VERSII_PZ < 10)
 #include "without iec61850/const_menu_inputs.h"
+#include "without iec61850/const_menu_diagnostyka.h"
 #else
 #include "with iec61850/const_menu_inputs.h"
 #include "with iec61850/const_menu_IEC61850.h"
+#include "with iec61850/const_menu_diagnostyka.h"
 #endif
 
 #include "const_menu_outputs.h"
@@ -58,7 +60,6 @@
 #include "const_menu_buttons.h"
 #include "const_menu_info.h"
 #include "const_menu_point_time_settings.h"
-#include "const_menu_diagnostyka.h"
 #include "const_menu_registrators.h"
 #include "const_menu_setting_language.h"
 #include "const_watchdog.h"
