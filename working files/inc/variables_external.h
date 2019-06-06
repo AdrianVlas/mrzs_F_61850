@@ -558,6 +558,14 @@ extern uint8_t IEC_time_edit[7];
 extern uint32_t IEC_save_time; 
 extern uint32_t IEC_active_functions[N_SMALL];
 extern uint32_t IEC_goose_active_functions[N_SMALL];
+
+extern uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
+extern uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];
+
+extern uint8_t Input_In_MMS_block[N_IN_MMS];
+extern uint8_t Input_ctrl_In_MMS_block[N_IN_MMS];
+
+extern uint8_t Output_Out_LAN_block[N_IN_GOOSE_MMS_OUT];
 #endif
 
 //Змінна глобальної помилки
