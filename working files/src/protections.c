@@ -11111,6 +11111,7 @@ void TIM2_IRQHandler(void)
     //Перевіряємо чи прийшли дані по каналу CANAL1_MO з комунікаційної плати
     GPIO_CANAL1_MO_Out1->BSRRL = GPIO_PIN_CANAL1_MO_Out1; //Переводимо пін canal1_Out1 в стан "1"
     start_receive_data_via_CANAL1_MO();
+    Canal1 = true;
     GPIO_CANAL1_MO_Out1->BSRRH = GPIO_PIN_CANAL1_MO_Out1; //Переводимо пін canal1_Out1 в стан "0"
     /***********************************************************/
 #endif
