@@ -937,8 +937,6 @@ uint32_t queue_mo, queue_mo_irq;
 uint32_t state_array_control_state;
 uint8_t IEC_time_edit[7]; 
 uint32_t IEC_save_time; 
-uint32_t IEC_active_functions[N_SMALL];
-uint32_t IEC_goose_active_functions[N_SMALL];
 
 uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];

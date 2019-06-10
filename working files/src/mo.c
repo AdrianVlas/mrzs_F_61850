@@ -129,18 +129,34 @@ void start_receive_data_via_CANAL1_MO(void)
                     for (size_t i = 0; i < size; i++)
                     {
                       size_t shift_tmp = shift + i;
-                      if (shift_tmp < sizeof(IEC_active_functions))
+                      if (shift_tmp < sizeof(Input_In_GOOSE_block))
                       {
-                        *((uint8_t*)(&IEC_active_functions) + shift_tmp) = Canal1_MO_Received[index++];
+                        *((uint8_t*)(&Input_In_GOOSE_block) + shift_tmp) = Canal1_MO_Received[index++];
                       }
                       else
                       {
-                        shift_tmp -= sizeof(IEC_active_functions);
-                        if (shift_tmp < sizeof(IEC_active_functions))
+                        shift_tmp -= sizeof(Input_In_GOOSE_block);
+                        if (shift_tmp < sizeof(Input_In_MMS_block))
                         {
-                          *((uint8_t*)(&IEC_goose_active_functions) + shift_tmp) = Canal1_MO_Received[index++];
+                          *((uint8_t*)(&Input_In_MMS_block) + shift_tmp) = Canal1_MO_Received[index++];
                         }
-                        else total_error_sw_fixed(85);
+                        else
+                        {
+                          shift_tmp -= sizeof(Input_In_MMS_block);
+                          if (shift_tmp < sizeof(Input_ctrl_In_GOOSE_block))
+                          {
+                            *((uint8_t*)(&Input_ctrl_In_GOOSE_block) + shift_tmp) = Canal1_MO_Received[index++];
+                          }
+                          else
+                          {
+                            shift_tmp -= sizeof(Input_ctrl_In_GOOSE_block);
+                            if (shift_tmp < sizeof(Input_ctrl_In_MMS_block))
+                            {
+                              *((uint8_t*)(&Input_ctrl_In_MMS_block) + shift_tmp) = Canal1_MO_Received[index++];
+                            }
+                            else total_error_sw_fixed(85);
+                          }
+                        }
                       }
                     }
                   }

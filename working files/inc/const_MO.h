@@ -37,12 +37,14 @@ enum _start_label
 
 #define SIZE_RECEIVING_DATA_TM          \
 (                                       \
-  sizeof(IEC_active_functions)          \
+  sizeof(Input_In_GOOSE_block) +        \
+  sizeof(Input_In_MMS_block  )          \
 )
 
 #define SIZE_RECEIVING_ACT_DATA_TM      \
 (                                       \
-  sizeof(IEC_goose_active_functions)    \
+  sizeof(Input_ctrl_In_GOOSE_block) +   \
+  sizeof(Input_ctrl_In_MMS_block)       \
 )
 
 #define SIZE_DESCRIPTION_DATA_TM      \
