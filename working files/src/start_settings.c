@@ -561,6 +561,7 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 10)   \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
+#endif
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
@@ -580,7 +581,6 @@ void start_settings_peripherals(void)
       
 #endif
     
-#endif
     
   }
   

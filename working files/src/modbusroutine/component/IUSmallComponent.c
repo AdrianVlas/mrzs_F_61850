@@ -2,8 +2,7 @@
 
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 0
-//конечный регистр в карте памяти
-#define END_ADR_REGISTER 15
+#define REGISTER_FOR_OBJ 16
 
 int getIUSmallModbusRegister(int);//получить содержимое регистра
 int getIUSmallModbusBit(int);//получить содержимое бита
@@ -11,8 +10,10 @@ int setIUSmallModbusRegister(int, int);//получить содержимое регистра
 int setIUSmallModbusBit(int, int);//получить содержимое бита
 
 void preIUSmallReadAction(void);//action до чтения
+void postIUSmallReadAction(void);//action после чтения
 void preIUSmallWriteAction(void);//action до записи
 int postIUSmallWriteAction(void);//action после записи
+void config_and_settingsIUSmall(void);//action активации
 
 int privateIUGetReg2(int adrReg);
 
@@ -25,14 +26,18 @@ void constructorIUSmallComponent(COMPONENT_OBJ *iucomp)
 {
   iucomponent = iucomp;
 
+  iucomponent->countObject = 1;//к-во обектов
+
   iucomponent->getModbusRegister = getIUSmallModbusRegister;//получить содержимое регистра
   iucomponent->getModbusBit      = getIUSmallModbusBit;//получить содержимое бита
   iucomponent->setModbusRegister = setIUSmallModbusRegister;//получить содержимое регистра
   iucomponent->setModbusBit      = setIUSmallModbusBit;//получить содержимое бита
 
   iucomponent->preReadAction   = preIUSmallReadAction;//action до чтения
+  iucomponent->postReadAction  = postIUSmallReadAction;//action после чтения
   iucomponent->preWriteAction  = preIUSmallWriteAction;//action до записи
   iucomponent->postWriteAction = postIUSmallWriteAction;//action после записи
+  iucomponent->config_and_settings = config_and_settingsIUSmall;//action активации
 
   iucomponent->isActiveActualData = 0;
 }//prepareDVinConfig
@@ -42,10 +47,10 @@ int getIUSmallModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateIUGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  //superSetOperativMarker(iucomponent, adrReg);
+  superSetOperativMarker(iucomponent, adrReg);
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
-  switch(offset) {//индекс регистра 
+  switch(offset%REGISTER_FOR_OBJ) {//индекс регистра 
     case 0://MA_SERIAL_NUMBER:
         return serial_number_dev;//serial_number_dev;
 
@@ -92,7 +97,7 @@ int getIUSmallModbusRegister(int adrReg)
         return (VERSIA_GMM << 8) + MODYFIKACIA_VERSII_GMM;
 
     case 15://MA_ZBIRKA_SW:
-        return ZBIRKA_VERSII_PZ;
+        return (ZBIRKA_VERSII_PZ<< 8) + ZBIRKA_PIDVERSII_PZ;
   }//switch
 
   return 0;//tempReadArray[adrReg-BEGIN_ADR_REGISTER];
@@ -117,7 +122,13 @@ int setIUSmallModbusBit(int x, int y) {
 
 void preIUSmallReadAction(void) {
 //action до чтения
+  iucomponent->operativMarker[0] = -1;
+  iucomponent->operativMarker[1] = -1;//оперативный маркер
   iucomponent->isActiveActualData = 1;
+}//
+void postIUSmallReadAction(void) {
+//action после чтения
+  if(iucomponent->operativMarker[0]<0) return;//не было чтения
 }//
 void preIUSmallWriteAction(void) {
 //action до записи
@@ -133,7 +144,13 @@ int postIUSmallWriteAction(void) {
 int privateIUGetReg2(int adrReg)
 {
   //проверить внешний периметр
- return controlPerimetr(adrReg, BEGIN_ADR_REGISTER, END_ADR_REGISTER);
+  int count_register = REGISTER_FOR_OBJ;
+  if(adrReg>=BEGIN_ADR_REGISTER && adrReg<(BEGIN_ADR_REGISTER+count_register)) return 0;
+  return MARKER_OUTPERIMETR;
 }//privateGetReg2(int adrReg)
 
+void config_and_settingsIUSmall(void)
+{
+//action активации
+}
 
