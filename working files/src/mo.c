@@ -334,6 +334,11 @@ void start_transmint_data_via_CANAL1_MO(void)
     {
       sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)diagnostyka) + i);
     }
+    
+    for (uint32_t i = 0; i < sizeof(Output_Out_LAN_block); i++) 
+    {
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)Output_Out_LAN_block) + i);
+    }
   }
     
   if ((index + 1 + sizeof(confirm_diagnostyka_mo)) < BUFFER_CANAL1_MO)

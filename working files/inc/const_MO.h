@@ -31,7 +31,8 @@ enum _start_label
   sizeof(state_outputs) +               \
   sizeof(state_leds) +                  \
   sizeof(active_functions) +            \
-  sizeof(diagnostyka)                   \
+  sizeof(diagnostyka) +                 \
+  sizeof(Output_Out_LAN_block)          \
 )
 
 #define SIZE_RECEIVING_DATA_TM          \
