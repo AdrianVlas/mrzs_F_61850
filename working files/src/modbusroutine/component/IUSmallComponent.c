@@ -42,7 +42,7 @@ int getIUSmallModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateIUGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  //superSetOperativMarker(iucomponent, adrReg);
+//  superSetOperativMarker(iucomponent, adrReg);
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
   switch(offset) {//индекс регистра 
@@ -92,11 +92,12 @@ int getIUSmallModbusRegister(int adrReg)
         return (VERSIA_GMM << 8) + MODYFIKACIA_VERSII_GMM;
 
     case 15://MA_ZBIRKA_SW:
-        return ZBIRKA_VERSII_PZ;
+        return (ZBIRKA_VERSII_PZ<< 8) + ZBIRKA_PIDVERSII_PZ;
   }//switch
 
   return 0;//tempReadArray[adrReg-BEGIN_ADR_REGISTER];
 }//getDVModbusRegister(int adrReg)
+
 int getIUSmallModbusBit(int x) {
   //получить содержимое bit
   UNUSED(x);
