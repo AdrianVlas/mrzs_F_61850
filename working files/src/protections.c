@@ -11286,9 +11286,6 @@ void TIM2_IRQHandler(void)
       else if (board_register_diff & 0x08)
       {
         _SET_BIT(clear_diagnostyka, ERROR_CB_FIX);
-//        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x2;
-//        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) & 0xff) != 0x25)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_CTLR);
-//        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
 #endif
 

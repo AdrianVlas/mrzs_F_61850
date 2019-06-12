@@ -120,8 +120,7 @@ ERROR_BDV_DZ_FIX,
 ERROR_BDV_DZ_CTLR,
 ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
-ERROR_CB_FIX,
-ERROR_CB_CTLR,
+ERROR_CB_FIX
 };
 
 #define WORD_0_MASKA_ERRORS_FROM_CANAL_1 0
@@ -213,7 +212,6 @@ ERROR_CB_CTLR,
   | (1 << (ERROR_BDZ_FIX - 96))                                 \
   | (1 << (ERROR_BDZ_CTLR - 96))                                \
   | (1 << (ERROR_CB_FIX - 96))                                  \
-  | (1 << (ERROR_CB_CTLR - 96))                                 \
 )
 
 # define NAME_DIAGN_RU  \
@@ -328,7 +326,7 @@ ERROR_CB_CTLR,
   " ÁÄÇ ô.         ",   \
   " ÁÄÇ ê.         ",   \
   " ÊÏ ô.          ",   \
-  " ÊÏ ê.          "
+  " Îøèáêà 111     "
 
 # define NAME_DIAGN_UA  \
   " Ïîì.I2C        ",   \
@@ -442,7 +440,7 @@ ERROR_CB_CTLR,
   " ÁÄÇ ô.         ",   \
   " ÁÄÇ ê.         ",   \
   " ÊÏ ô.          ",   \
-  " ÊÏ ê.          "
+  " Ïîìèëêà 111    "
 
 # define NAME_DIAGN_EN  \
   " I2C Err.       ",   \
@@ -556,7 +554,7 @@ ERROR_CB_CTLR,
   " BDZ f.         ",   \
   " BDZ ctrl.      ",   \
   " CB f.          ",   \
-  " CB ctrl.       "
+  " Error 111      "
 
 # define NAME_DIAGN_KZ  \
   " Îø.I2C         ",   \
@@ -670,6 +668,6 @@ ERROR_CB_CTLR,
   " ÁÄÇ ô.         ",   \
   " ÁÄÇ ê.         ",   \
   " ÊÏ ô.          ",   \
-  " ÊÏ ê.          "
+  " Îøèáêà 111     "
     
 #endif
