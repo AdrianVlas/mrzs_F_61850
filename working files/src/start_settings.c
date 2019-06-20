@@ -1356,7 +1356,7 @@ void start_settings_peripherals(void)
   USART_InitTypeDef USART_InitStructure;
 
   //Заповняємо структуру
-  USART_InitStructure.USART_BaudRate = 6750000;
+  USART_InitStructure.USART_BaudRate = 7500000;
   USART_InitStructure.USART_WordLength = USART_WordLength_9b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_Even;
