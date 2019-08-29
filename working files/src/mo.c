@@ -326,6 +326,18 @@ void start_transmint_data_via_CANAL1_MO(void)
       sum += Canal1_MO_Transmit[index++] = *(point++);
     }
     
+    point = (uint8_t*)(&resurs_vymykacha);
+    for (uint32_t i = 0; i < sizeof(resurs_vymykacha); i++) 
+    {
+      sum += Canal1_MO_Transmit[index++] = *(point++);
+    }
+
+    point = (uint8_t*)(&resurs_vidkljuchennja);
+    for (uint32_t i = 0; i < sizeof(resurs_vidkljuchennja); i++) 
+    {
+      sum += Canal1_MO_Transmit[index++] = *(point++);
+    }
+
     for (uint32_t i = 0; i < sizeof(state_inputs); i++) 
     {
       sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)state_inputs) + i);

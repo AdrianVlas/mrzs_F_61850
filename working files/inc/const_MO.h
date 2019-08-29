@@ -27,6 +27,8 @@ enum _start_label
   (sizeof(cos_phi_x1000) >> 1) +        \
   (sizeof(energy) >> 1) +               \
   (sizeof(phi_angle) >> 1) +            \
+  sizeof(resurs_vymykacha) +            \
+  sizeof(resurs_vidkljuchennja) +       \
   sizeof(state_inputs) +                \
   sizeof(state_outputs) +               \
   sizeof(state_leds) +                  \
