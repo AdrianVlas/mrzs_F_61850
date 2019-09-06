@@ -641,12 +641,12 @@ unsigned char temp_register_rtc[2];
 
 unsigned int changed_settings = CHANGED_ETAP_NONE; 
 unsigned char crc_settings;
-__SETTINGS current_settings_prt, current_settings;
+__SETTINGS current_settings_prt;
 
 #if (MODYFIKACIA_VERSII_PZ < 10)
-__SETTINGS edition_settings, current_settings_interfaces;
+__SETTINGS current_settings, edition_settings, current_settings_interfaces;
 #else
-SRAM1 __SETTINGS edition_settings, current_settings_interfaces;
+SRAM1 __SETTINGS current_settings, edition_settings, current_settings_interfaces;
 #endif
 
 
