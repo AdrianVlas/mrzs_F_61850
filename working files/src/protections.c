@@ -9663,8 +9663,8 @@ struct{
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_15;
         sLV.ch_amount_active_src++;
     }
-		hldGsBlkParam.ch_amount_blk_src    = sLV.ch_amount_blk_src;
-		hldGsBlkParam.ch_amount_active_src = sLV.ch_amount_active_src;
+        hldGsBlkParam.ch_amount_blk_src    = sLV.ch_amount_blk_src;
+        hldGsBlkParam.ch_amount_active_src = sLV.ch_amount_active_src;
 
 
     }while(sLV.ch_while_breaker);
@@ -9680,12 +9680,12 @@ struct{
 //=====================================================================================================
 do{
     sLV.ch_while_breaker = 0;sLV.ch_amount_mms_blk_src = sLV.ch_amount_mms_active_src = 0;//! optimize then
-	register long i,lV;
-	register void* pv;
+    register long i,lV;
+    register void* pv;
     
      register unsigned int *r_p_active_functions;
 // ----------------    -------------------------
-	r_p_active_functions = sLV.p_active_functions;
+    r_p_active_functions = sLV.p_active_functions;
     pv = (void*)&hldMmsBlkParam;
     if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_MMS1 + ((unsigned int)MMS_BLOCK_ORD_NUM_00))) != 0){
     //clr block
@@ -9735,7 +9735,7 @@ do{
         sLV.ch_amount_mms_active_src++;
     }
 
-	hldMmsBlkParam.ch_amount_blk_src    = sLV.ch_amount_blk_src;
+    hldMmsBlkParam.ch_amount_blk_src    = sLV.ch_amount_blk_src;
     hldMmsBlkParam.ch_amount_active_src = sLV.ch_amount_active_src;
 
 
@@ -10057,7 +10057,39 @@ do{
     //
     //--------------------------------------------------------------------------------------------------------
     //````````````````````````````````````````````````````````````````````````````````````````````````````````
+    
+    //=====================================================================================================
+    //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    //                  
+    //....................................................................................................
+    //=====================================================================================================
+    do{
+        sLV.ch_while_breaker = 0;
+    // ----------------    -------------------------       
+        register long i,lV,j,lCtrMmsSrc;
+         register void *pvlc,*pvll;
+        pvlc = (void*)temp_value_for_activated_function;
+        pvll = (void*)&current_settings_prt.ranguvannja_In_MMS;
+        //sLV.ch_amount_active_src = hldGsBlkParam.ch_amount_active_src;
+        //pvl = (void*)&hldGsBlkParam;((GsBlkParamDsc*)pvl)->
+        lCtrMmsSrc = hldMmsBlkParam.sh_amount_mms_active_src;   
         
+        while(lCtrMmsSrc){
+            lV = arrOrdNumsMmsSignal[lCtrMmsSrc];
+            i = lV>>3;j = lV - i;
+            lCtrMmsSrc--;
+            //temp_value_for_activated_function[N_SMALL];//;ranguvannja_In_GOOSE[i][j][0]
+            lV = i*N_IN_GOOSE_MMS_OUT*N_SMALL*sizeof(long) +j*N_SMALL*sizeof(long);
+            for(long k = 0; k < N_SMALL; k++){
+                ((long*)pvlc)[k] |= ((long*)pvll+lV) [k];
+            }
+            
+        }
+    }while(sLV.ch_while_breaker);
+    //
+    //--------------------------------------------------------------------------------------------------------
+    //````````````````````````````````````````````````````````````````````````````````````````````````````````
+            
 
     /**************************/
     //ќпрацьовуЇмо входи дл€ ¬х.MMS блок≥в≥ виставити потр≥бний б≥т у temp_value_for_activated_function_button_interface масив≥
