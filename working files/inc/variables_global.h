@@ -944,7 +944,7 @@ uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];
 uint8_t Input_In_MMS_block[N_IN_MMS];
 uint8_t Input_ctrl_In_MMS_block[N_IN_MMS];
 
-uint8_t Output_Out_LAN_block[N_IN_GOOSE_MMS_OUT];
+uint8_t Output_Out_LAN_block[N_OUT_LAN];
 
 #endif
 

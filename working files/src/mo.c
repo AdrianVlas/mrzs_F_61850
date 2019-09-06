@@ -340,17 +340,17 @@ void start_transmint_data_via_CANAL1_MO(void)
 
     for (uint32_t i = 0; i < sizeof(state_inputs); i++) 
     {
-      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)state_inputs) + i);
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&state_inputs) + i);
     }
     
     for (uint32_t i = 0; i < sizeof(state_outputs); i++) 
     {
-      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)state_outputs) + i);
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&state_outputs) + i);
     }
     
     for (uint32_t i = 0; i < sizeof(state_leds); i++) 
     {
-      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)state_leds) + i);
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&state_leds) + i);
     }
     
     for (uint32_t i = 0; i < sizeof(active_functions); i++) 

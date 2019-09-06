@@ -563,7 +563,7 @@ extern uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];
 extern uint8_t Input_In_MMS_block[N_IN_MMS];
 extern uint8_t Input_ctrl_In_MMS_block[N_IN_MMS];
 
-extern uint8_t Output_Out_LAN_block[N_IN_GOOSE_MMS_OUT];
+extern uint8_t Output_Out_LAN_block[N_OUT_LAN];
 #endif
 
 //Змінна глобальної помилки
