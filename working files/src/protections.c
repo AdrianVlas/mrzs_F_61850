@@ -10022,7 +10022,7 @@ inline void main_protection(void)
     }
     if (not_null)
     {
-      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+//      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
     }
     else
     {
