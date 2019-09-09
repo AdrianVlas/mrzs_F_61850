@@ -641,12 +641,12 @@ unsigned char temp_register_rtc[2];
 
 unsigned int changed_settings = CHANGED_ETAP_NONE; 
 unsigned char crc_settings;
-__SETTINGS current_settings_prt, current_settings;
+__SETTINGS current_settings_prt;
 
 #if (MODYFIKACIA_VERSII_PZ < 10)
-__SETTINGS edition_settings, current_settings_interfaces;
+__SETTINGS current_settings, edition_settings, current_settings_interfaces;
 #else
-SRAM1 __SETTINGS edition_settings, current_settings_interfaces;
+SRAM1 __SETTINGS current_settings, edition_settings, current_settings_interfaces;
 #endif
 
 
@@ -931,14 +931,12 @@ uint8_t Canal2_MO_Transmit[BUFFER_CANAL2_MO];
 uint8_t Canal2_MO_Received[BUFFER_CANAL2_MO];
 unsigned int Canal1, Canal2;
 const uint8_t my_address_mo = 0;
-uint32_t IEC_board_present = false;
+uint32_t IEC_board_uncall = 2;
 uint32_t IEC_board_address;
 uint32_t queue_mo, queue_mo_irq;
 uint32_t state_array_control_state;
 uint8_t IEC_time_edit[7]; 
 uint32_t IEC_save_time; 
-uint32_t IEC_active_functions[N_SMALL];
-uint32_t IEC_goose_active_functions[N_SMALL];
 
 uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];
@@ -946,7 +944,7 @@ uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];
 uint8_t Input_In_MMS_block[N_IN_MMS];
 uint8_t Input_ctrl_In_MMS_block[N_IN_MMS];
 
-uint8_t Output_Out_LAN_block[N_IN_GOOSE_MMS_OUT];
+uint8_t Output_Out_LAN_block[N_OUT_LAN];
 
 #endif
 

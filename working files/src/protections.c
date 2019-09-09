@@ -10613,7 +10613,7 @@ do{
     }
     if (not_null)
     {
-      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+//      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
     }
     else
     {
@@ -11702,6 +11702,7 @@ void TIM2_IRQHandler(void)
     //Перевіряємо чи прийшли дані по каналу CANAL1_MO з комунікаційної плати
     GPIO_CANAL1_MO_Out1->BSRRL = GPIO_PIN_CANAL1_MO_Out1; //Переводимо пін canal1_Out1 в стан "1"
     start_receive_data_via_CANAL1_MO();
+    Canal1 = true;
     GPIO_CANAL1_MO_Out1->BSRRH = GPIO_PIN_CANAL1_MO_Out1; //Переводимо пін canal1_Out1 в стан "0"
     /***********************************************************/
 #endif
@@ -11870,6 +11871,14 @@ void TIM2_IRQHandler(void)
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) & 0xff) != 0x25)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_CTLR);
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
+      
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      if ((board_register_tmp & 0x08) !=  0x8) _SET_BIT(set_diagnostyka, ERROR_CB_FIX);
+      else if (board_register_diff & 0x08)
+      {
+        _SET_BIT(clear_diagnostyka, ERROR_CB_FIX);
+      }
+#endif
 
 #if (                                \
      (MODYFIKACIA_VERSII_PZ == 0) || \

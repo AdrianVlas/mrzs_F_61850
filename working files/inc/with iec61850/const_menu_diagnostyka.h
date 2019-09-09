@@ -120,6 +120,7 @@ ERROR_BDV_DZ_FIX,
 ERROR_BDV_DZ_CTLR,
 ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
+ERROR_CB_FIX
 };
 
 #define WORD_0_MASKA_ERRORS_FROM_CANAL_1 0
@@ -210,6 +211,7 @@ ERROR_BDZ_CTLR,
   | (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
   | (1 << (ERROR_BDZ_FIX - 96))                                 \
   | (1 << (ERROR_BDZ_CTLR - 96))                                \
+  | (1 << (ERROR_CB_FIX - 96))                                  \
 )
 
 # define NAME_DIAGN_RU  \
@@ -323,7 +325,7 @@ ERROR_BDZ_CTLR,
   " ÁÄÂ-ÄÇ ê.      ",   \
   " ÁÄÇ ô.         ",   \
   " ÁÄÇ ê.         ",   \
-  " Îøèáêà 110     ",   \
+  " ÊÏ ô.          ",   \
   " Îøèáêà 111     "
 
 # define NAME_DIAGN_UA  \
@@ -437,7 +439,7 @@ ERROR_BDZ_CTLR,
   " ÁÄÂ-ÄÇ ê.      ",   \
   " ÁÄÇ ô.         ",   \
   " ÁÄÇ ê.         ",   \
-  " Ïîìèëêà 110    ",   \
+  " ÊÏ ô.          ",   \
   " Ïîìèëêà 111    "
 
 # define NAME_DIAGN_EN  \
@@ -551,7 +553,7 @@ ERROR_BDZ_CTLR,
   " BDV-DZ ctrl.   ",   \
   " BDZ f.         ",   \
   " BDZ ctrl.      ",   \
-  " Error 110      ",   \
+  " CB f.          ",   \
   " Error 111      "
 
 # define NAME_DIAGN_KZ  \
@@ -665,7 +667,7 @@ ERROR_BDZ_CTLR,
   " ÁÄÂ-ÄÇ ê.      ",   \
   " ÁÄÇ ô.         ",   \
   " ÁÄÇ ê.         ",   \
-  " Îøèáêà 110     ",   \
+  " ÊÏ ô.          ",   \
   " Îøèáêà 111     "
     
 #endif

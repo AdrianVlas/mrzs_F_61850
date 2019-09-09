@@ -535,15 +535,13 @@ void start_settings_peripherals(void)
   ***/
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0;
   uint32_t board_register_tmp = board_register = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47);
-#if (                                   \
+#if   (                                 \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
-       (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 3)     \
       )   
   if ((board_register_tmp & 0x17) != 0x17)
 #elif (                                 \
-       (MODYFIKACIA_VERSII_PZ == 1)  || \
-       (MODYFIKACIA_VERSII_PZ == 11)    \
+       (MODYFIKACIA_VERSII_PZ == 1)     \
       )   
   if ((board_register_tmp & 0x07) != 0x07)
 #elif (                                 \
@@ -554,12 +552,24 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 4)     \
       )   
   if ((board_register_tmp & 0x13) != 0x13)
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 10)    \
+      )   
+  if ((board_register_tmp & 0x1F) != 0x1F)
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 11)    \
+      )   
+  if ((board_register_tmp & 0x0F) != 0x0F)
 #else
  #error  "UDEFINED MODIFIKACIA"
 #endif
   {
     if ((board_register_tmp &  0x01) !=  0x1) _SET_BIT(set_diagnostyka, ERROR_BA_1_FIX);
     if ((board_register_tmp &  0x02) !=  0x2) _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_FIX);
+    
+#if (MODYFIKACIA_VERSII_PZ >= 10)   
+    if ((board_register_tmp &  0x08) !=  0x8) _SET_BIT(set_diagnostyka, ERROR_CB_FIX);
+#endif
     
 #if (                                \
      (MODYFIKACIA_VERSII_PZ == 0) || \
@@ -569,6 +579,7 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 11)   \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
+#endif
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
@@ -588,7 +599,6 @@ void start_settings_peripherals(void)
       
 #endif
     
-#endif
     
   }
   
@@ -1346,7 +1356,7 @@ void start_settings_peripherals(void)
   USART_InitTypeDef USART_InitStructure;
 
   //Заповняємо структуру
-  USART_InitStructure.USART_BaudRate = 6750000;
+  USART_InitStructure.USART_BaudRate = 7500000;
   USART_InitStructure.USART_WordLength = USART_WordLength_9b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_Even;

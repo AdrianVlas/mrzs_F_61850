@@ -1626,7 +1626,54 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
         NAME_DIAGN_KZ
       }
     };
-  
+
+    unsigned char name_string_tmp[MAX_ROW_FOR_DIAGNOSTYKA][MAX_COL_LCD];
+
+    for(unsigned int index_1 = 0; index_1 < MAX_ROW_FOR_DIAGNOSTYKA; index_1++)
+    {
+      for(unsigned int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+        name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
+      
+      if ((index_1 >= ERROR_DIGITAL_OUTPUT_1_BIT) && (index_1 < (ERROR_DIGITAL_OUTPUT_1_BIT + NUMBER_OUTPUTS)))
+      {
+        uint32_t value = 0;
+        uint32_t index_board = 0, index_number = 0;
+        for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+        {
+          if (name_string_tmp[index_1][index_2] == '?')
+          {
+            if (value == 0)
+            {
+              //Це є умовою фіксації слова
+              index_board = index_2;
+              value = (index_1 - ERROR_DIGITAL_OUTPUT_1_BIT) + 1;
+            }
+            else
+            {
+              //Це є умовою фіксації номеру на слоті
+              index_number = index_2;
+              break;
+            }
+          }
+        }
+        
+        int tmp_1 = -1, tmp_2 = -1;
+        for (size_t i = 0; i < N_OUTPUT_BOARDS; i++)
+        {
+          if (value <= output_boards[i][0])
+          {
+            tmp_1 = output_boards[i][1];
+            tmp_2 = (i == 0) ? value : value - output_boards[i - 1][0];
+          
+            break;
+          }
+        }
+        
+        name_string_tmp[index_1][index_board]  = tmp_1 + 0x40;
+        name_string_tmp[index_1][index_number] = tmp_2 + 0x30;
+      }
+    }
+    
     unsigned int max_number_changers_in_record = buffer_for_manu_read_record[8];
     unsigned int position_temp;
     unsigned int index_of_ekran;
@@ -1695,7 +1742,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
               if (k == 0)
               {
                 //У першому рядку відображаємо назву діагностики, який змінився
-                for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[(i<<1)+k][j] = name_string[index_language][index_of_diagnostic_in_the_slice][j];
+                for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[(i<<1)+k][j] = name_string_tmp[index_of_diagnostic_in_the_slice][j];
               }
               else
               {

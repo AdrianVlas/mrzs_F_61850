@@ -829,29 +829,30 @@ void make_ekran_settings_network_layer_Ethernet()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET<<1))//Множення на два константи MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    uint32_t index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET)
     {
-      uint32_t index_tmp = index_of_ekran >> 1;
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_tmp][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
         //У парному номері рядку виводимо значення
         const uint8_t string[] = "0123456789";
-        __SETTINGS *point_1 = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+        __SETTINGS *point_1 = (view == true) ? &current_settings : &edition_settings;
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
         if (
-            (index_tmp == INDEX_ML_NL_IPV4) ||
-            (index_tmp == INDEX_ML_NL_GATEWAY)
+            (index_of_ekran_tmp == INDEX_ML_NL_IPV4) ||
+            (index_of_ekran_tmp == INDEX_ML_NL_GATEWAY)
            )   
         {
           uint16_t *point_2;
-          if (index_tmp == INDEX_ML_NL_IPV4) point_2 = point_1->IP4;
-          else if (index_tmp == INDEX_ML_NL_GATEWAY) point_2 = point_1->gateway;
+          if (index_of_ekran_tmp == INDEX_ML_NL_IPV4) point_2 = point_1->IP4;
+          else if (index_of_ekran_tmp == INDEX_ML_NL_GATEWAY) point_2 = point_1->gateway;
           uint16_t array[4] = {point_2[0], point_2[1], point_2[2], point_2[3]};
           
           working_ekran[i][4] = working_ekran[i][8] = working_ekran[i][12] = '.';
@@ -880,7 +881,7 @@ void make_ekran_settings_network_layer_Ethernet()
             j += (3 + 1 + 3);
           }
         }
-        else if (index_tmp == INDEX_ML_NL_MASK)
+        else if (index_of_ekran_tmp == INDEX_ML_NL_MASK)
         {
           uint32_t maska_tmp = point_1->mask;
         
@@ -943,8 +944,7 @@ void make_ekran_settings_network_layer_Ethernet()
   }
 
   //Курсор видимий, якщо ми у режимі редагування
-  if (current_ekran.edition == 0) current_ekran.cursor_on = 0;
-  else current_ekran.cursor_on = 1;
+  current_ekran.cursor_on = 1;
   
   //Курсор не мигає
   if(current_ekran.edition == 0)current_ekran.cursor_blinking_on = 0;

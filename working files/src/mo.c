@@ -38,7 +38,7 @@ void start_receive_data_via_CANAL1_MO(void)
         for (int32_t i = 0; i < (size_packet - 3); i++) sum += Canal1_MO_Received[1 + i];
         if (sum == Canal1_MO_Received[size_packet - 2])
         { 
-          IEC_board_present = true;
+          IEC_board_uncall = 0;
           IEC_board_address = Canal1_MO_Received[2];
           
           uint32_t index = 4;
@@ -129,18 +129,34 @@ void start_receive_data_via_CANAL1_MO(void)
                     for (size_t i = 0; i < size; i++)
                     {
                       size_t shift_tmp = shift + i;
-                      if (shift_tmp < sizeof(IEC_active_functions))
+                      if (shift_tmp < sizeof(Input_In_GOOSE_block))
                       {
-                        *((uint8_t*)(&IEC_active_functions) + shift_tmp) = Canal1_MO_Received[index++];
+                        *((uint8_t*)(&Input_In_GOOSE_block) + shift_tmp) = Canal1_MO_Received[index++];
                       }
                       else
                       {
-                        shift_tmp -= sizeof(IEC_active_functions);
-                        if (shift_tmp < sizeof(IEC_active_functions))
+                        shift_tmp -= sizeof(Input_In_GOOSE_block);
+                        if (shift_tmp < sizeof(Input_In_MMS_block))
                         {
-                          *((uint8_t*)(&IEC_goose_active_functions) + shift_tmp) = Canal1_MO_Received[index++];
+                          *((uint8_t*)(&Input_In_MMS_block) + shift_tmp) = Canal1_MO_Received[index++];
                         }
-                        else total_error_sw_fixed(85);
+                        else
+                        {
+                          shift_tmp -= sizeof(Input_In_MMS_block);
+                          if (shift_tmp < sizeof(Input_ctrl_In_GOOSE_block))
+                          {
+                            *((uint8_t*)(&Input_ctrl_In_GOOSE_block) + shift_tmp) = Canal1_MO_Received[index++];
+                          }
+                          else
+                          {
+                            shift_tmp -= sizeof(Input_ctrl_In_GOOSE_block);
+                            if (shift_tmp < sizeof(Input_ctrl_In_MMS_block))
+                            {
+                              *((uint8_t*)(&Input_ctrl_In_MMS_block) + shift_tmp) = Canal1_MO_Received[index++];
+                            }
+                            else total_error_sw_fixed(85);
+                          }
+                        }
                       }
                     }
                   }
@@ -190,8 +206,8 @@ void start_receive_data_via_CANAL1_MO(void)
   else
   {
     //Не прийняті дані з комунікаційної плати по каналу 1
-    if (IEC_board_present == true) _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
-//    IEC_board_present = false;
+    if (IEC_board_uncall == 0) _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
+    else IEC_board_uncall--;
   }
       
   //Скидуємо всі можливі помилки
@@ -310,19 +326,31 @@ void start_transmint_data_via_CANAL1_MO(void)
       sum += Canal1_MO_Transmit[index++] = *(point++);
     }
     
+    point = (uint8_t*)(&resurs_vymykacha);
+    for (uint32_t i = 0; i < sizeof(resurs_vymykacha); i++) 
+    {
+      sum += Canal1_MO_Transmit[index++] = *(point++);
+    }
+
+    point = (uint8_t*)(&resurs_vidkljuchennja);
+    for (uint32_t i = 0; i < sizeof(resurs_vidkljuchennja); i++) 
+    {
+      sum += Canal1_MO_Transmit[index++] = *(point++);
+    }
+
     for (uint32_t i = 0; i < sizeof(state_inputs); i++) 
     {
-      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)state_inputs) + i);
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&state_inputs) + i);
     }
     
     for (uint32_t i = 0; i < sizeof(state_outputs); i++) 
     {
-      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)state_outputs) + i);
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&state_outputs) + i);
     }
     
     for (uint32_t i = 0; i < sizeof(state_leds); i++) 
     {
-      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)state_leds) + i);
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&state_leds) + i);
     }
     
     for (uint32_t i = 0; i < sizeof(active_functions); i++) 
@@ -333,6 +361,11 @@ void start_transmint_data_via_CANAL1_MO(void)
     for (uint32_t i = 0; i < sizeof(diagnostyka); i++) 
     {
       sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)diagnostyka) + i);
+    }
+    
+    for (uint32_t i = 0; i < sizeof(Output_Out_LAN_block); i++) 
+    {
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)Output_Out_LAN_block) + i);
     }
   }
     

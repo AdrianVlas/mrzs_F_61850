@@ -126,8 +126,8 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
           ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
         )
       ) return MARKER_ERRORDIAPAZON;
-      if(! ((unsigned int)dataReg < info_rejestrator_ar.number_records) &&
-          ((unsigned int)dataReg < max_number_records_ar             )) return MARKER_ERRORDIAPAZON;
+      if(! ((unsigned int)dataReg < info_rejestrator_ar.number_records)) return MARKER_ERRORDIAPAZON;
+      if((unsigned int)dataReg > max_number_records_ar) return MARKER_ERRORDIAPAZON;
 
       break;
     case 70:// оличество дискретных регистраторов
@@ -140,8 +140,8 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
           ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
         )
       ) return MARKER_ERRORDIAPAZON;
-      if(! ((unsigned int)dataReg < info_rejestrator_dr.number_records) &&
-          (dataReg < MAX_NUMBER_RECORDS_INTO_DR             )) return MARKER_ERRORDIAPAZON;
+      if(! ((unsigned int)dataReg < info_rejestrator_dr.number_records)) return MARKER_ERRORDIAPAZON;
+      if(dataReg > MAX_NUMBER_RECORDS_INTO_DR) return MARKER_ERRORDIAPAZON;
       break;
     case 74://ќчистить аналоговый регистратор
       if(dataReg!=CMD_WORD_CLEAR_AR) return MARKER_ERRORDIAPAZON;
