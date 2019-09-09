@@ -9365,8 +9365,15 @@ enum WRP_MMS_BIT_POS {
     MMS_BLOCK_ORD_NUM_01,//1
     MMS_BLOCK_ORD_NUM_02,//2
     MMS_BLOCK_ORD_NUM_03,//3
-
 TOTAL_MMS_BLOCK
+//
+};
+enum WRP_LAN_BIT_POS { 
+    LAN_BLOCK_ORD_NUM_00,//0
+    LAN_BLOCK_ORD_NUM_01,//1
+    LAN_BLOCK_ORD_NUM_02,//2
+    LAN_BLOCK_ORD_NUM_03,//3
+TOTAL_LAN_BLOCK
 //
 };
 
@@ -9466,6 +9473,7 @@ typedef struct tag_MmsBlkParam
 }MmsBlkParamDsc;
 static GsBlock_stt  arrGsBlk [N_IN_GOOSE];
 static MmsBlock_stt arrMmsBlk[N_IN_MMS];
+
 static GsBlkParamDsc hldGsBlkParam;
 static MmsBlkParamDsc hldMmsBlkParam;
 static short arrOrdNumsGsSignal[N_IN_GOOSE*N_IN_GOOSE_MMS_OUT];

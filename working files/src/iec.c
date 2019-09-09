@@ -138,6 +138,78 @@ do{
 //--------------------------------------------------------------------------------------------------------
 //````````````````````````````````````````````````````````````````````````````````````````````````````````
 
+//=====================================================================================================
+//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+//             LAN BLOCK     
+//....................................................................................................
+//=====================================================================================================
+do{
+    sLV.ch_while_breaker = 0;sLV.ch_amount_mms_blk_src = sLV.ch_amount_mms_active_src = 0;//! optimize then
+    register long i,lV;
+    register void* pv;
+    
+     register unsigned int *r_p_active_functions;
+// ----------------    -------------------------
+    r_p_active_functions = sLV.p_active_functions;
+    pv = (void*)&hldMmsBlkParam;
+    if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_OUT_LAN1 + ((unsigned int)LAN_BLOCK_ORD_NUM_00))) != 0){
+    //clr block
+        i = MMS_BLOCK_ORD_NUM_03 - sLV.ch_amount_mms_blk_src;
+        ((MmsBlkParamDsc*)pv)->unnV1[i].MmsBlkHdr.OrdNumMmsBlk = LAN_BLOCK_ORD_NUM_00;
+        sLV.ch_amount_mms_blk_src++;
+    }else{
+        lV = sLV.ch_amount_mms_active_src;
+        //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
+        hldMmsBlkParam.unnV1[lV].MmsBlkHdr.OrdNumMmsBlk = LAN_BLOCK_ORD_NUM_00;
+        sLV.ch_amount_mms_active_src++;
+    }
+
+    if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_OUT_LAN1+((unsigned int)LAN_BLOCK_ORD_NUM_01))) != 0){
+    //clr block
+        i = MMS_BLOCK_ORD_NUM_03 - sLV.ch_amount_mms_blk_src;
+        hldMmsBlkParam.unnV1[i].MmsBlkHdr.OrdNumMmsBlk = LAN_BLOCK_ORD_NUM_01;
+        sLV.ch_amount_mms_blk_src++;
+    }else{
+        lV = sLV.ch_amount_mms_active_src;
+        //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
+        hldMmsBlkParam.unnV1[lV].MmsBlkHdr.OrdNumMmsBlk = LAN_BLOCK_ORD_NUM_01;
+        sLV.ch_amount_mms_active_src++;
+    }
+
+    if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_OUT_LAN1+((unsigned int)LAN_BLOCK_ORD_NUM_02))) != 0){
+    //clr block
+        i = MMS_BLOCK_ORD_NUM_03 - sLV.ch_amount_mms_blk_src;
+        hldMmsBlkParam.unnV1[i].MmsBlkHdr.OrdNumMmsBlk = LAN_BLOCK_ORD_NUM_022;
+        sLV.ch_amount_mms_blk_src++;
+    }else{
+        lV = sLV.ch_amount_mms_active_src;
+        //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
+        hldMmsBlkParam.unnV1[lV].MmsBlkHdr.OrdNumMmsBlk = LAN_BLOCK_ORD_NUM_02;
+        sLV.ch_amount_mms_active_src++;
+    }
+
+    if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_OUT_LAN1+((unsigned int)LAN_BLOCK_ORD_NUM_03))) != 0){
+    //clr block
+        i = LAN_BLOCK_ORD_NUM_03 - sLV.ch_amount_mms_blk_src;
+        hldMmsBlkParam.unnV1[i].MmsBlkHdr.OrdNumMmsBlk = LAN_BLOCK_ORD_NUM_03;
+        sLV.ch_amount_mms_blk_src++;
+    }else{
+        lV = sLV.ch_amount_mms_active_src;
+        //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
+        hldMmsBlkParam.unnV1[lV].MmsBlkHdr.OrdNumMmsBlk = LAN_BLOCK_ORD_NUM_03;
+        sLV.ch_amount_mms_active_src++;
+    }
+
+    hldMmsBlkParam.ch_amount_blk_src    = sLV.ch_amount_blk_src;
+    hldMmsBlkParam.ch_amount_active_src = sLV.ch_amount_active_src;
+
+
+
+   
+}while(sLV.ch_while_breaker);
+//
+//--------------------------------------------------------------------------------------------------------
+//````````````````````````````````````````````````````````````````````````````````````````````````````````
 
 
 
