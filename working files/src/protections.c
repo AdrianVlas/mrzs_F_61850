@@ -9377,9 +9377,38 @@ TOTAL_LAN_BLOCK
 //
 };
 
-
+//.typedef union lan_block_Unn{ 
+//.    unsigned char arCh[4];
+//.    unsigned short arSh[2];
+//.    unsigned long Lan_Vl;
+//.    struct{
+//.        struct {
+//.            unsigned int in1 : 1; //0
+//.            unsigned int in2 : 1; //1
+//.            unsigned int in3 : 1; //2
+//.            unsigned int in4 : 1; //3
+//.            unsigned int in5 : 1; //4 
+//.            unsigned int in6 : 1; //5 
+//.            unsigned int in7 : 1; //6 
+//.            unsigned int in8 : 1; //7    
+//.        } in_bool; //
+//.    unsigned char Blk;
+//.    struct {
+//.        unsigned int out1 : 1; //0
+//.        unsigned int out2 : 1; //1
+//.        unsigned int out3 : 1; //2
+//.        unsigned int out4 : 1; //3
+//.        unsigned int out5 : 1; //4 
+//.        unsigned int out6 : 1; //5 
+//.        unsigned int out7 : 1; //6 
+//.        unsigned int out8 : 1; //7    
+//.    } out_bool; //unsigned char Out;
+//.    unsigned char Res;
+//.   }Lan_Hld;
+//.    
+//.} LanBlock_stt; 
   
-  typedef union mms_block_Unn{ 
+typedef union mms_block_Unn{ 
     unsigned char arCh[4];
     unsigned short arSh[2];
     unsigned long Mms_Vl;
@@ -9471,20 +9500,44 @@ typedef struct tag_MmsBlkParam
     char ch_amount_active_src;
     short sh_amount_mms_active_src;//use whith arrOrdNumsGsSignal
 }MmsBlkParamDsc;
+typedef struct tag_LanBlkParam
+{
+    union {
+        unsigned char   u8Ar [4];
+        unsigned short  u16Ar [2];
+        unsigned long   ulV;
+        struct {
+        unsigned char OrdNumLanBlk;
+        //unsigned char Res;
+        } LanBlkHdr;
+    }unnV1[N_OUT_LAN];
+    //void* pAddrGsBlk[N_OUT_LAN];
+
+}LanBlkParamDsc;
+
 static GsBlock_stt  arrGsBlk [N_IN_GOOSE];
-static MmsBlock_stt arrMmsBlk[N_IN_MMS];
+static MmsBlock_stt arrMmsBlk[N_IN_MMS  ];
+//static LanBlock_stt arrLanBlk[N_OUT_LAN ];
 
 static GsBlkParamDsc hldGsBlkParam;
 static MmsBlkParamDsc hldMmsBlkParam;
-static short arrOrdNumsGsSignal[N_IN_GOOSE*N_IN_GOOSE_MMS_OUT];
-static short arrOrdNumsMmsSignal[N_IN_MMS *N_IN_GOOSE_MMS_OUT];
-static short arrOrdNumsLanSignal[N_OUT_LAN* N_OUT_LAN_IN];
+static LanBlkParamDsc hldLanBlkParam = {
+    LAN_BLOCK_ORD_NUM_00,0,0,0,
+    LAN_BLOCK_ORD_NUM_01,0,0,0,
+    LAN_BLOCK_ORD_NUM_02,0,0,0,
+    LAN_BLOCK_ORD_NUM_03,0,0,0
+};
 
-//register unsigned long rU;
+static short arrOrdNumsGsSignal [N_IN_GOOSE*N_IN_GOOSE_MMS_OUT];
+static short arrOrdNumsMmsSignal[N_IN_MMS  *N_IN_GOOSE_MMS_OUT];
+
+
+
 struct{
     char  ch_while_breaker;
     char ch_amount_blk_src,ch_amount_mms_blk_src;
     char ch_amount_active_src,ch_amount_mms_active_src;
+    char ch_amount_GsSignal,ch_amount_MmsSignal;
     __SETTINGS *p_current_settings_prt;
     unsigned int *p_active_functions;
 
@@ -9499,6 +9552,7 @@ struct{
 //=====================================================================================================
     do{
      sLV.ch_amount_active_src = sLV.ch_amount_blk_src = sLV.ch_while_breaker = 0;//! optimize then
+     sLV.ch_amount_GsSignal =  sLV.ch_amount_MmsSignal = 0;
      register long i,lV;
      //register void* pv;
      register unsigned int *r_p_active_functions;
@@ -9514,22 +9568,29 @@ struct{
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_00;
         sLV.ch_amount_blk_src++;
+		
+		arrGsBlk[GS_BLOCK_ORD_NUM_00].GS_Hld.Blk = 1;
+		
     }else{
         lV = sLV.ch_amount_active_src;
-        //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_00;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_00].GS_Hld.Blk = 0;
+		
     }
+	
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 1)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_01;
         sLV.ch_amount_blk_src++;
+		
     }else{
         //Insert
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_01;
         sLV.ch_amount_active_src++;
+		
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 2)) != 0){
     //clr block
@@ -9704,6 +9765,8 @@ do{
         lV = sLV.ch_amount_mms_active_src;
         //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
         hldMmsBlkParam.unnV1[lV].MmsBlkHdr.OrdNumMmsBlk = MMS_BLOCK_ORD_NUM_00;
+		//hldMmsBlkParam.unnV1[MMS_BLOCK_ORD_NUM_00].u8Ar[] = 
+		//arrMmsBlk[MMS_BLOCK_ORD_NUM_00].arCh[2] = 0;
         sLV.ch_amount_mms_active_src++;
     }
 
@@ -9755,7 +9818,6 @@ do{
 //````````````````````````````````````````````````````````````````````````````````````````````````````````
 
 
-  
   
   
   /***/
@@ -9905,37 +9967,45 @@ do{
     do{
     // ----------------    -------------------------
      
-     register long i,lV,j,lIdxBlk;
+     register long i,lV,j;
+     register long lIdxBlk;
      
      register void *pvl;
+     
         pvl = (void*)&hldGsBlkParam;
-        sLV.ch_amount_active_src = hldGsBlkParam.ch_amount_active_src;
-        ((GsBlkParamDsc*)pvl)->sh_amount_gs_active_src = lIdxBlk = 0;
-        do{
-            //--;
-            //--;
-            //--;
-            i = ((GsBlkParamDsc*)pvl)-> unnV1[lIdxBlk].GsBlkHdr.OrdNumGsBlk;
-            //Check State Inputs
-            lV = arrGsBlk[i].arCh[2];//Outs
-            lV &= ~((unsigned long)(Input_ctrl_In_GOOSE_block[i]));//Clear all changeble bits
-            lV |= Input_In_GOOSE_block[i]&Input_ctrl_In_GOOSE_block[i];//Set ones only
-            //if(noerror)
-                arrGsBlk[i].arCh[2] = lV;//
-                register unsigned long wrpLV;
-    
-            wrpLV = arrGsBlk[i].arCh[2];
-            j = 0;lV = ((GsBlkParamDsc*)pvl)->sh_amount_gs_active_src;
-            while( (wrpLV != 0) && j < 8){
-                if((wrpLV & (1<<j)) != 0 ){
-                    arrOrdNumsGsSignal[lV] = lIdxBlk+j;lV++;
-                }
-                j++;
+        sLV.ch_amount_active_src = i = N_IN_GOOSE;//hldGsBlkParam.ch_amount_active_src;
+        sLV.ch_amount_GsSignal = 0;
+        if(i > 0){
+            ((GsBlkParamDsc*)pvl)->sh_amount_gs_active_src = lV = lIdxBlk = 0;asm ("nop" ::"r"(lIdxBlk),"r"(lV));
+            while(lIdxBlk < N_IN_GOOSE){ //do{
+                //--i = ((GsBlkParamDsc*)pvl)-> unnV1[lIdxBlk].GsBlkHdr.OrdNumGsBlk;;
+                //--//Check State Inputs                                            ;
+                //--lV = arrGsBlk[i].arCh[2];//Outs                                 ;
+                i = lIdxBlk;
+                lV = arrGsBlk[i].arCh[2];//!!Outs arrGsBlk[i].arCh[0]
                 
-            }
-            ((GsBlkParamDsc*)pvl)->sh_amount_gs_active_src = lV;
-
-        }while((--sLV.ch_amount_active_src) != 0);
+				
+                lV &= ~((unsigned long)(Input_ctrl_In_GOOSE_block[i]));//Clear all changeble bits
+                lV |= Input_In_GOOSE_block[i]&Input_ctrl_In_GOOSE_block[i];//Set ones only
+                //if(noerror)
+                    arrGsBlk[i].arCh[2] = lV;//arrGsBlk[i].arCh[0]
+                if(arrGsBlk[i].GS_Hld.Blk == 0){   
+					register unsigned long wrpLV;
+					wrpLV = arrGsBlk[i].arCh[2];//!!arrGsBlk[i].arCh[2] = arrGsBlk[i].arCh[0]
+					j = 0;lV = ((GsBlkParamDsc*)pvl)->sh_amount_gs_active_src;
+					while( (wrpLV != 0) ){//&& j < 8
+						if((wrpLV & (1<<j)) != 0 ){
+							arrOrdNumsGsSignal[lV] = (lIdxBlk<<3)+j;lV++;wrpLV &= ~(1<<j);
+						}
+						j++;
+						
+					}
+					((GsBlkParamDsc*)pvl)->sh_amount_gs_active_src = lV;
+				}
+                lIdxBlk++;//  += lV;//! ????
+            }//while(lIdxBlk);//(--sLV.ch_amount_active_src) != 0
+            sLV.ch_amount_GsSignal = ((GsBlkParamDsc*)pvl)->sh_amount_gs_active_src;
+        }
     //Try bield list of outs which sets in ones.
     
     }while(sLV.ch_while_breaker);
@@ -9955,38 +10025,42 @@ do{
     //=====================================================================================================
     do{
     // ----------------    -------------------------
-     
-     register long i,lV,j,lIdxBlk;
-     
+     register long i,lV,j;
+     register long lIdxBlk;
      register void *pvl;
         pvl = (void*)&hldMmsBlkParam;
-        sLV.ch_amount_active_src = hldMmsBlkParam.ch_amount_active_src;
-        ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src = lIdxBlk = 0;
-        do{
-            //--;
-            //--;
-            //--;
-            i = ((MmsBlkParamDsc*)pvl)-> unnV1[lIdxBlk].MmsBlkHdr.OrdNumMmsBlk;
-            //Check State Inputs
-            lV = arrMmsBlk[i].arCh[2];//Outs
-            lV &= ~((unsigned long)(Input_ctrl_In_MMS_block[i]));//Clear all changeble bits
-            lV |= Input_In_MMS_block[i]&Input_ctrl_In_MMS_block[i];//Set ones only
-            //if(noerror)
-                arrMmsBlk[i].arCh[2] = lV;//
-                register unsigned long wrpLV;
-    
-            wrpLV = arrMmsBlk[i].arCh[2];
-            j = 0;lV = ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src;
-            while( (wrpLV != 0) && j < 8){
-                if((wrpLV & (1<<j)) != 0 ){
-                    arrOrdNumsMmsSignal[lV] = lIdxBlk+j;lV++;
-                }
-                j++;
-                
-            }
-            ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src = lV;
+        sLV.ch_amount_active_src = i  = hldMmsBlkParam.ch_amount_active_src;
+        if(i > 0){
+            ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src = lV = lIdxBlk = 0;asm ("nop" ::"r"(lIdxBlk),"r"(lV));
+            while(lIdxBlk < N_IN_MMS){ //do{
+                //--;
+                //--;
+                //--;
+                i = ((MmsBlkParamDsc*)pvl)-> unnV1[lIdxBlk].MmsBlkHdr.OrdNumMmsBlk;
+                //Check State Inputs
+                lV = arrMmsBlk[i].arCh[2];//Outs
+                lV &= ~((unsigned long)(Input_In_MMS_block[i]));//Clear all changeble bits
+                lV |= Input_In_GOOSE_block[i]&Input_ctrl_In_MMS_block[i];//Set ones only
+                //if(noerror)
+                    arrMmsBlk[i].arCh[2] = lV;//
 
-        }while((--sLV.ch_amount_active_src) != 0);
+                    register unsigned long wrpLV;
+        
+                wrpLV = lV;//arrMmsBlk[i].arCh[2];
+                j = 0;lV = ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src;
+                while( (wrpLV != 0) ){//&& j < 8
+                    if((wrpLV & (1<<j)) != 0 ){
+                        arrOrdNumsMmsSignal[lV] = (lIdxBlk<<3)+j;lV++;wrpLV &= ~(1<<j);
+                    }
+                    j++;
+                    
+                }
+                ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src = lV;
+                lIdxBlk++;//  += lV;//! ????
+            }//while(lIdxBlk);//(--sLV.ch_amount_active_src) != 0
+            sLV.ch_amount_MmsSignal = ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src; 
+        }    
+
     //Try bield list of outs which sets in ones.
     
     }while(sLV.ch_while_breaker);
@@ -10016,7 +10090,7 @@ do{
        )
       )
       ||  
-      (active_inputs !=0)
+      (active_inputs !=0) || ((sLV.ch_amount_MmsSignal+sLV.ch_amount_GsSignal)>0)
 #if (MODYFIKACIA_VERSII_PZ >= 10)
      /* якщо є активація виходів від Вх.GOOSE блоків і Вх.MMS блоків*/   
 #endif
@@ -10042,30 +10116,39 @@ do{
     do{
         sLV.ch_while_breaker = 0;
     // ----------------    -------------------------       
-        register long i,lV,j,lCtrGsSrc;
-         register void *pvlc,*pvll;
-        pvlc = (void*)temp_value_for_activated_function;
-        pvll = (void*)&current_settings_prt.ranguvannja_In_GOOSE;
-        //sLV.ch_amount_active_src = hldGsBlkParam.ch_amount_active_src;
-        //pvl = (void*)&hldGsBlkParam;((GsBlkParamDsc*)pvl)->
-        lCtrGsSrc = hldGsBlkParam.sh_amount_gs_active_src;   
-        
-        while(lCtrGsSrc){
-            lV = arrOrdNumsGsSignal[lCtrGsSrc];
-            i = lV>>3;j = lV - i;
-            lCtrGsSrc--;
-            //temp_value_for_activated_function[N_SMALL];//;ranguvannja_In_GOOSE[i][j][0]
-            lV = i*N_IN_GOOSE_MMS_OUT*N_SMALL*sizeof(long) +j*N_SMALL*sizeof(long);
-            for(long k = 0; k < N_SMALL; k++){
-                ((long*)pvlc)[k] |= ((long*)pvll+lV) [k];
-            }
-            
-        }
+//        register unsigned long i,lV,j;
+//         unsigned long lCtrGsSrc;
+//         register void *pvlc,*pvll;
+//        pvlc = (void*)temp_value_for_activated_function;//ui32
+//        pvll = (void*)&current_settings_prt.ranguvannja_In_GOOSE;//uint32_t
+//        i = j = lV = 0;
+//        //sLV.ch_amount_active_src = hldGsBlkParam.ch_amount_active_src;
+//        //pvl = (void*)&hldGsBlkParam;((GsBlkParamDsc*)pvl)->
+//        lCtrGsSrc = hldGsBlkParam.sh_amount_gs_active_src;   
+//        asm ("nop" ::"r"(i),"r"(j),"r"(lV));
+//        while(lCtrGsSrc){
+//            lCtrGsSrc--;
+//            lV = arrOrdNumsGsSignal[lCtrGsSrc];
+//            i = lV>>3;j = lV - (i<<3);
+//            
+//            
+//            //temp_value_for_activated_function[N_SMALL];//;ranguvannja_In_GOOSE[i][j][0]
+//            lV = i*N_IN_GOOSE_MMS_OUT*N_SMALL*sizeof(long) +j*N_SMALL*sizeof(long);
+//            for(register unsigned long k = 0; k < N_SMALL; k++){
+//                ((unsigned long*)pvlc)[k] |= ((unsigned long*)pvll+lV) [k];
+//            }
+        proc_Gs_blk_out((void*)&temp_value_for_activated_function,hldGsBlkParam.sh_amount_gs_active_src,arrOrdNumsGsSignal );    
+//        }
     }while(sLV.ch_while_breaker);
     //
     //--------------------------------------------------------------------------------------------------------
     //````````````````````````````````````````````````````````````````````````````````````````````````````````
     
+
+    /**************************/
+    //Опрацьовуємо входи для Вх.MMS блоківі виставити потрібний біт у temp_value_for_activated_function_button_interface масиві
+    /**************************/
+    /**************************/
     //=====================================================================================================
     //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     //                  
@@ -10074,35 +10157,30 @@ do{
     do{
         sLV.ch_while_breaker = 0;
     // ----------------    -------------------------       
-        register long i,lV,j,lCtrMmsSrc;
-         register void *pvlc,*pvll;
-        pvlc = (void*)temp_value_for_activated_function;
-        pvll = (void*)&current_settings_prt.ranguvannja_In_MMS;
-        //sLV.ch_amount_active_src = hldGsBlkParam.ch_amount_active_src;
-        //pvl = (void*)&hldGsBlkParam;((GsBlkParamDsc*)pvl)->
-        lCtrMmsSrc = hldMmsBlkParam.sh_amount_mms_active_src;   
-        
-        while(lCtrMmsSrc){
-            lV = arrOrdNumsMmsSignal[lCtrMmsSrc];
-            i = lV>>3;j = lV - i;
-            lCtrMmsSrc--;
-            //temp_value_for_activated_function[N_SMALL];//;ranguvannja_In_GOOSE[i][j][0]
-            lV = i*N_IN_GOOSE_MMS_OUT*N_SMALL*sizeof(long) +j*N_SMALL*sizeof(long);
-            for(long k = 0; k < N_SMALL; k++){
-                ((long*)pvlc)[k] |= ((long*)pvll+lV) [k];
-            }
-            
-        }
+//        register long i,lV,j,lCtrMmsSrc;
+//         register void *pvlc,*pvll;
+//        pvlc = (void*)temp_value_for_activated_function;
+//        pvll = (void*)&current_settings_prt.ranguvannja_In_MMS;
+//        //sLV.ch_amount_active_src = hldGsBlkParam.ch_amount_active_src;
+//        //pvl = (void*)&hldGsBlkParam;((GsBlkParamDsc*)pvl)->
+//        lCtrMmsSrc = hldMmsBlkParam.sh_amount_mms_active_src;   
+        proc_Mms_blk_out((void*)&temp_value_for_activated_function,hldMmsBlkParam.sh_amount_mms_active_src,arrOrdNumsMmsSignal );        
+//        while(lCtrMmsSrc){
+//            lV = arrOrdNumsMmsSignal[lCtrMmsSrc];
+//            i = lV>>3;j = lV - i;
+//            lCtrMmsSrc--;
+//            //temp_value_for_activated_function[N_SMALL];//;ranguvannja_In_GOOSE[i][j][0]
+//            lV = i*N_IN_GOOSE_MMS_OUT*N_SMALL*sizeof(long) +j*N_SMALL*sizeof(long);
+//            for(long k = 0; k < N_SMALL; k++){
+//                ((long*)pvlc)[k] |= ((long*)pvll+lV) [k];
+//            }
+//            
+//        }
     }while(sLV.ch_while_breaker);
     //
     //--------------------------------------------------------------------------------------------------------
     //````````````````````````````````````````````````````````````````````````````````````````````````````````
             
-
-    /**************************/
-    //Опрацьовуємо входи для Вх.MMS блоківі виставити потрібний біт у temp_value_for_activated_function_button_interface масиві
-    /**************************/
-    /**************************/
   
     /***/
 #endif
@@ -11261,6 +11339,65 @@ do{
   /***
   Опрацювати логіку Вихідного Мережевого Блоку
   ***/
+
+//=====================================================================================================
+//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+//             LAN BLOCK     
+//....................................................................................................
+//=====================================================================================================
+do{
+    sLV.ch_while_breaker = 0;//! optimize then
+    
+    register void* pvl;
+    
+     register unsigned int *r_p_active_functions;
+// ----------------    -------------------------
+    r_p_active_functions = sLV.p_active_functions;
+    pvl = (void*)&hldLanBlkParam;//hldMmsBlkParam;
+    if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_OUT_LAN1 + ((unsigned int)LAN_BLOCK_ORD_NUM_00))) != 0){
+    //clr block
+        Output_Out_LAN_block[LAN_BLOCK_ORD_NUM_00] = 0;
+        //
+    }else{
+        proc_Lan_blk_out(&current_settings_prt.ranguvannja_Out_LAN[0][0][0],r_p_active_functions,(void*)&(((GsBlkParamDsc*)pvl)-> unnV1[LAN_BLOCK_ORD_NUM_00].ulV));
+    }
+
+    if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_OUT_LAN1+((unsigned int)LAN_BLOCK_ORD_NUM_01))) != 0){
+    //clr block
+        Output_Out_LAN_block[LAN_BLOCK_ORD_NUM_01] = 0; 
+    }else{
+        proc_Lan_blk_out(&current_settings_prt.ranguvannja_Out_LAN[0][0][0],r_p_active_functions,(void*)&(((GsBlkParamDsc*)pvl)-> unnV1[LAN_BLOCK_ORD_NUM_01].ulV));
+    }
+
+    if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_OUT_LAN1+((unsigned int)LAN_BLOCK_ORD_NUM_02))) != 0){
+    //clr block
+        Output_Out_LAN_block[LAN_BLOCK_ORD_NUM_02] = 0;
+    }else{
+        proc_Lan_blk_out(&current_settings_prt.ranguvannja_Out_LAN[0][0][0],r_p_active_functions,(void*)&(((GsBlkParamDsc*)pvl)-> unnV1[LAN_BLOCK_ORD_NUM_02].ulV));
+    }
+
+    if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_OUT_LAN1+((unsigned int)LAN_BLOCK_ORD_NUM_03))) != 0){
+    //clr block
+        Output_Out_LAN_block[LAN_BLOCK_ORD_NUM_03] = 0;
+    }else{
+        proc_Lan_blk_out(&current_settings_prt.ranguvannja_Out_LAN[0][0][0],r_p_active_functions,(void*)&(((GsBlkParamDsc*)pvl)-> unnV1[LAN_BLOCK_ORD_NUM_03].ulV));
+    }
+
+
+
+
+
+   
+}while(sLV.ch_while_breaker);
+//
+//--------------------------------------------------------------------------------------------------------
+//````````````````````````````````````````````````````````````````````````````````````````````````````````
+
+  
+
+
+  
+
   /***/
 #endif
   
@@ -12256,5 +12393,87 @@ void setpoints_selecting(unsigned int *p_active_functions, unsigned int act_inp_
     _CLEAR_BIT(p_active_functions, RANG_4_GRUPA_USTAVOK);
 }
 /*****************************************************/
+
+void proc_Gs_blk_out(void* pv,unsigned long lCtrGsSrc,short* p_arrOrdNumsGsSignal ){
+
+    // ----------------    -------------------------       
+        register unsigned long i,lV,j;
+         
+         register void *pvll;
+
+        pvll = (void*)&current_settings_prt.ranguvannja_In_GOOSE;//
+        i = j = lV = 0;
+
+        asm ("nop" ::"r"(i),"r"(j),"r"(lV));
+        while(lCtrGsSrc){
+            lCtrGsSrc--;
+            lV = p_arrOrdNumsGsSignal[lCtrGsSrc];
+            i = lV>>3;j = lV - (i<<3);
+
+            lV = i*N_IN_GOOSE_MMS_OUT*N_SMALL +j*N_SMALL;
+            for(register unsigned long k = 0; k < N_SMALL; k++){
+                ((unsigned long*)pv)[k] |= ((unsigned long*)pvll+lV) [k];
+            }
+            
+        }
+
+}
+void proc_Mms_blk_out(void* pv,unsigned long lCtrMmsSrc,short* p_arrOrdNumsMmsSignal ){
+
+    // ----------------    -------------------------       
+        register unsigned long i,lV,j;
+         
+         register void *pvll;
+
+        pvll = (void*)&current_settings_prt.ranguvannja_In_MMS;//
+        i = j = lV = 0;
+
+        asm ("nop" ::"r"(i),"r"(j),"r"(lV));
+        while(lCtrMmsSrc){
+            lCtrMmsSrc--;
+            lV = p_arrOrdNumsMmsSignal[lCtrMmsSrc];
+            i = lV>>3;j = lV - (i<<3);
+
+            lV = i*N_IN_GOOSE_MMS_OUT*N_SMALL +j*N_SMALL;
+            for(register unsigned long k = 0; k < N_SMALL; k++){
+                ((unsigned long*)pv)[k] |= ((unsigned long*)pvll+lV) [k];
+            }
+            
+        }
+
+}
+
+void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_functions, void *pLanDsc){
+    register unsigned long rU_V,rU_bit,rU_out, rU_Idx;
+   
+    unsigned long IdxBlk,l_O;
+// ----------------    -------------------------
+    IdxBlk = *((unsigned char*)pLanDsc);l_O = 0;//sLV.IdxBlk = LAN_BLOCK_ORD_NUM_00;    
+    for(rU_out = 0; rU_out < 8; rU_out++){
+        rU_bit = rU_V = 0;
+        while( rU_bit < MAX_FUNCTIONS_IN_OUT_LAN ){
+            //
+            rU_V = (IdxBlk*N_OUT_LAN_IN*MAX_FUNCTIONS_IN_OUT_LAN) + (rU_out*MAX_FUNCTIONS_IN_OUT_LAN) + rU_bit;//find index
+            rU_Idx = p_rang_Out_LAN[rU_V];//find index
+            if(rU_Idx>0){
+                rU_Idx--;
+                //Create 32 bit mask
+                rU_V = p_active_functions[rU_Idx >> 5] & ( (unsigned int)( 1 << (rU_Idx & 0x1f)));
+                if(rU_V != 0){
+                    ;//Set Val
+                    rU_bit = MAX_FUNCTIONS_IN_OUT_LAN+1;
+                }
+            }
+            rU_bit++;
+        }
+        rU_Idx = IdxBlk;//sLV.IdxBlk;
+        if(rU_bit == (MAX_FUNCTIONS_IN_OUT_LAN+2) ){ //Activate Out
+            //((unsigned char*)pLanDsc+1)[rU_Idx] |= 1<< rU_out;
+            l_O  |= 1<< rU_out;
+        }
+    
+    }   
+    Output_Out_LAN_block[IdxBlk] = l_O;
+}
 
 /*****************************************************/

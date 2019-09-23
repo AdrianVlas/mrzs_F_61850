@@ -120,7 +120,7 @@ extern void make_ekran_transformator(void);
 extern void make_ekran_transformator_control(void);
 extern void make_ekran_set_function_in_bi(unsigned int, unsigned int, unsigned int * 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-                                                                                    , int, int
+                                                                               , int, int
 #endif
 );
 extern void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int, unsigned int, unsigned int *);
@@ -355,6 +355,9 @@ extern void make_ekran_list_in_out_for_iec61850(unsigned int, size_t);
 extern void start_transmint_data_via_CANAL1_MO(void);
 extern void start_receive_data_via_CANAL1_MO(void);
 extern void CANAL2_MO_routine(void);
+extern void proc_Gs_blk_out(void* pv,unsigned long lCtrGsSrc,short* p_arrOrdNumsGsSignal ); 
+extern void proc_Mms_blk_out(void* pv,unsigned long lCtrMmsSrc,short* p_arrOrdNumsMmsSignal );
+extern void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_functions, void *pLanDsc);
 #endif
 
 extern void inputPacketParserUSB(void);
