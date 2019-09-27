@@ -10090,9 +10090,10 @@ do{
        )
       )
       ||  
-      (active_inputs !=0) || ((sLV.ch_amount_MmsSignal+sLV.ch_amount_GsSignal)>0)
+      (active_inputs !=0) 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
      /* якщо є активація виходів від Вх.GOOSE блоків і Вх.MMS блоків*/   
+      || ((sLV.ch_amount_MmsSignal+sLV.ch_amount_GsSignal)>0)
 #endif
      )   
   {
@@ -12394,6 +12395,7 @@ void setpoints_selecting(unsigned int *p_active_functions, unsigned int act_inp_
 }
 /*****************************************************/
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
 void proc_Gs_blk_out(void* pv,unsigned long lCtrGsSrc,short* p_arrOrdNumsGsSignal ){
 
     // ----------------    -------------------------       
@@ -12476,4 +12478,5 @@ void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_func
     Output_Out_LAN_block[IdxBlk] = l_O;
 }
 
+#endif
 /*****************************************************/
