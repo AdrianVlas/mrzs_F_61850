@@ -3180,14 +3180,14 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   else
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD1);
 
-  _AND3(logic_zdz_0, 2, light, 1, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 5);
+  _AND3(logic_zdz_0, 2, light, 1, control_zdz_tmp, CTR_ZDZ_OVD2_STATE_BIT, logic_zdz_0, 5);
   //"Ñâ.ÇÄÇ â³ä ÎÂÄ2"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 5))
     _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD2);
   else
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD2);
 
-  _AND3(logic_zdz_0, 2, light, 2, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 6);
+  _AND3(logic_zdz_0, 2, light, 2, control_zdz_tmp, CTR_ZDZ_OVD3_STATE_BIT, logic_zdz_0, 6);
   //"Ñâ.ÇÄÇ â³ä ÎÂÄ3"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 6))
     _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD3);
