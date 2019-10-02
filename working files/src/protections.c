@@ -3172,22 +3172,24 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)    \
-      )   
-  _AND4(logic_zdz_0, 2, light, 0, zdz_ovd_diagnostyka, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
+      ) 
+
+  uint32_t zdz_ovd_diagnostyka_inv = (uint32_t)(~zdz_ovd_diagnostyka);
+  _AND4(logic_zdz_0, 2, light, 0, zdz_ovd_diagnostyka_inv, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
   //"Ñâ.ÇÄÇ â³ä ÎÂÄ1"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 4))
     _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD1);
   else
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD1);
 
-  _AND4(logic_zdz_0, 2, light, 1, zdz_ovd_diagnostyka, 1, control_zdz_tmp, CTR_ZDZ_OVD2_STATE_BIT, logic_zdz_0, 5);
+  _AND4(logic_zdz_0, 2, light, 1, zdz_ovd_diagnostyka_inv, 1, control_zdz_tmp, CTR_ZDZ_OVD2_STATE_BIT, logic_zdz_0, 5);
   //"Ñâ.ÇÄÇ â³ä ÎÂÄ2"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 5))
     _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD2);
   else
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD2);
 
-  _AND4(logic_zdz_0, 2, light, 2, zdz_ovd_diagnostyka, 2, control_zdz_tmp, CTR_ZDZ_OVD3_STATE_BIT, logic_zdz_0, 6);
+  _AND4(logic_zdz_0, 2, light, 2, zdz_ovd_diagnostyka_inv, 2, control_zdz_tmp, CTR_ZDZ_OVD3_STATE_BIT, logic_zdz_0, 6);
   //"Ñâ.ÇÄÇ â³ä ÎÂÄ3"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 6))
     _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD3);
