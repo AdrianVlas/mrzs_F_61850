@@ -16,15 +16,15 @@
                 <debug>1</debug>
                 <option>
                     <name>ExePath</name>
-                    <state>Flash-Debug\IAR new\a.03.c.d\Exe</state>
+                    <state>Flash-Debug\IAR new\a.02.c.d\Exe</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>Flash-Debug\IAR new\a.03.c.d\Obj</state>
+                    <state>Flash-Debug\IAR new\a.02.c.d\Obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>Flash-Debug\IAR new\a.03.c.d\List</state>
+                    <state>Flash-Debug\IAR new\a.02.c.d\List</state>
                 </option>
                 <option>
                     <name>GEndianMode</name>
@@ -32,11 +32,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Full formatting, without multibyte support.</state>
+                    <state>Full formatting, with multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Full formatting, without multibyte support.</state>
+                    <state>Full formatting, with multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.32.4.20866</state>
+                    <state>8.40.2.22864</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -164,7 +164,7 @@
                 </option>
                 <option>
                     <name>OgLibHeap</name>
-                    <state>3</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGLibAdditionalLocale</name>
@@ -177,7 +177,7 @@
                 </option>
                 <option>
                     <name>OGPrintfMultibyteSupport</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGScanfVariant</name>
@@ -186,7 +186,7 @@
                 </option>
                 <option>
                     <name>OGScanfMultibyteSupport</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GenLocaleTags</name>
@@ -353,7 +353,7 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                    <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                    <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -438,7 +438,7 @@
                 </option>
                 <option>
                     <name>IccFloatSemantics</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCNoLiteralPool</name>
@@ -663,7 +663,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>device_2_v_14_3_2_3.bin</state>
+                    <state>device_2_v_14_2_1_4.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -718,7 +718,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>device_2_v_14_3_2_3.out</state>
+                    <state>device_2_v_14_2_1_4.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -933,7 +933,7 @@
                 </option>
                 <option>
                     <name>IlinkOptInline</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkOptExceptionsAllow</name>
@@ -949,7 +949,7 @@
                 </option>
                 <option>
                     <name>IlinkOptMergeDuplSections</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkOptUseVfe</name>
@@ -1015,7 +1015,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>device_2_v_14_0_0_3_import_lib.o</state>
+                    <state>device_2_v_14_2_0_3_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1178,14 +1178,13 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -1311,7 +1310,7 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -1396,7 +1395,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -1409,11 +1408,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -1447,14 +1446,13 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -1580,7 +1578,7 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -1665,7 +1663,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -1678,11 +1676,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -1716,14 +1714,13 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -1849,7 +1846,7 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -1934,7 +1931,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -1947,11 +1944,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -1988,14 +1985,13 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -2121,17 +2117,17 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
-                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
-                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
                             </option>
                             <option>
                                 <name>CCStdIncCheck</name>
@@ -2206,7 +2202,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -2219,11 +2215,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -2257,14 +2253,13 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -2390,7 +2385,7 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -2475,7 +2470,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -2488,11 +2483,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -2566,7 +2561,6 @@
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -2692,7 +2686,7 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -2777,7 +2771,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -2790,11 +2784,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -2853,14 +2847,13 @@
                                     <debug>1</debug>
                                     <option>
                                         <name>CCOptimizationNoSizeConstraints</name>
-                                        <state>1</state>
+                                        <state>0</state>
                                     </option>
                                     <option>
                                         <name>CCDefines</name>
                                         <state>USE_STDPERIPH_DRIVER</state>
                                         <state>STM32F2XX</state>
-                                        <state>USE_USB_OTG_FS</state>
-                                        <state>KEYBOARD_VER_2_1</state>
+                                        <state>USE_USB_OTG_FS </state>
                                     </option>
                                     <option>
                                         <name>CCPreprocFile</name>
@@ -2953,7 +2946,7 @@
                                     </option>
                                     <option>
                                         <name>CCRequirePrototypes</name>
-                                        <state>1</state>
+                                        <state>0</state>
                                     </option>
                                     <option>
                                         <name>CCDiagWarnAreErr</name>
@@ -2986,7 +2979,7 @@
                                     <option>
                                         <name>CCIncludePath2</name>
                                         <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                        <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                        <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                         <state>$PROJ_DIR$\..\..\working files\usb</state>
                                         <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                         <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -3071,7 +3064,7 @@
                                     </option>
                                     <option>
                                         <name>IccFloatSemantics</name>
-                                        <state>1</state>
+                                        <state>0</state>
                                     </option>
                                     <option>
                                         <name>CCNoLiteralPool</name>
@@ -3084,11 +3077,11 @@
                                     </option>
                                     <option>
                                         <name>CCEncSource</name>
-                                        <state>1</state>
+                                        <state>0</state>
                                     </option>
                                     <option>
                                         <name>CCEncOutput</name>
-                                        <state>1</state>
+                                        <state>0</state>
                                     </option>
                                     <option>
                                         <name>CCEncOutputBom</name>
@@ -3147,14 +3140,13 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
-                                    <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_2_1</state>
+                                    <state>USE_USB_OTG_FS </state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -3247,7 +3239,7 @@
                                 </option>
                                 <option>
                                     <name>CCRequirePrototypes</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDiagWarnAreErr</name>
@@ -3280,7 +3272,7 @@
                                 <option>
                                     <name>CCIncludePath2</name>
                                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                    <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                    <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -3365,7 +3357,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -3378,11 +3370,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -3419,14 +3411,13 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
-                                    <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_2_1</state>
+                                    <state>USE_USB_OTG_FS </state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -3519,7 +3510,7 @@
                                 </option>
                                 <option>
                                     <name>CCRequirePrototypes</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDiagWarnAreErr</name>
@@ -3552,7 +3543,7 @@
                                 <option>
                                     <name>CCIncludePath2</name>
                                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                    <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                    <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -3637,7 +3628,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -3650,11 +3641,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -3716,14 +3707,13 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
-                                <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
+                                <state>USE_USB_OTG_FS </state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -3816,7 +3806,7 @@
                             </option>
                             <option>
                                 <name>CCRequirePrototypes</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDiagWarnAreErr</name>
@@ -3849,7 +3839,7 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -3934,7 +3924,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -3947,11 +3937,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -3985,14 +3975,13 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
-                                <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
+                                <state>USE_USB_OTG_FS </state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -4085,7 +4074,7 @@
                             </option>
                             <option>
                                 <name>CCRequirePrototypes</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDiagWarnAreErr</name>
@@ -4118,7 +4107,7 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -4203,7 +4192,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -4216,11 +4205,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -4254,14 +4243,13 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
-                                <state>USE_USB_OTG_FS</state>
-                                <state>KEYBOARD_VER_2_1</state>
+                                <state>USE_USB_OTG_FS </state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -4354,7 +4342,7 @@
                             </option>
                             <option>
                                 <name>CCRequirePrototypes</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCDiagWarnAreErr</name>
@@ -4387,17 +4375,17 @@
                             <option>
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                 <state>$PROJ_DIR$\..\..\working files\usb</state>
                                 <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
-                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
-                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
                             </option>
                             <option>
                                 <name>CCStdIncCheck</name>
@@ -4472,7 +4460,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -4485,11 +4473,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>1</state>
+                                <state>0</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -4532,9 +4520,9 @@
             <group>
                 <name>general</name>
                 <group>
-                    <name>a.03.c.d</name>
+                    <name>a.02.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.03.c.d\const_global.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.02.c.d\const_global.h</name>
                     </file>
                 </group>
                 <file>
@@ -4583,9 +4571,9 @@
             <group>
                 <name>menu</name>
                 <group>
-                    <name>a.03.c.d</name>
+                    <name>a.02.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.03.c.d\const_menu_outputs.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.02.c.d\const_menu_outputs.h</name>
                     </file>
                 </group>
                 <group>
@@ -4775,9 +4763,9 @@
             <group>
                 <name>Serial Dataflash</name>
                 <group>
-                    <name>a.03.c.d</name>
+                    <name>a.02.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.03.c.d\const_driver_serial_dataflash.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.02.c.d\const_driver_serial_dataflash.h</name>
                     </file>
                 </group>
             </group>
@@ -4817,115 +4805,115 @@
             <group>
                 <name>interfaces</name>
                 <group>
-                    <name>component</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ACMDSmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\AISmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ANDBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTSmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DTRBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVSmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GCMDSmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\IUSmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\KEYBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MFTBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\NOTBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ORBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PFBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PKVBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PREGBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\QAISmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\REGBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRSmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDIBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDISmallComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\UPRBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\USTBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\VVBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\XORBigComponent.c</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\YustBigComponent.c</name>
-                    </file>
-                </group>
-                <group>
-                    <name>inc</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentdef.h</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentenum.h</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\prototyps.h</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_external_m.h</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_global_m.h</name>
-                    </file>
-                </group>
-                <group>
                     <name>modbusroutine</name>
+                    <group>
+                        <name>component</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ACMDSmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\AISmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ANDBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTSmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DTRBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVSmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GCMDSmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\IUSmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\KEYBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MFTBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\NOTBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ORBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PFBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PKVBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PREGBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\QAISmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\REGBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRSmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDIBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDISmallComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\UPRBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\USTBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\VVBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\XORBigComponent.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\YustBigComponent.c</name>
+                        </file>
+                    </group>
+                    <group>
+                        <name>inc</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentdef.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentenum.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\prototyps.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_external_m.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_global_m.h</name>
+                        </file>
+                    </group>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
                     </file>
@@ -5101,14 +5089,14 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_2_1</state>
+                                    <state>KEYBOARD_VER_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -5234,7 +5222,7 @@
                                 <option>
                                     <name>CCIncludePath2</name>
                                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                    <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                    <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -5319,7 +5307,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -5332,11 +5320,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -5406,14 +5394,13 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -5539,7 +5526,7 @@
                                 <option>
                                     <name>CCIncludePath2</name>
                                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                    <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                    <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -5624,7 +5611,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -5637,11 +5624,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -5675,14 +5662,14 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_2_1</state>
+                                    <state>KEYBOARD_VER_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -5808,7 +5795,7 @@
                                 <option>
                                     <name>CCIncludePath2</name>
                                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                    <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                    <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -5893,7 +5880,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -5906,11 +5893,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -5944,14 +5931,13 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -6077,7 +6063,7 @@
                                 <option>
                                     <name>CCIncludePath2</name>
                                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                    <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                    <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -6162,7 +6148,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -6175,11 +6161,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -6213,14 +6199,13 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -6346,7 +6331,7 @@
                                 <option>
                                     <name>CCIncludePath2</name>
                                     <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                    <state>$PROJ_DIR$\..\..\working files\inc\a.03.c.d</state>
+                                    <state>$PROJ_DIR$\..\..\working files\inc\a.02.c.d</state>
                                     <state>$PROJ_DIR$\..\..\working files\usb</state>
                                     <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
                                     <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
@@ -6431,7 +6416,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -6444,11 +6429,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>1</state>
+                                    <state>0</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
