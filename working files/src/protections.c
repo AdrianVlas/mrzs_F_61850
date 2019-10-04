@@ -9867,7 +9867,6 @@ do{
   }
   /**************************/
 
-  unsigned int blocking_commands_from_DI = 0;
   unsigned int active_inputs_grupa_ustavok = 0;
   /**************************/
   //Опрацьовуємо ФК, дискретні входи і верхній рівень
@@ -10227,47 +10226,15 @@ do{
     temp_value_for_activated_function[2] |= temp_value_for_activated_function_button_interface[2];
 
     //Активація з Д.Входу
-    unsigned int vvimk_VV_vid_DV = false;
-    unsigned int vymk_VV_vid_DV = false;
     if (active_inputs != 0)
     {
       for (unsigned int i = 0; i < NUMBER_INPUTS; i++)
       {
         if ((active_inputs & (1 << i)) != 0)
         {
-          if (
-              (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_VKL_VV )) ||
-              (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_OTKL_VV))
-             )   
-          {
-            unsigned int ranguvannja_inputs_tmp[N_SMALL] = {
-                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i  ],
-                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i+1],
-                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i+2]
-                                                           };
-
-            if (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_VKL_VV ))
-            {
-              vvimk_VV_vid_DV = true;
-              _CLEAR_BIT(ranguvannja_inputs_tmp, RANG_SMALL_VKL_VV);
-            }
-
-            if (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_OTKL_VV ))
-            {
-              vymk_VV_vid_DV = true;
-              _CLEAR_BIT(ranguvannja_inputs_tmp, RANG_SMALL_OTKL_VV);
-            }
-
-            temp_value_for_activated_function[0] |= ranguvannja_inputs_tmp[0];
-            temp_value_for_activated_function[1] |= ranguvannja_inputs_tmp[1];
-            temp_value_for_activated_function[2] |= ranguvannja_inputs_tmp[2];
-          }
-          else
-          {
-            temp_value_for_activated_function[0] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i  ];
-            temp_value_for_activated_function[1] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+1];
-            temp_value_for_activated_function[2] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+2];
-          }
+          temp_value_for_activated_function[0] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i  ];
+          temp_value_for_activated_function[1] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+1];
+          temp_value_for_activated_function[2] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+2];
         }
       }
     }
@@ -10384,36 +10351,11 @@ do{
     active_inputs_grupa_ustavok |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_3_GRUPA_USTAVOK    ) != 0) << (RANG_SMALL_3_GRUPA_USTAVOK - RANG_SMALL_1_GRUPA_USTAVOK);
     active_inputs_grupa_ustavok |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_4_GRUPA_USTAVOK    ) != 0) << (RANG_SMALL_4_GRUPA_USTAVOK - RANG_SMALL_1_GRUPA_USTAVOK);
       
-    //Загальні функції (які блокувються у місцевому управлінні)
     //Ввімкнення ВВ
     active_functions[RANG_VKL_VV >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_VKL_VV) != 0) << (RANG_VKL_VV & 0x1f);
-    if (vvimk_VV_vid_DV)
-    {
-      if (
-          (_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE )) &&
-          (current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE)
-         ) 
-      {
-        //Умова блокування командви "Ввімкнення ВВ" від ДВх.
-        blocking_commands_from_DI |= CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE;
-      }
-      else _SET_BIT(active_functions, RANG_VKL_VV);
-    }
 
     //Вимкнення ВВ
     active_functions[RANG_OTKL_VV >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_OTKL_VV) != 0) << (RANG_OTKL_VV & 0x1f);
-    if (vymk_VV_vid_DV)
-    {
-      if (
-          (_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE )) &&
-          (current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_OFF_CB_MISCEVE)
-         ) 
-      {
-        //Умова блокування командви "Вимкнення ВВ" від ДВх.
-        blocking_commands_from_DI |= CTR_EXTRA_SETTINGS_1_BLK_OFF_CB_MISCEVE;
-      }
-      else _SET_BIT(active_functions, RANG_OTKL_VV);
-    }
 
     //МТЗ
     active_functions[RANG_BLOCK_MTZ1     >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_MTZ1    ) != 0) << (RANG_BLOCK_MTZ1     & 0x1f);
