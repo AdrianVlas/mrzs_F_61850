@@ -886,6 +886,12 @@ int usb_transmiting_count/* = 0*/;
 unsigned char data_usb_transmiting/* = false*/;
 unsigned int timeout_idle_USB;
 
+//MODBUS-TCP
+unsigned char LAN_received[BUFFER_LAN];
+int LAN_received_count;
+unsigned char LAN_transmiting[BUFFER_LAN];
+int LAN_transmiting_count;
+
 //MODBUS-RTU
 //unsigned int registers_address_read =0x20000000;
 //unsigned int registers_address_write =0x20000000;

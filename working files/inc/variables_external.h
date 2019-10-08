@@ -505,6 +505,12 @@ extern int usb_transmiting_count;
 extern unsigned char data_usb_transmiting;
 extern unsigned int timeout_idle_USB;
 
+//MODBUS-TCP
+extern unsigned char LAN_received[BUFFER_LAN];
+extern int LAN_received_count;
+extern unsigned char LAN_transmiting[BUFFER_LAN];
+extern int LAN_transmiting_count;
+
 //MODBUS-RTU
 //extern unsigned int registers_address_read;
 //extern unsigned int registers_address_write;

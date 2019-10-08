@@ -64,17 +64,16 @@ void start_receive_data_via_CANAL1_MO(void)
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK);
 
-              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_FULL_DESCRIPTION)) 
-                _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_FULL_DESCRIPTION);
-              else 
-                _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_FULL_DESCRIPTION);
-
               if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER);
 
-
+              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_NEW_MODBUS_TCP_REQ)) 
+                _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ);
+              else 
+                _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ);
+              
               if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_TRANSACTION_PROGRESS)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
               else 
@@ -537,6 +536,16 @@ void CANAL2_MO_routine()
         
           _SET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER);
         }
+        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ))
+        {
+                 Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
+          sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
+          sum += Canal2_MO_Transmit[index_w++] = my_address_mo;
+  
+          sum += Canal2_MO_Transmit[index_w++] = REQUEST_MODBUS_TCP_REQ;
+        
+          _SET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ);
+        }
       }
     }
     else
@@ -623,6 +632,10 @@ void CANAL2_MO_routine()
                       ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER)) && (
                                                                                                          (Canal2_MO_Received[3] == SENDING_SETTINGS_NETWORK_LAYER) ||
                                                                                                          (Canal2_MO_Received[3] == ANY_CONFIRMATION              )
+                                                                                                        )                                                               ) ||
+                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ  )) && (
+                                                                                                         (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ) ||
+                                                                                                         (Canal2_MO_Received[3] == ANY_CONFIRMATION      )
                                                                                                         )                                                               )
                      )   
                    )
@@ -755,6 +768,43 @@ void CANAL2_MO_routine()
         {
           index_w = 0;
           _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER);
+          
+          if (
+              (Canal2_MO_Received[3] == ANY_CONFIRMATION) &&
+              (Canal2_MO_Received[4] == true)
+             )
+          {
+            CANAL2_MO_state = CANAL2_MO_FREE;
+            Canal2 = true;
+          }
+          else
+          {
+            CANAL2_MO_state = CANAL2_MO_ERROR;
+          }
+        }
+      }
+      else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ)) 
+      {
+        if (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ)
+        {
+          //Прийняти пакет-запит Modbus-TCP з КП
+          LAN_received_count = Canal2_MO_Received[4];
+          unsigned int answer;
+          if ((LAN_received_count >= 0) && (LAN_received_count < BUFFER_LAN))
+          {
+            for (intptr_t i = 0; i < LAN_received_count; i++) LAN_received[i] = Canal2_MO_Received[5 + i];
+            answer = true;
+          }
+          else answer = false;
+          
+          //Відправити підтвердження прийняття налаштувань мережевого рівня Ethernet
+          sum += Canal2_MO_Transmit[index_w++] = CONFIRM_RECEIVING_MODBUS_TCP_REQ;
+          sum += Canal2_MO_Transmit[index_w++] = answer;
+        }
+        else 
+        {
+          index_w = 0;
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ);
           
           if (
               (Canal2_MO_Received[3] == ANY_CONFIRMATION) &&
