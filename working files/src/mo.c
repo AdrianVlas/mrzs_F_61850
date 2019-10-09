@@ -546,6 +546,26 @@ void CANAL2_MO_routine()
         
           _SET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ);
         }
+        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP))
+        {
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP);
+
+          if ((LAN_transmiting_count > 0) && (LAN_transmiting_count < (BUFFER_LAN - 2)))
+          {
+            unsigned int length = LAN_transmiting_count;
+            
+                   Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
+            sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
+            sum += Canal2_MO_Transmit[index_w++] = my_address_mo;
+  
+            sum += Canal2_MO_Transmit[index_w++] = SENDIND_MODBUS_TCP_RESP;
+        
+            sum += Canal2_MO_Transmit[index_w++] = length;
+            for (size_t i = 0; i < length; i++) sum += Canal2_MO_Transmit[index_w++] = LAN_transmiting[i];
+            
+            _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
+          }
+        }
       }
     }
     else
@@ -636,7 +656,8 @@ void CANAL2_MO_routine()
                       ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ  )) && (
                                                                                                          (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ) ||
                                                                                                          (Canal2_MO_Received[3] == ANY_CONFIRMATION      )
-                                                                                                        )                                                               )
+                                                                                                        )                                                               ) ||
+                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP    )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       )
                      )   
                    )
                 {
@@ -686,10 +707,18 @@ void CANAL2_MO_routine()
         CANAL2_MO_state = CANAL2_MO_FREE;
         Canal2 = true;
       }
-      else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) 
+      else if (
+               (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) ||
+               (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP))
+              )   
       {
         index_w = 0;
-        _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
+        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
+        else  
+        {
+          LAN_transmiting_count = 0; //Це є ознакою того, що пакет-відповідь успішно передано
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
+        }
         
         if (Canal2_MO_Received[4] == true)
         {
