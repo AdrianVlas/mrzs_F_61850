@@ -1951,7 +1951,13 @@ void calc_power_and_energy(void)
     else number_minutes = PERIOD_SAVE_ENERGY_IN_MINUTES; /*якщо живлення відновиться, щоб зразу була подана команда на запис*/
 
     //Помічаємо, що відбулася очистка лічильників енергій
-    information_about_clean_energy |= ((1 << USB_RECUEST)|(1 << RS485_RECUEST));
+    information_about_clean_energy |= (
+                                         (1 << USB_RECUEST)
+                                       | (1 << RS485_RECUEST)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                       | (1 << LAN_RECUEST)
+#endif
+                                      );
   }
   
   state_calc_energy = true;

@@ -1251,10 +1251,21 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
           {
              value = trigger_functions_USB[value/32] & (1<<(value%32));
           }//if
-          else
+          else if(pointInterface==RS485_RECUEST)
           {
              value = trigger_functions_RS485[value/32] & (1<<(value%32));
           }//else
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if(pointInterface==LAN_RECUEST)
+          {
+             value = trigger_functions_LAN[value/32] & (1<<(value%32));
+          }//else
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(208);
+          }
         }//if(cmdSwitch==0)
       }
     }//if(item>=beginOffset && item<endOffset)

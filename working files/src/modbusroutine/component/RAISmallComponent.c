@@ -93,16 +93,26 @@ int getRAISmallModbusRegister(int adrReg)
   if(privateRAISmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
   if (
     //Не подано попередньокоманди вичитування відповідного запису дискретного реєстратора
-    //pointInterface=0 метка интерфейса 0-USB 1-RS485
-    ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB == 0xffff)) ||
+    //pointInterface=0 метка интерфейса 0-USB 1-RS485 2-LAN
+    ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB == 0xffff)) 
+    ||
     ((pointInterface == RS485_RECUEST) && (number_record_of_dr_for_RS485 == 0xffff))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    ||
+    ((pointInterface == LAN_RECUEST) && (number_record_of_dr_for_LAN == 0xffff))
+#endif      
   ) return MARKER_ERRORPERIMETR;
   if (
     //Зараз іде зчитування для інтерфейсу запису дискретного реєстратора, або очистка його, тому ця операція є тимчасово недоступною
     ((clean_rejestrators & CLEAN_DR) != 0) ||
     (
-      ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+      ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) 
+      ||
       ((pointInterface == RS485_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      ||
+      ((pointInterface == LAN_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
+#endif      
     )
   ) return MARKER_ERRORPERIMETR; //Не подано попередньокоманди вичитування відповідного запису дискретного реєстратора
 
@@ -112,7 +122,15 @@ int getRAISmallModbusRegister(int adrReg)
   number_block = (adrReg - MM_ADDRESS_FIRST_MEASUREMENTS_DR) / MMEASUREMENTS_DR_WIDTH;
   offset = (adrReg - MM_ADDRESS_FIRST_MEASUREMENTS_DR) - number_block*MMEASUREMENTS_DR_WIDTH;
   if (pointInterface == USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_dr;
-  else point_to_buffer = buffer_for_RS485_read_record_dr;
+  else if (pointInterface == RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_dr;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  else if (pointInterface == LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_dr;
+#endif  
+  else
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(203);
+  }
 
   if (!(
         number_block < (

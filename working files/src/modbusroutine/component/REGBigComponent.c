@@ -65,18 +65,22 @@ int getREGBigModbusRegister(int adrReg)
       return (info_rejestrator_ar.number_records) &0xFFFF;
 #define IMUNITET_REG35 35
     case IMUNITET_REG35://Текущий аналоговый регистратор
-      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
         return (number_record_of_ar_for_USB) &0xFFFF;
-      else
+      else if(pointInterface==RS485_RECUEST)
         return (number_record_of_ar_for_RS485) &0xFFFF;
+      else 
+        return (number_record_of_ar_for_LAN) &0xFFFF;
     case 70://Количество дискретных регистраторов
       return (info_rejestrator_dr.number_records) &0xFFFF;
 #define IMUNITET_REG71 71
     case IMUNITET_REG71://Текущий дискретный регистратор
       if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         return (number_record_of_dr_for_USB) &0xFFFF;
-      else
+      else if(pointInterface==RS485_RECUEST)
         return (number_record_of_dr_for_RS485) &0xFFFF;
+      else
+        return (number_record_of_dr_for_LAN) &0xFFFF;
     case 74://Очистить аналоговый регистратор
       return MARKER_ERRORPERIMETR;
     case 75://Очистить дискретный регистратор
@@ -122,8 +126,13 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
       if (
         ((clean_rejestrators & CLEAN_AR) != 0) ||
         (
-          ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
+          ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) 
+          ||
           ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          ||
+          ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN) != 0))
+#endif
         )
       ) return MARKER_ERRORDIAPAZON;
       if(! ((unsigned int)dataReg < info_rejestrator_ar.number_records)) return MARKER_ERRORDIAPAZON;
@@ -136,8 +145,13 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
       if (
         ((clean_rejestrators & CLEAN_DR) != 0) ||
         (
-          ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+          ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) 
+          ||
           ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          ||
+          ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
+#endif
         )
       ) return MARKER_ERRORDIAPAZON;
       if(! ((unsigned int)dataReg < info_rejestrator_dr.number_records)) return MARKER_ERRORDIAPAZON;
@@ -227,11 +241,24 @@ int postREGBigWriteAction(void)
               point_to_first_number_time_sample = &first_number_time_sample_for_USB;
               point_to_last_number_time_sample = &last_number_time_sample_for_USB;
             }
-          else
+          else if (pointInterface == RS485_RECUEST)
             {
               point_to_number_record_of_ar = &number_record_of_ar_for_RS485;
               point_to_first_number_time_sample = &first_number_time_sample_for_RS485;
               point_to_last_number_time_sample = &last_number_time_sample_for_RS485;
+            }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (pointInterface == LAN_RECUEST)
+            {
+              point_to_number_record_of_ar = &number_record_of_ar_for_LAN;
+              point_to_first_number_time_sample = &first_number_time_sample_for_LAN;
+              point_to_last_number_time_sample = &last_number_time_sample_for_LAN;
+            }
+#endif
+          else
+            {
+              //Теоретично цього ніколи не мало б бути
+              total_error_sw_fixed(187);
             }
 
           //Встановлюємо номер запису аналогового реєстратора для читання
@@ -254,8 +281,17 @@ int postREGBigWriteAction(void)
           //Подаємо команду зчитати дані у бувер пам'яті
           if (pointInterface == USB_RECUEST)
             control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB;
-          else
+          else if (pointInterface == RS485_RECUEST)
             control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (pointInterface == LAN_RECUEST)
+            control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN;
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(198);
+          }
 
         }
         break;//case 35
@@ -272,7 +308,7 @@ int postREGBigWriteAction(void)
               //Подаємо команду зчитати дані у бувер пам'яті
               control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB;
             }//if
-          else
+          else if(pointInterface==RS485_RECUEST)
             {
               number_record_of_dr_for_RS485 = tempWriteArray[offsetTempWriteArray+i];
               //Подаємо команду читання дискретного реєстратора для інтерфейсу RS-485
@@ -281,6 +317,23 @@ int postREGBigWriteAction(void)
               part_reading_dr_from_dataflash_for_RS485 = 0;
               //Подаємо команду зчитати дані у бувер пам'яті
               control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485;
+            }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if(pointInterface==LAN_RECUEST)
+            {
+              number_record_of_dr_for_LAN = tempWriteArray[offsetTempWriteArray+i];
+              //Подаємо команду читання дискретного реєстратора для інтерфейсу RS-485
+
+              //Виставляємо першу частину запису
+              part_reading_dr_from_dataflash_for_LAN = 0;
+              //Подаємо команду зчитати дані у бувер пам'яті
+              control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN;
+            }
+#endif  
+            else
+            {
+              //Теоретично цього ніколи не мало б бути
+              total_error_sw_fixed(201);
             }
 
           break;
@@ -297,6 +350,9 @@ int postREGBigWriteAction(void)
                  TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR      |
                  TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB                         |
                  TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485                       |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN                         |
+#endif  
                  TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU
                )
               ) != 0
@@ -325,6 +381,9 @@ int postREGBigWriteAction(void)
                  TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR |
                  TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                    |
                  TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                  |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                    |
+#endif  
                  TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU
                )
               ) != 0

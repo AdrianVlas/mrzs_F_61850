@@ -3468,6 +3468,17 @@ unsigned int set_new_settings_from_interface(unsigned int source)
   {
     set_password_RS485 = true;
   }
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  unsigned int set_password_LAN = false;
+  if (
+      (current_settings.password_interface_LAN != current_settings_interfaces.password_interface_LAN) &&
+      (current_settings_interfaces.password_interface_LAN != 0)  
+     )   
+  {
+    set_password_LAN = true;
+  }
+#endif
   
   if (error == 0)
   {
@@ -3492,6 +3503,9 @@ unsigned int set_new_settings_from_interface(unsigned int source)
     
     if (set_password_USB   != false) password_set_USB   = 1;
     if (set_password_RS485 != false) password_set_RS485 = 1;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    if (set_password_LAN != false) password_set_LAN = 1;
+#endif
     
     //Помічаємо, що поля структури зараз будуть змінені
     changed_settings = CHANGED_ETAP_EXECUTION;

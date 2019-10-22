@@ -1896,6 +1896,10 @@ void min_settings(__SETTINGS *target_label)
   target_label->password_interface_USB = 0;
   target_label->timeout_deactivation_password_interface_RS485 = TIMEOUT_DEACTIVATION_PASSWORD_MIN;
   target_label->password_interface_RS485 = 0;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  target_label->timeout_deactivation_password_interface_LAN = TIMEOUT_DEACTIVATION_PASSWORD_MIN;
+  target_label->password_interface_LAN = 0;
+#endif
   
   target_label->timeout_idle_new_settings = TIMEOUT_NEW_SETTINGS_MIN;
   

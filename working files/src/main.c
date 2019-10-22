@@ -179,6 +179,17 @@ inline void periodical_operations(void)
     }
   }
 
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  //Обмін по LAN
+  if (current_settings.password_interface_LAN)
+  {
+    unsigned int timeout = current_settings.timeout_deactivation_password_interface_LAN;
+    if ((timeout != 0) && (timeout_idle_LAN >= timeout) && ((restart_timeout_interface & (1 << LAN_RECUEST)) == 0)) password_set_LAN = 1;
+  }
+#endif
+
+  
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   /*******************/
   //Управління Каналом 2 міжпроцесорного обміну між БАв і комунікаційною платою
@@ -602,19 +613,21 @@ int main(void)
   /**********************/
     
   //Визначаємо, чи стоїть дозвіл запису через інтерфейси з паролем
-  if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
-  else password_set_RS485 = 1;
-  timeout_idle_RS485 = current_settings.timeout_deactivation_password_interface_RS485;
-  
-  timeout_idle_new_settings = current_settings.timeout_idle_new_settings;
-  //Визначаємо, чи стоїть дозвіл запису через інтерфейси з паролем
-  if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
-  else password_set_RS485 = 1;
-  timeout_idle_RS485 = current_settings.timeout_deactivation_password_interface_RS485;
-  
   if (current_settings.password_interface_USB   == 0) password_set_USB   = 0;
   else password_set_USB   = 1;
   timeout_idle_USB = current_settings.timeout_deactivation_password_interface_USB;
+  
+  if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
+  else password_set_RS485 = 1;
+  timeout_idle_RS485 = current_settings.timeout_deactivation_password_interface_RS485;
+  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  if (current_settings.password_interface_LAN == 0) password_set_LAN = 0;
+  else password_set_LAN = 1;
+  timeout_idle_LAN = current_settings.timeout_deactivation_password_interface_LAN;
+#endif
+
+  timeout_idle_new_settings = current_settings.timeout_idle_new_settings;
   
   //Перевірка параметрування мікросхем DataFlash
   start_checking_dataflash();

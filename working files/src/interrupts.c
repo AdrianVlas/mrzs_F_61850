@@ -980,6 +980,19 @@ void TIM4_IRQHandler(void)
         if (timeout_idle_RS485 < (current_settings.timeout_deactivation_password_interface_RS485)) timeout_idle_RS485++;
       }
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      //Робота з таймерами простою LAN
+      if ((restart_timeout_interface & (1 << LAN_RECUEST)) != 0) 
+      {
+        timeout_idle_LAN = 0;
+        restart_timeout_interface &= (unsigned int)(~(1 << LAN_RECUEST));
+      }
+      else 
+      {
+        if (timeout_idle_LAN < (current_settings.timeout_deactivation_password_interface_LAN)) timeout_idle_LAN++;
+      }
+#endif
+
       //Ресурс
       if (restart_resurs_count == 0)
       {
@@ -1189,6 +1202,9 @@ void TIM4_IRQHandler(void)
                                      TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH    |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB   |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485 |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN |
+#endif
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU
                                     )
          ) == 0
@@ -1209,7 +1225,10 @@ void TIM4_IRQHandler(void)
       number_record_of_pr_err_into_menu  = 0xffff;
       number_record_of_pr_err_into_USB   = 0xffff;
       number_record_of_pr_err_into_RS485 = 0xffff;
-
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      number_record_of_pr_err_into_LAN = 0xffff;
+#endif
+      
       //Знімаємо команду очистки реєстратора програмних подій
       clean_rejestrators &= (unsigned int)(~CLEAN_PR_ERR);
     }

@@ -270,8 +270,13 @@ int openRegistrator(int number_file)
       (number_file >= 1) &&
       (number_file <= 4) &&
       (
-        ((pointInterface == USB_RECUEST  ) && (number_record_of_ar_for_USB   == 0xffff)) ||
+        ((pointInterface == USB_RECUEST  ) && (number_record_of_ar_for_USB   == 0xffff))
+        ||
         ((pointInterface == RS485_RECUEST  ) && (number_record_of_ar_for_RS485 == 0xffff))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ||
+        ((pointInterface == LAN_RECUEST  ) && (number_record_of_ar_for_LAN == 0xffff))
+#endif
       )
     )
     ||
@@ -279,8 +284,13 @@ int openRegistrator(int number_file)
       (number_file >= 5) &&
       (number_file <= 6) &&
       (
-        ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB   == 0xffff)) ||
+        ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB   == 0xffff)) 
+        ||
         ((pointInterface == RS485_RECUEST  ) && (number_record_of_dr_for_RS485 == 0xffff))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ||
+        ((pointInterface == LAN_RECUEST  ) && (number_record_of_dr_for_LAN == 0xffff))
+#endif
       )
     )
   )
@@ -325,8 +335,13 @@ int openRegistrator(int number_file)
     (number_file <= 6) &&
     (
       (
-        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) 
+        ||
         ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ||
+        ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
+#endif
       )
       ||
       ((clean_rejestrators & CLEAN_DR) != 0)
@@ -343,8 +358,13 @@ int openRegistrator(int number_file)
     {
       //Очікуємо поки завершиться зчитуквання даних для аналогового реєстратора
       while (
-        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
+        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) 
+        ||
         ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ||
+        ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN) != 0))
+#endif
       )
         {
           //Якщ очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
@@ -367,8 +387,13 @@ int openRegistrator(int number_file)
   else
     {
       while (
-        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) 
+        ||
         ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ||
+        ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
+#endif
       )
         {
           //Якщ очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
@@ -409,11 +434,23 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
       point_to_first_number_time_sample = &first_number_time_sample_for_USB;
       point_to_last_number_time_sample  = &last_number_time_sample_for_USB;
     }
-  else
+  else if (pointInterface == RS485_RECUEST)
     {
       point_to_first_number_time_sample = &first_number_time_sample_for_RS485;
       point_to_last_number_time_sample  = &last_number_time_sample_for_RS485;
     }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  else if (pointInterface == LAN_RECUEST)
+    {
+      point_to_first_number_time_sample = &first_number_time_sample_for_LAN;
+      point_to_last_number_time_sample  = &last_number_time_sample_for_LAN;
+    }
+#endif  
+  else
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(191);
+  }
 
   //Перевіряємо чи зчитано заголовок аналогового реєстратора
   if (
@@ -438,13 +475,27 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
       //Подаємо команду зчитати дані у бувер пам'яті
       if (pointInterface == USB_RECUEST)
         control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB;
-      else
+      else if (pointInterface == RS485_RECUEST)
         control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      else if (pointInterface == LAN_RECUEST)
+        control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN;
+#endif  
+      else
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed(199);
+      }
 
       //Очікуємо поки завершиться зчитуквання даних для аналогового реєстратора
       while (
-        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) ||
-        ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
+        ((pointInterface == USB_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB  ) != 0)) 
+        ||
+        ((pointInterface == RS485_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ||
+        ((pointInterface == LAN_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN) != 0))
+#endif
       )
         {
           //Якщо очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
@@ -492,8 +543,17 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
   unsigned char *point_to_buffer;
   if (pointInterface == USB_RECUEST)
     point_to_buffer = buffer_for_USB_read_record_ar;
-  else
+  else if (pointInterface == RS485_RECUEST)
     point_to_buffer = buffer_for_RS485_read_record_ar;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  else if (pointInterface == LAN_RECUEST)
+    point_to_buffer = buffer_for_LAN_read_record_ar;
+#endif  
+  else
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(194);
+  }
 
   return (*(point_to_buffer + index_time_sample +2*(offsetRegister-3))) + ((*(point_to_buffer +
          index_time_sample + 1 +2*(offsetRegister-3))) << 8);
@@ -519,8 +579,17 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
       if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
-      else
+      else if (pointInterface==RS485_RECUEST)
         header_ar_tmp = (__HEADER_AR*)buffer_for_RS485_read_record_ar;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      else if (pointInterface==LAN_RECUEST)
+        header_ar_tmp = (__HEADER_AR*)buffer_for_LAN_read_record_ar;
+#endif  
+      else
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed(195);
+      }
 
       char idetyficator[NUMBER_ANALOG_CANALES][16] =
       {
@@ -780,8 +849,18 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
 
   if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
     header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
-  else
+  else if (pointInterface==RS485_RECUEST)
     header_ar_tmp = (__HEADER_AR*)buffer_for_RS485_read_record_ar;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  else if (pointInterface==LAN_RECUEST)
+    header_ar_tmp = (__HEADER_AR*)buffer_for_LAN_read_record_ar;
+#endif  
+  else
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(196);
+  }
+  
   switch(recordNumber)
     {
     case 0://Имя станции recordNumber
@@ -822,7 +901,16 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
           unsigned char *point_to_buffer;
           if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
             point_to_buffer = buffer_for_USB_read_record_dr;
-          else point_to_buffer = buffer_for_RS485_read_record_dr;
+          else if (pointInterface==RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_dr;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (pointInterface==LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_dr;
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(204);
+          }
+  
           if (offsetRegister < 8)
             {
               unsigned int index_cell;
@@ -1042,8 +1130,17 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
   unsigned char *point_to_buffer;
   if (pointInterface == USB_RECUEST) //метка интерфейса 0-USB 1-RS485
     point_to_buffer = buffer_for_USB_read_record_dr;
-  else
+  else if (pointInterface == RS485_RECUEST)
     point_to_buffer = buffer_for_RS485_read_record_dr;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  else if (pointInterface == LAN_RECUEST)
+    point_to_buffer = buffer_for_LAN_read_record_dr;
+#endif  
+  else
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(205);
+  }
 
   int max_number_time_sample = (current_settings.prefault_number_periods + current_settings.postfault_number_periods) << VAGA_NUMBER_POINT_AR;
 
@@ -1051,10 +1148,21 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
     {
       header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
     }//if
-  else
+  else if (pointInterface==RS485_RECUEST)
     {
       header_ar_tmp = (__HEADER_AR*)buffer_for_RS485_read_record_ar;
     }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  else if (pointInterface==LAN_RECUEST)
+    {
+      header_ar_tmp = (__HEADER_AR*)buffer_for_LAN_read_record_ar;
+    }
+#endif  
+  else
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(197);
+  }
 
   switch(subObj)
     {
@@ -1339,7 +1447,17 @@ int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
   unsigned char *point_to_buffer;
   if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
     point_to_buffer = buffer_for_USB_read_record_dr;
-  else point_to_buffer = buffer_for_RS485_read_record_dr;
+  else if (pointInterface==RS485_RECUEST)
+    point_to_buffer = buffer_for_RS485_read_record_dr;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  else if (pointInterface==LAN_RECUEST)
+    point_to_buffer = buffer_for_LAN_read_record_dr;
+#endif  
+  else
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(206);
+  }
 
   unsigned int max_number_two_bytes = (NUMBER_TOTAL_SIGNAL_FOR_RANG >> 4);
   if ((max_number_two_bytes << 4) != NUMBER_TOTAL_SIGNAL_FOR_RANG)  max_number_two_bytes++;

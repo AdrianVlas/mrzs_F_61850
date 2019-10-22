@@ -6454,7 +6454,13 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
     _SET_BIT(control_spi1_taskes, TASK_START_WRITE_RESURS_EEPROM_BIT);
 
     //Помічаємо, що відбулася очистка ресурсу вимикача
-    information_about_restart_counter |= ((1 << USB_RECUEST)|(1 << RS485_RECUEST));
+    information_about_restart_counter |= (
+                                            (1 << USB_RECUEST)
+                                          | (1 << RS485_RECUEST)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                          | (1 << LAN_RECUEST)
+#endif
+                                         );
   }
   
   /*******************************/
@@ -9861,6 +9867,15 @@ do{
       information_about_restart_counter  &= (unsigned int)(~(1 << RS485_RECUEST));
       information_about_clean_energy     &= (unsigned int)(~(1 << RS485_RECUEST));
     }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    if ((reset_trigger_function_from_interface & (1 << LAN_RECUEST)) != 0)
+    {
+      for (unsigned int i = 0; i < N_BIG; i++) trigger_functions_LAN[i] = 0;
+      
+      information_about_restart_counter  &= (unsigned int)(~(1 << LAN_RECUEST));
+      information_about_clean_energy     &= (unsigned int)(~(1 << LAN_RECUEST));
+    }
+#endif
     
     //Помічаємо що ми виконали очистку по ВСІХ інтерфейсах
     reset_trigger_function_from_interface = 0;
@@ -11388,6 +11403,7 @@ do{
     unsigned int temp_data = active_functions[i];
     trigger_functions_USB[i]   |= temp_data;
     trigger_functions_RS485[i] |= temp_data;
+    trigger_functions_LAN[i]   |= temp_data;
   }
 
   copying_active_functions = 0; //Помічаємо, що обновлення значення активних функцій завершене
@@ -11829,6 +11845,9 @@ void TIM2_IRQHandler(void)
                                      TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR      |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB                         |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485                       |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN                         |
+#endif  
                                      TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU
                                     )
          ) == 0
@@ -11863,6 +11882,9 @@ void TIM2_IRQHandler(void)
                                      TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR | 
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                    |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                  |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                    |
+#endif  
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU
                                     )
          ) == 0
@@ -11883,6 +11905,9 @@ void TIM2_IRQHandler(void)
       number_record_of_dr_for_menu  = 0xffff;
       number_record_of_dr_for_USB   = 0xffff;
       number_record_of_dr_for_RS485 = 0xffff;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      number_record_of_dr_for_LAN = 0xffff;
+#endif  
 
       //Знімаємо команду очистки дискретного реєстратора
       clean_rejestrators &= (unsigned int)(~CLEAN_DR);

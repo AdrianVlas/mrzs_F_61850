@@ -886,11 +886,30 @@ int usb_transmiting_count/* = 0*/;
 unsigned char data_usb_transmiting/* = false*/;
 unsigned int timeout_idle_USB;
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
 //MODBUS-TCP
 unsigned char LAN_received[BUFFER_LAN];
 int LAN_received_count;
 unsigned char LAN_transmiting[BUFFER_LAN];
 int LAN_transmiting_count;
+
+SRAM1 unsigned int timeout_idle_LAN;
+SRAM1 unsigned int password_set_LAN;
+
+unsigned int trigger_functions_LAN[N_BIG]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
+
+unsigned char buffer_for_LAN_read_record_dr[SIZE_BUFFER_FOR_DR_RECORD];
+unsigned int number_record_of_dr_for_LAN = 0xffff; //Це число означає, що номер запису не вибраний
+unsigned int part_reading_dr_from_dataflash_for_LAN/* = 0*/;
+
+unsigned char buffer_for_LAN_read_record_pr_err[SIZE_ONE_RECORD_PR_ERR];
+unsigned int number_record_of_pr_err_into_LAN = 0xffff;
+
+unsigned char buffer_for_LAN_read_record_ar[SIZE_PAGE_DATAFLASH_2];
+unsigned int number_record_of_ar_for_LAN = 0xffff; //Це число означає, що номер запису не вибраний
+int first_number_time_sample_for_LAN;// -1 - заголовок запису ан.р.; 0 - перший часовий зріз доаварійного масиву і т.д.
+int last_number_time_sample_for_LAN;// -1 - заголовок запису ан.р.; 0 - перший часовий зріз доаварійного масиву і т.д.
+#endif
 
 //MODBUS-RTU
 //unsigned int registers_address_read =0x20000000;

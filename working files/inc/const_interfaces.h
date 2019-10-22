@@ -28,6 +28,10 @@
 #define USB_RECUEST           0
 #define RS485_RECUEST         1
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+#define LAN_RECUEST           2
+#endif
+
 enum __data_changed_bit
 {
 SETTINGS_DATA_CHANGED_BIT = 0,

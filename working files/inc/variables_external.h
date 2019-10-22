@@ -505,11 +505,30 @@ extern int usb_transmiting_count;
 extern unsigned char data_usb_transmiting;
 extern unsigned int timeout_idle_USB;
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
 //MODBUS-TCP
 extern unsigned char LAN_received[BUFFER_LAN];
 extern int LAN_received_count;
 extern unsigned char LAN_transmiting[BUFFER_LAN];
 extern int LAN_transmiting_count;
+
+extern unsigned int timeout_idle_LAN;
+extern unsigned int password_set_LAN;
+
+extern unsigned int trigger_functions_LAN[N_BIG];
+
+extern unsigned char buffer_for_LAN_read_record_dr[SIZE_BUFFER_FOR_DR_RECORD];
+extern unsigned int number_record_of_dr_for_LAN;
+extern unsigned int part_reading_dr_from_dataflash_for_LAN;
+
+extern unsigned char buffer_for_LAN_read_record_pr_err[SIZE_ONE_RECORD_PR_ERR];
+extern unsigned int number_record_of_pr_err_into_LAN;
+
+extern unsigned char buffer_for_LAN_read_record_ar[SIZE_PAGE_DATAFLASH_2];
+extern unsigned int number_record_of_ar_for_LAN;
+extern int first_number_time_sample_for_LAN;
+extern int last_number_time_sample_for_LAN;
+#endif
 
 //MODBUS-RTU
 //extern unsigned int registers_address_read;

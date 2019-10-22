@@ -48,9 +48,11 @@ int getPREGBigModbusRegister(int adrReg)
     case 0://Очистить регистратор программных ошибок
       return MARKER_ERRORPERIMETR;
     case 1://Номер аварии доступной для чтения
-      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
         return (number_record_of_pr_err_into_USB) &0xFFFF;
-      return (number_record_of_pr_err_into_RS485) &0xFFFF;
+      if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
+        return (number_record_of_pr_err_into_RS485) &0xFFFF;
+      return (number_record_of_pr_err_into_LAN) &0xFFFF;
     case 2://Количество событий
       return (info_rejestrator_pr_err.number_records) &0xFFFF;
     case 3://Окно отображения страницы
@@ -71,20 +73,30 @@ int getPREGBigModbusRegister(int adrReg)
     case 18:
       
       if (
-        ((pointInterface==USB_RECUEST  ) && (number_record_of_pr_err_into_USB   == 0xffff)) ||
-        ((pointInterface==RS485_RECUEST  ) && (number_record_of_pr_err_into_RS485 == 0xffff))
+        ((pointInterface==USB_RECUEST) && (number_record_of_pr_err_into_USB   == 0xffff)) 
+        ||
+        ((pointInterface==RS485_RECUEST) && (number_record_of_pr_err_into_RS485 == 0xffff))
+#if (MODYFIKACIA_VERSII_PZ >= 10)        
+        ||
+        ((pointInterface==LAN_RECUEST) && (number_record_of_pr_err_into_LAN == 0xffff))
+#endif
       ) return MARKER_ERRORPERIMETR;
       
       if (
         ((clean_rejestrators & CLEAN_PR_ERR) != 0) ||
         (
-          ((pointInterface==USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) ||
+          ((pointInterface==USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) 
+          ||
           ((pointInterface==RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)        
+          ||
+          ((pointInterface==LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN) != 0))
+#endif
         )
       ) return MARKER_ERRORPERIMETR;
       if (
         (
-          (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+          (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
           &&
           (
             (number_record_of_pr_err_into_USB >= info_rejestrator_pr_err.number_records) ||
@@ -93,18 +105,30 @@ int getPREGBigModbusRegister(int adrReg)
         )
         ||
         (
-          (pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
+          (pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
           &&
           (
             (number_record_of_pr_err_into_RS485 >= info_rejestrator_pr_err.number_records) ||
             (number_record_of_pr_err_into_RS485 >= MAX_NUMBER_RECORDS_INTO_PR_ERR        )
           )
         )
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ||
+        (
+          (pointInterface==LAN_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
+          &&
+          (
+            (number_record_of_pr_err_into_LAN >= info_rejestrator_pr_err.number_records) ||
+            (number_record_of_pr_err_into_LAN >= MAX_NUMBER_RECORDS_INTO_PR_ERR        )
+          )
+        )
+#endif          
       )
         {
           //Помічаємо, що номер запису не вибраний
           if (pointInterface==USB_RECUEST) number_record_of_pr_err_into_USB = 0xffff;
-          else number_record_of_pr_err_into_RS485 = 0xffff;
+          else if (pointInterface==RS485_RECUEST) number_record_of_pr_err_into_RS485 = 0xffff;
+          else number_record_of_pr_err_into_LAN = 0xffff;
           return MARKER_ERRORPERIMETR;
         }//if
       
@@ -112,7 +136,15 @@ int getPREGBigModbusRegister(int adrReg)
         {
           unsigned char *point_to_buffer;
           if (pointInterface==USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_pr_err;
-          else point_to_buffer = buffer_for_RS485_read_record_pr_err;
+          else if (pointInterface==RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_pr_err;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (pointInterface==LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_pr_err;
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(193);
+          }
 
           if ( (*(point_to_buffer + 0)) != LABEL_START_RECORD_PR_ERR)
             {
@@ -230,6 +262,9 @@ int getPREGBigModbusRegister(int adrReg)
                TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH    |
                TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB   |
                TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485 |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+               TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN |
+#endif
                TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU
              )
             ) != 0
@@ -246,8 +281,13 @@ int getPREGBigModbusRegister(int adrReg)
 //      або очистка його, тому ця операція є тимчасово недоступною
           ((clean_rejestrators & CLEAN_PR_ERR) != 0) ||
           (
-            ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) ||
-            ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
+            ((pointInterface == USB_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) 
+            ||
+            ((pointInterface == RS485_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            ||
+            ((pointInterface == LAN_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN) != 0))
+#endif
           )
         ) return MARKER_ERRORPERIMETR;
 
@@ -312,7 +352,7 @@ int getPREGBigModbusRegister(int adrReg)
                 //Подаємо команду зчитати дані у бувер пам'яті для USB
                 control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB;
               }
-            else //if (type_interface == RS485_RECUEST)
+            else if(pointInterface==RS485_RECUEST)//if (type_interface == RS485_RECUEST)
               {
                 //Встановлюємо номер запису реєстратора програмних подій для читання через інтерфейс RS-485
                 number_record_of_pr_err_into_RS485 = (tempWriteArray[offsetTempWriteArray+i]);
@@ -320,6 +360,22 @@ int getPREGBigModbusRegister(int adrReg)
 
                 //Подаємо команду зчитати дані у бувер пам'яті для RS-485
                 control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485;
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            else if (pointInterface == LAN_RECUEST)
+              {
+                //Встановлюємо номер запису реєстратора програмних подій для читання через інтерфейс LAN
+                number_record_of_pr_err_into_LAN = (tempWriteArray[offsetTempWriteArray+i]);
+                //Подаємо команду читання реєстратора програмних подій для  інтерфейсу LAN
+
+                //Подаємо команду зчитати дані у бувер пам'яті для LAN
+                control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN;
+              }
+#endif
+            else
+              {
+                //Теоретично цього ніколи не мало б бути
+                total_error_sw_fixed(189);
               }
           }//case 1
           break;

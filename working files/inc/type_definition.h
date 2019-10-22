@@ -329,6 +329,10 @@ typedef struct
   unsigned int password_interface_USB;                          //Пароль для редагування з інтерфейсу USB
   unsigned int timeout_deactivation_password_interface_RS485;   //Час деактивації паролю для редагування з інтерфейсу RS485
   unsigned int password_interface_RS485;                        //Пароль для редагування з інтерфейсу RS485
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  unsigned int timeout_deactivation_password_interface_LAN;   //Час деактивації паролю для редагування з інтерфейсу LAN
+  unsigned int password_interface_LAN;                        //Пароль для редагування з інтерфейсу LAN
+#endif  
   
   unsigned int timeout_idle_new_settings;
 
