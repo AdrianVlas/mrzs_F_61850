@@ -21,6 +21,9 @@ int passwordImunitetReg(int adrReg);
 int passwordImunitetBit(int adrBit);
 
 unsigned char  *outputPacket;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+unsigned char  outputPacket_TCP[300];
+#endif
 unsigned char  outputPacket_USB[300];
 unsigned char  outputPacket_RS485[300];
 

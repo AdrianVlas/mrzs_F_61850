@@ -69,8 +69,12 @@ int getREGBigModbusRegister(int adrReg)
         return (number_record_of_ar_for_USB) &0xFFFF;
       else if(pointInterface==RS485_RECUEST)
         return (number_record_of_ar_for_RS485) &0xFFFF;
-      else 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      else if(pointInterface==LAN_RECUEST)
         return (number_record_of_ar_for_LAN) &0xFFFF;
+#endif  
+      //Теоретично сюди ніколи не мала б програма зайти
+      else total_error_sw_fixed(212);
     case 70://Количество дискретных регистраторов
       return (info_rejestrator_dr.number_records) &0xFFFF;
 #define IMUNITET_REG71 71
@@ -79,8 +83,12 @@ int getREGBigModbusRegister(int adrReg)
         return (number_record_of_dr_for_USB) &0xFFFF;
       else if(pointInterface==RS485_RECUEST)
         return (number_record_of_dr_for_RS485) &0xFFFF;
-      else
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      else if(pointInterface==LAN_RECUEST)
         return (number_record_of_dr_for_LAN) &0xFFFF;
+#endif  
+      //Теоретично сюди ніколи не мала б програма зайти
+      else total_error_sw_fixed(213);
     case 74://Очистить аналоговый регистратор
       return MARKER_ERRORPERIMETR;
     case 75://Очистить дискретный регистратор

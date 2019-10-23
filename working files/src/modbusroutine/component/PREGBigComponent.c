@@ -52,7 +52,11 @@ int getPREGBigModbusRegister(int adrReg)
         return (number_record_of_pr_err_into_USB) &0xFFFF;
       if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
         return (number_record_of_pr_err_into_RS485) &0xFFFF;
-      return (number_record_of_pr_err_into_LAN) &0xFFFF;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      if(pointInterface==LAN_RECUEST) return (number_record_of_pr_err_into_LAN) &0xFFFF;
+#endif  
+      //Теоретично сюди ніколи не мала б програма зайти
+      total_error_sw_fixed(211);
     case 2://Количество событий
       return (info_rejestrator_pr_err.number_records) &0xFFFF;
     case 3://Окно отображения страницы
@@ -128,7 +132,14 @@ int getPREGBigModbusRegister(int adrReg)
           //Помічаємо, що номер запису не вибраний
           if (pointInterface==USB_RECUEST) number_record_of_pr_err_into_USB = 0xffff;
           else if (pointInterface==RS485_RECUEST) number_record_of_pr_err_into_RS485 = 0xffff;
-          else number_record_of_pr_err_into_LAN = 0xffff;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (pointInterface==LAN_RECUEST) number_record_of_pr_err_into_LAN = 0xffff;
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(214);
+          }
           return MARKER_ERRORPERIMETR;
         }//if
       

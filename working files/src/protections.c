@@ -11403,7 +11403,9 @@ do{
     unsigned int temp_data = active_functions[i];
     trigger_functions_USB[i]   |= temp_data;
     trigger_functions_RS485[i] |= temp_data;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
     trigger_functions_LAN[i]   |= temp_data;
+#endif
   }
 
   copying_active_functions = 0; //Помічаємо, що обновлення значення активних функцій завершене
