@@ -160,9 +160,9 @@ void make_ekran_time_settings(unsigned int kind)
     name_string[ROW_T_][MAX_COL_LCD - 6] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 5] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 4] = ' ';
-    name_string[ROW_T_][MAX_COL_LCD - 3] = 'N';
-    name_string[ROW_T_][MAX_COL_LCD - 2] = 'e';
-    name_string[ROW_T_][MAX_COL_LCD - 1] = 't';
+    name_string[ROW_T_][MAX_COL_LCD - 3] = 'L';
+    name_string[ROW_T_][MAX_COL_LCD - 2] = 'A';
+    name_string[ROW_T_][MAX_COL_LCD - 1] = 'N';
   }
 #endif
   else

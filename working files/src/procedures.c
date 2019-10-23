@@ -3316,7 +3316,7 @@ source:       0 - мінімальні параметри
               1 - клавіатура
               2 - USB
               3 - RS-485
-              4 - Ethernet
+              4 - LAN
 ---------------------------------------------------
 ******************************************************/
 void fix_change_settings(unsigned int setting_rang, unsigned int source)
