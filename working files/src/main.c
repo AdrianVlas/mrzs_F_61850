@@ -187,6 +187,7 @@ inline void periodical_operations(void)
     unsigned int timeout = current_settings.timeout_deactivation_password_interface_LAN;
     if ((timeout != 0) && (timeout_idle_LAN >= timeout) && ((restart_timeout_interface & (1 << LAN_RECUEST)) == 0)) password_set_LAN = 1;
   }
+  if (LAN_received_count > 0) inputPacketParserLAN();
 #endif
 
   

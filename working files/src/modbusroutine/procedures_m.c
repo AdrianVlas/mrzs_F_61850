@@ -55,21 +55,24 @@ const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG +
 /**************************************/
 //разбор входного пакета TCP
 /**************************************/
-void inputPacketParserTCP(void)
+void inputPacketParserLAN(void)
 {
-#if (MODYFIKACIA_VERSII_PZ >= 10)
 //размер префикса TCP  
-#define TCP_PREFIXSIZE 6  
-  pointInterface=USB_RECUEST;//метка интерфейса 0-USB 1-RS485
+//#define TCP_PREFIXSIZE 6  
+  pointInterface=LAN_RECUEST;//метка интерфейса 0-USB 1-RS485
 
   received_count = &LAN_received_count;
 
   outputPacket = outputPacket_TCP;
-  inputPacket = LAN_received
-                +TCP_PREFIXSIZE;//убрать префикс TCP
-  *received_count -= TCP_PREFIXSIZE;//убрать префикс TCP
+  inputPacket = LAN_received;
+//                +TCP_PREFIXSIZE;//убрать префикс TCP
+//  *received_count -= TCP_PREFIXSIZE;//убрать префикс TCP
   
-  if((*received_count)<0) return;//что-то пошло не так
+  if((*received_count)<0)
+  {
+    LAN_received_count = 0;//очистить вход
+    return;//что-то пошло не так
+  }//if
   
   *received_count += 2;//симитировать CRC
   //Перевірка контрольної суми
@@ -81,19 +84,23 @@ void inputPacketParserTCP(void)
 
 //  if(inputPacket[0]!=current_settings.address) return;
 
-  if(inputPacketParser()==0) return;
+  if(inputPacketParser()==0)
+  {
+   LAN_received_count = 0;//очистить вход
+   return;
+  }//if
+
   sizeOutputPacket -= 2;//убрать CRC
 
   LAN_transmiting_count = sizeOutputPacket;
-  for (int i = 0; i < TCP_PREFIXSIZE; i++) LAN_transmiting[i] = 0;//добавить префикс TCP
-  LAN_transmiting[1] = 1;//префикс TCP
-  LAN_transmiting[5] = sizeOutputPacket;//префикс TCP
-  for (int i = 0; i < LAN_transmiting_count; i++) LAN_transmiting[i+ TCP_PREFIXSIZE] = outputPacket[i];
-  LAN_transmiting_count += TCP_PREFIXSIZE;//добавить префикс TCP
+//  for (int i = 0; i < TCP_PREFIXSIZE; i++) LAN_transmiting[i] = 0;//добавить префикс TCP
+//  LAN_transmiting[1] = 1;//префикс TCP
+//  LAN_transmiting[5] = sizeOutputPacket;//префикс TCP
+  for (int i = 0; i < LAN_transmiting_count; i++) LAN_transmiting[i/*+ TCP_PREFIXSIZE*/] = outputPacket[i];
+//  LAN_transmiting_count += TCP_PREFIXSIZE;//добавить префикс TCP
   LAN_received_count = 0;//очистить вход
   _SET_STATE (queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP);//отправить результат
-#endif
-}//inputPacketParserTCP(void)
+}//inputPacketParserLAN(void)
 #endif  
 /**************************************/
 //разбор входного пакета USB
