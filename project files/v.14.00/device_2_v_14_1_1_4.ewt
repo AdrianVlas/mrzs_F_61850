@@ -18,7 +18,7 @@
                     <analyzeTimeoutEnabled>1</analyzeTimeoutEnabled>
                     <analyzeTimeout>600</analyzeTimeout>
                     <enableParallel>0</enableParallel>
-                    <parallelThreads>4</parallelThreads>
+                    <parallelThreads>2</parallelThreads>
                     <enableFalsePositives>0</enableFalsePositives>
                     <messagesLimitEnabled>1</messagesLimitEnabled>
                     <messagesLimit>100</messagesLimit>
@@ -40,7 +40,7 @@
                                 <check enabled="true" name="ATH-cmp-unsign-neg" />
                                 <check enabled="true" name="ATH-cmp-unsign-pos" />
                                 <check enabled="true" name="ATH-div-0-assign" />
-                                <check enabled="true" name="ATH-div-0-cmp-aft" />
+                                <check enabled="false" name="ATH-div-0-cmp-aft" />
                                 <check enabled="true" name="ATH-div-0-cmp-bef" />
                                 <check enabled="true" name="ATH-div-0-interval" />
                                 <check enabled="true" name="ATH-div-0-pos" />
@@ -76,12 +76,12 @@
                                 <check enabled="true" name="CONST-member-ret" />
                             </group>
                             <group enabled="true" name="COP">
-                                <check enabled="true" name="COP-alloc-ctor" />
+                                <check enabled="false" name="COP-alloc-ctor" />
                                 <check enabled="true" name="COP-assign-op-ret" />
                                 <check enabled="true" name="COP-assign-op-self" />
                                 <check enabled="true" name="COP-assign-op" />
                                 <check enabled="true" name="COP-copy-ctor" />
-                                <check enabled="true" name="COP-dealloc-dtor" />
+                                <check enabled="false" name="COP-dealloc-dtor" />
                                 <check enabled="true" name="COP-dtor-throw" />
                                 <check enabled="true" name="COP-dtor" />
                                 <check enabled="true" name="COP-init-order" />
@@ -118,7 +118,7 @@
                             <group enabled="true" name="EXPR">
                                 <check enabled="true" name="EXPR-const-overflow" />
                             </group>
-                            <group enabled="false" name="FPT">
+                            <group enabled="true" name="FPT">
                                 <check enabled="true" name="FPT-cmp-null" />
                                 <check enabled="false" name="FPT-literal" />
                                 <check enabled="true" name="FPT-misuse" />
@@ -139,8 +139,8 @@
                                 <check enabled="true" name="ITR-end-cmp-aft" />
                                 <check enabled="true" name="ITR-end-cmp-bef" />
                                 <check enabled="true" name="ITR-invalidated" />
-                                <check enabled="true" name="ITR-mismatch-alg" />
-                                <check enabled="true" name="ITR-store" />
+                                <check enabled="false" name="ITR-mismatch-alg" />
+                                <check enabled="false" name="ITR-store" />
                                 <check enabled="true" name="ITR-uninit" />
                             </group>
                             <group enabled="true" name="LIB">
@@ -180,7 +180,7 @@
                             <group enabled="true" name="LOGIC">
                                 <check enabled="false" name="LOGIC-overload" />
                             </group>
-                            <group enabled="false" name="MEM">
+                            <group enabled="true" name="MEM">
                                 <check enabled="true" name="MEM-delete-array-op" />
                                 <check enabled="true" name="MEM-delete-op" />
                                 <check enabled="true" name="MEM-double-free-alias" />
@@ -189,7 +189,7 @@
                                 <check enabled="true" name="MEM-free-field" />
                                 <check enabled="true" name="MEM-free-fptr" />
                                 <check enabled="false" name="MEM-free-no-alloc-struct" />
-                                <check enabled="true" name="MEM-free-no-alloc" />
+                                <check enabled="false" name="MEM-free-no-alloc" />
                                 <check enabled="true" name="MEM-free-no-use" />
                                 <check enabled="true" name="MEM-free-op" />
                                 <check enabled="true" name="MEM-free-struct-field" />
@@ -220,20 +220,20 @@
                                 <check enabled="true" name="PTR-arith-stack" />
                                 <check enabled="true" name="PTR-arith-var" />
                                 <check enabled="true" name="PTR-cmp-str-lit" />
-                                <check enabled="true" name="PTR-null-assign-fun-pos" />
-                                <check enabled="true" name="PTR-null-assign-pos" />
+                                <check enabled="false" name="PTR-null-assign-fun-pos" />
+                                <check enabled="false" name="PTR-null-assign-pos" />
                                 <check enabled="true" name="PTR-null-assign" />
                                 <check enabled="true" name="PTR-null-cmp-aft" />
                                 <check enabled="true" name="PTR-null-cmp-bef-fun" />
                                 <check enabled="true" name="PTR-null-cmp-bef" />
                                 <check enabled="true" name="PTR-null-fun-pos" />
-                                <check enabled="true" name="PTR-null-literal-pos" />
+                                <check enabled="false" name="PTR-null-literal-pos" />
                                 <check enabled="false" name="PTR-overload" />
-                                <check enabled="true" name="PTR-singleton-arith-pos" />
+                                <check enabled="false" name="PTR-singleton-arith-pos" />
                                 <check enabled="true" name="PTR-singleton-arith" />
                                 <check enabled="true" name="PTR-unchk-param-some" />
                                 <check enabled="false" name="PTR-unchk-param" />
-                                <check enabled="true" name="PTR-uninit-pos" />
+                                <check enabled="false" name="PTR-uninit-pos" />
                                 <check enabled="true" name="PTR-uninit" />
                             </group>
                             <group enabled="true" name="RED">
@@ -250,8 +250,8 @@
                                 <check enabled="false" name="RED-expr" />
                                 <check enabled="false" name="RED-func-no-effect" />
                                 <check enabled="true" name="RED-local-hides-global" />
-                                <check enabled="true" name="RED-local-hides-local" />
-                                <check enabled="true" name="RED-local-hides-member" />
+                                <check enabled="false" name="RED-local-hides-local" />
+                                <check enabled="false" name="RED-local-hides-member" />
                                 <check enabled="true" name="RED-local-hides-param" />
                                 <check enabled="false" name="RED-no-effect" />
                                 <check enabled="true" name="RED-self-assign" />
@@ -275,9 +275,9 @@
                             </group>
                             <group enabled="true" name="SPC">
                                 <check enabled="true" name="SPC-order" />
-                                <check enabled="true" name="SPC-uninit-arr-all" />
+                                <check enabled="false" name="SPC-uninit-arr-all" />
                                 <check enabled="true" name="SPC-uninit-struct-field-heap" />
-                                <check enabled="true" name="SPC-uninit-struct-field" />
+                                <check enabled="false" name="SPC-uninit-struct-field" />
                                 <check enabled="true" name="SPC-uninit-struct" />
                                 <check enabled="true" name="SPC-uninit-var-all" />
                                 <check enabled="true" name="SPC-uninit-var-some" />
@@ -375,7 +375,7 @@
                             </group>
                         </package>
                         <package enabled="false" name="MISRAC2004">
-                            <group enabled="false" name="MISRAC2004-1">
+                            <group enabled="true" name="MISRAC2004-1">
                                 <check enabled="true" name="MISRAC2004-1.1" />
                                 <check enabled="true" name="MISRAC2004-1.2_a" />
                                 <check enabled="true" name="MISRAC2004-1.2_b" />
@@ -961,7 +961,7 @@
                             <group enabled="true" name="MISRAC++2008-6-2">
                                 <check enabled="true" name="MISRAC++2008-6-2-1" />
                                 <check enabled="true" name="MISRAC++2008-6-2-2" />
-                                <check enabled="true" name="MISRAC++2008-6-2-3" />
+                                <check enabled="false" name="MISRAC++2008-6-2-3" />
                             </group>
                             <group enabled="true" name="MISRAC++2008-6-3">
                                 <check enabled="true" name="MISRAC++2008-6-3-1_a" />
@@ -1207,9 +1207,9 @@
     <group>
         <name>Linker</name>
         <group>
-            <name>with iec61850</name>
+            <name>without iec61850</name>
             <file>
-                <name>$PROJ_DIR$\..\with iec61850\stm32f2xx_flash.icf</name>
+                <name>$PROJ_DIR$\..\without iec61850\stm32f2xx_flash.icf</name>
             </file>
         </group>
         <file>
@@ -1496,9 +1496,9 @@
             <group>
                 <name>general</name>
                 <group>
-                    <name>a.11.c.d</name>
+                    <name>a.01.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.11.c.d\const_global.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.01.c.d\const_global.h</name>
                     </file>
                 </group>
                 <file>
@@ -1547,21 +1547,18 @@
             <group>
                 <name>menu</name>
                 <group>
-                    <name>a.11.c.d</name>
+                    <name>a.01.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.11.c.d\const_menu_outputs.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.01.c.d\const_menu_outputs.h</name>
                     </file>
                 </group>
                 <group>
-                    <name>with iec61850</name>
+                    <name>without iec61850</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_diagnostyka.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_diagnostyka.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_IEC61850.h</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_inputs.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_inputs.h</name>
                     </file>
                 </group>
                 <file>
@@ -1722,15 +1719,6 @@
                 </file>
             </group>
             <group>
-                <name>MO</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_MO.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\diagnostyka_mo.h</name>
-                </file>
-            </group>
-            <group>
                 <name>protection</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_df.h</name>
@@ -1751,9 +1739,9 @@
             <group>
                 <name>Serial Dataflash</name>
                 <group>
-                    <name>a.11.c.d</name>
+                    <name>a.01.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.11.c.d\const_driver_serial_dataflash.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.01.c.d\const_driver_serial_dataflash.h</name>
                     </file>
                 </group>
             </group>
@@ -1982,9 +1970,6 @@
                     <name>$PROJ_DIR$\..\..\working files\src\menu_general_pickups_el.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\working files\src\menu_iec61850.c</name>
-                </file>
-                <file>
                     <name>$PROJ_DIR$\..\..\working files\src\menu_info.c</name>
                 </file>
                 <file>
@@ -2073,12 +2058,6 @@
                     <configuration>
                         <name>Flash-Debug</name>
                     </configuration>
-                </file>
-            </group>
-            <group>
-                <name>MO</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\src\mo.c</name>
                 </file>
             </group>
             <group>
