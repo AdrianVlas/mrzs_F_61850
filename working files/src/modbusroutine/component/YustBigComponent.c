@@ -195,7 +195,9 @@ int postYustBigWriteAction(void) {
     int typI = 2;
     if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
     else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
+#endif
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;//2-USB
     return 0;
   }//if(number_iteration_el>0)
@@ -223,7 +225,9 @@ int postYustBigWriteAction(void) {
     int typI = 2;
     if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
     else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
+#endif
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;
   }//if(upravlMin==0x1111)
   else if(upravlMinEnrg==0x1234) {

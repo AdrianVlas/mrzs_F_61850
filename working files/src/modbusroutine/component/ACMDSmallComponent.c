@@ -1812,7 +1812,9 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
         //Активація внесекних змін
         int typI = 2;
         if(pointInterface==RS485_RECUEST) typI = 3;//метка интерфейса 0-USB 1-RS485
+#if (MODYFIKACIA_VERSII_PZ >= 10)
         else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
+#endif
         if(set_new_settings_from_interface(typI))//2-USB
         {
         type_of_settings_changed = 0;
