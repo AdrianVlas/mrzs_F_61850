@@ -2448,9 +2448,18 @@ inline void d_xor_handler(unsigned int *p_active_functions)
       unsigned int signals = 0;
       for (unsigned int j = 0; j < N_BIG; j++)
       {
-        for (unsigned int k = 0; k < 32; k++)
+        if (temp_array[j] == 0) continue; 
+        else
         {
-          if ((temp_array[j] & (1 << k)) != 0) signals++;
+          for (unsigned int k = 0; k < 32; k++)
+          {
+            if ((temp_array[j] & (1 << k)) != 0) 
+            {
+              signals++;
+              if (signals > 1) break;
+            }
+          }
+          if (signals > 1) break;
         }
       }
       if (signals == 1) state_defined_xor |= (1 << i);
