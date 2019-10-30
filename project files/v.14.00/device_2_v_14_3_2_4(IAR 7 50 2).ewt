@@ -1071,12 +1071,12 @@
     <group>
       <name>without iec61850</name>
       <file>
+        <name>$PROJ_DIR$\..\without iec61850\StackDepth.suc</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\without iec61850\stm32f2xx_flash.icf</name>
       </file>
     </group>
-    <file>
-      <name>$PROJ_DIR$\..\StackDepth.suc</name>
-    </file>
     <file>
       <name>$PROJ_DIR$\..\stm32f2xx_flash_extsram.icf</name>
     </file>
@@ -1358,9 +1358,9 @@
       <group>
         <name>general</name>
         <group>
-          <name>a.00.c.d</name>
+          <name>a.03.c.d</name>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_global.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.03.c.d\const_global.h</name>
           </file>
         </group>
         <file>
@@ -1412,12 +1412,12 @@
       <group>
         <name>menu</name>
         <group>
-          <name>a.00.c.d</name>
+          <name>a.03.c.d</name>
           <file>
             <name>$PROJ_DIR$\..\..\working files\inc\a.03.c.d\const_menu_diagnostyka.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_menu_outputs.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.03.c.d\const_menu_outputs.h</name>
           </file>
         </group>
         <group>
