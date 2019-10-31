@@ -1,4 +1,5 @@
 
+#include "const_global.h"
 #include "variables_external_m.h"
 
 /**************************************/
@@ -34,5 +35,10 @@ void global_component_installation(void) {
   constructorAISmallComponent(&(config_array[AISMALLCOMPONENT]));//подготовка компонента aismall
   constructorQAISmallComponent(&(config_array[QAISMALLCOMPONENT]));//подготовка компонента qaismall
   constructorPFBigComponent(&(config_array[PFBIGCOMPONENT]));//подготовка компонента pf
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  constructorGOOSBigComponent(&(config_array[GOOSBIGCOMPONENT]));//подготовка компонента goos
+  constructorMMSBigComponent(&(config_array[MMSBIGCOMPONENT]));//подготовка компонента mms
+  constructorLANBigComponent(&(config_array[LANBIGCOMPONENT]));//подготовка компонента lan
+#endif
 }//global_vareiables_installation_bo(void)
 

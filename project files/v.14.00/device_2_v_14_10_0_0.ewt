@@ -1822,13 +1822,22 @@
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GCMDSmallComponent.c</name>
                     </file>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GOOSBigComponent.c</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\IUSmallComponent.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\KEYBigComponent.c</name>
                     </file>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\LANBigComponent.c</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MFTBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MMSBigComponent.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\NOTBigComponent.c</name>

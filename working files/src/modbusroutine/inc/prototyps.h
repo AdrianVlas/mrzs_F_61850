@@ -63,4 +63,10 @@ void constructorYustBigComponent(COMPONENT_OBJ *);
 void constructorAISmallComponent(COMPONENT_OBJ *);
 void constructorQAISmallComponent(COMPONENT_OBJ *);
 void constructorPFBigComponent(COMPONENT_OBJ *);
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+void constructorGOOSBigComponent(COMPONENT_OBJ *);
+void constructorMMSBigComponent(COMPONENT_OBJ *);
+void constructorLANBigComponent(COMPONENT_OBJ *);
+#endif
 #endif

@@ -3,7 +3,7 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 13000
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 13075
+#define END_ADR_REGISTER 13534
 
 #define REGISTERS_REG 32
 
@@ -51,9 +51,9 @@ int getREGBigModbusRegister(int adrReg)
   if(offset<32) return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_analog_registrator[0],
                                                    REGISTERS_REG, offset );
 //Ранжирование источников запуска дискретного регистратора
-  if(offset>=36&&offset<70)
+  if(offset>=300&&offset<332)
       return getRangN_BIGModbusRegister(&current_settings_interfaces.ranguvannja_digital_registrator[0],
-                                                               REGISTERS_REG, offset-36 );
+                                                               REGISTERS_REG, offset-300 );
 
   switch(offset)
     {
@@ -75,10 +75,13 @@ int getREGBigModbusRegister(int adrReg)
 #endif  
       //Теоретично сюди ніколи не мала б програма зайти
       else total_error_sw_fixed(212);
-    case 70://Количество дискретных регистраторов
+    case 36://Очистить аналоговый регистратор
+      return MARKER_ERRORPERIMETR;
+
+    case 334://Количество дискретных регистраторов
       return (info_rejestrator_dr.number_records) &0xFFFF;
-#define IMUNITET_REG71 71
-    case IMUNITET_REG71://Текущий дискретный регистратор
+#define IMUNITET_REG335 335
+    case IMUNITET_REG335://Текущий дискретный регистратор
       if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         return (number_record_of_dr_for_USB) &0xFFFF;
       else if(pointInterface==RS485_RECUEST)
@@ -89,9 +92,7 @@ int getREGBigModbusRegister(int adrReg)
 #endif  
       //Теоретично сюди ніколи не мала б програма зайти
       else total_error_sw_fixed(213);
-    case 74://Очистить аналоговый регистратор
-      return MARKER_ERRORPERIMETR;
-    case 75://Очистить дискретный регистратор
+    case 336://Очистить дискретный регистратор
       return MARKER_ERRORPERIMETR;
     }//switch
 
@@ -118,7 +119,8 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
 
   int offset = adrReg-BEGIN_ADR_REGISTER;
 //Ранжирование источников запуска аналогового регистратора
-  if(offset<32 || (offset>=36&&offset<70)) return validN_BIGACMD(dataReg);
+  if(offset<32) return validN_BIGACMD(dataReg);
+  if(offset>=300&&offset<332) return validN_BIGACMD(dataReg);
 
   switch(offset)
     {
@@ -147,9 +149,13 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
       if((unsigned int)dataReg > max_number_records_ar) return MARKER_ERRORDIAPAZON;
 
       break;
-    case 70://Количество дискретных регистраторов
+    case 36://Очистить аналоговый регистратор
+      if(dataReg!=CMD_WORD_CLEAR_AR) return MARKER_ERRORDIAPAZON;
+      break;
+
+    case 334://Количество дискретных регистраторов
       return MARKER_ERRORDIAPAZON;
-    case 71://Текущий дискретный регистратор
+    case 335://Текущий дискретный регистратор
       if (
         ((clean_rejestrators & CLEAN_DR) != 0) ||
         (
@@ -165,10 +171,7 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
       if(! ((unsigned int)dataReg < info_rejestrator_dr.number_records)) return MARKER_ERRORDIAPAZON;
       if(dataReg > MAX_NUMBER_RECORDS_INTO_DR) return MARKER_ERRORDIAPAZON;
       break;
-    case 74://Очистить аналоговый регистратор
-      if(dataReg!=CMD_WORD_CLEAR_AR) return MARKER_ERRORDIAPAZON;
-      break;
-    case 75://Очистить дискретный регистратор
+    case 336://Очистить дискретный регистратор
       if(dataReg!=CMD_WORD_CLEAR_DR) return MARKER_ERRORDIAPAZON;
       break;
     }//switch
@@ -221,10 +224,10 @@ int postREGBigWriteAction(void)
           upravlSchematic = 1;//флаг Rang
         }//if
 
-      if(offset>=36&&offset<70&&flag2)
+      if(offset>=300&&offset<332&&flag2)
         {
           writeRangN_BIGModbusRegister(&edition_settings.ranguvannja_digital_registrator[0], REGISTERS_REG, beginAdr,
-                                       countReg, BEGIN_ADR_REGISTER+36);
+                                       countReg, BEGIN_ADR_REGISTER+300);
           flag2=0;
           upravlSchematic = 1;//флаг Rang
         }//if
@@ -303,7 +306,35 @@ int postREGBigWriteAction(void)
 
         }
         break;//case 35
-        case 71://Текущий дискретный регистратор
+        case 36://Очистить аналоговый регистратор
+//ОСОБАЯ ПРОВЕРКА
+          if (
+            (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
+            ||
+            (state_ar_record             != STATE_AR_NO_RECORD )
+            ||
+            (
+              (control_tasks_dataflash & (
+                 TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR |
+                 TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR      |
+                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB                         |
+                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485                       |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN                         |
+#endif  
+                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU
+               )
+              ) != 0
+            )
+            ||
+            ((clean_rejestrators & CLEAN_AR) != 0)
+          ) return ERROR_VALID2;//ошибка валидации
+
+          clean_rejestrators |= CLEAN_AR;
+          break;
+
+
+        case 335://Текущий дискретный регистратор
 
           if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
             {
@@ -345,33 +376,7 @@ int postREGBigWriteAction(void)
             }
 
           break;
-        case 74://Очистить аналоговый регистратор
-//ОСОБАЯ ПРОВЕРКА
-          if (
-            (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
-            ||
-            (state_ar_record             != STATE_AR_NO_RECORD )
-            ||
-            (
-              (control_tasks_dataflash & (
-                 TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR |
-                 TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR      |
-                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB                         |
-                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485                       |
-#if (MODYFIKACIA_VERSII_PZ >= 10)
-                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN                         |
-#endif  
-                 TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU
-               )
-              ) != 0
-            )
-            ||
-            ((clean_rejestrators & CLEAN_AR) != 0)
-          ) return ERROR_VALID2;//ошибка валидации
-
-          clean_rejestrators |= CLEAN_AR;
-          break;
-        case 75://Очистить дискретный регистратор
+        case 336://Очистить дискретный регистратор
 //ОСОБАЯ ПРОВЕРКА
           if (
             (current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR)
@@ -422,7 +427,7 @@ int passwordImunitetRegREGBigComponent(int adrReg)
   switch(adrReg)
   {
   case BEGIN_ADR_REGISTER+IMUNITET_REG35://Текущий аналоговый регистратор
-  case BEGIN_ADR_REGISTER+IMUNITET_REG71://Текущий дискретный регистратор
+  case BEGIN_ADR_REGISTER+IMUNITET_REG335://Текущий дискретный регистратор
     return 0;//есть имунитет
   }//switch
   return MARKER_OUTPERIMETR;
