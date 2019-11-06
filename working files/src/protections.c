@@ -1464,7 +1464,9 @@ inline void input_scan(void)
   state_inputs_into_pin |=  ( _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36)       & 0xffff)
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
                          | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) &    0xf) << 16)
 #endif
@@ -10646,11 +10648,7 @@ do{
     /**************************/
     //Сигнал "Несправность Аварийная"
     /**************************/
-#if (N_DIAGN == 3)
-    const unsigned int maska_avar_error[N_DIAGN] = {MASKA_AVAR_ERROR_0, MASKA_AVAR_ERROR_1, MASKA_AVAR_ERROR_2};
-#elif (N_DIAGN == 4)
     const unsigned int maska_avar_error[N_DIAGN] = {MASKA_AVAR_ERROR_0, MASKA_AVAR_ERROR_1, MASKA_AVAR_ERROR_2, MASKA_AVAR_ERROR_3};
-#endif
 
     not_null = false;
     for (size_t i = 0; i < N_DIAGN; i++) 
@@ -12002,8 +12000,10 @@ void TIM2_IRQHandler(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
     )
       if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
       else if (board_register_diff & 0x04)
@@ -12019,17 +12019,26 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
     if ((board_register_tmp & 0x010) != 0x10) 
+      
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
       _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+      _SET_BIT(set_diagnostyka, ERROR_BDVV6_FIX);
 #else
       _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
 #endif
+      
       else if (board_register_diff & 0x10)
       {
 #if (                                   \
@@ -12037,17 +12046,27 @@ void TIM2_IRQHandler(void)
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
         _SET_BIT(clear_diagnostyka, ERROR_BDV_DZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+        _SET_BIT(clear_diagnostyka, ERROR_BDVV6_FIX);
 #else
         _SET_BIT(clear_diagnostyka, ERROR_BDZ_FIX);
 #endif
 
-      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x12)  _SET_BIT(set_diagnostyka, ERROR_BDVV6_CTLR);
 #else
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
 #endif

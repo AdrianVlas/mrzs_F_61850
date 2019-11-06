@@ -38,10 +38,10 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
 int superReader20(int offsetRegister, int fileNumber, int recordNumber, int recordLen);
 
 //Ідентитифікатор каналу - 16 ASCII символів
-#if (MODYFIKACIA_VERSII_PZ < 10)
-const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
-#else
+#if (MODYFIKACIA_VERSII_PZ >= 10)
 const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
+#else
+const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
 #endif
 {
   {NAME_RANG_RU},

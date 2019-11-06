@@ -293,6 +293,8 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 //123456
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
   case 117:

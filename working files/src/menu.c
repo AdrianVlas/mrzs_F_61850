@@ -19091,8 +19091,10 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
     )
 
     case EKRAN_RANGUVANNJA_INPUT_9:
@@ -19106,7 +19108,9 @@ void main_manu_function(void)
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
 
     case EKRAN_RANGUVANNJA_INPUT_17:
@@ -19132,8 +19136,10 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
     )
 
     case EKRAN_RANGUVANNJA_OUTPUT_10:
@@ -19143,6 +19149,18 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_OUTPUT_14:
     case EKRAN_RANGUVANNJA_OUTPUT_15:
     case EKRAN_RANGUVANNJA_OUTPUT_16:
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )
+
+    case EKRAN_RANGUVANNJA_OUTPUT_17:
+    case EKRAN_RANGUVANNJA_OUTPUT_18:
+    case EKRAN_RANGUVANNJA_OUTPUT_19:
+    case EKRAN_RANGUVANNJA_OUTPUT_20:
+      
+#endif
 
 #endif
 

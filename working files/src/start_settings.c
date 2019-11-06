@@ -537,7 +537,8 @@ void start_settings_peripherals(void)
   uint32_t board_register_tmp = board_register = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47);
 #if   (                                 \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
-       (MODYFIKACIA_VERSII_PZ == 3)     \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
   if ((board_register_tmp & 0x17) != 0x17)
 #elif (                                 \
@@ -553,7 +554,8 @@ void start_settings_peripherals(void)
       )   
   if ((board_register_tmp & 0x13) != 0x13)
 #elif (                                 \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10) || \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
   if ((board_register_tmp & 0x1F) != 0x1F)
 #elif (                                 \
@@ -575,8 +577,10 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
 #endif
@@ -585,14 +589,22 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
     )   
     if ((board_register_tmp & 0x010) != 0x10) 
+      
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
       _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+      _SET_BIT(set_diagnostyka, ERROR_BDVV6_FIX);
 #else
       _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
 #endif
@@ -640,6 +652,11 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x12)  _SET_BIT(set_diagnostyka, ERROR_BDVV6_CTLR);
 #else
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
 #endif

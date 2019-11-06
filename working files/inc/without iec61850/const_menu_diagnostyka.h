@@ -3,7 +3,7 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4))
+#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 1))
 #define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
 #define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
@@ -62,7 +62,7 @@ ERROR_OSCYLOJRAPH_OVERFLOW,
 
 ERROR_DIGITAL_OUTPUT_1_BIT,
 
-ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 16,
+ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
 ERROR_AR_OVERLOAD_BUFFER_BIT,
 ERROR_AR_UNDEFINED_BIT,
 ERROR_AR_LOSS_INFORMATION_BIT,
@@ -103,6 +103,9 @@ ERROR_BDV_DZ_FIX,
 ERROR_BDV_DZ_CTLR,
 ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
+ERROR_BDVV6_FIX,
+ERROR_BDVV6_CTLR,
+ERROR_CB_FIX
 };
 
 #define MASKA_AVAR_ERROR_0        (unsigned int)(               \
@@ -140,10 +143,14 @@ ERROR_BDZ_CTLR,
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 13 - 32))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 14 - 32))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 15 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 16 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 17 - 32))               \
 )
 
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
-    (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
+    (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 19 - 64))               \
+  | (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
   | (1 << (ERROR_BA_1_FIX - 64))                                \
   | (1 << (ERROR_BA_1_CTLR - 64))                               \
   | (1 << (ERROR_BDVV5_1_FIX - 64))                             \
@@ -151,9 +158,14 @@ ERROR_BDZ_CTLR,
   | (1 << (ERROR_BDVV5_2_FIX - 64))                             \
   | (1 << (ERROR_BDVV5_2_CTLR - 64))                            \
   | (1 << (ERROR_BDV_DZ_FIX - 64))                              \
-  | (1 << (ERROR_BDV_DZ_CTLR - 64))                             \
-  | (1 << (ERROR_BDZ_FIX - 64))                                 \
-  | (1 << (ERROR_BDZ_CTLR - 64))                                \
+)
+
+#define MASKA_AVAR_ERROR_3        (unsigned int)(               \
+    (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
+  | (1 << (ERROR_BDZ_FIX - 96))                                 \
+  | (1 << (ERROR_BDZ_CTLR - 96))                                \
+  | (1 << (ERROR_BDVV6_FIX - 96))                               \
+  | (1 << (ERROR_BDVV6_CTLR - 96))                              \
 )
 
 # define NAME_DIAGN_RU  \
@@ -219,6 +231,10 @@ ERROR_BDZ_CTLR,
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
   "Неопр.ош.ан.рег.",   \
@@ -252,7 +268,11 @@ ERROR_BDZ_CTLR,
   " БДВ-ДЗ к.      ",   \
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
-  " Ошибка 95      "
+  " БДВВ6 ф.       ",   \
+  " БДВВ6 к.       ",   \
+  " Ошибка 101     ",   \
+  " Ошибка 102     ",   \
+  " Ошибка 103     "
 
 # define NAME_DIAGN_UA  \
   " Пом.I2C        ",   \
@@ -317,6 +337,10 @@ ERROR_BDZ_CTLR,
   " Пом.вих.реле?.?",   \
   " Пом.вих.реле?.?",   \
   " Пом.вих.реле?.?",   \
+  " Пом.вих.реле?.?",   \
+  " Пом.вих.реле?.?",   \
+  " Пом.вих.реле?.?",   \
+  " Пом.вих.реле?.?",   \
   "Ан.р.тимч.зайнят",   \
   " Переп.буф.aн.р.",   \
   "Невизн.пом.ан.р.",   \
@@ -350,7 +374,11 @@ ERROR_BDZ_CTLR,
   " БДВ-ДЗ к.      ",   \
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
-  " Помилка 95     "
+  " БДВВ6 ф.       ",   \
+  " БДВВ6 к.       ",   \
+  " Помилка 101    ",   \
+  " Помилка 102    ",   \
+  " Помилка 103    "
 
 # define NAME_DIAGN_EN  \
   " I2C Err.       ",   \
@@ -415,6 +443,10 @@ ERROR_BDZ_CTLR,
   " DO?.? Ctrl.Err.",   \
   " DO?.? Ctrl.Err.",   \
   " DO?.? Ctrl.Err.",   \
+  " DO?.? Ctrl.Err.",   \
+  " DO?.? Ctrl.Err.",   \
+  " DO?.? Ctrl.Err.",   \
+  " DO?.? Ctrl.Err.",   \
   " An.Rec.busy    ",   \
   " An.Rec.buff.OVF",   \
   "Undef.An.Rec.Err",   \
@@ -448,7 +480,11 @@ ERROR_BDZ_CTLR,
   " BDV-DZ ctrl.   ",   \
   " BDZ f.         ",   \
   " BDZ ctrl.      ",   \
-  " Error 95       "
+  " BDVV6 f.       ",   \
+  " BDVV6 ctrl.    ",   \
+  " Error 101      ",   \
+  " Error 102      ",   \
+  " Error 103      "
 
 # define NAME_DIAGN_KZ  \
   " Ош.I2C         ",   \
@@ -513,6 +549,10 @@ ERROR_BDZ_CTLR,
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
   "Неопр.ош.ан.рег.",   \
@@ -546,6 +586,10 @@ ERROR_BDZ_CTLR,
   " БДВ-ДЗ к.      ",   \
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
-  " Ошибка 95      "
+  " БДВВ6 ф.       ",   \
+  " БДВВ6 к.       ",   \
+  " Ошибка 101     ",   \
+  " Ошибка 102     ",   \
+  " Ошибка 103     "
     
 #endif

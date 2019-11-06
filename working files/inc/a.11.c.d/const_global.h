@@ -1996,6 +1996,6 @@ NUMBER_ODYNYCI_VYMIRJUVANNJA
 //Версія універсальної карти памяті
 /*****************************************/
 #define VERSIA_GMM                                             8
-#define MODYFIKACIA_VERSII_GMM                                 0
+#define MODYFIKACIA_VERSII_GMM                                 4
 /*****************************************/
 #endif

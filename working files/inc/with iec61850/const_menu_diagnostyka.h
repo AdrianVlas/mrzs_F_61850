@@ -3,7 +3,7 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 2))
+#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 3))
 #define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
 #define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
@@ -62,7 +62,7 @@ ERROR_OSCYLOJRAPH_OVERFLOW,
 
 ERROR_DIGITAL_OUTPUT_1_BIT,
 
-ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 16,
+ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
 ERROR_AR_OVERLOAD_BUFFER_BIT,
 ERROR_AR_UNDEFINED_BIT,
 ERROR_AR_LOSS_INFORMATION_BIT,
@@ -120,6 +120,8 @@ ERROR_BDV_DZ_FIX,
 ERROR_BDV_DZ_CTLR,
 ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
+ERROR_BDVV6_FIX,
+ERROR_BDVV6_CTLR,
 ERROR_CB_FIX
 };
 
@@ -133,12 +135,12 @@ ERROR_CB_FIX
            (1 << (ERROR_CPU_NO_ANSWER_CANAL_1 - 64))         |\
            (1 << (ERROR_IEC_RECEIVING_CANAL_1 - 64))         |\
            (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_1 - 64))   |\
-           (1 << (ERROR_IEC_REQUEST_CANAL_1 - 64))           |\
-           (1 << (ERROR_IEC_NO_ANSWER_CANAL_1 - 64))          \
+           (1 << (ERROR_IEC_REQUEST_CANAL_1 - 64))            \
           )   
 
 #define WORD_3_MASKA_ERRORS_FROM_CANAL_1 (unsigned int)       \
           (                                                   \
+           (1 << (ERROR_IEC_NO_ANSWER_CANAL_1 - 96))         |\
            (1 << (ERROR_IEC_RECEIVING_CANAL_2 - 96))         |\
            (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_2 - 96))   |\
            (1 << (ERROR_IEC_REQUEST_CANAL_2 - 96))            \
@@ -147,15 +149,13 @@ ERROR_CB_FIX
 
 #define WORD_0_MASKA_RECEIVING_ERRORS_CANAL_2 0
 #define WORD_1_MASKA_RECEIVING_ERRORS_CANAL_2 0
-#define WORD_2_MASKA_RECEIVING_ERRORS_CANAL_2 (unsigned int)  \
-          (                                                   \
-           (1 << (ERROR_CPU_RECEIVING_CANAL_2 - 64))         |\
-           (1 << (ERROR_CPU_RECEIVED_PACKET_CANAL_2 - 64))   |\
-           (1 << (ERROR_CPU_ANSWER_CANAL_2 - 64))             \
-          ) 
+#define WORD_2_MASKA_RECEIVING_ERRORS_CANAL_2 0
 
 #define WORD_3_MASKA_RECEIVING_ERRORS_CANAL_2 (unsigned int)  \
           (                                                   \
+           (1 << (ERROR_CPU_RECEIVING_CANAL_2 - 96))         |\
+           (1 << (ERROR_CPU_RECEIVED_PACKET_CANAL_2 - 96))   |\
+           (1 << (ERROR_CPU_ANSWER_CANAL_2 - 96))            |\
            (1 << (ERROR_CPU_NO_ANSWER_CANAL_2 - 96))          \
           ) 
 
@@ -194,10 +194,14 @@ ERROR_CB_FIX
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 13 - 32))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 14 - 32))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 15 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 16 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 17 - 32))               \
 )
 
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
-    (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
+    (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 19 - 64))               \
+  | (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
 )
 
 #define MASKA_AVAR_ERROR_3        (unsigned int)(               \
@@ -211,6 +215,8 @@ ERROR_CB_FIX
   | (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
   | (1 << (ERROR_BDZ_FIX - 96))                                 \
   | (1 << (ERROR_BDZ_CTLR - 96))                                \
+  | (1 << (ERROR_BDVV6_FIX - 96))                               \
+  | (1 << (ERROR_BDVV6_CTLR - 96))                              \
   | (1 << (ERROR_CB_FIX - 96))                                  \
 )
 
@@ -277,6 +283,10 @@ ERROR_CB_FIX
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
   "Неопр.ош.ан.рег.",   \
@@ -325,8 +335,12 @@ ERROR_CB_FIX
   " БДВ-ДЗ к.      ",   \
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
+  " БДВВ6 ф.       ",   \
+  " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Ошибка 111     "
+  " Ошибка 117     ",   \
+  " Ошибка 118     ",   \
+  " Ошибка 119     "
 
 # define NAME_DIAGN_UA  \
   " Пом.I2C        ",   \
@@ -391,6 +405,10 @@ ERROR_CB_FIX
   " Пом.вих.реле?.?",   \
   " Пом.вих.реле?.?",   \
   " Пом.вих.реле?.?",   \
+  " Пом.вих.реле?.?",   \
+  " Пом.вих.реле?.?",   \
+  " Пом.вих.реле?.?",   \
+  " Пом.вих.реле?.?",   \
   "Ан.р.тимч.зайнят",   \
   " Переп.буф.aн.р.",   \
   "Невизн.пом.ан.р.",   \
@@ -439,8 +457,12 @@ ERROR_CB_FIX
   " БДВ-ДЗ к.      ",   \
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
+  " БДВВ6 ф.       ",   \
+  " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Помилка 111    "
+  " Помилка 117    ",   \
+  " Помилка 118    ",   \
+  " Помилка 119    "
 
 # define NAME_DIAGN_EN  \
   " I2C Err.       ",   \
@@ -505,6 +527,10 @@ ERROR_CB_FIX
   " DO?.? Ctrl.Err.",   \
   " DO?.? Ctrl.Err.",   \
   " DO?.? Ctrl.Err.",   \
+  " DO?.? Ctrl.Err.",   \
+  " DO?.? Ctrl.Err.",   \
+  " DO?.? Ctrl.Err.",   \
+  " DO?.? Ctrl.Err.",   \
   " An.Rec.busy    ",   \
   " An.Rec.buff.OVF",   \
   "Undef.An.Rec.Err",   \
@@ -553,8 +579,12 @@ ERROR_CB_FIX
   " BDV-DZ ctrl.   ",   \
   " BDZ f.         ",   \
   " BDZ ctrl.      ",   \
+  " BDVV6 f.       ",   \
+  " BDVV6 ctrl.    ",   \
   " CB f.          ",   \
-  " Error 111      "
+  " Error 117      ",   \
+  " Error 118      ",   \
+  " Error 119      "
 
 # define NAME_DIAGN_KZ  \
   " Ош.I2C         ",   \
@@ -619,6 +649,10 @@ ERROR_CB_FIX
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
+  " Ош.вых.реле ?.?",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
   "Неопр.ош.ан.рег.",   \
@@ -667,7 +701,11 @@ ERROR_CB_FIX
   " БДВ-ДЗ к.      ",   \
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
+  " БДВВ6 ф.       ",   \
+  " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Ошибка 111     "
+  " Ошибка 117     ",   \
+  " Ошибка 118     ",   \
+  " Ошибка 119     "
     
 #endif
