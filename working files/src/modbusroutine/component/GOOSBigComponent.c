@@ -2,9 +2,9 @@
 #if (MODYFIKACIA_VERSII_PZ >= 10)
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 2572
+#define BEGIN_ADR_REGISTER 2636
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 3595
+#define END_ADR_REGISTER 3659
 
 //к-во регистров внутри одной части GOOS
 #define REGISTERS_GOOS 8
@@ -81,7 +81,68 @@ int setGOOSBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(goosbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
-  return validN_SMALLACMD(dataReg);
+  if(validN_SMALLACMD(dataReg)==MARKER_ERRORPERIMETR) return MARKER_ERRORPERIMETR;
+
+  switch((unsigned short)dataReg)
+  {
+   case 50000://- 1-а гр.уставок    *
+   case 50001://- 2-а гр.уставок     *
+   case 50002://- 3-а гр.уставок     *
+   case 50003://- 4-а гр.уставок     *
+   case 50016://- Блок.МСЗ1          *
+   case 50032://- Блок.МСЗ2          *
+   case 50041://- Блок.приск.МСЗ2    *
+   case 50048://- Блок.МСЗ3          *
+   case 50064://- Блок.МСЗ4    
+   case 50080://- Блок.МСЗ 0.4кВ 1
+   case 50083://- Блок.МСЗ 0.4кВ 2
+   case 50086://- Бл.п.МСЗ 0.4кВ 2
+   case 50112://- Блок.ЗДЗ
+   case 50113://- Пуск ЗДЗ від ДВ
+   case 50128://- Блок.НЗЗ    
+   case 50144://- Блок.TZNP1
+   case 50154://- Блок.TZNP2
+   case 50164://- Блок.TZNP3
+   case 50176://- Блок.ЗЗП(КОФ)  
+   case 50192://- Блокировка ЗНмин1
+   case 50197://- Блокировка ЗНмин1
+   case 50202://- Пуск ЗНмин1
+   case 50203://- Пуск ЗНмин2
+   case 50208://- Блокировка ЗНмакс1
+   case 50211://- Блокировка ЗНмакс2
+   case 50288://- Стат.блок.АПВ  
+   case 50304://  Пуск ПРВВ від ДВ
+   case 50368://- АЧР/ЧАПВ    
+   case 50369://- Блок.АЧР1
+   case 50370://- Блок.АЧР2
+   case 50384://- Блок.УЗ1
+   case 50387://- Блок.УЗ2
+   case 50390://- Блок.УЗ3
+   case 50393://- Блок.УЗ4
+   case 50396://- Блок.УЗ5
+   case 50399://- Блок.УЗ6
+   case 50402://- Блок.УЗ7
+   case 50405://- Блок.УЗ8
+//   case 50528://- Ввімк.ВВ      *
+//   case 50529://- Вимк.ВВ       *
+//   case 50530://- Блок.ввімкн.ВВ  *
+//   case 50534://- Стан ВВ         *
+//   case 50536://- Контроль Ввімк. *
+//   case 50537://- Контроль Вимк.  *
+   case 50562://- Сброс индикации
+   case 50563://- Сброс реле
+   case 50569://- Місц./Дистанц. *
+//   case 50576://- Вимк.від зовн.з.* 
+   case 50599://- С.блк.Гот.до ТУ
+
+   case 50624://- Блокировка Вх.MMS 1
+   case 50625://- Блокировка Вх.MMS 2
+   case 50626://- Блокировка Вх.MMS 3
+   case 50627://- Блокировка Вх.MMS 4
+      return MARKER_ERRORPERIMETR; //не прошла валидация
+  }//switch
+
+  return 0;
 }//
 int setGOOSBigModbusBit(int x, int y)
 {

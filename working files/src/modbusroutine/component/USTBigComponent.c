@@ -705,33 +705,43 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     (*editValue) = (uint32_t*)&edition_settings.type_of_input;
     if(regUst&(~(0xF))) diapazon=0;
     break;
-  case 1050:
+#define MARKER1050  1050
+  case MARKER1050:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output;
-//      if(regUst&(~(0x3FF))) diapazon=0;
     break;
   case 1051:
     (*multer) = 1;
-    (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
-//      if(regUst&(~(0x3FF))) diapazon=0;
+    (*editValue) = (uint32_t*)&edition_settings.type_of_output;
+    if(regUst&(~(0xF))) diapazon=0;
     break;
-  case 1052:
+#define MARKER1052  1052
+  case MARKER1052:
+    (*multer) = 1;
+    (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
+    break;
+  case 1053:
+    (*multer) = 1;
+    (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
+      if(regUst&(~(0xF))) diapazon=0;
+    break;
+  case 1054:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_df;
     if(regUst&(~(0xFF))) diapazon=0;
     break;
-#define MARKER1053  1053
-  case MARKER1053:
+#define MARKER1055  1055
+  case MARKER1055:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_led;
 //      if(regUst&(~(0xFFFF))) diapazon=0;
     break;
-  case 1054:
+  case 1056:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_led;
     if(regUst&(~(0x1))) diapazon=0;
     break;
-  case 1055:
+  case 1057:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.buttons_mode;
     if(regUst&(~(0xFFF))) diapazon=0;
@@ -756,9 +766,9 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     }//if
     break;
 
-//IF ÂÑÒÀÂÊÀ 1056-1075
-//IF ÂÑÒÀÂÊÀ 1076-1083
-//IF ÂÑÒÀÂÊÀ 1086-1093
+//IF ÂÑÒÀÂÊÀ 1058-1077
+//IF ÂÑÒÀÂÊÀ 1078-1085
+//IF ÂÑÒÀÂÊÀ 1088-1095
 
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
@@ -899,42 +909,42 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
-  if(inOffset>=1056 && inOffset<1076)
+  if(inOffset>=1058 && inOffset<1078)
 #endif
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 1) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 11)      \
     )   
-    if(inOffset>=1056 && inOffset<1072)
+    if(inOffset>=1058 && inOffset<1074)
 #endif
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
      (MODYFIKACIA_VERSII_PZ == 4)       \
     )   
-      if(inOffset>=1056 && inOffset<1064)
+      if(inOffset>=1058 && inOffset<1066)
 #endif
       {
-        int item = inOffset-1056;
+        int item = inOffset-1058;
         (*editValue) = (uint32_t*)&edition_settings.dopusk_dv[item];
         (*multer) = 1;
         if(regUst<0 || regUst>60) diapazon=0;
-      }//if(inOffset>=1056 && inOffset<1076)
+      }//if(inOffset>=1058 && inOffset<1078)
 
-  if(inOffset>=1076 && inOffset<1084)
+  if(inOffset>=1078 && inOffset<1086)
   {
-    int item = inOffset-1076;
+    int item = inOffset-1078;
     (*editValue) = (uint32_t*)&edition_settings.timeout_pause_df[item];
     if(regUst<TIMEOUT_DF_PAUSE_MIN/10 || regUst>TIMEOUT_DF_PAUSE_MAX/10) diapazon=0;
   }//if(inOffset>=1076 && inOffset<1084)
 
-  if(inOffset>=1086 && inOffset<1094)
+  if(inOffset>=1088 && inOffset<1096)
   {
-    int item = inOffset-1086;
+    int item = inOffset-1088;
     (*editValue) = (uint32_t*)&edition_settings.timeout_work_df[item];
     if(regUst<TIMEOUT_DF_WORK_MIN/10 || regUst>TIMEOUT_DF_WORK_MAX/10) diapazon=0;
   }//if(inOffset>=1076 && inOffset<1084)
@@ -1040,8 +1050,8 @@ int getUSTBigModbusRegister(int adrReg)
   {
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
     if(offset==MARKER1046)
@@ -1068,8 +1078,8 @@ int getUSTBigModbusRegister(int adrReg)
   {
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
     if(offset==MARKER1048)
@@ -1092,9 +1102,64 @@ int getUSTBigModbusRegister(int adrReg)
 
 #endif
   }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
+
+  if(editValue == (uint32_t*)&edition_settings.type_of_output)
+  {
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
+    if(offset==MARKER1050)
+    {
+      return (*editValue) & (uint32_t)0xffff;
+    }
+    else
+    {
+      return ((*editValue)>>16)  & (uint32_t)0xffff;
+    }//else
+#else
+    if(offset==MARKER1050)
+    {
+      return (*editValue) & (uint32_t)0xffff;
+    }
+    else
+    {
+      return 0;
+    }//else
+
+#endif
+  }//if(editValue == (uint32_t*)&edition_settings.type_of_output)
+  if(editValue == (uint32_t*)&edition_settings.type_of_output_modif)
+  {
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
+    if(offset==MARKER1052)
+    {
+      return (*editValue) & (uint32_t)0xffff;
+    }
+    else
+    {
+      return ((*editValue)>>16)  & (uint32_t)0xffff;
+    }//else
+#else
+    if(offset==MARKER1052)
+    {
+      return (*editValue) & (uint32_t)0xffff;
+    }
+    else
+    {
+      return 0;
+    }//else
+
+#endif
+  }//if(editValue == (uint32_t*)&edition_settings.type_of_output)
+
+
   if(editValue == (uint32_t*)&edition_settings.type_of_led)
   {
-    if(offset==MARKER1053)
+    if(offset==MARKER1055)
     {
       return (*editValue) & (uint32_t)0xffff;
     }
@@ -1219,9 +1284,41 @@ int postUSTBigWriteAction(void)
         goto m1;
       }//else
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
+
+    if(editValue == (uint32_t*)&edition_settings.type_of_output)
+    {
+      if(offset==MARKER1050)
+      {
+        (*editValue) &= (uint32_t)~0xffff;
+        (*editValue) |= (value & 0xffff);
+        goto m1;
+      }
+      else
+      {
+        (*editValue)  &= (uint32_t)~(0xffff<<16);
+        (*editValue)  |= ((value & 0xffff)<<16);//
+        goto m1;
+      }//else
+    }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
+    if(editValue == (uint32_t*)&edition_settings.type_of_output_modif)
+    {
+      if(offset==MARKER1052)
+      {
+        (*editValue) &= (uint32_t)~0xffff;
+        (*editValue) |= (value & 0xffff);
+        goto m1;
+      }
+      else
+      {
+        (*editValue)  &= (uint32_t)~(0xffff<<16);
+        (*editValue)  |= ((value & 0xffff)<<16);//
+        goto m1;
+      }//else
+    }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
+
     if(editValue == (uint32_t*)&edition_settings.type_of_led)
     {
-      if(offset==MARKER1053)
+      if(offset==MARKER1055)
       {
         (*editValue) &= (uint32_t)~0xffff;
         (*editValue) |= (value & 0xffff);

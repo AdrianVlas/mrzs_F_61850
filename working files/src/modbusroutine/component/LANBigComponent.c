@@ -2,9 +2,9 @@
 #if (MODYFIKACIA_VERSII_PZ >= 10)
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 3852
+#define BEGIN_ADR_REGISTER 3916
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 4100
+#define END_ADR_REGISTER 4171
 
 //к-во регистров внутри одной части LAN
 #define REGISTERS_LAN 8

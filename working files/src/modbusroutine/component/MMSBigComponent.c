@@ -2,9 +2,9 @@
 #if (MODYFIKACIA_VERSII_PZ >= 10)
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 3596
+#define BEGIN_ADR_REGISTER 3660
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 3851
+#define END_ADR_REGISTER 3915
 
 //к-во регистров внутри одной части MMS
 #define REGISTERS_MMS 8
@@ -81,7 +81,38 @@ int setMMSBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(mmsbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
-  return validN_SMALLACMD(dataReg);
+  if(validN_SMALLACMD(dataReg)==MARKER_ERRORPERIMETR) return MARKER_ERRORPERIMETR;
+
+  switch((unsigned short)dataReg)
+  {
+   case 50528://- Ввімк.ВВ      *
+   case 50529://- Вимк.ВВ       *
+   case 50562://- Сброс индикации
+   case 50563://- Сброс реле
+   case 50599://- С.блк.Гот.до ТУ
+
+   case 50432://- Вход Опред. Функция  1
+   case 50433://- Вход Опред. Функция  2
+   case 50434://- Вход Опред. Функция  3
+   case 50435://- Вход Опред. Функция  4
+   case 50436://- Вход Опред. Функция  5
+   case 50437://- Вход Опред. Функция  6
+   case 50438://- Вход Опред. Функция  7
+   case 50439://- Вход Опред. Функция  8
+
+   case 50464://- Уст О-триггера 1
+   case 50465://- Сброс О-триггера 1
+   case 50466://- Уст О-триггера 2
+   case 50467://- Сброс О-триггера 2
+   case 50468://- Уст О-триггера 3
+   case 50469://- Сброс О-триггера 3
+   case 50470://- Уст О-триггера 4
+   case 50471://- Сброс О-триггера 4
+
+      return 0; //прошла валидация
+  }//switch
+
+  return MARKER_ERRORPERIMETR;//не прошла валидация
 }//
 int setMMSBigModbusBit(int x, int y)
 {
