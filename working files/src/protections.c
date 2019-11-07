@@ -1471,7 +1471,7 @@ inline void input_scan(void)
        (MODYFIKACIA_VERSII_PZ == 5) ||    \
        (MODYFIKACIA_VERSII_PZ == 15)      \
       )                                   
-                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 16) & 0xf) << 16)
+                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 12) & 0xf) << 16)
 #endif
                         ;
   /***************************/
@@ -3161,8 +3161,8 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
     test = swiched_on_OVD & 0x7;
   }
 
-  if (test != 0) _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (1 << 8) | ((test & 0xf) << 12);
-  else _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8);
+  if (test != 0) _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (1 << 8) | ((test & 0xf) << 12);
+  else _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8);
   /***/
 
 #endif  
@@ -10997,7 +10997,7 @@ do{
        (MODYFIKACIA_VERSII_PZ == 10)    \
       )   
       //Вимикаємо можливий режим тестування оптоканалу
-      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
+      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
       if (zdz_ovd_diagnostyka)
       {
         if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(clear_diagnostyka, TEST_OVD1);
@@ -11575,7 +11575,7 @@ do{
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
-  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (state_outputs_raw >> 16);
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (state_outputs_raw >> 16)<< 8;
 #endif
 
   TIM_PRT_write_tick = TIM2->CNT;
@@ -11956,7 +11956,7 @@ void TIM2_IRQHandler(void)
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
       unsigned int control_state_outputs =    ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)     ))) & 0xffff)
-                                           | (((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29          ) >> 8))) & 0xf   ) << 16);
+                                           | (((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30          ) >> 8))) & 0xf   ) << 16);
 #else
       unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)))) & 0xffff);
 #endif
