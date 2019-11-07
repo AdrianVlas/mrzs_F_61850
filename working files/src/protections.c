@@ -1464,11 +1464,14 @@ inline void input_scan(void)
   state_inputs_into_pin |=  ( _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36)       & 0xffff)
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 5) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)||    \
-     (MODYFIKACIA_VERSII_PZ == 15)      \
+     (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
-                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) &    0xf) << 16)
+                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >>  8) & 0xf) << 16)
+#elif (                                   \
+       (MODYFIKACIA_VERSII_PZ == 5) ||    \
+       (MODYFIKACIA_VERSII_PZ == 15)      \
+      )                                   
+                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 16) & 0xf) << 16)
 #endif
                         ;
   /***************************/
@@ -11568,6 +11571,13 @@ do{
   state_outputs_raw = ( state_outputs & ((unsigned int)(~output_signal_modif)) ) | ((state_outputs & output_signal_modif)*output_timer_prt_signal_output_mode_2);
   
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = state_outputs_raw;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (state_outputs_raw >> 16);
+#endif
+
   TIM_PRT_write_tick = TIM2->CNT;
   /**************************/
 
@@ -11941,7 +11951,16 @@ void TIM2_IRQHandler(void)
     else TIM_PRT_delta_write_read = TIM_PRT_read_tick - TIM_PRT_write_tick;
     if (TIM_PRT_delta_write_read > (TIM2_MIN_PERIOD_WRITE_READ + 1))
     {
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
+      unsigned int control_state_outputs =    ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)     ))) & 0xffff)
+                                           | (((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29          ) >> 8))) & 0xf   ) << 16);
+#else
       unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)))) & 0xffff);
+#endif
+     
 
       static uint32_t error_rele[NUMBER_OUTPUTS];
       if (control_state_outputs != state_outputs_raw) 
