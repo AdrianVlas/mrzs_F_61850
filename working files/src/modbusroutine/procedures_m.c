@@ -258,6 +258,7 @@ int superReader20(int offsetRegister, int fileNumber, int recordNumber, int reco
 {
   switch (fileNumber)
     {
+/*
     case 1://Конфигурация аналогового регистратора
       return configAnalogRegistrator(offsetRegister, recordNumber, recordLen);
 
@@ -275,7 +276,26 @@ int superReader20(int offsetRegister, int fileNumber, int recordNumber, int reco
 
     case 6://Данные дискретного регистратора 1часть
       return dataDiskretRegistrator(offsetRegister, recordNumber, recordLen);
+*/
 
+    case 1://Конфигурация дискретного регистратора
+      return configDiskretRegistrator(offsetRegister, recordNumber, recordLen);
+
+    case 2://Данные дискретного регистратора 1часть
+    case 3://Данные дискретного регистратора 2часть
+      if (fileNumber == 3) recordNumber += 10000;
+      return dataDiskretRegistrator(offsetRegister, recordNumber, recordLen);
+
+    case 4://Конфигурация аналогового регистратора
+      return configAnalogRegistrator(offsetRegister, recordNumber, recordLen);
+
+    default:
+      {
+      //Данные аналогового регистратора 
+      if (fileNumber == 0) break;
+      if (fileNumber > 5) recordNumber += 10000;
+      return dataAnalogRegistrator(offsetRegister, recordNumber, recordLen);
+      }//default
     }//switch
 
   return MARKER_ERRORPERIMETR;
