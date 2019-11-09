@@ -10362,7 +10362,29 @@ do{
       default: break;
       }
     }
-    
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    {
+      size_t word_n = RANG_SMALL_BLOCK_IN_GOOSE1 >> 5;
+      unsigned int maska = (unsigned int)(1 << (RANG_SMALL_BLOCK_IN_GOOSE1 & 0x1f));
+      
+      for (size_t i = 0; i < (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN); i++)
+      {
+        if (temp_value_for_activated_function[word_n] & maska) 
+        {
+          size_t index = RANG_BLOCK_IN_GOOSE1 + i;
+          active_functions[index >> 5] |= (unsigned int)(1 << (index & 0x1f));
+        }
+        
+        maska <<= 1;
+        if (maska == 0)
+        {
+          word_n++;
+          maska = 1;
+        }
+      }
+    }
+#endif    
       
     //Загальні функції (без ОФ-ій і функцій, які можуть блокуватися у місцевому управлінні)
     active_functions[RANG_BLOCK_VKL_VV                      >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_VKL_VV                     ) != 0) << (RANG_BLOCK_VKL_VV                      & 0x1f);
