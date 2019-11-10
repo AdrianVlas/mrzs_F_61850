@@ -10365,22 +10365,31 @@ do{
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
     {
-      size_t word_n = RANG_SMALL_BLOCK_IN_GOOSE1 >> 5;
-      unsigned int maska = (unsigned int)(1 << (RANG_SMALL_BLOCK_IN_GOOSE1 & 0x1f));
+      size_t word_n_small = RANG_SMALL_BLOCK_IN_GOOSE1 >> 5;
+      unsigned int maska_small = (unsigned int)(1 << (RANG_SMALL_BLOCK_IN_GOOSE1 & 0x1f));
       
+      size_t word_n_full = RANG_BLOCK_IN_GOOSE1 >> 5;
+      unsigned int maska_full = (unsigned int)(1 << (RANG_BLOCK_IN_GOOSE1 & 0x1f));
+
       for (size_t i = 0; i < (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN); i++)
       {
-        if (temp_value_for_activated_function[word_n] & maska) 
+        if (temp_value_for_activated_function[word_n_small] & maska_small) 
         {
-          size_t index = RANG_BLOCK_IN_GOOSE1 + i;
-          active_functions[index >> 5] |= (unsigned int)(1 << (index & 0x1f));
+          active_functions[word_n_full] |= maska_full;
         }
         
-        maska <<= 1;
-        if (maska == 0)
+        maska_small <<= 1;
+        if (maska_small == 0)
         {
-          word_n++;
-          maska = 1;
+          word_n_small++;
+          maska_small = 1;
+        }
+        
+        maska_full <<= 1;
+        if (maska_full == 0)
+        {
+          word_n_full++;
+          maska_full = 1;
         }
       }
     }
