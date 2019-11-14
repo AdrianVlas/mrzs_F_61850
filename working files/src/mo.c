@@ -481,6 +481,21 @@ void CANAL2_MO_routine()
           sum += Canal2_MO_Transmit[index_w++] = current_settings.gateway[2] & 0xff;
           sum += Canal2_MO_Transmit[index_w++] = current_settings.gateway[3] & 0xff;
         
+          sum += Canal2_MO_Transmit[index_w++] = current_settings.IP_time_server[0] & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = current_settings.IP_time_server[1] & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = current_settings.IP_time_server[2] & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = current_settings.IP_time_server[3] & 0xff;
+
+          unsigned int port_time_server = current_settings.port_time_server;
+          sum += Canal2_MO_Transmit[index_w++] = port_time_server        & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = (port_time_server >> 8) & 0xff;
+          
+          unsigned int period_sync = current_settings.period_sync;
+          sum += Canal2_MO_Transmit[index_w++] = period_sync         & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = (period_sync >>  8) & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = (period_sync >> 16) & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = (period_sync >> 24) & 0xff;
+          
           unsigned int period = TIM2_CCR1_VAL*60/*Prescaler*//60/*вх≥дна частота таймера у ћ√ц*/; /*результат у мкс*/
           sum += Canal2_MO_Transmit[index_w++] = period        & 0xff;
           sum += Canal2_MO_Transmit[index_w++] = (period >> 8) & 0xff;

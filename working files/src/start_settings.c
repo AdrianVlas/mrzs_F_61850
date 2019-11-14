@@ -1963,7 +1963,16 @@ void min_settings(__SETTINGS *target_label)
   target_label->gateway[1] = 0;
   target_label->gateway[2] = 0;
   target_label->gateway[3] = 0;
+
+  target_label->IP_time_server[0] = 192;
+  target_label->IP_time_server[1] = 168;
+  target_label->IP_time_server[2] = 100;
+  target_label->IP_time_server[3] = 10;
   
+  target_label->port_time_server = 123;
+
+  target_label->period_sync = 300;
+    
 #endif  
 
   for(unsigned int i = 0; i < (7+1); i++)
