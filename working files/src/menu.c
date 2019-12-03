@@ -1500,6 +1500,7 @@ void main_manu_function(void)
     case EKRAN_CHOSE_SETTING_RS485:
     case EKRAN_PHY_LAYER_RS485:
     case EKRAN_PROTOCOL_RS485:
+    case EKRAN_CHOSE_DATA_TIME:
       
 #if (MODYFIKACIA_VERSII_PZ >= 10)
     case EKRAN_LIST_TYPE_IEC61850_NODES:
@@ -1960,6 +1961,13 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_PROTOCOL_RS485] = current_ekran.index_position;
               //Формуємо екран відображення списку налаштувань протоколу RS-485
               make_ekran_protocols_rs485();
+            }
+            else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
+              //Формуємо екран вибору налаштувань дати і часу
+              make_ekran_chose_data_time_settings();
             }
 #if (MODYFIKACIA_VERSII_PZ >= 10)            
             else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
@@ -3141,6 +3149,12 @@ void main_manu_function(void)
                   //Переходимо на меню відображення настройок комунікації
                   current_ekran.current_level = EKRAN_CHOSE_COMMUNICATION_PARAMETERS;
                 }
+                else if(current_ekran.index_position == INDEX_OF_DATA_AND_TIME)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення налаштувань дати і часу
+                  current_ekran.current_level = EKRAN_CHOSE_DATA_TIME;
+                }
                 else if(current_ekran.index_position == INDEX_OF_REGISTRATORS)
                 {
                   //Запам'ятовуємо поперердній екран
@@ -3449,6 +3463,26 @@ void main_manu_function(void)
                 current_ekran.edition = 0;
               }
 #endif
+              else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
+              {
+                //Натисну кнопка Enter у вікні вибору вікна настройок налаштувань дл дати і часу
+                if(current_ekran.index_position == INDEX_ML_CHDT_TIME_ZONE)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення налаштувань часової зони і правил переходу на літній час
+                  current_ekran.current_level = EKRAN_TIME_ZONE;
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if(current_ekran.index_position == INDEX_ML_CHDT_SYNCHRO)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення наштувань для синхронізації по мережі
+                  current_ekran.current_level = EKRAN_SYNCHRO;
+                }
+#endif
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
               else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
               {
                 if(current_ekran.index_position == INDEX_ML_DIGITAL_REGISTRATOR)
@@ -4310,6 +4344,13 @@ void main_manu_function(void)
                //Формуємо екран відображення списку налаштувань протоколу RS-485
                make_ekran_protocols_rs485();
               }
+              else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS - 1;
+                position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
+                //Формуємо екран вибору налаштувань дати і часу
+                make_ekran_chose_data_time_settings();
+              }
 #if (MODYFIKACIA_VERSII_PZ >= 10)              
               else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
               {
@@ -5090,6 +5131,13 @@ void main_manu_function(void)
                //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
                 make_ekran_protocols_rs485();
               }
+              else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position =  0;
+                position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
+                //Формуємо екран вибору налаштувань дати і часу
+                make_ekran_chose_data_time_settings();
+              }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
               else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
               {
@@ -5627,6 +5675,7 @@ void main_manu_function(void)
       
 #if (MODYFIKACIA_VERSII_PZ >= 10)      
     case EKRAN_SETTING_NETWORK_LAYER_ETHERNET:
+    case EKRAN_SYNCHRO:
 #endif
       
     case EKRAN_GENERAL_PICKUPS_EL:
@@ -6368,6 +6417,13 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_SETTING_NETWORK_LAYER_ETHERNET] = current_ekran.index_position;
               //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
               make_ekran_settings_network_layer_Ethernet();
+            }
+            else if(current_ekran.current_level == EKRAN_SYNCHRO)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_SYNCHRO) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_SYNCHRO] = current_ekran.index_position;
+              //Формуємо екран інфтрмації по налаштуваннях сервера для синхронізації
+              make_ekran_settings_synchro();
             }
 #endif
             else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
@@ -7497,6 +7553,24 @@ void main_manu_function(void)
                     current_ekran.position_cursor_x = COL_MASK_BEGIN;
                   }
                 }
+                else if(current_ekran.current_level == EKRAN_SYNCHRO)
+                {
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    for (size_t i = 0; i < 4; i++) edition_settings.IP_time_server[i] = current_settings.IP_time_server[i];
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_BEGIN;
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    edition_settings.port_time_server = current_settings.port_time_server;
+                    current_ekran.position_cursor_x = COL_PORT_BEGIN;
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    edition_settings.period_sync = current_settings.period_sync;
+                    current_ekran.position_cursor_x = COL_PERIOD_BEGIN;
+                  }
+                }
 #endif
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
@@ -8503,6 +8577,28 @@ void main_manu_function(void)
                   else if (current_ekran.index_position == INDEX_ML_NL_MASK)
                   {
                     if (edition_settings.mask != current_settings.mask) found_changes = 1;
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_SYNCHRO)
+                {
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    for (size_t i = 0; i < 4; i++) 
+                    {
+                      if (edition_settings.IP_time_server[i] != current_settings.IP_time_server[i])
+                      {
+                        found_changes = 1;
+                        break;
+                      }
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    if (edition_settings.port_time_server != current_settings.port_time_server) found_changes = 1;
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    if (edition_settings.period_sync != current_settings.period_sync) found_changes = 1;
                   }
                 }
 #endif
@@ -11802,6 +11898,77 @@ void main_manu_function(void)
                     }
                   }
                 }
+                else if(current_ekran.current_level == EKRAN_SYNCHRO)
+                {
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    enum comp {EQUAL, OUT_OF_RANGE, IN_RANGE} comparation = EQUAL;
+                    for (size_t i = 0; i < 4; i++) 
+                    {
+                      if (edition_settings.IP_time_server[i] != current_settings.IP_time_server[i])
+                      {
+                        comparation = IN_RANGE;
+                        if ((edition_settings.IP_time_server[i] >> 8) != 0)
+                        {
+                          comparation = OUT_OF_RANGE;
+                          break;
+                        }
+                      }
+                    }
+                    
+                    if (comparation != OUT_OF_RANGE)
+                    {
+                      if (comparation == IN_RANGE)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        for (size_t i = 0; i < 4; i++) current_settings.IP_time_server[i] = edition_settings.IP_time_server[i];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба передати налаштування у комунікаційну плату
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    if (check_data_setpoint(edition_settings.port_time_server, NETWORK_PORT_MIN, NETWORK_PORT_MAX) == 1)
+                    {
+                      if (edition_settings.port_time_server != current_settings.port_time_server)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        current_settings.port_time_server = edition_settings.port_time_server;
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    if (check_data_setpoint(edition_settings.period_sync, NETWORK_PERIOD_SYNC_MIN, NETWORK_PERIOD_SYNC_MAX) == 1)
+                    {
+                      if (edition_settings.period_sync != current_settings.period_sync)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        current_settings.period_sync = edition_settings.period_sync;
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                }
 #endif                
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
@@ -13530,6 +13697,33 @@ void main_manu_function(void)
                 //Формуємо екран інфтрмації по комунікаційній адресі
                 make_ekran_settings_network_layer_Ethernet();
               }
+              else if(current_ekran.current_level == EKRAN_SYNCHRO)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_SYNCHRO - 1;
+                  position_in_current_level_menu[EKRAN_SYNCHRO] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    size_t index = (current_ekran.position_cursor_x - COL_IP4_SERVER_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                    edition_settings.IP_time_server[index] = edit_setpoint(1, edition_settings.IP_time_server[index], 0, 0, COL_IP4_SERVER_BEGIN + (3 + 1)*(index + 1) - 1 - 1, 1);
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    edition_settings.port_time_server = edit_setpoint(1, edition_settings.port_time_server, 0, 0, COL_PORT_END, 1);
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    edition_settings.period_sync = edit_setpoint(1, edition_settings.period_sync, 0, 0, COL_PEDIOD_END, 1);
+                  }
+                }
+                //Формуємо екран
+                make_ekran_settings_synchro();
+              }
 #endif              
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
@@ -15016,6 +15210,34 @@ void main_manu_function(void)
                 }
                 //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
                 make_ekran_settings_network_layer_Ethernet();
+              }
+              else if(current_ekran.current_level == EKRAN_SYNCHRO)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_SYNCHRO) current_ekran.index_position = 0;
+                  position_in_current_level_menu[EKRAN_SYNCHRO] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    size_t index = (current_ekran.position_cursor_x - COL_IP4_SERVER_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                    edition_settings.IP_time_server[index] = edit_setpoint(0, edition_settings.IP_time_server[index], 0, 0, COL_IP4_SERVER_BEGIN + (3 + 1)*(index + 1) - 1 - 1, 1);
+                    
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    edition_settings.port_time_server = edit_setpoint(0, edition_settings.port_time_server, 0, 0, COL_PORT_END, 1);
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    edition_settings.period_sync = edit_setpoint(0, edition_settings.period_sync, 0, 0, COL_PEDIOD_END, 1);
+                  }
+                }
+                //Формуємо екран інфтрмації
+                make_ekran_settings_synchro();
               }
 #endif              
               else if (current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
@@ -16891,6 +17113,36 @@ void main_manu_function(void)
                 //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
                 make_ekran_settings_network_layer_Ethernet();
               }
+              else if(current_ekran.current_level == EKRAN_SYNCHRO)
+              {
+                if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                {
+                  if ((current_ekran.position_cursor_x < COL_IP4_SERVER_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_SERVER_END))
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_BEGIN;
+
+                  size_t index = (current_ekran.position_cursor_x - COL_IP4_SERVER_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                  if (current_ekran.position_cursor_x == (COL_IP4_SERVER_BEGIN + (3 + 1)*(index + 1) - 1)) current_ekran.position_cursor_x++;
+
+                  if ((current_ekran.position_cursor_x < COL_IP4_SERVER_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_SERVER_END))
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_BEGIN;
+                }
+                else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                {
+                  if ((current_ekran.position_cursor_x < COL_PORT_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_PORT_END))
+                    current_ekran.position_cursor_x = COL_PORT_BEGIN;
+                }
+                else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                {
+                  if ((current_ekran.position_cursor_x < COL_PERIOD_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_PEDIOD_END))
+                    current_ekran.position_cursor_x = COL_PERIOD_BEGIN;
+                }
+                //Формуємо екран інфтрмації
+                make_ekran_settings_synchro();
+              }
 #endif              
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
@@ -18763,6 +19015,36 @@ void main_manu_function(void)
                 }
                 //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
                 make_ekran_settings_network_layer_Ethernet();
+              }
+              else if(current_ekran.current_level == EKRAN_SYNCHRO)
+              {
+                if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                {
+                  if ((current_ekran.position_cursor_x < COL_IP4_SERVER_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_SERVER_END))
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_END;
+
+                  size_t index = (current_ekran.position_cursor_x - COL_IP4_SERVER_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                  if (current_ekran.position_cursor_x == (COL_IP4_SERVER_BEGIN + (3 + 1)*(index + 1) - 1)) current_ekran.position_cursor_x--;
+
+                  if ((current_ekran.position_cursor_x < COL_IP4_SERVER_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_SERVER_END))
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_END;
+                }
+                else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                {
+                  if ((current_ekran.position_cursor_x < COL_PORT_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_PORT_END))
+                    current_ekran.position_cursor_x = COL_PORT_END;
+                }
+                else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                {
+                  if ((current_ekran.position_cursor_x < COL_PERIOD_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_PEDIOD_END))
+                    current_ekran.position_cursor_x = COL_PEDIOD_END;
+                }
+                //Формуємо екран інфтрмації
+                make_ekran_settings_synchro();
               }
 #endif              
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)

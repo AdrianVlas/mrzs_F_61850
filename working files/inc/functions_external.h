@@ -150,6 +150,8 @@ extern void make_ekran_pare_interface(void);
 extern void make_ekran_stopbits_interface(void);
 extern void make_ekran_timeout_interface(void);
 extern void make_ekran_settings_network_layer_Ethernet(void);
+extern void make_ekran_chose_data_time_settings(void);
+extern void make_ekran_settings_synchro(void);
 extern void make_ekran_chose_registrators(void);
 extern void make_ekran_settings_analog_registrators(void);
 extern void make_ekran_timeout_analog_registrator(void);

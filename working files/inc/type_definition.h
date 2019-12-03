@@ -392,7 +392,7 @@ typedef struct
   uint16_t gateway[4];                                  //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
   
   uint16_t IP_time_server[4];                           //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
-  uint16_t port_time_server;
+  uint32_t port_time_server;
   uint32_t period_sync;
   
 #endif

@@ -45,6 +45,7 @@
 #include "const_menu_switch.h"
 #include "const_menu_chose_settings_uvv.h"
 #include "const_menu_chose_communication_parameters.h"
+#include "const_menu_chose_data_time_settings.h"
 #include "const_menu_chose_settings_registrators.h"
 #include "const_menu_resurs.h"
 #include "const_menu_VMP.h"

@@ -428,6 +428,12 @@
 #define NETWORK_MASK_DEFAULT          24
 #define NETWORK_MASK_MAX              32
 
+#define NETWORK_PORT_MIN              0
+#define NETWORK_PORT_MAX              65535
+
+#define NETWORK_PERIOD_SYNC_MIN       0
+#define NETWORK_PERIOD_SYNC_MAX       300
+
 #define MAX_NUMBER_SPEEDS_INTERFACE    7
 #define VALUE_SPEED_INTERFACE_MIN      0
 #define VALUE_SPEED_INTERFACE_MAX      (MAX_NUMBER_SPEEDS_INTERFACE - 1)
