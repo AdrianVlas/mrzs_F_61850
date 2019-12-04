@@ -1949,6 +1949,10 @@ void min_settings(__SETTINGS *target_label)
   target_label->language = LANGUAGE_EN;
   
   target_label->control_extra_settings_1 = 0;
+  
+  target_label->time_zone = 2;
+  target_label->dst = MASKA_FOR_BIT(N_BIT_TZ_DST);
+  
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   

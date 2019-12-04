@@ -385,6 +385,9 @@ typedef struct
   
   unsigned int control_extra_settings_1;                //Поле для додаткових налаштувань
   
+  int32_t time_zone;                                    //Часова зона
+  uint32_t dst;                                         //Перехід на літній час
+  
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   //IP4
   uint16_t IP4[4];                                      //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип

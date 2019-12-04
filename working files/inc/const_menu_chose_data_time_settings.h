@@ -25,6 +25,16 @@ enum _index_ml_data_time_settings
   MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS
 };
 
+enum _index_ml_timezone_settings
+{
+  INDEX_ML_TIME_ZONE = 0,
+  INDEX_ML_DST,
+
+  MAX_ROW_FOR_TIMEZONE_SETTINGS
+  
+};
+
+
 #if (MODYFIKACIA_VERSII_PZ >= 10)  
 enum _index_ml_syn
 {
@@ -45,5 +55,12 @@ enum _index_ml_syn
 #define COL_PEDIOD_END                 8
 
 #endif
+
+#define N_BIT_TZ_DST                   (INDEX_ML_DST - INDEX_ML_DST)          
+
+#define CTR_TZ_MASKA                   (                                \
+                                        MASKA_FOR_BIT(N_BIT_TZ_DST)     \
+                                       )
+
 
 #endif

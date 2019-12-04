@@ -451,6 +451,9 @@ extern unsigned int clean_rejestrators;
 extern const unsigned char letters[69][2];
 extern const unsigned char extra_letters[12][1 + MAX_NAMBER_LANGUAGE];
 
+extern const unsigned char string_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD];
+extern const unsigned int cursor_x_string_off_on[MAX_NAMBER_LANGUAGE][2];
+
 extern int current_language;
 
 //Лічильник ресурсу

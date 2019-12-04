@@ -69,6 +69,106 @@ void make_ekran_chose_data_time_settings(void)
 }
 /*****************************************************/
 
+/*****************************************************/
+//Формуємо екран відображення інформації по часовій зоні і переходу на літній час
+/*****************************************************/
+void make_ekran_timezone_dst(void)
+{
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEZONE_SETTINGS][MAX_COL_LCD] = 
+  {
+    {
+      "  Часовой пояс  ",
+      "  Летнее время  "
+    },
+    {
+      "  Часовий пояс  ",
+      "   Летній час   "
+    },
+    {
+      "   Time zone    ",
+      "      DST       "
+    },
+    {
+      "  Часовой пояс  ",
+      "  Летнее время  "
+    }
+  };
+  int index_language = index_language_in_array(current_settings.language);
+  
+  unsigned int position_temp = current_ekran.index_position;
+  unsigned int index_of_ekran;
+  
+  //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+  index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+  
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_TIMEZONE_SETTINGS)
+    {
+      if ((i & 0x1) == 0)
+      {
+        //У непарному номері рядку виводимо заголовок
+        for (size_t j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+      }
+      else
+      {
+        //У парному номері рядку виводимо стан
+        __SETTINGS *point_1 = (view == true) ? &current_settings : &edition_settings;
+        
+        if (index_of_ekran_tmp == INDEX_ML_TIME_ZONE)
+        {
+          int dst = point_1->dst;
+
+          for (size_t j = 0; j < MAX_COL_LCD; j++) 
+          {
+            if (j == 8) 
+            {
+              if (dst >= 0) working_ekran[i][j] = '+';
+              else 
+              {
+                working_ekran[i][j] = '-';
+                dst *= -1; //робимо, щоб число було додатнім
+              }
+            }
+            else if (j == 9) working_ekran[i][j] = ((dst >= 10) ? (dst / 10) : dst ) + 0x30;
+            else if (j == 10) working_ekran[i][j] = (dst >= 10) ? ((dst % 10) + 0x30) : ' ';
+            else 
+            {
+              const unsigned char information[MAX_COL_LCD] = "     UTC___     ";
+        
+              working_ekran[i][j] = information[j];
+            }
+          }
+          if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = 4;
+        }
+        else if (index_of_ekran_tmp == INDEX_ML_DST)
+        {
+          unsigned int state = ((point_1->time_zone & MASKA_FOR_BIT(N_BIT_TZ_DST)) != 0);
+
+          for (size_t j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = string_off_on[index_language][state][j];
+          if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x_string_off_on[index_language][state];
+        }
+      }
+    }
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
+  current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  if(current_ekran.edition == 0)current_ekran.cursor_blinking_on = 0;
+  else current_ekran.cursor_blinking_on = 1;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
 /*****************************************************/

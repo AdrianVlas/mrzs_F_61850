@@ -1080,6 +1080,21 @@ const unsigned char extra_letters[12][1 + MAX_NAMBER_LANGUAGE] =
 { 0x90, 0xFF, 0xFF, 0xFF, 0x05}  // ђ - замінний символ з даним кодом для WIN1251
 };
 
+const unsigned char string_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+{
+  {"     Откл.      ", "      Вкл.      "},
+  {"     Вимк.      ", "     Ввімк.     "},
+  {"      Off       ", "       On       "},
+  {"     Сљнд.      ", "     Косу.      "}
+};
+const unsigned int cursor_x_string_off_on[MAX_NAMBER_LANGUAGE][2] = 
+{
+  {4, 5},
+  {4, 4},
+  {5, 6},
+  {4, 4}
+};
+
 int current_language = LANGUAGE_ABSENT;
 
 extern unsigned short const __checksum;

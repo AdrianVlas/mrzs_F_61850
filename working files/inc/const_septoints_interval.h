@@ -434,6 +434,10 @@
 #define NETWORK_PERIOD_SYNC_MIN       0
 #define NETWORK_PERIOD_SYNC_MAX       300
 
+#define TIME_ZONE_MIN                 (-12)
+#define TIME_ZONE_MAX                 12
+
+
 #define MAX_NUMBER_SPEEDS_INTERFACE    7
 #define VALUE_SPEED_INTERFACE_MIN      0
 #define VALUE_SPEED_INTERFACE_MAX      (MAX_NUMBER_SPEEDS_INTERFACE - 1)

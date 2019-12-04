@@ -151,7 +151,7 @@ void make_ekran_stopbits_interface(void);
 void make_ekran_timeout_interface(void);
 void make_ekran_settings_network_layer_Ethernet(void);
 void make_ekran_chose_data_time_settings(void);
-void make_ekran_settings_synchro(void);
+void make_ekran_timezone_dst(void);
 void make_ekran_chose_registrators(void);
 void make_ekran_settings_analog_registrators(void);
 void make_ekran_timeout_analog_registrator(void);
@@ -332,6 +332,7 @@ void start_transmint_data_via_CANAL1_MO(void);
 void start_receive_data_via_CANAL1_MO(void);
 void CANAL2_MO_routine(void);
 void inputPacketParserLAN(void);
+void make_ekran_settings_synchro(void);
 #endif
 
 extern void inputPacketParserUSB(void);

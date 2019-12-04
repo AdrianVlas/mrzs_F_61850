@@ -5678,6 +5678,7 @@ void main_manu_function(void)
     case EKRAN_SYNCHRO:
 #endif
       
+    case EKRAN_TIME_ZONE:
     case EKRAN_GENERAL_PICKUPS_EL:
     case EKRAN_LIST_TYPE_DF:
     case EKRAN_TIMEOUT_DF1:
@@ -6426,6 +6427,13 @@ void main_manu_function(void)
               make_ekran_settings_synchro();
             }
 #endif
+            else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_TIMEZONE_SETTINGS) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_TIME_ZONE] = current_ekran.index_position;
+              //Формуємо екран
+              make_ekran_timezone_dst();
+            }
             else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_GENERAL_PICKUPS_EL) current_ekran.index_position = 0;
@@ -7572,6 +7580,11 @@ void main_manu_function(void)
                   }
                 }
 #endif
+                else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+                {
+                  edition_settings.time_zone = current_settings.time_zone;
+                  edition_settings.dst = current_settings.dst;
+                }
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
                   if (current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -8602,6 +8615,13 @@ void main_manu_function(void)
                   }
                 }
 #endif
+                else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+                {
+                  if (
+                      (edition_settings.time_zone != current_settings.time_zone) ||
+                      (edition_settings.dst != current_settings.dst)
+                     )found_changes = 1;
+                }
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
                   if (current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -11970,6 +11990,31 @@ void main_manu_function(void)
                   }
                 }
 #endif                
+                else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+                {
+                  if (
+                      ((edition_settings.time_zone >= TIME_ZONE_MIN) || (edition_settings.time_zone <= TIME_ZONE_MAX)) &&
+                      ((edition_settings.dst  & ((unsigned int)(~CTR_TZ_MASKA))) == 0)
+                     )   
+                  {
+                    if (
+                        (edition_settings.time_zone != current_settings.time_zone) ||
+                        (edition_settings.dst != current_settings.dst)
+                       )   
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                      current_settings.time_zone = edition_settings.time_zone;
+                      current_settings.dst = edition_settings.dst;
+                      
+                      //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
                   if (current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -13725,6 +13770,13 @@ void main_manu_function(void)
                 make_ekran_settings_synchro();
               }
 #endif              
+              else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TIMEZONE_SETTINGS - 1;
+                position_in_current_level_menu[EKRAN_TIME_ZONE] = current_ekran.index_position;
+                //Формуємо екран
+                make_ekran_timezone_dst();
+              }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.edition == 0)
@@ -15240,6 +15292,13 @@ void main_manu_function(void)
                 make_ekran_settings_synchro();
               }
 #endif              
+              else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TIMEZONE_SETTINGS) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_TIME_ZONE] = current_ekran.index_position;
+                //Формуємо екран
+                make_ekran_timezone_dst();
+              }
               else if (current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.edition == 0)
@@ -17144,6 +17203,21 @@ void main_manu_function(void)
                 make_ekran_settings_synchro();
               }
 #endif              
+              else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+              {
+                if (current_ekran.index_position == INDEX_ML_TIME_ZONE)
+                {
+                  if (++edition_settings.time_zone > TIME_ZONE_MAX) edition_settings.time_zone = TIME_ZONE_MIN;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST)
+                {
+                  //Міняємо на протилежний відповідний біт для вибраної позиції
+                  edition_settings.dst ^= MASKA_FOR_BIT(N_BIT_TZ_DST);
+                }
+
+                //Формуємо екран
+                make_ekran_timezone_dst();
+              }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -19047,6 +19121,21 @@ void main_manu_function(void)
                 make_ekran_settings_synchro();
               }
 #endif              
+              else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+              {
+                if (current_ekran.index_position == INDEX_ML_TIME_ZONE)
+                {
+                  if (--edition_settings.time_zone < TIME_ZONE_MIN) edition_settings.time_zone = TIME_ZONE_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST)
+                {
+                  //Міняємо на протилежний відповідний біт для вибраної позиції
+                  edition_settings.dst ^= MASKA_FOR_BIT(N_BIT_TZ_DST);
+                }
+
+                //Формуємо екран
+                make_ekran_timezone_dst();
+              }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
