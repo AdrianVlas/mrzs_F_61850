@@ -104,7 +104,7 @@ void make_ekran_timezone_dst(void)
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
     unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
-    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    unsigned int view = (current_ekran.edition == 0);
     if (index_of_ekran_tmp < MAX_ROW_FOR_TIMEZONE_SETTINGS)
     {
       if ((i & 0x1) == 0)
@@ -119,21 +119,21 @@ void make_ekran_timezone_dst(void)
         
         if (index_of_ekran_tmp == INDEX_ML_TIME_ZONE)
         {
-          int dst = point_1->dst;
+          int time_zone = point_1->time_zone;
 
           for (size_t j = 0; j < MAX_COL_LCD; j++) 
           {
             if (j == 8) 
             {
-              if (dst >= 0) working_ekran[i][j] = '+';
+              if (time_zone >= 0) working_ekran[i][j] = '+';
               else 
               {
                 working_ekran[i][j] = '-';
-                dst *= -1; //робимо, щоб число було додатнім
+                time_zone *= -1; //робимо, щоб число було додатнім
               }
             }
-            else if (j == 9) working_ekran[i][j] = ((dst >= 10) ? (dst / 10) : dst ) + 0x30;
-            else if (j == 10) working_ekran[i][j] = (dst >= 10) ? ((dst % 10) + 0x30) : ' ';
+            else if (j == 9) working_ekran[i][j] = ((time_zone >= 10) ? (time_zone / 10) : time_zone ) + 0x30;
+            else if (j == 10) working_ekran[i][j] = (time_zone >= 10) ? ((time_zone % 10) + 0x30) : ' ';
             else 
             {
               const unsigned char information[MAX_COL_LCD] = "     UTC___     ";
@@ -145,7 +145,7 @@ void make_ekran_timezone_dst(void)
         }
         else if (index_of_ekran_tmp == INDEX_ML_DST)
         {
-          unsigned int state = ((point_1->time_zone & MASKA_FOR_BIT(N_BIT_TZ_DST)) != 0);
+          unsigned int state = ((point_1->dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) != 0);
 
           for (size_t j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = string_off_on[index_language][state][j];
           if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x_string_off_on[index_language][state];
