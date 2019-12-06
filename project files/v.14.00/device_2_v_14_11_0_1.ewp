@@ -224,6 +224,7 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
+                    <state>_DLIB_TIME_USES_64</state>
                     <state>USE_STDPERIPH_DRIVER</state>
                     <state>STM32F2XX</state>
                     <state>USE_USB_OTG_FS</state>
@@ -814,11 +815,11 @@
                 </option>
                 <option>
                     <name>IlinkUseExtraOptions</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkExtraOptions</name>
-                    <state></state>
+                    <state>--timezone_lib</state>
                 </option>
                 <option>
                     <name>IlinkLowLevelInterfaceSlave</name>
@@ -5410,6 +5411,21 @@
                     <name>$PROJ_DIR$\..\..\working files\src\driver_serial_dataflash.c</name>
                 </file>
             </group>
+        </group>
+        <group>
+            <name>time</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\clock.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\getzone.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\time.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\time64.c</name>
+            </file>
         </group>
         <group>
             <name>usb</name>

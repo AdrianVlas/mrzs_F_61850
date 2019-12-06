@@ -1577,6 +1577,9 @@
                     <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_communication_parameters.h</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_data_time_settings.h</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_extra_settings.h</name>
                 </file>
                 <file>
@@ -2075,6 +2078,9 @@
                     <name>$PROJ_DIR$\..\..\working files\src\driver_serial_dataflash.c</name>
                 </file>
             </group>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\src\menu_data_time_settings.c</name>
+            </file>
         </group>
         <group>
             <name>usb</name>
