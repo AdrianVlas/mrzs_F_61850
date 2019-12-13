@@ -195,7 +195,7 @@ int getPKVBigModbusRegister(int adrReg)
 
   unsigned char *label_to_time_array;
   if (copying_time == 2) label_to_time_array = time_copy;
-  else label_to_time_array = time;
+  else label_to_time_array = time_bcd;
 
   uint32_t *editValue=NULL;
   PKVFunc000(adrReg-BEGIN_ADR_REGISTER, 0, &editValue);
@@ -324,7 +324,7 @@ int postPKVBigWriteAction(void)
   int flag_time_array = 0;
 
   unsigned char *label_to_time_array = time_edit;
-  for(int i=0; i<7; i++) time_edit[i] = time[i];
+  for(int i=0; i<7; i++) time_edit[i] = time_bcd[i];
 
   for(int i=0; i<countAdr; i++)
   {
@@ -520,6 +520,7 @@ int postPKVBigWriteAction(void)
     if (check_data_for_data_time_menu() == 1)
     {
       //Дані достовірні
+      if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) isdst_prev = -1;
       _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
       _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
     }//if

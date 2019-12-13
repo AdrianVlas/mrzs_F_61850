@@ -19,6 +19,7 @@
 #include <math.h>
 #include <arm_math.h>
 #include <stdlib.h>
+#include <time.h>
 
 #pragma section = "variables_RAM1"
 #pragma section = "Analog_Registrator_Buffer"

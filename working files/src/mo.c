@@ -82,7 +82,7 @@ void start_receive_data_via_CANAL1_MO(void)
               //Синхронізація часу
               uint32_t goose_time = 0;
               point = (uint8_t*)&goose_time;
-              index += sizeof(time);
+              index += sizeof(time_bcd);
               for (uint32_t i = 0; ((i < sizeof(uint32_t)) && (index < BUFFER_CANAL1_MO)); i++) 
               {
                 *(point++) = Canal1_MO_Received[index++];
@@ -92,11 +92,11 @@ void start_receive_data_via_CANAL1_MO(void)
                 //Деякі позиції системного часу/дати треба записати
                 uint8_t *label_to_time_array;
                 if (copying_time == 2) label_to_time_array = time_copy;
-                else label_to_time_array = time;
-                int32_t index_tmp = index - sizeof(time) - sizeof(uint32_t);
+                else label_to_time_array = time_bcd;
+                int32_t index_tmp = index - sizeof(time_bcd) - sizeof(uint32_t);
                 if (index_tmp > 0)
                 {
-                  for (uint32_t i = 0; i < sizeof(time); i++) 
+                  for (uint32_t i = 0; i < sizeof(time_bcd); i++) 
                   {
                     if ((goose_time & (1 << i)) != 0) IEC_time_edit[i] = Canal1_MO_Received[index_tmp];
                     else IEC_time_edit[i] = *(label_to_time_array + i);
@@ -246,9 +246,9 @@ void start_transmint_data_via_CANAL1_MO(void)
   else 
   {
     sum += Canal1_MO_Transmit[index++] = thousandths_time;
-    label_to_time_array = time;
+    label_to_time_array = time_bcd;
   }
-  for(uint32_t i = 0; ((i < sizeof(time)) && (index < BUFFER_CANAL1_MO)); i++) 
+  for(uint32_t i = 0; ((i < sizeof(time_bcd)) && (index < BUFFER_CANAL1_MO)); i++) 
   {
     sum += Canal1_MO_Transmit[index++] = *(label_to_time_array + i);
   }

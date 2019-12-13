@@ -26,6 +26,7 @@
 #define START_ADDRESS_INFO_REJESTRATORS_AR              (((START_ADDRESS_INFO_REJESTRATORS_PR_ERR     + (    sizeof(info_rejestrator_pr_err                          ) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 #define START_ADDRESS_RESURS_IN_EEPROM                  (((START_ADDRESS_INFO_REJESTRATORS_AR         + (    sizeof(info_rejestrator_ar                              ) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 #define START_ADDRESS_ENERGY_IN_EEPROM                  (((START_ADDRESS_RESURS_IN_EEPROM             + (  2*sizeof(unsigned int                                     ) + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
+#define START_ADDRESS_DST_EEPROM                        (((START_ADDRESS_ENERGY_IN_EEPROM             + (SIZE_ENERGY                                                   + 1)) & (unsigned int)(~(SIZE_PAGE_EEPROM - 1))) + SIZE_PAGE_EEPROM)
 
 #define COMPARISON_WRITING_SETTINGS_BIT                                 0
 #define COMPARISON_WRITING_SETTINGS                                     (1 << COMPARISON_WRITING_SETTINGS_BIT)
@@ -45,6 +46,8 @@
 #define COMPARISON_WRITING_RESURS                                       (1 << COMPARISON_WRITING_RESURS_BIT)
 #define COMPARISON_WRITING_ENERGY_BIT                                   8
 #define COMPARISON_WRITING_ENERGY                                       (1 << COMPARISON_WRITING_ENERGY_BIT)
+#define COMPARISON_WRITING_DST_BIT                                      9
+#define COMPARISON_WRITING_DST                                          (1 << COMPARISON_WRITING_DST_BIT)
 
 #define TASK_EEPROM_WRITE_PREPARATION_BIT                               0      
 
@@ -101,6 +104,12 @@
 
 #define TASK_START_READ_ENERGY_EEPROM_BIT                               35      
 #define TASK_READING_ENERGY_EEPROM_BIT                                  36
+
+#define TASK_START_WRITE_DST_EEPROM_BIT                                 37      
+#define TASK_WRITING_DST_EEPROM_BIT                                     38      
+
+#define TASK_START_READ_DST_EEPROM_BIT                                  39      
+#define TASK_READING_DST_EEPROM_BIT                                     40      
 
 #define STATE_SETTINGS_EEPROM_EMPTY_BIT                                 0      
 #define STATE_SETTINGS_EEPROM_EMPTY                                     (1<<STATE_SETTINGS_EEPROM_EMPTY_BIT)      
@@ -168,6 +177,13 @@
 #define STATE_ENERGY_EEPROM_FAIL                                        (1<<STATE_ENERGY_EEPROM_FAIL_BIT)      
 #define STATE_ENERGY_EEPROM_GOOD_BIT                                    28      
 #define STATE_ENERGY_EEPROM_GOOD                                        (1<<STATE_ENERGY_EEPROM_GOOD_BIT) 
+
+#define STATE_DST_EEPROM_EMPTY_BIT                                      29      
+#define STATE_DST_EEPROM_EMPTY                                          (1<<STATE_ENERGY_EEPROM_EMPTY_BIT)      
+#define STATE_DST_EEPROM_FAIL_BIT                                       30      
+#define STATE_DST_EEPROM_FAIL                                           (1<<STATE_ENERGY_EEPROM_FAIL_BIT)      
+#define STATE_DST_EEPROM_GOOD_BIT                                       31      
+#define STATE_DST_EEPROM_GOOD                                           (1<<STATE_ENERGY_EEPROM_GOOD_BIT) 
 
 /*EEPROM*/
 #define OPCODE_WRITE                                          0x02

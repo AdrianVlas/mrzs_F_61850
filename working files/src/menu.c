@@ -905,7 +905,7 @@ void main_manu_function(void)
               if(current_ekran.edition == 0)
               {
                 //Копіюємо текчий масив часу у масив для редагування
-                for(unsigned int i=0; i < 7; i++) time_edit[i] = time[i]; /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                for(unsigned int i=0; i < 7; i++) time_edit[i] = time_bcd[i]; /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
                 calibration_edit = calibration;
                   
                 //Підготовка до режиму редагування - включаємо мигаючий курсор
@@ -930,7 +930,7 @@ void main_manu_function(void)
                 unsigned int found_changes = 0, i = 0;
                 while ((i < 7) && (found_changes == 0))
                 {
-                  if (time[i] != time_edit[i]) found_changes = 1; /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                  if (time_bcd[i] != time_edit[i]) found_changes = 1; /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
                   i++;
                 }
                 if (found_changes == 0)
@@ -952,9 +952,10 @@ void main_manu_function(void)
                 {
                   //Дані достовірні
                   //Копіюємо масив для редагування часу у текчий масив
-                  for(unsigned int i=0; i < 7; i++) time[i] = time_edit[i];/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                  for(unsigned int i=0; i < 7; i++) time_bcd[i] = time_edit[i];/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
                   calibration = calibration_edit;/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
                   current_ekran.edition = 0;
+                  if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) isdst_prev = -1;
                   //Виставляємо повідомлення запису часу в RTC
                   //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
                   _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
@@ -3360,7 +3361,7 @@ void main_manu_function(void)
                 else if(current_ekran.index_position == INDEX_ML_CHSRS485_TIMEOUT)
                 {
                   //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення інфрпмації по time-out наступного символу
+                  //Переходимо на меню відображення інфрпмації по time_bcd-out наступного символу
                   current_ekran.current_level = EKRAN_VIEW_TIMEOUT_RS485;
                 }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
@@ -6408,7 +6409,7 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_VIEW_TIMEOUT_INTERFACE) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_VIEW_TIMEOUT_RS485] = current_ekran.index_position;
-              //Формуємо екран інформації по time-out наступного символу
+              //Формуємо екран інформації по time_bcd-out наступного символу
               make_ekran_timeout_interface();
             }
 #if (MODYFIKACIA_VERSII_PZ >= 10)            
@@ -13701,7 +13702,7 @@ void main_manu_function(void)
                   //Редагування числа
                   edition_settings.time_out_1_RS485 = edit_setpoint(1, edition_settings.time_out_1_RS485, 1, COL_TIMEOUT_INTERFACE_COMMA, COL_TIMEOUT_INTERFACE_END, 1);
                 }
-                //Формуємо екран інформації по time-out наступного символу
+                //Формуємо екран інформації по time_bcd-out наступного символу
                 make_ekran_timeout_interface();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -15222,7 +15223,7 @@ void main_manu_function(void)
                   //Редагування числа
                   edition_settings.time_out_1_RS485 = edit_setpoint(0, edition_settings.time_out_1_RS485, 1, COL_TIMEOUT_INTERFACE_COMMA, COL_TIMEOUT_INTERFACE_END, 1);
                 }
-                //Формуємо екран інформації по time-out наступного символу
+                //Формуємо екран інформації по time_bcd-out наступного символу
                 make_ekran_timeout_interface();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -17141,7 +17142,7 @@ void main_manu_function(void)
                 if ((current_ekran.position_cursor_x < COL_TIMEOUT_INTERFACE_BEGIN) ||
                     (current_ekran.position_cursor_x > COL_TIMEOUT_INTERFACE_END))
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_BEGIN;
-                //Формуємо екран інформації по time-out наступного символу
+                //Формуємо екран інформації по time_bcd-out наступного символу
                 make_ekran_timeout_interface();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -19059,7 +19060,7 @@ void main_manu_function(void)
                 if ((current_ekran.position_cursor_x < COL_TIMEOUT_INTERFACE_BEGIN) ||
                     (current_ekran.position_cursor_x > COL_TIMEOUT_INTERFACE_END))
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_END;
-                //Формуємо екран інформації по time-out наступного символу
+                //Формуємо екран інформації по time_bcd-out наступного символу
                 make_ekran_timeout_interface();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)

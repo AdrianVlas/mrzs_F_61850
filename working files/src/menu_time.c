@@ -35,28 +35,28 @@ void make_ekran_time(void)
   if (current_ekran.edition == 0)
   {
     //День
-    name_string[ROW_Y_][COL_DY1] = (time[4] >>  4) + 0x30;
-    name_string[ROW_Y_][COL_DY2] = (time[4] & 0xf) + 0x30;
+    name_string[ROW_Y_][COL_DY1] = (time_bcd[4] >>  4) + 0x30;
+    name_string[ROW_Y_][COL_DY2] = (time_bcd[4] & 0xf) + 0x30;
 
     //Місяць
-    name_string[ROW_Y_][COL_MY1] = (time[5] >>  4) + 0x30;
-    name_string[ROW_Y_][COL_MY2] = (time[5] & 0xf) + 0x30;
+    name_string[ROW_Y_][COL_MY1] = (time_bcd[5] >>  4) + 0x30;
+    name_string[ROW_Y_][COL_MY2] = (time_bcd[5] & 0xf) + 0x30;
 
     //Рік
-    name_string[ROW_Y_][COL_SY1] = (time[6] >>  4) + 0x30;
-    name_string[ROW_Y_][COL_SY2] = (time[6] & 0xf) + 0x30;
+    name_string[ROW_Y_][COL_SY1] = (time_bcd[6] >>  4) + 0x30;
+    name_string[ROW_Y_][COL_SY2] = (time_bcd[6] & 0xf) + 0x30;
 
     //Година
-    name_string[ROW_T_][COL_HT1] = (time[3] >>  4) + 0x30;
-    name_string[ROW_T_][COL_HT2] = (time[3] & 0xf) + 0x30;
+    name_string[ROW_T_][COL_HT1] = (time_bcd[3] >>  4) + 0x30;
+    name_string[ROW_T_][COL_HT2] = (time_bcd[3] & 0xf) + 0x30;
 
     //Хвилини
-    name_string[ROW_T_][COL_MT1] = (time[2] >>  4) + 0x30;
-    name_string[ROW_T_][COL_MT2] = (time[2] & 0xf) + 0x30;
+    name_string[ROW_T_][COL_MT1] = (time_bcd[2] >>  4) + 0x30;
+    name_string[ROW_T_][COL_MT2] = (time_bcd[2] & 0xf) + 0x30;
 
     //Секунди
-    name_string[ROW_T_][COL_ST1] = (time[1] >>  4) + 0x30;
-    name_string[ROW_T_][COL_ST2] = (time[1] & 0xf) + 0x30;
+    name_string[ROW_T_][COL_ST1] = (time_bcd[1] >>  4) + 0x30;
+    name_string[ROW_T_][COL_ST2] = (time_bcd[1] & 0xf) + 0x30;
 
     //Калібровка
     if((calibration & (1<<5)) == 0) name_string[ROW_K_][COL_SK1] = '-';

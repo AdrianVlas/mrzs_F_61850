@@ -3326,7 +3326,7 @@ void fix_change_settings(unsigned int setting_rang, unsigned int source)
     //Записуємо час останніх змін
     unsigned char *label_to_time_array;
     if (copying_time == 2) label_to_time_array = time_copy;
-    else label_to_time_array = time;
+    else label_to_time_array = time_bcd;
 
     unsigned char *point_to_target;
   
@@ -3374,7 +3374,7 @@ unsigned int set_new_settings_from_interface(unsigned int source)
   //Вказівник на системний час
   unsigned char *label_to_time_array;
   if (copying_time == 2) label_to_time_array = time_copy;
-  else label_to_time_array = time;
+  else label_to_time_array = time_bcd;
   
   if ((type_of_settings_changed & (1 << DEFAULT_SETTINGS_SET_BIT)) != 0)
   {
@@ -3779,7 +3779,7 @@ void changing_diagnostyka_state(void)
           //Вже відбулося перше зчитуванння часу - тобто системний час у нас є
           unsigned char *label_to_time_array;
           if (copying_time == 2) label_to_time_array = time_copy;
-          else label_to_time_array = time;
+          else label_to_time_array = time_bcd;
           for(unsigned int i = 0; i < 7; i++) buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = *(label_to_time_array + i);
         }
         else

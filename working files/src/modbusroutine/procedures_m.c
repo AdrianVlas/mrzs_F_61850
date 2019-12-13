@@ -1284,7 +1284,7 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
               //Конвертуємо формат BCD у int
               for (unsigned int i = 0; i < 7; i++)
                 {
-                  unsigned int val = header_ar_tmp->time[i], val_l, val_m;
+                  unsigned int val = header_ar_tmp->time_bcd[i], val_l, val_m;
                   val_l = val & 0xf;
                   val_m = (val >> 4) & 0xf;
                   time_avar_analog[i] = (unsigned char)(val_m*10 + val_l);

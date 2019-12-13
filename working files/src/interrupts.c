@@ -924,7 +924,7 @@ void TIM4_IRQHandler(void)
       //Запусаємо раз у секунду самоконтроль важливих змінних
       periodical_tasks_TEST_SETTINGS            = periodical_tasks_TEST_USTUVANNJA          = periodical_tasks_TEST_TRG_FUNC                = 
       periodical_tasks_TEST_INFO_REJESTRATOR_AR = periodical_tasks_TEST_INFO_REJESTRATOR_DR = periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR = 
-      periodical_tasks_TEST_RESURS              = periodical_tasks_TEST_FLASH_MEMORY        = periodical_tasks_CALCULATION_ANGLE            = true;
+      periodical_tasks_TEST_RESURS              = periodical_tasks_TEST_FLASH_MEMORY        = periodical_tasks_CALCULATION_ANGLE            =  true;
       
       number_inputs_for_fix_one_second = 0;
       
@@ -1097,7 +1097,7 @@ void TIM4_IRQHandler(void)
 
         for(unsigned int i = 0; i < 7; i++)
         {
-          unsigned int data_tmp = 10*((time[i] >> 4) & 0xf) + (time[i] & 0xf);
+          unsigned int data_tmp = 10*((time_bcd[i] >> 4) & 0xf) + (time_bcd[i] & 0xf);
         
           unsigned int porig;
           switch (i)
@@ -1121,10 +1121,10 @@ void TIM4_IRQHandler(void)
             }
           case 4:
             {
-              unsigned int month = 10*((time[5] >> 4) & 0xf) + (time[5] & 0xf);
+              unsigned int month = 10*((time_bcd[5] >> 4) & 0xf) + (time_bcd[5] & 0xf);
               if (month == 0x2/*BCD*/)
               {
-                unsigned int year = 10*((time[6] >> 4) & 0xf) + (time[6] & 0xf);
+                unsigned int year = 10*((time_bcd[6] >> 4) & 0xf) + (time_bcd[6] & 0xf);
                 if (
                     ((year & 0x3) == 0) && /*остача від ділення на 4*/
                     (
@@ -1176,7 +1176,7 @@ void TIM4_IRQHandler(void)
         
           unsigned int high = data_tmp / 10;
           unsigned int low = data_tmp - high*10;
-          time[i] = (high << 4) | low;
+          time_bcd[i] = (high << 4) | low;
         
           if (rozrjad == false) break;
         }
@@ -1185,7 +1185,7 @@ void TIM4_IRQHandler(void)
       copying_time = 1; 
       
       thousandths_time_copy = thousandths_time;
-      for(unsigned int i = 0; i < 7; i++) time_copy[i] = time[i];
+      for(unsigned int i = 0; i < 7; i++) time_copy[i] = time_bcd[i];
       
       copying_time = 0; 
     }

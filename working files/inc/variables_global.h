@@ -641,7 +641,7 @@ const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE
 
 
 unsigned int fixed_power_down_into_RTC/* = 0*/; 
-unsigned char time[7], thousandths_time; 
+unsigned char time_bcd[7], thousandths_time; 
 unsigned char time_copy[7], thousandths_time_copy; 
 unsigned char calibration;
 unsigned char calibration_copy;
@@ -652,6 +652,11 @@ unsigned int copy_register8_RTC;
 int etap_reset_of_bit = ETAP_CLEAR_OF_NONE;
 int etap_settings_test_frequency = -1;
 unsigned char temp_register_rtc[2];
+
+clock_t clk_count;
+time_t time_dat;
+int isdst_prev = -1;
+int isdst = -1;
 
 unsigned int changed_settings = CHANGED_ETAP_NONE; 
 unsigned char crc_settings;

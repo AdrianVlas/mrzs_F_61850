@@ -17,10 +17,12 @@
  */
 
 #include <time.h>
+extern clock_t clk_count;
+extern time_t time_dat;
 
 #pragma module_name = "?clock"
 
 clock_t (clock)(void)
 {
-  return (clock_t) -1;
+  return (clk_count);
 }

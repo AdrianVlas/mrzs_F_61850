@@ -465,7 +465,7 @@ typedef struct
 typedef struct
 {
   unsigned char label_start_record;
-  unsigned char time[7]; 
+  unsigned char time_bcd[7]; 
   unsigned int T0;
   unsigned int TCurrent;
   unsigned int TCurrent04;

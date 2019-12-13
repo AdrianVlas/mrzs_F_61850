@@ -405,37 +405,37 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
       unsigned int field;
       
       //День
-      field = header_ar_tmp.time[4];
+      field = header_ar_tmp.time_bcd[4];
       name_string[ROW_R_Y_][COL_DY1_R] = (field >>  4) + 0x30;
       name_string[ROW_R_Y_][COL_DY2_R] = (field & 0xf) + 0x30;
 
       //Місяць
-      field = header_ar_tmp.time[5];
+      field = header_ar_tmp.time_bcd[5];
       name_string[ROW_R_Y_][COL_MY1_R] = (field >>  4) + 0x30;
       name_string[ROW_R_Y_][COL_MY2_R] = (field & 0xf) + 0x30;
 
       //Рік
-      field = header_ar_tmp.time[6];
+      field = header_ar_tmp.time_bcd[6];
       name_string[ROW_R_Y_][COL_SY1_R] = (field >>  4) + 0x30;
       name_string[ROW_R_Y_][COL_SY2_R] = (field & 0xf) + 0x30;
 
       //Година
-      field = header_ar_tmp.time[3];
+      field = header_ar_tmp.time_bcd[3];
       name_string[ROW_R_T_][COL_HT1_R] = (field >>  4) + 0x30;
       name_string[ROW_R_T_][COL_HT2_R] = (field & 0xf) + 0x30;
 
       //Хвилини
-      field = header_ar_tmp.time[2];
+      field = header_ar_tmp.time_bcd[2];
       name_string[ROW_R_T_][COL_MT1_R] = (field >>  4) + 0x30;
       name_string[ROW_R_T_][COL_MT2_R] = (field & 0xf) + 0x30;
 
       //Секунди
-      field = header_ar_tmp.time[1];
+      field = header_ar_tmp.time_bcd[1];
       name_string[ROW_R_T_][COL_ST1_R] = (field >>  4) + 0x30;
       name_string[ROW_R_T_][COL_ST2_R] = (field & 0xf) + 0x30;
 
       //Соті секунд
-      field = header_ar_tmp.time[0];
+      field = header_ar_tmp.time_bcd[0];
       name_string[ROW_R_T_][COL_HST1_R] = (field >>  4) + 0x30;
       name_string[ROW_R_T_][COL_HST2_R] = (field & 0xf) + 0x30;
 

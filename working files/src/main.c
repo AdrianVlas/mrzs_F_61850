@@ -214,7 +214,9 @@ inline void periodical_operations(void)
     IEC_save_time = false;
     for(uint32_t i = 0; i < 7; i++) time_edit[i] = IEC_time_edit[i];
     calibration_edit = (copying_time == 2) ? calibration : calibration_copy;
+    if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) isdst_prev = -1;
     _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
+    _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
   }
   /*******************/
 #endif
@@ -457,6 +459,27 @@ int main(void)
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_Conf();            /* Configure and initialize SystemView  */
 #endif
+  
+//  {
+//      struct tm orig;
+//      orig.tm_sec = 0;
+//      orig.tm_min = 30;
+//      orig.tm_hour = 9;
+//      orig.tm_mday = 10;
+//      orig.tm_mon = 11;
+//      orig.tm_year = 119;
+//
+//      orig.tm_wday = 0;
+//      orig.tm_yday = 0;
+//      orig.tm_isdst = -1;
+//      time_dat = mktime (& orig);  //1575963000  
+//
+//      orig.tm_sec = 1;
+//      time_dat = mktime (& orig);   //1575963001
+//
+//      orig.tm_sec = 2;
+//      time_dat = mktime (& orig);   //1575963002 
+//  }
   
   //Виставляємо подію про зупинку пристрою у попередньому сеансі роботи, а час встановиться пізніше, RTC запм'ятовує час пропадання живлення
   _SET_BIT(set_diagnostyka, EVENT_STOP_SYSTEM_BIT);

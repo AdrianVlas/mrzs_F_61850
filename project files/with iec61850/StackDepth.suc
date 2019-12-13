@@ -38,6 +38,8 @@ call graph root [System]: SystemInit;
 
 exclude USBD_USR_DeviceConnected, USBD_USR_DeviceDisconnected;
 
+exclude _LocaleC_isupper;
+
 //Ігоря функції
 possible calls superPreWriteAction : 
 preACMDSmallWriteAction,

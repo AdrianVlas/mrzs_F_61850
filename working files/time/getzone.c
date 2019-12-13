@@ -81,29 +81,32 @@
 
 char const * __getzone()
 {
-  return ":";
+//  return ":GMT+2:GMT+3:0200";
+  return ":GMT+2:GMT+3:0200:(1996)040103-0:110104-0";
 }
 
-//__ATTRIBUTES char *_DstMalloc(size_t);
-//__ATTRIBUTES void _DstFree(char *);
-//
-//char *_DstMalloc(size_t s)
-//{
+__ATTRIBUTES char *_DstMalloc(size_t);
+__ATTRIBUTES void _DstFree(char *);
+
+char *_DstMalloc(size_t s)
+{
 //  return 0;
-//  #if 0
-//    static char buffert[8 * 4];
-//    return buffert;
-//  #endif
+  #if 1
+    (void)(s);
+    static char buffert[8 * 6];
+    return buffert;
+  #endif
 //  #if 0
 //    return (char *)malloc(s);
 //  #endif
-//}
-//void _DstFree(char *p)
-//{
-//  #if 0
-//    // Nothing here
-//  #endif
+}
+void _DstFree(char *p)
+{
+  #if 1
+    // Nothing here
+    (void)(p);
+  #endif
 //  #if 0
 //    free(p);
 //  #endif
-//}
+}

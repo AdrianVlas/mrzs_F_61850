@@ -23,6 +23,8 @@ void main_routines_for_spi1(void)
   static unsigned int number_block_resurs_write_to_eeprom;
   //Статична змінна, яка вказує який блок інформації по енергіях треба записувати у EEPROM
   static unsigned int number_block_energy_write_to_eeprom;
+  //Статична змінна, яка вказує який блок інформації по літньому часу у EEPROM
+  static unsigned int number_block_dst_write_to_eeprom;
   
   //Статичні змінні для контролю коректності запису
   static __SETTINGS current_settings_comp;
@@ -36,6 +38,7 @@ void main_routines_for_spi1(void)
   static __INFO_REJESTRATOR info_rejestrator_pr_err_comp;
   static unsigned int resurs_vymykacha_comp, resurs_vidkljuchennja_comp;
   static double energy_comp[MAX_NUMBER_INDEXES_ENERGY];
+  static unsigned char dst_comp;
   
   if (state_execution_spi1 < 0)
   {
@@ -286,6 +289,49 @@ void main_routines_for_spi1(void)
         _CLEAR_BIT(control_spi1_taskes, TASK_WRITING_TRG_FUNC_EEPROM_BIT);
       }
     }
+    else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_DST_EEPROM_BIT) !=0)
+    {
+      //Стоїть умова запису блоку у EEPROM стану літнього часу
+      int size_to_end;
+      unsigned int number, offset_from_start;
+      
+      //Визначаємо з якого місця треба почати записувати
+      offset_from_start = number_block_dst_write_to_eeprom*SIZE_PAGE_EEPROM;
+
+      //Кількість байт до кінця буферу 
+      size_to_end = (2*1) - offset_from_start; 
+      
+      if (size_to_end > 0)
+      {
+        TxBuffer_SPI_EDF[0] = OPCODE_WRITE;
+        TxBuffer_SPI_EDF[1] = ((START_ADDRESS_DST_EEPROM + offset_from_start) >> 8) & 0xff; //старша  адреса початку зберігання стану літнього часу у EEPROM
+        TxBuffer_SPI_EDF[2] = ((START_ADDRESS_DST_EEPROM + offset_from_start)     ) & 0xff; //молодша адреса початку зберігання стану літнього часу у EEPROM
+
+        if (size_to_end < SIZE_PAGE_EEPROM) number = size_to_end;
+        else number = SIZE_PAGE_EEPROM;
+
+        if (offset_from_start != 0)
+        {
+          //Переміщаємо дані для запису до опкоду з адресою початку запису для того, щоб сформувати цілий масив для передачі по DMA
+          for (unsigned int i = 0; i < number; i++)
+            TxBuffer_SPI_EDF[3 + i] = TxBuffer_SPI_EDF[3 + offset_from_start + i];
+        }
+        
+        //Запускаємо процес запису в EEPROM
+        start_exchange_via_spi(INDEX_EEPROM, (3 + number));
+      }
+      else
+      {
+        //Весь масив станулітнього часу вже записаний, тому скидаємо умову запису у EEPROM
+
+        //Виставляємо команду контрольного читання для перевідрки достовірності записаної інформації
+        comparison_writing |= COMPARISON_WRITING_DST;
+        _SET_BIT(control_spi1_taskes, TASK_START_READ_DST_EEPROM_BIT);
+
+        //Cкидаємо умову запису станів виходів-світлоіндикаторів у EEPROM
+        _CLEAR_BIT(control_spi1_taskes, TASK_WRITING_DST_EEPROM_BIT);
+      }
+    }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_AR_EEPROM_BIT) !=0)
     {
       //Стоїть умова запису блоку інформації аналогового реєстратора у EEPROM
@@ -508,6 +554,15 @@ void main_routines_for_spi1(void)
                                                                                           //дальше значення байт не має значення
       start_exchange_via_spi(INDEX_EEPROM, ((sizeof(fix_active_buttons) + sizeof(trigger_active_functions) + 1) + 3));
     }
+    else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_DST_EEPROM_BIT) !=0)
+    {
+      //Запускаємо процес читання  даних про літній час - формуємо буфер для передавання в EEPROM щоб прочитати  дані
+      TxBuffer_SPI_EDF[0] = OPCODE_READ;
+      TxBuffer_SPI_EDF[1] = (START_ADDRESS_DST_EEPROM >> 8) & 0xff; //старша  адреса початку зберігання даних про літній час у EEPROM
+      TxBuffer_SPI_EDF[2] = (START_ADDRESS_DST_EEPROM     ) & 0xff; //молодша адреса початку зберігання даних про літній час у EEPROM
+                                                                                              //дальше значення байт не має значення
+      start_exchange_via_spi(INDEX_EEPROM, ((2*1) + 3));
+    }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_INFO_REJESTRATOR_AR_EEPROM_BIT) !=0)
     {
       //Запускаємо процес читання інформації по дискретному реєстратору - формуємо буфер для передавання в EEPROM щоб прочитати  дані по аналоговому реєстратору
@@ -553,16 +608,17 @@ void main_routines_for_spi1(void)
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_AR_EEPROM_BIT    ) !=0) || 
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_DR_EEPROM_BIT    ) !=0) || 
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) !=0) || 
-             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT                 ) !=0)
+             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT                 ) !=0) ||
+             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_DST_EEPROM_BIT                    ) !=0)
             )
     {
       //Запускаємо процес читання
 
-      //Читаємо регістр статусу томущо не можна читати EEPROM поки іде процес запису
+      //Читаємо регістр статусу тому, що не можна читати EEPROM поки іде процес запису
       TxBuffer_SPI_EDF[0] = OPCODE_RDSR;
       TxBuffer_SPI_EDF[1] = 0; //Будь-який байт для того, щоб здійснити читання регістру статусу;
 
-      //Запускаємо процес запису в RTC
+      //Запускаємо процес запису в EEPROM
       start_exchange_via_spi(INDEX_EEPROM, 2);
     }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT) !=0)
@@ -935,6 +991,25 @@ void main_routines_for_spi1(void)
       //Виставляємо перший блок лічильників ресурсу запису у EEPROM
       number_block_resurs_write_to_eeprom = 0;
     }
+    else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT) !=0)
+    {
+      //Стоїть умова початку нового запису у EEPROM стану літнього часу
+      
+      //Скидаємо біт запуску нового запису і виставляємо біт запису блоків у EEPROM з бітом встановлення дозволу на запис
+      _SET_BIT(control_spi1_taskes, TASK_EEPROM_WRITE_PREPARATION_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_WRITING_DST_EEPROM_BIT);
+      _CLEAR_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
+
+      //Готуємо буфер для запису
+      unsigned char temp_value = ((unsigned int)isdst_prev) & 0xff;
+      unsigned char temp_value_inv = (~(unsigned int)temp_value) & 0xff;
+      dst_comp = temp_value;
+      TxBuffer_SPI_EDF[3 +  0] = temp_value;
+      TxBuffer_SPI_EDF[3 +  1] = temp_value_inv;
+
+      //Виставляємо перший блок стану виходів-світлоіндикаторів запису у EEPROM
+      number_block_dst_write_to_eeprom = 0;
+    }
     /*************************************************/
   }
   else if (state_execution_spi1 == 1)
@@ -1078,7 +1153,8 @@ void main_routines_for_spi1(void)
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_AR_EEPROM_BIT    ) !=0) ||
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_DR_EEPROM_BIT    ) !=0) ||
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) !=0) || 
-             (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_RESURS_EEPROM_BIT                 ) !=0)
+             (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_RESURS_EEPROM_BIT                 ) !=0) ||
+             (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_DST_EEPROM_BIT                    ) !=0) 
             )
     {
       //Стоїть умова запису блоку у EEPROM
@@ -1128,6 +1204,11 @@ void main_routines_for_spi1(void)
         //Виставляємо наступний блок інформації по лічильниках запису у EEPROM
         number_block_resurs_write_to_eeprom++;
       }         
+      else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_DST_EEPROM_BIT) != 0)
+      {
+        //Виставляємо що стан літнього часу вже записано - треба тільки коректно завершити цю операцію з витримкою часу на саму процедуру запису у мікросхемі
+        number_block_dst_write_to_eeprom++;
+      }
       else
       {
         //Сюди програма не мала б теоретично ніколи заходити
@@ -1147,7 +1228,8 @@ void main_routines_for_spi1(void)
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_AR_EEPROM_BIT    ) !=0) ||  
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_DR_EEPROM_BIT    ) !=0) ||  
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) !=0) ||  
-            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT                 ) !=0) 
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT                 ) !=0) ||
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_DST_EEPROM_BIT                    ) !=0)
            )  
     {
       //Прочитано ресістр статусу
@@ -1208,6 +1290,12 @@ void main_routines_for_spi1(void)
           //Скидаємо біт запуску читання інформації і виставляємо біт процесу читання інформації 
           _SET_BIT(control_spi1_taskes, TASK_READING_RESURS_EEPROM_BIT);
           _CLEAR_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT);
+        }
+        else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_DST_EEPROM_BIT) !=0)
+        {
+          //Скидаємо біт запуску читання стану літнього часу і виставляємо біт процесу читання літнього часу
+          _SET_BIT(control_spi1_taskes, TASK_READING_DST_EEPROM_BIT);
+          _CLEAR_BIT(control_spi1_taskes, TASK_START_READ_DST_EEPROM_BIT);
         }
         else
         {
@@ -2016,6 +2104,103 @@ void main_routines_for_spi1(void)
       comparison_writing &= (unsigned int)(~COMPARISON_WRITING_TRG_FUNC);
       //Скидаємо повідомлення про читання даних
       _CLEAR_BIT(control_spi1_taskes, TASK_READING_TRG_FUNC_EEPROM_BIT);
+    }
+    else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_DST_EEPROM_BIT) !=0)
+    {
+      //Аналізуємо прочитані дані
+      //Спочатку аналізуємо, чи прояитаний блок є пустим, чи вже попередньо записаним
+      unsigned int empty_block = 1, i = 0; 
+      unsigned char dst_tmp;
+      
+      while ((empty_block != 0) && ( i < (2*1)))
+      {
+        if (RxBuffer_SPI_EDF[3 + i] != 0xff) empty_block = 0;
+        i++;
+      }
+      
+      if(empty_block == 0)
+      {
+        //Помічаємо, що блок не є пустим
+        state_spi1_task &= (unsigned int)(~STATE_DST_EEPROM_EMPTY);
+        
+        //Скидаємо повідомлення у слові діагностики, що блок пустий
+        _SET_BIT(clear_diagnostyka, ERROR_DST_EEPROM_EMPTY_BIT);
+        
+        //Перевіряємо достовірність стану тригерних індикаторів
+        dst_tmp = RxBuffer_SPI_EDF[3 + 0];
+        unsigned char value_1 = RxBuffer_SPI_EDF[3 + 1];
+        if (dst_tmp == (unsigned char)(~(unsigned int)value_1) )
+        {
+          //Контролдь зійшовся
+
+          if ((comparison_writing & COMPARISON_WRITING_DST) == 0)
+          {
+            //Виконувалося зчитування стану літнього часу
+
+            //Відновлюємо інформацію по літнього часу
+            isdst_prev = (signed char)dst_tmp;
+          }
+          
+          state_spi1_task &= (unsigned int)(~STATE_DST_EEPROM_FAIL);
+          state_spi1_task |= STATE_DST_EEPROM_GOOD;
+          
+          //Скидаємо повідомлення у слові діагностики
+          _SET_BIT(clear_diagnostyka, ERROR_DST_EEPROM_BIT);
+        }
+        else
+        {
+          //Контролдь не зійшовся
+          state_spi1_task &= (unsigned int)(~STATE_DST_EEPROM_GOOD);
+          state_spi1_task |= STATE_DST_EEPROM_FAIL;
+          
+          //Виствляємо повідомлення у слові діагностики
+          _SET_BIT(set_diagnostyka, ERROR_DST_EEPROM_BIT);
+        }
+      }
+      else
+      {
+        //Помічаємо, що прочитаний блок є пустим
+        state_spi1_task &= (unsigned int)(
+                                         ~(
+                                           STATE_DST_EEPROM_FAIL |
+                                           STATE_DST_EEPROM_GOOD
+                                          )
+                                         );
+        state_spi1_task |= STATE_DST_EEPROM_EMPTY;
+        
+        //Виствляємо повідомлення у слові діагностики
+        _SET_BIT(clear_diagnostyka, ERROR_DST_EEPROM_BIT);
+        _SET_BIT(set_diagnostyka, ERROR_DST_EEPROM_EMPTY_BIT);
+      }
+
+      if ((comparison_writing & COMPARISON_WRITING_DST) != 0)
+      {
+        //Виконувалося контроль достовірності записаної інформації у EEPROM з записуваною
+        
+        if((state_spi1_task & STATE_DST_EEPROM_GOOD) == STATE_DST_EEPROM_GOOD)
+        {
+          //Контроль запису здійснюємо тільки тоді, коли блок читання не є пустим і помилок не зафіксовано
+          if (dst_comp == dst_tmp )
+          {
+            //Контроль порівнняння пройшов успішно
+
+            //Скидаємо повідомлення у слові діагностики
+            _SET_BIT(clear_diagnostyka, ERROR_DST_EEPROM_COMPARISON_BIT);
+          }
+          else
+          {
+            //Контроль порівнняння зафіксував розбіжності між записаною і записуваною інформацією
+
+            //Виствляємо повідомлення у слові діагностики
+            _SET_BIT(set_diagnostyka, ERROR_DST_EEPROM_COMPARISON_BIT);
+          }
+        }
+      }
+
+      //Знімаємо можливу сигналізацію, що виконувалося порівнняння
+      comparison_writing &= (unsigned int)(~COMPARISON_WRITING_DST);
+      //Скидаємо повідомлення про читання даних
+      _CLEAR_BIT(control_spi1_taskes, TASK_READING_DST_EEPROM_BIT);
     }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_INFO_REJESTRATOR_AR_EEPROM_BIT) !=0)
     {
@@ -2954,7 +3139,8 @@ void main_routines_for_spi1(void)
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_AR_EEPROM_BIT    ) != 0) || 
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_DR_EEPROM_BIT    ) != 0) || 
              (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) != 0) ||
-             (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_RESURS_EEPROM_BIT                 ) != 0)
+             (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_RESURS_EEPROM_BIT                 ) != 0) ||
+             (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_DST_EEPROM_BIT                    ) != 0)
             )
     {
       //Стоїть умова запису блоку у EEPROM
@@ -3031,6 +3217,14 @@ void main_routines_for_spi1(void)
       _SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT);
       _CLEAR_BIT(control_spi1_taskes, TASK_READING_RESURS_EEPROM_BIT);
     } 
+    else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_DST_EEPROM_BIT) !=0)
+    {
+      //Стоїть умова читання блоку у EEPROM стану літнього часу
+      
+      //Повторно запускаємо процес читання
+      _SET_BIT(control_spi1_taskes, TASK_START_READ_DST_EEPROM_BIT);
+      _CLEAR_BIT(control_spi1_taskes, TASK_READING_DST_EEPROM_BIT);
+    }
     else
     {
       //У всіх інакших випадках нічого не робимо

@@ -255,7 +255,7 @@ extern const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODY
 extern const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
 
 extern unsigned int fixed_power_down_into_RTC; 
-extern unsigned char time[7], thousandths_time; 
+extern unsigned char time_bcd[7], thousandths_time; 
 extern unsigned char time_copy[7], thousandths_time_copy; 
 extern unsigned char calibration;
 extern unsigned char calibration_copy;
@@ -266,6 +266,11 @@ extern unsigned int copy_register8_RTC;
 extern int etap_reset_of_bit;
 extern int etap_settings_test_frequency;
 extern unsigned char temp_register_rtc[2];
+
+extern clock_t clk_count;
+extern time_t time_dat;
+extern int isdst_prev;
+extern int isdst;
 
 extern unsigned int changed_settings; 
 extern unsigned char crc_settings;

@@ -13,6 +13,8 @@
  ********************/
 
 #include <time64.h>
+extern clock_t clk_count;
+extern time_t time_dat;
 
 #pragma module_name = "?time"
 
@@ -21,8 +23,8 @@
   {
     if (t)
     {
-      *t = (__time64_t) -1;
+      *t = (time_dat);
     }
-    return (__time64_t) -1;
+    return time_dat;
   }
 #endif

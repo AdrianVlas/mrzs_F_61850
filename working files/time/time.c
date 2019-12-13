@@ -13,6 +13,8 @@
  ********************/
 
 #include <time32.h>
+extern clock_t clk_count;
+extern time_t time_dat;
 
 #pragma module_name = "?time"
 
@@ -20,7 +22,7 @@ __time32_t __time32(__time32_t *t)
 {
   if (t)
   {
-    *t = (__time32_t) -1;
+    *t = time_dat;
   }
-  return (__time32_t) -1;
+  return time_dat;
 }
