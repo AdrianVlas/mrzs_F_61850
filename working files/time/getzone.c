@@ -78,11 +78,71 @@
  ********************/
 
 #include <LowLevelIOInterface.h>
+#include "header.h"
 
 char const * __getzone()
 {
-//  return ":GMT+2:GMT+3:0200";
-  return ":GMT+2:GMT+3:0200:(1996)040103-0:110104-0";
+  int time_zone = current_settings.time_zone;
+  
+  size_t i = 0;
+  char * p_getzone_string = getzone_string[bank_getzone];
+  bank_getzone = (bank_getzone + 1) & 0x1;
+
+  p_getzone_string[i++] = ':';
+  
+  p_getzone_string[i++] = 'G';
+  p_getzone_string[i++] = 'M';
+  p_getzone_string[i++] = 'T';
+  p_getzone_string[i++] = (time_zone < 0 ) ? '-' : '+';
+  int abs_time_zone = abs(time_zone);
+  if (abs_time_zone <= 9) p_getzone_string[i++] = abs_time_zone + 0x30;
+  else
+  {
+    p_getzone_string[i++] = abs_time_zone/10 + 0x30;
+    p_getzone_string[i++] = abs_time_zone%10 + 0x30;
+  }
+
+  p_getzone_string[i++] = ':';
+  
+  p_getzone_string[i++] = 'G';
+  p_getzone_string[i++] = 'M';
+  p_getzone_string[i++] = 'T';
+  p_getzone_string[i++] = ((time_zone + 1) < 0 ) ? '-' : '+';
+  abs_time_zone = abs(time_zone + 1);
+  if (abs_time_zone <= 9) p_getzone_string[i++] = abs_time_zone + 0x30;
+  else
+  {
+    p_getzone_string[i++] = abs_time_zone/10 + 0x30;
+    p_getzone_string[i++] = abs_time_zone%10 + 0x30;
+  }
+
+  p_getzone_string[i++] = ':';
+  abs_time_zone = abs(time_zone);
+  if (time_zone < 0 ) p_getzone_string[i++] = '-';
+  p_getzone_string[i++] = abs_time_zone/10 + 0x30;
+  p_getzone_string[i++] = abs_time_zone%10 + 0x30;
+  p_getzone_string[i++] = '0';
+  p_getzone_string[i++] = '0';
+
+  if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
+  {
+    p_getzone_string[i++] = ':';
+  
+    char const dst_rul_ukr[] = "(1996)040103-0:110104-0";
+    for (size_t j = 0; dst_rul_ukr[j] != '\0'; ++j) p_getzone_string[i++] = dst_rul_ukr[j];
+  }
+
+  p_getzone_string[i++] = '\0';
+  return p_getzone_string;
+  
+//  if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
+//  {
+//    return ":GMT+2:GMT+3:0200:(1996)040103-0:110104-0";
+//  }
+//  else
+//  {
+//    return ":GMT+2:GMT+3:0200";
+//  }
 }
 
 __ATTRIBUTES char *_DstMalloc(size_t);
@@ -93,7 +153,7 @@ char *_DstMalloc(size_t s)
 //  return 0;
   #if 1
     (void)(s);
-    static char buffert[8 * 6];
+    static char buffert[50];
     return buffert;
   #endif
 //  #if 0

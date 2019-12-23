@@ -205,20 +205,6 @@ inline void periodical_operations(void)
   else if ((Canal1 == true) && (Canal2 == true)) Canal2 = false;
   Canal1 = false;
   /*******************/
-
-  /*******************/
-  //Якщо прийшла команда на синхронызацыю часу з Ethernet, то запускаємо її в дію
-  /*******************/
-  if (IEC_save_time != 0)
-  {
-    IEC_save_time = false;
-    for(uint32_t i = 0; i < 7; i++) time_edit[i] = IEC_time_edit[i];
-    calibration_edit = (copying_time == 2) ? calibration : calibration_copy;
-    if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) isdst_prev = -1;
-    _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
-    _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-  }
-  /*******************/
 #endif
   
   /*******************/
@@ -461,24 +447,73 @@ int main(void)
 #endif
   
 //  {
+//      FSMC_SRAM_Init();
+//      current_settings.time_zone = 2;
+//      current_settings.dst = MASKA_FOR_BIT(N_BIT_TZ_DST);
+//      
 //      struct tm orig;
-//      orig.tm_sec = 0;
-//      orig.tm_min = 30;
-//      orig.tm_hour = 9;
-//      orig.tm_mday = 10;
-//      orig.tm_mon = 11;
-//      orig.tm_year = 119;
 //
+//      //GMT+2 DST
+//      //Experiment 1: ":GMT+2:GMT_3:0200(1996)040103-0:110103-0"
+//      //Experiment 2: ":GMT+2:GMT_3:0200(1996)040103-0:110104-0"
+//
+//      
+//      //2020-10-25 03:58:00 1603587480 isdst = true
+//      orig.tm_sec = 0;
+//      orig.tm_min = 58;
+//      orig.tm_hour = 3;
+//      orig.tm_mday = 25;
+//      orig.tm_mon = 9;
+//      orig.tm_year = 120;
 //      orig.tm_wday = 0;
 //      orig.tm_yday = 0;
 //      orig.tm_isdst = -1;
-//      time_dat = mktime (& orig);  //1575963000  
+//      time_dat = mktime (& orig);
+//      //result 1:1603591080 isdst = false Wrong
+//      //result 2:1603587480 isdst = true OK
+//      
+//      struct tm *p;
+//      time_dat = 1603587480; //2020-10-25 3:58:00 isdst = true 
+//      p = localtime(&time_dat);
+//      //result 1: 2020-10-25 3:58:00 isdst = true; OK
+//      //result 2: 2020-10-25 3:58:00 isdst = true; OK
+//      
+//      time_dat = 1603587599; //2020-10-25 3:59:59 isdst = true 
+//      p = localtime(&time_dat); 
+//      //result 1: 2020-10-25 3:59:59 isdst = true; OK
+//      //result 2: 2020-10-25 3:59:59 isdst = true; OK
 //
-//      orig.tm_sec = 1;
-//      time_dat = mktime (& orig);   //1575963001
+//      time_dat = 1603587600;//2020-10-25 4:00:00 isdst = true -> 3:00:00 isdst = false
+//      p = localtime(&time_dat);
+//      //result 1: 2020-10-25 3:00:00 isdst = false; OK
+//      //result 2: 2020-10-25 4:00:00 isdst = true; Wrong
 //
-//      orig.tm_sec = 2;
-//      time_dat = mktime (& orig);   //1575963002 
+//      time_dat = 1603591199;//2020-10-25 3:59:59 isdst = false 
+//      p = localtime(&time_dat); 
+//      //result 1: 2020-10-25 3:59:59 isdst = false; OK
+//      //result 2: 2020-10-25 4:59:59 isdst = true; Wrong
+//
+//      time_dat = 1603591200;//2020-10-25 4:00:00 isdst = false 
+//      p = localtime(&time_dat); 
+//      //result 1: 2020-10-25 4:00:00 isdst = false; OK
+//      //result 2: 2020-10-25 4:00:00 isdst = false; OK
+//
+//      time_dat = 1603591201;//2020-10-25 4:00:01 isdst = false 
+//      p = localtime(&time_dat); 
+//      //result 1: 2020-10-25 4:00:01 isdst = false; OK
+//      //result 2: 2020-10-25 4:00:01 isdst = false; OK
+//
+//      time_dat = 1603594799;//2020-10-25 4:59:59 isdst = false 
+//      p = localtime(&time_dat); 
+//      //result 1: 2020-10-25 4:59:59 isdst = false; OK
+//      //result 2: 2020-10-25 4:59:59 isdst = false; OK
+//
+//      time_dat = 1603594800;//2020-10-25 5:00:00 isdst = false 
+//      p = localtime(&time_dat); 
+//      //result 1: 2020-10-25 5:00:00 isdst = false; OK
+//      //result 2: 2020-10-25 5:00:00 isdst = false; OK
+//
+//      time_dat = 1603594801;//2020-10-25 5:00:01 isdst = false 
 //  }
   
   //Виставляємо подію про зупинку пристрою у попередньому сеансі роботи, а час встановиться пізніше, RTC запм'ятовує час пропадання живлення

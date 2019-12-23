@@ -3324,27 +3324,27 @@ void fix_change_settings(unsigned int setting_rang, unsigned int source)
   if (setting_rang < 2)
   {
     //Записуємо час останніх змін
-    unsigned char *label_to_time_array;
-    if (copying_time == 2) label_to_time_array = time_copy;
-    else label_to_time_array = time_bcd;
+    time_t time_dat_tmp;
+    if (save_time_dat == 2) time_dat_tmp = time_dat_save;
+    else
+    { 
+      copying_time_dat = 1;
+      time_dat_tmp = time_dat_copy;
+      copying_time_dat = 0;
+    }
 
-    unsigned char *point_to_target;
-  
     if (/*(source != 4) && */(source != 0))
     {
-      if (setting_rang == 0) point_to_target = (&current_settings)->time_setpoints;
-      else point_to_target = (&current_settings)->time_ranguvannja;
-    
-      for (unsigned int i = 0; i < 7; i++) *(point_to_target + i) = *(label_to_time_array + i);
-      *(point_to_target + 7) = (unsigned char)(source & 0xff);
+      time_t *time_target = (setting_rang == 0) ? &current_settings.time_setpoints : &current_settings.time_ranguvannja;
+      unsigned char *source_target = (setting_rang == 0) ? &current_settings.source_setpoints : &current_settings.source_ranguvannja;
+      
+      *time_target = time_dat_tmp;
+      *source_target = (unsigned char)(source & 0xff);
     }
     else
     {
-      for (unsigned int i = 0; i < 7; i++) 
-      {
-        current_settings.time_ranguvannja[i] = current_settings.time_setpoints[i] = *(label_to_time_array + i);
-      }
-      current_settings.time_ranguvannja[7] = current_settings.time_setpoints[7] = (unsigned char)(source & 0xff);
+      current_settings.time_setpoints = current_settings.time_ranguvannja = time_dat_tmp;
+      current_settings.source_setpoints = current_settings.source_ranguvannja = (unsigned char)(source & 0xff);
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
       //Помічаємо, що треба передати налаштування у комунікаційну плату
@@ -3371,27 +3371,32 @@ unsigned int set_new_settings_from_interface(unsigned int source)
 {
   unsigned int error = 0;
   
-  //Вказівник на системний час
-  unsigned char *label_to_time_array;
-  if (copying_time == 2) label_to_time_array = time_copy;
-  else label_to_time_array = time_bcd;
+  //Системний час
+  time_t time_dat_tmp;
+  if (save_time_dat == 2) time_dat_tmp = time_dat_save;
+  else
+  { 
+    copying_time_dat = 1;
+    time_dat_tmp = time_dat_copy;
+    copying_time_dat = 0;
+  }
   
   if ((type_of_settings_changed & (1 << DEFAULT_SETTINGS_SET_BIT)) != 0)
   {
-    for (unsigned int i = 0; i < 7; i++) current_settings_interfaces.time_setpoints[i] = current_settings_interfaces.time_ranguvannja[i] = *(label_to_time_array + i);
-    current_settings_interfaces.time_setpoints[7] = current_settings_interfaces.time_ranguvannja[7] = 0;
+    current_settings.time_setpoints = current_settings.time_ranguvannja = time_dat_tmp;
+    current_settings.source_setpoints = current_settings.source_ranguvannja = 0;
   }
   
   if ((type_of_settings_changed & (1 << SETTINGS_DATA_CHANGED_BIT)) != 0)
   {
-    for (unsigned int i = 0; i < 7; i++) current_settings_interfaces.time_setpoints[i] = *(label_to_time_array + i);
-    current_settings_interfaces.time_setpoints[7] = source;
+    current_settings.time_setpoints = time_dat_tmp;
+    current_settings.source_setpoints = source;
   }
   
   if ((type_of_settings_changed & (1 << RANGUVANNJA_DATA_CHANGED_BIT)) != 0)
   {
-    for (unsigned int i = 0; i < 7; i++) current_settings_interfaces.time_ranguvannja[i] = *(label_to_time_array + i);
-    current_settings_interfaces.time_ranguvannja[7] = source;
+    current_settings.time_ranguvannja = time_dat_tmp;
+    current_settings.source_ranguvannja = source;
   }
   
   unsigned int reconfiguration_RS_485 = 0, reconfiguration_RS_485_with_reset_usart = 0;
@@ -3777,18 +3782,21 @@ void changing_diagnostyka_state(void)
           )
         {
           //Вже відбулося перше зчитуванння часу - тобто системний час у нас є
-          unsigned char *label_to_time_array;
-          if (copying_time == 2) label_to_time_array = time_copy;
-          else label_to_time_array = time_bcd;
-          for(unsigned int i = 0; i < 7; i++) buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = *(label_to_time_array + i);
+          copying_time_dat = 1;
+          time_t time_dat_tmp = time_dat_copy;
+          int time_ms_tmp = time_ms_copy;
+          copying_time_dat = 0;
+          for(size_t i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = *((unsigned char*)(&time_dat_tmp) + i);
+          for(size_t i = 0; i < sizeof(int); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
         }
         else
         {
           //Ще не відбулося перше зчитуванння часу - тому покищо ці поля записуємо числом 0xff, а потім, коли системний час зчитається, то ми це поле обновимо
-          for(unsigned int i = 0; i < 7; i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = 0xff;
+          for(size_t i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = 0;
+          for(size_t i = 0; i < sizeof(int); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + sizeof(time_t) + i] = 0;
         }
 
-        buffer_pr_err_records[index_into_buffer_pr_err + 8] = number_changes & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 13] = number_changes & 0xff;
       
         for (size_t i = 0; i < N_DIAGN_BYTES; i ++)
         {
@@ -3796,10 +3804,10 @@ void changing_diagnostyka_state(void)
           unsigned int shift = 8*(i & 0x3);
           
           //Записуємо попередній стан діагностики
-          buffer_pr_err_records[index_into_buffer_pr_err + 9 + i] =  (diagnostyka_before[n_word] >> shift) & 0xff;
+          buffer_pr_err_records[index_into_buffer_pr_err + 14 + i] =  (diagnostyka_before[n_word] >> shift) & 0xff;
 
           //Записуємо теперішній стан діагностики
-          buffer_pr_err_records[index_into_buffer_pr_err + 9 + N_DIAGN_BYTES + i] =  (diagnostyka_now[n_word] >> shift) & 0xff;
+          buffer_pr_err_records[index_into_buffer_pr_err + 14 + N_DIAGN_BYTES + i] =  (diagnostyka_now[n_word] >> shift) & 0xff;
         }
         
         /*

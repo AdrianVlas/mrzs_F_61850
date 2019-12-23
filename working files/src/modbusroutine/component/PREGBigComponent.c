@@ -164,71 +164,100 @@ int getPREGBigModbusRegister(int adrReg)
             }
           else
             {
+              time_t time_dat_tmp;
+              int time_ms_tmp;
+              for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&time_dat_tmp) + i) =  point_to_buffer[1 + i];
+              for(size_t i = 0; i < sizeof(int); i++) *((unsigned char*)(&time_ms_tmp) + i) = point_to_buffer[1 + sizeof(time_t) + i];
+              
+              struct tm *p = localtime(&time_dat_tmp);
               switch (offset-3)//temp_address)
                 {
                 case 0:
                 {
-                  return (((*(point_to_buffer + 7))  << 8) | (*(point_to_buffer + 6))) &0xFFFF;
+                  int field1 = p->tm_year - 100;
+                  int field2 = p->tm_mon + 1;
+                  return ((INT_TO_BCD(field1) << 8) | INT_TO_BCD(field2)) &0xFFFF;
                 }
                 case 1:
                 {
-                  return ((*(point_to_buffer + 5))  << 8) &0xFFFF;
+                  int field1 = p->tm_mday;
+                  return (INT_TO_BCD(field1) << 8) &0xFFFF;
                 }
                 case 2:
                 {
-                  return (((*(point_to_buffer + 4))  << 8) | (*(point_to_buffer + 3))) &0xFFFF;
+                  int field1 = p->tm_hour;
+                  int field2 = p->tm_min;
+                  return ((INT_TO_BCD(field1) << 8) | INT_TO_BCD(field2)) &0xFFFF;
                 }
                 case 3:
                 {
-                  return (((*(point_to_buffer + 2))  << 8) | (*(point_to_buffer + 1))) &0xFFFF;
+                  int field1 = p->tm_sec;
+                  int field2 = time_ms_tmp / 10;
+                  return ((INT_TO_BCD(field1) << 8) | INT_TO_BCD(field2)) &0xFFFF;
                 }
                 case 4:
                 {
-                  return (((*(point_to_buffer + 10))  << 8) | (*(point_to_buffer + 9))) &0xFFFF;
+                  return (((*(point_to_buffer + 15))  << 8) | (*(point_to_buffer + 14))) &0xFFFF;
                 }
                 case 5:
                 {
-                  return (((*(point_to_buffer + 12))  << 8) | (*(point_to_buffer + 11))) &0xFFFF;
+                  return (((*(point_to_buffer + 17))  << 8) | (*(point_to_buffer + 16))) &0xFFFF;
                 }
                 case 6:
                 {
-                  return (((*(point_to_buffer + 14))  << 8) | (*(point_to_buffer + 13))) &0xFFFF;
+                  return (((*(point_to_buffer + 19))  << 8) | (*(point_to_buffer + 18))) &0xFFFF;
                 }
                 case 7:
                 {
-                  return (((*(point_to_buffer + 16))  << 8) | (*(point_to_buffer + 15))) &0xFFFF;
+                  return (((*(point_to_buffer + 21))  << 8) | (*(point_to_buffer + 20))) &0xFFFF;
                 }
                 case 8:
                 {
-                  return (((*(point_to_buffer + 18))  << 8) | (*(point_to_buffer + 17))) &0xFFFF;
+                  return (((*(point_to_buffer + 23))  << 8) | (*(point_to_buffer + 22))) &0xFFFF;
                 }
                 case 9:
                 {
-                  return (((*(point_to_buffer + 20))  << 8) | (*(point_to_buffer + 19))) &0xFFFF;
+                  return (((*(point_to_buffer + 25))  << 8) | (*(point_to_buffer + 24))) &0xFFFF;
                 }
                 case 10:
                 {
-                  return (((*(point_to_buffer + 22))  << 8) | (*(point_to_buffer + 21))) &0xFFFF;
+                  return (((*(point_to_buffer + 27))  << 8) | (*(point_to_buffer + 26))) &0xFFFF;
                 }
                 case 11:
                 {
-                  return (((*(point_to_buffer + 24))  << 8) | (*(point_to_buffer + 23))) &0xFFFF;
+                  return (((*(point_to_buffer + 29))  << 8) | (*(point_to_buffer + 28))) &0xFFFF;
                 }
                 case 12:
                 {
-                  return (((*(point_to_buffer + 26))  << 8) | (*(point_to_buffer + 25))) &0xFFFF;
+                  return (((*(point_to_buffer + 31))  << 8) | (*(point_to_buffer + 30))) &0xFFFF;
                 }
                 case 13:
                 {
-                  return (((*(point_to_buffer + 28))  << 8) | (*(point_to_buffer + 27))) &0xFFFF;
+                  return (((*(point_to_buffer + 33))  << 8) | (*(point_to_buffer + 32))) &0xFFFF;
                 }
                 case 14:
                 {
-                  return (((*(point_to_buffer + 30))  << 8) | (*(point_to_buffer + 29))) &0xFFFF;
+                  return (((*(point_to_buffer + 35))  << 8) | (*(point_to_buffer + 34))) &0xFFFF;
                 }
                 case 15:
                 {
-                  return (((*(point_to_buffer + 32))  << 8) | (*(point_to_buffer + 31))) &0xFFFF;
+                  return (((*(point_to_buffer + 37))  << 8) | (*(point_to_buffer + 36))) &0xFFFF;
+                }
+                case 16:
+                {
+                  return (((*(point_to_buffer + 39))  << 8) | (*(point_to_buffer + 38))) &0xFFFF;
+                }
+                case 17:
+                {
+                  return (((*(point_to_buffer + 41))  << 8) | (*(point_to_buffer + 40))) &0xFFFF;
+                }
+                case 18:
+                {
+                  return (((*(point_to_buffer + 43))  << 8) | (*(point_to_buffer + 42))) &0xFFFF;
+                }
+                case 19:
+                {
+                  return (((*(point_to_buffer + 45))  << 8) | (*(point_to_buffer + 44))) &0xFFFF;
                 }
                 }//switch
 

@@ -400,21 +400,26 @@ typedef struct
   
 #endif
   
-  unsigned char time_setpoints[7+1];                     //Час останніх змін уставок-витримок-управління
-                                                         //Останній байт масиву сигналізує мітку звідки зміни були проведені
-                                                            //0 - мінімальні параметри
+  time_t time_setpoints;                                    //Час останніх змін уставок-витримок-управління
+  unsigned char source_setpoints;                           //0 - мінімальні параметри
                                                             //1 - клавіатура
                                                             //2 - USB
                                                             //3 - RS-485
                                                             //4 - Ethernet
   
-  unsigned char time_ranguvannja[7+1];                    //Час останніх змін ранжування
-                                                            //0 - мінімальні параметри
+  time_t time_ranguvannja;                                  //Час останніх змін ранжування
+  unsigned char source_ranguvannja;                         //0 - мінімальні параметри
                                                             //1 - клавіатура
                                                             //2 - USB
                                                             //3 - RS-485
                                                             //4 - Ethernet
 } __SETTINGS;
+
+typedef struct _info_vymk
+{
+  time_t time_dat;
+  int time_ms;
+} __info_vymk;
 
 typedef struct
 {
@@ -465,7 +470,8 @@ typedef struct
 typedef struct
 {
   unsigned char label_start_record;
-  unsigned char time_bcd[7]; 
+  time_t time_dat; 
+  int time_ms;
   unsigned int T0;
   unsigned int TCurrent;
   unsigned int TCurrent04;

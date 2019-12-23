@@ -5828,9 +5828,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
       /*****************************************************
       Формуванні інформації про причину відключення для меню
       *****************************************************/
-      unsigned char *label_to_time_array;
-      if (copying_time == 2) label_to_time_array = time_copy;
-      else label_to_time_array = time_bcd;
+      __info_vymk info_vymk_tmp = {time_dat, time_ms};
           
       //МТЗ1
       if(
@@ -5839,7 +5837,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ1);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ1][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ1] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ1);
       }
@@ -5851,7 +5849,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ2);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ2][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ2] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ2);
       }
@@ -5863,7 +5861,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ3);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ3][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ3] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ3);
       }
@@ -5875,7 +5873,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ4);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ4][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ4] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ4);
       }
@@ -5887,7 +5885,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ04_1);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ04_1][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ04_1] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ04_1);
       }
@@ -5899,7 +5897,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ04_2);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ04_2][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ04_2] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ04_2);
       }
@@ -5911,7 +5909,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ZDZ);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZDZ][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZDZ] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_ZDZ);
       }
@@ -5923,7 +5921,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_3I0);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_3I0][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_3I0] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_3I0);
       }
@@ -5935,7 +5933,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_3U0);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_3U0][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_3U0] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_3U0);
       }
@@ -5947,7 +5945,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_NZZ);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_NZZ][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_NZZ] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_NZZ);
       }
@@ -5959,7 +5957,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_TZNP1);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP1][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP1] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_TZNP1);
       }
@@ -5971,7 +5969,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_TZNP2);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP2][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP2] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_TZNP2);
       }
@@ -5983,7 +5981,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_TZNP3);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP3][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP3] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_TZNP3);
       }
@@ -5995,7 +5993,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ACHR_CHAPV_VID_DV);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV_VID_DV][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV_VID_DV] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV_VID_DV);
       }
@@ -6007,7 +6005,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ACHR_CHAPV1);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV1][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV1] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV1);
       }
@@ -6019,7 +6017,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ACHR_CHAPV2);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV2][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV2] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV2);
       }
@@ -6031,7 +6029,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UROV1);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UROV1][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UROV1] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_UROV1);
       }
@@ -6043,7 +6041,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UROV2);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UROV2][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UROV2] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_UROV2);
       }
@@ -6055,7 +6053,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ZOP);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZOP][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZOP] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_ZOP);
       }
@@ -6067,7 +6065,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UMIN1);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMIN1][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMIN1] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_UMIN1);
       }
@@ -6079,7 +6077,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UMIN2);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMIN2][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMIN2] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_UMIN2);
       }
@@ -6091,7 +6089,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UMAX1);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMAX1][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMAX1] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_UMAX1);
       }
@@ -6103,7 +6101,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UMAX2);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMAX2][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMAX2] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_UMAX2);
       }
@@ -6117,7 +6115,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
           )   
         {
           _SET_BIT(info_vidkluchennja_vymykacha, (VYMKNENNJA_VID_UP1 + n_UP));
-          for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UP1 + n_UP][i] = *(label_to_time_array + i);
+          info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UP1 + n_UP] = info_vymk_tmp;
 
           _CLEAR_BIT(temp_array_of_outputs, (RANG_UP1 + 3*n_UP));
         }
@@ -6130,7 +6128,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ZOVNISHNIKH_ZAKHYSTIV);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZOVNISHNIKH_ZAKHYSTIV][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZOVNISHNIKH_ZAKHYSTIV] = info_vymk_tmp;
 
         _CLEAR_BIT(temp_array_of_outputs, RANG_OTKL_VID_ZOVN_ZAHYSTIV);
       }
@@ -6163,7 +6161,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_INSHYKH_SYGNALIV);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_INSHYKH_SYGNALIV][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_INSHYKH_SYGNALIV] = info_vymk_tmp;
       }
       /*****************************************************/
     }
@@ -9110,10 +9108,8 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
           //Записуємо мітку початку запису
           header_ar.label_start_record = LABEL_START_RECORD_AR;
           //Записуємо час початку запису
-          unsigned char *label_to_time_array;
-          if (copying_time == 2) label_to_time_array = time_copy;
-          else label_to_time_array = time_bcd;
-          for(unsigned int i = 0; i < 7; i++) header_ar.time_bcd[i] = *(label_to_time_array + i);
+          header_ar.time_dat = time_dat;
+          header_ar.time_ms = time_ms;
           //Коефіцієнт трансформації T0
           header_ar.T0 = current_settings_prt.T0;
           //Коефіцієнт трансформації TT
@@ -10692,8 +10688,8 @@ do{
     }
     if (not_null)
     {
-      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
-//       #warning "No Avar Error"
+//      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+       #warning "No Avar Error"
     }
     else
     {
@@ -11838,15 +11834,58 @@ void TIM2_IRQHandler(void)
   
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
-    /***
+    /*************************************
     Управління чсом у UNIX-форматі
-    ***/
-    if ( ++clk_count < 1000) 
+    *************************************/
+    ++clk_count;
+
+    if ( ++time_ms >= 1000) 
     {
-      clk_count = 0;
-//      time_dat++;
+      time_ms = 0;
+      time_dat++;
     }
-    /***/
+      
+    if (save_time_dat)
+    {
+      //Процес запису нового часу
+      if (save_time_dat == 2)
+      {
+        time_ms = time_ms_save;
+        time_dat = time_dat_save;
+        
+        save_time_dat = 1;
+      }
+      
+      if (copying_time == 1) copying_time = 0;
+    }
+    else 
+    {
+      //Перевірка чи не потрібно забрати час з RTC
+      if (copying_time == 1)
+      {
+        int diff_ms = time_ms - time_ms_RTC;
+        time_t diff_s = time_dat - time_dat_RTC;
+        if (diff_ms < 0) 
+        {
+          diff_ms += 1000;
+          --diff_s;
+        }
+        if (llabs(diff_s*1000 + diff_ms) > 2000)
+        {
+          time_ms = time_ms_RTC;
+          time_dat = time_dat_RTC;
+        }
+        copying_time = 0;
+      }
+    }
+    
+    
+    if (!copying_time_dat)
+    {
+      time_ms_copy = time_ms;
+      time_dat_copy = time_dat;
+    }
+    /*************************************/
 
     /***********************************************************************************************/
     //Переривання відбулося вік каналу 1, який генерує переривання кожні 1 мс, для опраціьовування таймерів і систем захистів

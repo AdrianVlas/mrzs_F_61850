@@ -14,15 +14,20 @@
 
 #include <time32.h>
 extern clock_t clk_count;
-extern time_t time_dat;
+extern time_t time_dat_copy;
+extern unsigned int copying_time_dat;
 
 #pragma module_name = "?time"
 
 __time32_t __time32(__time32_t *t)
 {
+  copying_time_dat = 1;
+  __time32_t time_tmp = time_dat_copy;
+  copying_time_dat = 0;
+  
   if (t)
   {
-    *t = time_dat;
+    *t = time_tmp;
   }
-  return time_dat;
+  return time_tmp;
 }

@@ -193,9 +193,18 @@ int getPKVBigModbusRegister(int adrReg)
   }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 
-  unsigned char *label_to_time_array;
-  if (copying_time == 2) label_to_time_array = time_copy;
-  else label_to_time_array = time_bcd;
+  time_t time_dat_tmp;
+  int time_ms_tmp;
+  if (save_time_dat == 2) time_dat_tmp = time_dat_save;
+  else
+  { 
+    copying_time_dat = 1;
+    time_dat_tmp = time_dat_copy;
+    time_ms_tmp = time_ms_copy;
+    copying_time_dat = 0;
+  }
+  struct tm *p;
+  p = localtime(&time_dat_tmp);
 
   uint32_t *editValue=NULL;
   PKVFunc000(adrReg-BEGIN_ADR_REGISTER, 0, &editValue);
@@ -243,25 +252,25 @@ int getPKVBigModbusRegister(int adrReg)
     return (edition_settings.name_of_cell[14]&0xFF) | ((edition_settings.name_of_cell[15]<<8)&0xFF00);
 
   case 31://Год
-    return  (*(label_to_time_array + 6)) &0xFF;
+    return  INT_TO_BCD(p->tm_year - 100) &0xFF;
 
   case 32://Месяц
-    return (*(label_to_time_array + 5)) &0xFF;
+    return INT_TO_BCD(p->tm_mon + 1) &0xFF;
 
   case 33://День
-    return (*(label_to_time_array + 4)) &0xFF;
+    return INT_TO_BCD(p->tm_mday) &0xFF;
 
   case 34://Час
-    return (*(label_to_time_array + 3)) &0xFF;
+    return INT_TO_BCD(p->tm_hour) &0xFF;
 
   case 35://Минуты
-    return (*(label_to_time_array + 2)) &0xFF;
+    return INT_TO_BCD(p->tm_min) &0xFF;
 
   case 36://Секунды
-    return (*(label_to_time_array + 1)) &0xFF;
+    return INT_TO_BCD(p->tm_sec) &0xFF;
 
   case 37://Сотые секунды
-    return (*(label_to_time_array + 0)) &0xFF;
+    return INT_TO_BCD(time_ms_tmp/10) &0xFF;
   }//switch
 
   if(editValue==NULL) return 0;
@@ -520,9 +529,31 @@ int postPKVBigWriteAction(void)
     if (check_data_for_data_time_menu() == 1)
     {
       //Дані достовірні
-      if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) isdst_prev = -1;
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
-      _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
+      time_ms_save = 0;
+                  
+      struct tm orig;
+      unsigned int tmp_reg = time_edit[1];
+      orig.tm_sec = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+      tmp_reg = time_edit[2];
+      orig.tm_min = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+      tmp_reg = time_edit[3];
+      orig.tm_hour = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+      tmp_reg = time_edit[4];
+      orig.tm_mday = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+      tmp_reg = time_edit[5];
+      orig.tm_mon = 10*(tmp_reg >> 4) + (tmp_reg & 0xf) - 1;
+
+      tmp_reg = time_edit[6];
+      orig.tm_year = 10*(tmp_reg >> 4) + (tmp_reg & 0xf) + 100;
+
+      orig.tm_wday = 0;
+      orig.tm_yday = 0;
+      orig.tm_isdst = -1;
+      time_dat_save = mktime (&orig);
+      save_time_dat = 2;
     }//if
     else return ERROR_VALID2;
   }

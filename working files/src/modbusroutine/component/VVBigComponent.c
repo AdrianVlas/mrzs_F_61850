@@ -75,6 +75,17 @@ int setVVBigModbusRegister(int adrReg, int dataReg)
     }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 
+  //валидация //Работа БО //Работа БB
+  if(adrReg>=(BEGIN_ADR_REGISTER+REGISTERS_VV))
+  {
+   //ранжир ВВ откл
+   if(dataReg==50532) return MARKER_ERRORPERIMETR;//Работа БО
+  }
+  else {
+   //ранжир ВВ вкл
+   if(dataReg==50533) return MARKER_ERRORPERIMETR;//Работа БВ
+  }
+
   superSetOperativMarker(vvbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 

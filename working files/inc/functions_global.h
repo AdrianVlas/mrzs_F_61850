@@ -338,6 +338,7 @@ void make_ekran_settings_synchro(void);
 extern void inputPacketParserUSB(void);
 extern void inputPacketParserRS485(void);
 
+extern int _ForceReloadDstRules (void);
 
 #endif
 

@@ -2007,11 +2007,8 @@ void min_settings(__SETTINGS *target_label)
     
 #endif  
 
-  for(unsigned int i = 0; i < (7+1); i++)
-  {
-    target_label->time_setpoints[i] = 0;
-    target_label->time_ranguvannja[i] = 0;
-  }
+  target_label->time_setpoints = target_label->time_ranguvannja = 0;
+  target_label->source_setpoints = target_label->source_ranguvannja = 0;
 }
 /**************************************/
 

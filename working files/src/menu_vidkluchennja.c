@@ -13,40 +13,95 @@ void make_ekran_vidkluchenja(void)
     for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
   }
   int32_t index_position_tmp = current_ekran.index_position;
-  unsigned char *point = info_vidkluchennja_vymykachatime[index_position_tmp];
+  __info_vymk info_vymk = info_vidkluchennja_vymykachatime[index_position_tmp];
 
-  //День
-  working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY1] = ((*(point + 4)) >>  4) + 0x30;
-  working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY2] = ((*(point + 4)) & 0xf) + 0x30;
-  working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY2 + 1] = '-';
+  time_t time_dat_tmp = info_vymk.time_dat;
+  if (time_dat_tmp != 0)
+  {
+    struct tm *p = localtime(&info_vymk.time_dat);
+    int field;
 
-  //Місяць
-  working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY1] = ((*(point + 5)) >>  4) + 0x30;
-  working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY2] = ((*(point + 5)) & 0xf) + 0x30;
-  working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY2 + 1] = '-';
+    //День
+    field = p->tm_mday;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY1] = (field / 10) + 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY2] = (field % 10) + 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY2 + 1] = '-';
 
-  //Рік
-  working_ekran[VIDKL_ROW_Y_][VIDKL_COL_SY1] = ((*(point + 6)) >>  4) + 0x30;
-  working_ekran[VIDKL_ROW_Y_][VIDKL_COL_SY2] = ((*(point + 6)) & 0xf) + 0x30;
+    //Місяць
+    field = p->tm_mon + 1;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY1] = (field / 10) + 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY2] = (field % 10) + 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY2 + 1] = '-';
 
-  //Година
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT1] = ((*(point + 3)) >>  4) + 0x30;
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT2] = ((*(point + 3)) & 0xf) + 0x30;
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT2 + 1] = ':';
+    //Рік
+    field = p->tm_year - 100;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_SY1] = (field / 10) + 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_SY2] = (field % 10) + 0x30;
 
-  //Хвилини
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT1] = ((*(point + 2)) >>  4) + 0x30;
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT2] = ((*(point + 2)) & 0xf) + 0x30;
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT2 + 1] = ':';
+    //Година
+    field = p->tm_hour;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT1] = (field / 10) + 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT2] = (field % 10) + 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT2 + 1] = ':';
 
-  //Секунди
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST1] = ((*(point + 1)) >>  4) + 0x30;
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST2] = ((*(point + 1)) & 0xf) + 0x30;
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST2 + 1] = '.';
+    //Хвилини
+    field = p->tm_min;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT1] = (field / 10) + 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT2] = (field % 10) + 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT2 + 1] = ':';
 
-  //Соті секунд
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST1] = ((*(point + 0)) >>  4) + 0x30;
-  working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST2] = ((*(point + 0)) & 0xf) + 0x30;
+    //Секунди
+    field = p->tm_sec;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST1] = (field / 10) + 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST2] = (field % 10) + 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST2 + 1] = '.';
+
+    //Тисячні секунд
+    field = info_vymk.time_ms;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST1] = (field / 100) + 0x30;
+    field %= 100;
+      
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST2] = (field / 10) + 0x30;
+    field %= 10;
+
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST3] = field + 0x30;
+  }
+  else
+  {
+    //День
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY1] = 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY2] = 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_DY2 + 1] = '-';
+
+    //Місяць
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY1] = 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY2] = 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_MY2 + 1] = '-';
+
+    //Рік
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_SY1] = 0x30;
+    working_ekran[VIDKL_ROW_Y_][VIDKL_COL_SY2] = 0x30;
+
+    //Година
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT1] = 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT2] = 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HT2 + 1] = ':';
+
+    //Хвилини
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT1] = 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT2] = 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_MT2 + 1] = ':';
+
+    //Секунди
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST1] = 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST2] = 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_ST2 + 1] = '.';
+
+    //Тисячні секунд
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST1] = 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST2] = 0x30;
+    working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST3] = 0x30;
+  }
   
   const unsigned char information_1[MAX_NAMBER_LANGUAGE][VYMKNENNJA_VID_MAX_NUMBER - NUMBER_UP + 1][7] = 
   {
@@ -55,18 +110,19 @@ void make_ekran_vidkluchenja(void)
     {"   OCP1", "   OCP2", "   OCP3", "   OCP4", "OCP04 1", "OCP04 2", "   ЗДЗ", "    3I0", "    3U0", "    НЗЗ", "  ТЗНП1", "  ТЗНП2", "  ТЗНП3", " АЧР f.", "   АЧР1", "   АЧР2", "  CBFP1", "  CBFP2", "   NPSP", "  Umin1", "  Umin2", "  Umax1", "  Umax2", "    УЗx", "    ОВЗ", "  Other"},
     {"   МТЗ1", "   МТЗ2", "   МТЗ3", "   МТЗ4", "МТЗ04 1", "МТЗ04 2", "   ЗДЗ", "    3I0", "    3U0", "    НЗЗ", "  ТЗНП1", "  ТЗНП2", "  ТЗНП3", " АЧР от", "   АЧР1", "   АЧР2", "  УРОВ1", "  УРОВ2", "    ЗОП", " ЗНмин1", " ЗНмин2", "ЗНмакc1", "ЗНмакc2", "    УЗx", "    ОВЗ", " Другие"}
   };
+  unsigned char const *point;
   if ((index_position_tmp < VYMKNENNJA_VID_UP1) || (index_position_tmp >= (VYMKNENNJA_VID_UP1 + NUMBER_UP)))
   {
     if (index_position_tmp < VYMKNENNJA_VID_UP1)
-      point = (unsigned char *)information_1[index_language][index_position_tmp];
+      point = information_1[index_language][index_position_tmp];
     else
-      point = (unsigned char *)information_1[index_language][index_position_tmp - NUMBER_UP + 1];
+      point = information_1[index_language][index_position_tmp - NUMBER_UP + 1];
 
     for (unsigned int i = 0; i < 7; i++) working_ekran[VIDKL_ROW_Y_][VIDKL_COL_SY2 + 2 + i] = *(point + i);
   }
   else
   {
-    point = (unsigned char *)information_1[index_language][VYMKNENNJA_VID_UP1];
+    point = information_1[index_language][VYMKNENNJA_VID_UP1];
 
     for (unsigned int i = 0; i < 7; i++) 
     {
@@ -75,21 +131,21 @@ void make_ekran_vidkluchenja(void)
   }
     
   
-  const unsigned char information_2[MAX_NAMBER_LANGUAGE][VYMKNENNJA_VID_MAX_NUMBER - NUMBER_UP + 1][4] = 
+  const unsigned char information_2[MAX_NAMBER_LANGUAGE][VYMKNENNJA_VID_MAX_NUMBER - NUMBER_UP + 1][3] = 
   {
-    {"    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "  ДВ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    "},
-    {"    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "  ДВ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    "},
-    {"    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "  DI", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    "},
-    {"    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "  ДВ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    "},
+    {"   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", " ДВ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   "},
+    {"   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", " ДВ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   "},
+    {"   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", " DI", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   "},
+    {"   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", " ДВ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   "}
   };
 
   if (index_position_tmp < VYMKNENNJA_VID_UP1)
-    point = (unsigned char *)information_2[index_language][index_position_tmp];
+    point = information_2[index_language][index_position_tmp];
   else if (index_position_tmp >= (VYMKNENNJA_VID_UP1 + NUMBER_UP))
-    point = (unsigned char *)information_2[index_language][index_position_tmp - NUMBER_UP + 1];
+    point = information_2[index_language][index_position_tmp - NUMBER_UP + 1];
   else
-    point = (unsigned char *)information_2[index_language][VYMKNENNJA_VID_UP1];
-  for (unsigned int i = 0; i < 4; i++) working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST2 + 2 + i] = *(point + i);
+    point = information_2[index_language][VYMKNENNJA_VID_UP1];
+  for (unsigned int i = 0; i < 3; i++) working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST2 + 2 + i] = *(point + i);
 
   //Курсор по горизонталі відображається на першій позиції
   current_ekran.position_cursor_x = 0;

@@ -476,7 +476,14 @@ unsigned int start_read_buffer_via_I2C(uint32_t device_id, uint32_t ReadAddr, ui
 void main_routines_for_i2c(void)
 {
   static unsigned int temp_value_for_rtc;
+
   
+  if (save_time_dat == 1)
+  {
+    _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
+    _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
+  }
+
   if (driver_i2c.state_execution < 0)
   {
     /*************************************************/
@@ -547,33 +554,58 @@ void main_routines_for_i2c(void)
       }
       else if (rez == 0) _SET_BIT(clear_diagnostyka, ERROR_START_VIA_I2C_BIT);
     }
+    else if(_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT) !=0)
+    {
+      //Зараз треба зачекати з початною опрерацією, тому просто виходимо з цієї підпрограми
+    }
     else if (_CHECK_SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT) !=0)
     {
-      unsigned int rez;
-
-      copying_time = 2; //Помічаємо, що зараз  ще також обновляємо масив часу
+      copying_time_dat = 1;
+      time_t time_dat_tmp = time_dat_copy + 1; //+1 щоб спробувати записати, коли буде перехід на наступну секунду, або вже як вийде...
+      copying_time_dat = 0;
+      struct tm *p;
+      p = localtime(&time_dat_tmp);
+      
+      
       //Запускаємо процес запису часу в RTC
-      read_write_i2c_buffer[0] = time_bcd[0] = 0;
-      read_write_i2c_buffer[1] = time_bcd[1] = time_edit[1] & 0x7F;
-      read_write_i2c_buffer[2] = time_bcd[2] = time_edit[2] & 0x7F;
-      read_write_i2c_buffer[3] = time_bcd[3] = time_edit[3] & 0x3F;
-      read_write_i2c_buffer[4] = 7;
-      read_write_i2c_buffer[5] = time_bcd[4] = time_edit[4] & 0x3F;
-      read_write_i2c_buffer[6] = time_bcd[5] = time_edit[5] & 0x1F;
-      read_write_i2c_buffer[7] = time_bcd[6] = time_edit[6] & 0xFF;
+      read_write_i2c_buffer[0] = 0;
       
-      calibration = calibration_edit & 0x3f;
-      read_write_i2c_buffer[8] = calibration | (copy_register8_RTC & 0xC0);
+      int tmp_reg = p->tm_sec;
+      read_write_i2c_buffer[1] = INT_TO_BCD(tmp_reg) & 0x7F;
 
-      copying_time = 1;
-      
-      //Робимо копію масиву часу для того, щоб коли основний масив буде обновлятися можна було іншим модулям взяти попереднє, але достовірне значення часу і дати з цього масиву
-      for(unsigned int i = 0; i < 7; i++) time_copy[i] = time_bcd[i];
-      calibration_copy = calibration;
+      tmp_reg = p->tm_min;
+      read_write_i2c_buffer[2] = INT_TO_BCD(tmp_reg) & 0x7F;
 
-      copying_time = 0; //Помічаємо, що обновлення масив часу завершене
+      tmp_reg = p->tm_hour;
+      read_write_i2c_buffer[3] = INT_TO_BCD(tmp_reg) & 0x3F;
+
+      tmp_reg = p->tm_wday + 1;
+      read_write_i2c_buffer[4] = tmp_reg & 0x7;
+
+      tmp_reg = p->tm_mday;
+      read_write_i2c_buffer[5] = INT_TO_BCD(tmp_reg) & 0x3F;
+
+      tmp_reg = p->tm_mon + 1;
+      read_write_i2c_buffer[6] = INT_TO_BCD(tmp_reg) & 0x1F;
+
+      tmp_reg = p->tm_year - 100;
+      read_write_i2c_buffer[7] = INT_TO_BCD(tmp_reg) & 0xFF;
       
-      rez = start_write_buffer_via_I2C(RTC_ADDRESS, START_ADDRESS_TIME_REGISTERS, read_write_i2c_buffer, 9);
+      read_write_i2c_buffer[8] = (calibration & 0x3f) | (copy_register8_RTC & 0xC0);
+      
+      //Визначаємо час, коли десяті і стоі секунди мали  бубти рівними 0
+      time_t time_dat_tmp1;
+      do
+      {
+        copying_time_dat = 1;
+        time_dat_tmp1 = time_dat_copy;
+        copying_time_dat = 0;
+        
+        watchdog_routine();
+      }
+      while (time_dat_tmp1 < time_dat_tmp);
+      
+      unsigned int rez = start_write_buffer_via_I2C(RTC_ADDRESS, START_ADDRESS_TIME_REGISTERS, read_write_i2c_buffer, 9);
       
       //Аналізуємо успішність запуску нового запису
       if (rez > 1)
@@ -590,6 +622,17 @@ void main_routines_for_i2c(void)
         //При успішнопу запуску читання скидаємо біт запуску читання RTC і виставляємо біт процесу читання RTC
         _SET_BIT(control_i2c_taskes, TASK_WRITING_RTC_BIT);
         _CLEAR_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
+        
+        if (save_time_dat)
+        {
+          if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
+          {
+            long long hour_RTC = time_dat_RTC / 3600;
+            long long hour_tmp = time_dat_tmp / 3600;
+            if (hour_RTC != hour_tmp)  isdst_prev = -1;
+          }
+          save_time_dat = 0;
+        }
       }
     }
     else if (_CHECK_SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT) !=0)
@@ -688,7 +731,6 @@ void main_routines_for_i2c(void)
       if ((read_write_i2c_buffer[0xF] &  (1<< 2)) == 0) _SET_BIT(clear_diagnostyka, RTC_OSCILLATOR_FAIL_BIT);
       
       //Обновлюємо час
-      copying_time = 2; //Помічаємо, що зараз обновляємо масив часу
       time_bcd[0] = read_write_i2c_buffer[0] & 0xff;
       time_bcd[1] = read_write_i2c_buffer[1] & 0x7f;
       time_bcd[2] = read_write_i2c_buffer[2] & 0x7f;
@@ -745,53 +787,37 @@ void main_routines_for_i2c(void)
         }
         orig.tm_isdst = tm_isdst_lock;
       }
-      else orig.tm_isdst = 0;
+      else 
+      {
+        tm_isdst_lock = -1;
+        hour_lock = -1;
+        
+        orig.tm_isdst = 0;
+      }
       
       time_t time_dat_tmp = mktime (&orig);    
       
-      if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
+      if(isdst_prev < 0) 
       {
-        if(isdst_prev < 0) 
-        {
-          isdst_prev = orig.tm_isdst;
-          _SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
-        }
-        else if (isdst_prev != orig.tm_isdst)
-        {
-          int tmp_reg_int = (orig.tm_isdst > 0) ? orig.tm_hour : --orig.tm_hour;
-          time_bcd[3] = ((tmp_reg_int / 10) << 4) | (tmp_reg_int % 10);
-          time_dat_tmp = mktime (& orig);
+        isdst_prev = orig.tm_isdst;
+        _SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
+      }
+      else if (isdst_prev != orig.tm_isdst)
+      {
+        int tmp_reg_int = (orig.tm_isdst > 0) ? orig.tm_hour : --orig.tm_hour;
+        time_bcd[3] = ((tmp_reg_int / 10) << 4) | (tmp_reg_int % 10);
+        time_dat_tmp = mktime (& orig);
 
-          for(size_t i = 0; i < 7; i++) time_edit[i] = time_bcd[i];
-          calibration_edit = calibration;
-          _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
-          _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
+        _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
+        _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
         
-          hour_lock = orig.tm_hour;
-          tm_isdst_lock = isdst_prev = orig.tm_isdst;
-          _SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
-        }
+        hour_lock = orig.tm_hour;
+        tm_isdst_lock = isdst_prev = orig.tm_isdst;
+        _SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
       }
-      else
-      {
-        if(isdst_prev != 0) 
-        {
-          isdst_prev = 0;
-          _SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
-        }
-      }
+      tmp_reg = time_bcd[0];
+      int time_ms_tmp = 100*(tmp_reg >> 4) + 10*(tmp_reg & 0xf);
 
-      time_dat = time_dat_tmp;
-      isdst = orig.tm_isdst;
-
-      copying_time = 1;
-      
-      //Робимо копію масиву часу для того, щоб коли основний масив буде обновлятися можна було іншим модулям взяти попереднє, але достовірне значення часу і дати з цього масиву
-      for(unsigned int i = 0; i < 7; i++) time_copy[i] = time_bcd[i];
-      calibration_copy = calibration;
-
-      copying_time = 0; //Помічаємо, що обновлення масив часу завершене
-      
       if(
          (_CHECK_SET_BIT(    diagnostyka, EVENT_START_SYSTEM_BIT       ) != 0) ||
          (_CHECK_SET_BIT(set_diagnostyka, EVENT_START_SYSTEM_BIT       ) != 0) ||
@@ -812,7 +838,8 @@ void main_routines_for_i2c(void)
             //Це перестраховка, бо завжди у цьому місці має бути як мінімум два записи в буфері FIFO подія про зупинку роботи приладу і старт/рестарт системи, а запис у мікросхему dataFlash ще  є забороненй
             unsigned int local_point_for_time = tail_fifo_buffer_pr_err_records*SIZE_ONE_RECORD_PR_ERR + 1 ; //Індекс першого числа часу у вже першому записі (перший запис відподає за подію - зупинку роботи приладу) (tail_fifo_buffer_pr_err_records має дорівнювати 0 у ціьому місці програми)
             //Час, який зараз прочитаний з RTC до моменту скидання біту HT вказує на час до пропадання живлення з годинника RTC
-            for(unsigned int i = 0; i < 7; i++)  buffer_pr_err_records[local_point_for_time + i] = time_bcd[i]; /*використовувати time_copy і calibration_copy не треба бо іде обробка одної функції main_routines_for_i2c*/ 
+            for(unsigned int i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[local_point_for_time + i] = *((unsigned char*)(&time_dat_tmp) + i);
+            for(unsigned int i = 0; i < sizeof(int); i++)  buffer_pr_err_records[local_point_for_time + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
           }
         }
         else
@@ -858,6 +885,11 @@ void main_routines_for_i2c(void)
             local_point_for_time = (tail_fifo_buffer_pr_err_records + 1)*SIZE_ONE_RECORD_PR_ERR + 1; //Індекс першого числа часу у другому записі, який чекає на запис у DataFlash
           }
 
+          copying_time = 2;
+          time_dat_RTC = time_dat_tmp;
+          time_ms_RTC = time_ms_tmp;
+          copying_time = 1;
+
           //Встановлюємо часові мітки для тих подій, які мали місце до зчитування першої реальної часової мітки
           /*
           Змінна local_point_for_time зараз вказує на перше число часу другого запису (якщо була фіксація виключення живлення перед стартом),
@@ -894,10 +926,11 @@ void main_routines_for_i2c(void)
                    (local_point_for_time <  SIZE_BUFFER_FOR_PR_ERR)
                   )
             {
-              for(unsigned int i = 0; i < 7; i++)  buffer_pr_err_records[local_point_for_time + i] = time_bcd[i]; /*використовувати time_copy і calibration_copy не треба бо іде обробка одної функції main_routines_for_i2c*/ 
+              for(unsigned int i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[local_point_for_time + i] = *((unsigned char*)(&time_dat_tmp) + i);
+              for(unsigned int i = 0; i < sizeof(int); i++)  buffer_pr_err_records[local_point_for_time + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
               local_point_for_time += SIZE_ONE_RECORD_PR_ERR;
             }
-
+            
             //Скидаємо біти запуску програми або її перезапуску
             _SET_BIT(clear_diagnostyka, EVENT_START_SYSTEM_BIT);
             _SET_BIT(clear_diagnostyka, EVENT_RESTART_SYSTEM_BIT);
@@ -905,11 +938,19 @@ void main_routines_for_i2c(void)
           }
           while (
                  (local_point_for_time < (head_fifo_buffer_pr_err_records*SIZE_ONE_RECORD_PR_ERR)) &&
-                 (local_point_for_time <  SIZE_BUFFER_FOR_PR_ERR)
+                 (local_point_for_time <  SIZE_BUFFER_FOR_PR_ERR) &&
+                 (copying_time == 2)  
                 );
           //Розблоковуємо початок записування підготовлених записів, бо я вважаю, що часові мітки я вже гарантовано розставив
           temporary_block_writing_records_pr_err_into_DataFlash = 0;
         }
+      }
+      else
+      {
+        copying_time = 2;
+        time_dat_RTC = time_dat_tmp;
+        time_ms_RTC = time_ms_tmp;
+        copying_time = 1;
       }
 
       //Скидаємо повідомлення про читання системного часу

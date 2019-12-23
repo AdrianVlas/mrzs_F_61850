@@ -27,6 +27,7 @@
 
 #define VIDKL_COL_HST1                 9
 #define VIDKL_COL_HST2                 10
+#define VIDKL_COL_HST3                 11
 
 
 #endif

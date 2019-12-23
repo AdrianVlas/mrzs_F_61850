@@ -1279,185 +1279,69 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
         {
           if(registrator==ANALOG_REGISTRATOR)
             {
-              unsigned char time_avar_analog[7];
+              time_t time_dat_tmp = header_ar_tmp->time_dat;
+              int time_ms_tmp = header_ar_tmp->time_ms;
 
-              //Конвертуємо формат BCD у int
-              for (unsigned int i = 0; i < 7; i++)
-                {
-                  unsigned int val = header_ar_tmp->time_bcd[i], val_l, val_m;
-                  val_l = val & 0xf;
-                  val_m = (val >> 4) & 0xf;
-                  time_avar_analog[i] = (unsigned char)(val_m*10 + val_l);
-                }
-
+              struct tm *p;
               int temp_data;
-              unsigned int max_time_milliseconds_before = (current_settings.prefault_number_periods)*2; //2 - це десяті від 20 мс, що відображає період на 50Гц
-              unsigned int flag_carry = 0;
-              unsigned int s, ds_ms;
-
+              int max_time_milliseconds_before = (current_settings.prefault_number_periods)*20;
+              int s, ds_ms;
 
               if(subObj==4)  goto m1;// return time_avar_analog[offsetRegister];
+
               //Кількість секунд
-              s = max_time_milliseconds_before / 100;
+              s = max_time_milliseconds_before / 1000;
               //Кількість десятих і сотих мілісекунд
-              ds_ms = max_time_milliseconds_before - s*100;
+              ds_ms = max_time_milliseconds_before - s*1000;
+              
+              time_ms_tmp -= ds_ms;
+              time_dat_tmp -= (time_t)s;
 
-              //Віднімаємо даесяті і соті мілісекунд
-              if (time_avar_analog[0] >= ds_ms)
-                {
-                  time_avar_analog[0] -= ds_ms;
-                  flag_carry = 0;
-                }
-              else
-                {
-                  time_avar_analog[0] = time_avar_analog[0] + 100 - ds_ms;
-                  flag_carry = 1;
-                }
+              if (time_ms_tmp < 0) 
+              {
+                time_ms_tmp += 1000;
+                --time_dat_tmp;
+              }
 
-              //Віднімаємо секунди
-              if (time_avar_analog[1] >= (s + flag_carry))
-                {
-                  time_avar_analog[1] -= (s + flag_carry);
-                  flag_carry = 0;
-                }
-              else
-                {
-                  time_avar_analog[1] = time_avar_analog[1] + 60 - (s + flag_carry);
-                  flag_carry = 1;
-                }
-
-              //Дальше віднімаємо, якщо є виставлений прапорець переносу
-              if (flag_carry != 0)
-                {
-                  //Віднімаємо хвилини
-                  if (time_avar_analog[2] >=  flag_carry)
-                    {
-                      time_avar_analog[2] -= flag_carry;
-                      flag_carry = 0;
-                    }
-                  else
-                    {
-                      time_avar_analog[2] = time_avar_analog[2] + 60 - flag_carry;
-                      flag_carry = 1;
-                    }
-
-                  //Дальше віднімаємо, якщо є виставлений прапорець переносу
-                  if (flag_carry != 0)
-                    {
-                      //Віднімаємо години
-                      if (time_avar_analog[3] >=  flag_carry)
-                        {
-                          time_avar_analog[3] -= flag_carry;
-                          flag_carry = 0;
-                        }
-                      else
-                        {
-                          time_avar_analog[3] = time_avar_analog[3] + 24 - flag_carry;
-                          flag_carry = 1;
-                        }
-
-                      //Дальше віднімаємо, якщо є виставлений прапорець переносу
-                      if (flag_carry != 0)
-                        {
-                          //Віднімаємо дні місяця
-                          if (time_avar_analog[4] > flag_carry)
-                            {
-                              time_avar_analog[4] -= flag_carry;
-                              flag_carry = 0;
-                            }
-                          else
-                            {
-                              unsigned int max_value, number_previous_mounth;
-
-                              if (((int)(time_avar_analog[5] - 1)) > 0) number_previous_mounth = time_avar_analog[5] - 1;
-                              else number_previous_mounth = 12; //Попередній місяць - Грудень
-
-                              //Максимальну кількість днів у попередньому місяця (бо ми у місяців "позичаємо" одиничку і потім перейдемо на віднімання переносу у місяців)
-                              if (number_previous_mounth == 2)
-                                {
-                                  //Попередній місяць - лютий
-                                  //Перевірка на високосний рік
-                                  if((time_avar_analog[6] & 0xfc) == 0)
-                                    {
-                                      //Рік високосний - кількість днів у лютому 29
-                                      max_value = 29;
-                                    }
-                                  else
-                                    {
-                                      //Рік не високосний - кількість днів у лютому 28
-                                      max_value = 28;
-                                    }
-                                }
-                              else if (
-                                ((number_previous_mounth <= 7) && ((number_previous_mounth & 0x01) != 0)) ||
-                                ((number_previous_mounth >= 8) && ((number_previous_mounth & 0x01) == 0))
-                              )
-                                {
-                                  //Попередній місяць має 31 день
-                                  max_value = 31;
-                                }
-                              else
-                                {
-                                  //Попередній місяць має 30 днів
-                                  max_value = 30;
-                                }
-
-                              time_avar_analog[4] = time_avar_analog[4] + max_value - flag_carry;
-                              flag_carry = 1;
-                            }
-
-                          //Дальше віднімаємо, якщо є виставлений прапорець переносу
-                          if (flag_carry != 0)
-                            {
-                              //Віднімаємо місяці
-                              if ((int)(time_avar_analog[5] - flag_carry) > 0)
-                                {
-                                  time_avar_analog[5] -= flag_carry;
-                                  flag_carry = 0;
-                                }
-                              else
-                                {
-                                  time_avar_analog[5] = 12;
-                                  flag_carry = 1;
-                                }
-
-                              //Дальше віднімаємо, якщо є виставлений прапорець переносу
-                              if (flag_carry != 0)
-                                {
-                                  //Віднімаємо роки
-                                  if (time_avar_analog[6] > flag_carry)
-                                    {
-                                      time_avar_analog[6] -= flag_carry;
-                                      flag_carry = 0;
-                                    }
-                                  else
-                                    {
-                                      time_avar_analog[6] = 99;
-                                      flag_carry = 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
 m1:
+              p = localtime(&time_dat_tmp);
               switch(offsetRegister)
                 {
                 case 0:
+                  {
+                    temp_data = p->tm_mday;
+                    break;
+                  }
                 case 1:
-                  temp_data = time_avar_analog[4 + offsetRegister];
-                  break;
+                  {
+                    temp_data = p->tm_mon + 1;
+                    break;
+                  }
                 case 2:
-                  temp_data = time_avar_analog[4 + offsetRegister];
-                  temp_data += 2000; //Бо формат має бути чотиризначним числом
-                  break;
+                  {
+                    temp_data = p->tm_year + 1900;
+                    break;
+                  }
                 case 3:
+                  {
+                    temp_data = p->tm_hour;
+                    break;
+                  }
                 case 4:
-                  temp_data = time_avar_analog[3 - (offsetRegister - 3)];
-                  break;
+                  {
+                    temp_data = p->tm_min;
+                    break;
+                  }
                 case 5:
-                  temp_data = time_avar_analog[1]*100 + time_avar_analog[0];
-                  break;
+                  {
+                    temp_data = p->tm_sec*100 + time_ms_tmp/10;
+                    break;
+                  }
+                case 6:
+                  {
+                    temp_data = (time_ms_tmp % 10) * 10000;
+                    break;
+                  }
                 default:
                   temp_data = 0;
                 }//switch

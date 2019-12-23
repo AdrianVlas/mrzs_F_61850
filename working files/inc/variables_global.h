@@ -645,7 +645,6 @@ unsigned char time_bcd[7], thousandths_time;
 unsigned char time_copy[7], thousandths_time_copy; 
 unsigned char calibration;
 unsigned char calibration_copy;
-unsigned int copying_time/* = 0*/;
 unsigned char time_edit[7]; 
 unsigned char calibration_edit;
 unsigned int copy_register8_RTC;
@@ -653,10 +652,19 @@ int etap_reset_of_bit = ETAP_CLEAR_OF_NONE;
 int etap_settings_test_frequency = -1;
 unsigned char temp_register_rtc[2];
 
-clock_t clk_count;
-time_t time_dat;
+char getzone_string[2][50];
+size_t bank_getzone;
 int isdst_prev = -1;
-int isdst = -1;
+clock_t clk_count;
+int time_ms, time_ms_copy;
+time_t time_dat, time_dat_copy;
+unsigned int copying_time;
+int time_ms_RTC;
+time_t time_dat_RTC;
+unsigned int copying_time_dat;
+int time_ms_save;
+time_t time_dat_save;
+unsigned int save_time_dat;
 
 unsigned int changed_settings = CHANGED_ETAP_NONE; 
 unsigned char crc_settings;
@@ -955,7 +963,7 @@ unsigned int edit_serial_number_dev;
 
 //Для відображення інформації про причину відключення
 unsigned int info_vidkluchennja_vymykacha[2];
-unsigned char info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER][7]; 
+__info_vymk info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER]; 
 
 unsigned int control_word_of_watchdog/* = 0*/;
 //unsigned int test_watchdogs/* = 0*/;
@@ -979,8 +987,6 @@ uint32_t IEC_board_uncall = 2;
 uint32_t IEC_board_address;
 uint32_t queue_mo, queue_mo_irq;
 uint32_t state_array_control_state;
-uint8_t IEC_time_edit[7]; 
-uint32_t IEC_save_time; 
 
 uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];

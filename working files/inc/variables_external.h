@@ -259,7 +259,6 @@ extern unsigned char time_bcd[7], thousandths_time;
 extern unsigned char time_copy[7], thousandths_time_copy; 
 extern unsigned char calibration;
 extern unsigned char calibration_copy;
-extern unsigned int copying_time;
 extern unsigned char time_edit[7]; 
 extern unsigned char calibration_edit;
 extern unsigned int copy_register8_RTC;
@@ -267,10 +266,19 @@ extern int etap_reset_of_bit;
 extern int etap_settings_test_frequency;
 extern unsigned char temp_register_rtc[2];
 
-extern clock_t clk_count;
-extern time_t time_dat;
+extern char getzone_string[2][50];
+extern size_t bank_getzone;
 extern int isdst_prev;
-extern int isdst;
+extern clock_t clk_count;
+extern int time_ms, time_ms_copy;
+extern time_t time_dat, time_dat_copy;
+extern unsigned int copying_time;
+extern int time_ms_RTC;
+extern time_t time_dat_RTC;
+extern unsigned int copying_time_dat;
+extern int time_ms_save;
+extern time_t time_dat_save;
+extern unsigned int save_time_dat;
 
 extern unsigned int changed_settings; 
 extern unsigned char crc_settings;
@@ -563,7 +571,7 @@ extern unsigned int edit_serial_number_dev;
 
 //Для відображення інформації про причину відключення
 extern unsigned int info_vidkluchennja_vymykacha[2];
-extern unsigned char info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER][7]; 
+extern __info_vymk info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER]; 
 
 extern unsigned int control_word_of_watchdog;
 //extern unsigned int test_watchdogs;
@@ -587,8 +595,6 @@ extern uint32_t IEC_board_uncall;
 extern uint32_t IEC_board_address;
 extern uint32_t queue_mo, queue_mo_irq;
 extern uint32_t state_array_control_state;
-extern uint8_t IEC_time_edit[7]; 
-extern uint32_t IEC_save_time; 
 
 extern uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 extern uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];

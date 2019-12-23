@@ -18,7 +18,7 @@
 
 #include <time.h>
 extern clock_t clk_count;
-extern time_t time_dat;
+extern time_t time_dat, time_dat_copy;
 
 #pragma module_name = "?clock"
 

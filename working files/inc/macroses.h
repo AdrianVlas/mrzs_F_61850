@@ -541,6 +541,8 @@
   array_ar[index++] = data;                                                             \
 }
 
+#define INT_TO_BCD(_data) ((((_data) / 10) << 4) | ((_data) % 10))
+
 #endif 
 
 

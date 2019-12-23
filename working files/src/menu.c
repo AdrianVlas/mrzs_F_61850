@@ -861,33 +861,33 @@ void main_manu_function(void)
           //Пріоритет стоїть на обновлені екрану
           if((new_state_keyboard & (1<<BIT_REWRITE)) !=0)
           {
-            if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_TIME) current_ekran.index_position = 0;
-            /**************************************************/
-            //Курсор має бути на першому символі рядка з даними
-            /**************************************************/
-            if(current_ekran.index_position == ROW_Y_)
-            {
-              current_ekran.position_cursor_x = COL_DY1;
-            }
-            else if(current_ekran.index_position == ROW_T_)
-            {
-              current_ekran.index_position = ROW_Y_;
-              current_ekran.position_cursor_x = COL_DY1;
-            }
-            else if(current_ekran.index_position == ROW_N_)
-            {
-              current_ekran.index_position = ROW_K_;
-              current_ekran.position_cursor_x = COL_SK1;
-            }
-            else if(current_ekran.index_position == ROW_K_)
-            {
-              current_ekran.position_cursor_x = COL_SK1;
-            }
-            /**************************************************/
-            position_in_current_level_menu[EKRAN_TIME] = current_ekran.index_position;
-
             if (current_ekran.edition == 0)
             {
+              if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_TIME) current_ekran.index_position = 0;
+              /**************************************************/
+              //Курсор має бути на першому символі рядка з даними
+              /**************************************************/
+              if(current_ekran.index_position == ROW_Y_)
+              {
+                current_ekran.position_cursor_x = COL_DY1;
+              }
+              else if(current_ekran.index_position == ROW_T_)
+              {
+                current_ekran.index_position = ROW_Y_;
+                current_ekran.position_cursor_x = COL_DY1;
+              }
+              else if(current_ekran.index_position == ROW_N_)
+              {
+                current_ekran.index_position = ROW_K_;
+                current_ekran.position_cursor_x = COL_SK1;
+              }
+              else if(current_ekran.index_position == ROW_K_)
+              {
+                current_ekran.position_cursor_x = COL_SK1;
+              }
+              /**************************************************/
+              position_in_current_level_menu[EKRAN_TIME] = current_ekran.index_position;
+
               current_ekran.cursor_on = 0;
               current_ekran.cursor_blinking_on = 0;
             }
@@ -905,7 +905,21 @@ void main_manu_function(void)
               if(current_ekran.edition == 0)
               {
                 //Копіюємо текчий масив часу у масив для редагування
-                for(unsigned int i=0; i < 7; i++) time_edit[i] = time_bcd[i]; /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                copying_time_dat = 1;
+                time_t time_dat_tmp = time_dat_copy;
+                int time_ms_tmp = time_ms_copy;
+                copying_time_dat = 0;
+                struct tm *p;
+                p = localtime(&time_dat_tmp);
+
+                time_edit[0] = INT_TO_BCD(time_ms_tmp/10);
+                time_edit[1] = INT_TO_BCD(p->tm_sec) & 0x7F;
+                time_edit[2] = INT_TO_BCD(p->tm_min) & 0x7F;
+                time_edit[3] = INT_TO_BCD(p->tm_hour) & 0x3F;
+                time_edit[4] = INT_TO_BCD(p->tm_mday) & 0x3F;
+                time_edit[5] = INT_TO_BCD(p->tm_mon + 1) & 0x1F;
+                time_edit[6] = INT_TO_BCD(p->tm_year - 100) & 0xFF;
+
                 calibration_edit = calibration;
                   
                 //Підготовка до режиму редагування - включаємо мигаючий курсор
@@ -928,9 +942,55 @@ void main_manu_function(void)
               {
                 //Перевіряємо чи якісь зміни відбулися
                 unsigned int found_changes = 0, i = 0;
+
+                copying_time_dat = 1;
+                time_t time_dat_tmp = time_dat_copy;
+                int time_ms_tmp = time_ms_copy;
+                copying_time_dat = 0;
+                struct tm *p;
+                p = localtime(&time_dat_tmp);
+
                 while ((i < 7) && (found_changes == 0))
                 {
-                  if (time_bcd[i] != time_edit[i]) found_changes = 1; /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                  switch (i)
+                  {
+                  case 0:
+                    {
+                      if (INT_TO_BCD(time_ms_tmp/10) != time_edit[0]) found_changes = 1;
+                      break;
+                    }
+                  case 1:
+                    {
+                      if ((INT_TO_BCD(p->tm_sec) & 0x7F) != time_edit[1]) found_changes = 1;
+                      break;
+                    }
+                  case 2:
+                    {
+                      if ((INT_TO_BCD(p->tm_min) & 0x7F) != time_edit[2]) found_changes = 1;
+                      break;
+                    }
+                  case 3:
+                    {
+                      if ((INT_TO_BCD(p->tm_hour) & 0x3F) != time_edit[3]) found_changes = 1;
+                      break;
+                    }
+                  case 4:
+                    {
+                      if ((INT_TO_BCD(p->tm_mday) & 0x3F) != time_edit[4]) found_changes = 1;
+                      break;
+                    }
+                  case 5:
+                    {
+                      if ((INT_TO_BCD(p->tm_mon + 1) & 0x1F) != time_edit[5]) found_changes = 1;
+                      break;
+                    }
+                  case 6:
+                    {
+                      if (INT_TO_BCD(p->tm_year - 100) != time_edit[6]) found_changes = 1;
+                      break;
+                    }
+                  default: break;
+                  }
                   i++;
                 }
                 if (found_changes == 0)
@@ -951,15 +1011,36 @@ void main_manu_function(void)
                 if (check_data_for_data_time_menu() ==1)
                 {
                   //Дані достовірні
-                  //Копіюємо масив для редагування часу у текчий масив
-                  for(unsigned int i=0; i < 7; i++) time_bcd[i] = time_edit[i];/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+
+                  time_ms_save = 0;
+                  
+                  struct tm orig;
+                  unsigned int tmp_reg = time_edit[1];
+                  orig.tm_sec = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+                  tmp_reg = time_edit[2];
+                  orig.tm_min = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+                  tmp_reg = time_edit[3];
+                  orig.tm_hour = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+                  tmp_reg = time_edit[4];
+                  orig.tm_mday = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+                  tmp_reg = time_edit[5];
+                  orig.tm_mon = 10*(tmp_reg >> 4) + (tmp_reg & 0xf) - 1;
+
+                  tmp_reg = time_edit[6];
+                  orig.tm_year = 10*(tmp_reg >> 4) + (tmp_reg & 0xf) + 100;
+
+                  orig.tm_wday = 0;
+                  orig.tm_yday = 0;
+                  orig.tm_isdst = -1;
+                  time_dat_save = mktime (&orig);
+                  save_time_dat = 2;
+                  
                   calibration = calibration_edit;/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
                   current_ekran.edition = 0;
-                  if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) isdst_prev = -1;
-                  //Виставляємо повідомлення запису часу в RTC
-                  //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
-                  _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
-                  _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
                 }
                 else
                 {
@@ -3361,7 +3442,7 @@ void main_manu_function(void)
                 else if(current_ekran.index_position == INDEX_ML_CHSRS485_TIMEOUT)
                 {
                   //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення інфрпмації по time_bcd-out наступного символу
+                  //Переходимо на меню відображення інфрпмації по time-out наступного символу
                   current_ekran.current_level = EKRAN_VIEW_TIMEOUT_RS485;
                 }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
@@ -6409,7 +6490,7 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_VIEW_TIMEOUT_INTERFACE) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_VIEW_TIMEOUT_RS485] = current_ekran.index_position;
-              //Формуємо екран інформації по time_bcd-out наступного символу
+              //Формуємо екран інформації по time-out наступного символу
               make_ekran_timeout_interface();
             }
 #if (MODYFIKACIA_VERSII_PZ >= 10)            
@@ -12008,6 +12089,7 @@ void main_manu_function(void)
                         
                       current_settings.time_zone = edition_settings.time_zone;
                       current_settings.dst = edition_settings.dst;
+                      _ForceReloadDstRules();
                       
                       //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                       fix_change_settings(0, 1);
@@ -13702,7 +13784,7 @@ void main_manu_function(void)
                   //Редагування числа
                   edition_settings.time_out_1_RS485 = edit_setpoint(1, edition_settings.time_out_1_RS485, 1, COL_TIMEOUT_INTERFACE_COMMA, COL_TIMEOUT_INTERFACE_END, 1);
                 }
-                //Формуємо екран інформації по time_bcd-out наступного символу
+                //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -15223,7 +15305,7 @@ void main_manu_function(void)
                   //Редагування числа
                   edition_settings.time_out_1_RS485 = edit_setpoint(0, edition_settings.time_out_1_RS485, 1, COL_TIMEOUT_INTERFACE_COMMA, COL_TIMEOUT_INTERFACE_END, 1);
                 }
-                //Формуємо екран інформації по time_bcd-out наступного символу
+                //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -17142,7 +17224,7 @@ void main_manu_function(void)
                 if ((current_ekran.position_cursor_x < COL_TIMEOUT_INTERFACE_BEGIN) ||
                     (current_ekran.position_cursor_x > COL_TIMEOUT_INTERFACE_END))
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_BEGIN;
-                //Формуємо екран інформації по time_bcd-out наступного символу
+                //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -19060,7 +19142,7 @@ void main_manu_function(void)
                 if ((current_ekran.position_cursor_x < COL_TIMEOUT_INTERFACE_BEGIN) ||
                     (current_ekran.position_cursor_x > COL_TIMEOUT_INTERFACE_END))
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_END;
-                //Формуємо екран інформації по time_bcd-out наступного символу
+                //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
 #if (MODYFIKACIA_VERSII_PZ >= 10)

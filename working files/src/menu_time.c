@@ -34,29 +34,48 @@ void make_ekran_time(void)
   /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і make_ekran_time() викликаються з найнижчого рівня*/ 
   if (current_ekran.edition == 0)
   {
+    time_t time_dat_tmp;
+    if (save_time_dat == 2) time_dat_tmp = time_dat_save;
+    else
+    { 
+      copying_time_dat = 1;
+      time_dat_tmp = time_dat_copy;
+      copying_time_dat = 0;
+    }
+
+    struct tm *p;
+    p = localtime(&time_dat_tmp);
+    int field;
+    
     //День
-    name_string[ROW_Y_][COL_DY1] = (time_bcd[4] >>  4) + 0x30;
-    name_string[ROW_Y_][COL_DY2] = (time_bcd[4] & 0xf) + 0x30;
+    field = p->tm_mday;
+    name_string[ROW_Y_][COL_DY1] = (field / 10) + 0x30;
+    name_string[ROW_Y_][COL_DY2] = (field % 10) + 0x30;
 
     //Місяць
-    name_string[ROW_Y_][COL_MY1] = (time_bcd[5] >>  4) + 0x30;
-    name_string[ROW_Y_][COL_MY2] = (time_bcd[5] & 0xf) + 0x30;
+    field = p->tm_mon + 1;
+    name_string[ROW_Y_][COL_MY1] = (field / 10) + 0x30;
+    name_string[ROW_Y_][COL_MY2] = (field % 10) + 0x30;
 
     //Рік
-    name_string[ROW_Y_][COL_SY1] = (time_bcd[6] >>  4) + 0x30;
-    name_string[ROW_Y_][COL_SY2] = (time_bcd[6] & 0xf) + 0x30;
+    field = p->tm_year - 100;
+    name_string[ROW_Y_][COL_SY1] = (field / 10) + 0x30;
+    name_string[ROW_Y_][COL_SY2] = (field % 10) + 0x30;
 
     //Година
-    name_string[ROW_T_][COL_HT1] = (time_bcd[3] >>  4) + 0x30;
-    name_string[ROW_T_][COL_HT2] = (time_bcd[3] & 0xf) + 0x30;
+    field = p->tm_hour;
+    name_string[ROW_T_][COL_HT1] = (field / 10) + 0x30;
+    name_string[ROW_T_][COL_HT2] = (field % 10) + 0x30;
 
     //Хвилини
-    name_string[ROW_T_][COL_MT1] = (time_bcd[2] >>  4) + 0x30;
-    name_string[ROW_T_][COL_MT2] = (time_bcd[2] & 0xf) + 0x30;
+    field = p->tm_min;
+    name_string[ROW_T_][COL_MT1] = (field / 10) + 0x30;
+    name_string[ROW_T_][COL_MT2] = (field % 10) + 0x30;
 
     //Секунди
-    name_string[ROW_T_][COL_ST1] = (time_bcd[1] >>  4) + 0x30;
-    name_string[ROW_T_][COL_ST2] = (time_bcd[1] & 0xf) + 0x30;
+    field = p->tm_sec;
+    name_string[ROW_T_][COL_ST1] = (field / 10) + 0x30;
+    name_string[ROW_T_][COL_ST2] = (field % 10) + 0x30;
 
     //Калібровка
     if((calibration & (1<<5)) == 0) name_string[ROW_K_][COL_SK1] = '-';

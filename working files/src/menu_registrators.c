@@ -382,7 +382,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
     unsigned char name_string[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
     {
       "   XX-XX-20XX   ",
-      "   XX:XX:XX.XX  ",
+      "  XX:XX:XX.XXX  "
     };
   
     unsigned int position_temp = current_ekran.index_position;
@@ -393,6 +393,8 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
     /******************************************/
     //Заповнюємо поля відповідними цифрами
     /******************************************/
+    time_t time_dat_tmp;
+    int time_ms_tmp;
     if (type_of_registrator == 2)
     {
       __HEADER_AR header_ar_tmp;
@@ -402,75 +404,62 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
       щоб легше було можливість читати поля
       */
       header_ar_tmp = *((__HEADER_AR*)buffer_for_manu_read_record);
-      unsigned int field;
-      
-      //День
-      field = header_ar_tmp.time_bcd[4];
-      name_string[ROW_R_Y_][COL_DY1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_DY2_R] = (field & 0xf) + 0x30;
-
-      //Місяць
-      field = header_ar_tmp.time_bcd[5];
-      name_string[ROW_R_Y_][COL_MY1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_MY2_R] = (field & 0xf) + 0x30;
-
-      //Рік
-      field = header_ar_tmp.time_bcd[6];
-      name_string[ROW_R_Y_][COL_SY1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_SY2_R] = (field & 0xf) + 0x30;
-
-      //Година
-      field = header_ar_tmp.time_bcd[3];
-      name_string[ROW_R_T_][COL_HT1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_HT2_R] = (field & 0xf) + 0x30;
-
-      //Хвилини
-      field = header_ar_tmp.time_bcd[2];
-      name_string[ROW_R_T_][COL_MT1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_MT2_R] = (field & 0xf) + 0x30;
-
-      //Секунди
-      field = header_ar_tmp.time_bcd[1];
-      name_string[ROW_R_T_][COL_ST1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_ST2_R] = (field & 0xf) + 0x30;
-
-      //Соті секунд
-      field = header_ar_tmp.time_bcd[0];
-      name_string[ROW_R_T_][COL_HST1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_HST2_R] = (field & 0xf) + 0x30;
+      time_dat_tmp = header_ar_tmp.time_dat;
+      time_ms_tmp = header_ar_tmp.time_ms;
 
       //Позначаємо, що більше цей екран перерисовувати не треба
       rewrite_ekran_once_more = 0;
     }
     else
     {
+      for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&time_dat_tmp) + i) =  buffer_for_manu_read_record[1 + i];
+      for(size_t i = 0; i < sizeof(int); i++) *((unsigned char*)(&time_ms_tmp) + i) = buffer_for_manu_read_record[1 + sizeof(time_t) + i];
+    }
+    
+    if (time_dat_tmp != 0)
+    {
+      struct tm *p = localtime(&time_dat_tmp);
+      int field;
+      
       //День
-      name_string[ROW_R_Y_][COL_DY1_R] = (buffer_for_manu_read_record[5] >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_DY2_R] = (buffer_for_manu_read_record[5] & 0xf) + 0x30;
+      field = p->tm_mday;
+      name_string[ROW_R_Y_][COL_DY1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_Y_][COL_DY2_R] = (field % 10) + 0x30;
 
       //Місяць
-      name_string[ROW_R_Y_][COL_MY1_R] = (buffer_for_manu_read_record[6] >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_MY2_R] = (buffer_for_manu_read_record[6] & 0xf) + 0x30;
+      field = p->tm_mon + 1;
+      name_string[ROW_R_Y_][COL_MY1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_Y_][COL_MY2_R] = (field % 10) + 0x30;
 
       //Рік
-      name_string[ROW_R_Y_][COL_SY1_R] = (buffer_for_manu_read_record[7] >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_SY2_R] = (buffer_for_manu_read_record[7] & 0xf) + 0x30;
+      field = p->tm_year - 100;
+      name_string[ROW_R_Y_][COL_SY1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_Y_][COL_SY2_R] = (field % 10) + 0x30;
 
       //Година
-      name_string[ROW_R_T_][COL_HT1_R] = (buffer_for_manu_read_record[4] >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_HT2_R] = (buffer_for_manu_read_record[4] & 0xf) + 0x30;
+      field = p->tm_hour;
+      name_string[ROW_R_T_][COL_HT1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_T_][COL_HT2_R] = (field % 10) + 0x30;
 
       //Хвилини
-      name_string[ROW_R_T_][COL_MT1_R] = (buffer_for_manu_read_record[3] >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_MT2_R] = (buffer_for_manu_read_record[3] & 0xf) + 0x30;
+      field = p->tm_min;
+      name_string[ROW_R_T_][COL_MT1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_T_][COL_MT2_R] = (field % 10) + 0x30;
 
       //Секунди
-      name_string[ROW_R_T_][COL_ST1_R] = (buffer_for_manu_read_record[2] >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_ST2_R] = (buffer_for_manu_read_record[2] & 0xf) + 0x30;
+      field = p->tm_sec;
+      name_string[ROW_R_T_][COL_ST1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_T_][COL_ST2_R] = (field % 10) + 0x30;
 
-      //Соті секунд
-      name_string[ROW_R_T_][COL_HST1_R] = (buffer_for_manu_read_record[1] >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_HST2_R] = (buffer_for_manu_read_record[1] & 0xf) + 0x30;
+      //Тисячні секунд
+      field = time_ms_tmp;
+      name_string[ROW_R_T_][COL_HST1_R] = (field / 100) + 0x30;
+      field %= 100;
+      
+      name_string[ROW_R_T_][COL_HST2_R] = (field / 10) + 0x30;
+      field %= 10;
+      
+      name_string[ROW_R_T_][COL_HST3_R] = field + 0x30;
     }
 
     //Копіюємо  рядки у робочий екран
@@ -1674,7 +1663,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
       }
     }
     
-    unsigned int max_number_changers_in_record = buffer_for_manu_read_record[8];
+    unsigned int max_number_changers_in_record = buffer_for_manu_read_record[13];
     unsigned int position_temp;
     unsigned int index_of_ekran;
     unsigned int diagnostic_old[N_DIAGN], diagnostic_new[N_DIAGN], diagnostic_changing[N_DIAGN];
@@ -1688,21 +1677,12 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
         diagnostic_old[n_word] = 0;
         diagnostic_new[n_word] = 0;
       }
-      diagnostic_old[n_word] |= buffer_for_manu_read_record[9                 + i] << (8*n_byte);
-      diagnostic_new[n_word] |= buffer_for_manu_read_record[9 + N_DIAGN_BYTES + i] << (8*n_byte);
+      diagnostic_old[n_word] |= buffer_for_manu_read_record[14                 + i] << (8*n_byte);
+      diagnostic_new[n_word] |= buffer_for_manu_read_record[14 + N_DIAGN_BYTES + i] << (8*n_byte);
     }
-//    diagnostic_old[0] = buffer_for_manu_read_record[ 9] + (buffer_for_manu_read_record[10]<<8) + (buffer_for_manu_read_record[11]<<16) + (buffer_for_manu_read_record[12]<<24);
-//    diagnostic_old[1] = buffer_for_manu_read_record[13] + (buffer_for_manu_read_record[14]<<8) + (buffer_for_manu_read_record[15]<<16) + (buffer_for_manu_read_record[16]<<24);
-//    diagnostic_old[2] = buffer_for_manu_read_record[17] + (buffer_for_manu_read_record[18]<<8) + (buffer_for_manu_read_record[19]<<16) + (buffer_for_manu_read_record[20]<<24);
-//    diagnostic_new[0] = buffer_for_manu_read_record[21] + (buffer_for_manu_read_record[22]<<8) + (buffer_for_manu_read_record[23]<<16) + (buffer_for_manu_read_record[24]<<24);
-//    diagnostic_new[1] = buffer_for_manu_read_record[25] + (buffer_for_manu_read_record[26]<<8) + (buffer_for_manu_read_record[27]<<16) + (buffer_for_manu_read_record[28]<<24);
-//    diagnostic_new[2] = buffer_for_manu_read_record[29] + (buffer_for_manu_read_record[30]<<8) + (buffer_for_manu_read_record[31]<<16) + (buffer_for_manu_read_record[32]<<24);
         
     //Визначаємо, які сигнали змінилися
     for (size_t i = 0; i < N_DIAGN; i ++) diagnostic_changing[i] = diagnostic_new[i] ^ diagnostic_old[i];
-//    diagnostic_changing[0] = diagnostic_new[0] ^ diagnostic_old[0];
-//    diagnostic_changing[1] = diagnostic_new[1] ^ diagnostic_old[1];
-//    diagnostic_changing[2] = diagnostic_new[2] ^ diagnostic_old[2];
     
     //Перевіряємо, чи ми не вийшли за границі
     if (current_ekran.index_position < 0) current_ekran.index_position = max_number_changers_in_record - 1;
