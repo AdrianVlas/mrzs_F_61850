@@ -194,7 +194,7 @@ int getPKVBigModbusRegister(int adrReg)
   superClearActiveActualData();
 
   time_t time_dat_tmp;
-  int time_ms_tmp;
+  int32_t time_ms_tmp;
   if (save_time_dat == 2) time_dat_tmp = time_dat_save;
   else
   { 
@@ -333,7 +333,20 @@ int postPKVBigWriteAction(void)
   int flag_time_array = 0;
 
   unsigned char *label_to_time_array = time_edit;
-  for(int i=0; i<7; i++) time_edit[i] = time_bcd[i];
+  //Копіюємо текчий масив часу у масив для редагування
+  copying_time_dat = 1;
+  time_t time_dat_tmp = time_dat_copy;
+  int32_t time_ms_tmp = time_ms_copy;
+  copying_time_dat = 0;
+  struct tm *p;
+  p = localtime(&time_dat_tmp);
+  time_edit[0] = INT_TO_BCD(time_ms_tmp/10);
+  time_edit[1] = INT_TO_BCD(p->tm_sec) & 0x7F;
+  time_edit[2] = INT_TO_BCD(p->tm_min) & 0x7F;
+  time_edit[3] = INT_TO_BCD(p->tm_hour) & 0x3F;
+  time_edit[4] = INT_TO_BCD(p->tm_mday) & 0x3F;
+  time_edit[5] = INT_TO_BCD(p->tm_mon + 1) & 0x1F;
+  time_edit[6] = INT_TO_BCD(p->tm_year - 100) & 0xFF;
 
   for(int i=0; i<countAdr; i++)
   {

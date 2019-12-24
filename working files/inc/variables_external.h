@@ -270,13 +270,13 @@ extern char getzone_string[2][50];
 extern size_t bank_getzone;
 extern int isdst_prev;
 extern clock_t clk_count;
-extern int time_ms, time_ms_copy;
+extern int32_t time_ms, time_ms_copy;
 extern time_t time_dat, time_dat_copy;
 extern unsigned int copying_time;
-extern int time_ms_RTC;
+extern int32_t time_ms_RTC;
 extern time_t time_dat_RTC;
 extern unsigned int copying_time_dat;
-extern int time_ms_save;
+extern int32_t time_ms_save;
 extern time_t time_dat_save;
 extern unsigned int save_time_dat;
 

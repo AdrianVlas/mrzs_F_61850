@@ -418,7 +418,7 @@ typedef struct
 typedef struct _info_vymk
 {
   time_t time_dat;
-  int time_ms;
+  int32_t time_ms;
 } __info_vymk;
 
 typedef struct
@@ -471,7 +471,7 @@ typedef struct
 {
   unsigned char label_start_record;
   time_t time_dat; 
-  int time_ms;
+  int32_t time_ms;
   unsigned int T0;
   unsigned int TCurrent;
   unsigned int TCurrent04;

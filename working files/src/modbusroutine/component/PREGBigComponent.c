@@ -165,9 +165,9 @@ int getPREGBigModbusRegister(int adrReg)
           else
             {
               time_t time_dat_tmp;
-              int time_ms_tmp;
+              int32_t time_ms_tmp;
               for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&time_dat_tmp) + i) =  point_to_buffer[1 + i];
-              for(size_t i = 0; i < sizeof(int); i++) *((unsigned char*)(&time_ms_tmp) + i) = point_to_buffer[1 + sizeof(time_t) + i];
+              for(size_t i = 0; i < sizeof(int32_t); i++) *((unsigned char*)(&time_ms_tmp) + i) = point_to_buffer[1 + sizeof(time_t) + i];
               
               struct tm *p = localtime(&time_dat_tmp);
               switch (offset-3)//temp_address)

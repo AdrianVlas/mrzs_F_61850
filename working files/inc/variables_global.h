@@ -656,13 +656,13 @@ char getzone_string[2][50];
 size_t bank_getzone;
 int isdst_prev = -1;
 clock_t clk_count;
-int time_ms, time_ms_copy;
+int32_t time_ms, time_ms_copy;
 time_t time_dat, time_dat_copy;
 unsigned int copying_time;
-int time_ms_RTC;
+int32_t time_ms_RTC;
 time_t time_dat_RTC;
 unsigned int copying_time_dat;
-int time_ms_save;
+int32_t time_ms_save;
 time_t time_dat_save;
 unsigned int save_time_dat;
 

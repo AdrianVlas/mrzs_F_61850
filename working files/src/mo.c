@@ -80,33 +80,19 @@ void start_receive_data_via_CANAL1_MO(void)
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
               
               //Синхронізація часу
-              uint32_t goose_time = 0;
-              point = (uint8_t*)&goose_time;
-              index += sizeof(time_bcd);
-              for (uint32_t i = 0; ((i < sizeof(uint32_t)) && (index < BUFFER_CANAL1_MO)); i++) 
+              index += sizeof(time_t) + sizeof(int32_t);
+              if (Canal1_MO_Received[index++] != 0)
               {
-                *(point++) = Canal1_MO_Received[index++];
+                //Треба активувати системний час
+                int32_t index_tmp = index - 1 - sizeof(time_t) - sizeof(int32_t);
+                if (index_tmp > 0)
+                {
+                  for(size_t i = 0; i < sizeof(time_t); i++)  *((uint8_t *)(&time_dat_save) + i) = Canal1_MO_Received[index_tmp++];
+                  for(size_t i = 0; i < sizeof(int32_t); i++)  *((uint8_t *)(&time_ms_save) + i) = Canal1_MO_Received[index_tmp++];
+                  save_time_dat = 2;
+                }
+                else total_error_sw_fixed(84);
               }
-//              if (goose_time != 0)
-//              {
-//                //Деякі позиції системного часу/дати треба записати
-//                uint8_t *label_to_time_array;
-//                if (copying_time == 2) label_to_time_array = time_copy;
-//                else label_to_time_array = time_bcd;
-//                int32_t index_tmp = index - sizeof(time_bcd) - sizeof(uint32_t);
-//                if (index_tmp > 0)
-//                {
-//                  for (uint32_t i = 0; i < sizeof(time_bcd); i++) 
-//                  {
-//                    if ((goose_time & (1 << i)) != 0) IEC_time_edit[i] = Canal1_MO_Received[index_tmp];
-//                    else IEC_time_edit[i] = *(label_to_time_array + i);
-//                  
-//                    index_tmp++;
-//                  }
-//                  IEC_save_time = true;
-//                }
-//                else total_error_sw_fixed(84);
-//              }
               
               /***
               Оперативні дані
@@ -237,21 +223,8 @@ void start_transmint_data_via_CANAL1_MO(void)
   
   sum += Canal1_MO_Transmit[index++] = SENDIND_TM_INFO;
     
-  uint8_t *label_to_time_array;
-  if (copying_time == 2) 
-  {
-    sum += Canal1_MO_Transmit[index++] = thousandths_time_copy;
-    label_to_time_array = time_copy;
-  }
-  else 
-  {
-    sum += Canal1_MO_Transmit[index++] = thousandths_time;
-    label_to_time_array = time_bcd;
-  }
-  for(uint32_t i = 0; ((i < sizeof(time_bcd)) && (index < BUFFER_CANAL1_MO)); i++) 
-  {
-    sum += Canal1_MO_Transmit[index++] = *(label_to_time_array + i);
-  }
+  for(size_t i = 0; i < sizeof(time_t); i++) Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_dat) + i);
+  for(size_t i = 0; i < sizeof(int32_t); i++) Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_ms) + i);
   
   //Оперативні дані
   if ((index + 1 + 1 + 2 + 2 + SIZE_SENDING_DATA_TM) < BUFFER_CANAL1_MO)

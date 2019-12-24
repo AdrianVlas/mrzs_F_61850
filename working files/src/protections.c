@@ -8231,10 +8231,8 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
           buffer_for_save_dr_record[FIRST_INDEX_START_START_RECORD_DR] = LABEL_START_RECORD_DR;
          
           //Записуємо час початку запису
-          unsigned char *label_to_time_array;
-          if (copying_time == 2) label_to_time_array = time_copy;
-          else label_to_time_array = time_bcd;
-          for(unsigned int i = 0; i < 7; i++) buffer_for_save_dr_record[FIRST_INDEX_DATA_TIME_DR + i] = *(label_to_time_array + i);
+          for(size_t i = 0; i < sizeof(time_t); i++)  buffer_for_save_dr_record[FIRST_INDEX_DATA_TIME_DR + i] = *((unsigned char*)(&time_dat) + i);
+          for(size_t i = 0; i < sizeof(int32_t); i++)  buffer_for_save_dr_record[FIRST_INDEX_DATA_TIME_DR + sizeof(time_t) + i] = *((unsigned char*)(&time_ms) + i);
           
           //Додаткові налаштування при яких було запущено дискретний реєстратор
           unsigned int control_extra_settings_1_tmp = current_settings_prt.control_extra_settings_1 & (CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE | CTR_EXTRA_SETTINGS_1_CTRL_IB_I04);
@@ -11839,6 +11837,12 @@ void TIM2_IRQHandler(void)
   
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
+    /***********************************************************************************************/
+    //Переривання відбулося вік каналу 1, який генерує переривання кожні 1 мс, для опраціьовування таймерів і систем захистів
+    /***********************************************************************************************/
+    TIM2->SR = (uint16_t)((~(uint32_t)TIM_IT_CC1) & 0xffff);
+    uint32_t current_tick = TIM2->CCR1;
+    
     /*************************************
     Управління чсом у UNIX-форматі
     *************************************/
@@ -11868,7 +11872,7 @@ void TIM2_IRQHandler(void)
       //Перевірка чи не потрібно забрати час з RTC
       if (copying_time == 1)
       {
-        int diff_ms = time_ms - time_ms_RTC;
+        int32_t diff_ms = time_ms - time_ms_RTC;
         time_t diff_s = time_dat - time_dat_RTC;
         if (diff_ms < 0) 
         {
@@ -11892,12 +11896,6 @@ void TIM2_IRQHandler(void)
     }
     /*************************************/
 
-    /***********************************************************************************************/
-    //Переривання відбулося вік каналу 1, який генерує переривання кожні 1 мс, для опраціьовування таймерів і систем захистів
-    /***********************************************************************************************/
-    TIM2->SR = (uint16_t)((~(uint32_t)TIM_IT_CC1) & 0xffff);
-    uint32_t current_tick = TIM2->CCR1;
-    
 #if (MODYFIKACIA_VERSII_PZ >= 10)
     /***********************************************************/
     //Прийом інформації з комунікаційної плати

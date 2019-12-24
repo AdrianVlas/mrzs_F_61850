@@ -1280,7 +1280,7 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
           if(registrator==ANALOG_REGISTRATOR)
             {
               time_t time_dat_tmp = header_ar_tmp->time_dat;
-              int time_ms_tmp = header_ar_tmp->time_ms;
+              int32_t time_ms_tmp = header_ar_tmp->time_ms;
 
               struct tm *p;
               int temp_data;
@@ -1351,32 +1351,51 @@ m1:
             {
               //if(registrator==DISKRET_REGISTRATOR)
               //Конвертуємо формат BCD у int
+              time_t time_dat_tmp;
+              int32_t time_ms_tmp;
+
+              for (unsigned int i = 0; i < sizeof(time_t); i++) *((unsigned char *)(&time_dat_tmp) + i) = point_to_buffer[FIRST_INDEX_DATA_TIME_DR + i];
+              for (unsigned int i = 0; i < sizeof(int32_t); i++) *((unsigned char *)(&time_ms_tmp) + i) = point_to_buffer[FIRST_INDEX_DATA_TIME_DR + sizeof(time_t) + i];
+
               int temp_data;
-              unsigned int time_avar_digital[7];
-              for (unsigned int i = 0; i < 7; i++)
-                {
-                  unsigned int val = *(point_to_buffer + FIRST_INDEX_DATA_TIME_DR + i), val_l, val_m;
-                  val_l = val & 0xf;
-                  val_m = (val >> 4) & 0xf;
-                  time_avar_digital[i] = val_m*10 + val_l;
-                }//for
+              struct tm *p = localtime(&time_dat_tmp);
               switch(offsetRegister)
                 {
                 case 0:
+                  {
+                    temp_data = p->tm_mday;
+                    break;
+                  }
                 case 1:
-                  temp_data = time_avar_digital[4 + offsetRegister];
-                  break;
+                  {
+                    temp_data = p->tm_mon + 1;
+                    break;
+                  }
                 case 2:
-                  temp_data = time_avar_digital[4 + offsetRegister];
-                  temp_data += 2000; //Бо формат має бути чотиризначним числом
-                  break;
+                  {
+                    temp_data = p->tm_year + 1900;
+                    break;
+                  }
                 case 3:
+                  {
+                    temp_data = p->tm_hour;
+                    break;
+                  }
                 case 4:
-                  temp_data = time_avar_digital[3 - (offsetRegister - 3)];
-                  break;
+                  {
+                    temp_data = p->tm_min;
+                    break;
+                  }
                 case 5:
-                  temp_data = time_avar_digital[1]*100 + time_avar_digital[0];
-                  break;
+                  {
+                    temp_data = p->tm_sec*100 + time_ms_tmp/10;
+                    break;
+                  }
+                case 6:
+                  {
+                    temp_data = (time_ms_tmp % 10) * 10000;
+                    break;
+                  }
                 default:
                   temp_data = 0;
                 }//switch

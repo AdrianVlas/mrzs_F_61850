@@ -3784,16 +3784,16 @@ void changing_diagnostyka_state(void)
           //Вже відбулося перше зчитуванння часу - тобто системний час у нас є
           copying_time_dat = 1;
           time_t time_dat_tmp = time_dat_copy;
-          int time_ms_tmp = time_ms_copy;
+          int32_t time_ms_tmp = time_ms_copy;
           copying_time_dat = 0;
           for(size_t i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = *((unsigned char*)(&time_dat_tmp) + i);
-          for(size_t i = 0; i < sizeof(int); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
+          for(size_t i = 0; i < sizeof(int32_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
         }
         else
         {
           //Ще не відбулося перше зчитуванння часу - тому покищо ці поля записуємо числом 0xff, а потім, коли системний час зчитається, то ми це поле обновимо
           for(size_t i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = 0;
-          for(size_t i = 0; i < sizeof(int); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + sizeof(time_t) + i] = 0;
+          for(size_t i = 0; i < sizeof(int32_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + sizeof(time_t) + i] = 0;
         }
 
         buffer_pr_err_records[index_into_buffer_pr_err + 13] = number_changes & 0xff;

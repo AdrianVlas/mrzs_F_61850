@@ -394,7 +394,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
     //Заповнюємо поля відповідними цифрами
     /******************************************/
     time_t time_dat_tmp;
-    int time_ms_tmp;
+    int32_t time_ms_tmp;
     if (type_of_registrator == 2)
     {
       __HEADER_AR header_ar_tmp;
@@ -413,7 +413,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
     else
     {
       for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&time_dat_tmp) + i) =  buffer_for_manu_read_record[1 + i];
-      for(size_t i = 0; i < sizeof(int); i++) *((unsigned char*)(&time_ms_tmp) + i) = buffer_for_manu_read_record[1 + sizeof(time_t) + i];
+      for(size_t i = 0; i < sizeof(int32_t); i++) *((unsigned char*)(&time_ms_tmp) + i) = buffer_for_manu_read_record[1 + sizeof(time_t) + i];
     }
     
     if (time_dat_tmp != 0)

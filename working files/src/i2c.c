@@ -816,7 +816,7 @@ void main_routines_for_i2c(void)
         _SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
       }
       tmp_reg = time_bcd[0];
-      int time_ms_tmp = 100*(tmp_reg >> 4) + 10*(tmp_reg & 0xf);
+      int32_t time_ms_tmp = 100*(tmp_reg >> 4) + 10*(tmp_reg & 0xf);
 
       if(
          (_CHECK_SET_BIT(    diagnostyka, EVENT_START_SYSTEM_BIT       ) != 0) ||
@@ -839,7 +839,7 @@ void main_routines_for_i2c(void)
             unsigned int local_point_for_time = tail_fifo_buffer_pr_err_records*SIZE_ONE_RECORD_PR_ERR + 1 ; //Індекс першого числа часу у вже першому записі (перший запис відподає за подію - зупинку роботи приладу) (tail_fifo_buffer_pr_err_records має дорівнювати 0 у ціьому місці програми)
             //Час, який зараз прочитаний з RTC до моменту скидання біту HT вказує на час до пропадання живлення з годинника RTC
             for(unsigned int i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[local_point_for_time + i] = *((unsigned char*)(&time_dat_tmp) + i);
-            for(unsigned int i = 0; i < sizeof(int); i++)  buffer_pr_err_records[local_point_for_time + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
+            for(unsigned int i = 0; i < sizeof(int32_t); i++)  buffer_pr_err_records[local_point_for_time + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
           }
         }
         else
@@ -927,7 +927,7 @@ void main_routines_for_i2c(void)
                   )
             {
               for(unsigned int i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[local_point_for_time + i] = *((unsigned char*)(&time_dat_tmp) + i);
-              for(unsigned int i = 0; i < sizeof(int); i++)  buffer_pr_err_records[local_point_for_time + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
+              for(unsigned int i = 0; i < sizeof(int32_t); i++)  buffer_pr_err_records[local_point_for_time + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
               local_point_for_time += SIZE_ONE_RECORD_PR_ERR;
             }
             

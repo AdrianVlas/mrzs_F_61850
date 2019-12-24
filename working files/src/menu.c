@@ -907,7 +907,7 @@ void main_manu_function(void)
                 //Копіюємо текчий масив часу у масив для редагування
                 copying_time_dat = 1;
                 time_t time_dat_tmp = time_dat_copy;
-                int time_ms_tmp = time_ms_copy;
+                int32_t time_ms_tmp = time_ms_copy;
                 copying_time_dat = 0;
                 struct tm *p;
                 p = localtime(&time_dat_tmp);
@@ -945,7 +945,7 @@ void main_manu_function(void)
 
                 copying_time_dat = 1;
                 time_t time_dat_tmp = time_dat_copy;
-                int time_ms_tmp = time_ms_copy;
+                int32_t time_ms_tmp = time_ms_copy;
                 copying_time_dat = 0;
                 struct tm *p;
                 p = localtime(&time_dat_tmp);
