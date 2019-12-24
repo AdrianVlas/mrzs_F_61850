@@ -18,7 +18,7 @@ int postYustBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *yustbigcomponent;
 
-  int upravlYust=0;//флаг юстировки
+  int upravlYust=-1;//флаг юстировки
 
 /**************************************/
 //подготовка компонента ёстировки
@@ -211,6 +211,9 @@ int postYustBigWriteAction(void) {
 
     changed_ustuvannja = CHANGED_ETAP_ENDED;
     _SET_BIT(control_spi1_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
+  }//if
+  else if(upravlYust==0) {//флаг юстировки
+    upravlYust=-1;
   }//if
   else if(upravlMin==0x1111) {
 
