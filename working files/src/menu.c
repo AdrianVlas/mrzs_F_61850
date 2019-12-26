@@ -995,7 +995,7 @@ void main_manu_function(void)
                 }
                 if (found_changes == 0)
                 {
-                  if (calibration != calibration_edit) found_changes = 1;/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                  if (calibration != calibration_edit) found_changes = 1;
                 }
                 
                 //Виходимо з режиму редагування
@@ -1012,7 +1012,7 @@ void main_manu_function(void)
                 {
                   //Дані достовірні
 
-                  time_ms_save = 0;
+                  time_ms_save_l = 0;
                   
                   struct tm orig;
                   unsigned int tmp_reg = time_edit[1];
@@ -1036,10 +1036,10 @@ void main_manu_function(void)
                   orig.tm_wday = 0;
                   orig.tm_yday = 0;
                   orig.tm_isdst = -1;
-                  time_dat_save = mktime (&orig);
-                  save_time_dat = 2;
+                  time_dat_save_l = mktime (&orig);
+                  save_time_dat_l = 3;
                   
-                  calibration = calibration_edit;/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                  calibration = calibration_edit;
                   current_ekran.edition = 0;
                 }
                 else

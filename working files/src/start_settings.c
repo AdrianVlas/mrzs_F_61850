@@ -241,24 +241,6 @@ void global_vareiables_installation(void)
 //  current_ekran.cursor_on = 0;
 //  current_ekran.cursor_blinking_on = 0;  
   
-//  time[0] = 0x0;
-//  time[1] = 0x0;
-//  time[2] = 0x0;
-//  time[3] = 0x0;
-//  time[4] = 0x0;
-//  time[5] = 0x0;
-//  time[6] = 0x0;
-//  calibration = 0;
-
-//  time_copy[0] = 0x0;
-//  time_copy[1] = 0x0;
-//  time_copy[2] = 0x0;
-//  time_copy[3] = 0x0;
-//  time_copy[4] = 0x0;
-//  time_copy[5] = 0x0;
-//  time_copy[6] = 0x0;
-//  calibration_copy = 0;
-  
   /**************************/
   //Ініціалізація структури усправління драйвером I2C
   /**************************/

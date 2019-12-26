@@ -31,11 +31,10 @@ void make_ekran_time(void)
   /******************************************/
   //Заповнюємо поля відповідними цифрами
   /******************************************/
-  /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і make_ekran_time() викликаються з найнижчого рівня*/ 
   if (current_ekran.edition == 0)
   {
     time_t time_dat_tmp;
-    if (save_time_dat == 2) time_dat_tmp = time_dat_save;
+    if (save_time_dat_l == 3) time_dat_tmp = time_dat_save_l;
     else
     { 
       copying_time_dat = 1;

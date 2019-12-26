@@ -87,9 +87,9 @@ void start_receive_data_via_CANAL1_MO(void)
                 int32_t index_tmp = index - 1 - sizeof(time_t) - sizeof(int32_t);
                 if (index_tmp > 0)
                 {
-                  for(size_t i = 0; i < sizeof(time_t); i++)  *((uint8_t *)(&time_dat_save) + i) = Canal1_MO_Received[index_tmp++];
-                  for(size_t i = 0; i < sizeof(int32_t); i++)  *((uint8_t *)(&time_ms_save) + i) = Canal1_MO_Received[index_tmp++];
-                  save_time_dat = 2;
+                  for(size_t i = 0; i < sizeof(time_t); i++)  *((uint8_t *)(&time_dat_save_h) + i) = Canal1_MO_Received[index_tmp++];
+                  for(size_t i = 0; i < sizeof(int32_t); i++)  *((uint8_t *)(&time_ms_save_h) + i) = Canal1_MO_Received[index_tmp++];
+                  save_time_dat_h = 3;
                 }
                 else total_error_sw_fixed(84);
               }

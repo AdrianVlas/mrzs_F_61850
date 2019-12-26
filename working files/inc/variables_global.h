@@ -639,18 +639,10 @@ const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE
   }
 };
 
-
-unsigned int fixed_power_down_into_RTC/* = 0*/; 
-unsigned char time_bcd[7], thousandths_time; 
-unsigned char time_copy[7], thousandths_time_copy; 
 unsigned char calibration;
-unsigned char calibration_copy;
 unsigned char time_edit[7]; 
 unsigned char calibration_edit;
-unsigned int copy_register8_RTC;
 int etap_reset_of_bit = ETAP_CLEAR_OF_NONE;
-int etap_settings_test_frequency = -1;
-unsigned char temp_register_rtc[2];
 
 char getzone_string[2][50];
 size_t bank_getzone;
@@ -658,13 +650,13 @@ int isdst_prev = -1;
 clock_t clk_count;
 int32_t time_ms, time_ms_copy;
 time_t time_dat, time_dat_copy;
-unsigned int copying_time;
+unsigned int copying_time_to_RTC;
 int32_t time_ms_RTC;
 time_t time_dat_RTC;
 unsigned int copying_time_dat;
-int32_t time_ms_save;
-time_t time_dat_save;
-unsigned int save_time_dat;
+int32_t time_ms_save_l, time_ms_save_h;
+time_t time_dat_save_l, time_dat_save_h;
+unsigned int save_time_dat_l, save_time_dat_h;
 
 unsigned int changed_settings = CHANGED_ETAP_NONE; 
 unsigned char crc_settings;

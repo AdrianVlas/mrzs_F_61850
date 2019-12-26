@@ -3325,7 +3325,7 @@ void fix_change_settings(unsigned int setting_rang, unsigned int source)
   {
     //Записуємо час останніх змін
     time_t time_dat_tmp;
-    if (save_time_dat == 2) time_dat_tmp = time_dat_save;
+    if (save_time_dat_l == 3) time_dat_tmp = time_dat_save_l;
     else
     { 
       copying_time_dat = 1;
@@ -3373,7 +3373,7 @@ unsigned int set_new_settings_from_interface(unsigned int source)
   
   //Системний час
   time_t time_dat_tmp;
-  if (save_time_dat == 2) time_dat_tmp = time_dat_save;
+  if (save_time_dat_l == 3) time_dat_tmp = time_dat_save_l;
   else
   { 
     copying_time_dat = 1;

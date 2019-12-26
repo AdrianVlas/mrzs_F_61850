@@ -11854,23 +11854,30 @@ void TIM2_IRQHandler(void)
       time_dat++;
     }
       
-    if (save_time_dat)
+    if ((save_time_dat_h == 3) || (save_time_dat_l == 3))
     {
       //Процес запису нового часу
-      if (save_time_dat == 2)
+      if (save_time_dat_l == 3)
       {
-        time_ms = time_ms_save;
-        time_dat = time_dat_save;
+        time_ms = time_ms_save_l;
+        time_dat = time_dat_save_l;
         
-        save_time_dat = 1;
+        save_time_dat_l = 2;
+      }
+      if (save_time_dat_h == 3)
+      {
+        time_ms = time_ms_save_h;
+        time_dat = time_dat_save_h;
+        
+        save_time_dat_h = 2;
       }
       
-      if (copying_time == 1) copying_time = 0;
+      if (copying_time_to_RTC == 1) copying_time_to_RTC = 0;
     }
     else 
     {
       //Перевірка чи не потрібно забрати час з RTC
-      if (copying_time == 1)
+      if (copying_time_to_RTC == 1)
       {
         int32_t diff_ms = time_ms - time_ms_RTC;
         time_t diff_s = time_dat - time_dat_RTC;
@@ -11884,7 +11891,7 @@ void TIM2_IRQHandler(void)
           time_ms = time_ms_RTC;
           time_dat = time_dat_RTC;
         }
-        copying_time = 0;
+        copying_time_to_RTC = 0;
       }
     }
     

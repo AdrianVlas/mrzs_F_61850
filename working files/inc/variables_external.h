@@ -254,17 +254,10 @@ extern const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODY
 
 extern const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
 
-extern unsigned int fixed_power_down_into_RTC; 
-extern unsigned char time_bcd[7], thousandths_time; 
-extern unsigned char time_copy[7], thousandths_time_copy; 
 extern unsigned char calibration;
-extern unsigned char calibration_copy;
 extern unsigned char time_edit[7]; 
 extern unsigned char calibration_edit;
-extern unsigned int copy_register8_RTC;
 extern int etap_reset_of_bit;
-extern int etap_settings_test_frequency;
-extern unsigned char temp_register_rtc[2];
 
 extern char getzone_string[2][50];
 extern size_t bank_getzone;
@@ -272,13 +265,13 @@ extern int isdst_prev;
 extern clock_t clk_count;
 extern int32_t time_ms, time_ms_copy;
 extern time_t time_dat, time_dat_copy;
-extern unsigned int copying_time;
+extern unsigned int copying_time_to_RTC;
 extern int32_t time_ms_RTC;
 extern time_t time_dat_RTC;
 extern unsigned int copying_time_dat;
-extern int32_t time_ms_save;
-extern time_t time_dat_save;
-extern unsigned int save_time_dat;
+extern int32_t time_ms_save_l, time_ms_save_h;
+extern time_t time_dat_save_l, time_dat_save_h;
+extern unsigned int save_time_dat_l, save_time_dat_h;
 
 extern unsigned int changed_settings; 
 extern unsigned char crc_settings;

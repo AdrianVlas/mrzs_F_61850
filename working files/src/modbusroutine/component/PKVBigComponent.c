@@ -195,7 +195,7 @@ int getPKVBigModbusRegister(int adrReg)
 
   time_t time_dat_tmp;
   int32_t time_ms_tmp;
-  if (save_time_dat == 2) time_dat_tmp = time_dat_save;
+  if (save_time_dat_l == 3) time_dat_tmp = time_dat_save_l;
   else
   { 
     copying_time_dat = 1;
@@ -542,7 +542,7 @@ int postPKVBigWriteAction(void)
     if (check_data_for_data_time_menu() == 1)
     {
       //Дані достовірні
-      time_ms_save = 0;
+      time_ms_save_l = 0;
                   
       struct tm orig;
       unsigned int tmp_reg = time_edit[1];
@@ -565,8 +565,8 @@ int postPKVBigWriteAction(void)
       orig.tm_wday = 0;
       orig.tm_yday = 0;
       orig.tm_isdst = -1;
-      time_dat_save = mktime (&orig);
-      save_time_dat = 2;
+      time_dat_save_l = mktime (&orig);
+      save_time_dat_l = 3;
     }//if
     else return ERROR_VALID2;
   }
