@@ -223,8 +223,8 @@ void start_transmint_data_via_CANAL1_MO(void)
   
   sum += Canal1_MO_Transmit[index++] = SENDIND_TM_INFO;
     
-  for(size_t i = 0; i < sizeof(time_t); i++) Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_dat) + i);
-  for(size_t i = 0; i < sizeof(int32_t); i++) Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_ms) + i);
+  for(size_t i = 0; i < sizeof(time_t); i++) sum += Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_dat) + i);
+  for(size_t i = 0; i < sizeof(int32_t); i++) sum += Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_ms) + i);
   
   //Оперативні дані
   if ((index + 1 + 1 + 2 + 2 + SIZE_SENDING_DATA_TM) < BUFFER_CANAL1_MO)
