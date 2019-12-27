@@ -12089,7 +12089,9 @@ void main_manu_function(void)
                         
                       current_settings.time_zone = edition_settings.time_zone;
                       current_settings.dst = edition_settings.dst;
+#if (__VER__ >= 8000000)
                       _ForceReloadDstRules();
+#endif
                       
                       //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                       fix_change_settings(0, 1);

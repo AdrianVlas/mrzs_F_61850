@@ -1358,9 +1358,9 @@
       <group>
         <name>general</name>
         <group>
-          <name>a.11.c.d</name>
+          <name>a.15.c.d</name>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.11.c.d\const_global.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.15.c.d\const_global.h</name>
           </file>
         </group>
         <file>
@@ -1412,9 +1412,9 @@
       <group>
         <name>menu</name>
         <group>
-          <name>a.11.c.d</name>
+          <name>a.15.c.d</name>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.11.c.d\const_menu_outputs.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.15.c.d\const_menu_outputs.h</name>
           </file>
         </group>
         <group>
@@ -1443,6 +1443,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_communication_parameters.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_data_time_settings.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_extra_settings.h</name>
@@ -1616,9 +1619,9 @@
       <group>
         <name>Serial Dataflash</name>
         <group>
-          <name>a.11.c.d</name>
+          <name>a.15.c.d</name>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.11.c.d\const_driver_serial_dataflash.h</name>
+            <name>$PROJ_DIR$\..\..\working files\inc\a.15.c.d\const_driver_serial_dataflash.h</name>
           </file>
         </group>
       </group>
@@ -1836,6 +1839,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\menu_configuration.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\menu_data_time_settings.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\menu_df.c</name>

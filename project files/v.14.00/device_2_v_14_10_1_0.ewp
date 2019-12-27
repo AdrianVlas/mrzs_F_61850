@@ -5469,6 +5469,9 @@
             </group>
         </group>
         <group>
+            <name>time</name>
+        </group>
+        <group>
             <name>usb</name>
             <group>
                 <name>inc</name>
@@ -6581,5 +6584,17 @@
                 </file>
             </group>
         </group>
+        <file>
+            <name>$PROJ_DIR$\..\..\working files\time\clock.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\working files\time\getzone.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\working files\time\time.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\working files\time\time64.c</name>
+        </file>
     </group>
 </project>
