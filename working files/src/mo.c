@@ -88,7 +88,9 @@ void start_receive_data_via_CANAL1_MO(void)
                 if (index_tmp > 0)
                 {
                   for(size_t i = 0; i < sizeof(time_t); i++)  *((uint8_t *)(&time_dat_save_h) + i) = Canal1_MO_Received[index_tmp++];
-                  for(size_t i = 0; i < sizeof(int32_t); i++)  *((uint8_t *)(&time_ms_save_h) + i) = Canal1_MO_Received[index_tmp++];
+                  int32_t time_ms_tmp;
+                  for(size_t i = 0; i < sizeof(int32_t); i++)  *((uint8_t *)(&time_ms_tmp) + i) = Canal1_MO_Received[index_tmp++];
+                  time_ms_save_h = time_ms_tmp / 1000;
                   save_time_dat_h = 3;
                 }
                 else total_error_sw_fixed(84);
@@ -224,7 +226,8 @@ void start_transmint_data_via_CANAL1_MO(void)
   sum += Canal1_MO_Transmit[index++] = SENDIND_TM_INFO;
     
   for(size_t i = 0; i < sizeof(time_t); i++) sum += Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_dat) + i);
-  for(size_t i = 0; i < sizeof(int32_t); i++) sum += Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_ms) + i);
+  int32_t time_ms_tmp = time_ms * 1000;
+  for(size_t i = 0; i < sizeof(int32_t); i++) sum += Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_ms_tmp) + i);
   
   //Оперативні дані
   if ((index + 1 + 1 + 2 + 2 + SIZE_SENDING_DATA_TM) < BUFFER_CANAL1_MO)
