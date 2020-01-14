@@ -452,15 +452,39 @@ int main(void)
 //      current_settings.dst = MASKA_FOR_BIT(N_BIT_TZ_DST);
 //      
 //      struct tm orig;
+//      struct tm *p;
 //
 //      //GMT+2 DST
 //      //Experiment 1: ":GMT+2:GMT_3:0200(1996)040103-0:110103-0"
 //      //Experiment 2: ":GMT+2:GMT_3:0200(1996)040103-0:110104-0"
 //
+//      /*-1-*/
+//      orig.tm_sec = 59;
+//      orig.tm_min = 59;
+//      orig.tm_hour = 2;
+//      orig.tm_mday = 25;
+//      orig.tm_mon = 9;
+//      orig.tm_year = 120;
+//      orig.tm_wday = 0;
+//      orig.tm_yday = 0;
+//      orig.tm_isdst = -1;
+//      time_dat = mktime (& orig);
+//
+//      orig.tm_hour = 2;
+//      orig.tm_isdst = 0;
+//      time_dat = mktime (& orig);
+//
+//      orig.tm_hour = 2;
+//      orig.tm_isdst = 1;
+//      time_dat = mktime (& orig);
 //      
-//      //2020-10-25 03:58:00 1603587480 isdst = true
+//      time_dat = 1603583999;
+//      p = localtime(&time_dat);
+//      /*-1-*/
+//      
+//      /*-2-*/
 //      orig.tm_sec = 0;
-//      orig.tm_min = 58;
+//      orig.tm_min = 0;
 //      orig.tm_hour = 3;
 //      orig.tm_mday = 25;
 //      orig.tm_mon = 9;
@@ -469,51 +493,74 @@ int main(void)
 //      orig.tm_yday = 0;
 //      orig.tm_isdst = -1;
 //      time_dat = mktime (& orig);
-//      //result 1:1603591080 isdst = false Wrong
-//      //result 2:1603587480 isdst = true OK
+//
+//      orig.tm_hour = 3;
+//      orig.tm_isdst = 0;
+//      time_dat = mktime (& orig);
+//
+//      orig.tm_hour = 3;
+//      orig.tm_isdst = 1;
+//      time_dat = mktime (& orig);
 //      
-//      struct tm *p;
-//      time_dat = 1603587480; //2020-10-25 3:58:00 isdst = true 
+//      time_dat = 1603584000;
 //      p = localtime(&time_dat);
-//      //result 1: 2020-10-25 3:58:00 isdst = true; OK
-//      //result 2: 2020-10-25 3:58:00 isdst = true; OK
 //      
-//      time_dat = 1603587599; //2020-10-25 3:59:59 isdst = true 
-//      p = localtime(&time_dat); 
-//      //result 1: 2020-10-25 3:59:59 isdst = true; OK
-//      //result 2: 2020-10-25 3:59:59 isdst = true; OK
-//
-//      time_dat = 1603587600;//2020-10-25 4:00:00 isdst = true -> 3:00:00 isdst = false
+//      time_dat = 1603587600;
 //      p = localtime(&time_dat);
-//      //result 1: 2020-10-25 3:00:00 isdst = false; OK
-//      //result 2: 2020-10-25 4:00:00 isdst = true; Wrong
+//      /*-2-*/
 //
-//      time_dat = 1603591199;//2020-10-25 3:59:59 isdst = false 
-//      p = localtime(&time_dat); 
-//      //result 1: 2020-10-25 3:59:59 isdst = false; OK
-//      //result 2: 2020-10-25 4:59:59 isdst = true; Wrong
+//      /*-3-*/
+//      orig.tm_sec = 59;
+//      orig.tm_min = 59;
+//      orig.tm_hour = 3;
+//      orig.tm_mday = 25;
+//      orig.tm_mon = 9;
+//      orig.tm_year = 120;
+//      orig.tm_wday = 0;
+//      orig.tm_yday = 0;
+//      orig.tm_isdst = -1;
+//      time_dat = mktime (& orig);
 //
-//      time_dat = 1603591200;//2020-10-25 4:00:00 isdst = false 
-//      p = localtime(&time_dat); 
-//      //result 1: 2020-10-25 4:00:00 isdst = false; OK
-//      //result 2: 2020-10-25 4:00:00 isdst = false; OK
+//      orig.tm_hour = 3;
+//      orig.tm_isdst = 0;
+//      time_dat = mktime (& orig);
 //
-//      time_dat = 1603591201;//2020-10-25 4:00:01 isdst = false 
-//      p = localtime(&time_dat); 
-//      //result 1: 2020-10-25 4:00:01 isdst = false; OK
-//      //result 2: 2020-10-25 4:00:01 isdst = false; OK
+//      orig.tm_hour = 3;
+//      orig.tm_isdst = 1;
+//      time_dat = mktime (& orig);
+//      
+//      time_dat = 1603587599;
+//      p = localtime(&time_dat);
+//      
+//      time_dat = 1603591199;
+//      p = localtime(&time_dat);
+//      /*-3-*/
 //
-//      time_dat = 1603594799;//2020-10-25 4:59:59 isdst = false 
-//      p = localtime(&time_dat); 
-//      //result 1: 2020-10-25 4:59:59 isdst = false; OK
-//      //result 2: 2020-10-25 4:59:59 isdst = false; OK
+//      /*-4-*/
+//      orig.tm_sec = 0;
+//      orig.tm_min = 0;
+//      orig.tm_hour = 4;
+//      orig.tm_mday = 25;
+//      orig.tm_mon = 9;
+//      orig.tm_year = 120;
+//      orig.tm_wday = 0;
+//      orig.tm_yday = 0;
+//      orig.tm_isdst = -1;
+//      time_dat = mktime (& orig);
 //
-//      time_dat = 1603594800;//2020-10-25 5:00:00 isdst = false 
-//      p = localtime(&time_dat); 
-//      //result 1: 2020-10-25 5:00:00 isdst = false; OK
-//      //result 2: 2020-10-25 5:00:00 isdst = false; OK
+//      orig.tm_hour = 4;
+//      orig.tm_isdst = 0;
+//      time_dat = mktime (& orig);
 //
-//      time_dat = 1603594801;//2020-10-25 5:00:01 isdst = false 
+//      orig.tm_hour = 4;
+//      orig.tm_isdst = 1;
+//      time_dat = mktime (& orig);
+//      
+//      time_dat = 1603591200;
+//      p = localtime(&time_dat);
+//      /*-4-*/
+//      
+//      time_dat = 1603591201;
 //  }
   
   //Виставляємо подію про зупинку пристрою у попередньому сеансі роботи, а час встановиться пізніше, RTC запм'ятовує час пропадання живлення

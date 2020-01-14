@@ -128,21 +128,12 @@ char const * __getzone()
   {
     p_getzone_string[i++] = ':';
   
-    char const dst_rul_ukr[] = "(1996)040103-0:110104-0";
+    char const dst_rul_ukr[] = "(1996)040103-0:110103-0";
     for (size_t j = 0; dst_rul_ukr[j] != '\0'; ++j) p_getzone_string[i++] = dst_rul_ukr[j];
   }
 
   p_getzone_string[i++] = '\0';
   return p_getzone_string;
-  
-//  if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
-//  {
-//    return ":GMT+2:GMT+3:0200:(1996)040103-0:110104-0";
-//  }
-//  else
-//  {
-//    return ":GMT+2:GMT+3:0200";
-//  }
 }
 
 __ATTRIBUTES char *_DstMalloc(size_t);
