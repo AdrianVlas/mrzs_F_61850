@@ -901,6 +901,7 @@ void main_manu_function(void)
           {
             if (new_state_keyboard == (1<<BIT_KEY_ENTER))
             {
+              static int tm_isdst;
               //Натиснута кнопка ENTER
               if(current_ekran.edition == 0)
               {
@@ -949,6 +950,7 @@ void main_manu_function(void)
                 copying_time_dat = 0;
                 struct tm *p;
                 p = localtime(&time_dat_tmp);
+                tm_isdst = p->tm_isdst;
 
                 while ((i < 7) && (found_changes == 0))
                 {
@@ -1035,8 +1037,14 @@ void main_manu_function(void)
 
                   orig.tm_wday = 0;
                   orig.tm_yday = 0;
-                  orig.tm_isdst = -1;
+                  orig.tm_isdst = (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) ? tm_isdst : 0;
                   time_dat_save_l = mktime (&orig);
+                  if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
+                  {
+                    struct tm *p_tmp = localtime(&time_dat_save_l);
+                    if (tm_isdst != p_tmp->tm_isdst) orig.tm_isdst = p_tmp->tm_isdst;
+                    time_dat_save_l = mktime (&orig);
+                  }
                   save_time_dat_l = 3;
                   
                   calibration = calibration_edit;

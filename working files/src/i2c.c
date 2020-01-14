@@ -2,9 +2,6 @@
 
 int etap_settings_test_frequency = -1;
 
-int tm_isdst_lock = -1;
-int hour_lock = -1;
-
 /**************************************/
 //Конфігурація I2C
 /**************************************/
@@ -571,7 +568,7 @@ void main_routines_for_i2c(void)
       time_t time_dat_tmp = time_dat_copy + 1; //+1 щоб спробувати записати, коли буде перехід на наступну секунду, або вже як вийде...
       copying_time_dat = 0;
       struct tm *p;
-      p = localtime(&time_dat_tmp);
+      p = gmtime(&time_dat_tmp);
       
       
       //Запускаємо процес запису часу в RTC
@@ -632,12 +629,6 @@ void main_routines_for_i2c(void)
         
         if ((save_time_dat_l == 1) || (save_time_dat_h == 1))
         {
-          if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
-          {
-            long long hour_RTC = time_dat_RTC / 3600;
-            long long hour_tmp = time_dat_tmp / 3600;
-            if (hour_RTC != hour_tmp)  isdst_prev = -1;
-          }
           if (save_time_dat_l == 1) save_time_dat_l = 0;
           if (save_time_dat_h == 1) save_time_dat_h = 0;
         }
@@ -770,61 +761,25 @@ void main_routines_for_i2c(void)
 
       orig.tm_wday = 0;
       orig.tm_yday = 0;
+      orig.tm_isdst = -1;
+
+      lt_or_utc = true;
+#if (__VER__ >= 8000000)
+      _ForceReloadDstRules();
+#endif
+      time_t time_dat_tmp = mktime (&orig);
+      lt_or_utc = false;
+#if (__VER__ >= 8000000)
+      _ForceReloadDstRules();
+#endif
+      tmp_reg = reg_RTC[0];
+      int32_t time_ms_tmp = 100*(tmp_reg >> 4) + 10*(tmp_reg & 0xf);
       
       if((state_i2c_task & STATE_FIRST_READING_RTC) !=0)
       {
         //Зараз відбувається перше зчитування даних з RTC - скидаємо біт першого читання
         state_i2c_task &= (unsigned int)(~STATE_FIRST_READING_RTC);
-        
-        tm_isdst_lock = isdst_prev;
-        hour_lock = orig.tm_hour;
       }
-
-      if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
-      {
-        if(
-           (tm_isdst_lock >= 0) &&
-           (  
-            (isdst_prev < 0) ||
-            (hour_lock != orig.tm_hour)
-           )   
-          )
-        {
-          tm_isdst_lock = -1;
-          hour_lock = -1;
-        }
-        orig.tm_isdst = tm_isdst_lock;
-      }
-      else 
-      {
-        tm_isdst_lock = -1;
-        hour_lock = -1;
-        
-        orig.tm_isdst = 0;
-      }
-      
-      time_t time_dat_tmp = mktime (&orig);    
-      
-      if(isdst_prev < 0) 
-      {
-        isdst_prev = orig.tm_isdst;
-        _SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
-      }
-      else if (isdst_prev != orig.tm_isdst)
-      {
-        int tmp_reg_int = (orig.tm_isdst > 0) ? orig.tm_hour : --orig.tm_hour;
-        reg_RTC[3] = ((tmp_reg_int / 10) << 4) | (tmp_reg_int % 10);
-        time_dat_tmp = mktime (& orig);
-
-        _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
-        _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-        
-        hour_lock = orig.tm_hour;
-        tm_isdst_lock = isdst_prev = orig.tm_isdst;
-        _SET_BIT(control_spi1_taskes, TASK_START_WRITE_DST_EEPROM_BIT);
-      }
-      tmp_reg = reg_RTC[0];
-      int32_t time_ms_tmp = 100*(tmp_reg >> 4) + 10*(tmp_reg & 0xf);
 
       if(
          (_CHECK_SET_BIT(    diagnostyka, EVENT_START_SYSTEM_BIT       ) != 0) ||

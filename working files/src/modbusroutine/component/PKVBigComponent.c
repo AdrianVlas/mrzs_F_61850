@@ -564,8 +564,14 @@ int postPKVBigWriteAction(void)
 
       orig.tm_wday = 0;
       orig.tm_yday = 0;
-      orig.tm_isdst = -1;
+      orig.tm_isdst = (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) ? p->tm_isdst : 0;
       time_dat_save_l = mktime (&orig);
+      if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
+      {
+        struct tm *p_tmp = localtime(&time_dat_save_l);
+        if (p->tm_isdst != p_tmp->tm_isdst) orig.tm_isdst = p_tmp->tm_isdst;
+        time_dat_save_l = mktime (&orig);
+      }
       save_time_dat_l = 3;
     }//if
     else return ERROR_VALID2;
