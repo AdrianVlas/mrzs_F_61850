@@ -647,7 +647,6 @@ int etap_reset_of_bit = ETAP_CLEAR_OF_NONE;
 char getzone_string[2][50];
 size_t bank_getzone;
 unsigned int lt_or_utc;
-int isdst_prev = -1;
 clock_t clk_count;
 int32_t time_ms, time_ms_copy;
 time_t time_dat, time_dat_copy;

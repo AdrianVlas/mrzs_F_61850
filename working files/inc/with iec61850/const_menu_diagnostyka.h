@@ -3,7 +3,7 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 4))
+#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 3))
 #define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
 #define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
@@ -47,9 +47,6 @@ ERROR_RESURS_EEPROM_CONTROL_BIT,
 ERROR_ENERGY_EEPROM_BIT,
 ERROR_ENERGY_EEPROM_EMPTY_BIT,
 ERROR_ENERGY_EEPROM_COMPARISON_BIT,
-ERROR_DST_EEPROM_BIT,
-ERROR_DST_EEPROM_EMPTY_BIT,
-ERROR_DST_EEPROM_COMPARISON_BIT,
 
 RTC_BATTERY_LOW_BIT,
 RTC_OSCILLATOR_STOPED_BIT,
@@ -135,14 +132,14 @@ ERROR_CB_FIX
            (1 << (ERROR_CPU_RECEIVING_CANAL_1 - 64))         |\
            (1 << (ERROR_CPU_RECEIVED_PACKET_CANAL_1 - 64))   |\
            (1 << (ERROR_CPU_ANSWER_CANAL_1 - 64))            |\
-           (1 << (ERROR_CPU_NO_ANSWER_CANAL_1 - 64))          \
+           (1 << (ERROR_CPU_NO_ANSWER_CANAL_1 - 64))         |\
+           (1 << (ERROR_IEC_RECEIVING_CANAL_1 - 64))         |\
+           (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_1 - 64))   |\
+           (1 << (ERROR_IEC_REQUEST_CANAL_1 - 64))            \
           )   
 
 #define WORD_3_MASKA_ERRORS_FROM_CANAL_1 (unsigned int)       \
           (                                                   \
-           (1 << (ERROR_IEC_RECEIVING_CANAL_1 - 96))         |\
-           (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_1 - 96))   |\
-           (1 << (ERROR_IEC_REQUEST_CANAL_1 - 96))           |\
            (1 << (ERROR_IEC_NO_ANSWER_CANAL_1 - 96))         |\
            (1 << (ERROR_IEC_RECEIVING_CANAL_2 - 96))         |\
            (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_2 - 96))   |\
@@ -196,13 +193,13 @@ ERROR_CB_FIX
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 12 - 32))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 13 - 32))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 14 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 15 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 16 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 17 - 32))               \
 )
 
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
-    (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 15 - 64))               \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 16 - 64))               \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 17 - 64))               \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
+    (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 19 - 64))               \
   | (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
 )
@@ -262,9 +259,6 @@ ERROR_CB_FIX
   " Ош.к.с.энергий ",   \
   " Энергий нет    ",   \
   " Ош.зап.энергий ",   \
-  " Ош.воcст.с.ЛВ  ",   \
-  " Инф.о ЛВ нет   ",   \
-  " Ош.зап.ЛВ      ",   \
   " Батарея разряж.",   \
   "Осцилятор остан.",   \
   "Отказ Осцилятора",   \
@@ -344,14 +338,9 @@ ERROR_CB_FIX
   " БДВВ6 ф.       ",   \
   " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Ошибка 120     ",   \
-  " Ошибка 121     ",   \
-  " Ошибка 122     ",   \
-  " Ошибка 123     ",   \
-  " Ошибка 124     ",   \
-  " Ошибка 125     ",   \
-  " Ошибка 126     ",   \
-  " Ошибка 127     "
+  " Ошибка 117     ",   \
+  " Ошибка 118     ",   \
+  " Ошибка 119     "
 
 # define NAME_DIAGN_UA  \
   " Пом.I2C        ",   \
@@ -392,9 +381,6 @@ ERROR_CB_FIX
   " Пом.к.с.енергій",   \
   " Енергій нема   ",   \
   " Пом.зап.енергій",   \
-  " Пом.відн.с.ЛЧ  ",   \
-  " Інф.про ЛЧ нема",   \
-  " Пом.зап.ЛЧ     ",   \
   "Батарея разрядж.",   \
   " Осцилятор зуп. ",   \
   " Відм.Осцилятора",   \
@@ -474,14 +460,9 @@ ERROR_CB_FIX
   " БДВВ6 ф.       ",   \
   " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Помилка 120    ",   \
-  " Помилка 121    ",   \
-  " Помилка 122    ",   \
-  " Помилка 123    ",   \
-  " Помилка 124    ",   \
-  " Помилка 125    ",   \
-  " Помилка 126    ",   \
-  " Помилка 127    "
+  " Помилка 117    ",   \
+  " Помилка 118    ",   \
+  " Помилка 119    "
 
 # define NAME_DIAGN_EN  \
   " I2C Err.       ",   \
@@ -522,9 +503,6 @@ ERROR_CB_FIX
   " Ош.к.с.энергий ",   \
   " Энергий нет    ",   \
   " Ош.зап.энергий ",   \
-  " Ош.воcст.с.ЛВ  ",   \
-  " Инф.о ЛВ нет   ",   \
-  " Ош.зап.ЛВ      ",   \
   " RTC:Battery low",   \
   " RTC:Osc.stop   ",   \
   " RTC:Osc.fail   ",   \
@@ -604,14 +582,9 @@ ERROR_CB_FIX
   " BDVV6 f.       ",   \
   " BDVV6 ctrl.    ",   \
   " CB f.          ",   \
-  " Error 120      ",   \
-  " Error 121      ",   \
-  " Error 122      ",   \
-  " Error 123      ",   \
-  " Error 124      ",   \
-  " Error 125      ",   \
-  " Error 126      ",   \
-  " Error 127      "
+  " Error 117      ",   \
+  " Error 118      ",   \
+  " Error 119      "
 
 # define NAME_DIAGN_KZ  \
   " Ош.I2C         ",   \
@@ -652,9 +625,6 @@ ERROR_CB_FIX
   " Ош.к.с.энергий ",   \
   " Энергий нет    ",   \
   " Ош.зап.энергий ",   \
-  " Ош.воcст.с.ЛВ  ",   \
-  " Инф.о ЛВ нет   ",   \
-  " Ош.зап.ЛВ      ",   \
   " Батарея разряж.",   \
   "Осцилятор остан.",   \
   "Отказ Осцилятора",   \
@@ -734,13 +704,8 @@ ERROR_CB_FIX
   " БДВВ6 ф.       ",   \
   " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Ошибка 120     ",   \
-  " Ошибка 121     ",   \
-  " Ошибка 122     ",   \
-  " Ошибка 123     ",   \
-  " Ошибка 124     ",   \
-  " Ошибка 125     ",   \
-  " Ошибка 126     ",   \
-  " Ошибка 127     "
+  " Ошибка 117     ",   \
+  " Ошибка 118     ",   \
+  " Ошибка 119     "
     
 #endif

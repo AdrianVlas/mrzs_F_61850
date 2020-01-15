@@ -262,7 +262,6 @@ extern int etap_reset_of_bit;
 extern char getzone_string[2][50];
 extern size_t bank_getzone;
 extern unsigned int lt_or_utc;
-extern int isdst_prev;
 extern clock_t clk_count;
 extern int32_t time_ms, time_ms_copy;
 extern time_t time_dat, time_dat_copy;

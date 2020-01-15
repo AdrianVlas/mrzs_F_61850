@@ -767,6 +767,8 @@ void main_routines_for_i2c(void)
 #if (__VER__ >= 8000000)
       _ForceReloadDstRules();
 #endif
+      //Робота з Watchdog
+      watchdog_routine();
       time_t time_dat_tmp = mktime (&orig);
       lt_or_utc = false;
 #if (__VER__ >= 8000000)

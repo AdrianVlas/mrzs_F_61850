@@ -47,9 +47,6 @@ ERROR_RESURS_EEPROM_CONTROL_BIT,
 ERROR_ENERGY_EEPROM_BIT,
 ERROR_ENERGY_EEPROM_EMPTY_BIT,
 ERROR_ENERGY_EEPROM_COMPARISON_BIT,
-ERROR_DST_EEPROM_BIT,
-ERROR_DST_EEPROM_EMPTY_BIT,
-ERROR_DST_EEPROM_COMPARISON_BIT,
 
 RTC_BATTERY_LOW_BIT,
 RTC_OSCILLATOR_STOPED_BIT,
@@ -145,26 +142,26 @@ ERROR_CB_FIX
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 12 - 32))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 13 - 32))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 14 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 15 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 16 - 32))               \
+  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 17 - 32))               \
 )
 
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
-    (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 15 - 64))               \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 16 - 64))               \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 17 - 64))               \
-  | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
+    (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 19 - 64))               \
   | (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
   | (1 << (ERROR_BA_1_FIX - 64))                                \
   | (1 << (ERROR_BA_1_CTLR - 64))                               \
   | (1 << (ERROR_BDVV5_1_FIX - 64))                             \
   | (1 << (ERROR_BDVV5_1_CTLR - 64))                            \
+  | (1 << (ERROR_BDVV5_2_FIX - 64))                             \
+  | (1 << (ERROR_BDVV5_2_CTLR - 64))                            \
+  | (1 << (ERROR_BDV_DZ_FIX - 64))                              \
 )
 
 #define MASKA_AVAR_ERROR_3        (unsigned int)(               \
-    (1 << (ERROR_BDVV5_2_FIX - 96))                             \
-  | (1 << (ERROR_BDVV5_2_CTLR - 96))                            \
-  | (1 << (ERROR_BDV_DZ_FIX - 96))                              \
-  | (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
+    (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
   | (1 << (ERROR_BDZ_FIX - 96))                                 \
   | (1 << (ERROR_BDZ_CTLR - 96))                                \
   | (1 << (ERROR_BDVV6_FIX - 96))                               \
@@ -210,9 +207,6 @@ ERROR_CB_FIX
   " Ош.к.с.энергий ",   \
   " Энергий нет    ",   \
   " Ош.зап.энергий ",   \
-  " Ош.воcст.с.ЛВ  ",   \
-  " Инф.о ЛВ нет   ",   \
-  " Ош.зап.ЛВ      ",   \
   " Батарея разряж.",   \
   "Осцилятор остан.",   \
   "Отказ Осцилятора",   \
@@ -275,7 +269,10 @@ ERROR_CB_FIX
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
   " БДВВ6 ф.       ",   \
-  " БДВВ6 к.       "
+  " БДВВ6 к.       ",   \
+  " Ошибка 101     ",   \
+  " Ошибка 102     ",   \
+  " Ошибка 103     "
 
 # define NAME_DIAGN_UA  \
   " Пом.I2C        ",   \
@@ -316,9 +313,6 @@ ERROR_CB_FIX
   " Пом.к.с.енергій",   \
   " Енергій нема   ",   \
   " Пом.зап.енергій",   \
-  " Пом.відн.с.ЛЧ  ",   \
-  " Інф.про ЛЧ нема",   \
-  " Пом.зап.ЛЧ     ",   \
   "Батарея разрядж.",   \
   " Осцилятор зуп. ",   \
   " Відм.Осцилятора",   \
@@ -381,7 +375,10 @@ ERROR_CB_FIX
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
   " БДВВ6 ф.       ",   \
-  " БДВВ6 к.       "
+  " БДВВ6 к.       ",   \
+  " Помилка 101    ",   \
+  " Помилка 102    ",   \
+  " Помилка 103    "
 
 # define NAME_DIAGN_EN  \
   " I2C Err.       ",   \
@@ -422,9 +419,6 @@ ERROR_CB_FIX
   " Ош.к.с.энергий ",   \
   " Энергий нет    ",   \
   " Ош.зап.энергий ",   \
-  " Ош.воcст.с.ЛВ  ",   \
-  " Инф.о ЛВ нет   ",   \
-  " Ош.зап.ЛВ      ",   \
   " RTC:Battery low",   \
   " RTC:Osc.stop   ",   \
   " RTC:Osc.fail   ",   \
@@ -487,7 +481,10 @@ ERROR_CB_FIX
   " BDZ f.         ",   \
   " BDZ ctrl.      ",   \
   " BDVV6 f.       ",   \
-  " BDVV6 ctrl.    "
+  " BDVV6 ctrl.    ",   \
+  " Error 101      ",   \
+  " Error 102      ",   \
+  " Error 103      "
 
 # define NAME_DIAGN_KZ  \
   " Ош.I2C         ",   \
@@ -528,9 +525,6 @@ ERROR_CB_FIX
   " Ош.к.с.энергий ",   \
   " Энергий нет    ",   \
   " Ош.зап.энергий ",   \
-  " Ош.воcст.с.ЛВ  ",   \
-  " Инф.о ЛВ нет   ",   \
-  " Ош.зап.ЛВ      ",   \
   " Батарея разряж.",   \
   "Осцилятор остан.",   \
   "Отказ Осцилятора",   \
@@ -593,6 +587,9 @@ ERROR_CB_FIX
   " БДЗ ф.         ",   \
   " БДЗ к.         ",   \
   " БДВВ6 ф.       ",   \
-  " БДВВ6 к.       "
+  " БДВВ6 к.       ",   \
+  " Ошибка 101     ",   \
+  " Ошибка 102     ",   \
+  " Ошибка 103     "
     
 #endif
