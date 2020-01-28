@@ -1510,23 +1510,29 @@ m1:
   for(int i=0; i<countAdr; i++)
   {
     int offset = i+beginAdr-BEGIN_ADR_REGISTER;
-    if(offset==MARKER1037 || offset==MARKER1038 || offset==MARKER1039 || offset==MARKER1040 || offset==MARKER1041)
+    unsigned int chastka = edition_settings.setpoint_r_kom_st_Inom/edition_settings.setpoint_r_kom_st_Inom_vymk;
+    if(offset==MARKER1037 || offset==MARKER1038)
     {
-      temp1=edition_settings.setpoint_pochatkovyj_resurs;
-      unsigned int chastka = edition_settings.setpoint_r_kom_st_Inom/edition_settings.setpoint_r_kom_st_Inom_vymk;
+      temp1=edition_settings.setpoint_pochatkovyj_resurs;//MARKER1037 MARKER1038
       if(
         !(((unsigned int)temp1 >= (2*chastka)) && ((unsigned int)temp1 <= edition_settings.setpoint_r_kom_st_Inom))
       ) return ERROR_VALID2;//îøèáêà âàëèäàöèè
-      temp1=edition_settings.setpoint_krytychnyj_resurs;
+    }//if(offset==MARKER1037 || offset==MARKER1038
+    if(offset==MARKER1039)
+    {
+      temp1=edition_settings.setpoint_krytychnyj_resurs;//MARKER1039
       if(
         !(((unsigned int)temp1 >= chastka) && ((unsigned int)temp1 <= 2*chastka))
       ) return ERROR_VALID2;//îøèáêà âàëèäàöèè
+    }//if(offset==MARKER1039
 
-      temp1=edition_settings.setpoint_pochatkova_k_vymk;
+    if(offset==MARKER1040 || offset==MARKER1041)
+    {
+      temp1=edition_settings.setpoint_pochatkova_k_vymk;//MARKER1040 MARKER1041
       if(
         !((unsigned int)temp1 <= edition_settings.setpoint_r_kom_st_Inom)
       ) return ERROR_VALID2;//îøèáêà âàëèäàöèè
-    }//if
+    }//if(offset==MARKER1040 || offset==MARKER1041)
 
 //ÎÑÎÁÀß ÏĞÎÂÅĞÊÀ
 
