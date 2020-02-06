@@ -387,6 +387,8 @@ typedef struct
   
   int32_t time_zone;                                    //Часова зона
   uint32_t dst;                                         //Перехід на літній час
+  uint32_t dst_on_rule;                                 //Правило переходу на Літній час
+  uint32_t dst_off_rule;                                //Правило переходу на стандартний час
   
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   //IP4

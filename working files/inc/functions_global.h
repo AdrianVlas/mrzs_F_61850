@@ -152,6 +152,7 @@ void make_ekran_timeout_interface(void);
 void make_ekran_settings_network_layer_Ethernet(void);
 void make_ekran_chose_data_time_settings(void);
 void make_ekran_timezone_dst(void);
+void make_ekran_dst_rule(uint32_t);
 void make_ekran_chose_registrators(void);
 void make_ekran_settings_analog_registrators(void);
 void make_ekran_timeout_analog_registrator(void);

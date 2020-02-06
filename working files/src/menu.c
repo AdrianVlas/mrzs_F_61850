@@ -2062,6 +2062,17 @@ void main_manu_function(void)
             else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+              if ((current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) == 0)
+              {
+                while(
+                      (current_ekran.index_position == INDEX_ML_CHDT_DST_ON) ||
+                      (current_ekran.index_position == INDEX_ML_CHDT_DST_OFF)
+                     )
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+                }
+              }
+
               position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
               //Формуємо екран вибору налаштувань дати і часу
               make_ekran_chose_data_time_settings();
@@ -3569,6 +3580,15 @@ void main_manu_function(void)
                   //Переходимо на меню відображення налаштувань часової зони і правил переходу на літній час
                   current_ekran.current_level = EKRAN_TIME_ZONE;
                 }
+                else if(
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_ON) ||
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_OFF)
+                       )
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення правил переходу між літнім часом і стандартним часом
+                  current_ekran.current_level = EKRAN_DST_RULE;
+                }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                 else if(current_ekran.index_position == INDEX_ML_CHDT_SYNCHRO)
                 {
@@ -4444,6 +4464,17 @@ void main_manu_function(void)
               else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS - 1;
+                if ((current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) == 0)
+                {
+                  while(
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_ON) ||
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_OFF)
+                       )
+                  {
+                    if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS - 1;
+                  }
+                }
+
                 position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
                 //Формуємо екран вибору налаштувань дати і часу
                 make_ekran_chose_data_time_settings();
@@ -5230,7 +5261,18 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position =  0;
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+                if ((current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) == 0)
+                {
+                  while(
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_ON) ||
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_OFF)
+                       )
+                  {
+                    if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+                  }
+                }
+
                 position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
                 //Формуємо екран вибору налаштувань дати і часу
                 make_ekran_chose_data_time_settings();
@@ -5776,6 +5818,7 @@ void main_manu_function(void)
 #endif
       
     case EKRAN_TIME_ZONE:
+    case EKRAN_DST_RULE:
     case EKRAN_GENERAL_PICKUPS_EL:
     case EKRAN_LIST_TYPE_DF:
     case EKRAN_TIMEOUT_DF1:
@@ -6530,6 +6573,16 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_TIME_ZONE] = current_ekran.index_position;
               //Формуємо екран
               make_ekran_timezone_dst();
+            }
+            else if(current_ekran.current_level == EKRAN_DST_RULE)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_DST_RULE) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_DST_RULE] = current_ekran.index_position;
+              
+              __SETTINGS *p_settings = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+              uint32_t rule = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? p_settings->dst_on_rule : p_settings->dst_off_rule;
+              //Формуємо екран
+              make_ekran_dst_rule(rule);
             }
             else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
             {
@@ -7682,6 +7735,17 @@ void main_manu_function(void)
                   edition_settings.time_zone = current_settings.time_zone;
                   edition_settings.dst = current_settings.dst;
                 }
+                else if(current_ekran.current_level == EKRAN_DST_RULE)
+                {
+                  if (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON)
+                  {
+                    edition_settings.dst_on_rule = current_settings.dst_on_rule;
+                  }
+                  else
+                  {
+                    edition_settings.dst_off_rule = current_settings.dst_off_rule;
+                  }
+                }
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
                   if (current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -8718,6 +8782,17 @@ void main_manu_function(void)
                       (edition_settings.time_zone != current_settings.time_zone) ||
                       (edition_settings.dst != current_settings.dst)
                      )found_changes = 1;
+                }
+                else if(current_ekran.current_level == EKRAN_DST_RULE)
+                {
+                  if (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON)
+                  {
+                    if (edition_settings.dst_on_rule != current_settings.dst_on_rule)  found_changes = 1;
+                  }
+                  else
+                  {
+                    if (edition_settings.dst_off_rule != current_settings.dst_off_rule)  found_changes = 1;
+                  }
                 }
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
@@ -12115,6 +12190,40 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
+                else if(current_ekran.current_level == EKRAN_DST_RULE)
+                {
+                  uint32_t *p_rule_target = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? &edition_settings.dst_on_rule : &edition_settings.dst_off_rule;
+                  int mounth = (*p_rule_target >> POS_MM) & ((1 << SHIFT_MM) - 1);
+                  int dow = (*p_rule_target >> POS_DOW) & ((1 << SHIFT_DOW) - 1);
+                  int wr = (*p_rule_target >> POS_WR) & ((1 << SHIFT_WR) - 1);
+                  int hour = (*p_rule_target >> POS_HH) & ((1 << SHIFT_HH) - 1);
+
+                  if (
+                      (
+                       (mounth >= DST_RULE_MM_MIN ) && (mounth <= DST_RULE_MM_MAX )) &&
+                      ((dow    >= DST_RULE_DOW_MIN) && (dow    <= DST_RULE_DOW_MAX)) &&
+                      ((wr     >= DST_RULE_DR_MIN ) && (wr     <= DST_RULE_DR_MAX )) &&
+                      ((hour   >= DST_RULE_HH_MIN ) && (hour   <= DST_RULE_HH_MAX ))
+                     )   
+                  {
+                    uint32_t *p_rule_source = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? &current_settings.dst_on_rule : &current_settings.dst_off_rule;
+                    if (*p_rule_target != *p_rule_source)
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                      *p_rule_source = *p_rule_target;
+#if (__VER__ >= 8000000)
+                      _ForceReloadDstRules();
+#endif
+                      
+                      //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
                   if (current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -13877,6 +13986,16 @@ void main_manu_function(void)
                 //Формуємо екран
                 make_ekran_timezone_dst();
               }
+              else if(current_ekran.current_level == EKRAN_DST_RULE)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_DST_RULE - 1;
+                position_in_current_level_menu[EKRAN_DST_RULE] = current_ekran.index_position;
+              
+                __SETTINGS *p_settings = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+                uint32_t rule = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? p_settings->dst_on_rule : p_settings->dst_off_rule;
+                //Формуємо екран
+                make_ekran_dst_rule(rule);
+              }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.edition == 0)
@@ -15398,6 +15517,16 @@ void main_manu_function(void)
                 position_in_current_level_menu[EKRAN_TIME_ZONE] = current_ekran.index_position;
                 //Формуємо екран
                 make_ekran_timezone_dst();
+              }
+              else if(current_ekran.current_level == EKRAN_DST_RULE)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_DST_RULE) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_DST_RULE] = current_ekran.index_position;
+              
+                __SETTINGS *p_settings = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+                uint32_t rule = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? p_settings->dst_on_rule : p_settings->dst_off_rule;
+                //Формуємо екран
+                make_ekran_dst_rule(rule);
               }
               else if (current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
@@ -17318,6 +17447,60 @@ void main_manu_function(void)
                 //Формуємо екран
                 make_ekran_timezone_dst();
               }
+              else if(current_ekran.current_level == EKRAN_DST_RULE)
+              {
+                uint32_t *p_rule_target = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? &edition_settings.dst_on_rule : &edition_settings.dst_off_rule;
+                unsigned int pos, shift;
+                unsigned int min, max;
+
+                if (current_ekran.index_position == INDEX_ML_DST_MM)
+                {
+                  pos = POS_MM;
+                  shift = SHIFT_MM;
+                  
+                  min = DST_RULE_MM_MIN;
+                  max = DST_RULE_MM_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_DOW)
+                {
+                  pos = POS_DOW;
+                  shift = SHIFT_DOW;
+                  
+                  min = DST_RULE_DOW_MIN;
+                  max = DST_RULE_DOW_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_WR)
+                {
+                  pos = POS_WR;
+                  shift = SHIFT_WR;
+                  
+                  min = DST_RULE_DR_MIN;
+                  max = DST_RULE_DR_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_HH)
+                {
+                  pos = POS_HH;
+                  shift = SHIFT_HH;
+                  
+                  min = DST_RULE_HH_MIN;
+                  max = DST_RULE_HH_MAX;
+                }
+                else
+                {
+                  //Теоретично цього ніколи не мало б бути
+                  total_error_sw_fixed(219);
+                }
+                
+                uint32_t value = (*p_rule_target >> pos) & ((1 << shift) - 1);
+                if (++value > max) value = min;
+                
+                uint32_t bit_maska = ((1u << (pos + shift)) - 1) - ((1u << pos) - 1);
+                *p_rule_target &= ~bit_maska;
+                *p_rule_target |= value << pos;
+
+                //Формуємо екран
+                make_ekran_dst_rule(*p_rule_target);
+              }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.index_position == INDEX_ML_NUMBER_INERATION)
@@ -19235,6 +19418,60 @@ void main_manu_function(void)
 
                 //Формуємо екран
                 make_ekran_timezone_dst();
+              }
+              else if(current_ekran.current_level == EKRAN_DST_RULE)
+              {
+                uint32_t *p_rule_target = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? &edition_settings.dst_on_rule : &edition_settings.dst_off_rule;
+                unsigned int pos, shift;
+                unsigned int min, max;
+
+                if (current_ekran.index_position == INDEX_ML_DST_MM)
+                {
+                  pos = POS_MM;
+                  shift = SHIFT_MM;
+                  
+                  min = DST_RULE_MM_MIN;
+                  max = DST_RULE_MM_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_DOW)
+                {
+                  pos = POS_DOW;
+                  shift = SHIFT_DOW;
+                  
+                  min = DST_RULE_DOW_MIN;
+                  max = DST_RULE_DOW_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_WR)
+                {
+                  pos = POS_WR;
+                  shift = SHIFT_WR;
+                  
+                  min = DST_RULE_DR_MIN;
+                  max = DST_RULE_DR_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_HH)
+                {
+                  pos = POS_HH;
+                  shift = SHIFT_HH;
+                  
+                  min = DST_RULE_HH_MIN;
+                  max = DST_RULE_HH_MAX;
+                }
+                else
+                {
+                  //Теоретично цього ніколи не мало б бути
+                  total_error_sw_fixed(220);
+                }
+                
+                uint32_t value = (*p_rule_target >> pos) & ((1 << shift) - 1);
+                if (--value < min) value = max;
+                
+                uint32_t bit_maska = ((1u << (pos + shift)) - 1) - ((1u << pos) - 1);
+                *p_rule_target &= ~bit_maska;
+                *p_rule_target |= value << pos;
+
+                //Формуємо екран
+                make_ekran_dst_rule(*p_rule_target);
               }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {

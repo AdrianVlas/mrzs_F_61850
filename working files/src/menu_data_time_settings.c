@@ -5,55 +5,92 @@
 /*****************************************************/
 void make_ekran_chose_data_time_settings(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS][MAX_COL_LCD] = 
+  const uint8_t name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS][MAX_COL_LCD] = 
   {
     {
-      " Часовой пояс   "
+      " Часовой пояс   ",
+      " Нач.летнего вр.",
+      " Кон.летнего вр."
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,
       " Синхронизация  "
 #endif
     },
     {
-      " Часовий пояс   "
+      " Часовий пояс   ",
+      " Поч.літнього ч.",
+      " Кін.літнього ч."
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,
       " Синхронізація  "
 #endif
     },
     {
-      " Time zone      "
+      " Time zone      ",
+      " DST on         ",
+      " DST off        "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,
       " Synchronization"
 #endif
     },
     {
-      " Часовой пояс   "
+      " Часовой пояс   ",
+      " Нач.летнего вр.",
+      " Кон.летнего вр."
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,
       " Синхронизация  "
 #endif
     }
   };
+
+  uint8_t name_string_tmp[MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS][MAX_COL_LCD];
+
+  /******************************************/
+  //Виключаємо поля, які не треба відображати
+  /******************************************/
+  int position_temp = current_ekran.index_position;
+  int additional_current = 0;
+
   int index_language = index_language_in_array(current_settings.language);
-
-  unsigned int position_temp = current_ekran.index_position;
-  unsigned int index_of_ekran;
+  for(intptr_t index_1 = 0; index_1 < MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS; ++index_1)
+  {
+    if (
+        ((current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) == 0) &&
+        (
+         (index_1 == INDEX_ML_CHDT_DST_ON) ||
+         (index_1 == INDEX_ML_CHDT_DST_OFF)
+        )   
+       )   
+    {
+      ++additional_current;
+      if ((index_1 - additional_current) < position_temp) --position_temp;
+      continue;
+    }
+    
+    uint8_t *ptr_target = name_string_tmp[index_1 - additional_current];
+    uint8_t const *ptr_source = name_string[index_language][index_1];
+    for(size_t index_2 = 0; index_2 < MAX_COL_LCD; ++index_2) *ptr_target++ = *ptr_source++;
+  }
+  /******************************************/
   
-  
-  index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-
+  int index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
   
   //Копіюємо  рядки у робочий екран
-  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  for (size_t i = 0; i < MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS)
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran][j];
+    uint8_t *ptr_target = working_ekran[i];
+    
+    if (index_of_ekran < (MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS - additional_current))
+    {
+      uint8_t *ptr_source = name_string_tmp[index_of_ekran];
+      for (size_t j = 0; j < MAX_COL_LCD; ++j) *ptr_target++ = *ptr_source++;
+    }
     else
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+      for (size_t j = 0; j<MAX_COL_LCD; ++j) *ptr_target++ = ' ';
 
-    index_of_ekran++;
+    ++index_of_ekran;
   }
 
   //Курсор по горизонталі відображається на першій позиції
@@ -82,7 +119,7 @@ void make_ekran_timezone_dst(void)
     },
     {
       "  Часовий пояс  ",
-      "   Летній час   "
+      "   Літній час   "
     },
     {
       "   Time zone    ",
@@ -160,6 +197,345 @@ void make_ekran_timezone_dst(void)
 
   //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
   current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  if(current_ekran.edition == 0)current_ekran.cursor_blinking_on = 0;
+  else current_ekran.cursor_blinking_on = 1;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+
+/*****************************************************/
+//Формуємо екран відображення інформації по правилах переходу
+/*****************************************************/
+void make_ekran_dst_rule(unsigned int rule)
+{
+  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_DST_RULE][MAX_COL_LCD] = 
+  {
+    {
+      "     Месяц      ",
+      "  День недели   ",
+      "   Пор.номер    ",
+      "      Час       "
+    },
+    {
+      "     Місяць     ",
+      "   День тижня   ",
+      "   Пор.номер    ",
+      "     Година     "
+    },
+    {
+      "     Month      ",
+      "  Day of week   ",
+      "   Seq.number   ",
+      "      Hour      "
+    },
+    {
+      "     Месяц      ",
+      "  День недели   ",
+      "   Пор.номер    ",
+      "      Час       "
+    }
+  };
+  int index_language = index_language_in_array(current_settings.language);
+  
+  unsigned int position_temp = current_ekran.index_position;
+  
+  //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+  unsigned int index_of_ekran = ((position_temp << 1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+  
+  for (size_t i = 0; i < MAX_ROW_LCD; i++)
+  {
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_DST_RULE)
+    {
+      if ((i & 0x1) == 0)
+      {
+        //У непарному номері рядку виводимо заголовок
+        for (size_t j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+      }
+      else
+      {
+        //У парному номері рядку виводимо стан
+        unsigned char const monthes[MAX_NAMBER_LANGUAGE][12][MAX_COL_LCD] =
+        {
+          {
+            "     Январь     ",
+            "     Февраль    ",
+            "      Март      ",
+            "     Апрель     ",
+            "       Май      ",
+            "      Июнь      ",
+            "      Июль      ",
+            "     Август     ",
+            "    Сентябрь    ",
+            "     Октябрь    ",
+            "     Ноябрь     ",
+            "     Декабрь    "
+          },
+          {
+            "     Січень     ",
+            "      Лютий     ",
+            "    Березень    ",
+            "     Квітень    ",
+            "     Травень    ",
+            "     Червень    ",
+            "     Липень     ",
+            "     Серпень    ",
+            "    Вересень    ",
+            "     Жовтень    ",
+            "    Листопад    ",
+            "     Грудень    "
+          },
+          {
+            "     January    ",
+            "    February    ",
+            "      March     ",
+            "      April     ",
+            "       May      ",
+            "      June      ",
+            "      July      ",
+            "     August     ",
+            "    September   ",
+            "    October     ",
+            "    November    ",
+            "    December    "
+          },
+          {
+            "     Январь     ",
+            "     Февраль    ",
+            "      Март      ",
+            "     Апрель     ",
+            "       Май      ",
+            "      Июнь      ",
+            "      Июль      ",
+            "     Август     ",
+            "    Сентябрь    ",
+            "     Октябрь    ",
+            "     Ноябрь     ",
+            "     Декабрь    "
+          }
+        };
+
+        unsigned char const day_of_week[MAX_NAMBER_LANGUAGE][7][MAX_COL_LCD] =
+        {
+          {
+            "   Воскресенье  ",
+            "   Понедельник  ",
+            "     Вторник    ",
+            "      Среда     ",
+            "     Четверг    ",
+            "     Пятница    ",
+            "     Суббота    "
+          },
+          {
+            "     Неділя     ",
+            "    Понеділок   ",
+            "    Вівторок    ",
+            "     Середа     ",
+            "     Четвер     ",
+            "    П'ятниця    ",
+            "     Субота     "
+          },
+          {
+            "     Sunday     ",
+            "     Monday     ",
+            "     Tuesday    ",
+            "    Wednesday   ",
+            "    Thursday    ",
+            "     Friday     ",
+            "    Saturday    "
+          },
+          {
+            "   Воскресенье  ",
+            "   Понедельник  ",
+            "     Вторник    ",
+            "      Среда     ",
+            "     Четверг    ",
+            "     Пятница    ",
+            "     Суббота    "
+          }
+        };
+        
+        unsigned char const week_rule[MAX_NAMBER_LANGUAGE][5][MAX_COL_LCD] = 
+        {
+          {
+            "     Первый     ",
+            "     Второй     ",
+            "      Терий     ",
+            "    Четвёртый   ",
+            "    Последний   "
+          },
+          {
+            "     Перший     ",
+            "     Другий     ",
+            "     Третій     ",
+            "    Четвертий   ",
+            "    Останній    "
+          },
+          {
+            "      First     ",
+            "     Second     ",
+            "      Third     ",
+            "     Fourth     ",
+            "      Last      "
+          },
+          {
+            "     Первый     ",
+            "     Второй     ",
+            "      Терий     ",
+            "    Четвёртый   ",
+            "    Последний   "
+          }
+        };
+        unsigned char templ_hour_str[MAX_COL_LCD] = "                ";
+        
+        unsigned char *ptr_target = working_ekran[i];
+        unsigned char const *ptr_source;
+        if (index_of_ekran_tmp == INDEX_ML_DST_MM) ptr_source = monthes[index_language][((rule >> POS_MM) & ((1 << SHIFT_MM) - 1)) - 1];
+        else if (index_of_ekran_tmp == INDEX_ML_DST_DOW) ptr_source = day_of_week[index_language][(rule >> POS_DOW) & ((1 << SHIFT_DOW) - 1)];
+        else if (index_of_ekran_tmp == INDEX_ML_DST_WR) ptr_source = week_rule[index_language][((rule >> POS_WR) & ((1 << SHIFT_WR) - 1)) - 1];
+        else if (index_of_ekran_tmp == INDEX_ML_DST_HH)
+        {
+          unsigned int hour = (rule >> POS_HH) & ((1 << SHIFT_HH) - 1);
+          templ_hour_str[MAX_COL_LCD/2 - 1] = hour / 10 + 0x30;
+          templ_hour_str[MAX_COL_LCD/2] = hour % 10 + 0x30;
+          ptr_source = templ_hour_str;
+        }
+        else
+        {
+          //Теоретично цього ніколи не мало б бути
+          total_error_sw_fixed(215);
+        }
+
+        for (size_t j = 0; j < MAX_COL_LCD; ++j) *ptr_target++ = *ptr_source++;
+        if (
+            (index_of_ekran_tmp == INDEX_ML_DST_WR)
+            &&
+            (
+             (index_language == LANGUAGE_RU) ||
+             (index_language == LANGUAGE_UA)
+            )   
+           )
+        {
+          unsigned int dow = (rule >> POS_DOW) & ((1 << SHIFT_DOW) - 1);
+          
+          if ((dow == _Sun) || (dow == _Wed) || (dow == _Fri)  || (dow == _Sat))
+          {
+            unsigned int dr = (rule >> POS_WR) & ((1 << SHIFT_WR) - 1);
+            if ((dr < _N1) || (dr > _NL))
+            {
+              //Теоретично цього ніколи не мало б бути
+              total_error_sw_fixed(217);
+            }
+            
+            unsigned char *ptr_tmp = working_ekran[i];
+            while (*ptr_tmp == ' ') ++ptr_tmp;
+            while (*(++ptr_tmp) != ' ');
+          
+            if ((ptr_tmp - working_ekran[i]) >= 2)
+            {
+              --ptr_tmp;
+              if (index_language == INDEX_LANGUAGE_RU)
+              {
+                if (dow == _Sun) *(ptr_tmp--) = 'е';
+                else *(ptr_tmp--) = 'я';
+
+                if (dow == _Sun)
+                {
+                  switch (dr)
+                  {
+                  case _N1:
+                  case _N2:
+                  case _N3:
+                  case _N4:
+                    {
+                      *ptr_tmp = 'о';
+                      break;
+                    }
+                  case _NL:
+                    {
+                      *ptr_tmp = 'е';
+                      break;
+                    }
+                  }
+                } 
+                else 
+                {
+                  switch (dr)
+                  {
+                  case _N1:
+                  case _N2:
+                  case _N4:
+                    {
+                      *ptr_tmp = 'а';
+                      break;
+                    }
+                  case _N3:
+                    {
+                      *ptr_tmp = 'ь';
+                      break;
+                    }
+                  case _NL:
+                    {
+                      *ptr_tmp = 'я';
+                      break;
+                    }
+                  }
+                }
+              }
+              else
+              {
+                *(ptr_tmp--) = ' ';
+
+                switch (dr)
+                {
+                case _N1:
+                case _N2:
+                case _N4:
+                  {
+                    *ptr_tmp = 'а';
+                    break;
+                  }
+                case _N3:
+                case _NL:
+                  {
+                    *ptr_tmp = 'я';
+                    break;
+                  }
+                }
+              }
+            }
+            else
+            {
+              //Теоретично цього ніколи не мало б бути
+              total_error_sw_fixed(216);
+            }
+          }
+        }
+      }
+    }
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
+  current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+
+  {
+    int position_cursor_x = 0;
+    unsigned char const *ptr_target = working_ekran[current_ekran.position_cursor_y];
+    if (*ptr_target == ' ')
+    {  
+      while ((*(ptr_target + position_cursor_x + 1) == ' ') && (position_cursor_x < MAX_COL_LCD)) ++position_cursor_x;
+    }
+    current_ekran.position_cursor_x = position_cursor_x;
+  }
+  
   //Курсор видимий
   current_ekran.cursor_on = 1;
   //Курсор не мигає

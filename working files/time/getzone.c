@@ -130,7 +130,8 @@ char const * __getzone()
     {
       p_getzone_string[i++] = ':';
   
-      char const dst_rul_ukr[] = "(1996)040103-0:110103-0";
+//      char const dst_rul_ukr[] = "(1996)040103-0:110103-0";
+      char const dst_rul_ukr[] = "040103-0:110103-0";
       for (size_t j = 0; dst_rul_ukr[j] != '\0'; ++j) p_getzone_string[i++] = dst_rul_ukr[j];
     }
   }
