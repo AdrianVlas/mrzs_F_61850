@@ -19463,8 +19463,8 @@ void main_manu_function(void)
                   total_error_sw_fixed(220);
                 }
                 
-                uint32_t value = (*p_rule_target >> pos) & ((1 << shift) - 1);
-                if (--value < min) value = max;
+                int32_t value = (*p_rule_target >> pos) & ((1 << shift) - 1);
+                if (--value < (int)min) value = max;
                 
                 uint32_t bit_maska = ((1u << (pos + shift)) - 1) - ((1u << pos) - 1);
                 *p_rule_target &= ~bit_maska;

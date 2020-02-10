@@ -364,7 +364,7 @@ void make_ekran_dst_rule(unsigned int rule)
           {
             "     Первый     ",
             "     Второй     ",
-            "      Терий     ",
+            "     Третий     ",
             "    Четвёртый   ",
             "    Последний   "
           },
@@ -385,7 +385,7 @@ void make_ekran_dst_rule(unsigned int rule)
           {
             "     Первый     ",
             "     Второй     ",
-            "      Терий     ",
+            "     Третий     ",
             "    Четвёртый   ",
             "    Последний   "
           }
@@ -415,8 +415,8 @@ void make_ekran_dst_rule(unsigned int rule)
             (index_of_ekran_tmp == INDEX_ML_DST_WR)
             &&
             (
-             (index_language == LANGUAGE_RU) ||
-             (index_language == LANGUAGE_UA)
+             (index_language == INDEX_LANGUAGE_RU) ||
+             (index_language == INDEX_LANGUAGE_UA)
             )   
            )
         {
@@ -449,10 +449,14 @@ void make_ekran_dst_rule(unsigned int rule)
                   {
                   case _N1:
                   case _N2:
-                  case _N3:
                   case _N4:
                     {
                       *ptr_tmp = 'о';
+                      break;
+                    }
+                  case _N3:
+                    {
+                      *ptr_tmp = 'ь';
                       break;
                     }
                   case _NL:
