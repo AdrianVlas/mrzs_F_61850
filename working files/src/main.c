@@ -385,6 +385,12 @@ inline void periodical_operations(void)
     //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
     periodical_tasks_TEST_RESURS_LOCK = false;
   }
+
+  if (watchdog_l2) 
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(88);
+  }
   /*******************/
 
 //  /*******************/
@@ -578,6 +584,7 @@ int main(void)
     control_word_of_watchdog =  0;
   }
   
+  watchdog_l2 = true;
   USBD_Init(&USB_OTG_dev,
 #ifdef USE_USB_OTG_HS 
             USB_OTG_HS_CORE_ID,
@@ -587,6 +594,7 @@ int main(void)
             &USR_desc, 
             &USBD_CDC_cb, 
             &USR_cb);
+  watchdog_l2 = false;
   
   //Робота з watchdogs
   if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
