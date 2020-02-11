@@ -147,7 +147,7 @@ void start_receive_data_via_CANAL1_MO(void)
                       }
                     }
                   }
-                  else total_error_sw_fixed(88);
+                  else total_error_sw_fixed(220);
                 }
                 else total_error_sw_fixed(89);
               }

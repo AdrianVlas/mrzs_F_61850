@@ -3344,7 +3344,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
       else
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(88);
+        total_error_sw_fixed(221);
       }
 
       _AND2(logic_zdz_0, 7, logic_zdz_0, 16, logic_zdz_rez, 0);
@@ -3353,7 +3353,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   else
   {
     //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-    total_error_sw_fixed(88);
+    total_error_sw_fixed(222);
   }
   
   //"ѕќ «ƒ«"
