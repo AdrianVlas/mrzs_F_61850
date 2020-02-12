@@ -259,7 +259,7 @@ extern unsigned char time_edit[7];
 extern unsigned char calibration_edit;
 extern int etap_reset_of_bit;
 
-extern char getzone_string[2][50];
+extern char getzone_string[2][55];
 extern size_t bank_getzone;
 extern unsigned int lt_or_utc;
 extern clock_t clk_count;

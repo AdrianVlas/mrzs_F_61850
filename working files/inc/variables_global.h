@@ -644,7 +644,7 @@ unsigned char time_edit[7];
 unsigned char calibration_edit;
 int etap_reset_of_bit = ETAP_CLEAR_OF_NONE;
 
-char getzone_string[2][50];
+char getzone_string[2][55];
 size_t bank_getzone;
 unsigned int lt_or_utc;
 clock_t clk_count;

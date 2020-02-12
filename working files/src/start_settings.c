@@ -1934,7 +1934,7 @@ void min_settings(__SETTINGS *target_label)
   
   target_label->time_zone = 2;
   target_label->dst = MASKA_FOR_BIT(N_BIT_TZ_DST);
-  target_label->dst_on_rule = (_Apr << POS_MM) | (_NL << POS_WR) | (_Sun << POS_DOW) | (3 << POS_HH);
+  target_label->dst_on_rule = (_Mar << POS_MM) | (_NL << POS_WR) | (_Sun << POS_DOW) | (3 << POS_HH);
   target_label->dst_off_rule = (_Oct << POS_MM) | (_NL << POS_WR) | (_Sun << POS_DOW) | (3 << POS_HH);
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)

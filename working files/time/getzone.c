@@ -85,7 +85,7 @@ char const * __getzone()
   int time_zone = current_settings.time_zone;
   
   size_t i = 0;
-  char * p_getzone_string = getzone_string[bank_getzone];
+  char *p_getzone_string = getzone_string[bank_getzone];
   bank_getzone = (bank_getzone + 1) & 0x1;
 
   p_getzone_string[i++] = ':';
@@ -126,13 +126,88 @@ char const * __getzone()
     p_getzone_string[i++] = '0';
     p_getzone_string[i++] = '0';
 
-    if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
+    uint32_t dst_on_rule = current_settings.dst_on_rule;
+    uint32_t dst_off_rule = current_settings.dst_off_rule;
+    if (
+        (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) &&
+        (dst_off_rule != dst_on_rule)  
+       )   
     {
       p_getzone_string[i++] = ':';
   
 //      char const dst_rul_ukr[] = "(1996)040103-0:110103-0";
-      char const dst_rul_ukr[] = "040103-0:110103-0";
-      for (size_t j = 0; dst_rul_ukr[j] != '\0'; ++j) p_getzone_string[i++] = dst_rul_ukr[j];
+//      char const dst_rul_ukr[] = "040103-0:110103-0";
+//      for (size_t j = 0; dst_rul_ukr[j] != '\0'; ++j) p_getzone_string[i++] = dst_rul_ukr[j];
+      
+      uint32_t rule[2];
+      if (dst_on_rule < dst_off_rule)
+      {
+        //Північна півкуля
+        rule[0] = dst_on_rule;
+        rule[1] = dst_off_rule;
+      }
+      else
+      {
+        //Південна півкуля
+        char const dst_rul_begin[] = "010100-0:";
+        char const *ptr_tmp = dst_rul_begin;
+        for (; *ptr_tmp != '\0'; ) p_getzone_string[i++] = *ptr_tmp++;
+        
+        rule[0] = dst_off_rule;
+        rule[1] = dst_on_rule;
+      }
+
+      for (size_t j = 0; j < 2; j++)
+      {
+        unsigned int rule_tmp = rule[j];
+        
+        unsigned int n = (rule_tmp >> POS_WR) & ((1 << SHIFT_WR) - 1);
+        unsigned int val;
+        if (n == 5)
+        {
+          //[(MM + 1) % 12]01HH-W
+          val = ( ( (rule_tmp >> POS_MM) & ( (1 << SHIFT_MM) - 1 ) ) + 1 ) % 12;
+          p_getzone_string[i++] = val/10 + 0x30;
+          p_getzone_string[i++] = val%10 + 0x30;
+          
+          p_getzone_string[i++] = '0';
+          p_getzone_string[i++] = '1';
+
+          val = (rule_tmp >> POS_HH) & ((1 << SHIFT_HH) - 1);
+          p_getzone_string[i++] = val/10 + 0x30;
+          p_getzone_string[i++] = val%10 + 0x30;
+
+          p_getzone_string[i++] = '-';
+        }
+        else if ((n >= 1) && (n <= 4))
+        {
+          //MM(1 + n*7)HH+W
+          val = (rule_tmp >> POS_MM) & ( (1 << SHIFT_MM) - 1 );
+          p_getzone_string[i++] = val/10 + 0x30;
+          p_getzone_string[i++] = val%10 + 0x30;
+          
+          val = 1u + (n - 1)*7u;
+          p_getzone_string[i++] = val/10 + 0x30;
+          p_getzone_string[i++] = val%10 + 0x30;
+
+          val = (rule_tmp >> POS_HH) & ((1 << SHIFT_HH) - 1);
+          p_getzone_string[i++] = val/10 + 0x30;
+          p_getzone_string[i++] = val%10 + 0x30;
+
+          p_getzone_string[i++] = '+';
+        }
+        else
+        {
+          //Теоретично цього ніколи не мало б бути
+          total_error_sw_fixed(223);
+        }
+
+        val = (rule_tmp >> POS_DOW) & ((1 << SHIFT_DOW) - 1);
+        p_getzone_string[i++] = val + 0x30;
+        
+        if (j == 0) p_getzone_string[i++] = ':';
+    
+      }
     }
   }
 
@@ -148,7 +223,7 @@ char *_DstMalloc(size_t s)
 //  return 0;
   #if 1
     (void)(s);
-    static char buffert[50];
+    static char buffert[55];
     return buffert;
   #endif
 //  #if 0
