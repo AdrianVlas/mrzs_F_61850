@@ -100,8 +100,8 @@ enum _index_ml_syn
 #define COL_PORT_BEGIN                 5
 #define COL_PORT_END                   9
 
-#define COL_PERIOD_BEGIN               6
-#define COL_PEDIOD_END                 8
+#define COL_PERIOD_BEGIN               3
+#define COL_PEDIOD_END                 7
 
 #endif
 

@@ -664,7 +664,7 @@ void make_ekran_settings_synchro()
           uint32_t period_tmp = point_1->period_sync;
         
           uint32_t j = COL_PEDIOD_END;
-          for (size_t k2 = 0; k2 < 3; k2++)
+          for (size_t k2 = 0; k2 < 5; k2++)
           {
             uint32_t val = period_tmp % 10;
             period_tmp /= 10;
@@ -682,6 +682,12 @@ void make_ekran_settings_synchro()
               working_ekran[i][j--] = ' ';
             }
           }
+
+          uint8_t const symbols[MAX_NAMBER_LANGUAGE][4+1] = {"мин.", "хв. ", "min.", "мин."};
+          uint8_t const *ptr_tmp= symbols[index_language];
+          
+          j = COL_PEDIOD_END + 2;
+          while ((j < MAX_COL_LCD) && (*ptr_tmp != ' ') && (*ptr_tmp != '\0'))  working_ekran[i][j++] = *ptr_tmp++;
         }
       }
     }
