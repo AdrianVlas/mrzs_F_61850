@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.42.1.23869</state>
+                    <state>8.42.2.24202</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -787,7 +787,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\with iec61850\stm32f2xx_flash.icf</state>
+                    <state>$PROJ_DIR$\..\without iec61850\stm32f2xx_flash.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
