@@ -3421,6 +3421,17 @@ unsigned int set_new_settings_from_interface(unsigned int source)
     }
   }
   
+  unsigned int reload_DST_Rules = false;
+  if (
+      (current_settings.time_zone != current_settings_interfaces.time_zone) ||
+      (current_settings.dst != current_settings_interfaces.dst) ||
+      (current_settings.dst_on_rule != current_settings_interfaces.dst_on_rule) ||
+      (current_settings.dst_off_rule != current_settings_interfaces.dst_off_rule)
+     )
+  {
+    reload_DST_Rules = true;
+  }
+
   unsigned int change_timeout_ar = 0;
   if (
       (current_settings.prefault_number_periods != current_settings_interfaces.prefault_number_periods) ||
@@ -3561,6 +3572,13 @@ unsigned int set_new_settings_from_interface(unsigned int source)
       }
     }
 
+    if (reload_DST_Rules)
+    {
+#if (__VER__ >= 8000000)
+      _ForceReloadDstRules();
+#endif
+    }
+    
     fix_change_settings(2, source);
 
     //Виставляємо признак, що на екрані треба обновити інформацію
