@@ -349,7 +349,8 @@ unsigned int temp_states_for_mtz/* = 0*/;
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
 uint32_t delta_time_test = PERIOD_ZDZ_TEST;
 uint32_t zdz_ovd_diagnostyka;
@@ -467,6 +468,7 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
      (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
      (MODYFIKACIA_VERSII_PZ == 15)   \
     )
   ,
@@ -491,6 +493,7 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
      (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
      (MODYFIKACIA_VERSII_PZ == 15)   \
     )
   ,

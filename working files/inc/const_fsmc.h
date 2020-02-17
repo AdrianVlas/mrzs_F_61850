@@ -15,8 +15,9 @@
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)||     \
-     (MODYFIKACIA_VERSII_PZ == 15)       \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
     )   
 
 #define OFFSET_DD26_DD29                0x0C00000

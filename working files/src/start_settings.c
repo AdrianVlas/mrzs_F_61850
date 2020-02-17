@@ -431,6 +431,7 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 5) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = 0;
@@ -539,6 +540,7 @@ void start_settings_peripherals(void)
   if ((board_register_tmp & 0x13) != 0x13)
 #elif (                                 \
        (MODYFIKACIA_VERSII_PZ == 10) || \
+       (MODYFIKACIA_VERSII_PZ == 13) || \
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
   if ((board_register_tmp & 0x1F) != 0x1F)
@@ -564,6 +566,7 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
      (MODYFIKACIA_VERSII_PZ == 15)   \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
@@ -575,6 +578,7 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )   
     if ((board_register_tmp & 0x010) != 0x10) 
@@ -614,6 +618,7 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
      (MODYFIKACIA_VERSII_PZ == 11)   \
     )
   if ((board_register_tmp & 0x04) == 0x04)
@@ -626,7 +631,8 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
       )   
   if ((board_register_tmp & 0x10) == 0x10)
   {
@@ -1649,7 +1655,8 @@ void min_settings(__SETTINGS *target_label)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
       )   
   target_label->zdz_ovd_porig = 0;
 #endif

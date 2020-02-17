@@ -50,8 +50,8 @@
 #define EKRAN_RANGUVANNJA_INPUT_LAST             EKRAN_RANGUVANNJA_INPUT_20
 
 #elif (                                 \
-       (MODYFIKACIA_VERSII_PZ == 11) ||  \
-       (MODYFIKACIA_VERSII_PZ == 13)     \
+       (MODYFIKACIA_VERSII_PZ == 11) || \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
       )   
 
 #define EKRAN_RANGUVANNJA_INPUT_LAST             EKRAN_RANGUVANNJA_INPUT_16

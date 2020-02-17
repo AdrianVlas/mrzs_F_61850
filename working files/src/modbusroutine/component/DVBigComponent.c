@@ -18,7 +18,8 @@
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 1) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 11)      \
+     (MODYFIKACIA_VERSII_PZ == 11)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
 //конечный регистр в карте памяти
 //16 шт
