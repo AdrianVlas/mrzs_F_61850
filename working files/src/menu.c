@@ -20373,7 +20373,7 @@ void main_manu_function(void)
               }
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
               {
-                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_and :  edition_settings.ranguvannja_d_xor;
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_xor :  edition_settings.ranguvannja_d_xor;
                 for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + i];
               }
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
@@ -22434,7 +22434,7 @@ void main_manu_function(void)
                 }
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
                 {
-                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_and :  edition_settings.ranguvannja_d_xor;
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_xor :  edition_settings.ranguvannja_d_xor;
                   for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + i];
                 }
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
@@ -23208,7 +23208,7 @@ void main_manu_function(void)
                 }
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
                 {
-                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_and :  edition_settings.ranguvannja_d_xor;
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_xor :  edition_settings.ranguvannja_d_xor;
                   for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + i];
                 }
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
