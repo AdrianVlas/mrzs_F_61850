@@ -106,8 +106,8 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
 
   case 38://Часовой пояс
     (*editValue) = (uint32_t*)&edition_settings.time_zone;
-    if(regPKV>65000 && regPKV<65536+TIME_ZONE_MIN) diapazon=0;
-    if(regPKV<65000 && regPKV>TIME_ZONE_MAX) diapazon=0;
+    if(regPKV>64000 && regPKV<65536+(TIME_ZONE_MIN*60)) diapazon=0;
+    if(regPKV<64000 && regPKV>(TIME_ZONE_MAX*60)) diapazon=0;
     break;
   }//switch
 
@@ -224,7 +224,7 @@ int getPKVBigModbusRegister(int adrReg)
     }
 
   case 38://Часовой пояс
-    return (*editValue) &0xFFFF;
+    return ((*editValue) &0xFFFF)*60;
 
   case 39://Переход на Зимнее/Летнее время
     return (edition_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) ? 1 : 0;
@@ -232,17 +232,17 @@ int getPKVBigModbusRegister(int adrReg)
   case 40://Месяц перехода на Летнее время
     return (edition_settings.dst_on_rule>>POS_MM)&((int)(pow(2,SHIFT_MM)-1));
   case 41://Неделя месяца перехода на Летнее время
-    return (edition_settings.dst_on_rule>>POS_WR)&((int)(pow(2,SHIFT_WR)-1));
-  case 42://День недели перехода на Летнее время
     return (edition_settings.dst_on_rule>>POS_DOW)&((int)(pow(2,SHIFT_DOW)-1));
+  case 42://День недели перехода на Летнее время
+    return (edition_settings.dst_on_rule>>POS_WR)&((int)(pow(2,SHIFT_WR)-1));
   case 43://Час недели перехода на Летнее время
     return (edition_settings.dst_on_rule>>POS_HH)&((int)(pow(2,SHIFT_HH)-1));
   case 44://Месяц перехода на Зимнее время
     return (edition_settings.dst_off_rule>>POS_MM)&((int)(pow(2,SHIFT_MM)-1));
   case 45://Неделя месяца перехода на Зимнее время
-    return (edition_settings.dst_off_rule>>POS_WR)&((int)(pow(2,SHIFT_WR)-1));
-  case 46://День недели перехода на Зимнее время
     return (edition_settings.dst_off_rule>>POS_DOW)&((int)(pow(2,SHIFT_DOW)-1));
+  case 46://День недели перехода на Зимнее время
+    return (edition_settings.dst_off_rule>>POS_WR)&((int)(pow(2,SHIFT_WR)-1));
   case 47://Час недели перехода на Зимнее время
     return (edition_settings.dst_off_rule>>POS_HH)&((int)(pow(2,SHIFT_HH)-1));
 
@@ -251,7 +251,7 @@ int getPKVBigModbusRegister(int adrReg)
   case 52://IP адрес сервера NTP 1
      return edition_settings.IP_time_server[2]&0xff | (((edition_settings.IP_time_server[3]&0xff)<<8)&0xFF00);
 
-  case 54://Интервал опроса NTP сервера
+  case 53://Интервал опроса NTP сервера
     return edition_settings.period_sync&0xFFFF;
   }//switch
 
@@ -345,7 +345,6 @@ int postPKVBigWriteAction(void)
     case 7://Паритет
     case 8://Задержка приёма
     case 13://Адрес устройства в сети
-    case 38://Часовой пояс
       *editValue = offsetWriteRegister;
       upravlSetting = 1;//флаг Setting
       break;
@@ -510,6 +509,15 @@ int postPKVBigWriteAction(void)
       flag_ms_array = 1;
       break;
 
+    case 38://Часовой пояс
+      {
+      int value = (short)offsetWriteRegister;
+      if((value%60) >0) return ERROR_VALID2;//проверка кратность 60
+      *editValue = value/60;
+      upravlSetting = 1;//флаг Setting
+      }
+      break;
+
    case 39://Переход на Зимнее/Летнее время
      if(offsetWriteRegister>1) return ERROR_VALID2;
      edition_settings.dst &= (uint32_t)(~(1<<N_BIT_TZ_DST));
@@ -525,17 +533,17 @@ int postPKVBigWriteAction(void)
      upravlSetting = 1;//флаг Setting
      break;
    case 41://Неделя месяца перехода на Летнее время
+     if(offsetWriteRegister>DST_RULE_DOW_MAX) return ERROR_VALID2;
+//     if(offsetWriteRegister<DST_RULE_DOW_MIN) return ERROR_VALID2;
+     edition_settings.dst_on_rule &= (uint32_t)(~(((1 << SHIFT_DOW) - 1)<<POS_DOW));
+     edition_settings.dst_on_rule |= (offsetWriteRegister<<POS_DOW);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 42://Номер дня недели перехода  на Летнее время
      if(offsetWriteRegister>DST_RULE_DR_MAX) return ERROR_VALID2;
      if(offsetWriteRegister<DST_RULE_DR_MIN) return ERROR_VALID2;
      edition_settings.dst_on_rule &= (uint32_t)(~(((1 << SHIFT_WR) - 1)<<POS_WR));
      edition_settings.dst_on_rule |= (offsetWriteRegister<<POS_WR);
-     upravlSetting = 1;//флаг Setting
-     break;
-   case 42://День недели перехода на Летнее время
-     if(offsetWriteRegister>DST_RULE_DOW_MAX) return ERROR_VALID2;
-     //if(offsetWriteRegister<DST_RULE_DOW_MIN) return ERROR_VALID2;
-     edition_settings.dst_on_rule &= (uint32_t)(~(((1 << SHIFT_DOW) - 1)<<POS_DOW));
-     edition_settings.dst_on_rule |= (offsetWriteRegister<<POS_DOW);
      upravlSetting = 1;//флаг Setting
      break;
    case 43://Час недели перехода на Летнее время
@@ -553,17 +561,17 @@ int postPKVBigWriteAction(void)
      upravlSetting = 1;//флаг Setting
      break;
    case 45://Неделя месяца перехода на Зимнее время
+     if(offsetWriteRegister>DST_RULE_DOW_MAX) return ERROR_VALID2;
+//     if(offsetWriteRegister<DST_RULE_DOW_MIN) return ERROR_VALID2;
+     edition_settings.dst_off_rule &= (uint32_t)(~(((1 << SHIFT_DOW) - 1)<<POS_DOW));
+     edition_settings.dst_off_rule |= (offsetWriteRegister<<POS_DOW);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 46://Номер дня недели перехода на Стандартное время
      if(offsetWriteRegister>DST_RULE_DR_MAX) return ERROR_VALID2;
      if(offsetWriteRegister<DST_RULE_DR_MIN) return ERROR_VALID2;
      edition_settings.dst_off_rule &= (uint32_t)(~(((1 << SHIFT_WR) - 1)<<POS_WR));
      edition_settings.dst_off_rule |= (offsetWriteRegister<<POS_WR);
-     upravlSetting = 1;//флаг Setting
-     break;
-   case 46://День недели перехода на Зимнее время
-     if(offsetWriteRegister>DST_RULE_DOW_MAX) return ERROR_VALID2;
-     //if(offsetWriteRegister<DST_RULE_DOW_MIN) return ERROR_VALID2;
-     edition_settings.dst_off_rule &= (uint32_t)(~(((1 << SHIFT_DOW) - 1)<<POS_DOW));
-     edition_settings.dst_off_rule |= (offsetWriteRegister<<POS_DOW);
      upravlSetting = 1;//флаг Setting
      break;
    case 47://Час недели перехода на Зимнее время
@@ -585,7 +593,8 @@ int postPKVBigWriteAction(void)
      upravlSetting = 1;//флаг Setting
      break;
  
-   case 54://Интервал опроса NTP сервера
+   case 53://Интервал опроса NTP сервера
+     if(offsetWriteRegister==0) return ERROR_VALID2;
      edition_settings.period_sync = offsetWriteRegister;
      upravlSetting = 1;//флаг Setting
      break;
