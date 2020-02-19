@@ -159,6 +159,7 @@ int getPKVBigModbusRegister(int adrReg)
   }
   //struct tm *p;
   //struct tm *p = localtime(&time_dat_tmp);
+//time_dat_tmp = 1581934622;
 
   uint32_t *editValue=NULL;
   PKVFunc000(adrReg-BEGIN_ADR_REGISTER, 0, &editValue);
@@ -211,7 +212,7 @@ int getPKVBigModbusRegister(int adrReg)
     tmp[1] = &((uint16_t*)&time_dat_tmp)[1];
     tmp[2] = &((uint16_t*)&time_dat_tmp)[2];
     tmp[3] = &((uint16_t*)&time_dat_tmp)[3];
-    return *(tmp[offset-31]);
+    return (*(tmp[offset-31]));
     }
   case 35:
   case 36:
@@ -344,6 +345,7 @@ int postPKVBigWriteAction(void)
     case 7://Паритет
     case 8://Задержка приёма
     case 13://Адрес устройства в сети
+    case 38://Часовой пояс
       *editValue = offsetWriteRegister;
       upravlSetting = 1;//флаг Setting
       break;
@@ -506,11 +508,6 @@ int postPKVBigWriteAction(void)
       if(countAdr == 1) return ERROR_VALID2;//к-во регистров
       time_ms_frac[offset-35] = offsetWriteRegister;//фракции Время, микросекунды
       flag_ms_array = 1;
-      break;
-
-    case 38://Часовой пояс
-      *editValue = offsetWriteRegister;
-      upravlSetting = 1;//флаг Setting
       break;
 
    case 39://Переход на Зимнее/Летнее время
