@@ -12070,8 +12070,8 @@ void main_manu_function(void)
                         //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                         fix_change_settings(0, 1);
 
-                        //Помічаємо, що треба передати налаштування у комунікаційну плату
-                        _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
                       }
                       //Виходимо з режиму редагування
                       current_ekran.edition = 0;
@@ -12089,6 +12089,9 @@ void main_manu_function(void)
                         current_settings.mask = edition_settings.mask;
                         //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                         fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
                       }
                       //Виходимо з режиму редагування
                       current_ekran.edition = 0;
@@ -12124,8 +12127,8 @@ void main_manu_function(void)
                         //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                         fix_change_settings(0, 1);
 
-                        //Помічаємо, що треба передати налаштування у комунікаційну плату
-                        _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
                       }
                       //Виходимо з режиму редагування
                       current_ekran.edition = 0;
@@ -12143,6 +12146,9 @@ void main_manu_function(void)
                         current_settings.port_time_server = edition_settings.port_time_server;
                         //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                         fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
                       }
                       //Виходимо з режиму редагування
                       current_ekran.edition = 0;
@@ -12160,6 +12166,9 @@ void main_manu_function(void)
                         current_settings.period_sync = edition_settings.period_sync;
                         //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                         fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
                       }
                       //Виходимо з режиму редагування
                       current_ekran.edition = 0;

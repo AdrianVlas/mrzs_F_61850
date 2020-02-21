@@ -205,7 +205,15 @@ int postYustBigWriteAction(void) {
   if(upravlYust==0x1978) {//флаг юстировки
 
     changed_ustuvannja = CHANGED_ETAP_EXECUTION;
-    serial_number_dev = edit_serial_number_dev;
+    if (serial_number_dev != edit_serial_number_dev)
+    {   
+      serial_number_dev = edit_serial_number_dev;
+      
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      //Помічаємо, що треба перезапустити КП
+      _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+#endif
+    }
     for(int i=0; i<NUMBER_ANALOG_CANALES; i++) ustuvannja[i] = edit_ustuvannja[i];
     for(int i=0; i<NUMBER_ANALOG_CANALES; i++) phi_ustuvannja[i] = phi_edit_ustuvannja[i];
 

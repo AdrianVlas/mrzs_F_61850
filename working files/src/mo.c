@@ -193,8 +193,11 @@ void start_receive_data_via_CANAL1_MO(void)
   else
   {
     //Не прийняті дані з комунікаційної плати по каналу 1
-    if (IEC_board_uncall == 0) _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
-    else IEC_board_uncall--;
+    if (restart_KP_irq == 0)
+    {
+      if (IEC_board_uncall == 0) _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
+      else IEC_board_uncall--;
+    }
   }
       
   //Скидуємо всі можливі помилки
@@ -388,9 +391,6 @@ void start_transmint_data_via_CANAL1_MO(void)
 ***********************************************************************************/
 void CANAL2_MO_routine()
 {
-  queue_mo &= (uint32_t)(~QUEUQ_MO_IRQ);
-  queue_mo |= queue_mo_irq;
-  
   typedef enum _CANAL2_MO_states
   {
     CANAL2_MO_FREE = 0,
@@ -402,6 +402,24 @@ void CANAL2_MO_routine()
   } __CANAL2_MO_states;
   
   static __CANAL2_MO_states CANAL2_MO_state;
+
+  queue_mo &= (uint32_t)(~QUEUQ_MO_IRQ);
+  if (!_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP))
+  {
+    //Немає активної команди перезапустити КП
+    queue_mo |= queue_mo_irq;
+  }
+  else
+  {
+    if (
+        (queue_mo == MASKA_FOR_BIT(STATE_QUEUE_MO_RESTART_KP)) &&
+        (CANAL2_MO_state == CANAL2_MO_FREE)
+       )
+    {
+      restart_KP_irq = 5;
+    }
+  }
+  
   static uint32_t tick;
   static uint32_t rx_ndtr;
   static uint32_t packet_number;
@@ -426,10 +444,7 @@ void CANAL2_MO_routine()
     {
       if (Canal1 == true)
       {
-        if (
-            (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_BASIC_SETTINGS)) ||
-            (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS))
-           )   
+        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_BASIC_SETTINGS))
         {
                  Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
           sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
@@ -476,7 +491,6 @@ void CANAL2_MO_routine()
           sum += Canal2_MO_Transmit[index_w++] = period        & 0xff;
           sum += Canal2_MO_Transmit[index_w++] = (period >> 8) & 0xff;
         
-          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
           _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
         } 
         else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK))
@@ -844,6 +858,11 @@ void CANAL2_MO_routine()
     else if (CANAL2_MO_state == CANAL2_MO_ERROR)
     {
       CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+      if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP)) 
+      {
+        _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
+        _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP);
+      }
     }
   
     tick = TIM4->CNT; /*стан лічильника коли буда завершена остання трасакція повністю з помилкою або без неї*/

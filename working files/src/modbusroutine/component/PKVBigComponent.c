@@ -246,6 +246,7 @@ int getPKVBigModbusRegister(int adrReg)
   case 47://Час недели перехода на Зимнее время
     return (edition_settings.dst_off_rule>>POS_HH)&((int)(pow(2,SHIFT_HH)-1));
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
   case 51://IP адрес сервера NTP 1
      return edition_settings.IP_time_server[0]&0xff | (((edition_settings.IP_time_server[1]&0xff)<<8)&0xFF00);
   case 52://IP адрес сервера NTP 1
@@ -253,6 +254,7 @@ int getPKVBigModbusRegister(int adrReg)
 
   case 53://Интервал опроса NTP сервера
     return edition_settings.period_sync&0xFFFF;
+#endif
   }//switch
 
   if(editValue==NULL) return 0;
@@ -582,6 +584,7 @@ int postPKVBigWriteAction(void)
      upravlSetting = 1;//флаг Setting
      break;
  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
    case 51://IP адрес сервера NTP 1
      edition_settings.IP_time_server[0] = offsetWriteRegister & 0xff;
      edition_settings.IP_time_server[1] = (offsetWriteRegister>>8) & 0xff;
@@ -598,6 +601,7 @@ int postPKVBigWriteAction(void)
      edition_settings.period_sync = offsetWriteRegister;
      upravlSetting = 1;//флаг Setting
      break;
+#endif
 
     }//switch
   }//for

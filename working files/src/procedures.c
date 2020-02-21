@@ -3347,8 +3347,8 @@ void fix_change_settings(unsigned int setting_rang, unsigned int source)
       current_settings.source_setpoints = current_settings.source_ranguvannja = (unsigned char)(source & 0xff);
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-      //Помічаємо, що треба передати налаштування у комунікаційну плату
-      _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
+      //Помічаємо, що треба перезапустити КП
+      _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
 #endif
     }
   }
@@ -3494,6 +3494,59 @@ unsigned int set_new_settings_from_interface(unsigned int source)
   {
     set_password_LAN = true;
   }
+  
+  unsigned int resrart_kp = false;
+  uint16_t *p_source;
+  {
+    p_source = current_settings_interfaces.IP4;
+    for (uint16_t *p_target = current_settings.IP4; p_target != (current_settings.IP4 + 4); )
+    {
+      if (*p_target++ != *p_source++) 
+      {
+        resrart_kp = true;
+        break;
+      }
+    }
+  }
+  
+  if (resrart_kp == false)
+  {
+    p_source = current_settings_interfaces.gateway;
+    for (uint16_t *p_target = current_settings.gateway; p_target != (current_settings.gateway + 4); )
+    {
+      if (*p_target++ != *p_source++) 
+      {
+        resrart_kp = true;
+        break;
+      }
+    }
+  }
+  
+  if (resrart_kp == false)
+  {
+    p_source = current_settings_interfaces.IP_time_server;
+    for (uint16_t *p_target = current_settings.IP_time_server; p_target != (current_settings.IP_time_server + 4); )
+    {
+      if (*p_target++ != *p_source++) 
+      {
+        resrart_kp = true;
+        break;
+      }
+    }
+  }
+  
+  if (
+      (resrart_kp == false) 
+      &&
+      (  
+       (current_settings.mask != current_settings_interfaces.mask) ||
+       (current_settings.port_time_server != current_settings_interfaces.port_time_server) ||
+       (current_settings.period_sync != current_settings_interfaces.period_sync)
+      )  
+     )
+  {
+    resrart_kp = true;
+  }
 #endif
   
   if (error == 0)
@@ -3572,6 +3625,14 @@ unsigned int set_new_settings_from_interface(unsigned int source)
       }
     }
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    if (resrart_kp)
+    {
+      //Помічаємо, що треба перезапустити КП
+      _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+    }
+#endif    
+    
     if (reload_DST_Rules)
     {
 #if (__VER__ >= 8000000)
