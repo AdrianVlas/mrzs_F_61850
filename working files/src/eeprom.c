@@ -1347,7 +1347,7 @@ void main_routines_for_spi1(void)
       unsigned int empty_block = 1, i = 0; 
       __SETTINGS current_settings_tmp;
       
-      while ((empty_block != 0) && ( i < (sizeof(__SETTINGS) + 1)))
+      while ((empty_block != 0) && ( i < (sizeof(__SETTINGS) + 2)))
       {
         if (RxBuffer_SPI_EDF[3 + i] != 0xff) empty_block = 0;
         i++;

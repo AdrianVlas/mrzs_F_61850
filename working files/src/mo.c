@@ -609,7 +609,7 @@ void CANAL2_MO_routine()
       if (rx_ndtr == BUFFER_CANAL2_MO)
       {
         //Не прийнято жодного байту
-        if (delta > 500 /*500x10мкс = 5000мкс = 5мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
+        if (delta > 1000 /*1000x10мкс = 10000мкс = 10мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
       }
       else
       {
