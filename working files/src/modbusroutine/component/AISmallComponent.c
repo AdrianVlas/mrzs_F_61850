@@ -2,9 +2,9 @@
 #include "header.h"
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 332
+#define BEGIN_ADR_REGISTER 338
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 408
+#define END_ADR_REGISTER 414
 
 int getAISmallModbusRegister(int);//получить содержимое регистра
 int getAISmallModbusBit(int);//получить содержимое бита
@@ -57,7 +57,7 @@ int getAISmallModbusRegister(int adrReg)
     case 0://UA
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 332;
+        return 338;
 #else
         return (measurement_low[IM_UA] >> 3) &0xFFFF;
 #endif
@@ -65,7 +65,7 @@ int getAISmallModbusRegister(int adrReg)
     case 1://UB
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 333;
+        return 339;
 #else
         return (measurement_low[IM_UB] >> 3) &0xFFFF;
 #endif
@@ -73,7 +73,7 @@ int getAISmallModbusRegister(int adrReg)
     case 2://UC
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 334;
+        return 340;
 #else
         return (measurement_low[IM_UC] >> 3) &0xFFFF;
 #endif
@@ -82,7 +82,7 @@ int getAISmallModbusRegister(int adrReg)
     case 3://IA
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 335;
+        return 341;
 #else
         return (measurement_low[IM_IA] >> 2) &0xFFFF;
 #endif
@@ -90,7 +90,7 @@ int getAISmallModbusRegister(int adrReg)
     case 4://IB
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 336;
+        return 342;
 #else
         return (measurement_low[IM_IB] >> 2) &0xFFFF;
 #endif
@@ -98,7 +98,7 @@ int getAISmallModbusRegister(int adrReg)
     case 5://IC
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 337;
+        return 343;
 #else
         return (measurement_low[IM_IC] >> 2) &0xFFFF;
 #endif
@@ -107,7 +107,7 @@ int getAISmallModbusRegister(int adrReg)
     case 6://I04
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 338;
+        return 344;
 #else
         return (measurement_low[IM_I04] >> 2) &0xFFFF;
 #endif
@@ -115,7 +115,7 @@ int getAISmallModbusRegister(int adrReg)
     case 7://P
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 339;
+        return 345;
 #else
         return (P[bank_for_calc_power]/50) &0xFFFF;
 #endif
@@ -123,7 +123,7 @@ int getAISmallModbusRegister(int adrReg)
     case 8://P
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 340;
+        return 346;
 #else
         return (Q[bank_for_calc_power]/50) &0xFFFF;
 #endif
@@ -131,7 +131,7 @@ int getAISmallModbusRegister(int adrReg)
     case 9://P
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 341;
+        return 347;
 #else
         return (S[bank_for_calc_power]/50) &0xFFFF;
 #endif
@@ -139,7 +139,7 @@ int getAISmallModbusRegister(int adrReg)
     case 10://cos f
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 342;
+        return 348;
 #else
         if (S[bank_for_calc_power] != 0)
           return (cos_phi_x1000[bank_for_calc_power]) &0xFFFF;
@@ -149,7 +149,7 @@ int getAISmallModbusRegister(int adrReg)
     case 11://3I0
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 343;
+        return 349;
 #else
         return (measurement_low[IM_3I0]) &0xFFFF;
 #endif
@@ -157,7 +157,7 @@ int getAISmallModbusRegister(int adrReg)
     case 12://freq
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 344;
+        return 350;
 #else
         int int_frequency = (int)(frequency*100);
         
@@ -190,7 +190,7 @@ int getAISmallModbusRegister(int adrReg)
     case 24://Eq4
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 345+(offset-13);
+        return 351+(offset-13);
 #else
         unsigned int enrg = (unsigned int)(energy[0][(offset-13) >> 1]*1000.0);
         if((offset-13)&1)
@@ -203,7 +203,7 @@ int getAISmallModbusRegister(int adrReg)
     case 25://UAB
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 357;
+        return 363;
 #else
         return (measurement_low[IM_UAB] >> 3) &0xFFFF;
 #endif
@@ -211,7 +211,7 @@ int getAISmallModbusRegister(int adrReg)
     case 26://UBC
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 358;
+        return 364;
 #else
         return (measurement_low[IM_UBC] >> 3) &0xFFFF;
 #endif
@@ -219,7 +219,7 @@ int getAISmallModbusRegister(int adrReg)
     case 27://UCA
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 359;
+        return 365;
 #else
         return (measurement_low[IM_UCA] >> 3) &0xFFFF;
 #endif
@@ -227,7 +227,7 @@ int getAISmallModbusRegister(int adrReg)
     case 28://3U0
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 360;
+        return 366;
 #else
         return (measurement_low[IM_3U0] >> 3) &0xFFFF;
 #endif
@@ -235,7 +235,7 @@ int getAISmallModbusRegister(int adrReg)
     case 29://3I0-1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 361;
+        return 367;
 #else
         return (measurement_low[IM_3I0_r] >> 2) &0xFFFF;
 #endif
@@ -243,7 +243,7 @@ int getAISmallModbusRegister(int adrReg)
     case 30://IM_3I0_other_g
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 362;
+        return 368;
 #else
         return (measurement_low[IM_3I0_other_g]) &0xFFFF;
 #endif
@@ -251,7 +251,7 @@ int getAISmallModbusRegister(int adrReg)
     case 31://IM_I1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 363;
+        return 369;
 #else
         return (measurement_low[IM_I1] >> 2) &0xFFFF;
 #endif
@@ -259,7 +259,7 @@ int getAISmallModbusRegister(int adrReg)
     case 32://IM_I2
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 364;
+        return 370;
 #else
         return (measurement_low[IM_I2] >> 2) &0xFFFF;
 #endif
@@ -277,13 +277,13 @@ int getAISmallModbusRegister(int adrReg)
 //    case 43://Uca TH2
     case 44://U1
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 376;
+        return 382;
 #else
         return (measurement_low[IM_U1] >> 3) &0xFFFF;
 #endif
     case 45://U2
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 377;
+        return 383;
 #else
         return (measurement_low[IM_U2] >> 3) &0xFFFF;
 #endif
@@ -292,7 +292,7 @@ int getAISmallModbusRegister(int adrReg)
     case 48://baza
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 380;
+        return 386;
 #else
         if (base_index_for_angle <= FULL_ORT_3U0) return (base_index_for_angle + 1) &0xFFFF;
         else
@@ -306,7 +306,7 @@ int getAISmallModbusRegister(int adrReg)
     case 49://OFFSET_ANGLE_UA_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 381;
+        return 387;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ua]) &0xFFFF;
 #endif
@@ -314,7 +314,7 @@ int getAISmallModbusRegister(int adrReg)
     case 50://OFFSET_ANGLE_UB_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 382;
+        return 388;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ub]) &0xFFFF;
 #endif
@@ -322,7 +322,7 @@ int getAISmallModbusRegister(int adrReg)
     case 51://OFFSET_ANGLE_UC_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 383;
+        return 389;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Uc]) &0xFFFF;
 #endif
@@ -330,7 +330,7 @@ int getAISmallModbusRegister(int adrReg)
     case 52://OFFSET_ANGLE_UAB_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 384;
+        return 390;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Uab]) &0xFFFF;
 #endif
@@ -338,7 +338,7 @@ int getAISmallModbusRegister(int adrReg)
     case 53://OFFSET_ANGLE_UBC_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 385;
+        return 391;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ubc]) &0xFFFF;
 #endif
@@ -346,7 +346,7 @@ int getAISmallModbusRegister(int adrReg)
     case 54://OFFSET_ANGLE_UCA_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 386;
+        return 392;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Uca]) &0xFFFF;
 #endif
@@ -354,7 +354,7 @@ int getAISmallModbusRegister(int adrReg)
     case 55://OFFSET_ANGLE_3U0_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 387;
+        return 393;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_3U0]) &0xFFFF;
 #endif
@@ -368,7 +368,7 @@ int getAISmallModbusRegister(int adrReg)
     case 62://OFFSET_ANGLE_Ia_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 394;
+        return 400;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ia]) &0xFFFF;
 #endif
@@ -376,7 +376,7 @@ int getAISmallModbusRegister(int adrReg)
     case 63://OFFSET_ANGLE_Ib_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 395;
+        return 401;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ib]) &0xFFFF;
 #endif
@@ -384,7 +384,7 @@ int getAISmallModbusRegister(int adrReg)
     case 64://OFFSET_ANGLE_Ic_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 396;
+        return 402;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ic]) &0xFFFF;
 #endif
@@ -392,7 +392,7 @@ int getAISmallModbusRegister(int adrReg)
     case 65://OFFSET_ANGLE_I04
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 397;
+        return 403;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_I04]) &0xFFFF;
 #endif
@@ -400,7 +400,7 @@ int getAISmallModbusRegister(int adrReg)
     case 66://OFFSET_ANGLE_3I0_1
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 398;
+        return 404;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_3I0]) &0xFFFF;
 #endif
@@ -408,7 +408,7 @@ int getAISmallModbusRegister(int adrReg)
     case 67://OFFSET_ANGLE_3I0_r
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 399;
+        return 405;
 #else
         return ((unsigned int)phi_angle[bank_for_calc_phi_angle][FULL_ORT_3I0_r]) &0xFFFF;
 #endif
@@ -421,7 +421,7 @@ int getAISmallModbusRegister(int adrReg)
     case 73://
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 405;
+        return 411;
 #else
         return resurs_vidkljuchennja & 0xffff;
 #endif
@@ -429,7 +429,7 @@ int getAISmallModbusRegister(int adrReg)
     case 74://
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 406;
+        return 412;
 #else
         return (resurs_vidkljuchennja >> 16) & 0xffff;
 #endif
@@ -437,7 +437,7 @@ int getAISmallModbusRegister(int adrReg)
     case 75://
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 407;
+        return 413;
 #else
         return resurs_vymykacha & 0xffff;
 #endif
@@ -445,7 +445,7 @@ int getAISmallModbusRegister(int adrReg)
     case 76://
       {
 #ifdef TESTZBIRKA_VERSII_PZ
-        return 408;
+        return 414;
 #else
         return (resurs_vymykacha >> 16) & 0xffff;
 #endif
