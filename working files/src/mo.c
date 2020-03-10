@@ -426,7 +426,10 @@ void CANAL2_MO_routine()
   
   uint8_t sum = 0;
   uint32_t index_w = 0;
-    
+
+  static uint32_t delta_max;
+      
+  
   if (CANAL2_MO_state == CANAL2_MO_BREAK_LAST_ACTION)
   {
            Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
@@ -577,10 +580,14 @@ void CANAL2_MO_routine()
     {
       uint32_t tick_tmp = TIM4->CNT;
       uint32_t delta;
+      
       if (tick_tmp >= tick) delta = tick_tmp - tick;
       else delta = (0x10000 - tick) + tick_tmp; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
       
-      if (delta > 500 /*500x10мкс = 5000мкс = 5мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+//      if (delta > 1000 /*1000x10мкс = 10000мкс = 10мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+      if (delta > 100000 /*100000x10мкс = 1000000мкс = 1000мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+      
+      if (delta_max < delta) delta_max = delta;
     }
   }
   else if (CANAL2_MO_state == CANAL2_MO_SENDING)
@@ -609,7 +616,10 @@ void CANAL2_MO_routine()
       if (rx_ndtr == BUFFER_CANAL2_MO)
       {
         //Не прийнято жодного байту
-        if (delta > 1000 /*1000x10мкс = 10000мкс = 10мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
+//        if (delta > 1000 /*1000x10мкс = 10000мкс = 10мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
+        if (delta > 100000 /*100000x10мкс = 1000000мкс = 1000мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
+      
+        if (delta_max < delta) delta_max = delta;
       }
       else
       {
