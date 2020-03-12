@@ -5458,7 +5458,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
         Алгебраїчне спрощення виразу
         setpoint = (pickup*koef_povernennja/100)*10 =  pickup*koef_povernennja/10
         */
-        pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/10;
+        pickup = (pickup * (int32_t)current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/10;
       }
       else
       {
@@ -5468,7 +5468,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     }
     else
     {
-      if (_CHECK_SET_BIT(p_active_functions, (RANG_PO_UP1 + 3*n_UP)) != 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
+      if (_CHECK_SET_BIT(p_active_functions, (RANG_PO_UP1 + 3*n_UP)) != 0) pickup = (pickup * (int32_t)current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
     }
 
     unsigned int more_less = ((current_settings_prt.control_UP & MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
