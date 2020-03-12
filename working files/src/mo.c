@@ -585,7 +585,7 @@ void CANAL2_MO_routine()
       else delta = (0x10000 - tick) + tick_tmp; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
       
 //      if (delta > 1000 /*1000x10мкс = 10000мкс = 10мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
-      if (delta > 100000 /*100000x10мкс = 1000000мкс = 1000мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+      if (delta > 50000 /*50000x10мкс = 500000мкс = 500мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
       
       if (delta_max < delta) delta_max = delta;
     }
@@ -617,7 +617,7 @@ void CANAL2_MO_routine()
       {
         //Не прийнято жодного байту
 //        if (delta > 1000 /*1000x10мкс = 10000мкс = 10мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
-        if (delta > 100000 /*100000x10мкс = 1000000мкс = 1000мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
+        if (delta > 50000 /*50000x10мкс = 500000мкс = 500мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
       
         if (delta_max < delta) delta_max = delta;
       }
