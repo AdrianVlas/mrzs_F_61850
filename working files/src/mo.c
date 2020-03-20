@@ -14,10 +14,17 @@ void start_receive_data_via_CANAL1_MO(void)
   //Зупиняэмо канал приймання
   if ((DMA_StreamCANAL1_MO_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL1_MO_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;  
   
-  int32_t size_packet = BUFFER_CANAL1_MO - (uint16_t)(DMA_StreamCANAL1_MO_Rx->NDTR);
-  if(size_packet != 0)
+  if(DMA_StreamCANAL1_MO_Rx->NDTR != BUFFER_CANAL1_MO)
   {
-    uint32_t error_status = CANAL1_MO->SR &  (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE);
+    uint32_t error_status = 0;
+    do
+    {
+      error_status |= CANAL1_MO->SR;
+    }
+    while ((error_status & (USART_FLAG_IDLE | USART_FLAG_LBD)) == 0);
+    int32_t size_packet = BUFFER_CANAL1_MO - (uint16_t)(DMA_StreamCANAL1_MO_Rx->NDTR);
+    
+    error_status &= (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE);
     
     //Прийняті дані з комунікаційної плати по каналу 1
     if (

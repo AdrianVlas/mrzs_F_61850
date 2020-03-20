@@ -773,11 +773,11 @@
                 </option>
                 <option>
                     <name>CCJLinkCommRadio</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCJLinkTCPIP</name>
-                    <state>aaa.bbb.ccc.ddd</state>
+                    <state>10.0.0.49</state>
                 </option>
                 <option>
                     <name>CCJLinkSpeedRadioV2</name>
@@ -892,7 +892,7 @@
                 <option>
                     <name>CCTcpIpAlt</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCJLinkTcpIpSerialNo</name>
