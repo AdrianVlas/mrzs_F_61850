@@ -32,11 +32,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Full formatting, with multibyte support.</state>
+                    <state>Full formatting, without multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Full formatting, with multibyte support.</state>
+                    <state>Full formatting, without multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.42.1.23869</state>
+                    <state>8.50.1.24770</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -164,7 +164,7 @@
                 </option>
                 <option>
                     <name>OgLibHeap</name>
-                    <state>0</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>OGLibAdditionalLocale</name>
@@ -177,7 +177,7 @@
                 </option>
                 <option>
                     <name>OGPrintfMultibyteSupport</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGScanfVariant</name>
@@ -186,7 +186,7 @@
                 </option>
                 <option>
                     <name>OGScanfMultibyteSupport</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>GenLocaleTags</name>
@@ -439,7 +439,7 @@
                 </option>
                 <option>
                     <name>IccFloatSemantics</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCNoLiteralPool</name>
@@ -938,7 +938,7 @@
                 </option>
                 <option>
                     <name>IlinkOptInline</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkOptExceptionsAllow</name>
@@ -954,7 +954,7 @@
                 </option>
                 <option>
                     <name>IlinkOptMergeDuplSections</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkOptUseVfe</name>
@@ -1183,13 +1183,15 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -1400,7 +1402,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -1413,11 +1415,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -1455,13 +1457,15 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -1672,7 +1676,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -1685,11 +1689,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -1727,13 +1731,15 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -1944,7 +1950,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -1957,11 +1963,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -2002,13 +2008,15 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -2140,11 +2148,11 @@
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
-                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
-                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
                             </option>
                             <option>
                                 <name>CCStdIncCheck</name>
@@ -2219,7 +2227,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -2232,11 +2240,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -2274,13 +2282,15 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -2491,7 +2501,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -2504,11 +2514,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -2583,9 +2593,11 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -2796,7 +2808,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -2809,11 +2821,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -2876,13 +2888,15 @@
                                     <debug>1</debug>
                                     <option>
                                         <name>CCOptimizationNoSizeConstraints</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                     <option>
                                         <name>CCDefines</name>
+                                        <state>_DLIB_TIME_USES_64</state>
                                         <state>USE_STDPERIPH_DRIVER</state>
                                         <state>STM32F2XX</state>
-                                        <state>USE_USB_OTG_FS </state>
+                                        <state>USE_USB_OTG_FS</state>
+                                        <state>KEYBOARD_VER_2_1</state>
                                     </option>
                                     <option>
                                         <name>CCPreprocFile</name>
@@ -2975,7 +2989,7 @@
                                     </option>
                                     <option>
                                         <name>CCRequirePrototypes</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                     <option>
                                         <name>CCDiagWarnAreErr</name>
@@ -3093,7 +3107,7 @@
                                     </option>
                                     <option>
                                         <name>IccFloatSemantics</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                     <option>
                                         <name>CCNoLiteralPool</name>
@@ -3106,11 +3120,11 @@
                                     </option>
                                     <option>
                                         <name>CCEncSource</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                     <option>
                                         <name>CCEncOutput</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                     <option>
                                         <name>CCEncOutputBom</name>
@@ -3173,13 +3187,15 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
-                                    <state>USE_USB_OTG_FS </state>
+                                    <state>USE_USB_OTG_FS</state>
+                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -3272,7 +3288,7 @@
                                 </option>
                                 <option>
                                     <name>CCRequirePrototypes</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDiagWarnAreErr</name>
@@ -3390,7 +3406,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -3403,11 +3419,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -3448,13 +3464,15 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
-                                    <state>USE_USB_OTG_FS </state>
+                                    <state>USE_USB_OTG_FS</state>
+                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -3547,7 +3565,7 @@
                                 </option>
                                 <option>
                                     <name>CCRequirePrototypes</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDiagWarnAreErr</name>
@@ -3665,7 +3683,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -3678,11 +3696,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -3748,13 +3766,15 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
-                                <state>USE_USB_OTG_FS </state>
+                                <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -3847,7 +3867,7 @@
                             </option>
                             <option>
                                 <name>CCRequirePrototypes</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDiagWarnAreErr</name>
@@ -3965,7 +3985,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -3978,11 +3998,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -4020,13 +4040,15 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
-                                <state>USE_USB_OTG_FS </state>
+                                <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -4119,7 +4141,7 @@
                             </option>
                             <option>
                                 <name>CCRequirePrototypes</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDiagWarnAreErr</name>
@@ -4237,7 +4259,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -4250,11 +4272,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -4292,13 +4314,15 @@
                             <debug>1</debug>
                             <option>
                                 <name>CCOptimizationNoSizeConstraints</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
-                                <state>USE_USB_OTG_FS </state>
+                                <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
                             </option>
                             <option>
                                 <name>CCPreprocFile</name>
@@ -4391,7 +4415,7 @@
                             </option>
                             <option>
                                 <name>CCRequirePrototypes</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCDiagWarnAreErr</name>
@@ -4430,11 +4454,11 @@
                                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
-                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
-                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
                             </option>
                             <option>
                                 <name>CCStdIncCheck</name>
@@ -4509,7 +4533,7 @@
                             </option>
                             <option>
                                 <name>IccFloatSemantics</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCNoLiteralPool</name>
@@ -4522,11 +4546,11 @@
                             </option>
                             <option>
                                 <name>CCEncSource</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutput</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                             <option>
                                 <name>CCEncOutputBom</name>
@@ -5148,14 +5172,15 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_1</state>
+                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -5366,7 +5391,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -5379,11 +5404,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -5472,13 +5497,15 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
+                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -5689,7 +5716,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -5702,11 +5729,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -5744,14 +5771,15 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_1</state>
+                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -5962,7 +5990,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -5975,11 +6003,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -6017,13 +6045,15 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
+                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -6234,7 +6264,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -6247,11 +6277,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>
@@ -6289,13 +6319,15 @@
                                 <debug>1</debug>
                                 <option>
                                     <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
+                                    <state>KEYBOARD_VER_2_1</state>
                                 </option>
                                 <option>
                                     <name>CCPreprocFile</name>
@@ -6506,7 +6538,7 @@
                                 </option>
                                 <option>
                                     <name>IccFloatSemantics</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCNoLiteralPool</name>
@@ -6519,11 +6551,11 @@
                                 </option>
                                 <option>
                                     <name>CCEncSource</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutput</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                                 <option>
                                     <name>CCEncOutputBom</name>

@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.42.1.23869</state>
+                    <state>8.50.1.24770</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -1187,6 +1187,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -1460,6 +1461,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -1733,6 +1735,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -2009,6 +2012,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -2282,6 +2286,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -2588,6 +2593,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -2886,6 +2892,7 @@
                                     </option>
                                     <option>
                                         <name>CCDefines</name>
+                                        <state>_DLIB_TIME_USES_64</state>
                                         <state>USE_STDPERIPH_DRIVER</state>
                                         <state>STM32F2XX</state>
                                         <state>USE_USB_OTG_FS</state>
@@ -3184,6 +3191,7 @@
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
@@ -3460,6 +3468,7 @@
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
@@ -3761,6 +3770,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -4034,6 +4044,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -4307,6 +4318,7 @@
                             </option>
                             <option>
                                 <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
                                 <state>USE_STDPERIPH_DRIVER</state>
                                 <state>STM32F2XX</state>
                                 <state>USE_USB_OTG_FS</state>
@@ -5164,6 +5176,7 @@
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
@@ -5488,6 +5501,7 @@
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
@@ -5761,6 +5775,7 @@
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
@@ -6034,6 +6049,7 @@
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
@@ -6307,6 +6323,7 @@
                                 </option>
                                 <option>
                                     <name>CCDefines</name>
+                                    <state>_DLIB_TIME_USES_64</state>
                                     <state>USE_STDPERIPH_DRIVER</state>
                                     <state>STM32F2XX</state>
                                     <state>USE_USB_OTG_FS</state>
