@@ -82,6 +82,7 @@ int setGOOSBigModbusRegister(int adrReg, int dataReg)
   superSetTempWriteArray(dataReg);//записать в буфер
 
   if(validN_SMALLACMD(dataReg)==MARKER_ERRORPERIMETR) return MARKER_ERRORPERIMETR;
+  if(dataReg==0) return 0;//прошла валидация
 
   switch((unsigned short)dataReg)
   {

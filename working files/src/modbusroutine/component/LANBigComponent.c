@@ -84,7 +84,7 @@ int setLANBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(lanbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
-  if(dataReg<0) return 0;
+//  if(dataReg<0) return 0;
   return validN_BIGACMD(dataReg);
 }//getDOUTBigModbusRegister(int adrReg)
 int setLANBigModbusBit(int x, int y)
