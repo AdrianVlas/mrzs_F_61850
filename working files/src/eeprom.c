@@ -1380,7 +1380,7 @@ void main_routines_for_spi1(void)
           //Скидаємо повідомлення у слові діагностики
           _SET_BIT(clear_diagnostyka, ERROR_SETTINGS_EEPROM_BIT);
 
-          if (current_settings_tmp.device_id == VERSIA_PZ)
+          if (current_settings_tmp.device_id == ((VERSIA_PZ << 8) | (MODYFIKACIA_VERSII_PZ)))
           {
             //Таблиця настройок відповідає типу даного приладу
             

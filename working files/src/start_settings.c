@@ -1519,7 +1519,7 @@ void start_settings_peripherals(void)
 /**************************************/
 void min_settings(__SETTINGS *target_label)
 {
-  target_label->device_id = VERSIA_PZ;
+  target_label->device_id = ((VERSIA_PZ << 8) | (MODYFIKACIA_VERSII_PZ));
     
   target_label->type_of_input = 0x0;
   target_label->type_of_input_signal = 0x0;
