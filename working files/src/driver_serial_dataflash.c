@@ -233,9 +233,15 @@ void dataflash_mamory_read(int index_chip)
     size_page = SIZE_PAGE_DATAFLASH_1;
 
     if(
-       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU ) ||
-       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) ||
+       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU ) 
+       ||
+       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) 
+       ||
        (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+       ||
+       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
+#endif  
       )
     {
       //Читання даних дискретного реєстратора
@@ -832,6 +838,8 @@ inline void analize_received_data_dataflash(int index_chip)
             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)  
 #if (MODYFIKACIA_VERSII_PZ >= 10)
             ||  
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN    )
+            ||  
             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)  
 #endif
            )
@@ -847,9 +855,15 @@ inline void analize_received_data_dataflash(int index_chip)
         }
 
         if (
-            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU ) ||
-            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) ||  
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU ) 
+            ||
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) 
+            ||  
             (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            ||  
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)  
+#endif
            )
         {
           //Відбувалося зчитування дискретного реєстратора
@@ -1357,7 +1371,7 @@ void main_function_for_dataflash_req(int index_chip)
               what_we_are_reading_from_dataflash_2 = READING_AR_FOR_USB; //Читання для USB завжди має більший пріоритет порівняно з читанням для  LAN, RS-485 і меню
 #if (MODYFIKACIA_VERSII_PZ >= 10)
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN) !=0 )
-              what_we_are_reading_from_dataflash_1 = READING_AR_FOR_LAN;//Читання для LAN завжди має більший пріоритет порівняно з читанням для RS-485 і меню
+              what_we_are_reading_from_dataflash_2 = READING_AR_FOR_LAN;//Читання для LAN завжди має більший пріоритет порівняно з читанням для RS-485 і меню
 #endif
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) !=0 )
               what_we_are_reading_from_dataflash_2 = READING_AR_FOR_RS485; //Читання для RS485 завжди має більший пріоритет порівняно з читанням для меню
