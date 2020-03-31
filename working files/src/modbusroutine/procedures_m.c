@@ -342,8 +342,8 @@ int openRegistrator(int number_file)
 //ОБЩЕЕ AR DR
   if (
     (
-      (number_file >= 1) &&
-      (number_file <= 4) &&
+      (number_file >= 4) &&
+      (number_file <= 7) &&
       (
         ((pointInterface == USB_RECUEST  ) && (number_record_of_ar_for_USB   == 0xffff))
         ||
@@ -356,8 +356,8 @@ int openRegistrator(int number_file)
     )
     ||
     (
-      (number_file >= 5) &&
-      (number_file <= 6) &&
+      (number_file >= 1) &&
+      (number_file <= 2) &&
       (
         ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB   == 0xffff)) 
         ||
@@ -374,8 +374,8 @@ int openRegistrator(int number_file)
       return -1;
     }
   else if (
-    (number_file >= 1) &&
-    (number_file <= 4) &&
+    (number_file >= 4) &&
+    (number_file <= 7) &&
     (
       (
         (state_ar_record != STATE_AR_NO_RECORD      ) &&
@@ -406,8 +406,8 @@ int openRegistrator(int number_file)
       */
     }
   else if (
-    (number_file >= 5) &&
-    (number_file <= 6) &&
+    (number_file >= 1) &&
+    (number_file <= 2) &&
     (
       (
         ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) 
@@ -429,7 +429,7 @@ int openRegistrator(int number_file)
     }//if
 
 //ТОЛЬКО AR
-  if(number_file<5)//
+  if((number_file >= 4) && (number_file <= 7))//
     {
       //Очікуємо поки завершиться зчитуквання даних для аналогового реєстратора
       while (
