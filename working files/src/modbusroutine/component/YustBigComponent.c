@@ -18,7 +18,7 @@ int postYustBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *yustbigcomponent;
 
-  int upravlYust=0;//флаг юстировки
+  int upravlYust=-1;//флаг юстировки
 
 /**************************************/
 //подготовка компонента Юстировки
@@ -195,6 +195,9 @@ int postYustBigWriteAction(void) {
     int typI = 2;
     if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
+#endif
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;//2-USB
     return 0;
   }//if(number_iteration_el>0)
@@ -202,12 +205,23 @@ int postYustBigWriteAction(void) {
   if(upravlYust==0x1978) {//флаг юстировки
 
     changed_ustuvannja = CHANGED_ETAP_EXECUTION;
-    serial_number_dev = edit_serial_number_dev;
+    if (serial_number_dev != edit_serial_number_dev)
+    {   
+      serial_number_dev = edit_serial_number_dev;
+      
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      //Помічаємо, що треба перезапустити КП
+      _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+#endif
+    }
     for(int i=0; i<NUMBER_ANALOG_CANALES; i++) ustuvannja[i] = edit_ustuvannja[i];
     for(int i=0; i<NUMBER_ANALOG_CANALES; i++) phi_ustuvannja[i] = phi_edit_ustuvannja[i];
 
     changed_ustuvannja = CHANGED_ETAP_ENDED;
     _SET_BIT(control_spi1_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT);
+  }//if
+  else if(upravlYust==0) {//флаг юстировки
+    upravlYust=-1;
   }//if
   else if(upravlMin==0x1111) {
 
@@ -222,6 +236,9 @@ int postYustBigWriteAction(void) {
     int typI = 2;
     if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
+#endif
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;
   }//if(upravlMin==0x1111)
   else if(upravlMinEnrg==0x1234) {

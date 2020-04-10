@@ -3316,7 +3316,7 @@ source:       0 - мінімальні параметри
               1 - клавіатура
               2 - USB
               3 - RS-485
-              4 - Ethernet
+              4 - LAN
 ---------------------------------------------------
 ******************************************************/
 void fix_change_settings(unsigned int setting_rang, unsigned int source)
@@ -3324,31 +3324,31 @@ void fix_change_settings(unsigned int setting_rang, unsigned int source)
   if (setting_rang < 2)
   {
     //Записуємо час останніх змін
-    unsigned char *label_to_time_array;
-    if (copying_time == 2) label_to_time_array = time_copy;
-    else label_to_time_array = time;
+    time_t time_dat_tmp;
+    if (save_time_dat_l == 3) time_dat_tmp = time_dat_save_l;
+    else
+    { 
+      copying_time_dat = 1;
+      time_dat_tmp = time_dat_copy;
+      copying_time_dat = 0;
+    }
 
-    unsigned char *point_to_target;
-  
     if (/*(source != 4) && */(source != 0))
     {
-      if (setting_rang == 0) point_to_target = (&current_settings)->time_setpoints;
-      else point_to_target = (&current_settings)->time_ranguvannja;
-    
-      for (unsigned int i = 0; i < 7; i++) *(point_to_target + i) = *(label_to_time_array + i);
-      *(point_to_target + 7) = (unsigned char)(source & 0xff);
+      time_t *time_target = (setting_rang == 0) ? &current_settings.time_setpoints : &current_settings.time_ranguvannja;
+      unsigned char *source_target = (setting_rang == 0) ? &current_settings.source_setpoints : &current_settings.source_ranguvannja;
+      
+      *time_target = time_dat_tmp;
+      *source_target = (unsigned char)(source & 0xff);
     }
     else
     {
-      for (unsigned int i = 0; i < 7; i++) 
-      {
-        current_settings.time_ranguvannja[i] = current_settings.time_setpoints[i] = *(label_to_time_array + i);
-      }
-      current_settings.time_ranguvannja[7] = current_settings.time_setpoints[7] = (unsigned char)(source & 0xff);
+      current_settings.time_setpoints = current_settings.time_ranguvannja = time_dat_tmp;
+      current_settings.source_setpoints = current_settings.source_ranguvannja = (unsigned char)(source & 0xff);
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-      //Помічаємо, що треба передати налаштування у комунікаційну плату
-      _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
+      //Помічаємо, що треба перезапустити КП
+      _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
 #endif
     }
   }
@@ -3371,27 +3371,32 @@ unsigned int set_new_settings_from_interface(unsigned int source)
 {
   unsigned int error = 0;
   
-  //Вказівник на системний час
-  unsigned char *label_to_time_array;
-  if (copying_time == 2) label_to_time_array = time_copy;
-  else label_to_time_array = time;
+  //Системний час
+  time_t time_dat_tmp;
+  if (save_time_dat_l == 3) time_dat_tmp = time_dat_save_l;
+  else
+  { 
+    copying_time_dat = 1;
+    time_dat_tmp = time_dat_copy;
+    copying_time_dat = 0;
+  }
   
   if ((type_of_settings_changed & (1 << DEFAULT_SETTINGS_SET_BIT)) != 0)
   {
-    for (unsigned int i = 0; i < 7; i++) current_settings_interfaces.time_setpoints[i] = current_settings_interfaces.time_ranguvannja[i] = *(label_to_time_array + i);
-    current_settings_interfaces.time_setpoints[7] = current_settings_interfaces.time_ranguvannja[7] = 0;
+    current_settings.time_setpoints = current_settings.time_ranguvannja = time_dat_tmp;
+    current_settings.source_setpoints = current_settings.source_ranguvannja = 0;
   }
   
   if ((type_of_settings_changed & (1 << SETTINGS_DATA_CHANGED_BIT)) != 0)
   {
-    for (unsigned int i = 0; i < 7; i++) current_settings_interfaces.time_setpoints[i] = *(label_to_time_array + i);
-    current_settings_interfaces.time_setpoints[7] = source;
+    current_settings.time_setpoints = time_dat_tmp;
+    current_settings.source_setpoints = source;
   }
   
   if ((type_of_settings_changed & (1 << RANGUVANNJA_DATA_CHANGED_BIT)) != 0)
   {
-    for (unsigned int i = 0; i < 7; i++) current_settings_interfaces.time_ranguvannja[i] = *(label_to_time_array + i);
-    current_settings_interfaces.time_ranguvannja[7] = source;
+    current_settings.time_ranguvannja = time_dat_tmp;
+    current_settings.source_ranguvannja = source;
   }
   
   unsigned int reconfiguration_RS_485 = 0, reconfiguration_RS_485_with_reset_usart = 0;
@@ -3416,6 +3421,17 @@ unsigned int set_new_settings_from_interface(unsigned int source)
     }
   }
   
+  unsigned int reload_DST_Rules = false;
+  if (
+      (current_settings.time_zone != current_settings_interfaces.time_zone) ||
+      (current_settings.dst != current_settings_interfaces.dst) ||
+      (current_settings.dst_on_rule != current_settings_interfaces.dst_on_rule) ||
+      (current_settings.dst_off_rule != current_settings_interfaces.dst_off_rule)
+     )
+  {
+    reload_DST_Rules = true;
+  }
+
   unsigned int change_timeout_ar = 0;
   if (
       (current_settings.prefault_number_periods != current_settings_interfaces.prefault_number_periods) ||
@@ -3468,6 +3484,70 @@ unsigned int set_new_settings_from_interface(unsigned int source)
   {
     set_password_RS485 = true;
   }
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  unsigned int set_password_LAN = false;
+  if (
+      (current_settings.password_interface_LAN != current_settings_interfaces.password_interface_LAN) &&
+      (current_settings_interfaces.password_interface_LAN != 0)  
+     )   
+  {
+    set_password_LAN = true;
+  }
+  
+  unsigned int resrart_kp = false;
+  uint16_t *p_source;
+  {
+    p_source = current_settings_interfaces.IP4;
+    for (uint16_t *p_target = current_settings.IP4; p_target != (current_settings.IP4 + 4); )
+    {
+      if (*p_target++ != *p_source++) 
+      {
+        resrart_kp = true;
+        break;
+      }
+    }
+  }
+  
+  if (resrart_kp == false)
+  {
+    p_source = current_settings_interfaces.gateway;
+    for (uint16_t *p_target = current_settings.gateway; p_target != (current_settings.gateway + 4); )
+    {
+      if (*p_target++ != *p_source++) 
+      {
+        resrart_kp = true;
+        break;
+      }
+    }
+  }
+  
+  if (resrart_kp == false)
+  {
+    p_source = current_settings_interfaces.IP_time_server;
+    for (uint16_t *p_target = current_settings.IP_time_server; p_target != (current_settings.IP_time_server + 4); )
+    {
+      if (*p_target++ != *p_source++) 
+      {
+        resrart_kp = true;
+        break;
+      }
+    }
+  }
+  
+  if (
+      (resrart_kp == false) 
+      &&
+      (  
+       (current_settings.mask != current_settings_interfaces.mask) ||
+       (current_settings.port_time_server != current_settings_interfaces.port_time_server) ||
+       (current_settings.period_sync != current_settings_interfaces.period_sync)
+      )  
+     )
+  {
+    resrart_kp = true;
+  }
+#endif
   
   if (error == 0)
   {
@@ -3492,6 +3572,9 @@ unsigned int set_new_settings_from_interface(unsigned int source)
     
     if (set_password_USB   != false) password_set_USB   = 1;
     if (set_password_RS485 != false) password_set_RS485 = 1;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    if (set_password_LAN != false) password_set_LAN = 1;
+#endif
     
     //Помічаємо, що поля структури зараз будуть змінені
     changed_settings = CHANGED_ETAP_EXECUTION;
@@ -3542,6 +3625,21 @@ unsigned int set_new_settings_from_interface(unsigned int source)
       }
     }
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    if (resrart_kp)
+    {
+      //Помічаємо, що треба перезапустити КП
+      _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+    }
+#endif    
+    
+    if (reload_DST_Rules)
+    {
+#if (__VER__ >= 8000000)
+      _ForceReloadDstRules();
+#endif
+    }
+    
     fix_change_settings(2, source);
 
     //Виставляємо признак, що на екрані треба обновити інформацію
@@ -3763,18 +3861,21 @@ void changing_diagnostyka_state(void)
           )
         {
           //Вже відбулося перше зчитуванння часу - тобто системний час у нас є
-          unsigned char *label_to_time_array;
-          if (copying_time == 2) label_to_time_array = time_copy;
-          else label_to_time_array = time;
-          for(unsigned int i = 0; i < 7; i++) buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = *(label_to_time_array + i);
+          copying_time_dat = 1;
+          time_t time_dat_tmp = time_dat_copy;
+          int32_t time_ms_tmp = time_ms_copy;
+          copying_time_dat = 0;
+          for(size_t i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = *((unsigned char*)(&time_dat_tmp) + i);
+          for(size_t i = 0; i < sizeof(int32_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + sizeof(time_t) + i] = *((unsigned char*)(&time_ms_tmp) + i);
         }
         else
         {
           //Ще не відбулося перше зчитуванння часу - тому покищо ці поля записуємо числом 0xff, а потім, коли системний час зчитається, то ми це поле обновимо
-          for(unsigned int i = 0; i < 7; i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = 0xff;
+          for(size_t i = 0; i < sizeof(time_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + i] = 0;
+          for(size_t i = 0; i < sizeof(int32_t); i++)  buffer_pr_err_records[index_into_buffer_pr_err + 1 + sizeof(time_t) + i] = 0;
         }
 
-        buffer_pr_err_records[index_into_buffer_pr_err + 8] = number_changes & 0xff;
+        buffer_pr_err_records[index_into_buffer_pr_err + 13] = number_changes & 0xff;
       
         for (size_t i = 0; i < N_DIAGN_BYTES; i ++)
         {
@@ -3782,10 +3883,10 @@ void changing_diagnostyka_state(void)
           unsigned int shift = 8*(i & 0x3);
           
           //Записуємо попередній стан діагностики
-          buffer_pr_err_records[index_into_buffer_pr_err + 9 + i] =  (diagnostyka_before[n_word] >> shift) & 0xff;
+          buffer_pr_err_records[index_into_buffer_pr_err + 14 + i] =  (diagnostyka_before[n_word] >> shift) & 0xff;
 
           //Записуємо теперішній стан діагностики
-          buffer_pr_err_records[index_into_buffer_pr_err + 9 + N_DIAGN_BYTES + i] =  (diagnostyka_now[n_word] >> shift) & 0xff;
+          buffer_pr_err_records[index_into_buffer_pr_err + 14 + N_DIAGN_BYTES + i] =  (diagnostyka_now[n_word] >> shift) & 0xff;
         }
         
         /*

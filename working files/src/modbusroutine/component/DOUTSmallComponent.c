@@ -11,7 +11,8 @@
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)   \
     )
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 100
@@ -27,6 +28,16 @@
 #define END_ADR_REGISTER 100
 //конечный bit в карте памяти
 #define END_ADR_BIT 108
+#endif
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )   
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 101
+//конечный bit в карте памяти
+#define END_ADR_BIT 119
 #endif
 
 int privateDOUTSmallGetReg2(int adrReg);
@@ -68,7 +79,17 @@ int getDOUTSmallModbusRegister(int adrReg) {
   //получить содержимое регистра
   if(privateDOUTSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  return  (state_outputs) &0xFFFF;
+//  return  (state_outputs) &0xFFFF;
+  switch(adrReg-BEGIN_ADR_REGISTER)
+  {
+    case 0:
+    return (state_outputs) &0xFFFF;
+    case 1:
+    return (state_outputs>>16)&0xFFFF;
+  }//switch
+
+  return 0;
+
 }//getDOUTModbusRegister(int adrReg)
 int getDOUTSmallModbusBit(int adrBit) {
   //получить содержимое bit

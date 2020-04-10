@@ -3,7 +3,11 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 61800
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 61818
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+#define END_ADR_REGISTER 61823
+#else
+#define END_ADR_REGISTER 61821
+#endif
 
 int privatePREGBigGetReg2(int adrReg);
 
@@ -48,9 +52,15 @@ int getPREGBigModbusRegister(int adrReg)
     case 0://Очистить регистратор программных ошибок
       return MARKER_ERRORPERIMETR;
     case 1://Номер аварии доступной для чтения
-      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
         return (number_record_of_pr_err_into_USB) &0xFFFF;
-      return (number_record_of_pr_err_into_RS485) &0xFFFF;
+      if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
+        return (number_record_of_pr_err_into_RS485) &0xFFFF;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      if(pointInterface==LAN_RECUEST) return (number_record_of_pr_err_into_LAN) &0xFFFF;
+#endif  
+      //Теоретично сюди ніколи не мала б програма зайти
+      total_error_sw_fixed(211);
     case 2://Количество событий
       return (info_rejestrator_pr_err.number_records) &0xFFFF;
     case 3://Окно отображения страницы
@@ -69,22 +79,38 @@ int getPREGBigModbusRegister(int adrReg)
     case 16:
     case 17:
     case 18:
-      
+    case 19:
+    case 20:
+    case 21:
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    case 22:
+    case 23:
+#endif      
       if (
-        ((pointInterface==USB_RECUEST  ) && (number_record_of_pr_err_into_USB   == 0xffff)) ||
-        ((pointInterface==RS485_RECUEST  ) && (number_record_of_pr_err_into_RS485 == 0xffff))
+        ((pointInterface==USB_RECUEST) && (number_record_of_pr_err_into_USB   == 0xffff)) 
+        ||
+        ((pointInterface==RS485_RECUEST) && (number_record_of_pr_err_into_RS485 == 0xffff))
+#if (MODYFIKACIA_VERSII_PZ >= 10)        
+        ||
+        ((pointInterface==LAN_RECUEST) && (number_record_of_pr_err_into_LAN == 0xffff))
+#endif
       ) return MARKER_ERRORPERIMETR;
       
       if (
         ((clean_rejestrators & CLEAN_PR_ERR) != 0) ||
         (
-          ((pointInterface==USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) ||
+          ((pointInterface==USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) 
+          ||
           ((pointInterface==RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)        
+          ||
+          ((pointInterface==LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN) != 0))
+#endif
         )
       ) return MARKER_ERRORPERIMETR;
       if (
         (
-          (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+          (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
           &&
           (
             (number_record_of_pr_err_into_USB >= info_rejestrator_pr_err.number_records) ||
@@ -93,18 +119,37 @@ int getPREGBigModbusRegister(int adrReg)
         )
         ||
         (
-          (pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
+          (pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
           &&
           (
             (number_record_of_pr_err_into_RS485 >= info_rejestrator_pr_err.number_records) ||
             (number_record_of_pr_err_into_RS485 >= MAX_NUMBER_RECORDS_INTO_PR_ERR        )
           )
         )
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        ||
+        (
+          (pointInterface==LAN_RECUEST)//метка интерфейса 0-USB 1-RS485 2-LAN
+          &&
+          (
+            (number_record_of_pr_err_into_LAN >= info_rejestrator_pr_err.number_records) ||
+            (number_record_of_pr_err_into_LAN >= MAX_NUMBER_RECORDS_INTO_PR_ERR        )
+          )
+        )
+#endif          
       )
         {
           //Помічаємо, що номер запису не вибраний
           if (pointInterface==USB_RECUEST) number_record_of_pr_err_into_USB = 0xffff;
-          else number_record_of_pr_err_into_RS485 = 0xffff;
+          else if (pointInterface==RS485_RECUEST) number_record_of_pr_err_into_RS485 = 0xffff;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (pointInterface==LAN_RECUEST) number_record_of_pr_err_into_LAN = 0xffff;
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(214);
+          }
           return MARKER_ERRORPERIMETR;
         }//if
       
@@ -112,7 +157,15 @@ int getPREGBigModbusRegister(int adrReg)
         {
           unsigned char *point_to_buffer;
           if (pointInterface==USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_pr_err;
-          else point_to_buffer = buffer_for_RS485_read_record_pr_err;
+          else if (pointInterface==RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_pr_err;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (pointInterface==LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_pr_err;
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(193);
+          }
 
           if ( (*(point_to_buffer + 0)) != LABEL_START_RECORD_PR_ERR)
             {
@@ -121,71 +174,58 @@ int getPREGBigModbusRegister(int adrReg)
             }
           else
             {
-              switch (offset-3)//temp_address)
+              time_t time_dat_tmp;
+              int32_t time_ms_tmp;
+              for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&time_dat_tmp) + i) =  point_to_buffer[1 + i];
+              for(size_t i = 0; i < sizeof(int32_t); i++) *((unsigned char*)(&time_ms_tmp) + i) = point_to_buffer[1 + sizeof(time_t) + i];
+              time_ms_tmp *= 1000; //перевід у мкс
+              
+              int offset_tmp = offset - 3;
+              switch (offset_tmp)//temp_address)
                 {
                 case 0:
                 {
-                  return (((*(point_to_buffer + 7))  << 8) | (*(point_to_buffer + 6))) &0xFFFF;
+                  return (time_dat_tmp >> 0) & 0xFFFF;
                 }
                 case 1:
                 {
-                  return ((*(point_to_buffer + 5))  << 8) &0xFFFF;
+                  return (time_dat_tmp >> 16) &0xFFFF;
                 }
                 case 2:
                 {
-                  return (((*(point_to_buffer + 4))  << 8) | (*(point_to_buffer + 3))) &0xFFFF;
+                  return (time_dat_tmp >> 32) &0xFFFF;
                 }
                 case 3:
                 {
-                  return (((*(point_to_buffer + 2))  << 8) | (*(point_to_buffer + 1))) &0xFFFF;
+                  return (time_dat_tmp >> 48) &0xFFFF;
                 }
                 case 4:
                 {
-                  return (((*(point_to_buffer + 10))  << 8) | (*(point_to_buffer + 9))) &0xFFFF;
+                  return (time_ms_tmp >> 0) &0xFFFF;
                 }
                 case 5:
                 {
-                  return (((*(point_to_buffer + 12))  << 8) | (*(point_to_buffer + 11))) &0xFFFF;
+                  return (time_ms_tmp >> 16) &0xFFFF;
                 }
                 case 6:
-                {
-                  return (((*(point_to_buffer + 14))  << 8) | (*(point_to_buffer + 13))) &0xFFFF;
-                }
                 case 7:
-                {
-                  return (((*(point_to_buffer + 16))  << 8) | (*(point_to_buffer + 15))) &0xFFFF;
-                }
                 case 8:
-                {
-                  return (((*(point_to_buffer + 18))  << 8) | (*(point_to_buffer + 17))) &0xFFFF;
-                }
                 case 9:
-                {
-                  return (((*(point_to_buffer + 20))  << 8) | (*(point_to_buffer + 19))) &0xFFFF;
-                }
                 case 10:
-                {
-                  return (((*(point_to_buffer + 22))  << 8) | (*(point_to_buffer + 21))) &0xFFFF;
-                }
                 case 11:
-                {
-                  return (((*(point_to_buffer + 24))  << 8) | (*(point_to_buffer + 23))) &0xFFFF;
-                }
                 case 12:
-                {
-                  return (((*(point_to_buffer + 26))  << 8) | (*(point_to_buffer + 25))) &0xFFFF;
-                }
                 case 13:
-                {
-                  return (((*(point_to_buffer + 28))  << 8) | (*(point_to_buffer + 27))) &0xFFFF;
-                }
                 case 14:
-                {
-                  return (((*(point_to_buffer + 30))  << 8) | (*(point_to_buffer + 29))) &0xFFFF;
-                }
                 case 15:
+                case 16:
+                case 17:
+                case 18:
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                case 19:
+                case 20:
+#endif
                 {
-                  return (((*(point_to_buffer + 32))  << 8) | (*(point_to_buffer + 31))) &0xFFFF;
+                  return (((*(point_to_buffer + 15 + 2*(offset_tmp - 6)))  << 8) | (*(point_to_buffer + 14 + 2*(offset_tmp - 6)))) &0xFFFF;
                 }
                 }//switch
 
@@ -230,6 +270,9 @@ int getPREGBigModbusRegister(int adrReg)
                TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH    |
                TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB   |
                TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485 |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+               TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN |
+#endif
                TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU
              )
             ) != 0
@@ -246,8 +289,13 @@ int getPREGBigModbusRegister(int adrReg)
 //      або очистка його, тому ця операція є тимчасово недоступною
           ((clean_rejestrators & CLEAN_PR_ERR) != 0) ||
           (
-            ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) ||
-            ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
+            ((pointInterface == USB_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) != 0)) 
+            ||
+            ((pointInterface == RS485_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) != 0))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            ||
+            ((pointInterface == LAN_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN) != 0))
+#endif
           )
         ) return MARKER_ERRORPERIMETR;
 
@@ -312,7 +360,7 @@ int getPREGBigModbusRegister(int adrReg)
                 //Подаємо команду зчитати дані у бувер пам'яті для USB
                 control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB;
               }
-            else //if (type_interface == RS485_RECUEST)
+            else if(pointInterface==RS485_RECUEST)//if (type_interface == RS485_RECUEST)
               {
                 //Встановлюємо номер запису реєстратора програмних подій для читання через інтерфейс RS-485
                 number_record_of_pr_err_into_RS485 = (tempWriteArray[offsetTempWriteArray+i]);
@@ -320,6 +368,22 @@ int getPREGBigModbusRegister(int adrReg)
 
                 //Подаємо команду зчитати дані у бувер пам'яті для RS-485
                 control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485;
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            else if (pointInterface == LAN_RECUEST)
+              {
+                //Встановлюємо номер запису реєстратора програмних подій для читання через інтерфейс LAN
+                number_record_of_pr_err_into_LAN = (tempWriteArray[offsetTempWriteArray+i]);
+                //Подаємо команду читання реєстратора програмних подій для  інтерфейсу LAN
+
+                //Подаємо команду зчитати дані у бувер пам'яті для LAN
+                control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN;
+              }
+#endif
+            else
+              {
+                //Теоретично цього ніколи не мало б бути
+                total_error_sw_fixed(189);
               }
           }//case 1
           break;

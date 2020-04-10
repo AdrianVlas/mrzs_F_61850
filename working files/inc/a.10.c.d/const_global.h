@@ -4,22 +4,7 @@
 #define N_BIG   9
 #define N_SMALL 3
 
-//Величина, яка необхідна для періодичної (період 1  мс   ) генерації переривань каналом 1 таймеру 2 з прескаллером 2000 = (1999 + 1)
-#define TIM2_CCR1_VAL                   1000
-#define TIM2_MIN_PERIOD_WRITE_READ      1 /*мкс*/
-//Величина, яка необхідна для періодичної (період 10 мс   ) генерації переривань каналом 1 таймеру 4 з прескаллером 600 = (599 + 1)
-#define TIM4_CCR1_VAL                   1000
-//Величина, яка необхідна для періодичної (період 1 мс   ) генерації переривань каналом 2 таймеру 4 з прескаллером 600 = (599 + 1)
-#define TIM4_CCR2_VAL                   100
-//Величина, яка необхідна для періодичної (як мінімум, період 10 мкс   ) генерації переривань каналом 3 таймеру 4 з прескаллером 600 = (599 + 1)
-#define TIM4_CCR3_VAL                   1
-//Величина, яка необхідна для періодичної (період 0,625 мс) генерації переривань каналом 1 таймеру 3 з прескаллером 1 = (0 + 1)
-#define TIM5_CCR1_2_VAL               37500
-
 #define MAX_NUMBER_LINES_VMP            8
-
-#define DELTA_TIME_FOR_TIMERS           1
-#define PERIOD_SIGNAL_OUTPUT_MODE_2     1000 /*мс*/
 
 #define NUMBER_ANALOG_CANALES           8
 
@@ -1986,8 +1971,8 @@ NUMBER_ODYNYCI_VYMIRJUVANNJA
 /*****************************************/
 #define VERSIA_PZ                                             14
 #define MODYFIKACIA_VERSII_PZ                                 10
-#define ZBIRKA_VERSII_PZ                                      0
-#define ZBIRKA_PIDVERSII_PZ                                   0
+#define ZBIRKA_VERSII_PZ                                      1
+#define ZBIRKA_PIDVERSII_PZ                                   2
 /*****************************************/
 
 /*****************************************/
@@ -2006,6 +1991,6 @@ NUMBER_ODYNYCI_VYMIRJUVANNJA
 //Версія універсальної карти памяті
 /*****************************************/
 #define VERSIA_GMM                                             8
-#define MODYFIKACIA_VERSII_GMM                                 0
+#define MODYFIKACIA_VERSII_GMM                                 4
 /*****************************************/
 #endif

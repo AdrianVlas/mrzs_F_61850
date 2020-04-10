@@ -201,7 +201,8 @@ typedef struct
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
    int32_t zdz_ovd_porig;                                   //Поріг спрацювання ОВД
 #endif
@@ -329,6 +330,10 @@ typedef struct
   unsigned int password_interface_USB;                          //Пароль для редагування з інтерфейсу USB
   unsigned int timeout_deactivation_password_interface_RS485;   //Час деактивації паролю для редагування з інтерфейсу RS485
   unsigned int password_interface_RS485;                        //Пароль для редагування з інтерфейсу RS485
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  unsigned int timeout_deactivation_password_interface_LAN;   //Час деактивації паролю для редагування з інтерфейсу LAN
+  unsigned int password_interface_LAN;                        //Пароль для редагування з інтерфейсу LAN
+#endif  
   
   unsigned int timeout_idle_new_settings;
 
@@ -381,28 +386,43 @@ typedef struct
   
   unsigned int control_extra_settings_1;                //Поле для додаткових налаштувань
   
+  int32_t time_zone;                                    //Часова зона
+  uint32_t dst;                                         //Перехід на літній час
+  uint32_t dst_on_rule;                                 //Правило переходу на Літній час
+  uint32_t dst_off_rule;                                //Правило переходу на стандартний час
+  
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   //IP4
   uint16_t IP4[4];                                      //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
   uint32_t mask;                                        //XX
   uint16_t gateway[4];                                  //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
+  
+  uint16_t IP_time_server[4];                           //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
+  uint32_t port_time_server;
+  uint32_t period_sync;
+  
 #endif
   
-  unsigned char time_setpoints[7+1];                     //Час останніх змін уставок-витримок-управління
-                                                         //Останній байт масиву сигналізує мітку звідки зміни були проведені
-                                                            //0 - мінімальні параметри
+  time_t time_setpoints;                                    //Час останніх змін уставок-витримок-управління
+  unsigned char source_setpoints;                           //0 - мінімальні параметри
                                                             //1 - клавіатура
                                                             //2 - USB
                                                             //3 - RS-485
                                                             //4 - Ethernet
   
-  unsigned char time_ranguvannja[7+1];                    //Час останніх змін ранжування
-                                                            //0 - мінімальні параметри
+  time_t time_ranguvannja;                                  //Час останніх змін ранжування
+  unsigned char source_ranguvannja;                         //0 - мінімальні параметри
                                                             //1 - клавіатура
                                                             //2 - USB
                                                             //3 - RS-485
                                                             //4 - Ethernet
 } __SETTINGS;
+
+typedef struct _info_vymk
+{
+  time_t time_dat;
+  int32_t time_ms;
+} __info_vymk;
 
 typedef struct
 {
@@ -453,7 +473,8 @@ typedef struct
 typedef struct
 {
   unsigned char label_start_record;
-  unsigned char time[7]; 
+  time_t time_dat; 
+  int32_t time_ms;
   unsigned int T0;
   unsigned int TCurrent;
   unsigned int TCurrent04;

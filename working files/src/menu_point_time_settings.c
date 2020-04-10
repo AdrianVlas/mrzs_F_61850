@@ -72,48 +72,58 @@ void make_ekran_time_settings(unsigned int kind)
 {
   unsigned char name_string[2*MAX_ROW_FOR_POINT_TIME_SETPOINT_RANGUVANNJA][MAX_COL_LCD] = 
   {
-    "XX-XX-20XX      ",
-    "XX:XX:XX XXXXXXX"
+    "00-00-2000      ",
+    "00:00:00 XXXXXXX"
   };
   
   unsigned int position_temp = current_ekran.index_position;
   unsigned int index_of_ekran;
-  unsigned char *point_to_target;
+  time_t time_target = (kind == 0) ? current_settings.time_setpoints : current_settings.time_ranguvannja;
+  unsigned char source_target = (kind == 0) ? current_settings.source_setpoints : current_settings.source_ranguvannja;
   
   index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
 
-  if (kind == 0) point_to_target = (&current_settings)->time_setpoints;
-  else point_to_target = (&current_settings)->time_ranguvannja;
-  
   /******************************************/
   //Заповнюємо поля відповідними цифрами
   /******************************************/
-  //День
-  name_string[0][0 ] = ((*(point_to_target + 4)) >>  4) + 0x30;
-  name_string[0][1 ] = ((*(point_to_target + 4)) & 0xf) + 0x30;
+   if (time_target != 0)
+   {
+      struct tm *p = localtime(&time_target);
+      int field;
+      
+      //День
+      field = p->tm_mday;
+      name_string[0][0 ] = (field / 10) + 0x30;
+      name_string[0][1 ] = (field % 10) + 0x30;
 
-  //Місяць
-  name_string[0][3 ] = ((*(point_to_target + 5)) >>  4) + 0x30;
-  name_string[0][4 ] = ((*(point_to_target + 5)) & 0xf) + 0x30;
+      //Місяць
+      field = p->tm_mon + 1;
+      name_string[0][3 ] = (field / 10) + 0x30;
+      name_string[0][4 ] = (field % 10) + 0x30;
 
-  //Рік
-  name_string[0][8 ] = ((*(point_to_target + 6)) >>  4) + 0x30;
-  name_string[0][9 ] = ((*(point_to_target + 6)) & 0xf) + 0x30;
+      //Рік
+      field = p->tm_year - 100;
+      name_string[0][8 ] = (field / 10) + 0x30;
+      name_string[0][9 ] = (field % 10) + 0x30;
 
-  //Година
-  name_string[1][0 ] = ((*(point_to_target + 3)) >>  4) + 0x30;
-  name_string[1][1 ] = ((*(point_to_target + 3)) & 0xf) + 0x30;
+      //Година
+      field = p->tm_hour;
+      name_string[1][0 ] = (field / 10) + 0x30;
+      name_string[1][1 ] = (field % 10) + 0x30;
 
-  //Хвилини
-  name_string[1][3 ] = ((*(point_to_target + 2)) >>  4) + 0x30;
-  name_string[1][4 ] = ((*(point_to_target + 2)) & 0xf) + 0x30;
+      //Хвилини
+      field = p->tm_min;
+      name_string[1][3 ] = (field / 10) + 0x30;
+      name_string[1][4 ] = (field % 10) + 0x30;
 
-  //Секунди
-  name_string[1][6 ] = ((*(point_to_target + 1)) >>  4) + 0x30;
-  name_string[1][7 ] = ((*(point_to_target + 1)) & 0xf) + 0x30;
+      //Секунди
+      field = p->tm_sec;
+      name_string[1][6 ] = (field / 10) + 0x30;
+      name_string[1][7 ] = (field % 10) + 0x30;
+   }
 
   //Повідомлення про джерело змін
-  if((*(point_to_target + 7)) == 0)
+  if(source_target == 0)
   {
     name_string[ROW_T_][MAX_COL_LCD - 7] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 6] = ' ';
@@ -123,7 +133,7 @@ void make_ekran_time_settings(unsigned int kind)
     name_string[ROW_T_][MAX_COL_LCD - 2] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 1] = '0';
   }
-  else if((*(point_to_target + 7)) == 1)
+  else if(source_target == 1)
   {
     name_string[ROW_T_][MAX_COL_LCD - 7] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 6] = ' ';
@@ -133,7 +143,7 @@ void make_ekran_time_settings(unsigned int kind)
     name_string[ROW_T_][MAX_COL_LCD - 2] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 1] = 'K';
   }
-  else if((*(point_to_target + 7)) == 2)
+  else if(source_target == 2)
   {
     name_string[ROW_T_][MAX_COL_LCD - 7] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 6] = ' ';
@@ -143,7 +153,7 @@ void make_ekran_time_settings(unsigned int kind)
     name_string[ROW_T_][MAX_COL_LCD - 2] = 'S';
     name_string[ROW_T_][MAX_COL_LCD - 1] = 'B';
   }
-  else if((*(point_to_target + 7)) == 3)
+  else if(source_target == 3)
   {
     name_string[ROW_T_][MAX_COL_LCD - 7] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 6] = 'R';
@@ -154,15 +164,15 @@ void make_ekran_time_settings(unsigned int kind)
     name_string[ROW_T_][MAX_COL_LCD - 1] = '5';
   }
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-  else if((*(point_to_target + 7)) == 4)
+  else if(source_target == 4)
   {
     name_string[ROW_T_][MAX_COL_LCD - 7] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 6] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 5] = ' ';
     name_string[ROW_T_][MAX_COL_LCD - 4] = ' ';
-    name_string[ROW_T_][MAX_COL_LCD - 3] = 'N';
-    name_string[ROW_T_][MAX_COL_LCD - 2] = 'e';
-    name_string[ROW_T_][MAX_COL_LCD - 1] = 't';
+    name_string[ROW_T_][MAX_COL_LCD - 3] = 'L';
+    name_string[ROW_T_][MAX_COL_LCD - 2] = 'A';
+    name_string[ROW_T_][MAX_COL_LCD - 1] = 'N';
   }
 #endif
   else

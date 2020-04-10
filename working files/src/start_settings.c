@@ -241,24 +241,6 @@ void global_vareiables_installation(void)
 //  current_ekran.cursor_on = 0;
 //  current_ekran.cursor_blinking_on = 0;  
   
-//  time[0] = 0x0;
-//  time[1] = 0x0;
-//  time[2] = 0x0;
-//  time[3] = 0x0;
-//  time[4] = 0x0;
-//  time[5] = 0x0;
-//  time[6] = 0x0;
-//  calibration = 0;
-
-//  time_copy[0] = 0x0;
-//  time_copy[1] = 0x0;
-//  time_copy[2] = 0x0;
-//  time_copy[3] = 0x0;
-//  time_copy[4] = 0x0;
-//  time_copy[5] = 0x0;
-//  time_copy[6] = 0x0;
-//  calibration_copy = 0;
-  
   /**************************/
   //Ініціалізація структури усправління драйвером I2C
   /**************************/
@@ -447,9 +429,12 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
-  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = 0;
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = 0;
 #endif
   /**********************/
 
@@ -537,7 +522,8 @@ void start_settings_peripherals(void)
   uint32_t board_register_tmp = board_register = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47);
 #if   (                                 \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
-       (MODYFIKACIA_VERSII_PZ == 3)     \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 5)     \
       )   
   if ((board_register_tmp & 0x17) != 0x17)
 #elif (                                 \
@@ -553,7 +539,9 @@ void start_settings_peripherals(void)
       )   
   if ((board_register_tmp & 0x13) != 0x13)
 #elif (                                 \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10) || \
+       (MODYFIKACIA_VERSII_PZ == 13) || \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
   if ((board_register_tmp & 0x1F) != 0x1F)
 #elif (                                 \
@@ -575,8 +563,11 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
 #endif
@@ -585,14 +576,23 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
     )   
     if ((board_register_tmp & 0x010) != 0x10) 
+      
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
       _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+      _SET_BIT(set_diagnostyka, ERROR_BDVV6_FIX);
 #else
       _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
 #endif
@@ -618,6 +618,7 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
      (MODYFIKACIA_VERSII_PZ == 11)   \
     )
   if ((board_register_tmp & 0x04) == 0x04)
@@ -630,7 +631,8 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
       )   
   if ((board_register_tmp & 0x10) == 0x10)
   {
@@ -640,6 +642,11 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x12)  _SET_BIT(set_diagnostyka, ERROR_BDVV6_CTLR);
 #else
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
 #endif
@@ -733,6 +740,12 @@ void start_settings_peripherals(void)
   GPIO_Init(GPIO_CANAL1_MO_Out1, &GPIO_InitStructure);
   /* Знімаємо пін Canal1_MO_Out */
   GPIO_ResetBits(GPIO_CANAL1_MO_Out1, GPIO_PIN_CANAL1_MO_Out1);
+
+  /* KP_SOFT_RESET_Out1*/
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_KP_SOFT_RESET;
+  GPIO_Init(GPIO_KP_SOFT_RESET, &GPIO_InitStructure);
+  /* Знімаємо пін KP_SOFT_RESET */
+  GPIO_ResetBits(GPIO_KP_SOFT_RESET, GPIO_PIN_KP_SOFT_RESET);
 #endif
   /**************/
 
@@ -1506,7 +1519,7 @@ void start_settings_peripherals(void)
 /**************************************/
 void min_settings(__SETTINGS *target_label)
 {
-  target_label->device_id = VERSIA_PZ;
+  target_label->device_id = ((VERSIA_PZ << 8) | (MODYFIKACIA_VERSII_PZ));
     
   target_label->type_of_input = 0x0;
   target_label->type_of_input_signal = 0x0;
@@ -1648,7 +1661,8 @@ void min_settings(__SETTINGS *target_label)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
       )   
   target_label->zdz_ovd_porig = 0;
 #endif
@@ -1896,6 +1910,10 @@ void min_settings(__SETTINGS *target_label)
   target_label->password_interface_USB = 0;
   target_label->timeout_deactivation_password_interface_RS485 = TIMEOUT_DEACTIVATION_PASSWORD_MIN;
   target_label->password_interface_RS485 = 0;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  target_label->timeout_deactivation_password_interface_LAN = TIMEOUT_DEACTIVATION_PASSWORD_MIN;
+  target_label->password_interface_LAN = 0;
+#endif
   
   target_label->timeout_idle_new_settings = TIMEOUT_NEW_SETTINGS_MIN;
   
@@ -1926,6 +1944,11 @@ void min_settings(__SETTINGS *target_label)
   target_label->language = LANGUAGE_EN;
   
   target_label->control_extra_settings_1 = 0;
+  
+  target_label->time_zone = 2;
+  target_label->dst = MASKA_FOR_BIT(N_BIT_TZ_DST);
+  target_label->dst_on_rule = (_Mar << POS_MM) | (_NL << POS_WR) | (_Sun << POS_DOW) | (3 << POS_HH);
+  target_label->dst_off_rule = (_Oct << POS_MM) | (_NL << POS_WR) | (_Sun << POS_DOW) | (3 << POS_HH);
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   
@@ -1940,14 +1963,20 @@ void min_settings(__SETTINGS *target_label)
   target_label->gateway[1] = 0;
   target_label->gateway[2] = 0;
   target_label->gateway[3] = 0;
+
+  target_label->IP_time_server[0] = 192;
+  target_label->IP_time_server[1] = 168;
+  target_label->IP_time_server[2] = 100;
+  target_label->IP_time_server[3] = 10;
   
+  target_label->port_time_server = 123;
+
+  target_label->period_sync = 300;
+    
 #endif  
 
-  for(unsigned int i = 0; i < (7+1); i++)
-  {
-    target_label->time_setpoints[i] = 0;
-    target_label->time_ranguvannja[i] = 0;
-  }
+  target_label->time_setpoints = target_label->time_ranguvannja = 0;
+  target_label->source_setpoints = target_label->source_ranguvannja = 0;
 }
 /**************************************/
 

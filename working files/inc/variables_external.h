@@ -122,7 +122,8 @@ extern unsigned int temp_states_for_mtz;
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
 extern uint32_t delta_time_test;
 extern uint32_t zdz_ovd_diagnostyka;
@@ -254,18 +255,24 @@ extern const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODY
 
 extern const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
 
-extern unsigned int fixed_power_down_into_RTC; 
-extern unsigned char time[7], thousandths_time; 
-extern unsigned char time_copy[7], thousandths_time_copy; 
 extern unsigned char calibration;
-extern unsigned char calibration_copy;
-extern unsigned int copying_time;
 extern unsigned char time_edit[7]; 
 extern unsigned char calibration_edit;
-extern unsigned int copy_register8_RTC;
 extern int etap_reset_of_bit;
-extern int etap_settings_test_frequency;
-extern unsigned char temp_register_rtc[2];
+
+extern char getzone_string[2][55];
+extern size_t bank_getzone;
+extern unsigned int lt_or_utc;
+extern clock_t clk_count;
+extern int32_t time_ms, time_ms_copy;
+extern time_t time_dat, time_dat_copy;
+extern unsigned int copying_time_to_RTC;
+extern int32_t time_ms_RTC;
+extern time_t time_dat_RTC;
+extern unsigned int copying_time_dat;
+extern int32_t time_ms_save_l, time_ms_save_h;
+extern time_t time_dat_save_l, time_dat_save_h;
+extern unsigned int save_time_dat_l, save_time_dat_h;
 
 extern unsigned int changed_settings; 
 extern unsigned char crc_settings;
@@ -451,6 +458,9 @@ extern unsigned int clean_rejestrators;
 extern const unsigned char letters[69][2];
 extern const unsigned char extra_letters[12][1 + MAX_NAMBER_LANGUAGE];
 
+extern const unsigned char string_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD];
+extern const unsigned int cursor_x_string_off_on[MAX_NAMBER_LANGUAGE][2];
+
 extern int current_language;
 
 //Лічильник ресурсу
@@ -505,6 +515,31 @@ extern int usb_transmiting_count;
 extern unsigned char data_usb_transmiting;
 extern unsigned int timeout_idle_USB;
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+//MODBUS-TCP
+extern unsigned char LAN_received[BUFFER_LAN];
+extern int LAN_received_count;
+extern unsigned char LAN_transmiting[BUFFER_LAN];
+extern int LAN_transmiting_count;
+
+extern unsigned int timeout_idle_LAN;
+extern unsigned int password_set_LAN;
+
+extern unsigned int trigger_functions_LAN[N_BIG];
+
+extern unsigned char buffer_for_LAN_read_record_dr[SIZE_BUFFER_FOR_DR_RECORD];
+extern unsigned int number_record_of_dr_for_LAN;
+extern unsigned int part_reading_dr_from_dataflash_for_LAN;
+
+extern unsigned char buffer_for_LAN_read_record_pr_err[SIZE_ONE_RECORD_PR_ERR];
+extern unsigned int number_record_of_pr_err_into_LAN;
+
+extern unsigned char buffer_for_LAN_read_record_ar[SIZE_PAGE_DATAFLASH_2];
+extern unsigned int number_record_of_ar_for_LAN;
+extern int first_number_time_sample_for_LAN;
+extern int last_number_time_sample_for_LAN;
+#endif
+
 //MODBUS-RTU
 //extern unsigned int registers_address_read;
 //extern unsigned int registers_address_write;
@@ -530,8 +565,9 @@ extern unsigned int edit_serial_number_dev;
 
 //Для відображення інформації про причину відключення
 extern unsigned int info_vidkluchennja_vymykacha[2];
-extern unsigned char info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER][7]; 
+extern __info_vymk info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER]; 
 
+extern unsigned int  watchdog_l2;
 extern unsigned int control_word_of_watchdog;
 //extern unsigned int test_watchdogs;
 
@@ -553,9 +589,8 @@ extern const uint8_t my_address_mo;
 extern uint32_t IEC_board_uncall;
 extern uint32_t IEC_board_address;
 extern uint32_t queue_mo, queue_mo_irq;
+extern unsigned int restart_KP_irq;
 extern uint32_t state_array_control_state;
-extern uint8_t IEC_time_edit[7]; 
-extern uint32_t IEC_save_time; 
 
 extern uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 extern uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];

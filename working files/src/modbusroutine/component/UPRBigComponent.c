@@ -208,7 +208,8 @@ int uprFunc000(int actControl, int inOffset, uint32_t *uprMaska, int validData, 
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
       )   
 
     case 104:
@@ -595,14 +596,14 @@ int uprFunc000(int actControl, int inOffset, uint32_t *uprMaska, int validData, 
       break;
 
 //  count_bit = 1;
-    case 371://Блокировка Вкл. ВВ от ДВ
-      (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE;
-      (*editControl) = &edition_settings.control_extra_settings_1;
-      break;
-    case 372://Блокировка Откл. ВВ от ДВ
-      (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_BLK_OFF_CB_MISCEVE;
-      (*editControl) = &edition_settings.control_extra_settings_1;
-      break;
+//    case 371://Блокировка Вкл. ВВ от ДВ
+//      (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE;
+//      (*editControl) = &edition_settings.control_extra_settings_1;
+//      break;
+//    case 372://Блокировка Откл. ВВ от ДВ
+//      (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_BLK_OFF_CB_MISCEVE;
+//      (*editControl) = &edition_settings.control_extra_settings_1;
+//      break;
     case 373://Контроль ФК
       (*uprMaska)   = INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_FB_ACTIVATION;
       (*editControl) = &edition_settings.control_extra_settings_1;

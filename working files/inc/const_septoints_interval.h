@@ -428,6 +428,27 @@
 #define NETWORK_MASK_DEFAULT          24
 #define NETWORK_MASK_MAX              32
 
+#define NETWORK_PORT_MIN              0
+#define NETWORK_PORT_MAX              65535
+
+#define NETWORK_PERIOD_SYNC_MIN       0
+#define NETWORK_PERIOD_SYNC_MAX       65535
+
+#define TIME_ZONE_MIN                 (-12)
+#define TIME_ZONE_MAX                 12
+
+#define DST_RULE_MM_MIN               _Jan
+#define DST_RULE_MM_MAX               _Dec
+
+#define DST_RULE_DOW_MIN              _Sun
+#define DST_RULE_DOW_MAX              _Sat
+
+#define DST_RULE_DR_MIN               _N1
+#define DST_RULE_DR_MAX               _NL
+
+#define DST_RULE_HH_MIN               0
+#define DST_RULE_HH_MAX               23
+
 #define MAX_NUMBER_SPEEDS_INTERFACE    7
 #define VALUE_SPEED_INTERFACE_MIN      0
 #define VALUE_SPEED_INTERFACE_MAX      (MAX_NUMBER_SPEEDS_INTERFACE - 1)

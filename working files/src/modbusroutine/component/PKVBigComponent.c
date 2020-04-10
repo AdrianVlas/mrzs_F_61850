@@ -3,7 +3,7 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 12000
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 12042
+#define END_ADR_REGISTER 12055
 
 int privatePKVBigGetReg2(int adrReg);
 
@@ -20,7 +20,6 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue);
 int passwordImunitetRegPKVBigComponent(int x);
 
 COMPONENT_OBJ *pkvbigcomponent;
-
 int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
 {
   int diapazon = 1;
@@ -28,19 +27,39 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
   switch(inOffset)
   {
   case 0://Время активации пароля после простоя
-    if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+    switch(pointInterface)//метка интерфейса 0-USB 1-RS485
+    {
+     case USB_RECUEST:
       (*editValue) = &edition_settings.timeout_deactivation_password_interface_USB;
-    else
+     break;
+     case RS485_RECUEST:
       (*editValue) = &edition_settings.timeout_deactivation_password_interface_RS485;
+     break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+     case LAN_RECUEST:
+      (*editValue) = &edition_settings.timeout_deactivation_password_interface_LAN;
+     break;
+#endif
+    }//switch
     if(regPKV<TIMEOUT_DEACTIVATION_PASSWORD_MIN || regPKV>TIMEOUT_DEACTIVATION_PASSWORD_MAX) diapazon=0;
     break;
 
 #define IMUNITET_PKV1 1
   case IMUNITET_PKV1://Проверка/установка пароля
-    if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+    switch(pointInterface)//метка интерфейса 0-USB 1-RS485
+    {
+     case USB_RECUEST:
       (*editValue) = &edition_settings.password_interface_USB;
-    else
+     break;
+     case RS485_RECUEST:
       (*editValue) = &edition_settings.password_interface_RS485;
+     break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+     case LAN_RECUEST:
+      (*editValue) = &edition_settings.password_interface_LAN;
+     break;
+#endif
+    }//switch
     break;
 
   case 2://Тайм-аут применения изменений
@@ -85,88 +104,11 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
     if(regPKV<KOEF_ADDRESS_MIN || regPKV>KOEF_ADDRESS_MAX) diapazon=0;
     break;
 
-//    case 14://Таймаут конца фрейма
-//    case 15:
-//      (*editValue) = &stubnull;
-//      break;
-
-//    case 16://Символ 1 и 2
-//      (*editValue) = &edition_settings.name_of_cell[0];
-//      break;
-//    case 17://Символ 3 и 4
-//      (*editValue) = &edition_settings.name_of_cell[2];
-//      break;
-//    case 18://Символ 5 и 6
-//      (*editValue) = &edition_settings.name_of_cell[4];
-//      break;
-//    case 19://Символ 7 и 8
-//      (*editValue) = &edition_settings.name_of_cell[6];
-//      break;
-//    case 20://Символ 9 и 10
-//      (*editValue) = &edition_settings.name_of_cell[8];
-//      break;
-//    case 21://Символ 11 и 12
-//      (*editValue) = &edition_settings.name_of_cell[10];
-//      break;
-//    case 22://Символ 13 и 14
-//      (*editValue) = &edition_settings.name_of_cell[12];
-//      break;
-//    case 23://Символ 15 и 16
-//      (*editValue) = &edition_settings.name_of_cell[14];
-//      break;
-  case 24://Год
-    if(regPKV&0xff00) diapazon=0;
-    if(regPKV>0x99) diapazon=0;
-    if((regPKV&0xf)>9) diapazon=0;
+  case 38://Часовой пояс
+    (*editValue) = (uint32_t*)&edition_settings.time_zone;
+    if(regPKV>64000 && regPKV<65536+(TIME_ZONE_MIN*60)) diapazon=0;
+    if(regPKV<64000 && regPKV>(TIME_ZONE_MAX*60)) diapazon=0;
     break;
-  case 25://Месяц
-    if(regPKV&0xff00) diapazon=0;
-    if(regPKV==0) diapazon=0;
-    if(regPKV>0x12) diapazon=0;
-    if((regPKV&0xf)>9) diapazon=0;
-    break;
-  case 26://День
-    if(regPKV&0xff00) diapazon=0;
-    if(regPKV==0) diapazon=0;
-    if(regPKV>0x31) diapazon=0;
-    if((regPKV&0xf)>9) diapazon=0;
-    break;
-  case 27://Час
-    if(regPKV&0xff00) diapazon=0;
-    if(regPKV>0x23) diapazon=0;
-    if((regPKV&0xf)>9) diapazon=0;
-    break;
-  case 28://Минуты
-    if(regPKV&0xff00) diapazon=0;
-    if(regPKV>0x59) diapazon=0;
-    if((regPKV&0xf)>9) diapazon=0;
-    break;
-  case 29://Секунды
-    if(regPKV&0xff00) diapazon=0;
-    if(regPKV>0x59) diapazon=0;
-    if((regPKV&0xf)>9) diapazon=0;
-    break;
-  case 30://Сотые секунды
-    if(regPKV&0xff00) diapazon=0;
-    if(regPKV>0x99) diapazon=0;
-    if((regPKV&0xf)>9) diapazon=0;
-    break;
-
-//    case 31://Часовой пояс
-//    case 32://Переход на Зимнее/Летнее время
-//    case 33://Месяц перехода на Летнее время
-//    case 34://Неделя месяца перехода на Летнее время
-//    case 35://День недели перехода на Летнее время
-//    case 36://Час недели перехода на Летнее время
-//    case 37://Месяц перехода на Зимнее время
-//    case 38://Неделя месяца перехода на Зимнее время
-//    case 39://День недели перехода на Зимнее время
-//    case 40://Час недели перехода на Зимнее время
-//    case 41://Синхронизация времени
-//    case 42://Время утраты синхронизации
-//      (*editValue) = &stubnull;
-//      break;
-
   }//switch
 
   return diapazon;
@@ -201,56 +143,118 @@ int getPKVBigModbusRegister(int adrReg)
   }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
 
-  unsigned char *label_to_time_array;
-  if (copying_time == 2) label_to_time_array = time_copy;
-  else label_to_time_array = time;
+  time_t time_dat_tmp;
+  int32_t time_ms_tmp;
+  if (save_time_dat_l == 3) 
+  {
+    time_dat_tmp = time_dat_save_l;
+    time_ms_tmp = time_ms_save_l;
+  }
+  else
+  { 
+    copying_time_dat = 1;
+    time_dat_tmp = time_dat_copy;
+    time_ms_tmp = time_ms_copy;
+    copying_time_dat = 0;
+  }
+  //struct tm *p;
+  //struct tm *p = localtime(&time_dat_tmp);
+//time_dat_tmp = 1581934622;
 
   uint32_t *editValue=NULL;
   PKVFunc000(adrReg-BEGIN_ADR_REGISTER, 0, &editValue);
+  int offset = adrReg-BEGIN_ADR_REGISTER;
 
-  switch(adrReg-BEGIN_ADR_REGISTER)
+  switch(offset)
   {
   case 1://Проверка/установка пароля
     return MARKER_ERRORPERIMETR;
   case 6://Количество стоп-бит
     return (((unsigned short)*editValue)+1) &0xFFFF;
-  case 16://Символ 1 и 2
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    case 16://IP адрес устройства
+     return edition_settings.IP4[0]&0xff | (((edition_settings.IP4[1]&0xff)<<8)&0xFF00);
+    case 17://IP адрес устройства
+     return edition_settings.IP4[2]&0xff | (((edition_settings.IP4[3]&0xff)<<8)&0xFF00);
+    case 18://Маска подсети
+     return edition_settings.mask&0xff;
+    case 19://Шлюз по-умолчанию
+     return edition_settings.gateway[0]&0xff | (((edition_settings.gateway[1]&0xff)<<8)&0xFF00);
+    case 20://Шлюз по-умолчанию
+     return edition_settings.gateway[2]&0xff | (((edition_settings.gateway[3]&0xff)<<8)&0xFF00);
+#endif
+
+  case 23://Символ 1 и 2
     return (edition_settings.name_of_cell[0]&0xFF) | ((edition_settings.name_of_cell[1]<<8)&0xFF00);
-  case 17://Символ 3 и 4
+  case 24://Символ 3 и 4
     return (edition_settings.name_of_cell[2]&0xFF) | ((edition_settings.name_of_cell[3]<<8)&0xFF00);
-  case 18://Символ 5 и 6
+  case 25://Символ 5 и 6
     return (edition_settings.name_of_cell[4]&0xFF) | ((edition_settings.name_of_cell[5]<<8)&0xFF00);
-  case 19://Символ 7 и 8
+  case 26://Символ 7 и 8
     return (edition_settings.name_of_cell[6]&0xFF) | ((edition_settings.name_of_cell[7]<<8)&0xFF00);
-  case 20://Символ 9 и 10
+  case 27://Символ 9 и 10
     return (edition_settings.name_of_cell[8]&0xFF) | ((edition_settings.name_of_cell[9]<<8)&0xFF00);
-  case 21://Символ 11 и 12
+  case 28://Символ 11 и 12
     return (edition_settings.name_of_cell[10]&0xFF) | ((edition_settings.name_of_cell[11]<<8)&0xFF00);
-  case 22://Символ 13 и 14
+  case 29://Символ 13 и 14
     return (edition_settings.name_of_cell[12]&0xFF) | ((edition_settings.name_of_cell[13]<<8)&0xFF00);
-  case 23://Символ 15 и 16
+  case 30://Символ 15 и 16
     return (edition_settings.name_of_cell[14]&0xFF) | ((edition_settings.name_of_cell[15]<<8)&0xFF00);
 
-  case 24://Год
-    return  (*(label_to_time_array + 6)) &0xFF;
+  case 31:
+  case 32:
+  case 33:
+  case 34:
+    {
+    uint16_t* tmp[4];
+    tmp[0] = &((uint16_t*)&time_dat_tmp)[0];
+    tmp[1] = &((uint16_t*)&time_dat_tmp)[1];
+    tmp[2] = &((uint16_t*)&time_dat_tmp)[2];
+    tmp[3] = &((uint16_t*)&time_dat_tmp)[3];
+    return (*(tmp[offset-31]));
+    }
+  case 35:
+  case 36:
+    {
+    uint16_t* tmp[2];
+    tmp[0] = &((uint16_t*)&time_ms_tmp)[0];
+    tmp[1] = &((uint16_t*)&time_ms_tmp)[1];
+    return *(tmp[offset-35]);
+    }
 
-  case 25://Месяц
-    return (*(label_to_time_array + 5)) &0xFF;
+  case 38://Часовой пояс
+    return ((*editValue) &0xFFFF)*60;
 
-  case 26://День
-    return (*(label_to_time_array + 4)) &0xFF;
+  case 39://Переход на Зимнее/Летнее время
+    return (edition_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) ? 1 : 0;
 
-  case 27://Час
-    return (*(label_to_time_array + 3)) &0xFF;
+  case 40://Месяц перехода на Летнее время
+    return (edition_settings.dst_on_rule>>POS_MM)&((int)(pow(2,SHIFT_MM)-1));
+  case 41://Неделя месяца перехода на Летнее время
+    return (edition_settings.dst_on_rule>>POS_DOW)&((int)(pow(2,SHIFT_DOW)-1));
+  case 42://День недели перехода на Летнее время
+    return (edition_settings.dst_on_rule>>POS_WR)&((int)(pow(2,SHIFT_WR)-1));
+  case 43://Час недели перехода на Летнее время
+    return (edition_settings.dst_on_rule>>POS_HH)&((int)(pow(2,SHIFT_HH)-1));
+  case 44://Месяц перехода на Зимнее время
+    return (edition_settings.dst_off_rule>>POS_MM)&((int)(pow(2,SHIFT_MM)-1));
+  case 45://Неделя месяца перехода на Зимнее время
+    return (edition_settings.dst_off_rule>>POS_DOW)&((int)(pow(2,SHIFT_DOW)-1));
+  case 46://День недели перехода на Зимнее время
+    return (edition_settings.dst_off_rule>>POS_WR)&((int)(pow(2,SHIFT_WR)-1));
+  case 47://Час недели перехода на Зимнее время
+    return (edition_settings.dst_off_rule>>POS_HH)&((int)(pow(2,SHIFT_HH)-1));
 
-  case 28://Минуты
-    return (*(label_to_time_array + 2)) &0xFF;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  case 51://IP адрес сервера NTP 1
+     return edition_settings.IP_time_server[0]&0xff | (((edition_settings.IP_time_server[1]&0xff)<<8)&0xFF00);
+  case 52://IP адрес сервера NTP 1
+     return edition_settings.IP_time_server[2]&0xff | (((edition_settings.IP_time_server[3]&0xff)<<8)&0xFF00);
 
-  case 29://Секунды
-    return (*(label_to_time_array + 1)) &0xFF;
-
-  case 30://Сотые секунды
-    return (*(label_to_time_array + 0)) &0xFF;
+  case 53://Интервал опроса NTP сервера
+    return edition_settings.period_sync&0xFFFF;
+#endif
   }//switch
 
   if(editValue==NULL) return 0;
@@ -309,17 +313,31 @@ int postPKVBigWriteAction(void)
   int endAdr   = pkvbigcomponent->operativMarker[1];
   int offsetTempWriteArray = superFindTempWriteArrayOffset(BEGIN_ADR_REGISTER);//найти смещение TempWriteArray
   int countAdr = endAdr-beginAdr+1;
-  if(endAdr<0) countAdr = 1;
+  if(endAdr<0) countAdr = 1;//к-во регистров
   int flag_time_array = 0;
+  int flag_ms_array = 0;
 
-  unsigned char *label_to_time_array = time_edit;
-  for(int i=0; i<7; i++) time_edit[i] = time[i];
+//  struct tm *p;
+  //запрещенные начальные адреса пакета
+  switch(beginAdr)
+  {
+   case 12032: case 12033: case 12034: case 12036: return ERROR_VALID2;
+  }//switch
+  //запрещенные конечные адреса пакета
+  switch(endAdr)
+  {
+   case 12031: case 12032: case 12033: case 12035: return ERROR_VALID2;
+  }//switch
+  unsigned short time_dat_frac[4];//фракции Время (для 64-бит)
+  unsigned short time_ms_frac[2];//фракции Время, микросекунды
+
 
   for(int i=0; i<countAdr; i++)
   {
     int offset = i+beginAdr-BEGIN_ADR_REGISTER;
     uint32_t *editValue=NULL;
     PKVFunc000(offset, 0, &editValue);
+    unsigned short offsetWriteRegister = tempWriteArray[offsetTempWriteArray+i];//новое значение регистра
     switch(offset)  //индекс регистра
     {
     case 0://Время активации пароля после простоя
@@ -329,36 +347,49 @@ int postPKVBigWriteAction(void)
     case 7://Паритет
     case 8://Задержка приёма
     case 13://Адрес устройства в сети
-      *editValue = (tempWriteArray[offsetTempWriteArray+i]);
+      *editValue = offsetWriteRegister;
       upravlSetting = 1;//флаг Setting
       break;
 
     case 1://Проверка/установка пароля
       {
       int passwordS=-1;
-      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+      switch(pointInterface)//метка интерфейса 0-USB 1-RS485
       {
+       case USB_RECUEST:
         passwordS = password_set_USB;//Пароль установлен
-      }//if
-      else
-      {
+       break;
+       case RS485_RECUEST:
         passwordS = password_set_RS485;//Пароль установлен
-      }
-      unsigned short new_parol = tempWriteArray[offsetTempWriteArray+i];
+       break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+       case LAN_RECUEST:
+        passwordS = password_set_LAN;//Пароль установлен
+       break;
+#endif
+      }//switch
+      unsigned short new_parol = offsetWriteRegister;
+
       if(passwordS==1) //пароль не снят
       {
         //режим check parol
         if((*editValue) == new_parol)
         {
           //обнулить флажок пароля
-          if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+          switch(pointInterface)//метка интерфейса 0-USB 1-RS485
           {
+           case USB_RECUEST:
             password_set_USB=0;//Пароль установлен
-          }//if
-          else
-          {
+           break;
+           case RS485_RECUEST:
             password_set_RS485=0;//Пароль установлен
-          }
+           break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+           case LAN_RECUEST:
+            password_set_LAN=0;//Пароль установлен
+           break;
+#endif
+          }//switch
         }//if
         else return ERROR_VALID2;//неправильный пароль
         break;
@@ -370,108 +401,242 @@ int postPKVBigWriteAction(void)
         {
           if(new_parol==0) break;//повторная запись нулевого пароля не активирует флаг
           //активир флажок пароля
-          if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+          switch(pointInterface)//метка интерфейса 0-USB 1-RS485
           {
+           case USB_RECUEST:
             password_set_USB=1;//Пароль установлен
-          }//if
-          else
-          {
+           break;
+           case RS485_RECUEST:
             password_set_RS485=1;//Пароль установлен
-          }
+           break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+           case LAN_RECUEST:
+            password_set_LAN=1;//Пароль установлен
+           break;
+#endif
+          }//switch
         }//if
       }//else
       //записать новый пароль
-      *editValue = (unsigned short)(tempWriteArray[offsetTempWriteArray+i]);
+      *editValue = offsetWriteRegister;
       upravlSetting = 1;//флаг Setting
       } break;
 
     case 6://Количество стоп-бит
-      *editValue = (tempWriteArray[offsetTempWriteArray+i])-1;
+      *editValue = offsetWriteRegister-1;
       upravlSetting = 1;//флаг Setting
       break;
 
-    case 16://Символ 1 и 2
-      edition_settings.name_of_cell[0] = (tempWriteArray[offsetTempWriteArray+i]);
-      edition_settings.name_of_cell[1] = (tempWriteArray[offsetTempWriteArray+i])>>8;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    case 16://IP адрес устройства
+     edition_settings.IP4[0] = offsetWriteRegister & 0xff;
+     edition_settings.IP4[1] = (offsetWriteRegister>>8) & 0xff;
+     upravlSetting = 1;//флаг Setting
+    break;
+    case 17://IP адрес устройства
+     edition_settings.IP4[2] = offsetWriteRegister & 0xff;
+     edition_settings.IP4[3] = (offsetWriteRegister>>8) & 0xff;
+     upravlSetting = 1;//флаг Setting
+    break;
+
+    case 18://Маска подсети
+     edition_settings.mask = offsetWriteRegister & 0xff;
+     upravlSetting = 1;//флаг Setting
+    break;
+
+    case 19://Шлюз по-умолчанию
+     edition_settings.gateway[0] = offsetWriteRegister & 0xff;
+     edition_settings.gateway[1] = (offsetWriteRegister>>8) & 0xff;
+     upravlSetting = 1;//флаг Setting
+    break;
+    case 20://Шлюз по-умолчанию
+     edition_settings.gateway[2] = offsetWriteRegister & 0xff;
+     edition_settings.gateway[3] = (offsetWriteRegister>>8) & 0xff;
+     upravlSetting = 1;//флаг Setting
+    break;
+#endif
+    case 23://Символ 1 и 2
+      edition_settings.name_of_cell[0] = offsetWriteRegister;
+      edition_settings.name_of_cell[1] = offsetWriteRegister>>8;
       upravlSetting = 1;//флаг Setting
       break;
-    case 17://Символ 3 и 4
-      edition_settings.name_of_cell[2] = (tempWriteArray[offsetTempWriteArray+i]);
-      edition_settings.name_of_cell[3] = (tempWriteArray[offsetTempWriteArray+i])>>8;
+    case 24://Символ 3 и 4
+      edition_settings.name_of_cell[2] = offsetWriteRegister;
+      edition_settings.name_of_cell[3] = offsetWriteRegister>>8;
       upravlSetting = 1;//флаг Setting
       break;
-    case 18://Символ 5 и 6
-      edition_settings.name_of_cell[4] = (tempWriteArray[offsetTempWriteArray+i]);
-      edition_settings.name_of_cell[5] = (tempWriteArray[offsetTempWriteArray+i])>>8;
+    case 25://Символ 5 и 6
+      edition_settings.name_of_cell[4] = offsetWriteRegister;
+      edition_settings.name_of_cell[5] = offsetWriteRegister>>8;
       upravlSetting = 1;//флаг Setting
       break;
-    case 19://Символ 7 и 8
-      edition_settings.name_of_cell[6] = (tempWriteArray[offsetTempWriteArray+i]);
-      edition_settings.name_of_cell[7] = (tempWriteArray[offsetTempWriteArray+i])>>8;
+    case 26://Символ 7 и 8
+      edition_settings.name_of_cell[6] = offsetWriteRegister;
+      edition_settings.name_of_cell[7] = offsetWriteRegister>>8;
       upravlSetting = 1;//флаг Setting
       break;
-    case 20://Символ 9 и 10
-      edition_settings.name_of_cell[8] = (tempWriteArray[offsetTempWriteArray+i]);
-      edition_settings.name_of_cell[9] = (tempWriteArray[offsetTempWriteArray+i])>>8;
+    case 27://Символ 9 и 10
+      edition_settings.name_of_cell[8] = offsetWriteRegister;
+      edition_settings.name_of_cell[9] = offsetWriteRegister>>8;
       upravlSetting = 1;//флаг Setting
       break;
-    case 21://Символ 11 и 12
-      edition_settings.name_of_cell[10] = (tempWriteArray[offsetTempWriteArray+i]);
-      edition_settings.name_of_cell[11] = (tempWriteArray[offsetTempWriteArray+i])>>8;
+    case 28://Символ 11 и 12
+      edition_settings.name_of_cell[10] = offsetWriteRegister;
+      edition_settings.name_of_cell[11] = offsetWriteRegister>>8;
       upravlSetting = 1;//флаг Setting
       break;
-    case 22://Символ 13 и 14
-      edition_settings.name_of_cell[12] = (tempWriteArray[offsetTempWriteArray+i]);
-      edition_settings.name_of_cell[13] = (tempWriteArray[offsetTempWriteArray+i])>>8;
+    case 29://Символ 13 и 14
+      edition_settings.name_of_cell[12] = offsetWriteRegister;
+      edition_settings.name_of_cell[13] = offsetWriteRegister>>8;
       upravlSetting = 1;//флаг Setting
       break;
-    case 23://Символ 15 и 16
-      edition_settings.name_of_cell[14] = (tempWriteArray[offsetTempWriteArray+i]);
-      edition_settings.name_of_cell[15] = (tempWriteArray[offsetTempWriteArray+i])>>8;
+    case 30://Символ 15 и 16
+      edition_settings.name_of_cell[14] = offsetWriteRegister;
+      edition_settings.name_of_cell[15] = offsetWriteRegister>>8;
       upravlSetting = 1;//флаг Setting
       break;
 
-    case 24://Год
-      *(label_to_time_array + 6) = (tempWriteArray[offsetTempWriteArray+i]);
+    case 31://Время (для 64-бит)
+    case 32://Время (для 64-бит)
+    case 33://Время (для 64-бит)
+    case 34://Время (для 64-бит)
+      if(countAdr == 1) return ERROR_VALID2;//к-во регистров
+      time_dat_frac[offset-31] = offsetWriteRegister;//фракции Время (для 64-бит)
       flag_time_array = 1;
       break;
-    case 25://Месяц
-      *(label_to_time_array + 5) = (tempWriteArray[offsetTempWriteArray+i]);
-      flag_time_array = 1;
+    case 35://Время, микросекунды
+    case 36://Время, микросекунды
+      if(countAdr == 1) return ERROR_VALID2;//к-во регистров
+      time_ms_frac[offset-35] = offsetWriteRegister;//фракции Время, микросекунды
+      flag_ms_array = 1;
       break;
-    case 26://День
-      *(label_to_time_array + 4) = (tempWriteArray[offsetTempWriteArray+i]);
-      flag_time_array = 1;
+
+    case 38://Часовой пояс
+      {
+      int value = (short)offsetWriteRegister;
+      if((value%60) >0) return ERROR_VALID2;//проверка кратность 60
+      *editValue = value/60;
+      upravlSetting = 1;//флаг Setting
+      }
       break;
-    case 27://Час
-      *(label_to_time_array + 3) = (tempWriteArray[offsetTempWriteArray+i]);
-      flag_time_array = 1;
-      break;
-    case 28://Минуты
-      *(label_to_time_array + 2) = (tempWriteArray[offsetTempWriteArray+i]);
-      flag_time_array = 1;
-      break;
-    case 29://Секунды
-      *(label_to_time_array + 1) = (tempWriteArray[offsetTempWriteArray+i]);
-      flag_time_array = 1;
-      break;
-    case 30://Сотые секунды
-      *(label_to_time_array + 0) = (tempWriteArray[offsetTempWriteArray+i]);
-      flag_time_array = 1;
-      break;
+
+   case 39://Переход на Зимнее/Летнее время
+     if(offsetWriteRegister>1) return ERROR_VALID2;
+     edition_settings.dst &= (uint32_t)(~(1<<N_BIT_TZ_DST));
+     edition_settings.dst |= (offsetWriteRegister<<N_BIT_TZ_DST);
+     upravlSetting = 1;//флаг Setting
+     break;
+ 
+   case 40://Месяц перехода на Летнее время
+     if(offsetWriteRegister>DST_RULE_MM_MAX) return ERROR_VALID2;
+     if(offsetWriteRegister<DST_RULE_MM_MIN) return ERROR_VALID2;
+     edition_settings.dst_on_rule &= (uint32_t)(~(((1 << SHIFT_MM) - 1)<<POS_MM));
+     edition_settings.dst_on_rule |= (offsetWriteRegister<<POS_MM);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 41://Неделя месяца перехода на Летнее время
+     if(offsetWriteRegister>DST_RULE_DOW_MAX) return ERROR_VALID2;
+//     if(offsetWriteRegister<DST_RULE_DOW_MIN) return ERROR_VALID2;
+     edition_settings.dst_on_rule &= (uint32_t)(~(((1 << SHIFT_DOW) - 1)<<POS_DOW));
+     edition_settings.dst_on_rule |= (offsetWriteRegister<<POS_DOW);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 42://Номер дня недели перехода  на Летнее время
+     if(offsetWriteRegister>DST_RULE_DR_MAX) return ERROR_VALID2;
+     if(offsetWriteRegister<DST_RULE_DR_MIN) return ERROR_VALID2;
+     edition_settings.dst_on_rule &= (uint32_t)(~(((1 << SHIFT_WR) - 1)<<POS_WR));
+     edition_settings.dst_on_rule |= (offsetWriteRegister<<POS_WR);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 43://Час недели перехода на Летнее время
+     if(offsetWriteRegister>DST_RULE_HH_MAX) return ERROR_VALID2;
+     //if(offsetWriteRegister<DST_RULE_HH_MIN) return ERROR_VALID2;
+     edition_settings.dst_on_rule &= (uint32_t)(~(((1 << SHIFT_HH) - 1)<<POS_HH));
+     edition_settings.dst_on_rule |= (offsetWriteRegister<<POS_HH);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 44://Месяц перехода на Зимнее время
+     if(offsetWriteRegister>DST_RULE_MM_MAX) return ERROR_VALID2;
+     if(offsetWriteRegister<DST_RULE_MM_MIN) return ERROR_VALID2;
+     edition_settings.dst_off_rule &= (uint32_t)(~(((1 << SHIFT_MM) - 1)<<POS_MM));
+     edition_settings.dst_off_rule |= (offsetWriteRegister<<POS_MM);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 45://Неделя месяца перехода на Зимнее время
+     if(offsetWriteRegister>DST_RULE_DOW_MAX) return ERROR_VALID2;
+//     if(offsetWriteRegister<DST_RULE_DOW_MIN) return ERROR_VALID2;
+     edition_settings.dst_off_rule &= (uint32_t)(~(((1 << SHIFT_DOW) - 1)<<POS_DOW));
+     edition_settings.dst_off_rule |= (offsetWriteRegister<<POS_DOW);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 46://Номер дня недели перехода на Стандартное время
+     if(offsetWriteRegister>DST_RULE_DR_MAX) return ERROR_VALID2;
+     if(offsetWriteRegister<DST_RULE_DR_MIN) return ERROR_VALID2;
+     edition_settings.dst_off_rule &= (uint32_t)(~(((1 << SHIFT_WR) - 1)<<POS_WR));
+     edition_settings.dst_off_rule |= (offsetWriteRegister<<POS_WR);
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 47://Час недели перехода на Зимнее время
+     if(offsetWriteRegister>DST_RULE_HH_MAX) return ERROR_VALID2;
+     //if(offsetWriteRegister<DST_RULE_HH_MIN) return ERROR_VALID2;
+     edition_settings.dst_off_rule &= (uint32_t)(~(((1 << SHIFT_HH) - 1)<<POS_HH));
+     edition_settings.dst_off_rule |= (offsetWriteRegister<<POS_HH);
+     upravlSetting = 1;//флаг Setting
+     break;
+ 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+   case 51://IP адрес сервера NTP 1
+     edition_settings.IP_time_server[0] = offsetWriteRegister & 0xff;
+     edition_settings.IP_time_server[1] = (offsetWriteRegister>>8) & 0xff;
+     upravlSetting = 1;//флаг Setting
+     break;
+   case 52://IP адрес сервера NTP 1
+     edition_settings.IP_time_server[2] = offsetWriteRegister & 0xff;
+     edition_settings.IP_time_server[3] = (offsetWriteRegister>>8) & 0xff;
+     upravlSetting = 1;//флаг Setting
+     break;
+ 
+   case 53://Интервал опроса NTP сервера
+     if(offsetWriteRegister==0) return ERROR_VALID2;
+     edition_settings.period_sync = offsetWriteRegister;
+     upravlSetting = 1;//флаг Setting
+     break;
+#endif
+
     }//switch
   }//for
 
+  //Сборка новых значений времени
+  copying_time_dat = 1;
+  time_t time_dat_tmp = time_dat_copy;//time UNIX
+  uint32_t time_ms_tmp = time_ms_copy;//milisec
+  copying_time_dat = 0;
+   uint16_t* tmp1 = &((uint16_t*)&time_dat_tmp)[0];
+   uint16_t* tmp2 = &((uint16_t*)&time_dat_tmp)[1];
+   uint16_t* tmp3 = &((uint16_t*)&time_dat_tmp)[2];
+   uint16_t* tmp4 = &((uint16_t*)&time_dat_tmp)[3];
+   uint16_t* tmp5 = &((uint16_t*)&time_ms_tmp)[0];
+   uint16_t* tmp6 = &((uint16_t*)&time_ms_tmp)[1];
   if(flag_time_array)
   {
-    if (check_data_for_data_time_menu() == 1)
-    {
-      //Дані достовірні
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
-      _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }//if
-    else return ERROR_VALID2;
-  }
+  (*tmp1) = time_dat_frac[0];
+  (*tmp2) = time_dat_frac[1];
+  (*tmp3) = time_dat_frac[2];
+  (*tmp4) = time_dat_frac[3];
+  }//if
+  if(flag_ms_array)
+  {
+  (*tmp5) = time_ms_frac[0];
+  (*tmp6) = time_ms_frac[1];
+  if(time_ms_tmp>1000) return ERROR_VALID2;
+  }//if
+
+  if(flag_time_array || flag_ms_array)
+  {
+    time_dat_save_l = time_dat_tmp;
+    time_ms_save_l = time_ms_tmp;
+    save_time_dat_l = 3;
+  }//if(flag_time_array || flag_ms_array)
   return 0;
 }//
 

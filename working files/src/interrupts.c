@@ -924,7 +924,7 @@ void TIM4_IRQHandler(void)
       //Запусаємо раз у секунду самоконтроль важливих змінних
       periodical_tasks_TEST_SETTINGS            = periodical_tasks_TEST_USTUVANNJA          = periodical_tasks_TEST_TRG_FUNC                = 
       periodical_tasks_TEST_INFO_REJESTRATOR_AR = periodical_tasks_TEST_INFO_REJESTRATOR_DR = periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR = 
-      periodical_tasks_TEST_RESURS              = periodical_tasks_TEST_FLASH_MEMORY        = periodical_tasks_CALCULATION_ANGLE            = true;
+      periodical_tasks_TEST_RESURS              = periodical_tasks_TEST_FLASH_MEMORY        = periodical_tasks_CALCULATION_ANGLE            =  true;
       
       number_inputs_for_fix_one_second = 0;
       
@@ -980,6 +980,19 @@ void TIM4_IRQHandler(void)
         if (timeout_idle_RS485 < (current_settings.timeout_deactivation_password_interface_RS485)) timeout_idle_RS485++;
       }
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      //Робота з таймерами простою LAN
+      if ((restart_timeout_interface & (1 << LAN_RECUEST)) != 0) 
+      {
+        timeout_idle_LAN = 0;
+        restart_timeout_interface &= (unsigned int)(~(1 << LAN_RECUEST));
+      }
+      else 
+      {
+        if (timeout_idle_LAN < (current_settings.timeout_deactivation_password_interface_LAN)) timeout_idle_LAN++;
+      }
+#endif
+
       //Ресурс
       if (restart_resurs_count == 0)
       {
@@ -998,6 +1011,20 @@ void TIM4_IRQHandler(void)
         resurs_global_max = 0;
       }
     }
+    /***********************************************************/
+
+    /***********************************************************/
+    //Виставляємо повідомлення про те, що канал 1 TIM4, що відповідає за періодичні функції клавіатури працює
+    /***********************************************************/
+    if (watchdog_l2)
+    {
+      GPIO_WriteBit(
+                    GPIO_EXTERNAL_WATCHDOG,
+                    GPIO_PIN_EXTERNAL_WATCHDOG,
+                    (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
+                   );
+    }
+    else control_word_of_watchdog |= WATCHDOG_KYYBOARD;
     /***********************************************************/
 
     /***********************************************************/
@@ -1048,11 +1075,6 @@ void TIM4_IRQHandler(void)
     while (repeat != 0);
     /***********************************************************/
 
-    /***********************************************************/
-    //Виставляємо повідомлення про те, що канал 1 TIM4, що відповідає за періодичні функції клавіатури працює
-    /***********************************************************/
-    control_word_of_watchdog |= WATCHDOG_KYYBOARD;
-    /***********************************************************/
     /***********************************************************************************************/
   }
   else if (TIM_GetITStatus(TIM4, TIM_IT_CC2) != RESET)
@@ -1064,121 +1086,6 @@ void TIM4_IRQHandler(void)
     uint16_t current_tick = TIM4->CCR2;
     
     /***********************************************************/
-    //Корекція десятих і сотих секунд
-    /***********************************************************/
-    if (copying_time == 0)
-    {
-      //На даний момент не іде встановлення або зчитування часу
-
-      /*
-      Помічаємо, що зараз  будемо змінювати час (при цьому встановлення або
-      читання з мікросхеми не може початися, бо ми у перериванні, а ці операції
-      виконуються з фонового режиму; відбір же даних буде іти коректно)
-      */
-      copying_time = 2; 
-      
-      unsigned int rozrjad = 0;
-      if ((++thousandths_time) > 9)
-      {
-        thousandths_time = 0;
-
-        for(unsigned int i = 0; i < 7; i++)
-        {
-          unsigned int data_tmp = 10*((time[i] >> 4) & 0xf) + (time[i] & 0xf);
-        
-          unsigned int porig;
-          switch (i)
-          {
-          case 0:
-          case 6:
-            {
-              porig = 99;
-              break;
-            }
-          case 1:
-          case 2:
-            {
-              porig = 59;
-              break;
-            }
-          case 3:
-            {
-              porig = 23;
-              break;
-            }
-          case 4:
-            {
-              unsigned int month = 10*((time[5] >> 4) & 0xf) + (time[5] & 0xf);
-              if (month == 0x2/*BCD*/)
-              {
-                unsigned int year = 10*((time[6] >> 4) & 0xf) + (time[6] & 0xf);
-                if (
-                    ((year & 0x3) == 0) && /*остача від ділення на 4*/
-                    (
-                     ((year % 100) != 0) /* ||
-                     ((year % 400) == 0) */ /*не кратний 100 або кратний 400*/
-                    )  
-                   )
-                {
-                  porig = 29;
-                } 
-                else
-                {
-                  porig = 28;
-                }
-              }
-              else if (
-                       ((month <= 0x7/*BCD*/) && ( (month & 1))) ||
-                       ((month >  0x7/*BCD*/) && (!(month & 1)))
-                      ) 
-              {
-                porig = 31;
-              }
-              else
-              {
-                porig = 30;
-              }
-              break;
-            }
-          case 5:
-            {
-              porig = 12;
-              break;
-            }
-          default:
-            {
-              //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
-              total_error_sw_fixed(74);
-            }
-          }
-        
-          if ((++data_tmp) > porig)
-          {
-            rozrjad = 1;
-          
-            if ((i == 4) || (i == 5)) data_tmp = 1;
-            else data_tmp = 0;
-          }
-          else rozrjad = 0;
-        
-          unsigned int high = data_tmp / 10;
-          unsigned int low = data_tmp - high*10;
-          time[i] = (high << 4) | low;
-        
-          if (rozrjad == false) break;
-        }
-      }
-
-      copying_time = 1; 
-      
-      thousandths_time_copy = thousandths_time;
-      for(unsigned int i = 0; i < 7; i++) time_copy[i] = time[i];
-      
-      copying_time = 0; 
-    }
-    /***********************************************************/
-
-    /***********************************************************/
     //Перевіряємо необхідність очистки реєстратора програмних подій
     /***********************************************************/
     if (
@@ -1189,6 +1096,9 @@ void TIM4_IRQHandler(void)
                                      TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH    |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB   |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485 |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN |
+#endif
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU
                                     )
          ) == 0
@@ -1209,7 +1119,10 @@ void TIM4_IRQHandler(void)
       number_record_of_pr_err_into_menu  = 0xffff;
       number_record_of_pr_err_into_USB   = 0xffff;
       number_record_of_pr_err_into_RS485 = 0xffff;
-
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      number_record_of_pr_err_into_LAN = 0xffff;
+#endif
+      
       //Знімаємо команду очистки реєстратора програмних подій
       clean_rejestrators &= (unsigned int)(~CLEAN_PR_ERR);
     }

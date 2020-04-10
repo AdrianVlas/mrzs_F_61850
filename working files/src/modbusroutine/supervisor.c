@@ -21,6 +21,9 @@ int passwordImunitetReg(int adrReg);
 int passwordImunitetBit(int adrBit);
 
 unsigned char  *outputPacket;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+unsigned char  outputPacket_TCP[300];
+#endif
 unsigned char  outputPacket_USB[300];
 unsigned char  outputPacket_RS485[300];
 
@@ -673,14 +676,20 @@ int superWriterRegister(int adrReg, int dataReg)
 {
   int result=0;
   int i=0;
-  if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-    {
+  switch(pointInterface)//метка интерфейса 0-USB 1-RS485
+  {
+   case USB_RECUEST:
       if(passwordImunitetReg(adrReg) && password_set_USB) return MARKER_ERRORPAROL;
-    }
-  else
-    {
+   break;
+   case RS485_RECUEST:
       if(passwordImunitetReg(adrReg) && password_set_RS485) return MARKER_ERRORPAROL;
-    }
+   break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+   case LAN_RECUEST:
+      if(passwordImunitetReg(adrReg) && password_set_LAN) return MARKER_ERRORPAROL;
+   break;
+#endif
+  }//switch
 
   for(; i<TOTAL_COMPONENT; i++)
     {
@@ -714,14 +723,21 @@ int superWriterBit(int adrBit, int dataBit)
 {
   int result=0;
   int i=0;
-  if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-    {
+
+  switch(pointInterface)//метка интерфейса 0-USB 1-RS485
+  {
+   case USB_RECUEST:
       if(passwordImunitetBit(adrBit) && password_set_USB) return MARKER_ERRORPAROL;
-    }
-  else
-    {
+   break;
+   case RS485_RECUEST:
       if(passwordImunitetBit(adrBit) && password_set_RS485) return MARKER_ERRORPAROL;
-    }
+   break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+   case LAN_RECUEST:
+      if(passwordImunitetBit(adrBit) && password_set_LAN) return MARKER_ERRORPAROL;
+   break;
+#endif
+  }//switch
 
   for(; i<TOTAL_COMPONENT; i++)
     {
@@ -811,6 +827,14 @@ void superClearActiveActualData(void)
   uprbigcomponent->isActiveActualData = 0;
   vvbigcomponent->isActiveActualData = 0;
   xorbigcomponent->isActiveActualData = 0;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  extern COMPONENT_OBJ *goosbigcomponent;
+  extern COMPONENT_OBJ *mmsbigcomponent;
+  extern COMPONENT_OBJ *lanbigcomponent;
+  goosbigcomponent->isActiveActualData = 0;
+  mmsbigcomponent->isActiveActualData = 0;
+  lanbigcomponent->isActiveActualData = 0;
+#endif
 }//superClearActiveActualData()
 
 int passwordImunitetRegPKVBigComponent(int adrReg);

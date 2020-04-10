@@ -179,11 +179,24 @@ inline void periodical_operations(void)
     }
   }
 
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  //Обмін по LAN
+  if (current_settings.password_interface_LAN)
+  {
+    unsigned int timeout = current_settings.timeout_deactivation_password_interface_LAN;
+    if ((timeout != 0) && (timeout_idle_LAN >= timeout) && ((restart_timeout_interface & (1 << LAN_RECUEST)) == 0)) password_set_LAN = 1;
+  }
+  if (LAN_received_count > 0) inputPacketParserLAN();
+#endif
+
+  
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   /*******************/
   //Управління Каналом 2 міжпроцесорного обміну між БАв і комунікаційною платою
   /*******************/
   if (
+      (restart_KP_irq == 0) &&
       (IEC_board_uncall == 0) &&
       (Canal2 == false)  
      )   
@@ -192,18 +205,6 @@ inline void periodical_operations(void)
   }
   else if ((Canal1 == true) && (Canal2 == true)) Canal2 = false;
   Canal1 = false;
-  /*******************/
-
-  /*******************/
-  //Якщо прийшла команда на синхронызацыю часу з Ethernet, то запускаємо її в дію
-  /*******************/
-  if (IEC_save_time != 0)
-  {
-    IEC_save_time = false;
-    for(uint32_t i = 0; i < 7; i++) time_edit[i] = IEC_time_edit[i];
-    calibration_edit = (copying_time == 2) ? calibration : calibration_copy;
-    _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
-  }
   /*******************/
 #endif
   
@@ -384,6 +385,12 @@ inline void periodical_operations(void)
 
     //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
     periodical_tasks_TEST_RESURS_LOCK = false;
+  }
+
+  if (watchdog_l2) 
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(88);
   }
   /*******************/
 
@@ -578,6 +585,7 @@ int main(void)
     control_word_of_watchdog =  0;
   }
   
+  watchdog_l2 = true;
   USBD_Init(&USB_OTG_dev,
 #ifdef USE_USB_OTG_HS 
             USB_OTG_HS_CORE_ID,
@@ -587,6 +595,7 @@ int main(void)
             &USR_desc, 
             &USBD_CDC_cb, 
             &USR_cb);
+  watchdog_l2 = false;
   
   //Робота з watchdogs
   if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
@@ -602,19 +611,21 @@ int main(void)
   /**********************/
     
   //Визначаємо, чи стоїть дозвіл запису через інтерфейси з паролем
-  if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
-  else password_set_RS485 = 1;
-  timeout_idle_RS485 = current_settings.timeout_deactivation_password_interface_RS485;
-  
-  timeout_idle_new_settings = current_settings.timeout_idle_new_settings;
-  //Визначаємо, чи стоїть дозвіл запису через інтерфейси з паролем
-  if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
-  else password_set_RS485 = 1;
-  timeout_idle_RS485 = current_settings.timeout_deactivation_password_interface_RS485;
-  
   if (current_settings.password_interface_USB   == 0) password_set_USB   = 0;
   else password_set_USB   = 1;
   timeout_idle_USB = current_settings.timeout_deactivation_password_interface_USB;
+  
+  if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
+  else password_set_RS485 = 1;
+  timeout_idle_RS485 = current_settings.timeout_deactivation_password_interface_RS485;
+  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  if (current_settings.password_interface_LAN == 0) password_set_LAN = 0;
+  else password_set_LAN = 1;
+  timeout_idle_LAN = current_settings.timeout_deactivation_password_interface_LAN;
+#endif
+
+  timeout_idle_new_settings = current_settings.timeout_idle_new_settings;
   
   //Перевірка параметрування мікросхем DataFlash
   start_checking_dataflash();

@@ -28,6 +28,10 @@
 #define USB_RECUEST           0
 #define RS485_RECUEST         1
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+#define LAN_RECUEST           2
+#endif
+
 enum __data_changed_bit
 {
 SETTINGS_DATA_CHANGED_BIT = 0,
@@ -41,6 +45,7 @@ DEFAULT_SETTINGS_SET_BIT
 
 #define BUFFER_RS485          256
 #define BUFFER_USB            256
+#define BUFFER_LAN            256
 
 #define MAX_TIMEOUT_PACKET    5000 // 50 мс, якщо врахувати, що ТІM4 тактує з періодом 10 мкс
 

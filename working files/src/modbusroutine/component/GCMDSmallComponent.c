@@ -2,14 +2,22 @@
 #include "header.h"
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 294
+#define BEGIN_ADR_REGISTER 297
 //начальный bit в карте памяти
-#define BEGIN_ADR_BIT 50608
+#define BEGIN_ADR_BIT 50656
 
+//#if (MODYFIKACIA_VERSII_PZ >= 10)
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 331
+//#define END_ADR_REGISTER 337
 //конечный bit в карте памяти
-#define END_ADR_BIT 51215
+//#define END_ADR_BIT 51311
+
+//#else
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 337
+//конечный bit в карте памяти
+#define END_ADR_BIT 51311
+//#endif
 
 int privateGCMDSmallGetReg2(int adrReg);
 int privateGCMDSmallGetBit2(int adrBit);

@@ -14,10 +14,17 @@ void start_receive_data_via_CANAL1_MO(void)
   //Зупиняэмо канал приймання
   if ((DMA_StreamCANAL1_MO_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL1_MO_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;  
   
-  int32_t size_packet = BUFFER_CANAL1_MO - (uint16_t)(DMA_StreamCANAL1_MO_Rx->NDTR);
-  if(size_packet != 0)
+  if(DMA_StreamCANAL1_MO_Rx->NDTR != BUFFER_CANAL1_MO)
   {
-    uint32_t error_status = CANAL1_MO->SR &  (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE);
+    uint32_t error_status = 0;
+    do
+    {
+      error_status |= CANAL1_MO->SR;
+    }
+    while ((error_status & (USART_FLAG_IDLE | USART_FLAG_LBD)) == 0);
+    int32_t size_packet = BUFFER_CANAL1_MO - (uint16_t)(DMA_StreamCANAL1_MO_Rx->NDTR);
+    
+    error_status &= (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE);
     
     //Прийняті дані з комунікаційної плати по каналу 1
     if (
@@ -64,47 +71,34 @@ void start_receive_data_via_CANAL1_MO(void)
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK);
 
-              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_FULL_DESCRIPTION)) 
-                _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_FULL_DESCRIPTION);
-              else 
-                _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_FULL_DESCRIPTION);
-
               if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER);
 
-
+              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_NEW_MODBUS_TCP_REQ)) 
+                _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ);
+              else 
+                _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ);
+              
               if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_TRANSACTION_PROGRESS)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
               
               //Синхронізація часу
-              uint32_t goose_time = 0;
-              point = (uint8_t*)&goose_time;
-              index += sizeof(time);
-              for (uint32_t i = 0; ((i < sizeof(uint32_t)) && (index < BUFFER_CANAL1_MO)); i++) 
+              index += sizeof(time_t) + sizeof(int32_t);
+              if (Canal1_MO_Received[index++] != 0)
               {
-                *(point++) = Canal1_MO_Received[index++];
-              }
-              if (goose_time != 0)
-              {
-                //Деякі позиції системного часу/дати треба записати
-                uint8_t *label_to_time_array;
-                if (copying_time == 2) label_to_time_array = time_copy;
-                else label_to_time_array = time;
-                int32_t index_tmp = index - sizeof(time) - sizeof(uint32_t);
+                //Треба активувати системний час
+                int32_t index_tmp = index - 1 - sizeof(time_t) - sizeof(int32_t);
                 if (index_tmp > 0)
                 {
-                  for (uint32_t i = 0; i < sizeof(time); i++) 
-                  {
-                    if ((goose_time & (1 << i)) != 0) IEC_time_edit[i] = Canal1_MO_Received[index_tmp];
-                    else IEC_time_edit[i] = *(label_to_time_array + i);
-                  
-                    index_tmp++;
-                  }
-                  IEC_save_time = true;
+                  for(size_t i = 0; i < sizeof(time_t); i++)  *((uint8_t *)(&time_dat_save_h) + i) = Canal1_MO_Received[index_tmp++];
+                  int32_t time_ms_tmp;
+                  for(size_t i = 0; i < sizeof(int32_t); i++)  *((uint8_t *)(&time_ms_tmp) + i) = Canal1_MO_Received[index_tmp++];
+                  time_ms_save_h = time_ms_tmp / 1000;
+                  save_time_dat_h = 3;
                 }
                 else total_error_sw_fixed(84);
               }
@@ -160,7 +154,7 @@ void start_receive_data_via_CANAL1_MO(void)
                       }
                     }
                   }
-                  else total_error_sw_fixed(88);
+                  else total_error_sw_fixed(220);
                 }
                 else total_error_sw_fixed(89);
               }
@@ -206,8 +200,11 @@ void start_receive_data_via_CANAL1_MO(void)
   else
   {
     //Не прийняті дані з комунікаційної плати по каналу 1
-    if (IEC_board_uncall == 0) _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
-    else IEC_board_uncall--;
+    if (restart_KP_irq == 0)
+    {
+      if (IEC_board_uncall == 0) _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
+      else IEC_board_uncall--;
+    }
   }
       
   //Скидуємо всі можливі помилки
@@ -238,21 +235,9 @@ void start_transmint_data_via_CANAL1_MO(void)
   
   sum += Canal1_MO_Transmit[index++] = SENDIND_TM_INFO;
     
-  uint8_t *label_to_time_array;
-  if (copying_time == 2) 
-  {
-    sum += Canal1_MO_Transmit[index++] = thousandths_time_copy;
-    label_to_time_array = time_copy;
-  }
-  else 
-  {
-    sum += Canal1_MO_Transmit[index++] = thousandths_time;
-    label_to_time_array = time;
-  }
-  for(uint32_t i = 0; ((i < sizeof(time)) && (index < BUFFER_CANAL1_MO)); i++) 
-  {
-    sum += Canal1_MO_Transmit[index++] = *(label_to_time_array + i);
-  }
+  for(size_t i = 0; i < sizeof(time_t); i++) sum += Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_dat) + i);
+  int32_t time_ms_tmp = time_ms * 1000;
+  for(size_t i = 0; i < sizeof(int32_t); i++) sum += Canal1_MO_Transmit[index++] = *((uint8_t *)(&time_ms_tmp) + i);
   
   //Оперативні дані
   if ((index + 1 + 1 + 2 + 2 + SIZE_SENDING_DATA_TM) < BUFFER_CANAL1_MO)
@@ -413,9 +398,6 @@ void start_transmint_data_via_CANAL1_MO(void)
 ***********************************************************************************/
 void CANAL2_MO_routine()
 {
-  queue_mo &= (uint32_t)(~QUEUQ_MO_IRQ);
-  queue_mo |= queue_mo_irq;
-  
   typedef enum _CANAL2_MO_states
   {
     CANAL2_MO_FREE = 0,
@@ -427,13 +409,34 @@ void CANAL2_MO_routine()
   } __CANAL2_MO_states;
   
   static __CANAL2_MO_states CANAL2_MO_state;
+
+  queue_mo &= (uint32_t)(~QUEUQ_MO_IRQ);
+  if (!_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP))
+  {
+    //Немає активної команди перезапустити КП
+    queue_mo |= queue_mo_irq;
+  }
+  else
+  {
+    if (
+        (queue_mo == MASKA_FOR_BIT(STATE_QUEUE_MO_RESTART_KP)) &&
+        (CANAL2_MO_state == CANAL2_MO_FREE)
+       )
+    {
+      restart_KP_irq = 5;
+    }
+  }
+  
   static uint32_t tick;
   static uint32_t rx_ndtr;
   static uint32_t packet_number;
   
   uint8_t sum = 0;
   uint32_t index_w = 0;
-    
+
+  static uint32_t delta_max;
+      
+  
   if (CANAL2_MO_state == CANAL2_MO_BREAK_LAST_ACTION)
   {
            Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
@@ -451,10 +454,7 @@ void CANAL2_MO_routine()
     {
       if (Canal1 == true)
       {
-        if (
-            (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_BASIC_SETTINGS)) ||
-            (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS))
-           )   
+        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_BASIC_SETTINGS))
         {
                  Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
           sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
@@ -482,11 +482,25 @@ void CANAL2_MO_routine()
           sum += Canal2_MO_Transmit[index_w++] = current_settings.gateway[2] & 0xff;
           sum += Canal2_MO_Transmit[index_w++] = current_settings.gateway[3] & 0xff;
         
+          sum += Canal2_MO_Transmit[index_w++] = current_settings.IP_time_server[0] & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = current_settings.IP_time_server[1] & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = current_settings.IP_time_server[2] & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = current_settings.IP_time_server[3] & 0xff;
+
+          unsigned int port_time_server = current_settings.port_time_server;
+          sum += Canal2_MO_Transmit[index_w++] = port_time_server        & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = (port_time_server >> 8) & 0xff;
+          
+          unsigned int period_sync = current_settings.period_sync;
+          sum += Canal2_MO_Transmit[index_w++] = period_sync         & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = (period_sync >>  8) & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = (period_sync >> 16) & 0xff;
+          sum += Canal2_MO_Transmit[index_w++] = (period_sync >> 24) & 0xff;
+          
           unsigned int period = TIM2_CCR1_VAL*60/*Prescaler*//60/*вхідна частота таймера у МГц*/; /*результат у мкс*/
           sum += Canal2_MO_Transmit[index_w++] = period        & 0xff;
           sum += Canal2_MO_Transmit[index_w++] = (period >> 8) & 0xff;
         
-          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_SEND_BASIC_SETTINGS);
           _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
         } 
         else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK))
@@ -537,16 +551,50 @@ void CANAL2_MO_routine()
         
           _SET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER);
         }
+        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ))
+        {
+                 Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
+          sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
+          sum += Canal2_MO_Transmit[index_w++] = my_address_mo;
+  
+          sum += Canal2_MO_Transmit[index_w++] = REQUEST_MODBUS_TCP_REQ;
+        
+          _SET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ);
+        }
+        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP))
+        {
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP);
+
+          if ((LAN_transmiting_count > 0) && (LAN_transmiting_count < (BUFFER_LAN - 2)))
+          {
+            unsigned int length = LAN_transmiting_count;
+            
+                   Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
+            sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
+            sum += Canal2_MO_Transmit[index_w++] = my_address_mo;
+  
+            sum += Canal2_MO_Transmit[index_w++] = SENDIND_MODBUS_TCP_RESP;
+        
+            sum += Canal2_MO_Transmit[index_w++] = length;
+            for (size_t i = 0; i < length; i++) sum += Canal2_MO_Transmit[index_w++] = LAN_transmiting[i];
+            
+            _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
+          }
+        }
       }
     }
     else
     {
       uint32_t tick_tmp = TIM4->CNT;
       uint32_t delta;
+      
       if (tick_tmp >= tick) delta = tick_tmp - tick;
       else delta = (0x10000 - tick) + tick_tmp; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
       
-      if (delta > 500 /*500x10мкс = 5000мкс = 5мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+//      if (delta > 1000 /*1000x10мкс = 10000мкс = 10мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+      if (delta > 50000 /*50000x10мкс = 500000мкс = 500мс*/) CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+      
+      if (delta_max < delta) delta_max = delta;
     }
   }
   else if (CANAL2_MO_state == CANAL2_MO_SENDING)
@@ -575,7 +623,10 @@ void CANAL2_MO_routine()
       if (rx_ndtr == BUFFER_CANAL2_MO)
       {
         //Не прийнято жодного байту
-        if (delta > 500 /*500x10мкс = 5000мкс = 5мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
+//        if (delta > 1000 /*1000x10мкс = 10000мкс = 10мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
+        if (delta > 50000 /*50000x10мкс = 500000мкс = 500мс*/) CANAL2_MO_state = CANAL2_MO_ERROR;
+      
+        if (delta_max < delta) delta_max = delta;
       }
       else
       {
@@ -623,7 +674,12 @@ void CANAL2_MO_routine()
                       ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER)) && (
                                                                                                          (Canal2_MO_Received[3] == SENDING_SETTINGS_NETWORK_LAYER) ||
                                                                                                          (Canal2_MO_Received[3] == ANY_CONFIRMATION              )
-                                                                                                        )                                                               )
+                                                                                                        )                                                               ) ||
+                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ  )) && (
+                                                                                                         (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ) ||
+                                                                                                         (Canal2_MO_Received[3] == ANY_CONFIRMATION      )
+                                                                                                        )                                                               ) ||
+                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP    )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       )
                      )   
                    )
                 {
@@ -673,10 +729,18 @@ void CANAL2_MO_routine()
         CANAL2_MO_state = CANAL2_MO_FREE;
         Canal2 = true;
       }
-      else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) 
+      else if (
+               (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) ||
+               (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP))
+              )   
       {
         index_w = 0;
-        _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
+        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
+        else  
+        {
+          LAN_transmiting_count = 0; //Це є ознакою того, що пакет-відповідь успішно передано
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
+        }
         
         if (Canal2_MO_Received[4] == true)
         {
@@ -770,10 +834,52 @@ void CANAL2_MO_routine()
           }
         }
       }
+      else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ)) 
+      {
+        if (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ)
+        {
+          //Прийняти пакет-запит Modbus-TCP з КП
+          LAN_received_count = Canal2_MO_Received[4];
+          unsigned int answer;
+          if ((LAN_received_count >= 0) && (LAN_received_count < BUFFER_LAN))
+          {
+            for (intptr_t i = 0; i < LAN_received_count; i++) LAN_received[i] = Canal2_MO_Received[5 + i];
+            answer = true;
+          }
+          else answer = false;
+          
+          //Відправити підтвердження прийняття налаштувань мережевого рівня Ethernet
+          sum += Canal2_MO_Transmit[index_w++] = CONFIRM_RECEIVING_MODBUS_TCP_REQ;
+          sum += Canal2_MO_Transmit[index_w++] = answer;
+        }
+        else 
+        {
+          index_w = 0;
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ);
+          
+          if (
+              (Canal2_MO_Received[3] == ANY_CONFIRMATION) &&
+              (Canal2_MO_Received[4] == true)
+             )
+          {
+            CANAL2_MO_state = CANAL2_MO_FREE;
+            Canal2 = true;
+          }
+          else
+          {
+            CANAL2_MO_state = CANAL2_MO_ERROR;
+          }
+        }
+      }
     }
     else if (CANAL2_MO_state == CANAL2_MO_ERROR)
     {
       CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+      if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP)) 
+      {
+        _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
+        _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP);
+      }
     }
   
     tick = TIM4->CNT; /*стан лічильника коли буда завершена остання трасакція повністю з помилкою або без неї*/

@@ -150,6 +150,9 @@ void make_ekran_pare_interface(void);
 void make_ekran_stopbits_interface(void);
 void make_ekran_timeout_interface(void);
 void make_ekran_settings_network_layer_Ethernet(void);
+void make_ekran_chose_data_time_settings(void);
+void make_ekran_timezone_dst(void);
+void make_ekran_dst_rule(uint32_t);
 void make_ekran_chose_registrators(void);
 void make_ekran_settings_analog_registrators(void);
 void make_ekran_timeout_analog_registrator(void);
@@ -329,11 +332,16 @@ void make_ekran_list_in_out_for_iec61850(unsigned int, size_t);
 void start_transmint_data_via_CANAL1_MO(void);
 void start_receive_data_via_CANAL1_MO(void);
 void CANAL2_MO_routine(void);
+void inputPacketParserLAN(void);
+void make_ekran_settings_synchro(void);
 #endif
 
 extern void inputPacketParserUSB(void);
 extern void inputPacketParserRS485(void);
 
+#if (__VER__ >= 8000000)
+extern int _ForceReloadDstRules (void);
+#endif
 
 #endif
 

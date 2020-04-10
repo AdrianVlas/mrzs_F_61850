@@ -10,7 +10,8 @@
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)   \
     )
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1355
@@ -22,6 +23,14 @@
     )   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1243
+#endif
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )   
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 1419
 #endif
 
 int privateDOUTBigGetReg2(int adrReg);

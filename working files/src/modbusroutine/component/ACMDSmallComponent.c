@@ -6,10 +6,19 @@
 //начальный bit в карте памяти
 #define BEGIN_ADR_BIT 50000
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 296
+//конечный bit в карте памяти
+#define END_ADR_BIT 50643
+
+#else
+
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 293
 //конечный bit в карте памяти
 #define END_ADR_BIT 50599
+#endif
 
 int privateACMDSmallGetReg2(int adrReg);
 int privateACMDSmallGetBit2(int adrBit);
@@ -284,7 +293,10 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 //123456
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
     )                                   
   case 117:
     (*outMaska) = RANG_LIGHT_ZDZ_FROM_OVD1;
@@ -1172,6 +1184,27 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     }//switch
   }//if
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  if(inOffset>=608 && inOffset<624)
+  {
+    int ingoosOffset = inOffset-608;
+    (*outMaska) = RANG_BLOCK_IN_GOOSE1 + ingoosOffset;
+    (*dvMaska)  = RANG_SMALL_BLOCK_IN_GOOSE1 + ingoosOffset;
+  }//if(inOffset>=608 && inOffset<624)
+  else if(inOffset>=624 && inOffset<628)
+  {
+    int inmmsOffset = inOffset-624;
+    (*outMaska) = RANG_BLOCK_IN_MMS1 + inmmsOffset;
+    (*dvMaska)  = RANG_SMALL_BLOCK_IN_MMS1 + inmmsOffset;
+  }//if(inOffset>=624 && inOffset<628)
+  else if(inOffset>=640 && inOffset<644)
+  {
+    int inlanOffset = inOffset-640;
+    (*outMaska) = RANG_BLOCK_OUT_LAN1 + inlanOffset;
+    (*dvMaska)  = RANG_SMALL_BLOCK_OUT_LAN1 + inlanOffset;
+  }//if(inOffset>=640 && inOffset<644)
+#endif
+
   return isValid;
 }//cmdFunc000(int inOffset, int *outMaska, int *dvMaska)
 
@@ -1212,11 +1245,23 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
      {
       case PASSWORD_SETCMD://Пароль установлен
       {
-      if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-            value = password_set_USB;//Пароль установлен
-      else  value = password_set_RS485;//Пароль установлен
+       switch(pointInterface)//метка интерфейса 0-USB 1-RS485
+       {
+        case USB_RECUEST:
+         value = password_set_USB;//Пароль установлен
+        break;
+        case RS485_RECUEST:
+         value = password_set_RS485;//Пароль установлен
+        break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        case LAN_RECUEST:
+         value = password_set_LAN;//Пароль установлен
+        break;
+#endif
+       }//switch(pointInterface)
       goto m1;
-      }//if
+      }//case PASSWORD_SETCMD://Пароль установлен
+
       case IMUNITET_BITACMD565://Сброс счетчика ресурса выключателя
       {
         value = 0;
@@ -1227,6 +1272,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
                  value = 1;
           goto m1;
         }//if
+
         if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         if(cmdSwitch==1) //GCMD
         { 
@@ -1234,9 +1280,20 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
                  value = 1;
           goto m1;
         }//if
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        if(pointInterface==LAN_RECUEST)//метка интерфейса 0-USB 1-RS485
+        if(cmdSwitch==1) //GCMD
+        { 
+          if(information_about_restart_counter & (1 << LAN_RECUEST)/*(1 << RS485_RECUEST)*/)
+                 value = 1;
+          goto m1;
+        }//if
+#endif
+
         goto m1;
-      }//if
-     }//switch
+      }//case IMUNITET_BITACMD565
+     }//switch(item)
       value = encoderN_BIGACMD(item);//кодировщик адреса modbus в индекс бита для реле
       if(value==-1) value=0;
       else {
@@ -1251,10 +1308,21 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
           {
              value = trigger_functions_USB[value/32] & (1<<(value%32));
           }//if
-          else
+          else if(pointInterface==RS485_RECUEST)
           {
              value = trigger_functions_RS485[value/32] & (1<<(value%32));
           }//else
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if(pointInterface==LAN_RECUEST)
+          {
+             value = trigger_functions_LAN[value/32] & (1<<(value%32));
+          }//else
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(208);
+          }
         }//if(cmdSwitch==0)
       }
     }//if(item>=beginOffset && item<endOffset)
@@ -1778,10 +1846,20 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     if(actControl&&dataBit)
     {
       //Скидання загальних функцій
-  if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
-      reset_trigger_function_from_interface |= (1 << USB_RECUEST);
-  else 
+     switch(pointInterface)//метка интерфейса 0-USB 1-RS485
+     {
+      case USB_RECUEST:
+       reset_trigger_function_from_interface |= (1 << USB_RECUEST);
+      break;
+      case RS485_RECUEST:
       reset_trigger_function_from_interface |= (1 << RS485_RECUEST);
+      break;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      case LAN_RECUEST:
+      reset_trigger_function_from_interface |= (1 << LAN_RECUEST);
+      break;
+#endif
+     }//switch
     }//if(action)
     return 0;
   case 565://Сигнал про очищення ресурсу лічильників з системи захистів
@@ -1801,6 +1879,9 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
         //Активація внесекних змін
         int typI = 2;
         if(pointInterface==RS485_RECUEST) typI = 3;//метка интерфейса 0-USB 1-RS485
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
+#endif
         if(set_new_settings_from_interface(typI))//2-USB
         {
         type_of_settings_changed = 0;

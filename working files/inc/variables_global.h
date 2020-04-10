@@ -349,7 +349,8 @@ unsigned int temp_states_for_mtz/* = 0*/;
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
 uint32_t delta_time_test = PERIOD_ZDZ_TEST;
 uint32_t zdz_ovd_diagnostyka;
@@ -464,13 +465,24 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
     )
   ,
   {16, 5}
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )
+  ,
+  {20, 7}
+#endif
 #endif
 };
+
 const uint32_t input_boards[N_INPUT_BOARDS][2] = 
 {
   { 8, 4}
@@ -478,14 +490,19 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
     )
   ,
   {16, 5}
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
   ,
   {20, 7}
@@ -625,19 +642,24 @@ const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE
   }
 };
 
-
-unsigned int fixed_power_down_into_RTC/* = 0*/; 
-unsigned char time[7], thousandths_time; 
-unsigned char time_copy[7], thousandths_time_copy; 
 unsigned char calibration;
-unsigned char calibration_copy;
-unsigned int copying_time/* = 0*/;
 unsigned char time_edit[7]; 
 unsigned char calibration_edit;
-unsigned int copy_register8_RTC;
 int etap_reset_of_bit = ETAP_CLEAR_OF_NONE;
-int etap_settings_test_frequency = -1;
-unsigned char temp_register_rtc[2];
+
+char getzone_string[2][55];
+size_t bank_getzone;
+unsigned int lt_or_utc;
+clock_t clk_count;
+int32_t time_ms, time_ms_copy;
+time_t time_dat, time_dat_copy;
+unsigned int copying_time_to_RTC;
+int32_t time_ms_RTC;
+time_t time_dat_RTC;
+unsigned int copying_time_dat;
+int32_t time_ms_save_l, time_ms_save_h;
+time_t time_dat_save_l, time_dat_save_h;
+unsigned int save_time_dat_l, save_time_dat_h;
 
 unsigned int changed_settings = CHANGED_ETAP_NONE; 
 unsigned char crc_settings;
@@ -886,6 +908,31 @@ int usb_transmiting_count/* = 0*/;
 unsigned char data_usb_transmiting/* = false*/;
 unsigned int timeout_idle_USB;
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+//MODBUS-TCP
+unsigned char LAN_received[BUFFER_LAN];
+int LAN_received_count;
+unsigned char LAN_transmiting[BUFFER_LAN];
+int LAN_transmiting_count;
+
+SRAM1 unsigned int timeout_idle_LAN;
+SRAM1 unsigned int password_set_LAN;
+
+unsigned int trigger_functions_LAN[N_BIG]/* = {0, 0, 0, 0, 0, 0, 0, 0, 0}*/;
+
+unsigned char buffer_for_LAN_read_record_dr[SIZE_BUFFER_FOR_DR_RECORD];
+unsigned int number_record_of_dr_for_LAN = 0xffff; //Це число означає, що номер запису не вибраний
+unsigned int part_reading_dr_from_dataflash_for_LAN/* = 0*/;
+
+unsigned char buffer_for_LAN_read_record_pr_err[SIZE_ONE_RECORD_PR_ERR];
+unsigned int number_record_of_pr_err_into_LAN = 0xffff;
+
+unsigned char buffer_for_LAN_read_record_ar[SIZE_PAGE_DATAFLASH_2];
+unsigned int number_record_of_ar_for_LAN = 0xffff; //Це число означає, що номер запису не вибраний
+int first_number_time_sample_for_LAN;// -1 - заголовок запису ан.р.; 0 - перший часовий зріз доаварійного масиву і т.д.
+int last_number_time_sample_for_LAN;// -1 - заголовок запису ан.р.; 0 - перший часовий зріз доаварійного масиву і т.д.
+#endif
+
 //MODBUS-RTU
 //unsigned int registers_address_read =0x20000000;
 //unsigned int registers_address_write =0x20000000;
@@ -911,8 +958,9 @@ unsigned int edit_serial_number_dev;
 
 //Для відображення інформації про причину відключення
 unsigned int info_vidkluchennja_vymykacha[2];
-unsigned char info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER][7]; 
+__info_vymk info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER]; 
 
+unsigned int  watchdog_l2;
 unsigned int control_word_of_watchdog/* = 0*/;
 //unsigned int test_watchdogs/* = 0*/;
 
@@ -931,12 +979,11 @@ uint8_t Canal2_MO_Transmit[BUFFER_CANAL2_MO];
 uint8_t Canal2_MO_Received[BUFFER_CANAL2_MO];
 unsigned int Canal1, Canal2;
 const uint8_t my_address_mo = 0;
-uint32_t IEC_board_uncall = 2;
+uint32_t IEC_board_uncall = 200;
 uint32_t IEC_board_address;
 uint32_t queue_mo, queue_mo_irq;
+unsigned int restart_KP_irq;
 uint32_t state_array_control_state;
-uint8_t IEC_time_edit[7]; 
-uint32_t IEC_save_time; 
 
 uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];
@@ -1039,6 +1086,21 @@ const unsigned char extra_letters[12][1 + MAX_NAMBER_LANGUAGE] =
 { 0xBE, 0xFF, 0xFF, 0xFF, 0x03}, // ѕ - замінний символ з даним кодом для WIN1251
 { 0x80, 0xFF, 0xFF, 0xFF, 0x04}, // Ђ - замінний символ з даним кодом для WIN1251
 { 0x90, 0xFF, 0xFF, 0xFF, 0x05}  // ђ - замінний символ з даним кодом для WIN1251
+};
+
+const unsigned char string_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+{
+  {"     Откл.      ", "      Вкл.      "},
+  {"     Вимк.      ", "     Ввімк.     "},
+  {"      Off       ", "       On       "},
+  {"     Сљнд.      ", "     Косу.      "}
+};
+const unsigned int cursor_x_string_off_on[MAX_NAMBER_LANGUAGE][2] = 
+{
+  {4, 5},
+  {4, 4},
+  {5, 6},
+  {4, 4}
 };
 
 int current_language = LANGUAGE_ABSENT;

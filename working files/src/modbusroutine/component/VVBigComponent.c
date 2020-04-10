@@ -1,9 +1,9 @@
 #include "header.h"
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 2316
+#define BEGIN_ADR_REGISTER 2380
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 2379
+#define END_ADR_REGISTER 2443
 
 #define REGISTERS_VV 32
 
@@ -74,6 +74,17 @@ int setVVBigModbusRegister(int adrReg, int dataReg)
       edition_settings = current_settings_interfaces;//делаем копию
     }//if(uprbigcomponent->isActiveActualData)
   superClearActiveActualData();
+
+  //валидация //Работа БО //Работа БB
+  if(adrReg>=(BEGIN_ADR_REGISTER+REGISTERS_VV))
+  {
+   //ранжир ВВ откл
+   if(dataReg==50532) return MARKER_ERRORPERIMETR;//Работа БО
+  }
+  else {
+   //ранжир ВВ вкл
+   if(dataReg==50533) return MARKER_ERRORPERIMETR;//Работа БВ
+  }
 
   superSetOperativMarker(vvbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер

@@ -1,8 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
- #include "stm32f2xx_it.h"
  
-#include "hw_config.h"
-#include "platform_config.h"
 #include "header.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -28,6 +25,11 @@ void Set_System(void)
 
   //AHB1
   RCC_AHB1PeriphClockCmd(
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                         RCC_AHB1Periph_GPIO_CANAL1_MO          |
+                         RCC_AHB1Periph_GPIO_CANAL2_MO          |
+                         RCC_AHB1Periph_GPIO_CANAL1_MO_Out1     |
+#endif                           
                          RCC_AHB1Periph_DMA1                    |
                          RCC_AHB1Periph_DMA2                    |
                          RCC_AHB1Periph_GPIO_LCD_RW             |
@@ -48,20 +50,19 @@ void Set_System(void)
                          RCC_AHB1Periph_GPIO_CON_OUTPUTS        |
                          RCC_AHB1Periph_GPIO_USART_RS485        |
                          RCC_AHB1Periph_GPIO_485DE              |
-                         RCC_AHB1Periph_GPIO_CANAL1_MO          |
-                         RCC_AHB1Periph_GPIO_CANAL2_MO          |
                          RCC_AHB1Periph_GPIO_EXTERNAL_WATCHDOG  |
-                         RCC_AHB1Periph_GPIO_POWER_CTRL         |
-                         RCC_AHB1Periph_GPIO_CANAL1_MO_Out1,
+                         RCC_AHB1Periph_GPIO_POWER_CTRL,
                          
                          ENABLE);
 
   //APB2
   RCC_APB2PeriphClockCmd(
-                         RCC_APB2Periph_SYSCFG  |
-                         RCC_APB2Periph_SPI_EDF |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
                          RCC_CANAL1_MO          |
-                         RCC_CANAL2_MO,
+                         RCC_CANAL2_MO          |
+#endif
+                         RCC_APB2Periph_SYSCFG  |
+                         RCC_APB2Periph_SPI_EDF,
                          
                          ENABLE);
   

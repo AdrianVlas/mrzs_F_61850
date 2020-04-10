@@ -150,6 +150,9 @@ extern void make_ekran_pare_interface(void);
 extern void make_ekran_stopbits_interface(void);
 extern void make_ekran_timeout_interface(void);
 extern void make_ekran_settings_network_layer_Ethernet(void);
+extern void make_ekran_chose_data_time_settings(void);
+extern void make_ekran_timezone_dst(void);
+extern void make_ekran_dst_rule(uint32_t);
 extern void make_ekran_chose_registrators(void);
 extern void make_ekran_settings_analog_registrators(void);
 extern void make_ekran_timeout_analog_registrator(void);
@@ -358,9 +361,15 @@ extern void CANAL2_MO_routine(void);
 extern void proc_Gs_blk_out(void* pv,unsigned long lCtrGsSrc,short* p_arrOrdNumsGsSignal ); 
 extern void proc_Mms_blk_out(void* pv,unsigned long lCtrMmsSrc,short* p_arrOrdNumsMmsSignal );
 extern void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_functions, void *pLanDsc);
+extern void inputPacketParserLAN(void);
+void make_ekran_settings_synchro(void);
 #endif
 
 extern void inputPacketParserUSB(void);
 extern void inputPacketParserRS485(void);
+
+#if (__VER__ >= 8000000)
+extern int _ForceReloadDstRules (void);
+#endif
 
 #endif

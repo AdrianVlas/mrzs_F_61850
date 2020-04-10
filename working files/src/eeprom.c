@@ -122,7 +122,7 @@ void main_routines_for_spi1(void)
       offset_from_start = number_block_settings_write_to_eeprom*SIZE_PAGE_EEPROM;
 
       //Кількість байт до кінця буферу 
-      size_to_end = (sizeof(__SETTINGS) + 1) - offset_from_start; 
+      size_to_end = (sizeof(__SETTINGS) + 2) - offset_from_start; 
       
       if (size_to_end > 0)
       {
@@ -479,7 +479,7 @@ void main_routines_for_spi1(void)
       TxBuffer_SPI_EDF[1] = (START_ADDRESS_SETTINGS_IN_EEPROM >> 8) & 0xff; //старша  адреса початку зберігання настройок у EEPROM
       TxBuffer_SPI_EDF[2] = (START_ADDRESS_SETTINGS_IN_EEPROM     ) & 0xff; //молодша адреса початку зберігання настройок у EEPROM
                                                                                     //дальше значення байт не має значення
-      start_exchange_via_spi(INDEX_EEPROM, ((sizeof(__SETTINGS) + 1) + 3));
+      start_exchange_via_spi(INDEX_EEPROM, ((sizeof(__SETTINGS) + 2) + 3));
     }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_USTUVANNJA_EEPROM_BIT) !=0)
     {
@@ -558,11 +558,11 @@ void main_routines_for_spi1(void)
     {
       //Запускаємо процес читання
 
-      //Читаємо регістр статусу томущо не можна читати EEPROM поки іде процес запису
+      //Читаємо регістр статусу тому, що не можна читати EEPROM поки іде процес запису
       TxBuffer_SPI_EDF[0] = OPCODE_RDSR;
       TxBuffer_SPI_EDF[1] = 0; //Будь-який байт для того, щоб здійснити читання регістру статусу;
 
-      //Запускаємо процес запису в RTC
+      //Запускаємо процес запису в EEPROM
       start_exchange_via_spi(INDEX_EEPROM, 2);
     }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT) !=0)
@@ -628,7 +628,8 @@ void main_routines_for_spi1(void)
         crc_eeprom_settings += temp_value;
       }
       //Добавляємо інвертовану контрольну суму у кінець масиву
-      TxBuffer_SPI_EDF[3 + sizeof(__SETTINGS)] = (unsigned char)((~(unsigned int)crc_eeprom_settings) & 0xff);
+      TxBuffer_SPI_EDF[3 + sizeof(__SETTINGS)    ] = (unsigned char)((~(unsigned int)crc_eeprom_settings) & 0xff); /*  інвертована контрольна сума*/
+      TxBuffer_SPI_EDF[3 + sizeof(__SETTINGS) + 1] = (unsigned char)(                crc_eeprom_settings  & 0xff); /*неінвертована контрольна сума*/
       
       
       //Виставляємо перший блок настройок запису у EEPROM
@@ -1147,7 +1148,7 @@ void main_routines_for_spi1(void)
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_AR_EEPROM_BIT    ) !=0) ||  
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_DR_EEPROM_BIT    ) !=0) ||  
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) !=0) ||  
-            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT                 ) !=0) 
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT                 ) !=0)
            )  
     {
       //Прочитано ресістр статусу
@@ -1346,7 +1347,7 @@ void main_routines_for_spi1(void)
       unsigned int empty_block = 1, i = 0; 
       __SETTINGS current_settings_tmp;
       
-      while ((empty_block != 0) && ( i < (sizeof(__SETTINGS) + 1)))
+      while ((empty_block != 0) && ( i < (sizeof(__SETTINGS) + 2)))
       {
         if (RxBuffer_SPI_EDF[3 + i] != 0xff) empty_block = 0;
         i++;
@@ -1369,14 +1370,17 @@ void main_routines_for_spi1(void)
           crc_eeprom_settings += temp_value;
           point++;
         }
-        if (RxBuffer_SPI_EDF[3 + sizeof(__SETTINGS)]  == ((unsigned char)((~(unsigned int)crc_eeprom_settings) & 0xff)))
+        if (
+            (RxBuffer_SPI_EDF[3 + sizeof(__SETTINGS)    ]  == ((unsigned char)((~(unsigned int)crc_eeprom_settings) & 0xff))) &&
+            (RxBuffer_SPI_EDF[3 + sizeof(__SETTINGS) + 1]  == ((unsigned char)(                crc_eeprom_settings  & 0xff)))
+           )   
         {
           //Контролдьна сума сходиться
 
           //Скидаємо повідомлення у слові діагностики
           _SET_BIT(clear_diagnostyka, ERROR_SETTINGS_EEPROM_BIT);
 
-          if (current_settings_tmp.device_id == VERSIA_PZ)
+          if (current_settings_tmp.device_id == ((VERSIA_PZ << 8) | (MODYFIKACIA_VERSII_PZ)))
           {
             //Таблиця настройок відповідає типу даного приладу
             
@@ -1424,9 +1428,10 @@ void main_routines_for_spi1(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)      \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
-              _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (((current_settings.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
+              _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (((current_settings.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
 #endif
             }
             else

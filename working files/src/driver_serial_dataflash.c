@@ -233,9 +233,15 @@ void dataflash_mamory_read(int index_chip)
     size_page = SIZE_PAGE_DATAFLASH_1;
 
     if(
-       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU ) ||
-       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) ||
+       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU ) 
+       ||
+       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) 
+       ||
        (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+       ||
+       (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
+#endif  
       )
     {
       //Читання даних дискретного реєстратора
@@ -251,10 +257,22 @@ void dataflash_mamory_read(int index_chip)
         part_reading = part_reading_dr_from_dataflash_for_USB;
         number_record = number_record_of_dr_for_USB;
       }
-      else
+      else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)
       {
         part_reading = part_reading_dr_from_dataflash_for_RS485;
         number_record = number_record_of_dr_for_RS485;
+      }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
+      {
+        part_reading = part_reading_dr_from_dataflash_for_LAN;
+        number_record = number_record_of_dr_for_LAN;
+      }
+#endif  
+      else
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed(200);
       }
 
       //Формуємо буфер для передавання у мікросхему DataFlash
@@ -282,9 +300,15 @@ void dataflash_mamory_read(int index_chip)
       }
     }
     else if (
-             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU ) ||
-             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  ) ||
+             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU ) 
+             ||
+             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
+             ||
              (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+             ||
+             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
+#endif
             )   
     {
       //Читання даних реєстратора програмних помилок
@@ -297,11 +321,22 @@ void dataflash_mamory_read(int index_chip)
       {
         number_record = number_record_of_pr_err_into_USB;
       }
-      else
+      else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
       {
         number_record = number_record_of_pr_err_into_RS485;
       }
-
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
+      {
+        number_record = number_record_of_pr_err_into_LAN;
+      }
+#endif
+      else
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed(209);
+      }
+      
       //Визначаємо початкову адресу запису, яку треба зчитати
       temp_value_for_address = info_rejestrator_pr_err.next_address - ((number_record + 1)<<VAGA_SIZE_ONE_RECORD_PR_ERR);
       while (temp_value_for_address < MIN_ADDRESS_PR_ERR_AREA) temp_value_for_address = temp_value_for_address + SIZE_PR_ERR_AREA; 
@@ -328,9 +363,15 @@ void dataflash_mamory_read(int index_chip)
     size_page = SIZE_PAGE_DATAFLASH_2;
 
     if(
-       (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_MENU ) ||
-       (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_USB  ) ||
+       (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_MENU ) 
+       ||
+       (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_USB  )
+       ||
        (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_RS485)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+       ||
+       (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_LAN)
+#endif
       )
     {
       //Читання даних аналогового реєстратора
@@ -353,13 +394,26 @@ void dataflash_mamory_read(int index_chip)
           first_number_time_sample = first_number_time_sample_for_USB;
           last_number_time_sample = last_number_time_sample_for_USB;
         }
-        else
+        else if (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_RS485)
         {
           number_record_of_ar = number_record_of_ar_for_RS485;
           first_number_time_sample = first_number_time_sample_for_RS485;
           last_number_time_sample = last_number_time_sample_for_RS485;
         }
-
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        else if (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_LAN)
+        {
+          number_record_of_ar = number_record_of_ar_for_LAN;
+          first_number_time_sample = first_number_time_sample_for_LAN;
+          last_number_time_sample = last_number_time_sample_for_LAN;
+        }
+#endif
+        else
+        {
+          //Теоретично цього ніколи не мало б бути
+          total_error_sw_fixed(186);
+        }
+        
         //Визначаємо першу адресу вибраного запису
         /*
         Використовую принцип, що мая програма не передбачає, що запис може початися в кінці адресного опростору 
@@ -726,29 +780,68 @@ inline void analize_received_data_dataflash(int index_chip)
           number_byte_copy_into_target_buffer = size_page;
           point_part_reading = &part_reading_dr_from_dataflash_for_RS485;
         }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
+        {
+          point_buffer = (unsigned char *)(buffer_for_LAN_read_record_dr + part_reading_dr_from_dataflash_for_LAN*size_page);
+          number_byte_copy_into_target_buffer = size_page;
+          point_part_reading = &part_reading_dr_from_dataflash_for_LAN;
+        }
+#endif                   
         else if (
-                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU )||
-                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )||
+                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU )
+                 ||
+                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
+                 ||
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                 ||
+                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
+#endif                   
                 )   
         {
           if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU)
             point_buffer = (unsigned char *)(buffer_for_manu_read_record);
           else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB)
             point_buffer = (unsigned char *)(buffer_for_USB_read_record_pr_err);
-          else
+          else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
             point_buffer = (unsigned char *)(buffer_for_RS485_read_record_pr_err);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
+            point_buffer = (unsigned char *)(buffer_for_LAN_read_record_pr_err);
+#endif  
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(192);
+          }
           
           number_byte_copy_into_target_buffer = SIZE_ONE_RECORD_PR_ERR;
         }
+        else
+        {
+          //Теоретично цього ніколи не мало б бути
+          total_error_sw_fixed(202);
+        }
         
         if (
-            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU     ) ||
-            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB      ) ||  
-            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485    ) ||  
-            (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU ) ||
-            (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  ) ||  
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU     ) 
+            ||
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB      )
+            ||  
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485    )
+            ||  
+            (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU )
+            ||
+            (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
+            ||  
             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            ||  
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN    )
+            ||  
+            (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)  
+#endif
            )
         {
           //По ідеї ця умова завжди має виконуватися
@@ -762,9 +855,15 @@ inline void analize_received_data_dataflash(int index_chip)
         }
 
         if (
-            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU ) ||
-            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) ||  
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU ) 
+            ||
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) 
+            ||  
             (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            ||  
+            (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)  
+#endif
            )
         {
           //Відбувалося зчитування дискретного реєстратора
@@ -789,16 +888,31 @@ inline void analize_received_data_dataflash(int index_chip)
             }
             else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB)
               control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB);
-            else
+            else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)
               control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
+              control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN);
+#endif  
+            else
+            {
+              //Теоретично цього ніколи не мало б бути
+              total_error_sw_fixed(207);
+            }
           
             *point_part_reading = 0;
           }
         }
         else if (
-                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU ) ||
-                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  ) ||  
+                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU ) 
+                 ||
+                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
+                 ||  
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                 ||  
+                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)  
+#endif
                 )
         {
           //Відбувалося зчитування реєстратора програмних подій
@@ -815,8 +929,17 @@ inline void analize_received_data_dataflash(int index_chip)
           }
           else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB)
             control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB);
-          else
+          else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
             control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+          else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
+            control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN);
+#endif
+          else
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed(188);
+          }
         }
       }
       else if (index_chip == INDEX_DATAFLASH_2)
@@ -838,11 +961,29 @@ inline void analize_received_data_dataflash(int index_chip)
           point_buffer = (unsigned char *)(buffer_for_RS485_read_record_ar);
           number_byte_copy_into_target_buffer = size_page; /*Фактично може бути і менше, але точно не більше, але щоб не входити у розрахунки копіюю повністю цілий буфер прийому. Тим більше що йде намагання читати стільки часовх зрізів, щоб вони максимально заповники цей об'єм*/
         }
-
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        else if (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_LAN)
+        {
+          point_buffer = (unsigned char *)(buffer_for_LAN_read_record_ar);
+          number_byte_copy_into_target_buffer = size_page; /*Фактично може бути і менше, але точно не більше, але щоб не входити у розрахунки копіюю повністю цілий буфер прийому. Тим більше що йде намагання читати стільки часовх зрізів, щоб вони максимально заповники цей об'єм*/
+        }
+#endif
+        else
+        {
+          //Теоретично цього ніколи не мало б бути
+          total_error_sw_fixed(190);
+        }
+        
         if (
-            (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_MENU ) ||
-            (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_USB  ) ||  
+            (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_MENU ) 
+            ||
+            (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_USB  )
+            ||  
             (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_RS485)  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            ||  
+            (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_LAN)  
+#endif
            )
         {
           for (unsigned int i = 0; i < number_byte_copy_into_target_buffer; i++ )
@@ -869,6 +1010,15 @@ inline void analize_received_data_dataflash(int index_chip)
           control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB);
         else if (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_RS485)
           control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        else if (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_LAN)
+          control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN);
+#endif  
+        else
+        {
+          //Теоретично цього ніколи не мало б бути
+          total_error_sw_fixed(210);
+        }
       }
       else
       {
@@ -1167,24 +1317,46 @@ void main_function_for_dataflash_req(int index_chip)
             dataflash_mamory_page_program_through_buffer(index_chip);
           }
           else if (
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU     ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB      ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485    ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU     ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB      ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485    ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU     ) !=0 ) 
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB      ) !=0 ) 
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485    ) !=0 )
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU     ) !=0 )
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB      ) !=0 )
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485    ) !=0 )
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU ) !=0 )
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) !=0 )
+                   ||
                    ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) !=0 )
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN    ) !=0 )
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN    ) !=0 )
+                   ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN) !=0 )
+#endif
                   )   
           {
             
             //Може виконуватися тільки одна операція для одної мікросхеми DataFlash(причому більi пріоритетна може переривати менш пріоритетну, якщо задача виконується у декілька етапів)
             //DataFlash1
             if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB) !=0 )
-              what_we_are_reading_from_dataflash_1 = READING_DR_FOR_USB; //Читання для USB завжди має більший пріоритет порівняно з читанням для RS-485 і меню
+              what_we_are_reading_from_dataflash_1 = READING_DR_FOR_USB; //Читання для USB завжди має більший пріоритет порівняно з читанням для LAN, RS-485 і меню
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB) !=0 )
-              what_we_are_reading_from_dataflash_1 = READING_PR_ERR_FOR_USB;//Читання для USB завжди має більший пріоритет порівняно з читанням для RS-485 і меню
+              what_we_are_reading_from_dataflash_1 = READING_PR_ERR_FOR_USB;//Читання для USB завжди має більший пріоритет порівняно з читанням для LAN, RS-485 і меню
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) !=0 )
+              what_we_are_reading_from_dataflash_1 = READING_DR_FOR_LAN; //Читання для LAN завжди має більший пріоритет порівняно з читанням для RS-485 і меню
+            else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN) !=0 )
+              what_we_are_reading_from_dataflash_1 = READING_PR_ERR_FOR_LAN;//Читання для LAN завжди має більший пріоритет порівняно з читанням для RS-485 і меню
+#endif
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) !=0 )
               what_we_are_reading_from_dataflash_1 = READING_DR_FOR_RS485; //Читання для RS-485 завжди має більший пріоритет порівняно з читанням для меню
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) !=0 )
@@ -1196,7 +1368,11 @@ void main_function_for_dataflash_req(int index_chip)
             
             //DataFlash2
             if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB) !=0 )
-              what_we_are_reading_from_dataflash_2 = READING_AR_FOR_USB; //Читання для USB завжди має більший пріоритет порівняно з читанням для RS-485 і меню
+              what_we_are_reading_from_dataflash_2 = READING_AR_FOR_USB; //Читання для USB завжди має більший пріоритет порівняно з читанням для  LAN, RS-485 і меню
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+            else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN) !=0 )
+              what_we_are_reading_from_dataflash_2 = READING_AR_FOR_LAN;//Читання для LAN завжди має більший пріоритет порівняно з читанням для RS-485 і меню
+#endif
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485) !=0 )
               what_we_are_reading_from_dataflash_2 = READING_AR_FOR_RS485; //Читання для RS485 завжди має більший пріоритет порівняно з читанням для меню
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU) !=0 )
@@ -1233,6 +1409,9 @@ void actions_after_changing_tiomouts_ar(void)
   number_record_of_ar_for_menu = 0xffff;
   number_record_of_ar_for_USB = 0xffff;
   number_record_of_ar_for_RS485 = 0xffff;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  number_record_of_ar_for_LAN = 0xffff;
+#endif
 }
 /*****************************************************/
 

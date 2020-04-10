@@ -1466,7 +1466,12 @@ inline void input_scan(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
-                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) &    0xf) << 16)
+                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >>  8) & 0xf) << 16)
+#elif (                                   \
+       (MODYFIKACIA_VERSII_PZ == 5) ||    \
+       (MODYFIKACIA_VERSII_PZ == 15)      \
+      )                                   
+                         | (((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 12) & 0xf) << 16)
 #endif
                         ;
   /***************************/
@@ -2448,9 +2453,18 @@ inline void d_xor_handler(unsigned int *p_active_functions)
       unsigned int signals = 0;
       for (unsigned int j = 0; j < N_BIG; j++)
       {
-        for (unsigned int k = 0; k < 32; k++)
+        if (temp_array[j] == 0) continue; 
+        else
         {
-          if ((temp_array[j] & (1 << k)) != 0) signals++;
+          for (unsigned int k = 0; k < 32; k++)
+          {
+            if ((temp_array[j] & (1 << k)) != 0) 
+            {
+              signals++;
+              if (signals > 1) break;
+            }
+          }
+          if (signals > 1) break;
         }
       }
       if (signals == 1) state_defined_xor |= (1 << i);
@@ -3057,7 +3071,8 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
       )   
 
   static uint32_t test;
@@ -3147,8 +3162,8 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
     test = swiched_on_OVD & 0x7;
   }
 
-  if (test != 0) _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (1 << 8) | ((test & 0xf) << 12);
-  else _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8);
+  if (test != 0) _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (1 << 8) | ((test & 0xf) << 12);
+  else _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8);
   /***/
 
 #endif  
@@ -3171,23 +3186,26 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
-      )   
-  _AND3(logic_zdz_0, 2, light, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
+      ) 
+
+  uint32_t zdz_ovd_diagnostyka_inv = (uint32_t)(~zdz_ovd_diagnostyka);
+  _AND4(logic_zdz_0, 2, light, 0, zdz_ovd_diagnostyka_inv, 0, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 4);
   //"Св.ЗДЗ від ОВД1"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 4))
     _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD1);
   else
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD1);
 
-  _AND3(logic_zdz_0, 2, light, 1, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 5);
+  _AND4(logic_zdz_0, 2, light, 1, zdz_ovd_diagnostyka_inv, 1, control_zdz_tmp, CTR_ZDZ_OVD2_STATE_BIT, logic_zdz_0, 5);
   //"Св.ЗДЗ від ОВД2"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 5))
     _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD2);
   else
     _CLEAR_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD2);
 
-  _AND3(logic_zdz_0, 2, light, 2, control_zdz_tmp, CTR_ZDZ_OVD1_STATE_BIT, logic_zdz_0, 6);
+  _AND4(logic_zdz_0, 2, light, 2, zdz_ovd_diagnostyka_inv, 2, control_zdz_tmp, CTR_ZDZ_OVD3_STATE_BIT, logic_zdz_0, 6);
   //"Св.ЗДЗ від ОВД3"
   if (_GET_OUTPUT_STATE(logic_zdz_0, 6))
     _SET_BIT(p_active_functions, RANG_LIGHT_ZDZ_FROM_OVD3);
@@ -3328,7 +3346,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
       else
       {
         //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
-        total_error_sw_fixed(88);
+        total_error_sw_fixed(221);
       }
 
       _AND2(logic_zdz_0, 7, logic_zdz_0, 16, logic_zdz_rez, 0);
@@ -3337,7 +3355,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
   else
   {
     //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
-    total_error_sw_fixed(88);
+    total_error_sw_fixed(222);
   }
   
   //"ПО ЗДЗ"
@@ -5440,7 +5458,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
         Алгебраїчне спрощення виразу
         setpoint = (pickup*koef_povernennja/100)*10 =  pickup*koef_povernennja/10
         */
-        pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/10;
+        pickup = (pickup * (int32_t)current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/10;
       }
       else
       {
@@ -5450,7 +5468,7 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
     }
     else
     {
-      if (_CHECK_SET_BIT(p_active_functions, (RANG_PO_UP1 + 3*n_UP)) != 0) pickup = (pickup * current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
+      if (_CHECK_SET_BIT(p_active_functions, (RANG_PO_UP1 + 3*n_UP)) != 0) pickup = (pickup * (int32_t)current_settings_prt.setpoint_UP_KP[n_UP][0][number_group_stp])/100;
     }
 
     unsigned int more_less = ((current_settings_prt.control_UP & MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) != 0);
@@ -5692,7 +5710,6 @@ inline void up_handler(unsigned int *p_active_functions, unsigned int number_gro
 inline void on_off_handler(unsigned int *p_active_functions)
 {
   static unsigned int previous_active_functions[N_BIG];
-  unsigned int maska[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
   /*********************/
   //Спочатку опрацьовуємо таймери
@@ -5753,21 +5770,34 @@ inline void on_off_handler(unsigned int *p_active_functions)
   /*********************/
   //Першим розглядається блок відключення, бо він може блокувати включення вимикача
   /*********************/
+  uint32_t off_cb_tmp[N_BIG] = 
+  {
+    (p_active_functions[0] & current_settings_prt.ranguvannja_off_cb[0]),
+    (p_active_functions[1] & current_settings_prt.ranguvannja_off_cb[1]),
+    (p_active_functions[2] & current_settings_prt.ranguvannja_off_cb[2]),
+    (p_active_functions[3] & current_settings_prt.ranguvannja_off_cb[3]),
+    (p_active_functions[4] & current_settings_prt.ranguvannja_off_cb[4]),
+    (p_active_functions[5] & current_settings_prt.ranguvannja_off_cb[5]),
+    (p_active_functions[6] & current_settings_prt.ranguvannja_off_cb[6]),
+    (p_active_functions[7] & current_settings_prt.ranguvannja_off_cb[7]),
+    (p_active_functions[8] & current_settings_prt.ranguvannja_off_cb[8])
+  };
+  
   /*
-  Цей сигнал встановлюється тільки у певних випадках, тому по замовчуванню його треба скинута,
+  Цей сигнал встановлюється тільки у певних випадках, тому по замовчуванню його треба скинути,
   а коли буде потрібно - він встановиться
   */
   _CLEAR_BIT(p_active_functions, RANG_VIDKL_VID_ZAKHYSTIV);
   if (
-      ((p_active_functions[0] & current_settings_prt.ranguvannja_off_cb[0]) != 0) ||
-      ((p_active_functions[1] & current_settings_prt.ranguvannja_off_cb[1]) != 0) ||
-      ((p_active_functions[2] & current_settings_prt.ranguvannja_off_cb[2]) != 0) ||
-      ((p_active_functions[3] & current_settings_prt.ranguvannja_off_cb[3]) != 0) ||
-      ((p_active_functions[4] & current_settings_prt.ranguvannja_off_cb[4]) != 0) ||
-      ((p_active_functions[5] & current_settings_prt.ranguvannja_off_cb[5]) != 0) ||
-      ((p_active_functions[6] & current_settings_prt.ranguvannja_off_cb[6]) != 0) ||
-      ((p_active_functions[7] & current_settings_prt.ranguvannja_off_cb[7]) != 0) ||
-      ((p_active_functions[8] & current_settings_prt.ranguvannja_off_cb[8]) != 0)
+      (off_cb_tmp[0] != 0) ||
+      (off_cb_tmp[1] != 0) ||
+      (off_cb_tmp[2] != 0) ||
+      (off_cb_tmp[3] != 0) ||
+      (off_cb_tmp[4] != 0) ||
+      (off_cb_tmp[5] != 0) ||
+      (off_cb_tmp[6] != 0) ||
+      (off_cb_tmp[7] != 0) ||
+      (off_cb_tmp[8] != 0)
      )
   {
     //Є умова активації блку вимкнення
@@ -5786,368 +5816,359 @@ inline void on_off_handler(unsigned int *p_active_functions)
     Формуємо сигнал "Відключення від захистів" (він рівний наявності умови команди
     активації команди "Робота БО" будь-якою командою за виключенняв "Вимкн. ВВ")
     */
-    //Формуємо інвертовану маску для виключення команди "Вимк.ВВ"
-    for (unsigned int i = 0; i < N_BIG; i++ )  maska[i] = (unsigned int)(~0);
-    _CLEAR_BIT(maska, RANG_OTKL_VV);
-    _CLEAR_BIT(maska, RANG_WORK_BO);
+    _CLEAR_BIT(off_cb_tmp, RANG_OTKL_VV);
     if (
-        ((p_active_functions[0] & maska[0]) != 0) ||
-        ((p_active_functions[1] & maska[1]) != 0) ||
-        ((p_active_functions[2] & maska[2]) != 0) ||
-        ((p_active_functions[3] & maska[3]) != 0) ||
-        ((p_active_functions[4] & maska[4]) != 0) ||
-        ((p_active_functions[5] & maska[5]) != 0) ||
-        ((p_active_functions[6] & maska[6]) != 0) ||
-        ((p_active_functions[7] & maska[7]) != 0) ||
-        ((p_active_functions[8] & maska[8]) != 0)
+        (off_cb_tmp[0] != 0) ||
+        (off_cb_tmp[1] != 0) ||
+        (off_cb_tmp[2] != 0) ||
+        (off_cb_tmp[3] != 0) ||
+        (off_cb_tmp[4] != 0) ||
+        (off_cb_tmp[5] != 0) ||
+        (off_cb_tmp[6] != 0) ||
+        (off_cb_tmp[7] != 0) ||
+        (off_cb_tmp[8] != 0)
        )
     {
       //Вимкнення від захистів
       _SET_BIT(p_active_functions, RANG_VIDKL_VID_ZAKHYSTIV);
       
-      unsigned int temp_array_of_outputs[N_BIG];
-      for (unsigned int i = 0; i < N_BIG; i++ ) temp_array_of_outputs[i] = (p_active_functions[i] & maska[i]);
-      _CLEAR_BIT(temp_array_of_outputs, RANG_VIDKL_VID_ZAKHYSTIV);
-          
       /*****************************************************
       Формуванні інформації про причину відключення для меню
       *****************************************************/
-      unsigned char *label_to_time_array;
-      if (copying_time == 2) label_to_time_array = time_copy;
-      else label_to_time_array = time;
+      __info_vymk info_vymk_tmp = {time_dat, time_ms};
           
       //МТЗ1
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_MTZ1) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_MTZ1) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_MTZ1) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ1);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ1][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ1] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ1);
+        _CLEAR_BIT(off_cb_tmp, RANG_MTZ1);
       }
       
       //МТЗ2
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_MTZ2) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_MTZ2) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_MTZ2) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ2);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ2][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ2] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ2);
+        _CLEAR_BIT(off_cb_tmp, RANG_MTZ2);
       }
       
       //МТЗ3
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_MTZ3) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_MTZ3) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_MTZ3) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ3);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ3][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ3] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ3);
+        _CLEAR_BIT(off_cb_tmp, RANG_MTZ3);
       }
       
       //МТЗ4
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_MTZ4) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_MTZ4) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_MTZ4) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ4);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ4][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ4] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ4);
+        _CLEAR_BIT(off_cb_tmp, RANG_MTZ4);
       }
       
           //МТЗ1 04 кВ
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_MTZ04_1) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_MTZ04_1) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_MTZ04_1) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ04_1);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ04_1][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ04_1] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ04_1);
+        _CLEAR_BIT(off_cb_tmp, RANG_MTZ04_1);
       }
           
       //МТЗ2 04кВ
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_MTZ04_2) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_MTZ04_2) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_MTZ04_2) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_MTZ04_2);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ04_2][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MTZ04_2] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_MTZ04_2);
+        _CLEAR_BIT(off_cb_tmp, RANG_MTZ04_2);
       }
           
       //ЗДЗ
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_ZDZ) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_ZDZ) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_ZDZ) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ZDZ);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZDZ][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZDZ] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_ZDZ);
+        _CLEAR_BIT(off_cb_tmp, RANG_ZDZ);
       }
       
       //ЗЗ/3I0
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_3I0) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_3I0) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_3I0) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_3I0);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_3I0][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_3I0] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_3I0);
+        _CLEAR_BIT(off_cb_tmp, RANG_3I0);
       }
           
       //ЗЗ/3U0
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_3U0) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_3U0) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_3U0) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_3U0);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_3U0][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_3U0] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_3U0);
+        _CLEAR_BIT(off_cb_tmp, RANG_3U0);
       }
           
       //НЗЗ
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_NZZ) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_NZZ) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_NZZ) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_NZZ);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_NZZ][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_NZZ] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_NZZ);
+        _CLEAR_BIT(off_cb_tmp, RANG_NZZ);
       }
           
       //ТЗНП1
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_TZNP1) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_TZNP1) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_TZNP1) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_TZNP1);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP1][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP1] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_TZNP1);
+        _CLEAR_BIT(off_cb_tmp, RANG_TZNP1);
       }
 
       //ТЗНП2
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_TZNP2) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_TZNP2) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_TZNP2) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_TZNP2);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP2][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP2] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_TZNP2);
+        _CLEAR_BIT(off_cb_tmp, RANG_TZNP2);
       }
 
       //ТЗНП3
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_TZNP3) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_TZNP3) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_TZNP3) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_TZNP3);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP3][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_TZNP3] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_TZNP3);
+        _CLEAR_BIT(off_cb_tmp, RANG_TZNP3);
       }
 
       //АЧР/ЧАПВ від ДВ
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV_VID_DV) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_ACHR_CHAPV_VID_DV) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_ACHR_CHAPV_VID_DV) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ACHR_CHAPV_VID_DV);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV_VID_DV][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV_VID_DV] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV_VID_DV);
+        _CLEAR_BIT(off_cb_tmp, RANG_ACHR_CHAPV_VID_DV);
       }
           
       //АЧР/ЧАПВ1
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV1) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_ACHR_CHAPV1) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_ACHR_CHAPV1) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ACHR_CHAPV1);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV1][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV1] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV1);
+        _CLEAR_BIT(off_cb_tmp, RANG_ACHR_CHAPV1);
       }
           
       //АЧР/ЧАПВ2
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV2) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_ACHR_CHAPV2) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_ACHR_CHAPV2) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ACHR_CHAPV2);
-        for(unsigned int j = 0; j < 7; j++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV2][j] = *(label_to_time_array + j);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ACHR_CHAPV2] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_ACHR_CHAPV2);
+        _CLEAR_BIT(off_cb_tmp, RANG_ACHR_CHAPV2);
       }
           
       //УРОВ1
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_UROV1) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_UROV1) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_UROV1) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UROV1);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UROV1][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UROV1] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_UROV1);
+        _CLEAR_BIT(off_cb_tmp, RANG_UROV1);
       }
       
       //УРОВ2
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_UROV2) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_UROV2) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_UROV2) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UROV2);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UROV2][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UROV2] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_UROV2);
+        _CLEAR_BIT(off_cb_tmp, RANG_UROV2);
       }
       
       //ЗОП
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_ZOP) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_ZOP) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_ZOP) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ZOP);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZOP][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZOP] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_ZOP);
+        _CLEAR_BIT(off_cb_tmp, RANG_ZOP);
       }
       
       //Umin1
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_UMIN1) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_UMIN1) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_UMIN1) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UMIN1);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMIN1][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMIN1] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_UMIN1);
+        _CLEAR_BIT(off_cb_tmp, RANG_UMIN1);
       }
       
       //Umin2
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_UMIN2) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_UMIN2) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_UMIN2) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UMIN2);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMIN2][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMIN2] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_UMIN2);
+        _CLEAR_BIT(off_cb_tmp, RANG_UMIN2);
       }
       
       //Umax1
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_UMAX1) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_UMAX1) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_UMAX1) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UMAX1);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMAX1][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMAX1] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_UMAX1);
+        _CLEAR_BIT(off_cb_tmp, RANG_UMAX1);
       }
       
       //Umax2
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_UMAX2) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_UMAX2) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_UMAX2) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_UMAX2);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMAX2][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UMAX2] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_UMAX2);
+        _CLEAR_BIT(off_cb_tmp, RANG_UMAX2);
       }
       
       //Універсальний захист
       for (size_t n_UP = 0; n_UP < NUMBER_UP; n_UP++)
       {
         if(
-           (_CHECK_SET_BIT(temp_array_of_outputs, (RANG_UP1 + 3*n_UP)) != 0) &&
+           (_CHECK_SET_BIT(off_cb_tmp, (RANG_UP1 + 3*n_UP)) != 0) &&
            (_CHECK_SET_BIT(previous_active_functions, (RANG_UP1 + 3*n_UP)) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
           )   
         {
           _SET_BIT(info_vidkluchennja_vymykacha, (VYMKNENNJA_VID_UP1 + n_UP));
-          for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UP1 + n_UP][i] = *(label_to_time_array + i);
+          info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_UP1 + n_UP] = info_vymk_tmp;
 
-          _CLEAR_BIT(temp_array_of_outputs, (RANG_UP1 + 3*n_UP));
+          _CLEAR_BIT(off_cb_tmp, (RANG_UP1 + 3*n_UP));
         }
       }
       
       //Відключення від зовнішніх захистів
       if(
-         (_CHECK_SET_BIT(temp_array_of_outputs, RANG_OTKL_VID_ZOVN_ZAHYSTIV) != 0) &&
+         (_CHECK_SET_BIT(off_cb_tmp, RANG_OTKL_VID_ZOVN_ZAHYSTIV) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_OTKL_VID_ZOVN_ZAHYSTIV) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_ZOVNISHNIKH_ZAKHYSTIV);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZOVNISHNIKH_ZAKHYSTIV][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_ZOVNISHNIKH_ZAKHYSTIV] = info_vymk_tmp;
 
-        _CLEAR_BIT(temp_array_of_outputs, RANG_OTKL_VID_ZOVN_ZAHYSTIV);
+        _CLEAR_BIT(off_cb_tmp, RANG_OTKL_VID_ZOVN_ZAHYSTIV);
       }
       
       //Відключення від інших сигналів (крім відключення від сигналу "Вимк.ВВ")
       if(
          (
-          (temp_array_of_outputs[0] != 0) ||
-          (temp_array_of_outputs[1] != 0) ||
-          (temp_array_of_outputs[2] != 0) ||
-          (temp_array_of_outputs[3] != 0) ||
-          (temp_array_of_outputs[4] != 0) ||
-          (temp_array_of_outputs[5] != 0) ||
-          (temp_array_of_outputs[6] != 0) ||
-          (temp_array_of_outputs[7] != 0) ||
-          (temp_array_of_outputs[8] != 0)
+          (off_cb_tmp[0] != 0) ||
+          (off_cb_tmp[1] != 0) ||
+          (off_cb_tmp[2] != 0) ||
+          (off_cb_tmp[3] != 0) ||
+          (off_cb_tmp[4] != 0) ||
+          (off_cb_tmp[5] != 0) ||
+          (off_cb_tmp[6] != 0) ||
+          (off_cb_tmp[7] != 0) ||
+          (off_cb_tmp[8] != 0)
          )
          &&
          (
-          ((previous_active_functions[0] & temp_array_of_outputs[0])!= temp_array_of_outputs[0]) ||
-          ((previous_active_functions[1] & temp_array_of_outputs[1])!= temp_array_of_outputs[1]) ||
-          ((previous_active_functions[2] & temp_array_of_outputs[2])!= temp_array_of_outputs[2]) ||
-          ((previous_active_functions[3] & temp_array_of_outputs[3])!= temp_array_of_outputs[3]) ||
-          ((previous_active_functions[4] & temp_array_of_outputs[4])!= temp_array_of_outputs[4]) ||
-          ((previous_active_functions[5] & temp_array_of_outputs[5])!= temp_array_of_outputs[5]) ||
-          ((previous_active_functions[6] & temp_array_of_outputs[6])!= temp_array_of_outputs[6]) ||
-          ((previous_active_functions[7] & temp_array_of_outputs[7])!= temp_array_of_outputs[7]) ||
-          ((previous_active_functions[8] & temp_array_of_outputs[8])!= temp_array_of_outputs[8])
+          ((previous_active_functions[0] & off_cb_tmp[0])!= off_cb_tmp[0]) ||
+          ((previous_active_functions[1] & off_cb_tmp[1])!= off_cb_tmp[1]) ||
+          ((previous_active_functions[2] & off_cb_tmp[2])!= off_cb_tmp[2]) ||
+          ((previous_active_functions[3] & off_cb_tmp[3])!= off_cb_tmp[3]) ||
+          ((previous_active_functions[4] & off_cb_tmp[4])!= off_cb_tmp[4]) ||
+          ((previous_active_functions[5] & off_cb_tmp[5])!= off_cb_tmp[5]) ||
+          ((previous_active_functions[6] & off_cb_tmp[6])!= off_cb_tmp[6]) ||
+          ((previous_active_functions[7] & off_cb_tmp[7])!= off_cb_tmp[7]) ||
+          ((previous_active_functions[8] & off_cb_tmp[8])!= off_cb_tmp[8])
          ) 
         )   
       {
         _SET_BIT(info_vidkluchennja_vymykacha, VYMKNENNJA_VID_INSHYKH_SYGNALIV);
-        for(unsigned int i = 0; i < 7; i++) info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_INSHYKH_SYGNALIV][i] = *(label_to_time_array + i);
+        info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_INSHYKH_SYGNALIV] = info_vymk_tmp;
       }
       /*****************************************************/
     }
@@ -6452,7 +6473,13 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
     _SET_BIT(control_spi1_taskes, TASK_START_WRITE_RESURS_EEPROM_BIT);
 
     //Помічаємо, що відбулася очистка ресурсу вимикача
-    information_about_restart_counter |= ((1 << USB_RECUEST)|(1 << RS485_RECUEST));
+    information_about_restart_counter |= (
+                                            (1 << USB_RECUEST)
+                                          | (1 << RS485_RECUEST)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                          | (1 << LAN_RECUEST)
+#endif
+                                         );
   }
   
   /*******************************/
@@ -8206,10 +8233,8 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
           buffer_for_save_dr_record[FIRST_INDEX_START_START_RECORD_DR] = LABEL_START_RECORD_DR;
          
           //Записуємо час початку запису
-          unsigned char *label_to_time_array;
-          if (copying_time == 2) label_to_time_array = time_copy;
-          else label_to_time_array = time;
-          for(unsigned int i = 0; i < 7; i++) buffer_for_save_dr_record[FIRST_INDEX_DATA_TIME_DR + i] = *(label_to_time_array + i);
+          for(size_t i = 0; i < sizeof(time_t); i++)  buffer_for_save_dr_record[FIRST_INDEX_DATA_TIME_DR + i] = *((unsigned char*)(&time_dat) + i);
+          for(size_t i = 0; i < sizeof(int32_t); i++)  buffer_for_save_dr_record[FIRST_INDEX_DATA_TIME_DR + sizeof(time_t) + i] = *((unsigned char*)(&time_ms) + i);
           
           //Додаткові налаштування при яких було запущено дискретний реєстратор
           unsigned int control_extra_settings_1_tmp = current_settings_prt.control_extra_settings_1 & (CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE | CTR_EXTRA_SETTINGS_1_CTRL_IB_I04);
@@ -9016,6 +9041,17 @@ void fix_undefined_error_ar(unsigned int* carrent_active_functions)
 inline void analog_registrator(unsigned int* carrent_active_functions)
 {
   static unsigned int unsaved_bytes_of_header_ar;
+  static unsigned int prev_active_sources[N_BIG];
+  unsigned int cur_active_sources[N_BIG];
+  cur_active_sources[0] = carrent_active_functions[0] & current_settings_prt.ranguvannja_analog_registrator[0];
+  cur_active_sources[1] = carrent_active_functions[1] & current_settings_prt.ranguvannja_analog_registrator[1];
+  cur_active_sources[2] = carrent_active_functions[2] & current_settings_prt.ranguvannja_analog_registrator[2];
+  cur_active_sources[3] = carrent_active_functions[3] & current_settings_prt.ranguvannja_analog_registrator[3];
+  cur_active_sources[4] = carrent_active_functions[4] & current_settings_prt.ranguvannja_analog_registrator[4];
+  cur_active_sources[5] = carrent_active_functions[5] & current_settings_prt.ranguvannja_analog_registrator[5];
+  cur_active_sources[6] = carrent_active_functions[6] & current_settings_prt.ranguvannja_analog_registrator[6];
+  cur_active_sources[7] = carrent_active_functions[7] & current_settings_prt.ranguvannja_analog_registrator[7];
+  cur_active_sources[8] = carrent_active_functions[8] & current_settings_prt.ranguvannja_analog_registrator[8];
 
   //Попередньо скидаємо невизначену помилку  роботи аналогового реєстратора
   _SET_BIT(clear_diagnostyka, ERROR_AR_UNDEFINED_BIT);
@@ -9025,24 +9061,57 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
     /*
     Ця ситуація означає, що були активними джерела аналогового реєстратора, які запустили
     в роботу аналоговий реєстратор, і тепер для розблокування можливості запускати новий запис ми 
-    чекаємо ситуації, що всі джерела активації деактивуються (у будь-який час чи до
-    завершення записування текучого запису аналогового реєстратора, чи вже після завершення
-    записування. Це буде умовою розблокування можливості запису нового запису)
+    чекаємо ситуації, що
+    - всі джерела активації деактивуються (у будь-який час чи до завершення записування текучого
+    запису аналогового реєстратора, чи вже після завершення записування. Це буде умовою
+    розблокування можливості запису нового запису)
+    - попердній запис записаний  у DataFlash
+    - всі джерела не деактивувалися але появилося нове джерело
     */
     if(
-       ((carrent_active_functions[0] & current_settings_prt.ranguvannja_analog_registrator[0]) == 0) &&
-       ((carrent_active_functions[1] & current_settings_prt.ranguvannja_analog_registrator[1]) == 0) &&
-       ((carrent_active_functions[2] & current_settings_prt.ranguvannja_analog_registrator[2]) == 0) &&
-       ((carrent_active_functions[3] & current_settings_prt.ranguvannja_analog_registrator[3]) == 0) &&
-       ((carrent_active_functions[4] & current_settings_prt.ranguvannja_analog_registrator[4]) == 0) &&
-       ((carrent_active_functions[5] & current_settings_prt.ranguvannja_analog_registrator[5]) == 0) &&
-       ((carrent_active_functions[6] & current_settings_prt.ranguvannja_analog_registrator[6]) == 0) &&
-       ((carrent_active_functions[7] & current_settings_prt.ranguvannja_analog_registrator[7]) == 0) &&
-       ((carrent_active_functions[8] & current_settings_prt.ranguvannja_analog_registrator[8]) == 0) 
+       (cur_active_sources[0] == 0) &&
+       (cur_active_sources[1] == 0) &&
+       (cur_active_sources[2] == 0) &&
+       (cur_active_sources[3] == 0) &&
+       (cur_active_sources[4] == 0) &&
+       (cur_active_sources[5] == 0) &&
+       (cur_active_sources[6] == 0) &&
+       (cur_active_sources[7] == 0) &&
+       (cur_active_sources[8] == 0) 
       ) 
     {
-      //Умова розблокування можливості початку нового запису виконана
+      //Перша умова розблокування можливості початку нового запису виконана
       continue_previous_record_ar = 0;
+    }
+    else if  (state_ar_record == STATE_AR_NO_RECORD)
+    {
+      //Попередній запис повністю записаний у DataFlash, але ще деякі джерела активації не деакттивувалися
+      unsigned int diff_active_sources[N_BIG];
+      diff_active_sources[0] = prev_active_sources[0] ^ cur_active_sources[0];
+      diff_active_sources[1] = prev_active_sources[1] ^ cur_active_sources[1];
+      diff_active_sources[2] = prev_active_sources[2] ^ cur_active_sources[2];
+      diff_active_sources[3] = prev_active_sources[3] ^ cur_active_sources[3];
+      diff_active_sources[4] = prev_active_sources[4] ^ cur_active_sources[4];
+      diff_active_sources[5] = prev_active_sources[5] ^ cur_active_sources[5];
+      diff_active_sources[6] = prev_active_sources[6] ^ cur_active_sources[6];
+      diff_active_sources[7] = prev_active_sources[7] ^ cur_active_sources[7];
+      diff_active_sources[8] = prev_active_sources[8] ^ cur_active_sources[8];
+
+      if(
+         ((diff_active_sources[0] & cur_active_sources[0]) != 0) ||
+         ((diff_active_sources[1] & cur_active_sources[1]) != 0) ||
+         ((diff_active_sources[2] & cur_active_sources[2]) != 0) ||
+         ((diff_active_sources[3] & cur_active_sources[3]) != 0) ||
+         ((diff_active_sources[4] & cur_active_sources[4]) != 0) ||
+         ((diff_active_sources[5] & cur_active_sources[5]) != 0) ||
+         ((diff_active_sources[6] & cur_active_sources[6]) != 0) ||
+         ((diff_active_sources[7] & cur_active_sources[7]) != 0) ||
+         ((diff_active_sources[8] & cur_active_sources[8]) != 0) 
+        ) 
+      {
+        //Друга умова розблокування можливості початку нового запису виконана
+        continue_previous_record_ar = 0;
+      }
     }
   }
 
@@ -9063,15 +9132,15 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
       //Аналізуємо, чи стоїть умова запуску аналогового реєстратора
       if (
           (
-           ((carrent_active_functions[0] & current_settings_prt.ranguvannja_analog_registrator[0]) != 0) ||
-           ((carrent_active_functions[1] & current_settings_prt.ranguvannja_analog_registrator[1]) != 0) ||
-           ((carrent_active_functions[2] & current_settings_prt.ranguvannja_analog_registrator[2]) != 0) ||
-           ((carrent_active_functions[3] & current_settings_prt.ranguvannja_analog_registrator[3]) != 0) ||
-           ((carrent_active_functions[4] & current_settings_prt.ranguvannja_analog_registrator[4]) != 0) ||
-           ((carrent_active_functions[5] & current_settings_prt.ranguvannja_analog_registrator[5]) != 0) ||
-           ((carrent_active_functions[6] & current_settings_prt.ranguvannja_analog_registrator[6]) != 0) ||
-           ((carrent_active_functions[7] & current_settings_prt.ranguvannja_analog_registrator[7]) != 0) ||
-           ((carrent_active_functions[8] & current_settings_prt.ranguvannja_analog_registrator[8]) != 0)
+           (cur_active_sources[0] != 0) ||
+           (cur_active_sources[1] != 0) ||
+           (cur_active_sources[2] != 0) ||
+           (cur_active_sources[3] != 0) ||
+           (cur_active_sources[4] != 0) ||
+           (cur_active_sources[5] != 0) ||
+           (cur_active_sources[6] != 0) ||
+           (cur_active_sources[7] != 0) ||
+           (cur_active_sources[8] != 0)
           )
           &&  
           (continue_previous_record_ar == 0) /*при попередній роботі ан.реєстротора (якщо така була) вже всі джерела активації були зняті і зароз вони знову виникли*/ 
@@ -9088,10 +9157,8 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
           //Записуємо мітку початку запису
           header_ar.label_start_record = LABEL_START_RECORD_AR;
           //Записуємо час початку запису
-          unsigned char *label_to_time_array;
-          if (copying_time == 2) label_to_time_array = time_copy;
-          else label_to_time_array = time;
-          for(unsigned int i = 0; i < 7; i++) header_ar.time[i] = *(label_to_time_array + i);
+          header_ar.time_dat = time_dat;
+          header_ar.time_ms = time_ms;
           //Коефіцієнт трансформації T0
           header_ar.T0 = current_settings_prt.T0;
           //Коефіцієнт трансформації TT
@@ -9180,15 +9247,15 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
             поки ще старий запис не закінчився повністю
             */
             if (
-                ((carrent_active_functions[0] & current_settings_prt.ranguvannja_analog_registrator[0]) != 0) ||
-                ((carrent_active_functions[1] & current_settings_prt.ranguvannja_analog_registrator[1]) != 0) ||
-                ((carrent_active_functions[2] & current_settings_prt.ranguvannja_analog_registrator[2]) != 0) ||
-                ((carrent_active_functions[3] & current_settings_prt.ranguvannja_analog_registrator[3]) != 0) ||
-                ((carrent_active_functions[4] & current_settings_prt.ranguvannja_analog_registrator[4]) != 0) ||
-                ((carrent_active_functions[5] & current_settings_prt.ranguvannja_analog_registrator[5]) != 0) ||
-                ((carrent_active_functions[6] & current_settings_prt.ranguvannja_analog_registrator[6]) != 0) ||
-                ((carrent_active_functions[7] & current_settings_prt.ranguvannja_analog_registrator[7]) != 0) ||
-                ((carrent_active_functions[8] & current_settings_prt.ranguvannja_analog_registrator[8]) != 0)
+                (cur_active_sources[0] != 0) ||
+                (cur_active_sources[1] != 0) ||
+                (cur_active_sources[2] != 0) ||
+                (cur_active_sources[3] != 0) ||
+                (cur_active_sources[4] != 0) ||
+                (cur_active_sources[5] != 0) ||
+                (cur_active_sources[6] != 0) ||
+                (cur_active_sources[7] != 0) ||
+                (cur_active_sources[8] != 0)
                ) 
             {
               //Виставляємо помилку, що тимчасово аналоговий реєстратор є занятий (черз те, що завершується попередній запис)
@@ -9302,15 +9369,15 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
       //На даний момент певні внутрішні операції блокують роботу аналогового реєстратрора
       //Аналізуємо, чи стоїть умова запуску аналогового реєстратора
       if (
-          ((carrent_active_functions[0] & current_settings_prt.ranguvannja_analog_registrator[0]) != 0) ||
-          ((carrent_active_functions[1] & current_settings_prt.ranguvannja_analog_registrator[1]) != 0) ||
-          ((carrent_active_functions[2] & current_settings_prt.ranguvannja_analog_registrator[2]) != 0) ||
-          ((carrent_active_functions[3] & current_settings_prt.ranguvannja_analog_registrator[3]) != 0) ||
-          ((carrent_active_functions[4] & current_settings_prt.ranguvannja_analog_registrator[4]) != 0) ||
-          ((carrent_active_functions[5] & current_settings_prt.ranguvannja_analog_registrator[5]) != 0) ||
-          ((carrent_active_functions[6] & current_settings_prt.ranguvannja_analog_registrator[6]) != 0) ||
-          ((carrent_active_functions[7] & current_settings_prt.ranguvannja_analog_registrator[7]) != 0) ||
-          ((carrent_active_functions[8] & current_settings_prt.ranguvannja_analog_registrator[8]) != 0)
+          (cur_active_sources[0] != 0) ||
+          (cur_active_sources[1] != 0) ||
+          (cur_active_sources[2] != 0) ||
+          (cur_active_sources[3] != 0) ||
+          (cur_active_sources[4] != 0) ||
+          (cur_active_sources[5] != 0) ||
+          (cur_active_sources[6] != 0) ||
+          (cur_active_sources[7] != 0) ||
+          (cur_active_sources[8] != 0)
          )
       {
         //Виставляємо помилку, що тимчасово аналоговий реєстратор є занятий
@@ -9326,6 +9393,16 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
       break;
     }
   }
+
+  prev_active_sources[0] = cur_active_sources[0];
+  prev_active_sources[1] = cur_active_sources[1];
+  prev_active_sources[2] = cur_active_sources[2];
+  prev_active_sources[3] = cur_active_sources[3];
+  prev_active_sources[4] = cur_active_sources[4];
+  prev_active_sources[5] = cur_active_sources[5];
+  prev_active_sources[6] = cur_active_sources[6];
+  prev_active_sources[7] = cur_active_sources[7];
+  prev_active_sources[8] = cur_active_sources[8];
 }
 /*****************************************************/
 
@@ -9859,13 +9936,21 @@ do{
       information_about_restart_counter  &= (unsigned int)(~(1 << RS485_RECUEST));
       information_about_clean_energy     &= (unsigned int)(~(1 << RS485_RECUEST));
     }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    if ((reset_trigger_function_from_interface & (1 << LAN_RECUEST)) != 0)
+    {
+      for (unsigned int i = 0; i < N_BIG; i++) trigger_functions_LAN[i] = 0;
+      
+      information_about_restart_counter  &= (unsigned int)(~(1 << LAN_RECUEST));
+      information_about_clean_energy     &= (unsigned int)(~(1 << LAN_RECUEST));
+    }
+#endif
     
     //Помічаємо що ми виконали очистку по ВСІХ інтерфейсах
     reset_trigger_function_from_interface = 0;
   }
   /**************************/
 
-  unsigned int blocking_commands_from_DI = 0;
   unsigned int active_inputs_grupa_ustavok = 0;
   /**************************/
   //Опрацьовуємо ФК, дискретні входи і верхній рівень
@@ -10090,9 +10175,10 @@ do{
        )
       )
       ||  
-      (active_inputs !=0) || ((sLV.ch_amount_MmsSignal+sLV.ch_amount_GsSignal)>0)
+      (active_inputs !=0) 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
      /* якщо є активація виходів від Вх.GOOSE блоків і Вх.MMS блоків*/   
+      || ((sLV.ch_amount_MmsSignal+sLV.ch_amount_GsSignal)>0)
 #endif
      )   
   {
@@ -10224,47 +10310,15 @@ do{
     temp_value_for_activated_function[2] |= temp_value_for_activated_function_button_interface[2];
 
     //Активація з Д.Входу
-    unsigned int vvimk_VV_vid_DV = false;
-    unsigned int vymk_VV_vid_DV = false;
     if (active_inputs != 0)
     {
       for (unsigned int i = 0; i < NUMBER_INPUTS; i++)
       {
         if ((active_inputs & (1 << i)) != 0)
         {
-          if (
-              (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_VKL_VV )) ||
-              (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_OTKL_VV))
-             )   
-          {
-            unsigned int ranguvannja_inputs_tmp[N_SMALL] = {
-                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i  ],
-                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i+1],
-                                                            current_settings_prt.ranguvannja_inputs[N_SMALL*i+2]
-                                                           };
-
-            if (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_VKL_VV ))
-            {
-              vvimk_VV_vid_DV = true;
-              _CLEAR_BIT(ranguvannja_inputs_tmp, RANG_SMALL_VKL_VV);
-            }
-
-            if (_CHECK_SET_BIT((current_settings_prt.ranguvannja_inputs + N_SMALL*i), RANG_SMALL_OTKL_VV ))
-            {
-              vymk_VV_vid_DV = true;
-              _CLEAR_BIT(ranguvannja_inputs_tmp, RANG_SMALL_OTKL_VV);
-            }
-
-            temp_value_for_activated_function[0] |= ranguvannja_inputs_tmp[0];
-            temp_value_for_activated_function[1] |= ranguvannja_inputs_tmp[1];
-            temp_value_for_activated_function[2] |= ranguvannja_inputs_tmp[2];
-          }
-          else
-          {
-            temp_value_for_activated_function[0] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i  ];
-            temp_value_for_activated_function[1] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+1];
-            temp_value_for_activated_function[2] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+2];
-          }
+          temp_value_for_activated_function[0] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i  ];
+          temp_value_for_activated_function[1] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+1];
+          temp_value_for_activated_function[2] |= current_settings_prt.ranguvannja_inputs[N_SMALL*i+2];
         }
       }
     }
@@ -10363,7 +10417,38 @@ do{
       default: break;
       }
     }
-    
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    {
+      size_t word_n_small = RANG_SMALL_BLOCK_IN_GOOSE1 >> 5;
+      unsigned int maska_small = (unsigned int)(1 << (RANG_SMALL_BLOCK_IN_GOOSE1 & 0x1f));
+      
+      size_t word_n_full = RANG_BLOCK_IN_GOOSE1 >> 5;
+      unsigned int maska_full = (unsigned int)(1 << (RANG_BLOCK_IN_GOOSE1 & 0x1f));
+
+      for (size_t i = 0; i < (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN); i++)
+      {
+        if (temp_value_for_activated_function[word_n_small] & maska_small) 
+        {
+          active_functions[word_n_full] |= maska_full;
+        }
+        
+        maska_small <<= 1;
+        if (maska_small == 0)
+        {
+          word_n_small++;
+          maska_small = 1;
+        }
+        
+        maska_full <<= 1;
+        if (maska_full == 0)
+        {
+          word_n_full++;
+          maska_full = 1;
+        }
+      }
+    }
+#endif    
       
     //Загальні функції (без ОФ-ій і функцій, які можуть блокуватися у місцевому управлінні)
     active_functions[RANG_BLOCK_VKL_VV                      >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_VKL_VV                     ) != 0) << (RANG_BLOCK_VKL_VV                      & 0x1f);
@@ -10381,36 +10466,11 @@ do{
     active_inputs_grupa_ustavok |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_3_GRUPA_USTAVOK    ) != 0) << (RANG_SMALL_3_GRUPA_USTAVOK - RANG_SMALL_1_GRUPA_USTAVOK);
     active_inputs_grupa_ustavok |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_4_GRUPA_USTAVOK    ) != 0) << (RANG_SMALL_4_GRUPA_USTAVOK - RANG_SMALL_1_GRUPA_USTAVOK);
       
-    //Загальні функції (які блокувються у місцевому управлінні)
     //Ввімкнення ВВ
     active_functions[RANG_VKL_VV >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_VKL_VV) != 0) << (RANG_VKL_VV & 0x1f);
-    if (vvimk_VV_vid_DV)
-    {
-      if (
-          (_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE )) &&
-          (current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE)
-         ) 
-      {
-        //Умова блокування командви "Ввімкнення ВВ" від ДВх.
-        blocking_commands_from_DI |= CTR_EXTRA_SETTINGS_1_BLK_ON_CB_MISCEVE;
-      }
-      else _SET_BIT(active_functions, RANG_VKL_VV);
-    }
 
     //Вимкнення ВВ
     active_functions[RANG_OTKL_VV >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_OTKL_VV) != 0) << (RANG_OTKL_VV & 0x1f);
-    if (vymk_VV_vid_DV)
-    {
-      if (
-          (_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE )) &&
-          (current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_BLK_OFF_CB_MISCEVE)
-         ) 
-      {
-        //Умова блокування командви "Вимкнення ВВ" від ДВх.
-        blocking_commands_from_DI |= CTR_EXTRA_SETTINGS_1_BLK_OFF_CB_MISCEVE;
-      }
-      else _SET_BIT(active_functions, RANG_OTKL_VV);
-    }
 
     //МТЗ
     active_functions[RANG_BLOCK_MTZ1     >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_MTZ1    ) != 0) << (RANG_BLOCK_MTZ1     & 0x1f);
@@ -10677,11 +10737,7 @@ do{
     /**************************/
     //Сигнал "Несправность Аварийная"
     /**************************/
-#if (N_DIAGN == 3)
-    const unsigned int maska_avar_error[N_DIAGN] = {MASKA_AVAR_ERROR_0, MASKA_AVAR_ERROR_1, MASKA_AVAR_ERROR_2};
-#elif (N_DIAGN == 4)
     const unsigned int maska_avar_error[N_DIAGN] = {MASKA_AVAR_ERROR_0, MASKA_AVAR_ERROR_1, MASKA_AVAR_ERROR_2, MASKA_AVAR_ERROR_3};
-#endif
 
     not_null = false;
     for (size_t i = 0; i < N_DIAGN; i++) 
@@ -10691,7 +10747,8 @@ do{
     }
     if (not_null)
     {
-//      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+//       #warning "No Avar Error"
     }
     else
     {
@@ -11024,10 +11081,11 @@ do{
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)    \
       )   
       //Вимикаємо можливий режим тестування оптоканалу
-      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
+      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
       if (zdz_ovd_diagnostyka)
       {
         if (zdz_ovd_diagnostyka & (1 << 0)) _SET_BIT(clear_diagnostyka, TEST_OVD1);
@@ -11443,6 +11501,9 @@ do{
     unsigned int temp_data = active_functions[i];
     trigger_functions_USB[i]   |= temp_data;
     trigger_functions_RS485[i] |= temp_data;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    trigger_functions_LAN[i]   |= temp_data;
+#endif
   }
 
   copying_active_functions = 0; //Помічаємо, що обновлення значення активних функцій завершене
@@ -11598,6 +11659,13 @@ do{
   state_outputs_raw = ( state_outputs & ((unsigned int)(~output_signal_modif)) ) | ((state_outputs & output_signal_modif)*output_timer_prt_signal_output_mode_2);
   
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = state_outputs_raw;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (state_outputs_raw >> 16)<< 8;
+#endif
+
   TIM_PRT_write_tick = TIM2->CNT;
   /**************************/
 
@@ -11832,12 +11900,88 @@ void TIM2_IRQHandler(void)
     TIM2->SR = (uint16_t)((~(uint32_t)TIM_IT_CC1) & 0xffff);
     uint32_t current_tick = TIM2->CCR1;
     
+    /*************************************
+    Управління чсом у UNIX-форматі
+    *************************************/
+    ++clk_count;
+
+    if ( ++time_ms >= 1000) 
+    {
+      time_ms = 0;
+      time_dat++;
+    }
+      
+    if ((save_time_dat_h == 3) || (save_time_dat_l == 3))
+    {
+      //Процес запису нового часу
+      if (save_time_dat_l == 3)
+      {
+        time_ms = time_ms_save_l;
+        time_dat = time_dat_save_l;
+        
+        save_time_dat_l = 2;
+      }
+      if (save_time_dat_h == 3)
+      {
+        time_ms = time_ms_save_h;
+        time_dat = time_dat_save_h;
+        
+        save_time_dat_h = 2;
+      }
+      
+      if (copying_time_to_RTC == 1) copying_time_to_RTC = 0;
+    }
+    else 
+    {
+      //Перевірка чи не потрібно забрати час з RTC
+      if (copying_time_to_RTC == 1)
+      {
+        int32_t diff_ms = time_ms - time_ms_RTC;
+        time_t diff_s = time_dat - time_dat_RTC;
+        if (diff_ms < 0) 
+        {
+          diff_ms += 1000;
+          --diff_s;
+        }
+        if (llabs(diff_s*1000 + diff_ms) > 2000)
+        {
+          time_ms = time_ms_RTC;
+          time_dat = time_dat_RTC;
+        }
+        copying_time_to_RTC = 0;
+      }
+    }
+    
+    
+    if (!copying_time_dat)
+    {
+      time_ms_copy = time_ms;
+      time_dat_copy = time_dat;
+    }
+    /*************************************/
+
 #if (MODYFIKACIA_VERSII_PZ >= 10)
     /***********************************************************/
     //Прийом інформації з комунікаційної плати
     /***********************************************************/
-    //Перевіряємо чи прийшли дані по каналу CANAL1_MO з комунікаційної плати
-    GPIO_CANAL1_MO_Out1->BSRRL = GPIO_PIN_CANAL1_MO_Out1; //Переводимо пін canal1_Out1 в стан "1"
+    if (restart_KP_irq == 0)
+    {
+      //Перевіряємо чи прийшли дані по каналу CANAL1_MO з комунікаційної плати
+      GPIO_CANAL1_MO_Out1->BSRRL = GPIO_PIN_CANAL1_MO_Out1; //Переводимо пін canal1_Out1 в стан "1"
+    }
+    else
+    {
+      _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+      
+      if (--restart_KP_irq != 0) GPIO_KP_SOFT_RESET->BSRRL = GPIO_PIN_KP_SOFT_RESET; //Подаємо команду на перезапуск комунікаціної плати
+      else 
+      {
+        GPIO_KP_SOFT_RESET->BSRRH = GPIO_PIN_KP_SOFT_RESET; //Знімаємо команду на перезапуск комунікаціної плати
+        
+        queue_mo_irq = 0;
+        IEC_board_uncall = 200;
+      }
+    }
     start_receive_data_via_CANAL1_MO();
     Canal1 = true;
     GPIO_CANAL1_MO_Out1->BSRRH = GPIO_PIN_CANAL1_MO_Out1; //Переводимо пін canal1_Out1 в стан "0"
@@ -11884,6 +12028,9 @@ void TIM2_IRQHandler(void)
                                      TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR      |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB                         |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485                       |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN                         |
+#endif  
                                      TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU
                                     )
          ) == 0
@@ -11918,6 +12065,9 @@ void TIM2_IRQHandler(void)
                                      TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR | 
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                    |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                  |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                    |
+#endif  
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU
                                     )
          ) == 0
@@ -11938,6 +12088,9 @@ void TIM2_IRQHandler(void)
       number_record_of_dr_for_menu  = 0xffff;
       number_record_of_dr_for_USB   = 0xffff;
       number_record_of_dr_for_RS485 = 0xffff;
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      number_record_of_dr_for_LAN = 0xffff;
+#endif  
 
       //Знімаємо команду очистки дискретного реєстратора
       clean_rejestrators &= (unsigned int)(~CLEAN_DR);
@@ -11962,7 +12115,16 @@ void TIM2_IRQHandler(void)
     else TIM_PRT_delta_write_read = TIM_PRT_read_tick - TIM_PRT_write_tick;
     if (TIM_PRT_delta_write_read > (TIM2_MIN_PERIOD_WRITE_READ + 1))
     {
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
+      unsigned int control_state_outputs =    ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)     ))) & 0xffff)
+                                           | (((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30          ) >> 8))) & 0xf   ) << 16);
+#else
       unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)))) & 0xffff);
+#endif
+     
 
       static uint32_t error_rele[NUMBER_OUTPUTS];
       if (control_state_outputs != state_outputs_raw) 
@@ -12021,8 +12183,11 @@ void TIM2_IRQHandler(void)
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
     )
       if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
       else if (board_register_diff & 0x04)
@@ -12038,17 +12203,27 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
-       (MODYFIKACIA_VERSII_PZ == 10)    \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 10)||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
     if ((board_register_tmp & 0x010) != 0x10) 
+      
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
       _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+      _SET_BIT(set_diagnostyka, ERROR_BDVV6_FIX);
 #else
       _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
 #endif
+      
       else if (board_register_diff & 0x10)
       {
 #if (                                   \
@@ -12056,17 +12231,27 @@ void TIM2_IRQHandler(void)
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
         _SET_BIT(clear_diagnostyka, ERROR_BDV_DZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+        _SET_BIT(clear_diagnostyka, ERROR_BDVV6_FIX);
 #else
         _SET_BIT(clear_diagnostyka, ERROR_BDZ_FIX);
 #endif
 
-      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x14)  _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_CTLR);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 15)    \
+      )   
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x12)  _SET_BIT(set_diagnostyka, ERROR_BDVV6_CTLR);
 #else
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
 #endif
@@ -12394,6 +12579,7 @@ void setpoints_selecting(unsigned int *p_active_functions, unsigned int act_inp_
 }
 /*****************************************************/
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
 void proc_Gs_blk_out(void* pv,unsigned long lCtrGsSrc,short* p_arrOrdNumsGsSignal ){
 
     // ----------------    -------------------------       
@@ -12476,4 +12662,5 @@ void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_func
     Output_Out_LAN_block[IdxBlk] = l_O;
 }
 
+#endif
 /*****************************************************/
