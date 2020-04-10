@@ -10040,7 +10040,7 @@ do{
                 //Check State Inputs
                 lV = arrMmsBlk[i].arCh[2];//Outs
                 lV &= ~((unsigned long)(Input_In_MMS_block[i]));//Clear all changeble bits
-                lV |= Input_In_GOOSE_block[i]&Input_ctrl_In_MMS_block[i];//Set ones only
+                lV |= Input_In_MMS_block[i]&Input_ctrl_In_MMS_block[i];//Set ones only
                 //if(noerror)
                     arrMmsBlk[i].arCh[2] = lV;//
 
