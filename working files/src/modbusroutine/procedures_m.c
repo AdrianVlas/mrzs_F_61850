@@ -293,7 +293,7 @@ int superReader20(int offsetRegister, int fileNumber, int recordNumber, int reco
       {
       //Данные аналогового регистратора 
       if (fileNumber == 0) break;
-      if (fileNumber > 5) recordNumber += 10000;
+      if (fileNumber > 5) recordNumber += (fileNumber - 5)*10000;
       return dataAnalogRegistrator(offsetRegister, recordNumber, recordLen);
       }//default
     }//switch
