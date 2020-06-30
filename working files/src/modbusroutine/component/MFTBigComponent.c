@@ -177,6 +177,6 @@ int privateMFTBigGetReg2(int adrReg)
 
 int validMFTN_BIGACMD(unsigned short dataReg, int actControl)
 {
- return validBazaN_BIGACMD(dataReg, actControl+1);
+ return validBazaN_BIGACMD(dataReg, actControl+(1+SOURCEMARKER_MFT));
 }//validOFN_BIGACMD(unsigned short dataReg, int actControl)
 
