@@ -1098,16 +1098,16 @@ int getUSTBigModbusRegister(int adrReg)
     )                                   
     if(offset==MARKER1048)
     {
-      return (*editValue) & (uint32_t)0xffff;
+      return (~(*editValue)) & (uint32_t)0xffff;
     }
     else
     {
-      return ((*editValue)>>16)  & (uint32_t)0xffff;
+      return ((~(*editValue))>>16)  & (uint32_t)0xffff;
     }//else
 #else
     if(offset==MARKER1048)
     {
-      return (*editValue) & (uint32_t)0xffff;
+      return (~(*editValue)) & (uint32_t)0xffff;
     }
     else
     {
@@ -1288,13 +1288,13 @@ int postUSTBigWriteAction(void)
       if(offset==MARKER1048)
       {
         (*editValue) &= (uint32_t)~0xffff;
-        (*editValue) |= (value & 0xffff);
+        (*editValue) |= ((~value) & 0xffff);
         goto m1;
       }
       else
       {
         (*editValue)  &= (uint32_t)~(0xffff<<16);
-        (*editValue)  |= ((value & 0xffff)<<16);//
+        (*editValue)  |= (((~value) & 0xffff)<<16);//
         goto m1;
       }//else
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
