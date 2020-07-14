@@ -546,8 +546,9 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     if(regUst<SETPOINT_CHAPV2_F_RAB_MIN/10 || regUst>SETPOINT_CHAPV2_F_RAB_MAX/10) diapazon=0;
     break;
   case 199:
+    (*multer) = 100;
     (*editValue) = (uint32_t*)&edition_settings.setpoint_achr_chapv_uf[gruppa];
-    if(regUst<SETPOINT_ACHR_CHAPV_UF_MIN/10 || regUst>SETPOINT_ACHR_CHAPV_UF_MAX/10) diapazon=0;
+    if(regUst<SETPOINT_ACHR_CHAPV_UF_MIN/100 || regUst>SETPOINT_ACHR_CHAPV_UF_MAX/100) diapazon=0;
     break;
   case 200:
     (*editValue) = (uint32_t*)&edition_settings.timeout_achr_1[gruppa];
