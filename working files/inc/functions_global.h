@@ -205,7 +205,7 @@ unsigned int count_number_set_bit(unsigned int*, unsigned int);
 void input_scan(void);
 void clocking_global_timers(void);
 void main_protection(void);
-void df_handler(unsigned int*, unsigned int*);
+void df_handler(unsigned int*);
 void dt_handler(unsigned int*);
 void d_and_handler(unsigned int*);
 void d_or_handler(unsigned int*);

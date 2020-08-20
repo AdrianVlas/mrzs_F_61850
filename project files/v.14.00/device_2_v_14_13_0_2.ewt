@@ -1937,9 +1937,6 @@
             <group>
                 <name>protection</name>
                 <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_df.h</name>
-                </file>
-                <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_global_timers.h</name>
                 </file>
                 <file>

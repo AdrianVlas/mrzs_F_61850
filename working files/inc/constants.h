@@ -71,7 +71,6 @@
 
 #include "const_koef_povernennja.h"
 #include "const_global_timers.h"
-#include "const_df.h"
 
 #include "const_eeprom.h"
 #include "const_i2c.h"

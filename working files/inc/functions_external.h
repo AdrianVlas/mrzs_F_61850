@@ -207,7 +207,7 @@ extern void clear_bit(unsigned int*, unsigned int);
 extern void input_scan(void);
 extern void clocking_global_timers(void);
 extern void main_protection(void);
-extern void df_handler(unsigned int*, unsigned int*);
+extern void df_handler(unsigned int*);
 extern void dt_handler(unsigned int*);
 extern void d_and_handler(unsigned int*);
 extern void d_or_handler(unsigned int*);

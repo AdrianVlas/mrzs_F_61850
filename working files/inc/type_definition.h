@@ -83,8 +83,8 @@ typedef struct
   unsigned int type_df;                                                 //Тип опреділювальної функції
                                                                         //0 - Пряма
                                                                         //1 - Зворотня
-  unsigned int timeout_pause_df[NUMBER_DEFINED_FUNCTIONS];              //Час затримки спрацюваня опреділювальної функції
-  unsigned int timeout_work_df[NUMBER_DEFINED_FUNCTIONS];               //Час роботи опреділювальної функції
+  int timeout_pause_df[NUMBER_DEFINED_FUNCTIONS];                       //Час затримки спрацюваня опреділювальної функції
+  int timeout_work_df[NUMBER_DEFINED_FUNCTIONS];                        //Час роботи опреділювальної функції
   unsigned int ranguvannja_df_source_plus[N_BIG*NUMBER_DEFINED_FUNCTIONS];  //Ранжування прямих команд опреділювальниї функцій
   unsigned int ranguvannja_df_source_minus[N_BIG*NUMBER_DEFINED_FUNCTIONS]; //Ранжування інверсних команд опреділювальниї функцій
   unsigned int ranguvannja_df_source_blk[N_BIG*NUMBER_DEFINED_FUNCTIONS];   //Ранжування команд блокування опреділювальниї функцій
