@@ -421,12 +421,12 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
       }
 
       unsigned int porig_Uxy;
-      if (Uxy_bilshe_porogu[i] == 0) porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_SECTOR_BLK/100;
+      if (Uxy_bilshe_porogu[i] == 0) porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_U_SECTOR_BLK/100;
       else porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
       unsigned int Uxy_bilshe_porogu_tmp = Uxy_bilshe_porogu[i] = (measurement[index_U] >= porig_Uxy);
       
       unsigned int porig_Ix;
-      if (Ix_bilshe_porogu[i] == 0) porig_Ix = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_SECTOR_BLK/100;
+      if (Ix_bilshe_porogu[i] == 0) porig_Ix = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_I_SECTOR_BLK/100;
       else porig_Ix = PORIG_CHUTLYVOSTI_CURRENT;
       unsigned int Ix_bilshe_porogu_tmp = Ix_bilshe_porogu[i]  = (measurement[index_I] >= porig_Ix );
 
@@ -616,12 +616,12 @@ inline void directional_tznp(int ortogonal_local_calc[], unsigned int number_gro
     За розрахунком описаним при розрахунку діючих значень наші ортогональні є у ворматі (15 біт + знак) = 16-розряжне число
     */
     unsigned int porig_U;
-    if (TZNP_3U0_bilshe_porogu == 0) porig_U = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_SECTOR_BLK/100;
+    if (TZNP_3U0_bilshe_porogu == 0) porig_U = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_U_SECTOR_BLK/100;
     else porig_U = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
     unsigned int U_bilshe_porogu_tmp = TZNP_3U0_bilshe_porogu = (measurement[IM_3U0] >= porig_U);
       
     unsigned int porig_I;
-    if (TZNP_3I0_r_bilshe_porogu == 0) porig_I = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_SECTOR_BLK/100;
+    if (TZNP_3I0_r_bilshe_porogu == 0) porig_I = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_I_SECTOR_BLK/100;
     else porig_I = PORIG_CHUTLYVOSTI_CURRENT;
     unsigned int I_bilshe_porogu_tmp = TZNP_3I0_r_bilshe_porogu  = (measurement[IM_3I0_r] >= porig_I);
 
@@ -3141,13 +3141,13 @@ inline void zz_handler(unsigned int *p_active_functions, unsigned int number_gro
   
   *********************************/
   unsigned int porig_3I0;
-  if (Nzz_3I0_bilshe_porogu == 0) porig_3I0 = PORIG_CHUTLYVOSTI_3I0*KOEF_POVERNENNJA_SECTOR_BLK/100;
+  if (Nzz_3I0_bilshe_porogu == 0) porig_3I0 = PORIG_CHUTLYVOSTI_3I0*KOEF_POVERNENNJA_3I0_SECTOR_BLK/100;
   else porig_3I0 = PORIG_CHUTLYVOSTI_3I0;
   unsigned int Nzz_3I0_bilshe_porogu_tmp = Nzz_3I0_bilshe_porogu = (measurement[IM_3I0] >= porig_3I0);
 
   unsigned int porig_3U0;
-  if (Nzz_3U0_bilshe_porogu == 0) porig_3U0 = PORIG_CHUTLYVOSTI_3U0*KOEF_POVERNENNJA_SECTOR_BLK/100;
-  else porig_3U0 = PORIG_CHUTLYVOSTI_3U0;
+  if (Nzz_3U0_bilshe_porogu == 0) porig_3U0 = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_U_SECTOR_BLK/100;
+  else porig_3U0 = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
   unsigned int Nzz_3U0_bilshe_porogu_tmp = Nzz_3U0_bilshe_porogu = (measurement[IM_3U0] >= porig_3U0);
       
   if (
