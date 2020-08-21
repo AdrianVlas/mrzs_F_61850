@@ -381,7 +381,6 @@ void global_vareiables_installation(void)
   //Modbus-RTU
   type_of_settings_changed = 0;
   password_ustuvannja = 0;
-  global_component_installation();  
 }
 /**************************************/
 
