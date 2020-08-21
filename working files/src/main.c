@@ -208,6 +208,12 @@ inline void periodical_operations(void)
   /*******************/
 #endif
   
+  if (watchdog_l2) 
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(88);
+  }
+  
   /*******************/
   //Контроль достовірності важливих даних
   /*******************/
@@ -387,11 +393,6 @@ inline void periodical_operations(void)
     periodical_tasks_TEST_RESURS_LOCK = false;
   }
 
-  if (watchdog_l2) 
-  {
-    //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(88);
-  }
   /*******************/
 
   //Підрахунок вільного ресуру процесор-програма
