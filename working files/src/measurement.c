@@ -1333,8 +1333,6 @@ void SPI_ADC_IRQHandler(void)
         {
           int data_tmp = data_for_oscylograph[tail_data_for_oscylograph_tmp].data[i];
           
-//          //Цифровий осцилограф
-//          current_data[index_array_of_current_data_value++] = data_tmp;
           
           if((prescaler_ar & MASKA_BIT_FOR_PRESCALER) == 0)
           {
@@ -1343,8 +1341,6 @@ void SPI_ADC_IRQHandler(void)
             AR_WRITE(index_array_ar_current, data_tmp);
           }
         }
-        //Індекс цифрового осцилографа
-        if (index_array_of_current_data_value >= (NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT)) index_array_of_current_data_value = 0;/*Умова мал аб бути ==, але щоб перестахуватися на невизначену помилку я поставив >=*/
 
         //Масив дискретних сигналів для аналогового реєстратора
         unsigned int *label_to_active_functions_source = data_for_oscylograph[tail_data_for_oscylograph_tmp].active_functions;

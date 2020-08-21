@@ -58,9 +58,6 @@ void global_vareiables_installation(void)
 //    vref_adc[i] = VREF_NORMAL_VALUE;
   }
   
-//  for(unsigned int i=0; i<(NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT); i++)
-//    current_data[i] = 0;
-  
 //  for(unsigned int i=0; i<NUMBER_POINT; i++)
 //  {
 //    sqr_current_data_3I0[i] = 0;

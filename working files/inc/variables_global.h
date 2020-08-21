@@ -81,9 +81,7 @@ unsigned int index_array_of_one_value_fourier/* = 0*/;
 
 EXTENDED_SAMPLE ADCs_data_raw[NUMBER_ANALOG_CANALES];
 int ADCs_data[NUMBER_ANALOG_CANALES];
-//int current_data[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT];
 unsigned long long sqr_current_data_3I0[NUMBER_POINT];
-unsigned int index_array_of_current_data_value/* = 0*/;
 
 unsigned int changed_ustuvannja = CHANGED_ETAP_NONE; 
 unsigned char crc_ustuvannja;
@@ -933,16 +931,6 @@ int last_number_time_sample_for_LAN;// -1 - заголовок запису ан.р.; 0 - перший ч
 #endif
 
 //MODBUS-RTU
-//unsigned int registers_address_read =0x20000000;
-//unsigned int registers_address_write =0x20000000;
-//unsigned int data_write_to_memory;
-//unsigned int number_registers_read/* = 0*/;
-//unsigned short int registers_values[64]/* @ "variables_RAM1"*/;
-//unsigned int action_is_continued/* = false*/;
-//unsigned int part_transmit_carrent_data/* = 0*/;
-//unsigned int command_to_receive_current_data/* = false*/;
-//int current_data_transmit[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT] /*@ "variables_RAM1"*/; 
-//volatile unsigned int wait_of_receiving_current_data/*  = false*/; 
 SRAM1 unsigned int password_set_USB, password_set_RS485;
 SRAM1 unsigned int password_changed;
 SRAM1 unsigned int password_ustuvannja/* = 0*/;

@@ -394,27 +394,6 @@ inline void periodical_operations(void)
   }
   /*******************/
 
-//  /*******************/
-//  //Копіювання даних миттєвого масиву для передавання у інші системи
-//  /*******************/
-//  if(command_to_receive_current_data == true)
-//  {
-//    unsigned int i, index;
-//    //Виставляємо очікування останнього виходу з вимірювальної системи для синохронізації подій
-//    wait_of_receiving_current_data  = true;
-//    while(wait_of_receiving_current_data  == true);
-//    index = index_array_of_current_data_value;
-//    for (i = 0; i < (NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT); i++)
-//    {
-//      current_data_transmit[i] = current_data[index++];
-//      if (index == (NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT)) index = 0;
-//    }
-//    //Сигналізуємо про завершення процесу копіювання
-//    action_is_continued = false;
-//    command_to_receive_current_data = false;
-//  }
-//  /*******************/
-    
   //Підрахунок вільного ресуру процесор-програма
   if(resurs_temp < 0xfffffffe) resurs_temp++;
 

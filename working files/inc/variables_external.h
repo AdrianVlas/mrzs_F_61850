@@ -41,9 +41,7 @@ extern unsigned int index_array_of_one_value_fourier;
 
 extern EXTENDED_SAMPLE ADCs_data_raw[NUMBER_ANALOG_CANALES];
 extern int ADCs_data[NUMBER_ANALOG_CANALES];
-//extern int current_data[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT];
 extern unsigned long long sqr_current_data_3I0[NUMBER_POINT];
-extern unsigned int index_array_of_current_data_value;
 
 extern unsigned int changed_ustuvannja; 
 extern unsigned char crc_ustuvannja;
@@ -540,16 +538,6 @@ extern int last_number_time_sample_for_LAN;
 #endif
 
 //MODBUS-RTU
-//extern unsigned int registers_address_read;
-//extern unsigned int registers_address_write;
-//extern unsigned int data_write_to_memory;
-//extern unsigned int number_registers_read;
-//extern unsigned short int registers_values[64] /*@ "variables_RAM1"*/;
-//extern unsigned int action_is_continued;
-//extern unsigned int part_transmit_carrent_data;
-//extern unsigned int command_to_receive_current_data;
-//extern int current_data_transmit[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT] /*@ "variables_RAM1"*/;
-//extern volatile unsigned int wait_of_receiving_current_data; 
 extern unsigned int password_set_USB, password_set_RS485;
 extern unsigned int password_changed;
 extern unsigned int password_ustuvannja;

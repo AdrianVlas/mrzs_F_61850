@@ -32,8 +32,6 @@
 #define VAGA_NUMBER_POINT                5
 #define NUMBER_POINT                     (1 << VAGA_NUMBER_POINT)
 
-#define NUMBER_PERIOD_TRANSMIT           10
-
 /*
 Коефіцієнт, який переводить число з АЦП у мА
           K*2500
