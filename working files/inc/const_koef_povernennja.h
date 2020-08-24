@@ -23,6 +23,7 @@
 #define KOEF_MIN_UMIN                   250
 
 #define I_NOM                           5000
+#define U_F_NOM                         57735
 #define U_LINEAR_NOM                    100000
 
 #define KOEF_1_2_I                      1.2

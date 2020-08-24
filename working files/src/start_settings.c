@@ -374,8 +374,6 @@ void global_vareiables_installation(void)
   timeout_mtz_po_napruzi[MTZ_LEVEL3] = current_settings_prt.timeout_mtz_3_po_napruzi;
   timeout_mtz_po_napruzi[MTZ_LEVEL4] = current_settings_prt.timeout_mtz_4_po_napruzi;
   
-  i_nom_const = I_NOM * KOEF_1_2_I;
-  u_linear_nom_const = U_LINEAR_NOM * KOEF_0_2_U;
   /**************************/
   
   //Modbus-RTU

@@ -279,6 +279,7 @@ extern unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
 extern unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
 extern unsigned int mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH];
 extern unsigned int i_nom_const;
+extern unsigned int const u_f_nom_const;
 extern unsigned int u_linear_nom_const;
 extern unsigned int * setpoint_mtz[NUMBER_LEVEL_MTZ];
 extern unsigned int * setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ];
