@@ -9,7 +9,7 @@ void make_ekran_grupa_ustavok()
   {
     " Группа уставок ",
     " Група уставок  ",
-    " Pick-up Set    ",
+    "SetPoints Groups",
     " Группа уставок "
   };
   int index_language = index_language_in_array(current_settings.language);

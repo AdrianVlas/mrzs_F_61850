@@ -161,10 +161,10 @@
   "   Блок.АЧР2    ",                   \
   "Пуск ПРВВ від ДВ",                   \
   " Блок.ЗЗП(КОФ)  ",                   \
-  "  Блок.ЗНмин1   ",                   \
-  "  Пуск ЗНмин1   ",                   \
-  "  Блок.ЗНмин2   ",                   \
-  "  Пуск ЗНмин2   ",                   \
+  "  Блок.ЗНмін1   ",                   \
+  "  Пуск ЗНмін1   ",                   \
+  "  Блок.ЗНмін2   ",                   \
+  "  Пуск ЗНмін2   ",                   \
   "  Блок.ЗНмакс1  ",                   \
   "  Блок.ЗНмакс2  ",                   \
   "    Блок.УЗx    ",                   \
@@ -186,64 +186,64 @@
   " Ск.В-триґера4  "
 
 #define NAME_RANG_SMALL_EN         \
-  " ON CB Blocking ",                   \
-  "Indication Reset",                   \
+  "  CB Close Blk  ",                   \
+  "   LED Reset    ",                   \
   "  Relay Reset   ",                   \
   "  Local/Remote  ",                   \
-  "  State of CB   ",                   \
-  "Откл.от вн.защит",                   \
-  "     On CB      ",                   \
-  " On CB Control  ",                   \
-  "     Off CB     ",                   \
-  " Off CB Control ",                   \
-  " Pick-up Set 1  ",                   \
-  " Pick-up Set 2  ",                   \
-  " Pick-up Set 3  ",                   \
-  " Pick-up Set 4  ",                   \
-  " С.блк.Гот.к ТУ ",                   \
+  "    CB State    ",                   \
+  " Ext CB Open Cmd",                   \
+  "  Close CB Cmd  ",                   \
+  " CB Op Circ Ctl ",                   \
+  "  Open CB Cmd   ",                   \
+  " CB Cl Circ Ctl ",                   \
+  " SetPoints gr-1 ",                   \
+  " SetPoints gr-2 ",                   \
+  " SetPoints gr-3 ",                   \
+  " SetPoints gr-4 ",                   \
+  "Rem Ctr R Bl Res",                   \
   "  Blc.of OCP1   ",                   \
   "  Blc.of OCP2   ",                   \
-  "  OCP2 Acc.Blc. ",                   \
+  "  OCP2 Acc Blk  ",                   \
   "  Blc.of OCP3   ",                   \
   "  Blc.of OCP4   ",                   \
-  "OCP 0.4kV 1 Blc.",                   \
-  "OCP 0.4kV 2 Blc.",                   \
-  "OCP 0.4kV 2 Ac.B",                   \
+  "   LVOCP1 Blk   ",                   \
+  "   LVOCP2 Blk   ",                   \
+  " LVOCP2 acc Blk ",                   \
   "    Блок.ЗДЗ    ",                   \
-  " Пуск ЗДЗ от ДВ ",                   \
-  "    Блок.НЗЗ    ",                   \
-  "   Блок.ТЗНП1   ",                   \
-  "   Блок.ТЗНП2   ",                   \
-  "   Блок.ТЗНП3   ",                   \
+  "AFD via BI Start",                   \
+  "   SDEFP Blk    ",                   \
+  "   DEFP1 Blk    ",                   \
+  "   DEFP2 Blk    ",                   \
+  "   DEFP3 Blk    ",                   \
   " Стат.блок.АПВ  ",                   \
-  " АЧР/ЧАПВ от ДВ ",                   \
-  "   Блок.АЧР1    ",                   \
-  "   Блок.АЧР2    ",                   \
-  " CBFP Start f.DI",                   \
+  " LFС/FAR vBI St ",                   \
+  "    LFС1 Blk    ",                   \
+  "    LFС2 Blk    ",                   \
+  " CBF vBI Start  ",                   \
   "  Blc.of NPSP   ",                   \
-  "   Блок.Umin1   ",                   \
-  "   Пуск Umin1   ",                   \
-  "   Блок.Umin2   ",                   \
-  "   Пуск Umin2   ",                   \
-  "   Блок.Umax1   ",                   \
-  "   Блок.Umax2   ",                   \
+  "    UVP1 Blk    ",                   \
+  " UVP1 vBI Start ",                   \
+  "    UVP2 Blk    ",                   \
+  " UVP2 vBI Start ",                   \
+  "    OVP1 Blk    ",                   \
+  "    OVP2 Blk    ",                   \
   "   Blc.of UPx   ",                   \
-  "    UDF1 In     ",                   \
-  "    UDF2 In     ",                   \
-  "    UDF3 In     ",                   \
-  "    UDF4 In     ",                   \
-  "    UDF5 In     ",                   \
-  "    UDF6 In     ",                   \
-  "    UDF7 In     ",                   \
-  "    UDF8 In     ",                   \
-  "UD Flip-Flop1 S.",                   \
-  "UD Flip-Flop1 R.",                   \
-  "UD Flip-Flop2 S.",                   \
-  "UD Flip-Flop2 R.",                   \
-  "UD Flip-Flop3 S.",                   \
-  "UD Flip-Flop3 R.",                   \
-  "UD Flip-Flop4 S.",                   \
-  "UD Flip-Flop4 R."
+  "  UD-Func 1 In  ",                   \
+  "  UD-Func 2 In  ",                   \
+  "  UD-Func 3 In  ",                   \
+  "  UD-Func 4 In  ",                   \
+  "  UD-Func 5 In  ",                   \
+  "  UD-Func 6 In  ",                   \
+  "  UD-Func 7 In  ",                   \
+  "  UD-Func 8 In  ",                   \
+  "  UD-FF 1 Set   ",                   \
+  " UD-FF 1 Reset  ",                   \
+  "  UD-FF 2 Set   ",                   \
+  " UD-FF 2 Reset  ",                   \
+  "  UD-FF 3 Set   ",                   \
+  " UD-FF 3 Reset  ",                   \
+  "  UD-FF 4 Set   ",                   \
+  " UD-FF 4 Reset  "
         
 #define NAME_RANG_SMALL_KZ         \
   "  Блок.вкл.ВВ   ",                   \

@@ -26,8 +26,8 @@ void make_ekran_info()
 #endif
     },
     {
-      "   VER.of F/W   ",
-      "   VER.of MM    ",
+      "  Software ver  ",
+      "  Mem Card ver  ",
       " Serial number  "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,

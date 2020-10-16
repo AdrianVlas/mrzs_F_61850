@@ -48,7 +48,7 @@ void make_ekran_chose_setpoint_control_transformator(void)
       " Управління     "
     },
     {
-      " Pickups        ",
+      " Start Values   ",
       " Control        "
     },
     {
@@ -144,7 +144,7 @@ void make_ekran_transformator()
     {
       "  3I0 T Ratio   ",
       "    CT Ratio    ",
-      " CT 0.4kV Ratio ",
+      "   LVCT Ratio   ",
       "    VT Ratio    "
     },
     {
@@ -373,7 +373,7 @@ void make_ekran_transformator_control(void)
           {
             {"     Фазные     ", "    Линейные    "},
             {"     Фазні      ", "    Лінійні     "},
-            {"     Фазные     ", "    Линейные    "},
+            {"     Ph-N       ", "    Ph-Ph       "},
             {"     Фазные     ", "    Линейные    "}
           }
         };

@@ -28,13 +28,13 @@ void make_ekran_extended_logic(void)
       " Перед.функції  "
     },
     {
-      " General pickups",
-      " UD Functions   ",
-      " UD Flip-Flops  ",
-      " UD AND         ",
-      " UD OR          ",
-      " UD XOR         ",
-      " UD NOT         ",
+      " Gen Set Points ",
+      " UD-Functions   ",
+      " UD-FF          ",
+      " AND            ",
+      " OR             ",
+      " XOR            ",
+      " NOT            ",
       " Перед.функции  "
     },
     {

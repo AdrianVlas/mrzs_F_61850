@@ -18,8 +18,8 @@ void make_ekran_chose_settings_any_protection(void)
       " Управління     "
     },
     {
-      " Pickups        ",
-      " Delay          ",
+      " Start Values   ",
+      " Operate delay  ",
       " Control        "
     },
     {
@@ -84,10 +84,10 @@ void make_ekran_chose_settings_protection_with_groups(void)
       " Управління     "
     },
     {
-      " Set 1          ",
-      " Set 2          ",
-      " Set 3          ",
-      " Set 4          ",
+      " SetPoints Gr 1 ",
+      " SetPoints Gr 2 ",
+      " SetPoints Gr 3 ",
+      " SetPoints Gr 4 ",
       " Control        "
     },
     {
@@ -148,8 +148,8 @@ void make_ekran_chose_setpoint_and_timeout(void)
      " Витримки       "
     },
     {
-     " Pickups        ",
-     " Delay          "
+     " Start Values   ",
+     " Operate delay  "
     },
     {
      " Кyрулар        ",
@@ -204,7 +204,7 @@ void make_ekran_chose_timeout(void)
      " Витримки       "
     },
     {
-     " Delay          "
+     " Operate delay  "
     },
     {
      " Беріктік       "
@@ -313,7 +313,7 @@ void make_ekran_chose_timeout_control(void)
       " Управління     "
     },
     {
-      " Delay          ",
+      " Operate delay  ",
       " Control        "
     },
     {
@@ -362,23 +362,23 @@ void make_ekran_chose_settings_vmp(void)
   const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_VMP][MAX_COL_LCD] = 
   {
     {
-     " Вперёд         ",
-     " Назад          ",
+     " Прямой         ",
+     " Обратный       ",
      " Управление     "
     },
     {
-     " Вперед         ",
-     " Назад          ",
+     " Прямий         ",
+     " Зворотний      ",
      " Управління     "
     },
     {
-     " Вперёд         ",
-     " Назад          ",
+     " Forward        ",
+     " Backward       ",
      " Control        "
     },
     {
-     " Вперёд         ",
-     " Назад          ",
+     " Прямой         ",
+     " Обратный       ",
      " Беріктік       "
     }
   };
@@ -436,8 +436,8 @@ void make_ekran_chose_settings_switcher(void)
       " Ранжування     "
     },
     {
-      " Pickups        ",
-      " Delay          ",
+      " Start Values   ",
+      " Operate delay  ",
       " Control        ",
       " Ранжирование   "
     },

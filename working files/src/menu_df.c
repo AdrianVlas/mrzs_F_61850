@@ -18,9 +18,9 @@ void make_ekran_chose_settings_df(void)
       " Тип функції    "
     },
     {
-      " Sources        ",
+      " Inputs         ",
       " Timers         ",
-      " Type of func.  "
+      " Func Type      "
     },
     {
       " Источники      ",
@@ -71,7 +71,7 @@ void make_ekran_type_df(void)
   {
     "  О-функция     ",
     "  В-функція     ",
-    " UD Function    ",
+    " UD-Function    ",
     "  О-функция     "
   };
   const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {12, 12, 13, 12};
@@ -127,7 +127,7 @@ void make_ekran_type_df(void)
         {
           {"     ПРЯМАЯ     ", "    ОБРАТНАЯ    "},
           {"     ПРЯМА      ", "    ЗВОРОТНА    "},
-          {"    FORWARD     ", "    REVERSE     "},
+          {"    Forward     ", "    Reverse     "},
           {"     ПРЯМАЯ     ", "    ОБРАТНАЯ    "}
         };
         const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
@@ -312,9 +312,9 @@ void make_ekran_list_type_source_df(void)
       " Джерела блок.  ",
     },
     {
-      " Direct Sources ",
-      " Inverse Sources",
-      " Blc.Sources    ",
+      " Direct Inputs  ",
+      " Inverse Inputs ",
+      " Blk Inputs     "
     },
     {
       " Источники прям.",

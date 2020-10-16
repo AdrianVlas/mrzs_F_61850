@@ -20,10 +20,10 @@ void make_ekran_setpoint_Umin(unsigned int group)
       "Блок.ЗНмін2 по I"
     },
     {
-      " Уставка Umin1  ",
-      " Блок.Umin1 по I",
-      " Уставка Umin2  ",
-      " Блок.Umin2 по I"
+      "   UVP1 StVal   ",
+      "   UVP1 IBlk    ",
+      "   UVP2 StVal   ",
+      "   UVP2 IBlk    "
     },
     {
       " Уставка ЗНмин1 ",
@@ -197,8 +197,8 @@ void make_ekran_timeout_Umin(unsigned int group)
       " Витримка ЗНмін2"
     },
     {
-      " Выдержка Umin1 ",
-      " Выдержка Umin2 "
+      "  UVP1 Op Del   ",
+      "  UVP2 Op Del   "
     },
     {
       " Выдержка ЗНмин1",
@@ -338,14 +338,14 @@ void make_ekran_control_Umin()
       "Блок.ЗНмін2 по I"
     },
     {
-      "     Umin1      ",
-      "    ПО Umin1    ",
-      " Блок.Umin1 по U",
-      " Блок.Umin1 по I",
-      "     Umin2      ",
-      "    ПО Umin2    ",
-      " Блок.Umin2 по U",
-      " Блок.Umin2 по I"
+      "      UVP1      ",
+      "   UVP1 Start   ",
+      "   UVP1 UBlk    ",
+      "   UVP1 IBlk    ",
+      "      UVP2      ",
+      "   UVP2 Start   ",
+      "   UVP2 UBlk    ",
+      "   UVP2 IBlk    "
     },
     {
       "     ЗНмин1     ",
@@ -390,7 +390,7 @@ void make_ekran_control_Umin()
           {
             {"      ИЛИ       ", "       И        "},
             {"      АБО       ", "       І        "},
-            {"       OR       ", "      AND       "},
+            {"       Or       ", "      And       "},
             {"      ИЛИ       ", "       И        "}
           },
           {
@@ -414,7 +414,7 @@ void make_ekran_control_Umin()
           {
             {"      ИЛИ       ", "       И        "},
             {"      АБО       ", "       І        "},
-            {"       OR       ", "      AND       "},
+            {"       Or       ", "      And       "},
             {"      ИЛИ       ", "       И        "}
           },
           {

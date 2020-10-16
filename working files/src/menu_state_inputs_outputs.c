@@ -16,8 +16,8 @@ void make_ekran_list_inputs_outputs(void)
       " Стан виходів   "
     },
     {
-      " Inputs  state  ",
-      " Outputs state  "
+      " BI state       ",
+      " BO state       "
     },
     {
       " Кіріс жаfдайы  ",
@@ -83,8 +83,8 @@ void make_ekran_state_inputs_or_outputs(unsigned int input_output)
       " Двих.    "
     },
     {
-      " DI.      ",
-      " DO.      "
+      " BI.      ",
+      " BO.      "
     },
     {
       " Дк.      ",

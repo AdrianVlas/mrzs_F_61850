@@ -16,8 +16,8 @@ void make_ekran_setpoint_zz(unsigned int group)
       "  Уставка 3U0   "
     },
     {
-      "  SGFP Pickup   ",
-      "  Уставка 3U0   "
+      " SEFP3I0 St Val ",
+      " SEFP3U0 St Val "
     },
     {
       "  Уставка 3I0   ",
@@ -148,9 +148,9 @@ void make_ekran_timeout_zz(unsigned int group)
       "  Витримка НЗЗ  "
     },
     {
-      "   SGFP Delay   ",
-      "  Выдержка 3U0  ",
-      "  Выдержка НЗЗ  "
+      " SEFP3I0 Op Del ",
+      " SEFP3U0 Op Del ",
+      "  SDEFP Op Del  "
     },
     {
       "  Выдержка 3I0  ",
@@ -317,11 +317,11 @@ void make_ekran_control_zz()
       "   Сектор НЗЗ   "
     },
     {
-      " SGFP Protection",
-      " Option of SGFP ",
-      "  Защита ЗЗ/3U0 ",
-      "   Защита НЗЗ   ",
-      "   Сектор НЗЗ   "
+      "    SEFP3I0     ",
+      "  SEFP3I0 Type  ",
+      "    SEFP3U0     ",
+      "     SDEFP      ",
+      "   SDEFP Sec    "
     },
     {
       " Защита ЗЗ/3I0  ",
@@ -342,10 +342,10 @@ void make_ekran_control_zz()
       {"     Сљнд.      ", "     Косу.      "}
     },
     {
-      {"     РТЗ-50     ", "      УСЗ       "},
-      {"     РТЗ-50     ", "      УСЗ       "},
-      {"     RTZ-50     ", "      USZ       "},
-      {"     РТЗ-50     ", "      УСЗ       "}
+      {"     РТЗ50      ", "      УСЗ       "},
+      {"     РТЗ50      ", "      УСЗ       "},
+      {"       MH       ", "      HiH       "},
+      {"     РТЗ50      ", "      УСЗ       "}
     },
     {
       {"     Откл.      ", "      Вкл.      "},
@@ -361,8 +361,8 @@ void make_ekran_control_zz()
     },
     {
       {"    Обратный    ", "     Прямой     "},
-      {"   Зворотній    ", "     Прямий     "},
-      {"    Обратный    ", "     Прямой     "},
+      {"   Зворотний    ", "     Прямий     "},
+      {"       Bw       ", "       Fw       "},
       {"    Обратный    ", "     Прямой     "}
     }
   };

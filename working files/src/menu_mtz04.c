@@ -16,8 +16,8 @@ void make_ekran_setpoint_mtz04(unsigned int group)
       "  МСЗ 0.4кВ 2   "
     },
     {
-      "  OCP 0.4kV 1   ",
-      "  OCP 0.4kV 2   "
+      "    LVOCP1      ",
+      "    LVOCP2      "
     },
     {
       "  МТЗ 0.4кВ 1   ",
@@ -150,10 +150,10 @@ void make_ekran_timeout_mtz04(unsigned int group)
       "В.Пр.МСЗ 0.4кВ 2"
     },
     {
-      "  OCP 0.4kV 1   ",
-      "  OCP 0.4kV 2   ",
-      " Пр.МСЗ 0.4kV 2 ",
-      "В.Пр.МСЗ 0.4kV 2"
+      "    LVOCP1      ",
+      "    LVOCP2      ",
+      " LVOCP2 AcOpDl  ",
+      "LVOCP2 Acc Ena T"
     },
     {
       "  МТЗ 0.4кВ 1   ",
@@ -334,11 +334,11 @@ void make_ekran_control_mtz04()
       " П-а МСЗ 0.4кВ 2"
     },
     {
-      " OCP 0.4kV St.1 ",
-      " OCP 0.4kV St.2 ",
-      "OCP 0.4kV 2 Opt.",
-      "OCP 0.4kV 2 Acc.",
-      " Acc.OCP 0.4kV 2"
+      "    LVOCP1      ",
+      "    LVOCP2      ",
+      "  LVOCP2 Type   ",
+      " LVOCP2 Acc Ena ",
+      "  LVOCP2 Acc С  "
     },
     {
       "  МТЗ 0.4кВ 1   ",
@@ -384,7 +384,7 @@ void make_ekran_control_mtz04()
           {
             {"    Простая     ", "     Ошибка     ", "     Ошибка     ", " Завис.(Тип A)  ", " Завис.(Тип B)  ", " Завис.(Тип C)  "},
             {"     Проста     ", "    Помилка     ", "    Помилка     ", " Залежна (Тип A)", " Залежна (Тип B)", " Залежна (Тип C)"},
-            {"    Простая     ", "     Error      ", "     Error      ", "  Dep.(Type A)  ", "  Dep.(Type B)  ", "  Dep.(Type C)  "},
+            {"    Non Dir     ", "     Error      ", "     Error      ", "  Dep (Type A)  ", "  Dep (Type B)  ", "  Dep (Type C)  "},
             {"    Простая     ", "     Ошибка     ", "     Ошибка     ", " Завис.(Тип A)  ", " Завис.(Тип B)  ", " Завис.(Тип C)  "}
           };
           const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][6] = 

@@ -9,7 +9,7 @@ void make_ekran_chose_communication_parameters(void)
   {
     {
       " Имя ячейки     ",
-      " RS-485         "
+      " Настр.RS-485   "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,
       " Ethernet       "
@@ -17,7 +17,7 @@ void make_ekran_chose_communication_parameters(void)
     },
     {
       " Ім'я комірки   ",
-      " RS-485         "
+      " Налашт.RS-485  "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,
       " Ethernet       "
@@ -25,7 +25,7 @@ void make_ekran_chose_communication_parameters(void)
     },
     {
       " Bay name       ",
-      " RS-485         "
+      " RS-485 Settings"
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,
       " Ethernet       "
@@ -33,7 +33,7 @@ void make_ekran_chose_communication_parameters(void)
     },
     {
       " Имя ячейки     ",
-      " RS-485         "
+      " Настр.RS-485   "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,
       " Ethernet       "
@@ -649,7 +649,7 @@ void make_ekran_timeout_interface()
     "End of Reception",
     "  Конец приёма  "
   };
-  const unsigned char symbols[MAX_NAMBER_LANGUAGE][5] = {"симв.", "симв.", "symb.", "симв."};
+  const unsigned char symbols[MAX_NAMBER_LANGUAGE][5] = {"симв.", "симв.", "symb ", "симв."};
   int index_language = index_language_in_array(current_settings.language);
   
   unsigned int position_temp = current_ekran.index_position;
@@ -810,7 +810,7 @@ void make_ekran_settings_network_layer_Ethernet()
     {
       "      IPv4      ",
       "      Mask      ",
-      "    Geteway     "
+      "    Gateway     "
     },
     {
       "      IPv4      ",

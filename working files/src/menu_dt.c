@@ -79,8 +79,8 @@ void make_ekran_list_type_source_dt(void)
       " Джерела звор.  "
     },
     {
-      " Direct Sources ",
-      " Inverse Sources"
+      " Direct Inputs  ",
+      " Inverse Inputs "
     },
     {
       " Источники прям.",

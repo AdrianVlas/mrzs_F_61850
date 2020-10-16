@@ -27,21 +27,21 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
   const unsigned char information[MAX_NAMBER_LANGUAGE][_MAX_ID_INPUT_OUPUT][MAX_COL_LCD] = 
   {
     {
-      " Двх.           ", 
-      " Двых.          ", 
-      " Св             ", 
-      " О-функция      ", 
-      " F              ", 
-      " О-триггер      ", 
-      " О-И            ", 
-      " О-ИЛИ          ", 
-      " О-Искл.ИЛИ     ", 
+      " Двх.           ",
+      " Двых.          ",
+      " Св             ",
+      " О-функция      ",
+      " F              ",
+      " О-триггер      ",
+      " О-И            ",
+      " О-ИЛИ          ",
+      " О-Искл.ИЛИ     ",
       " О-НЕ           ",
-      " Пер.ф.         " 
+      " Пер.ф.         "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-      , 
-      " Вх.GOOSE Блок  ", 
-      " Вх.MMS Блок    ", 
+      ,
+      " Вх.GOOSE Блок  ",
+      " Вх.MMS Блок    ",
       " ВМБ            "
 #endif
     },
@@ -65,16 +65,16 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 #endif
     },
     {
-      " DI.            ",
-      " DO.            ",
+      " BI.            ",
+      " BO.            ",
       " LED            ",
-      " UD Function    ",
+      " UD-Function    ",
       " F              ",
-      " UD Flip-Flop   ",
-      " UD AND         ",
-      " UD OR          ",
-      " UD XOR         ",
-      " UD NOT         ",
+      " UD-FF          ",
+      " AND            ",
+      " OR             ",
+      " XOR            ",
+      " NOT            ",
       " Tr.F.          "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
       ,
@@ -84,19 +84,19 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 #endif
     },
     {
-      " Двх.           ", 
+      " Двх.           ",
       " Двых.          ",
       " Св             ",
-      " О-функция      ", 
-      " F              ", 
-      " О-триггер      ", 
+      " О-функция      ",
+      " F              ",
+      " О-триггер      ",
       " О-И            ",
       " О-ИЛИ          ",
       " О-Искл.ИЛИ     ",
       " О-НЕ           ",
       " Пер.ф.         "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-        ,
+      ,
       " Вх.GOOSE Блок  ",
       " Вх.MMS Блок    ",
       " ВМБ            "
@@ -316,7 +316,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     },
     {
       "       No       ",
-      "    ranking     ",
+      "  signal conf   ",
       NAME_RANG_SMALL_EN
     },
     {
@@ -452,7 +452,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     {
       "    Блок.ЗЗ     ",
       "    Блок.ЗЗ     ",
-      "    Блок.ЗЗ     ",
+      "    SEFP Blk    ",
       "    Блок.ЗЗ     "
     };
     for (size_t index_1 = 0; index_1 < MAX_COL_LCD; index_1++)
@@ -958,7 +958,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     },
     {
       "       No       ",
-      "    ranking     ",
+      "  signal conf   ",
       NAME_RANG_EN
     },
     {

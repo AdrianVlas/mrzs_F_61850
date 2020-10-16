@@ -17,7 +17,7 @@ void make_ekran_chose_item_of_point_time_settings(void)
     },
     {
       " Settings Mark  ",
-      " Ranking  Mark  "
+      " Sign Conf Mar  "
     },
     {
       " Метка настроек ",

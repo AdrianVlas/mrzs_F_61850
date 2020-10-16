@@ -410,8 +410,8 @@ void make_ekran_measurement_voltage_type(void)
      " Лінійні        "
     },
     {
-     " Фазные         ",
-     " Линейные       "
+     " Ph-N           ",
+     " Ph-Ph          "
     },
     {
      " Фазные         ",

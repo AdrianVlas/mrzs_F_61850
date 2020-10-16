@@ -23,10 +23,10 @@ void make_ekran_chose_extra_settings(void)
     },
     {
       "    Ib/I0.4     ",
-      " Вх.напряжения  ",
-      "Бл.Гот.к ТУ от з",
-      " Инф.об отключ. ",
-      " FK activ.Ctrl  "
+      " Input Voltages ",
+      " Rem Ctr Trip Bl",
+      "   Trip Info    ",
+      "  FK activ Ctr  "
     },
     {
       "    Ib/I0.4     ",
@@ -68,7 +68,7 @@ void make_ekran_chose_extra_settings(void)
           {
             {"     Фазные     ", "    Линейные    "},
             {"     Фазні      ", "    Лінійні     "},
-            {"     Фазные     ", "    Линейные    "},
+            {"      Ph-N      ", "     Ph-Ph      "},
             {"     Фазные     ", "    Линейные    "}
           },
           {
