@@ -14,8 +14,10 @@ void start_receive_data_via_CANAL1_MO(void)
   //Зупиняэмо канал приймання
   if ((DMA_StreamCANAL1_MO_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL1_MO_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;  
   
+  static unsigned int lock_error_no_answer;
   if(DMA_StreamCANAL1_MO_Rx->NDTR != BUFFER_CANAL1_MO)
   {
+    lock_error_no_answer = 0;
     uint32_t error_status = 0;
     do
     {
@@ -27,6 +29,7 @@ void start_receive_data_via_CANAL1_MO(void)
     error_status &= (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE);
     
     //Прийняті дані з комунікаційної плати по каналу 1
+    static unsigned int lock_error_receiving;
     if (
         (error_status == 0) &&
         (size_packet >= 3) &&
@@ -34,6 +37,7 @@ void start_receive_data_via_CANAL1_MO(void)
         (Canal1_MO_Received[size_packet - 1] == STOP_BYTE_MO)  
        )   
     {
+      lock_error_receiving = 0;
       //Перевіряємо адресу
       if (
           (Canal1_MO_Received[1] == BROADCAST_ADDRESS_MO) ||
@@ -43,8 +47,11 @@ void start_receive_data_via_CANAL1_MO(void)
         //Перевіряємо контрольну суму
         uint8_t sum = 0;
         for (int32_t i = 0; i < (size_packet - 3); i++) sum += Canal1_MO_Received[1 + i];
+        
+        static unsigned int lock_error_received_packet;
         if (sum == Canal1_MO_Received[size_packet - 2])
         { 
+          lock_error_received_packet = 0;
           IEC_board_uncall = 0;
           IEC_board_address = Canal1_MO_Received[2];
           
@@ -192,17 +199,38 @@ void start_receive_data_via_CANAL1_MO(void)
             }
           }
         }
-        else _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_1);
+        else 
+        {
+          if (++lock_error_received_packet >= 2)
+          {
+            _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_1);
+            lock_error_received_packet &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+          }
+        }
       }
     }
-    else _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_1);
+    else 
+    {
+      if (++lock_error_receiving >= 2)
+      {
+        _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_1);
+        lock_error_receiving &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+      }
+    }
   }
   else
   {
     //Не прийняті дані з комунікаційної плати по каналу 1
     if (restart_KP_irq == 0)
     {
-      if (IEC_board_uncall == 0) _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
+      if (IEC_board_uncall == 0) 
+      {
+        if (++lock_error_no_answer >= 2)
+        {
+          _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
+          lock_error_no_answer &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+        }
+      }
       else IEC_board_uncall--;
     }
   }
