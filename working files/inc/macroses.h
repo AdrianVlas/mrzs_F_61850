@@ -61,7 +61,7 @@
 
 #define _CLEAR_STATE(_output, _output_bit) _output &= (unsigned int)(~(1 << _output_bit))
 
-#define _SET_STATE(_output, _output_bit) _output |= (unsigned int)(1 << _output_bit)
+#define _SET_STATE(_output, _output_bit) _output |= (1u << _output_bit)
 
 #define _GET_OUTPUT_STATE(_input, _input_bit) ((_input & ((unsigned int)(1 << _input_bit))) != 0)
 

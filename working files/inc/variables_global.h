@@ -969,9 +969,12 @@ unsigned int Canal1, Canal2;
 const uint8_t my_address_mo = 0;
 uint32_t IEC_board_uncall = 200;
 uint32_t IEC_board_address;
-uint32_t queue_mo, queue_mo_irq;
+uint32_t queue_mo = (1u << STATE_QUEUE_MO_READ_FW_VERSION);
+uint32_t queue_mo_irq;
 unsigned int restart_KP_irq;
 uint32_t state_array_control_state;
+uint8_t fwKP[4];
+uint8_t fwDTKP[6];
 
 uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];

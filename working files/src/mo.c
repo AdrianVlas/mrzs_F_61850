@@ -609,6 +609,18 @@ void CANAL2_MO_routine()
             _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
           }
         }
+        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION))
+        {
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION);
+
+                 Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
+          sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
+          sum += Canal2_MO_Transmit[index_w++] = my_address_mo;
+  
+          sum += Canal2_MO_Transmit[index_w++] = REQUEST_FW_VERSION;
+            
+          _SET_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION);
+        }
       }
     }
     else
@@ -707,7 +719,8 @@ void CANAL2_MO_routine()
                                                                                                          (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ) ||
                                                                                                          (Canal2_MO_Received[3] == ANY_CONFIRMATION      )
                                                                                                         )                                                               ) ||
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP    )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       )
+                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP    )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       ) ||
+                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION             )) && (Canal2_MO_Received[3] == SEND_FIRMWARE_VERSION         )       )
                      )   
                    )
                 {
@@ -763,7 +776,11 @@ void CANAL2_MO_routine()
               )   
       {
         index_w = 0;
-        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
+        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) 
+        {
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
+          _SET_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION);
+        }
         else  
         {
           LAN_transmiting_count = 0; //Це є ознакою того, що пакет-відповідь успішно передано
@@ -898,6 +915,16 @@ void CANAL2_MO_routine()
             CANAL2_MO_state = CANAL2_MO_ERROR;
           }
         }
+      }
+      else if(_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION))
+      {
+        index_w = 0;
+        _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION);
+        for (size_t i = 0; i < 4; ++i) fwKP[i] = Canal2_MO_Received[4 + i];
+        for (size_t i = 0; i < 6; ++i) fwDTKP[i] = Canal2_MO_Received[14 + i];
+
+        CANAL2_MO_state = CANAL2_MO_FREE;
+        Canal2 = true;
       }
     }
     else if (CANAL2_MO_state == CANAL2_MO_ERROR)

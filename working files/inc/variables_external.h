@@ -580,6 +580,7 @@ extern uint32_t queue_mo, queue_mo_irq;
 extern unsigned int restart_KP_irq;
 extern uint32_t state_array_control_state;
 extern uint8_t fwKP[4];
+extern uint8_t fwDTKP[6];
 
 extern uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 extern uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];
