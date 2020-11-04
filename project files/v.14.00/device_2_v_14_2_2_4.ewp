@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.50.1.24770</state>
+                    <state>8.50.6.28950</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -668,7 +668,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>device_2_v_14_2_2_3.bin</state>
+                    <state>device_2_v_14_2_2_4.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -723,7 +723,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>device_2_v_14_2_2_3.out</state>
+                    <state>device_2_v_14_2_2_4.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
