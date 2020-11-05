@@ -967,7 +967,7 @@ uint8_t Canal2_MO_Transmit[BUFFER_CANAL2_MO];
 uint8_t Canal2_MO_Received[BUFFER_CANAL2_MO];
 unsigned int Canal1, Canal2;
 const uint8_t my_address_mo = 0;
-uint32_t IEC_board_uncall = 200;
+uint32_t IEC_board_uncall = 500;
 uint32_t IEC_board_address;
 uint32_t queue_mo = (1u << STATE_QUEUE_MO_READ_FW_VERSION);
 uint32_t queue_mo_irq;
