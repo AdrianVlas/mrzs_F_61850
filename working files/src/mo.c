@@ -93,6 +93,11 @@ void start_receive_data_via_CANAL1_MO(void)
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
               
+              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_REBOOT_REQ)) 
+                _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_RESTART_KP);
+              else 
+                _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_RESTART_KP);
+              
               //Синхронізація часу
               index += sizeof(time_t) + sizeof(int32_t);
               if (Canal1_MO_Received[index++] != 0)
@@ -438,6 +443,7 @@ void CANAL2_MO_routine()
   
   static __CANAL2_MO_states CANAL2_MO_state;
 
+  queue_mo |= (queue_mo_irq & STATE_QUEUE_MO_RESTART_KP);
   queue_mo &= (uint32_t)(~QUEUQ_MO_IRQ);
   if (!_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP))
   {
@@ -451,6 +457,7 @@ void CANAL2_MO_routine()
         (CANAL2_MO_state == CANAL2_MO_FREE)
        )
     {
+      _SET_BIT(set_diagnostyka, EVENT_RESTART_CB_BIT);
       restart_KP_irq = 5;
     }
   }

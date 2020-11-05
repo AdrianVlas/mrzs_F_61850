@@ -122,7 +122,9 @@ ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
 ERROR_BDVV6_FIX,
 ERROR_BDVV6_CTLR,
-ERROR_CB_FIX
+ERROR_CB_FIX,
+
+EVENT_RESTART_CB_BIT
 };
 
 #define WORD_0_MASKA_ERRORS_FROM_CANAL_1 0
@@ -338,7 +340,7 @@ ERROR_CB_FIX
   " БДВВ6 ф.       ",   \
   " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Ошибка 117     ",   \
+  " Рестарт КП     ",   \
   " Ошибка 118     ",   \
   " Ошибка 119     "
 
@@ -460,7 +462,7 @@ ERROR_CB_FIX
   " БДВВ6 ф.       ",   \
   " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Помилка 117    ",   \
+  " Рестарт КП     ",   \
   " Помилка 118    ",   \
   " Помилка 119    "
 
@@ -582,7 +584,7 @@ ERROR_CB_FIX
   " BDVV6 f.       ",   \
   " BDVV6 ctrl.    ",   \
   " CB f.          ",   \
-  " Error 117      ",   \
+  " CB Restart     ",   \
   " Error 118      ",   \
   " Error 119      "
 
@@ -704,7 +706,7 @@ ERROR_CB_FIX
   " БДВВ6 ф.       ",   \
   " БДВВ6 к.       ",   \
   " КП ф.          ",   \
-  " Ошибка 117     ",   \
+  " Рестарт КП     ",   \
   " Ошибка 118     ",   \
   " Ошибка 119     "
     

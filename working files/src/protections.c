@@ -10490,6 +10490,7 @@ do{
   _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_SOFT_RESTART_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
+  _CLEAR_BIT(diagnostyka_tmp, EVENT_RESTART_CB_BIT);
   unsigned int not_null = false;
   for (size_t i = 0; i < N_DIAGN; i++) 
   {
@@ -11738,6 +11739,7 @@ void TIM2_IRQHandler(void)
       if (--restart_KP_irq != 0) GPIO_KP_SOFT_RESET->BSRRL = GPIO_PIN_KP_SOFT_RESET; //Подаємо команду на перезапуск комунікаціної плати
       else 
       {
+        _SET_BIT(clear_diagnostyka, EVENT_RESTART_CB_BIT);
         GPIO_KP_SOFT_RESET->BSRRH = GPIO_PIN_KP_SOFT_RESET; //Знімаємо команду на перезапуск комунікаціної плати
         
         queue_mo_irq = 0;
