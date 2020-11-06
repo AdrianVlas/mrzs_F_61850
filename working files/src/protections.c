@@ -10490,7 +10490,9 @@ do{
   _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_SOFT_RESTART_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
   _CLEAR_BIT(diagnostyka_tmp, EVENT_RESTART_CB_BIT);
+#endif
   unsigned int not_null = false;
   for (size_t i = 0; i < N_DIAGN; i++) 
   {

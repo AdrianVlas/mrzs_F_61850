@@ -3785,6 +3785,7 @@ void changing_diagnostyka_state(void)
   }
   /*****/
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
   /*****/
   //Подія "Рестарт КП"
   /*****/
@@ -3805,6 +3806,7 @@ void changing_diagnostyka_state(void)
     }
   }
   /*****/
+#endif
 
   //Перевіряємо, чи треба виконувати дії поо зміні діагностики
   unsigned int not_null = false;
