@@ -434,7 +434,7 @@
 #define NETWORK_PERIOD_SYNC_MIN       0
 #define NETWORK_PERIOD_SYNC_MAX       65535
 
-#define TIME_ZONE_MIN                 (-12)
+#define TIME_ZONE_MIN                 (-11)
 #define TIME_ZONE_MAX                 12
 
 #define DST_RULE_MM_MIN               _Jan
