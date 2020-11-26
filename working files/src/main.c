@@ -208,6 +208,12 @@ inline void periodical_operations(void)
   /*******************/
 #endif
   
+  if (watchdog_l2) 
+  {
+    //Теоретично цього ніколи не мало б бути
+    total_error_sw_fixed(88);
+  }
+  
   /*******************/
   //Контроль достовірності важливих даних
   /*******************/
@@ -387,34 +393,8 @@ inline void periodical_operations(void)
     periodical_tasks_TEST_RESURS_LOCK = false;
   }
 
-  if (watchdog_l2) 
-  {
-    //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(88);
-  }
   /*******************/
 
-//  /*******************/
-//  //Копіювання даних миттєвого масиву для передавання у інші системи
-//  /*******************/
-//  if(command_to_receive_current_data == true)
-//  {
-//    unsigned int i, index;
-//    //Виставляємо очікування останнього виходу з вимірювальної системи для синохронізації подій
-//    wait_of_receiving_current_data  = true;
-//    while(wait_of_receiving_current_data  == true);
-//    index = index_array_of_current_data_value;
-//    for (i = 0; i < (NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT); i++)
-//    {
-//      current_data_transmit[i] = current_data[index++];
-//      if (index == (NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT)) index = 0;
-//    }
-//    //Сигналізуємо про завершення процесу копіювання
-//    action_is_continued = false;
-//    command_to_receive_current_data = false;
-//  }
-//  /*******************/
-    
   //Підрахунок вільного ресуру процесор-програма
   if(resurs_temp < 0xfffffffe) resurs_temp++;
 
@@ -571,7 +551,7 @@ int main(void)
   changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
 
   /**********************/
-  //Ініціалізація USB
+  //Ініціалізація компонет Ігоря для Modbus + USB
   /**********************/
   //Робота з watchdogs
   if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
@@ -586,6 +566,8 @@ int main(void)
   }
   
   watchdog_l2 = true;
+  global_component_installation();  
+  
   USBD_Init(&USB_OTG_dev,
 #ifdef USE_USB_OTG_HS 
             USB_OTG_HS_CORE_ID,

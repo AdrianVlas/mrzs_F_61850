@@ -1023,6 +1023,16 @@ void TIM4_IRQHandler(void)
                     GPIO_PIN_EXTERNAL_WATCHDOG,
                     (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
                    );
+
+      if (periodical_tasks_CALC_ENERGY_DATA != 0)
+      {
+        //Стоїть у черзі активна задача розразунку потужності і енергій
+      
+        calc_power_and_energy();
+
+        //Скидаємо активну задачу розрахунку потужності і енергій
+        periodical_tasks_CALC_ENERGY_DATA = false;
+      }
     }
     else control_word_of_watchdog |= WATCHDOG_KYYBOARD;
     /***********************************************************/

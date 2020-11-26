@@ -58,9 +58,6 @@ void global_vareiables_installation(void)
 //    vref_adc[i] = VREF_NORMAL_VALUE;
   }
   
-//  for(unsigned int i=0; i<(NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT); i++)
-//    current_data[i] = 0;
-  
 //  for(unsigned int i=0; i<NUMBER_POINT; i++)
 //  {
 //    sqr_current_data_3I0[i] = 0;
@@ -198,15 +195,6 @@ void global_vareiables_installation(void)
 //  }
   /**************************/
 
-  /**************************/
-  //Змінні, які потрібні для дискретного реєстратора
-  /**************************/
-  for(unsigned int i = 0; i < SIZE_BUFFER_FOR_DR_RECORD; i++)
-  {
-    buffer_for_save_dr_record[i] = 0xff;
-  }
-  /**************************/
-  
   /**************************
   Константа (які від версії до версії може змінюватися), але для даного проекту 
   завжди визначена
@@ -386,14 +374,11 @@ void global_vareiables_installation(void)
   timeout_mtz_po_napruzi[MTZ_LEVEL3] = current_settings_prt.timeout_mtz_3_po_napruzi;
   timeout_mtz_po_napruzi[MTZ_LEVEL4] = current_settings_prt.timeout_mtz_4_po_napruzi;
   
-  i_nom_const = I_NOM * KOEF_1_2_I;
-  u_linear_nom_const = U_LINEAR_NOM * KOEF_0_2_U;
   /**************************/
   
   //Modbus-RTU
   type_of_settings_changed = 0;
   password_ustuvannja = 0;
-  global_component_installation();  
 }
 /**************************************/
 

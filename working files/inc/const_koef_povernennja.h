@@ -6,7 +6,9 @@
 #define KOEF_POVERNENNJA_3I0_OTHER      85
 #define KOEF_POVERNENNJA_ZOP_BLK        120
 
-#define KOEF_POVERNENNJA_SECTOR_BLK     110
+#define KOEF_POVERNENNJA_3I0_SECTOR_BLK   140
+#define KOEF_POVERNENNJA_I_SECTOR_BLK     130
+#define KOEF_POVERNENNJA_U_SECTOR_BLK     110
 
 #define U_UP                            90
 #define U_DOWN                          110
@@ -21,13 +23,13 @@
 #define KOEF_MIN_UMIN                   250
 
 #define I_NOM                           5000
+#define U_F_NOM                         57735
 #define U_LINEAR_NOM                    100000
 
 #define KOEF_1_2_I                      1.2
 #define KOEF_0_2_U                      0.2
 
-#define PORIG_CHUTLYVOSTI_3I0        50
-#define PORIG_CHUTLYVOSTI_3U0        4000
+#define PORIG_CHUTLYVOSTI_3I0        40
 #define PORIG_CHUTLYVOSTI_CURRENT    50
 #define PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE    3500
 #define PORIG_CHUTLYVOSTI_VOLTAGE    5000

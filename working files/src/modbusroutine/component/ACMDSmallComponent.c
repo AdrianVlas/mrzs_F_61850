@@ -205,7 +205,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 //        (*dvMaska) =
     break;
   case 67:
-    (*outMaska) = RANG_PO_MTZPN1;
+    (*outMaska) = RANG_PO_MTZPN4;
 //        (*dvMaska) =
     break;
   case 68:

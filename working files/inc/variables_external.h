@@ -41,9 +41,7 @@ extern unsigned int index_array_of_one_value_fourier;
 
 extern EXTENDED_SAMPLE ADCs_data_raw[NUMBER_ANALOG_CANALES];
 extern int ADCs_data[NUMBER_ANALOG_CANALES];
-//extern int current_data[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT];
 extern unsigned long long sqr_current_data_3I0[NUMBER_POINT];
-extern unsigned int index_array_of_current_data_value;
 
 extern unsigned int changed_ustuvannja; 
 extern unsigned char crc_ustuvannja;
@@ -183,8 +181,7 @@ extern uint32_t board_register;
 extern int global_timers[MAX_NUMBER_GLOBAL_TIMERS];
 extern unsigned int timer_prt_signal_output_mode_2;
 extern unsigned int output_timer_prt_signal_output_mode_2;
-extern unsigned int etap_execution_df[NUMBER_DEFINED_FUNCTIONS];
-//extern unsigned int state_df;
+extern unsigned int static_logic_df;
 
 //12345
 extern unsigned int  previous_states_MTZ04_vvid_pr_0;
@@ -282,6 +279,7 @@ extern unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
 extern unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
 extern unsigned int mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH];
 extern unsigned int i_nom_const;
+extern unsigned int const u_f_nom_const;
 extern unsigned int u_linear_nom_const;
 extern unsigned int * setpoint_mtz[NUMBER_LEVEL_MTZ];
 extern unsigned int * setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ];
@@ -541,16 +539,6 @@ extern int last_number_time_sample_for_LAN;
 #endif
 
 //MODBUS-RTU
-//extern unsigned int registers_address_read;
-//extern unsigned int registers_address_write;
-//extern unsigned int data_write_to_memory;
-//extern unsigned int number_registers_read;
-//extern unsigned short int registers_values[64] /*@ "variables_RAM1"*/;
-//extern unsigned int action_is_continued;
-//extern unsigned int part_transmit_carrent_data;
-//extern unsigned int command_to_receive_current_data;
-//extern int current_data_transmit[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT] /*@ "variables_RAM1"*/;
-//extern volatile unsigned int wait_of_receiving_current_data; 
 extern unsigned int password_set_USB, password_set_RS485;
 extern unsigned int password_changed;
 extern unsigned int password_ustuvannja;
@@ -591,6 +579,8 @@ extern uint32_t IEC_board_address;
 extern uint32_t queue_mo, queue_mo_irq;
 extern unsigned int restart_KP_irq;
 extern uint32_t state_array_control_state;
+extern uint8_t fwKP[4];
+extern uint8_t fwDTKP[6];
 
 extern uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 extern uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];

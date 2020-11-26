@@ -421,12 +421,12 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
       }
 
       unsigned int porig_Uxy;
-      if (Uxy_bilshe_porogu[i] == 0) porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_SECTOR_BLK/100;
+      if (Uxy_bilshe_porogu[i] == 0) porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_U_SECTOR_BLK/100;
       else porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
       unsigned int Uxy_bilshe_porogu_tmp = Uxy_bilshe_porogu[i] = (measurement[index_U] >= porig_Uxy);
       
       unsigned int porig_Ix;
-      if (Ix_bilshe_porogu[i] == 0) porig_Ix = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_SECTOR_BLK/100;
+      if (Ix_bilshe_porogu[i] == 0) porig_Ix = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_I_SECTOR_BLK/100;
       else porig_Ix = PORIG_CHUTLYVOSTI_CURRENT;
       unsigned int Ix_bilshe_porogu_tmp = Ix_bilshe_porogu[i]  = (measurement[index_I] >= porig_Ix );
 
@@ -616,12 +616,12 @@ inline void directional_tznp(int ortogonal_local_calc[], unsigned int number_gro
     За розрахунком описаним при розрахунку діючих значень наші ортогональні є у ворматі (15 біт + знак) = 16-розряжне число
     */
     unsigned int porig_U;
-    if (TZNP_3U0_bilshe_porogu == 0) porig_U = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_SECTOR_BLK/100;
+    if (TZNP_3U0_bilshe_porogu == 0) porig_U = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_U_SECTOR_BLK/100;
     else porig_U = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
     unsigned int U_bilshe_porogu_tmp = TZNP_3U0_bilshe_porogu = (measurement[IM_3U0] >= porig_U);
       
     unsigned int porig_I;
-    if (TZNP_3I0_r_bilshe_porogu == 0) porig_I = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_SECTOR_BLK/100;
+    if (TZNP_3I0_r_bilshe_porogu == 0) porig_I = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_I_SECTOR_BLK/100;
     else porig_I = PORIG_CHUTLYVOSTI_CURRENT;
     unsigned int I_bilshe_porogu_tmp = TZNP_3I0_r_bilshe_porogu  = (measurement[IM_3I0_r] >= porig_I);
 
@@ -1589,19 +1589,17 @@ inline void clocking_global_timers(void)
 /*****************************************************/
 //Опрацювання Ориділювальних функцій - має запускатися після відкрпацювання блоків всіх захистів
 /*****************************************************/
-inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed_state_with_start_new_timeout)
+inline void df_handler(unsigned int *p_active_functions)
 {
-  /*
-  Джерела активації формуємо в source_activation_df
-  Формуємо маску вже активних функцій у maska_active_df
-  */
-  static unsigned int source_activation_df_prev;
+  unsigned int logic_df[NUMBER_DEFINED_FUNCTIONS];
   
-  unsigned int source_activation_df = 0;
-  unsigned int state_df = 0;
+  //Визначаємо, чи активовуються опреділювані функції через свої ранжовані функції-джерела
   for (unsigned int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
   {
-    unsigned int number_byte_in, number_bit_in, number_byte_out, number_bit_out;
+    unsigned int *p_logic_df = (logic_df + i);
+    *p_logic_df = 0;
+    
+    unsigned int number_byte_in, number_bit_in;
     switch (i)
     {
     case 0:
@@ -1609,9 +1607,6 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
         number_byte_in = RANG_DF1_IN >> 5;
         number_bit_in = RANG_DF1_IN & 0x1f;
 
-        number_byte_out = RANG_DF1_OUT >> 5;
-        number_bit_out = RANG_DF1_OUT & 0x1f;
-        
         break;
       }
     case 1:
@@ -1619,18 +1614,12 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
         number_byte_in = RANG_DF2_IN >> 5;
         number_bit_in = RANG_DF2_IN & 0x1f;
 
-        number_byte_out = RANG_DF2_OUT >> 5;
-        number_bit_out = RANG_DF2_OUT & 0x1f;
-        
         break;
       }
     case 2:
       {
         number_byte_in = RANG_DF3_IN >> 5;
         number_bit_in = RANG_DF3_IN & 0x1f;
-
-        number_byte_out = RANG_DF3_OUT >> 5;
-        number_bit_out = RANG_DF3_OUT & 0x1f;
         
         break;
       }
@@ -1639,9 +1628,6 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
         number_byte_in = RANG_DF4_IN >> 5;
         number_bit_in = RANG_DF4_IN & 0x1f;
 
-        number_byte_out = RANG_DF4_OUT >> 5;
-        number_bit_out = RANG_DF4_OUT & 0x1f;
-        
         break;
       }
     case 4:
@@ -1649,9 +1635,6 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
         number_byte_in = RANG_DF5_IN >> 5;
         number_bit_in = RANG_DF5_IN & 0x1f;
 
-        number_byte_out = RANG_DF5_OUT >> 5;
-        number_bit_out = RANG_DF5_OUT & 0x1f;
-        
         break;
       }
     case 5:
@@ -1659,9 +1642,6 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
         number_byte_in = RANG_DF6_IN >> 5;
         number_bit_in = RANG_DF6_IN & 0x1f;
 
-        number_byte_out = RANG_DF6_OUT >> 5;
-        number_bit_out = RANG_DF6_OUT & 0x1f;
-        
         break;
       }
     case 6:
@@ -1669,9 +1649,6 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
         number_byte_in = RANG_DF7_IN >> 5;
         number_bit_in = RANG_DF7_IN & 0x1f;
 
-        number_byte_out = RANG_DF7_OUT >> 5;
-        number_bit_out = RANG_DF7_OUT & 0x1f;
-        
         break;
       }
     case 7:
@@ -1679,9 +1656,6 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
         number_byte_in = RANG_DF8_IN >> 5;
         number_bit_in = RANG_DF8_IN & 0x1f;
 
-        number_byte_out = RANG_DF8_OUT >> 5;
-        number_bit_out = RANG_DF8_OUT & 0x1f;
-        
         break;
       }
     default:
@@ -1692,303 +1666,94 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
       }
     }
 
-//    if (i < NUMBER_DEFINED_FUNCTIONS/*current_settings_prt.number_defined_df*/)
+    /***
+    Джерело активації ОФ-ії
+    ***/
+    *p_logic_df |= ((p_active_functions[number_byte_in] & (1 << number_bit_in) ) >> number_bit_in ) << 0;
+    //Перевіряємо ще, чи не іде утимування активним джерела ОФ через таймер-утримування (для активації через кнопки або інтерфейс)
+    if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] >= 0)
     {
-      /***
-      Джерело активації ОФ-ії
-      ***/
-      source_activation_df |= ((p_active_functions[number_byte_in] & (1 << number_bit_in) ) >> number_bit_in ) << i;
-      //Перевіряємо ще, чи не іде утимування активним джерела ОФ через таймер-утримування (для активації через кнопки або інтерфейс)
-      if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] >= 0)
-      {
-        //Таймер запущений, або вже зупинився
-        //Факт запуску цього таймеру означає, що активація відбувалася через кнопку, або інтерфейс
-        //Тому для забеспечення роботи логічної схеми до кінця роботи цього таймеру виставляємо, що джерело активації активне
-        source_activation_df |= (1 << i);
+      //Таймер запущений, або вже зупинився
+      //Факт запуску цього таймеру означає, що активація відбувалася через кнопку, або інтерфейс
+      //Тому для забеспечення роботи логічної схеми до кінця роботи цього таймеру виставляємо, що джерело активації активне
+      *p_logic_df |= (1 << 0);
       
-        //Відмічаємо, джерело активації утримуємться у активному стані у масиві активуючих функцій
-        p_active_functions[number_byte_in] |= (1 << number_bit_in);
+      //Відмічаємо, джерело активації утримуємться у активному стані у масиві активуючих функцій
+      p_active_functions[number_byte_in] |= (1 << number_bit_in);
       
-        //У випадку, якщо таймер дійшов до свого макисального значення, то скидаємо роботу цього таймеру
-        if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] >= ((int)current_settings_prt.timeout_pause_df[i]))
-          global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] = -1;
-      }
-      /***/
+      //У випадку, якщо таймер дійшов до свого макисального значення, то скидаємо роботу цього таймеру
+      if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] >= ((int)current_settings_prt.timeout_pause_df[i]))
+        global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] = -1;
+    }
+    /***/
 
-      /***
-      Формування маски до цього часу активних ОФ-ій
-      ***/
-      state_df |= (((p_active_functions[number_byte_out] & ((unsigned int)(1 << number_bit_out))) != 0) || (etap_execution_df[i] == EXECUTION_DF)) << i;
-      /***/
-    }
-//    else
-//    {
-//      //Таймери, які не задіяні скидаємо з роботи
-//      global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + i] = -1;
-//      global_timers[INDEX_TIMER_DF_PAUSE_START + i] = -1;
-//      global_timers[INDEX_TIMER_DF_WORK_START + i] = -1;
-//      
-//      etap_execution_df[i] = NONE_DF;
-//    }
-    }
-  
-  //Визначаємо, чи активовуються опреділювані функції через свої ранжовані функції-джерела
-  unsigned int source_blk_df = 0;
-  for (unsigned int i = 0; i < NUMBER_DEFINED_FUNCTIONS/*current_settings_prt.number_defined_df*/; i++)
-  {
-    if (
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i    ] !=0) || 
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 1] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 2] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 3] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 4] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 5] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 6] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 7] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 8] !=0)
-       )
+    if(
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i    ] & p_active_functions[0] ) != 0) ||
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 1] & p_active_functions[1] ) != 0) ||
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 2] & p_active_functions[2] ) != 0) ||
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 3] & p_active_functions[3] ) != 0) ||
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 4] & p_active_functions[4] ) != 0) ||
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 5] & p_active_functions[5] ) != 0) ||
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 6] & p_active_functions[6] ) != 0) ||
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 7] & p_active_functions[7] ) != 0) ||
+       ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 8] & p_active_functions[8] ) != 0) 
+      )
     {
-      //Випадок, якщо функції зранжовані на джерело прямих функцій
-      if(
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i    ] & p_active_functions[0] ) != 0) ||
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 1] & p_active_functions[1] ) != 0) ||
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 2] & p_active_functions[2] ) != 0) ||
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 3] & p_active_functions[3] ) != 0) ||
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 4] & p_active_functions[4] ) != 0) ||
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 5] & p_active_functions[5] ) != 0) ||
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 6] & p_active_functions[6] ) != 0) ||
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 7] & p_active_functions[7] ) != 0) ||
-         ( ( current_settings_prt.ranguvannja_df_source_plus[N_BIG*i + 8] & p_active_functions[8] ) != 0) 
-        )
-      {
-        source_activation_df |= (1 << i);
-      }
+      *p_logic_df |= (1 << 0);
     }
 
-    if (
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i    ] !=0) || 
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 1] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 2] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 3] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 4] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 5] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 6] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 7] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 8] !=0)
-       )
+    if(
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i    ] & ((unsigned int)(~p_active_functions[0])) ) != 0 ) ||
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 1] & ((unsigned int)(~p_active_functions[1])) ) != 0 ) ||
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 2] & ((unsigned int)(~p_active_functions[2])) ) != 0 ) ||
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 3] & ((unsigned int)(~p_active_functions[3])) ) != 0 ) ||
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 4] & ((unsigned int)(~p_active_functions[4])) ) != 0 ) ||
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 5] & ((unsigned int)(~p_active_functions[5])) ) != 0 ) ||
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 6] & ((unsigned int)(~p_active_functions[6])) ) != 0 ) ||
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 7] & ((unsigned int)(~p_active_functions[7])) ) != 0 )||
+       ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 8] & ((unsigned int)(~p_active_functions[8])) ) != 0 )
+      )
     {
-      //Випадок, якщо функції зранжовані на джерело інверсних функцій
-      if(
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i    ] & ((unsigned int)(~p_active_functions[0])) ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 1] & ((unsigned int)(~p_active_functions[1])) ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 2] & ((unsigned int)(~p_active_functions[2])) ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 3] & ((unsigned int)(~p_active_functions[3])) ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 4] & ((unsigned int)(~p_active_functions[4])) ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 5] & ((unsigned int)(~p_active_functions[5])) ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 6] & ((unsigned int)(~p_active_functions[6])) ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 7] & ((unsigned int)(~p_active_functions[7])) ) != 0 )||
-         ( ( current_settings_prt.ranguvannja_df_source_minus[N_BIG*i + 8] & ((unsigned int)(~p_active_functions[8])) ) != 0 )
-        )
-      {
-        source_activation_df |= (1<< i);
-      }
+      *p_logic_df |= (1 << 0);
     }
 
-    if (
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i    ] !=0) || 
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 1] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 2] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 3] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 4] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 5] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 6] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 7] !=0) ||
-        (current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 8] !=0)
-       )
+    if(
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i    ] & p_active_functions[0] ) == 0 ) &&
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 1] & p_active_functions[1] ) == 0 ) &&
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 2] & p_active_functions[2] ) == 0 ) &&
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 3] & p_active_functions[3] ) == 0 ) &&
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 4] & p_active_functions[4] ) == 0 ) &&
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 5] & p_active_functions[5] ) == 0 ) &&
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 6] & p_active_functions[6] ) == 0 ) &&
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 7] & p_active_functions[7] ) == 0 ) &&
+       ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 8] & p_active_functions[8] ) == 0 )
+      )
     {
-      //Випадок, якщо функції зранжовані насправді на джерело блокування
-      if(
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i    ] & p_active_functions[0] ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 1] & p_active_functions[1] ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 2] & p_active_functions[2] ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 3] & p_active_functions[3] ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 4] & p_active_functions[4] ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 5] & p_active_functions[5] ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 6] & p_active_functions[6] ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 7] & p_active_functions[7] ) != 0 ) ||
-         ( ( current_settings_prt.ranguvannja_df_source_blk[N_BIG*i + 8] & p_active_functions[8] ) != 0 )
-        )
-      {
-        source_blk_df |= (1<< i);
-      }
+      *p_logic_df |= (1 << 1);
     }
     
-    //Запускаємо у роботу лоргічну схему роботи опреділюваної функції
-    switch (etap_execution_df[i])
+    /***
+    Виконуємо у цьому місці обробку логіки без встанвлення/скидання бітів про стан Визначуваної функції
+    Щоб новий стан попередньої функції не був включений у стан наступної
+    ***/
+    _TIMER_T_0(INDEX_TIMER_DF_PAUSE_START + i, current_settings_prt.timeout_pause_df[i], (*p_logic_df), 0, (*p_logic_df), 2);
+    
+    if ((current_settings_prt.type_df & (1 << i)) == 0)
     {
-    case NONE_DF:
-      {
-        if ((source_activation_df & (1<<i)) != 0)
-        {
-           if (current_settings_prt.timeout_pause_df[i] > 0)
-           {
-             //Випадок, коли є перед активацією ОФ, треба витримати таймер павзи
-             //Запускаємо відраховування таймера паузи
-             global_timers[INDEX_TIMER_DF_PAUSE_START + i] = 0;
-             //Змінюємо етап виконання логічної схеми на очікування завершення часу павзи
-             etap_execution_df[i] = START_TIMER_PAUSE_DF;
-           }
-           else
-           {
-             //Випадок, коли таймер павзи рівний нулю, тобто треба зразу активовувати ОФ і запускати таймер роботи
-
-             if (
-                 (current_settings_prt.timeout_work_df[i] > 0) ||
-                 ((current_settings_prt.type_df & (1<<i)) != 0)
-                )   
-             {
-              //Встановлюємо стан даної ОФ в "АКТИВНИЙ"
-              state_df |= (1 << i);
-              //Запускаємо відраховування таймера роботи
-              global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
-              //Переходимо на відраховування таймеру роботи - протягом цього часу ОФ гарантовано активується (якщо немає умови блокування)
-              etap_execution_df[i] = EXECUTION_DF;
-             }
-             else etap_execution_df[i] = WAITING_DEACTIVATION_SOURCE_DF;
-           }
-           
-           //Фіксація про зміну стану з початком відслідковуванням нової витримки
-           *p_changed_state_with_start_new_timeout |= (1 << i);
-        }
-        break;
-      }
-    case START_TIMER_PAUSE_DF:
-      {
-        //Зараз іде відлік часу таймеру павзи
-        //Перевіряємо, чи ОФ ще утимується в стані активації через своє джерело
-        if ((source_activation_df & (1<< i)) != 0)
-        {
-          //Перевіряємо, чи завершилася робота таймеру павзи
-          if (global_timers[INDEX_TIMER_DF_PAUSE_START + i] >= ((int)current_settings_prt.timeout_pause_df[i]))
-          {
-            if ((*p_changed_state_with_start_new_timeout & (1 << i)) == 0)
-            {
-              //Завершився час роботи таймеру павзи
-              global_timers[INDEX_TIMER_DF_PAUSE_START + i] = -1;
-  
-              if (
-                  (current_settings_prt.timeout_work_df[i] > 0) ||
-                  ((current_settings_prt.type_df & (1<<i)) != 0)
-                 )   
-              {
-                //Встановлюємо стан даної ОФ в "АКТИВНИЙ"
-                state_df |= (1 << i);
-                //Запускаємо відраховування таймера роботи
-                global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
-                //Переходимо на відраховування таймеру роботи - протягом цього часу ОФ гарантовано активується (якщо немає умови блокування)
-                etap_execution_df[i] = EXECUTION_DF;
-              }
-              else etap_execution_df[i] = WAITING_DEACTIVATION_SOURCE_DF;
-           
-              //Фіксація про зміну стану з початком відслідковуванням нової витримки
-              *p_changed_state_with_start_new_timeout |= (1 << i);
-            }
-          }
-        }
-        else
-        {
-          //Активація знята до завершення роботи таймеру павзи, тому скидаємо всю роботу по даній оприділюваеній функції
-          global_timers[INDEX_TIMER_DF_PAUSE_START + i] = -1;
-          etap_execution_df[i] = NONE_DF;
-           
-          //Відміна фіксації про зміну стану з початком відслідковуванням нової витримки
-          *p_changed_state_with_start_new_timeout &= (unsigned int)(~(1 << i));
-        }
-        break;
-      }
-    case EXECUTION_DF:
-      {
-        //Подальша робота даної ОФ залежить від типу ОФ
-        if ((current_settings_prt.type_df & (1<<i)) != 0)
-        {
-          //Дана ОФ ЗВОРОТНЯ
-          //Згідно логічної схеми утримуємо ОФ таймер роботи має запуститися після деактивації джерела
-          if ((source_activation_df & (1<< i)) != 0)
-          {
-            //Джерело ще є активне, а тому таймер роботи утримуємо/повертаємо у нульовому значенні
-            global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
-          }
-        }
-        else
-        {
-          //Дана ОФ ПРЯМА
-          if (
-              ((source_activation_df_prev & (1 << i)) == 0) &&
-              ((source_activation_df      & (1 << i)) != 0)
-             )   
-          {
-            //Джерело ще наново активувалося, а тому таймер роботи повертаємо у нульовому значенні
-            global_timers[INDEX_TIMER_DF_WORK_START + i] = 0;
-          }
-        }
-
-        //Перевіряємо, чи завершилася робота таймеру роботи
-        /*
-        Умовою продовження активації ОФ є випадок коли ОФ зворотня і джерело є активним
-        Впринципі на рівні таймеру все б мало працювати правильно, але є один нюанс, коли
-        функція є звороньою і джерело активне, то код вище скине таймер роботи в 0, 
-        тобто він буде гарантовано в 0, але коли уставка "Таймер роботи" для даної функції буде 0,
-        то по аналізу самого таймеру робота функції може зупинитися, що не правильно.
-        Тому тут ще я добавляю перевірку, що ОФ не може деактивуватися навіть коли таймер роботи
-        перевищує свою уставку у випадку коли і ОФ є зворотньою і джерело є активним
-        */
-        if (
-            (global_timers[INDEX_TIMER_DF_WORK_START + i] >= ((int)current_settings_prt.timeout_work_df[i])) &&
-            (
-             !( 
-               ((current_settings_prt.type_df & (1 << i)) != 0) && 
-               ((source_activation_df         & (1 << i)) != 0) 
-              )
-            )  
-           )
-        {
-          if ((*p_changed_state_with_start_new_timeout & (1 << i)) == 0)
-          {
-            //Завершився час роботи таймеру роботи
-            global_timers[INDEX_TIMER_DF_WORK_START + i] = -1;
-            //Переводимо ОФ у ПАСИВНИЙ стан
-            state_df &= ~(1 << i);
-          
-            //Перевіряємо, чи нам треба перейти в очікування деактивації джерела ОФ, чи перейти у висхідний стан
-            if ((source_activation_df & (1<< i)) == 0)
-            {
-              //Переходимо у режим висхідний стан
-              etap_execution_df[i] = NONE_DF;
-            }
-            else 
-            {
-              //Якщо джерело запуску цієї ОФ ще активне, то переходимо на оцікування його завершення
-              etap_execution_df[i] = WAITING_DEACTIVATION_SOURCE_DF;
-            }
-          }
-        }
-        break;
-      }
-    case WAITING_DEACTIVATION_SOURCE_DF:
-      {
-        //У цьому режимі ми перебуваємо доти, поки джерело активації ОФ не буде зняте
-        if ((source_activation_df & (1 << i)) == 0)
-        {
-          //Переходимо у режим висхідний стан
-          etap_execution_df[i] = NONE_DF;
-        }
-        break;
-      }
-    default: break;
+      _TIMER_IMPULSE(INDEX_TIMER_DF_WORK_START + i, current_settings_prt.timeout_work_df[i], static_logic_df, i, (*p_logic_df), 2, (*p_logic_df), 3);
     }
-  }
-  source_activation_df_prev = source_activation_df;
+    else
+    {
+      _TIMER_0_T    (INDEX_TIMER_DF_WORK_START + i, current_settings_prt.timeout_work_df[i],                     (*p_logic_df), 2, (*p_logic_df), 3);
+      static_logic_df &= ~(1u << i);
+    }
+      
+    _AND2((*p_logic_df), 3, (*p_logic_df), 1, (*p_logic_df), 4);
+    /***/
 
+    
+  }
+  
   //Установлюємо, або скидаємо ОФ у масиві функцій, які зараз будуть активовуватися
   /*
   Цей цикл і попередній не об'єднаі в один, а навпаки розєднані, бо у першому ми використовуємо
@@ -2052,20 +1817,8 @@ inline void df_handler(unsigned int *p_active_functions, unsigned int *p_changed
       }
     }
       
-    if ((state_df & (1 << i)) != 0 )
-    {
-      /*
-      ОФ функція зараз є активною
-      але перед тим, як виставити реальний стан цієї функції на даний момент часу - 
-      перевіряєио, чи не йде блокування її 
-      */     
-      if ((source_blk_df & (1<< i)) == 0 ) _SET_BIT(p_active_functions, index_df);
-      else _CLEAR_BIT(p_active_functions, index_df);
-    }
-    else
-    {
-      _CLEAR_BIT(p_active_functions, index_df);
-    }
+    if ((logic_df[i] & (1 << 4)) != 0 ) _SET_BIT(p_active_functions, index_df);
+    else _CLEAR_BIT(p_active_functions, index_df);
   }
 }
 /*****************************************************/
@@ -2742,13 +2495,26 @@ inline void mtz_handler(unsigned int *p_active_functions, unsigned int number_gr
                                 (measurement[IM_IC] <= po_i_ncn_setpoint));
   
   //ПО Uнцн
-  po_u_ncn_setpoint = previous_state_mtz_po_uncn ?
-            u_linear_nom_const * U_DOWN / 100 :
-            u_linear_nom_const;
+  if ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
+  {
+    po_u_ncn_setpoint = previous_state_mtz_po_uncn ?
+              u_f_nom_const * U_DOWN / 100 :
+              u_f_nom_const;
   
-  previous_state_mtz_po_uncn = ((measurement[IM_UAB] <= po_u_ncn_setpoint) ||
-                                (measurement[IM_UBC] <= po_u_ncn_setpoint) ||
-                                (measurement[IM_UCA] <= po_u_ncn_setpoint));
+    previous_state_mtz_po_uncn = ((measurement[IM_UA] <= po_u_ncn_setpoint) ||
+                                  (measurement[IM_UB] <= po_u_ncn_setpoint) ||
+                                  (measurement[IM_UC] <= po_u_ncn_setpoint));
+  }
+  else
+  {
+    po_u_ncn_setpoint = previous_state_mtz_po_uncn ?
+              u_linear_nom_const * U_DOWN / 100 :
+              u_linear_nom_const;
+  
+    previous_state_mtz_po_uncn = ((measurement[IM_UAB] <= po_u_ncn_setpoint) ||
+                                  (measurement[IM_UBC] <= po_u_ncn_setpoint) ||
+                                  (measurement[IM_UCA] <= po_u_ncn_setpoint));
+  }
   
   ctr_mtz_nespr_kil_napr = ctr_mtz_nespr_kil_napr && previous_state_mtz_po_incn && previous_state_mtz_po_uncn; //Неисправность цепей напряжения (_AND3)
   
@@ -3388,13 +3154,13 @@ inline void zz_handler(unsigned int *p_active_functions, unsigned int number_gro
   
   *********************************/
   unsigned int porig_3I0;
-  if (Nzz_3I0_bilshe_porogu == 0) porig_3I0 = PORIG_CHUTLYVOSTI_3I0*KOEF_POVERNENNJA_SECTOR_BLK/100;
+  if (Nzz_3I0_bilshe_porogu == 0) porig_3I0 = PORIG_CHUTLYVOSTI_3I0*KOEF_POVERNENNJA_3I0_SECTOR_BLK/100;
   else porig_3I0 = PORIG_CHUTLYVOSTI_3I0;
   unsigned int Nzz_3I0_bilshe_porogu_tmp = Nzz_3I0_bilshe_porogu = (measurement[IM_3I0] >= porig_3I0);
 
   unsigned int porig_3U0;
-  if (Nzz_3U0_bilshe_porogu == 0) porig_3U0 = PORIG_CHUTLYVOSTI_3U0*KOEF_POVERNENNJA_SECTOR_BLK/100;
-  else porig_3U0 = PORIG_CHUTLYVOSTI_3U0;
+  if (Nzz_3U0_bilshe_porogu == 0) porig_3U0 = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_U_SECTOR_BLK/100;
+  else porig_3U0 = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
   unsigned int Nzz_3U0_bilshe_porogu_tmp = Nzz_3U0_bilshe_porogu = (measurement[IM_3U0] >= porig_3U0);
       
   if (
@@ -10724,6 +10490,9 @@ do{
   _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_SOFT_RESTART_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  _CLEAR_BIT(diagnostyka_tmp, EVENT_RESTART_CB_BIT);
+#endif
   unsigned int not_null = false;
   for (size_t i = 0; i < N_DIAGN; i++) 
   {
@@ -11220,7 +10989,6 @@ do{
       unsigned int active_functions_tmp[NUMBER_ITERATION_EL_MAX][N_BIG];
       unsigned int iteration = 0;
       unsigned int repeat_state = false;
-      unsigned int df_changed_state_with_start_new_timeout = 0;
       do
       {
         for (unsigned int i = 0; i < iteration; i++)
@@ -11257,7 +11025,7 @@ do{
         d_or_handler(active_functions);
         d_xor_handler(active_functions);
         d_not_handler(active_functions);
-        df_handler(active_functions, &df_changed_state_with_start_new_timeout);
+        df_handler(active_functions);
         dt_handler(active_functions);
         
         iteration++;
@@ -11310,6 +11078,8 @@ do{
       //Скидаємо всі таймери, які відповідають за розширену логіку
       for(unsigned int i = INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START; i < (INDEX_TIMER_DF_WORK_START + NUMBER_DEFINED_FUNCTIONS); i++)
         global_timers[i] = -1;
+      
+      static_logic_df = 0;
     }
     /**************************/
 
@@ -11370,15 +11140,8 @@ do{
     //Скидаємо всі таймери, які присутні у лозіці
     for(unsigned int i = INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START; i < MAX_NUMBER_GLOBAL_TIMERS; i++)
       global_timers[i] = -1;
-    
-//    //Стан всіх ОФ переводимо у пасивний
-//    state_df = 0;
-    
-    //Стан виконання ОФ переводимо у початковий
-    for(unsigned int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
-    {
-      etap_execution_df[i] = NONE_DF;
-    }
+
+    static_logic_df = 0;
   }
 
   /**************************/
@@ -11732,12 +11495,23 @@ do{
      ) state_leds_ctrl |=  (1 << LED_COLOR_RED_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E);
   else state_leds_ctrl &=  (uint32_t)(~((1 << LED_COLOR_RED_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E)));
   
+  static uint32_t state_leds_lock[2];
+  static uint32_t state_leds_ctrl_lock[2];
+  static uint32_t state_leds_Fx_lock[2][2];
+  static size_t bank_lock;
+  
+  size_t bank_lock_tmp1 = bank_lock;
+  size_t bank_lock_tmp2 = (bank_lock_tmp1 + 1) & 0x1;
+  
+  state_leds_lock[bank_lock_tmp2] |= state_leds;
+  state_leds_ctrl_lock[bank_lock_tmp2] |= state_leds_ctrl;
+  state_leds_Fx_lock[bank_lock_tmp2][0] |= state_leds_Fx[0];
+  state_leds_Fx_lock[bank_lock_tmp2][1] |= state_leds_Fx[1];
+
   static uint32_t current_LED_N_COL;
   
   //Очищаємо попередню інформацію
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD32_DD38) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~0) & ((1 << LED_N_ROW) - 1));
-  //Переходимо на наступний стовбець
-  if (++current_LED_N_COL >= LED_N_COL) current_LED_N_COL = 0;
   
   uint32_t state_leds_tmp;
   
@@ -11745,126 +11519,105 @@ do{
   {
   case 0:
     {
-      state_leds_tmp = (((state_leds >>  0) & 0x1) << 0) |
-                       (((state_leds >>  2) & 0x1) << 1) |
-                       (((state_leds >>  4) & 0x1) << 2) |
-                       (((state_leds >>  6) & 0x1) << 3) |
-                       (((state_leds >>  8) & 0x1) << 4) |
-                       (((state_leds >> 10) & 0x1) << 5) |
-                       (((state_leds >> 12) & 0x1) << 6) |
-                       (((state_leds >> 14) & 0x1) << 7);
-
-//      state_leds_tmp = (((state_leds >> (2*0)) & ((1 << 2) - 1)) << 0) |
-//                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E)) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
-//                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(6 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      uint32_t state_leds_auto = state_leds_lock[bank_lock_tmp1];
+      
+      state_leds_tmp = (((state_leds_auto >>  0) & 0x1) << 0) |
+                       (((state_leds_auto >>  2) & 0x1) << 1) |
+                       (((state_leds_auto >>  4) & 0x1) << 2) |
+                       (((state_leds_auto >>  6) & 0x1) << 3) |
+                       (((state_leds_auto >>  8) & 0x1) << 4) |
+                       (((state_leds_auto >> 10) & 0x1) << 5) |
+                       (((state_leds_auto >> 12) & 0x1) << 6) |
+                       (((state_leds_auto >> 14) & 0x1) << 7);
       break;
     }
   case 1:
     {
-      uint32_t temp_state = state_leds;
-      state_leds_tmp = (((temp_state >>  1) & 0x1) << 0) |
-                       (((temp_state >>  3) & 0x1) << 1) |
-                       (((temp_state >>  5) & 0x1) << 2) |
-                       (((temp_state >>  7) & 0x1) << 3) |
-                       (((temp_state >>  9) & 0x1) << 4) |
-                       (((temp_state >> 11) & 0x1) << 5) |
-                       (((temp_state >> 13) & 0x1) << 6) |
-                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) & (1 << LED_COLOR_RED_BIT)) != 0) << 7);
-
-//      state_leds_tmp = (((state_leds >> (2*1)) & ((1 << 2) - 1)) << 0) |
-//                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_START)) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
-//                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(1 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      uint32_t state_leds_auto = state_leds_lock[bank_lock_tmp1];
+      uint32_t state_leds_ctrl_auto = state_leds_ctrl_lock[bank_lock_tmp1];
+      
+      state_leds_tmp = (((state_leds_auto >>  1) & 0x1) << 0) |
+                       (((state_leds_auto >>  3) & 0x1) << 1) |
+                       (((state_leds_auto >>  5) & 0x1) << 2) |
+                       (((state_leds_auto >>  7) & 0x1) << 3) |
+                       (((state_leds_auto >>  9) & 0x1) << 4) |
+                       (((state_leds_auto >> 11) & 0x1) << 5) |
+                       (((state_leds_auto >> 13) & 0x1) << 6) |
+                       ((((state_leds_ctrl_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) & (1 << LED_COLOR_RED_BIT)) != 0) << 7);
       break;
     }
   case 2:
     {
-      state_leds_tmp = ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E  )) & (1 << LED_COLOR_RED_BIT)) != 0) << 0) |
-                      /*
-                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_START)) & (1 << LED_COLOR_RED_BIT)) != 0) << 1) |
-                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_TRIP )) & (1 << LED_COLOR_RED_BIT)) != 0) << 2) |
-                      */
-                       (((state_leds >> 15) & 0x1) << 1) |
-                       (((state_leds >> 16) & 0x1) << 2) |
+      uint32_t state_leds_auto = state_leds_lock[bank_lock_tmp1];
+      uint32_t state_leds_ctrl_auto = state_leds_ctrl_lock[bank_lock_tmp1];
+      uint32_t state_leds_Fx0_auto = state_leds_Fx_lock[bank_lock_tmp1][0];
+
+      state_leds_tmp = ((((state_leds_ctrl_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E  )) & (1 << LED_COLOR_RED_BIT)) != 0) << 0) |
+
+                       (((state_leds_auto >> 15) & 0x1) << 1) |
+                       (((state_leds_auto >> 16) & 0x1) << 2) |
       
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(1 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 3) | 
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(2 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 4) | 
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(3 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 5) | 
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(4 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 6) | 
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(5 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 7);
-      
-//      state_leds_tmp = (((state_leds >> (2*2)) & ((1 << 2) - 1)) << 0) |
-//                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_TRIP)) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
-//                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(2 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(1 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 3) | 
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(2 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 4) | 
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(3 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 5) | 
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(4 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 6) | 
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(5 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 7);
       break;
     }
   case 3:
     {
-      state_leds_tmp = ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E  )) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 0) |
-                      /*
-                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_START)) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 1) |
-                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_TRIP )) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 2) |
-                      */
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(1 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 3) | 
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(2 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 4) | 
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(3 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 5) | 
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(4 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 6) | 
-                       ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(5 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 7);
-      
-//      state_leds_tmp = (((state_leds >> (2*3)) & ((1 << 2) - 1)) << 0) |
-//                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(1 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
-//                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(3 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      uint32_t state_leds_ctrl_auto = state_leds_ctrl_lock[bank_lock_tmp1];
+      uint32_t state_leds_Fx0_auto = state_leds_Fx_lock[bank_lock_tmp1][0];
+
+      state_leds_tmp = ((((state_leds_ctrl_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_R_E  )) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 0) |
+
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(1 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 3) | 
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(2 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 4) | 
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(3 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 5) | 
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(4 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 6) | 
+                       ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(5 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 7);
+
       break;
     }
   case 4:
     {
-      state_leds_tmp = ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(6 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 0) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(1 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 1) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(2 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 2) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(3 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 3) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(4 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 4) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(5 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 5) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(6 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 6) |
-                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)) & (1 << LED_COLOR_RED_BIT)) != 0) << 7);
+      uint32_t state_leds_ctrl_auto = state_leds_ctrl_lock[bank_lock_tmp1];
+      uint32_t state_leds_Fx0_auto = state_leds_Fx_lock[bank_lock_tmp1][0];
+      uint32_t state_leds_Fx1_auto = state_leds_Fx_lock[bank_lock_tmp1][1];
 
-//      state_leds_tmp = (((state_leds >> (2*4)) & ((1 << 2) - 1)) << 0) |
-//                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(2 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
-//                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(4 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      state_leds_tmp = ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(6 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 0) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(1 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 1) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(2 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 2) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(3 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 3) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(4 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 4) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(5 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 5) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(6 - 1))) & (1 << LED_COLOR_RED_BIT)) != 0) << 6) |
+                       ((((state_leds_ctrl_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)) & (1 << LED_COLOR_RED_BIT)) != 0) << 7);
       break;
     }
   case 5:
     {
-      state_leds_tmp = ((((state_leds_Fx[0] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(6 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 0) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(1 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 1) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(2 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 2) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(3 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 3) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(4 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 4) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(5 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 5) |
-                       ((((state_leds_Fx[1] >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(6 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 6) |
-                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 7);
+      uint32_t state_leds_ctrl_auto = state_leds_ctrl_lock[bank_lock_tmp1];
+      uint32_t state_leds_Fx0_auto = state_leds_Fx_lock[bank_lock_tmp1][0];
+      uint32_t state_leds_Fx1_auto = state_leds_Fx_lock[bank_lock_tmp1][1];
 
-//      state_leds_tmp = (((state_leds >> (2*5)) & ((1 << 2) - 1)) << 0) |
-//                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(3 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
-//                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(5 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      state_leds_tmp = ((((state_leds_Fx0_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(6 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 0) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(1 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 1) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(2 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 2) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(3 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 3) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(4 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 4) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(5 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 5) |
+                       ((((state_leds_Fx1_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)(6 - 1))) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 6) |
+                       ((((state_leds_ctrl_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 7);
       break;
     }
   case 6:
     {
-      state_leds_tmp = ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 7);
+      uint32_t state_leds_ctrl_auto = state_leds_ctrl_lock[bank_lock_tmp1];
 
-//      state_leds_tmp = (((state_leds >> (2*6)) & ((1 << 2) - 1)) << 0) |
-//                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(4 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
-//                       (((state_leds_Fx[1] >> (NUMBER_LED_COLOR*(6 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 4);
+      state_leds_tmp = ((((state_leds_ctrl_auto >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 7);
       break;
     }
-//  case 7:
-//    {
-//      state_leds_tmp = (((state_leds >> (2*7)) & ((1 << 1) - 1)) << 0) |
-//                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) & (1 << LED_COLOR_RED_BIT)) != 0) << 1) |
-//                       (((state_leds_Fx[0] >> (NUMBER_LED_COLOR*(5 - 1))) & ((1 << NUMBER_LED_COLOR) - 1)) << 2) |
-//                       (((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I)) & ((1 << NUMBER_LED_COLOR) - 1)) << 4) |
-//                       ((((state_leds_ctrl >> ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) & (1 << LED_COLOR_GREEN_BIT)) != 0) << 6);
-//      break;
-//    }
   default:
     {
       //Теоретично цього ніколи не мало б бути
@@ -11874,6 +11627,18 @@ do{
 
   //Виводимо інформацію по світлоіндикаторах на світлодіоди
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD32_DD38) = ((1 << current_LED_N_COL) << LED_N_ROW) | ((uint32_t)(~state_leds_tmp) & ((1 << LED_N_ROW) - 1));
+
+  //Переходимо на наступний стовбець
+  if (++current_LED_N_COL >= LED_N_COL) 
+  {
+    current_LED_N_COL = 0;
+    bank_lock = bank_lock_tmp2;
+
+    state_leds_lock[bank_lock_tmp1] = 0;
+    state_leds_ctrl_lock[bank_lock_tmp1] = 0;
+    state_leds_Fx_lock[bank_lock_tmp1][0] = 0;
+    state_leds_Fx_lock[bank_lock_tmp1][1] = 0;
+  }
   /**************************/
 
   /**************************/
@@ -11976,6 +11741,7 @@ void TIM2_IRQHandler(void)
       if (--restart_KP_irq != 0) GPIO_KP_SOFT_RESET->BSRRL = GPIO_PIN_KP_SOFT_RESET; //Подаємо команду на перезапуск комунікаціної плати
       else 
       {
+        _SET_BIT(clear_diagnostyka, EVENT_RESTART_CB_BIT);
         GPIO_KP_SOFT_RESET->BSRRH = GPIO_PIN_KP_SOFT_RESET; //Знімаємо команду на перезапуск комунікаціної плати
         
         queue_mo_irq = 0;

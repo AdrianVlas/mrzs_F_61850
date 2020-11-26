@@ -81,9 +81,7 @@ unsigned int index_array_of_one_value_fourier/* = 0*/;
 
 EXTENDED_SAMPLE ADCs_data_raw[NUMBER_ANALOG_CANALES];
 int ADCs_data[NUMBER_ANALOG_CANALES];
-//int current_data[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT];
 unsigned long long sqr_current_data_3I0[NUMBER_POINT];
-unsigned int index_array_of_current_data_value/* = 0*/;
 
 unsigned int changed_ustuvannja = CHANGED_ETAP_NONE; 
 unsigned char crc_ustuvannja;
@@ -418,8 +416,7 @@ uint32_t board_register;
 int global_timers[MAX_NUMBER_GLOBAL_TIMERS]; //Масив глобальних таймерів
 unsigned int timer_prt_signal_output_mode_2/* = 0*/;
 unsigned int output_timer_prt_signal_output_mode_2/* = false*/;
-unsigned int etap_execution_df[NUMBER_DEFINED_FUNCTIONS] = {NONE_DF, NONE_DF, NONE_DF, NONE_DF, NONE_DF, NONE_DF, NONE_DF, NONE_DF}; //Етап виконання опреділюваної функції
-//unsigned int state_df = 0; //Текучий стан опреділюваних функцій
+unsigned int static_logic_df;
 
 unsigned int static_logic_APV_0;
 unsigned int previous_states_APV_0/* = 0*/;
@@ -676,8 +673,9 @@ unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
 unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
 int * type_mtz_arr[NUMBER_LEVEL_MTZ];
 unsigned int mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH];
-unsigned int i_nom_const;
-unsigned int u_linear_nom_const;
+unsigned int const i_nom_const = I_NOM * KOEF_1_2_I;
+unsigned int const u_f_nom_const = U_F_NOM * KOEF_0_2_U;
+unsigned int const u_linear_nom_const = U_LINEAR_NOM * KOEF_0_2_U;
 unsigned int * setpoint_mtz[NUMBER_LEVEL_MTZ];
 unsigned int * setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ];
 unsigned int * setpoint_mtz_n_nazad[NUMBER_LEVEL_MTZ];
@@ -934,16 +932,6 @@ int last_number_time_sample_for_LAN;// -1 - заголовок запису ан.р.; 0 - перший ч
 #endif
 
 //MODBUS-RTU
-//unsigned int registers_address_read =0x20000000;
-//unsigned int registers_address_write =0x20000000;
-//unsigned int data_write_to_memory;
-//unsigned int number_registers_read/* = 0*/;
-//unsigned short int registers_values[64]/* @ "variables_RAM1"*/;
-//unsigned int action_is_continued/* = false*/;
-//unsigned int part_transmit_carrent_data/* = 0*/;
-//unsigned int command_to_receive_current_data/* = false*/;
-//int current_data_transmit[NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT] /*@ "variables_RAM1"*/; 
-//volatile unsigned int wait_of_receiving_current_data/*  = false*/; 
 SRAM1 unsigned int password_set_USB, password_set_RS485;
 SRAM1 unsigned int password_changed;
 SRAM1 unsigned int password_ustuvannja/* = 0*/;
@@ -979,11 +967,14 @@ uint8_t Canal2_MO_Transmit[BUFFER_CANAL2_MO];
 uint8_t Canal2_MO_Received[BUFFER_CANAL2_MO];
 unsigned int Canal1, Canal2;
 const uint8_t my_address_mo = 0;
-uint32_t IEC_board_uncall = 200;
+uint32_t IEC_board_uncall = 500;
 uint32_t IEC_board_address;
-uint32_t queue_mo, queue_mo_irq;
+uint32_t queue_mo = (1u << STATE_QUEUE_MO_READ_FW_VERSION);
+uint32_t queue_mo_irq;
 unsigned int restart_KP_irq;
 uint32_t state_array_control_state;
+uint8_t fwKP[4];
+uint8_t fwDTKP[6];
 
 uint8_t Input_In_GOOSE_block[N_IN_GOOSE];
 uint8_t Input_ctrl_In_GOOSE_block[N_IN_GOOSE];

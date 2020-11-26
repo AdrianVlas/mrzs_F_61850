@@ -546,8 +546,9 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     if(regUst<SETPOINT_CHAPV2_F_RAB_MIN/10 || regUst>SETPOINT_CHAPV2_F_RAB_MAX/10) diapazon=0;
     break;
   case 199:
+    (*multer) = 100;
     (*editValue) = (uint32_t*)&edition_settings.setpoint_achr_chapv_uf[gruppa];
-    if(regUst<SETPOINT_ACHR_CHAPV_UF_MIN/10 || regUst>SETPOINT_ACHR_CHAPV_UF_MAX/10) diapazon=0;
+    if(regUst<SETPOINT_ACHR_CHAPV_UF_MIN/100 || regUst>SETPOINT_ACHR_CHAPV_UF_MAX/100) diapazon=0;
     break;
   case 200:
     (*editValue) = (uint32_t*)&edition_settings.timeout_achr_1[gruppa];
@@ -1098,16 +1099,16 @@ int getUSTBigModbusRegister(int adrReg)
     )                                   
     if(offset==MARKER1048)
     {
-      return (*editValue) & (uint32_t)0xffff;
+      return (~(*editValue)) & (uint32_t)0xffff;
     }
     else
     {
-      return ((*editValue)>>16)  & (uint32_t)0xffff;
+      return ((~(*editValue))>>16)  & (uint32_t)0xffff;
     }//else
 #else
     if(offset==MARKER1048)
     {
-      return (*editValue) & (uint32_t)0xffff;
+      return (~(*editValue)) & (uint32_t)0xffff;
     }
     else
     {
@@ -1288,13 +1289,13 @@ int postUSTBigWriteAction(void)
       if(offset==MARKER1048)
       {
         (*editValue) &= (uint32_t)~0xffff;
-        (*editValue) |= (value & 0xffff);
+        (*editValue) |= ((~value) & 0xffff);
         goto m1;
       }
       else
       {
         (*editValue)  &= (uint32_t)~(0xffff<<16);
-        (*editValue)  |= ((value & 0xffff)<<16);//
+        (*editValue)  |= (((~value) & 0xffff)<<16);//
         goto m1;
       }//else
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input)

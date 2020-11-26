@@ -14,19 +14,22 @@ void start_receive_data_via_CANAL1_MO(void)
   //Зупиняэмо канал приймання
   if ((DMA_StreamCANAL1_MO_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL1_MO_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;  
   
+  static unsigned int lock_error_no_answer;
   if(DMA_StreamCANAL1_MO_Rx->NDTR != BUFFER_CANAL1_MO)
   {
+    lock_error_no_answer = 0;
     uint32_t error_status = 0;
-    do
-    {
+//    do
+//    {
       error_status |= CANAL1_MO->SR;
-    }
-    while ((error_status & (USART_FLAG_IDLE | USART_FLAG_LBD)) == 0);
+//    }
+//    while ((error_status & (USART_FLAG_IDLE | USART_FLAG_LBD)) == 0);
     int32_t size_packet = BUFFER_CANAL1_MO - (uint16_t)(DMA_StreamCANAL1_MO_Rx->NDTR);
     
     error_status &= (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE);
     
     //Прийняті дані з комунікаційної плати по каналу 1
+    static unsigned int lock_error_receiving;
     if (
         (error_status == 0) &&
         (size_packet >= 3) &&
@@ -34,6 +37,7 @@ void start_receive_data_via_CANAL1_MO(void)
         (Canal1_MO_Received[size_packet - 1] == STOP_BYTE_MO)  
        )   
     {
+      lock_error_receiving = 0;
       //Перевіряємо адресу
       if (
           (Canal1_MO_Received[1] == BROADCAST_ADDRESS_MO) ||
@@ -43,8 +47,11 @@ void start_receive_data_via_CANAL1_MO(void)
         //Перевіряємо контрольну суму
         uint8_t sum = 0;
         for (int32_t i = 0; i < (size_packet - 3); i++) sum += Canal1_MO_Received[1 + i];
+        
+        static unsigned int lock_error_received_packet;
         if (sum == Canal1_MO_Received[size_packet - 2])
         { 
+          lock_error_received_packet = 0;
           IEC_board_uncall = 0;
           IEC_board_address = Canal1_MO_Received[2];
           
@@ -85,6 +92,11 @@ void start_receive_data_via_CANAL1_MO(void)
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
+              
+              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_REBOOT_REQ)) 
+                _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_RESTART_KP);
+              else 
+                _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_RESTART_KP);
               
               //Синхронізація часу
               index += sizeof(time_t) + sizeof(int32_t);
@@ -192,17 +204,38 @@ void start_receive_data_via_CANAL1_MO(void)
             }
           }
         }
-        else _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_1);
+        else 
+        {
+          if (++lock_error_received_packet >= 2)
+          {
+            _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_1);
+            lock_error_received_packet &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+          }
+        }
       }
     }
-    else _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_1);
+    else 
+    {
+      if (++lock_error_receiving >= 2)
+      {
+        _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_1);
+        lock_error_receiving &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+      }
+    }
   }
   else
   {
     //Не прийняті дані з комунікаційної плати по каналу 1
     if (restart_KP_irq == 0)
     {
-      if (IEC_board_uncall == 0) _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
+      if (IEC_board_uncall == 0) 
+      {
+        if (++lock_error_no_answer >= 2)
+        {
+          _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
+          lock_error_no_answer &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+        }
+      }
       else IEC_board_uncall--;
     }
   }
@@ -410,6 +443,7 @@ void CANAL2_MO_routine()
   
   static __CANAL2_MO_states CANAL2_MO_state;
 
+  queue_mo |= (queue_mo_irq & STATE_QUEUE_MO_RESTART_KP);
   queue_mo &= (uint32_t)(~QUEUQ_MO_IRQ);
   if (!_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP))
   {
@@ -423,6 +457,7 @@ void CANAL2_MO_routine()
         (CANAL2_MO_state == CANAL2_MO_FREE)
        )
     {
+      _SET_BIT(set_diagnostyka, EVENT_RESTART_CB_BIT);
       restart_KP_irq = 5;
     }
   }
@@ -581,6 +616,18 @@ void CANAL2_MO_routine()
             _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
           }
         }
+        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION))
+        {
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION);
+
+                 Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
+          sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
+          sum += Canal2_MO_Transmit[index_w++] = my_address_mo;
+  
+          sum += Canal2_MO_Transmit[index_w++] = REQUEST_FW_VERSION;
+            
+          _SET_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION);
+        }
       }
     }
     else
@@ -679,7 +726,8 @@ void CANAL2_MO_routine()
                                                                                                          (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ) ||
                                                                                                          (Canal2_MO_Received[3] == ANY_CONFIRMATION      )
                                                                                                         )                                                               ) ||
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP    )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       )
+                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP    )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       ) ||
+                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION             )) && (Canal2_MO_Received[3] == SEND_FIRMWARE_VERSION         )       )
                      )   
                    )
                 {
@@ -735,7 +783,11 @@ void CANAL2_MO_routine()
               )   
       {
         index_w = 0;
-        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
+        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) 
+        {
+          _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
+          _SET_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION);
+        }
         else  
         {
           LAN_transmiting_count = 0; //Це є ознакою того, що пакет-відповідь успішно передано
@@ -870,6 +922,16 @@ void CANAL2_MO_routine()
             CANAL2_MO_state = CANAL2_MO_ERROR;
           }
         }
+      }
+      else if(_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION))
+      {
+        index_w = 0;
+        _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION);
+        for (size_t i = 0; i < 4; ++i) fwKP[i] = Canal2_MO_Received[4 + i];
+        for (size_t i = 0; i < 6; ++i) fwDTKP[i] = Canal2_MO_Received[14 + i];
+
+        CANAL2_MO_state = CANAL2_MO_FREE;
+        Canal2 = true;
       }
     }
     else if (CANAL2_MO_state == CANAL2_MO_ERROR)

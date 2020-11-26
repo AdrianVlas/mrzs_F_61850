@@ -3828,7 +3828,13 @@ void main_manu_function(void)
               else if (current_ekran.current_level == EKRAN_INFO)
               {
                 //Натисну кнопка Enter у вікні інформації по версії прошивки і карти пам'яті
-                if(current_ekran.index_position == INDEX_ML_INFO_FIRMWARE)
+                if(
+                   (current_ekran.index_position == INDEX_ML_INFO_FIRMWARE) 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                   ||
+                   (current_ekran.index_position == INDEX_ML_INFO_FIRMWARE_CB)
+#endif
+                  )   
                 {
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення кдати і часу створення прошивки

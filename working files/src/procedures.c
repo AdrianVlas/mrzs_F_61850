@@ -3785,6 +3785,29 @@ void changing_diagnostyka_state(void)
   }
   /*****/
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  /*****/
+  //Подія "Рестарт КП"
+  /*****/
+  if (_CHECK_SET_BIT(value_changes, EVENT_RESTART_CB_BIT) != 0)
+  {
+    //Зафіксовано що подія "Пр.Рестарт пр." змінила свій стан
+    if (_CHECK_SET_BIT(diagnostyka_now, EVENT_RESTART_CB_BIT) == 0)
+    {
+      /*
+      Новий стан події "Рестарт КП" є неактивний стан
+      Тому робимо так, щоб ця подія не попала у реєстратор програмних подій таким операціями
+      - знімаємо встановлений біт про зміну стану діагностики
+      - знімаємо повідомлення, що у попередньому стані діагностики ця подія була активною
+      - у текучому стані діагностики нічого міняти не треба, бо цей сигнал є неактивним
+      */
+      _CLEAR_BIT(value_changes, EVENT_RESTART_CB_BIT);
+      _CLEAR_BIT(diagnostyka_before, EVENT_RESTART_CB_BIT);
+    }
+  }
+  /*****/
+#endif
+
   //Перевіряємо, чи треба виконувати дії поо зміні діагностики
   unsigned int not_null = false;
   for (size_t i = 0; i < N_DIAGN; i++) 
