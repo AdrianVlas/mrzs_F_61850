@@ -40,6 +40,12 @@ int validBazaN_BIGACMD(unsigned short dataReg, int actControl);
 int writeACMDSmallActualDataBit(int offset, int dataBit);
 int passwordImunitetBitACMDSmallComponent(int adrReg);
 
+int decoderN_BIGACMDArrayLoader(int idxBit);
+int decoderN_SMALLACMDArrayLoader(int idxBit);
+
+unsigned short decoderN_BIGACMDArray[N_BIG*32];//массив декодирования битов N_BIG
+unsigned short decoderN_SMALLACMDArray[N_SMALL*32];//массив декодирования битов N_SMALL
+
 #define CLRACT_CONTROL  0
 
 COMPONENT_OBJ *acmdsmallcomponent;
@@ -682,146 +688,146 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
   case EL_CONFIGURATION_BEGIN:
     (*outMaska) = RANG_DF1_IN;
     (*dvMaska) = RANG_SMALL_DF1_IN;
-    if(actControl==1) isValid = 0;
+    if(actControl==(1+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 433:
     (*outMaska) = RANG_DF2_IN;
     (*dvMaska) = RANG_SMALL_DF2_IN;
-    if(actControl==2) isValid = 0;
+    if(actControl==(2+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 434:
     (*outMaska) = RANG_DF3_IN;
     (*dvMaska) = RANG_SMALL_DF3_IN;
-    if(actControl==3) isValid = 0;
+    if(actControl==(3+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 435:
     (*outMaska) = RANG_DF4_IN;
     (*dvMaska) = RANG_SMALL_DF4_IN;
-    if(actControl==4) isValid = 0;
+    if(actControl==(4+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 436:
     (*outMaska) = RANG_DF5_IN;
     (*dvMaska) = RANG_SMALL_DF5_IN;
-    if(actControl==5) isValid = 0;
+    if(actControl==(5+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 437:
     (*outMaska) = RANG_DF6_IN;
     (*dvMaska) = RANG_SMALL_DF6_IN;
-    if(actControl==6) isValid = 0;
+    if(actControl==(6+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 438:
     (*outMaska) = RANG_DF7_IN;
     (*dvMaska) = RANG_SMALL_DF7_IN;
-    if(actControl==7) isValid = 0;
+    if(actControl==(7+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 439:
     (*outMaska) = RANG_DF8_IN;
     (*dvMaska) = RANG_SMALL_DF8_IN;
-    if(actControl==8) isValid = 0;
+    if(actControl==(8+SOURCEMARKER_MFT)) isValid = 0;
     break;
 
 //  count_bit = 8;
   case 448:
     (*outMaska) = RANG_DF1_OUT;
 //        (*dvMaska) =
-    if(actControl==1) isValid = 0;
+    if(actControl==(1+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 449:
     (*outMaska) = RANG_DF2_OUT;
 //        (*dvMaska) =
-    if(actControl==2) isValid = 0;
+    if(actControl==(2+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 450:
     (*outMaska) = RANG_DF3_OUT;
 //        (*dvMaska) =
-    if(actControl==3) isValid = 0;
+    if(actControl==(3+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 451:
     (*outMaska) = RANG_DF4_OUT;
 //        (*dvMaska) =
-    if(actControl==4) isValid = 0;
+    if(actControl==(4+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 452:
     (*outMaska) = RANG_DF5_OUT;
 //        (*dvMaska) =
-    if(actControl==5) isValid = 0;
+    if(actControl==(5+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 453:
     (*outMaska) = RANG_DF6_OUT;
 //        (*dvMaska) =
-    if(actControl==6) isValid = 0;
+    if(actControl==(6+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 454:
     (*outMaska) = RANG_DF7_OUT;
 //        (*dvMaska) =
-    if(actControl==7) isValid = 0;
+    if(actControl==(7+SOURCEMARKER_MFT)) isValid = 0;
     break;
   case 455:
     (*outMaska) = RANG_DF8_OUT;
 //        (*dvMaska) =
-    if(actControl==8) isValid = 0;
+    if(actControl==(8+SOURCEMARKER_MFT)) isValid = 0;
     break;
 
 //  count_bit = 12;
   case 464:
     (*outMaska) = RANG_DT1_SET;
     (*dvMaska) = RANG_SMALL_DT1_SET;
-    if(actControl==1) isValid = 0;
+    if(actControl==(1+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 465:
     (*outMaska) = RANG_DT1_RESET;
     (*dvMaska) = RANG_SMALL_DT1_RESET;
-    if(actControl==1) isValid = 0;
+    if(actControl==(1+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 466:
     (*outMaska) = RANG_DT2_SET;
     (*dvMaska) = RANG_SMALL_DT2_SET;
-    if(actControl==2) isValid = 0;
+    if(actControl==(2+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 467:
     (*outMaska) = RANG_DT2_RESET;
     (*dvMaska) = RANG_SMALL_DT2_RESET;
-    if(actControl==2) isValid = 0;
+    if(actControl==(2+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 468:
     (*outMaska) = RANG_DT3_SET;
     (*dvMaska) = RANG_SMALL_DT3_SET;
-    if(actControl==3) isValid = 0;
+    if(actControl==(3+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 469:
     (*outMaska) = RANG_DT3_RESET;
     (*dvMaska) = RANG_SMALL_DT3_RESET;
-    if(actControl==3) isValid = 0;
+    if(actControl==(3+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 470:
     (*outMaska) = RANG_DT4_SET;
     (*dvMaska) = RANG_SMALL_DT4_SET;
-    if(actControl==4) isValid = 0;
+    if(actControl==(4+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 471:
     (*outMaska) = RANG_DT4_RESET;
     (*dvMaska) = RANG_SMALL_DT4_RESET;
-    if(actControl==4) isValid = 0;
+    if(actControl==(4+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 472:
     (*outMaska) = RANG_DT1_OUT;
 //        (*dvMaska) =
-    if(actControl==1) isValid = 0;
+    if(actControl==(1+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 473:
     (*outMaska) = RANG_DT2_OUT;
 //        (*dvMaska) =
-    if(actControl==2) isValid = 0;
+    if(actControl==(2+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 474:
     (*outMaska) = RANG_DT3_OUT;
 //        (*dvMaska) =
-    if(actControl==3) isValid = 0;
+    if(actControl==(3+SOURCEMARKER_DTR)) isValid = 0;
     break;
   case 475:
     (*outMaska) = RANG_DT4_OUT;
 //        (*dvMaska) =
-    if(actControl==4) isValid = 0;
+    if(actControl==(4+SOURCEMARKER_DTR)) isValid = 0;
     break;
 
 //  count_bit = 40;
@@ -1229,6 +1235,9 @@ void constructorACMDSmallComponent(COMPONENT_OBJ *acmdcomp)
   acmdsmallcomponent->postWriteAction = postACMDSmallWriteAction;//action после записи
 
   acmdsmallcomponent->isActiveActualData = 0;
+
+  for(int i=0; i<N_BIG*32; i++)   decoderN_BIGACMDArray[i] = (unsigned short)decoderN_BIGACMDArrayLoader(i);//декодировщик индекса бита в адрес modbus  для реле
+  for(int i=0; i<N_SMALL*32; i++) decoderN_SMALLACMDArray[i] = (unsigned short)decoderN_SMALLACMDArrayLoader(i);//декодировщик индекса бита в адрес modbus  для DV
 }//constructorDOUTSmallComponent(COMPONENT_OBJ *doutcomp)
 
 void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
@@ -1390,6 +1399,13 @@ unsigned int encoderValidN_SMALLACMD(int offsetCMD, int *validCMD)
 int decoderN_BIGACMD(int idxBit)
 {
 //декодировщик индекса бита в адрес modbus  для реле
+  unsigned short result = decoderN_BIGACMDArray[idxBit];
+  if(result==0xFFFF) return -1;
+  return result;
+}//decoderN_BIGACMD(int idxBit)
+int decoderN_BIGACMDArrayLoader(int idxBit)
+{
+//декодировщик индекса бита в адрес modbus  для реле
   for(int item=0; item<(END_ADR_BIT-BEGIN_ADR_BIT+1); item++)
   {
     int outMaska=-1;
@@ -1400,6 +1416,13 @@ int decoderN_BIGACMD(int idxBit)
   return -1;
 }//decoderN_BIGACMD(int idxBit)
 int decoderN_SMALLACMD(int idxBit)
+{
+//декодировщик индекса бита в адрес modbus  для ДВ
+  unsigned short result = decoderN_SMALLACMDArray[idxBit];
+  if(result==0xFFFF) return -1;
+  return result;
+}//decoderN_SMALLACMD(int idxBit)
+int decoderN_SMALLACMDArrayLoader(int idxBit)
 {
 //декодировщик индекса бита в адрес modbus  для ДВ
   for(int item=0; item<(END_ADR_BIT-BEGIN_ADR_BIT+1); item++)

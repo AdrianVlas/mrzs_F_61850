@@ -183,5 +183,5 @@ int privateDTRBigGetReg2(int adrReg)
 
 int validDTRN_BIGACMD(unsigned short dataReg, int actControl)
 {
- return validBazaN_BIGACMD(dataReg, actControl+1);
+ return validBazaN_BIGACMD(dataReg, actControl+(1+SOURCEMARKER_DTR));
 }//validDTRN_BIGACMD(unsigned short dataReg, int actControl)

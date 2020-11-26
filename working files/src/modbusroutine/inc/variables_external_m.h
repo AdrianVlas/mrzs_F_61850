@@ -11,6 +11,11 @@ extern  short tempWriteArray[];
 extern  int   indexTW;//индекс буфера записи
 extern  int   pointInterface;//метка интерфейса 0-USB 1-RS485
 
+//для валидации ранжир источников входов-выходов триггеров
+#define SOURCEMARKER_DTR  10
+//для валидации ранжир источников входов ОФ
+#define SOURCEMARKER_MFT  20
+
 //закоментируйте для боевого применения
 //#define TESTZBIRKA_VERSII_PZ
 

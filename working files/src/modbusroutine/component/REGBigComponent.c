@@ -3,7 +3,7 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 13000
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 13534
+#define END_ADR_REGISTER 13369
 
 #define REGISTERS_REG 32
 
