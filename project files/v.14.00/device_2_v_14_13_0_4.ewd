@@ -777,7 +777,7 @@
                 </option>
                 <option>
                     <name>CCJLinkTCPIP</name>
-                    <state>tunnel:164209104::jlink-europe.segger.com</state>
+                    <state>10.0.0.5</state>
                 </option>
                 <option>
                     <name>CCJLinkSpeedRadioV2</name>

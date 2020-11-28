@@ -29,7 +29,7 @@ enum _start_label
   (sizeof(phi_angle) >> 1) +            \
   sizeof(resurs_vymykacha) +            \
   sizeof(resurs_vidkljuchennja) +       \
-  sizeof(state_inputs) +                \
+  sizeof(active_inputs) +                \
   sizeof(state_outputs) +               \
   sizeof(state_leds) +                  \
   sizeof(active_functions) +            \
