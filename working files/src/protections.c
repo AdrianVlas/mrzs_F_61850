@@ -9427,153 +9427,181 @@ struct{
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_01;
         sLV.ch_amount_blk_src++;
-		
+		arrGsBlk[GS_BLOCK_ORD_NUM_01].GS_Hld.Blk = 1;
     }else{
         //Insert
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_01;
         sLV.ch_amount_active_src++;
-		
+		arrGsBlk[GS_BLOCK_ORD_NUM_01].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 2)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_02;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_02].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_02;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_02].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 3)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_03;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_03].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_03;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_03].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 4)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_04;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_04].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_04;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_04].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 5)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_05;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_05].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_05;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_05].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 6)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_06;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_06].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_06;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_06].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 7)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_07;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_07].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_07;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_07].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 8)) != 0){
     //clr block
                 i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_08;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_08].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_08;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_08].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 9)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_09;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_09].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_09;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_09].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 10)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_10;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_10].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_10;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_10].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 11)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_11;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_11].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_11;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_11].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 12)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_12;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_12].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_12;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_12].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 13)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_13;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_13].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_13;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_13].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 14)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_14;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_14].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_14;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_14].GS_Hld.Blk = 0;
     }
     if(_CHECK_SET_BIT( ((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_GOOSE1 + 15)) != 0){
     //clr block
         i = GS_BLOCK_ORD_NUM_15 - sLV.ch_amount_blk_src;
         hldGsBlkParam.unnV1[i].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_15;
         sLV.ch_amount_blk_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_15].GS_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_active_src;
         hldGsBlkParam.unnV1[lV].GsBlkHdr.OrdNumGsBlk = GS_BLOCK_ORD_NUM_15;
         sLV.ch_amount_active_src++;
+		arrGsBlk[GS_BLOCK_ORD_NUM_15].GS_Hld.Blk = 0;
     }
         hldGsBlkParam.ch_amount_blk_src    = sLV.ch_amount_blk_src;
         hldGsBlkParam.ch_amount_active_src = sLV.ch_amount_active_src;
@@ -9604,6 +9632,7 @@ do{
         i = MMS_BLOCK_ORD_NUM_03 - sLV.ch_amount_mms_blk_src;
         ((MmsBlkParamDsc*)pv)->unnV1[i].MmsBlkHdr.OrdNumMmsBlk = MMS_BLOCK_ORD_NUM_00;
         sLV.ch_amount_mms_blk_src++;
+		arrMmsBlk[MMS_BLOCK_ORD_NUM_00].Mms_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_mms_active_src;
         //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
@@ -9611,6 +9640,7 @@ do{
 		//hldMmsBlkParam.unnV1[MMS_BLOCK_ORD_NUM_00].u8Ar[] = 
 		//arrMmsBlk[MMS_BLOCK_ORD_NUM_00].arCh[2] = 0;
         sLV.ch_amount_mms_active_src++;
+		arrMmsBlk[MMS_BLOCK_ORD_NUM_00].Mms_Hld.Blk = 0;
     }
 
     if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_MMS1+((unsigned int)MMS_BLOCK_ORD_NUM_01))) != 0){
@@ -9618,11 +9648,13 @@ do{
         i = MMS_BLOCK_ORD_NUM_03 - sLV.ch_amount_mms_blk_src;
         hldMmsBlkParam.unnV1[i].MmsBlkHdr.OrdNumMmsBlk = MMS_BLOCK_ORD_NUM_01;
         sLV.ch_amount_mms_blk_src++;
+		arrMmsBlk[MMS_BLOCK_ORD_NUM_01].Mms_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_mms_active_src;
         //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
         hldMmsBlkParam.unnV1[lV].MmsBlkHdr.OrdNumMmsBlk = MMS_BLOCK_ORD_NUM_01;
         sLV.ch_amount_mms_active_src++;
+		arrMmsBlk[MMS_BLOCK_ORD_NUM_01].Mms_Hld.Blk = 0;
     }
 
     if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_MMS1+((unsigned int)MMS_BLOCK_ORD_NUM_02))) != 0){
@@ -9630,11 +9662,13 @@ do{
         i = MMS_BLOCK_ORD_NUM_03 - sLV.ch_amount_mms_blk_src;
         hldMmsBlkParam.unnV1[i].MmsBlkHdr.OrdNumMmsBlk = MMS_BLOCK_ORD_NUM_02;
         sLV.ch_amount_mms_blk_src++;
+		arrMmsBlk[MMS_BLOCK_ORD_NUM_02].Mms_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_mms_active_src;
         //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
         hldMmsBlkParam.unnV1[lV].MmsBlkHdr.OrdNumMmsBlk = MMS_BLOCK_ORD_NUM_02;
         sLV.ch_amount_mms_active_src++;
+		arrMmsBlk[MMS_BLOCK_ORD_NUM_02].Mms_Hld.Blk = 0;
     }
 
     if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_BLOCK_IN_MMS1+((unsigned int)MMS_BLOCK_ORD_NUM_03))) != 0){
@@ -9642,15 +9676,19 @@ do{
         i = MMS_BLOCK_ORD_NUM_03 - sLV.ch_amount_mms_blk_src;
         hldMmsBlkParam.unnV1[i].MmsBlkHdr.OrdNumMmsBlk = MMS_BLOCK_ORD_NUM_03;
         sLV.ch_amount_mms_blk_src++;
+		arrMmsBlk[MMS_BLOCK_ORD_NUM_03].Mms_Hld.Blk = 1;
     }else{
         lV = sLV.ch_amount_mms_active_src;
         //hldGsBlkParam.pAddrGsBlk[lV] = (void*)(&arrMmsBlk[GS_BLOCK_ORD_NUM_00]);
         hldMmsBlkParam.unnV1[lV].MmsBlkHdr.OrdNumMmsBlk = MMS_BLOCK_ORD_NUM_03;
         sLV.ch_amount_mms_active_src++;
+		arrMmsBlk[MMS_BLOCK_ORD_NUM_03].Mms_Hld.Blk = 0;
     }
 
     hldMmsBlkParam.ch_amount_blk_src    = sLV.ch_amount_blk_src;
     hldMmsBlkParam.ch_amount_active_src = sLV.ch_amount_active_src;
+	if(_CHECK_SET_BIT(((unsigned int*)r_p_active_functions), (RANG_MISCEVE_DYSTANCIJNE )) != 1)
+		hldMmsBlkParam.ch_amount_blk_src |= 0x80;
 
 
 
@@ -9887,24 +9925,24 @@ do{
                 //--;
                 //--;
                 //--;
-                i = ((MmsBlkParamDsc*)pvl)-> unnV1[lIdxBlk].MmsBlkHdr.OrdNumMmsBlk;
+                i = lIdxBlk;//.i = ((MmsBlkParamDsc*)pvl)-> unnV1[lIdxBlk].MmsBlkHdr.OrdNumMmsBlk;
                 //Check State Inputs
                 lV = arrMmsBlk[i].arCh[2];//Outs
                 lV &= ~((unsigned long)(Input_In_MMS_block[i]));//Clear all changeble bits
                 lV |= Input_In_MMS_block[i]&Input_ctrl_In_MMS_block[i];//Set ones only
                 //if(noerror)
                     arrMmsBlk[i].arCh[2] = lV;//
-
+                if(arrMmsBlk[i].Mms_Hld.Blk == 0 && (((MmsBlkParamDsc*)pvl)->ch_amount_blk_src&0x80)){ 
                     register unsigned long wrpLV;
         
-                wrpLV = lV;//arrMmsBlk[i].arCh[2];
-                j = 0;lV = ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src;
-                while( (wrpLV != 0) ){//&& j < 8
-                    if((wrpLV & (1<<j)) != 0 ){
-                        arrOrdNumsMmsSignal[lV] = (lIdxBlk<<3)+j;lV++;wrpLV &= ~(1<<j);
-                    }
-                    j++;
-                    
+					wrpLV = lV;//arrMmsBlk[i].arCh[2];
+					j = 0;lV = ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src;
+					while( (wrpLV != 0) ){//&& j < 8
+						if((wrpLV & (1<<j)) != 0 ){
+							arrOrdNumsMmsSignal[lV] = (lIdxBlk<<3)+j;lV++;wrpLV &= ~(1<<j);
+						}
+						j++;
+					}
                 }
                 ((MmsBlkParamDsc*)pvl)->sh_amount_mms_active_src = lV;
                 lIdxBlk++;//  += lV;//! ????
@@ -12390,9 +12428,103 @@ void proc_Mms_blk_out(void* pv,unsigned long lCtrMmsSrc,short* p_arrOrdNumsMmsSi
             for(register unsigned long k = 0; k < N_SMALL; k++){
                 ((unsigned long*)pv)[k] |= ((unsigned long*)pvll+lV) [k];
             }
-            
+			
         }
+		//
+		/*
+		2. У момент ,коли ти активовуєш "Вхід ВФх" (вхід будь-якої визначуваної функції) з MMS (GOOSE це не стосується!), то тобі треба запустити таймер:
 
+global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + _n] = 0;
+
+Де _n - це номер визначуваної функції
+
+Все.
+-----------------------------------------
+
+Для прикладу, як я це роблю у рядках 10140-10152 protection.c
+
+Це недолік у програмі. Бо неможливо активуватьи визначувану функцію з MMS, якщо у неї виставлено таймер павзи ненульовий. Тому, я вважаю, що це неайпріоритетніша робота зараз для тебе мала б бути.
+		*/
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF1_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 0] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 0] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF2_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 1] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 1] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF3_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 2] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 2] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF4_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 3] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 3] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF5_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 4] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 4] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF6_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 5] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 5] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF7_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 6] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 6] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF8_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 7] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 7] = 0;
+//.			}
+//.		}
 }
 
 void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_functions, void *pLanDsc){
