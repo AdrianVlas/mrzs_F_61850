@@ -12445,86 +12445,86 @@ global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + _n] = 0;
 
 Це недолік у програмі. Бо неможливо активуватьи визначувану функцію з MMS, якщо у неї виставлено таймер павзи ненульовий. Тому, я вважаю, що це неайпріоритетніша робота зараз для тебе мала б бути.
 		*/
-		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF1_IN) == 0){
-			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 0] < 0)
-			{
-			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 0] = 0;
-			}
-		}
-		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF2_IN) == 0){
-			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 1] < 0)
-			{
-			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 1] = 0;
-			}
-		}
-		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF3_IN) == 0){
-			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 2] < 0)
-			{
-			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 2] = 0;
-			}
-		}
-		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF4_IN) == 0){
-			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 3] < 0)
-			{
-			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 3] = 0;
-			}
-		}
-		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF5_IN) == 0){
-			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 4] < 0)
-			{
-			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 4] = 0;
-			}
-		}
-		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF6_IN) == 0){
-			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 5] < 0)
-			{
-			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 5] = 0;
-			}
-		}
-		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF7_IN) == 0){
-			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 6] < 0)
-			{
-			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 6] = 0;
-			}
-		}
-		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF8_IN) == 0){
-			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
-			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
-			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 7] < 0)
-			{
-			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
-			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
-			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 7] = 0;
-			}
-		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF1_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 0] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 0] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF2_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 1] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 1] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF3_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 2] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 2] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF4_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 3] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 3] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF5_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 4] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 4] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF6_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 5] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 5] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF7_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 6] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 6] = 0;
+//.			}
+//.		}
+//.		if (_CHECK_SET_BIT(((unsigned long*)pv), RANG_SMALL_DF8_IN) == 0){
+//.			//Зараз має активуватися В-ФункціяХ, тому треба запустити таймер її утримування,
+//.			//для того, щоб потім час цей можна було зрівняти з часом таймера павзи
+//.			if (global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 7] < 0)
+//.			{
+//.			//Запускаємо таймер таймер утримування цієї функції в активному стані (емітація активного входу)
+//.			//Запуск робимо тільки ту тому випадкук, якщо він ще не почався
+//.			global_timers[INDEX_TIMER_DF_PROLONG_SET_FOR_BUTTON_INTERFACE_START + 7] = 0;
+//.			}
+//.		}
 }
 
 void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_functions, void *pLanDsc){
