@@ -10054,7 +10054,7 @@ do{
 //        //sLV.ch_amount_active_src = hldGsBlkParam.ch_amount_active_src;
 //        //pvl = (void*)&hldGsBlkParam;((GsBlkParamDsc*)pvl)->
 //        lCtrMmsSrc = hldMmsBlkParam.sh_amount_mms_active_src;   
-        proc_Mms_blk_out((void*)&temp_value_for_activated_function,hldMmsBlkParam.sh_amount_mms_active_src,arrOrdNumsMmsSignal );        
+        proc_Mms_blk_out((void*)&temp_value_for_activated_function_button_interface,hldMmsBlkParam.sh_amount_mms_active_src,arrOrdNumsMmsSignal );        
 //        while(lCtrMmsSrc){
 //            lV = arrOrdNumsMmsSignal[lCtrMmsSrc];
 //            i = lV>>3;j = lV - i;
