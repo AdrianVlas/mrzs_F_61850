@@ -62,7 +62,7 @@ void make_ekran_chose_settings(void)
       " Transformers   ",
       " BIOS           ",
       " Communication  ",
-      " Data and Time  ",
+      " Date and Time  ",
       " Recorders      ",
       " Extended logic ",
       " F-Keys         ",
