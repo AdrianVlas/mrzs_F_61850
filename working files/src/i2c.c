@@ -905,8 +905,7 @@ void main_routines_for_i2c(void)
           }
           while (
                  (local_point_for_time < (head_fifo_buffer_pr_err_records*SIZE_ONE_RECORD_PR_ERR)) &&
-                 (local_point_for_time <  SIZE_BUFFER_FOR_PR_ERR) &&
-                 (copying_time_to_RTC == 2)  
+                 (local_point_for_time <  SIZE_BUFFER_FOR_PR_ERR)
                 );
           //Розблоковуємо початок записування підготовлених записів, бо я вважаю, що часові мітки я вже гарантовано розставив
           temporary_block_writing_records_pr_err_into_DataFlash = 0;
