@@ -286,7 +286,7 @@ void make_ekran_list_source_tf(void)
   }
   
   uint32_t position_temp = current_ekran.index_position;
-  uint32_t index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+  uint32_t index_of_ekran = ((position_temp << 1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
   
   uint32_t value = ((current_ekran.edition == 0) ? current_settings : edition_settings).ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1];
   //Копіюємо  рядки у робочий екран
