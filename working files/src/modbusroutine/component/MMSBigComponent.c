@@ -81,7 +81,6 @@ int setMMSBigModbusRegister(int adrReg, int dataReg)
   superSetOperativMarker(mmsbigcomponent, adrReg);
   superSetTempWriteArray(dataReg);//записать в буфер
 
-  if(validN_SMALLACMD(dataReg)==MARKER_ERRORPERIMETR) return MARKER_ERRORPERIMETR;
   if(dataReg==0) return 0;//прошла валидация
 
   switch((unsigned short)dataReg)
@@ -91,24 +90,6 @@ int setMMSBigModbusRegister(int adrReg, int dataReg)
    case 50562://- Сброс индикации
    case 50563://- Сброс реле
    case 50599://- С.блк.Гот.до ТУ
-
-   case 50432://- Вход Опред. Функция  1
-   case 50433://- Вход Опред. Функция  2
-   case 50434://- Вход Опред. Функция  3
-   case 50435://- Вход Опред. Функция  4
-   case 50436://- Вход Опред. Функция  5
-   case 50437://- Вход Опред. Функция  6
-   case 50438://- Вход Опред. Функция  7
-   case 50439://- Вход Опред. Функция  8
-
-   case 50464://- Уст О-триггера 1
-   case 50465://- Сброс О-триггера 1
-   case 50466://- Уст О-триггера 2
-   case 50467://- Сброс О-триггера 2
-   case 50468://- Уст О-триггера 3
-   case 50469://- Сброс О-триггера 3
-   case 50470://- Уст О-триггера 4
-   case 50471://- Сброс О-триггера 4
 
       return 0; //прошла валидация
   }//switch

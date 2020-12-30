@@ -689,7 +689,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case MARKER1046:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_input_signal;
-//      if(regUst&(~(0xFFFF))) diapazon=0;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_INPUTS)-1)))) != 0) diapazon=0;
     break;
   case 1047:
     (*multer) = 1;
@@ -700,7 +700,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case MARKER1048:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_input;
-//      if(regUst&(~(0xFFFF))) diapazon=0;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_INPUTS)-1)))) != 0) diapazon=0;
     break;
   case 1049:
     (*multer) = 1;
@@ -711,6 +711,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case MARKER1050:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_OUTPUTS)-1)))) != 0) diapazon=0;
     break;
   case 1051:
     (*multer) = 1;
@@ -721,22 +722,23 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case MARKER1052:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_OUTPUTS)-1)))) != 0) diapazon=0;
     break;
   case 1053:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
-      if(regUst&(~(0xF))) diapazon=0;
+    if(regUst&(~(0xF))) diapazon=0;
     break;
   case 1054:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_df;
-    if(regUst&(~(0xFF))) diapazon=0;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_DEFINED_FUNCTIONS)-1)))) != 0) diapazon=0;
     break;
 #define MARKER1055  1055
   case MARKER1055:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_led;
-//      if(regUst&(~(0xFFFF))) diapazon=0;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_LEDS)-1)))) != 0) diapazon=0;
     break;
   case 1056:
     (*multer) = 1;
@@ -1075,7 +1077,7 @@ int getUSTBigModbusRegister(int adrReg)
     }
     else
     {
-      return ((*editValue)>>16)  & (uint32_t)0xffff;
+      return ((*editValue)>>16)  & (uint32_t)0xf;//fff;
     }//else
 #else
     if(offset==MARKER1046)
@@ -1103,12 +1105,13 @@ int getUSTBigModbusRegister(int adrReg)
     }
     else
     {
-      return ((~(*editValue))>>16)  & (uint32_t)0xffff;
+      return ((~(*editValue))>>16)  & (uint32_t)0xf;//fff;
     }//else
 #else
     if(offset==MARKER1048)
     {
-      return (~(*editValue)) & (uint32_t)0xffff;
+//      return (~(*editValue)) & (uint32_t)0xffff;
+      return (~(*editValue)) & ((1<<NUMBER_INPUTS)-1);//(uint32_t)0xffff;
     }
     else
     {
@@ -1130,7 +1133,7 @@ int getUSTBigModbusRegister(int adrReg)
     }
     else
     {
-      return ((*editValue)>>16)  & (uint32_t)0xffff;
+      return ((*editValue)>>16)  & (uint32_t)0xf;//fff;
     }//else
 #else
     if(offset==MARKER1050)
@@ -1156,7 +1159,7 @@ int getUSTBigModbusRegister(int adrReg)
     }
     else
     {
-      return ((*editValue)>>16)  & (uint32_t)0xffff;
+      return ((*editValue)>>16)  & (uint32_t)0xf;//fff;
     }//else
 #else
     if(offset==MARKER1052)
@@ -1180,7 +1183,7 @@ int getUSTBigModbusRegister(int adrReg)
     }
     else
     {
-      return ((*editValue)>>16)  & (uint32_t)0xffff;
+      return ((*editValue)>>16)  & (uint32_t)0x1;//ffff;
     }//else
   }//if(editValue == (uint32_t*)&edition_settings.type_of_led)
 
@@ -1286,6 +1289,12 @@ int postUSTBigWriteAction(void)
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
     if(editValue == (uint32_t*)&edition_settings.type_of_input)
     {
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
       if(offset==MARKER1048)
       {
         (*editValue) &= (uint32_t)~0xffff;
@@ -1295,9 +1304,17 @@ int postUSTBigWriteAction(void)
       else
       {
         (*editValue)  &= (uint32_t)~(0xffff<<16);
-        (*editValue)  |= (((~value) & 0xffff)<<16);//
+        (*editValue)  |= (((~value) & 0xf)<<16);//
         goto m1;
       }//else
+#else
+      if(offset==MARKER1048)
+      {
+        (*editValue) &= (uint32_t)~((1<<NUMBER_INPUTS)-1);//(uint32_t)~0xffff;
+        (*editValue) |= ((~value) & ((1<<NUMBER_INPUTS)-1));//0xffff);
+        goto m1;
+      }
+#endif
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
 
     if(editValue == (uint32_t*)&edition_settings.type_of_output)
