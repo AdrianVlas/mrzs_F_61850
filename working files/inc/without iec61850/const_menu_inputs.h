@@ -201,33 +201,33 @@
   " SetPoints gr-3 ",                   \
   " SetPoints gr-4 ",                   \
   "Rem Ctr R Bl Res",                   \
-  "  Blc.of OCP1   ",                   \
-  "  Blc.of OCP2   ",                   \
+  "    OCP1 Blk    ",                   \
+  "    OCP2 Blk    ",                   \
   "  OCP2 Acc Blk  ",                   \
-  "  Blc.of OCP3   ",                   \
-  "  Blc.of OCP4   ",                   \
+  "    OCP3 Blk    ",                   \
+  "    OCP4 Blk    ",                   \
   "   LVOCP1 Blk   ",                   \
   "   LVOCP2 Blk   ",                   \
   " LVOCP2 acc Blk ",                   \
-  "    ¡ÎÓÍ.«ƒ«    ",                   \
+  "    AFD Blk     ",                   \
   "AFD via BI Start",                   \
   "   SDEFP Blk    ",                   \
   "   DEFP1 Blk    ",                   \
   "   DEFP2 Blk    ",                   \
   "   DEFP3 Blk    ",                   \
-  " —Ú‡Ú.·ÎÓÍ.¿œ¬  ",                   \
+  "     AR Blk     ",                   \
   " LF—/FAR vBI St ",                   \
   "    LF—1 Blk    ",                   \
   "    LF—2 Blk    ",                   \
   " CBF vBI Start  ",                   \
-  "  Blc.of NPSP   ",                   \
+  "   NSOCP Blk    ",                   \
   "    UVP1 Blk    ",                   \
   " UVP1 vBI Start ",                   \
   "    UVP2 Blk    ",                   \
   " UVP2 vBI Start ",                   \
   "    OVP1 Blk    ",                   \
   "    OVP2 Blk    ",                   \
-  "   Blc.of UPx   ",                   \
+  "   MFPx Block   ",                   \
   "  UD-Func 1 In  ",                   \
   "  UD-Func 2 In  ",                   \
   "  UD-Func 3 In  ",                   \

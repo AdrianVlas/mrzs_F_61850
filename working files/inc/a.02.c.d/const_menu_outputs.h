@@ -489,239 +489,239 @@
   " Пом.нал.р.лог. "
     
 #define NAME_RANG_EN    \
-  " ON CB Blocking ",   \
-  "Indication Reset",   \
+  "  CB Close Blk  ",   \
+  "   LED Reset    ",   \
   "  Relay Reset   ",   \
   "  Local/Remote  ",   \
-  "  State of CB   ",   \
-  "Откл.от вн.защит",   \
-  "     On CB      ",   \
-  " On CB Control  ",   \
-  "     Off CB     ",   \
-  " Off CB Control ",   \
+  "    CB State    ",   \
+  " Ext CB Open Cmd",   \
+  "  Close CB Cmd  ",   \
+  " CB Op Circ Ctl ",   \
+  "  Open CB Cmd   ",   \
+  " CB Cl Circ Ctl ",   \
   "  CB Actuator   ",   \
-  " Прев.Iот.ном.  ",   \
-  " Крит.Ресурс ВВ ",   \
-  " Исч.Ресурс ВВ  ",   \
-  "  Total Fault   ",   \
+  "Rat Trip Cur Exc",   \
+  "  CB crit res   ",   \
+  "   CB res exh   ",   \
+  " General fault  ",   \
   " Emergence Fault",   \
-  "An.Rec.Operation",   \
-  " D.Rec.Operation",   \
-  " Откл.от защит  ",   \
-  "Off CB Operation",   \
-  " On CB Operation",   \
-  " Pick-up Set 1  ",   \
-  " Pick-up Set 2  ",   \
-  " Pick-up Set 3  ",   \
-  " Pick-up Set 4  ",   \
-  " Инв.ДВ гр.уст. ",   \
-  "Блк.гр.уст.от з.",   \
-  " С.блк.Гот.к ТУ ",   \
-  " Готовность к ТУ",   \
-  "Changed settings",   \
-  "  Blc.of OCP1   ",   \
-  "  Blc.of OCP2   ",   \
-  "  OCP2 Acc.Blc. ",   \
-  "  Blc.of OCP3   ",   \
-  "  Blc.of OCP4   ",   \
-  " Сект.МТЗН1 Пр. ",   \
-  " Сект.МТЗН1 Обр.",   \
-  "    OCP1 SE     ",   \
-  " ПО МТЗН1 Прямой",   \
-  " ПО МТЗН1 Обр.  ",   \
-  "  ПО U МТЗПН1   ",   \
-  "   ПО МТЗПН1    ",   \
-  "      OCP1      ",   \
-  " Сект.МТЗН2 Пр. ",   \
-  " Сект.МТЗН2 Обр.",   \
-  "    OCP2 SE     ",   \
-  " ПО МТЗН2 Прямой",   \
-  " ПО МТЗН2 Обр.  ",   \
-  "  ПО U МТЗПН2   ",   \
-  "   ПО МТЗПН2    ",   \
-  "      OCP2      ",   \
-  " Сект.МТЗН3 Пр. ",   \
-  " Сект.МТЗН3 Обр.",   \
-  "    OCP3 SE     ",   \
-  " ПО МТЗН3 Прямой",   \
-  " ПО МТЗН3 Обр.  ",   \
-  "  ПО U МТЗПН3   ",   \
-  "   ПО МТЗПН3    ",   \
-  "      OCP3      ",   \
-  " Сект.МТЗН4 Пр. ",   \
-  " Сект.МТЗН4 Обр.",   \
-  "    OCP4 SE     ",   \
-  " ПО МТЗН4 Прямой",   \
-  " ПО МТЗН4 Обр.  ",   \
-  "  ПО U МТЗПН4   ",   \
-  "   ПО МТЗПН4    ",   \
-  "      OCP4      ",   \
-  " ПО блок.U МТЗН ",   \
-  "    НЦН-МТЗ     ",   \
-  "OCP 0.4kV 1 Blc.",   \
-  "OCP 0.4kV 2 Blc.",   \
-  "OCP 0.4kV 2 Ac.B",   \
-  " OCP 0.4kV 1 SE ",   \
-  "  OCP 0.4kV 1   ",   \
-  " OCP 0.4kV 2 SE ",   \
-  "  OCP 0.4kV 2   ",   \
-  "    Блок.ЗДЗ    ",   \
-  " Пуск ЗДЗ от ДВ ",   \
-  " Свет ЗДЗ от ДВ ",   \
-  "     ПО ЗДЗ     ",   \
-  "      ЗДЗ       ",   \
-  "    Блок.НЗЗ    ",   \
-  "     ПО НЗЗ     ",   \
-  "      НЗЗ       ",   \
-  "  SGFP(3Io) SE  ",   \
-  "   SGFP(3Io)    ",   \
-  "   ПО ЗЗ(3U0)   ",   \
-  "    ЗЗ(3U0)     ",   \
-  "   Сектор НЗЗ   ",   \
-  "   Блок.ТЗНП1   ",   \
-  " Сект.ТЗНП1 Пр. ",   \
-  " Сект.ТЗНП1 Обр.",   \
-  "ПО 3I0 ТЗНП1 Пр.",   \
-  "ПО 3I0 ТЗНП1 Обр",   \
-  "ПО 3U0 ТЗНП1 Пр.",   \
-  "ПО 3U0 ТЗНП1 Обр",   \
-  "  ПО ТЗНП1 Пр.  ",   \
-  " ПО ТЗНП1 Обр.  ",   \
-  "     ТЗНП1      ",   \
-  "   Блок.ТЗНП2   ",   \
-  " Сект.ТЗНП2 Пр. ",   \
-  " Сект.ТЗНП2 Обр.",   \
-  "ПО 3I0 ТЗНП2 Пр.",   \
-  "ПО 3I0 ТЗНП2 Обр",   \
-  "ПО 3U0 ТЗНП2 Пр.",   \
-  "ПО 3U0 ТЗНП2 Обр",   \
-  "  ПО ТЗНП2 Пр.  ",   \
-  " ПО ТЗНП2 Обр.  ",   \
-  "     ТЗНП2      ",   \
-  "   Блок.ТЗНП3   ",   \
-  " Сект.ТЗНП3 Пр. ",   \
-  " Сект.ТЗНП3 Обр.",   \
-  "ПО 3I0 ТЗНП3 Пр.",   \
-  "ПО 3I0 ТЗНП3 Обр",   \
-  "ПО 3U0 ТЗНП3 Пр.",   \
-  "ПО 3U0 ТЗНП3 Обр",   \
-  "  ПО ТЗНП3 Пр.  ",   \
-  " ПО ТЗНП3 Обр.  ",   \
-  "     ТЗНП3      ",   \
-  "Static Blc.of AR",   \
-  "       AR       ",   \
-  "      AR2       ",   \
-  "      AR3       ",   \
-  "      AR4       ",   \
-  "   Работа АПВ   ",   \
-  "UFLS/FAR from DI",   \
-  "   Блок.АЧР1    ",   \
-  "   Блок.АЧР2    ",   \
-  "   Разр.ЧАПВ    ",   \
-  "   Блок.ЧАПВ    ",   \
-  "    ПО АЧР1     ",   \
-  "   ПО ЧАПВ1     ",   \
-  "   UFLS/FAR1    ",   \
-  "    ПО АЧР2     ",   \
-  "   ПО ЧАПВ2     ",   \
-  "   UFLS/FAR2    ",   \
-  " CBFP Start f.DI",   \
-  "    CBFP SE     ",   \
-  "     CBFP1      ",   \
-  "     CBFP2      ",   \
-  "  Blc.of NPSP   ",   \
-  "    NPSP SE     ",   \
-  "      NPSP      ",   \
-  "   Блок.Umin1   ",   \
-  "   Пуск Umin1   ",   \
-  "   Блок.Umin2   ",   \
-  "   Пуск Umin2   ",   \
-  "    ПО Umin1    ",   \
-  " ПО Uблк.Umin1  ",   \
-  " ПО Iблк.Umin1  ",   \
-  "     Umin1      ",   \
-  "    ПО Umin2    ",   \
-  " ПО Uблк.Umin2  ",   \
-  " ПО Iблк.Umin2  ",   \
-  "     Umin2      ",   \
-  "   Блок.Umax1   ",   \
-  "    ПО Umax1    ",   \
-  "     Umax1      ",   \
-  "   Блок.Umax2   ",   \
-  "    ПО Umax2    ",   \
-  "     Umax2      ",   \
-  "   Blc.of UPx   ",   \
-  "     UPx SE     ",   \
-  "      UPx       ",   \
-  "    UDF1 In     ",   \
-  "    UDF1 Out    ",   \
-  "    UDF2 In     ",   \
-  "    UDF2 Out    ",   \
-  "    UDF3 In     ",   \
-  "    UDF3 Out    ",   \
-  "    UDF4 In     ",   \
-  "    UDF4 Out    ",   \
-  "    UDF5 In     ",   \
-  "    UDF5 Out    ",   \
-  "    UDF6 In     ",   \
-  "    UDF6 Out    ",   \
-  "    UDF7 In     ",   \
-  "    UDF7 Out    ",   \
-  "    UDF8 In     ",   \
-  "    UDF8 Out    ",   \
-  "UD Flip-Flop1 S.",   \
-  "UD Flip-Flop1 R.",   \
-  "UD Flip-Flop1 O.",   \
-  "UD Flip-Flop2 S.",   \
-  "UD Flip-Flop2 R.",   \
-  "UD Flip-Flop2 O.",   \
-  "UD Flip-Flop3 S.",   \
-  "UD Flip-Flop3 R.",   \
-  "UD Flip-Flop3 O.",   \
-  "UD Flip-Flop4 S.",   \
-  "UD Flip-Flop4 R.",   \
-  "UD Flip-Flop4 O.",   \
-  "    UD AND1     ",   \
-  "    UD AND2     ",   \
-  "    UD AND3     ",   \
-  "    UD AND4     ",   \
-  "    UD AND5     ",   \
-  "    UD AND6     ",   \
-  "    UD AND7     ",   \
-  "    UD AND8     ",   \
-  "     UD OR1     ",   \
-  "     UD OR2     ",   \
-  "     UD OR3     ",   \
-  "     UD OR4     ",   \
-  "     UD OR5     ",   \
-  "     UD OR6     ",   \
-  "     UD OR7     ",   \
-  "     UD OR8     ",   \
-  "    UD XOR1     ",   \
-  "    UD XOR2     ",   \
-  "    UD XOR3     ",   \
-  "    UD XOR4     ",   \
-  "    UD XOR5     ",   \
-  "    UD XOR6     ",   \
-  "    UD XOR7     ",   \
-  "    UD XOR8     ",   \
-  "    UD NOT1     ",   \
-  "    UD NOT2     ",   \
-  "    UD NOT3     ",   \
-  "    UD NOT4     ",   \
-  "    UD NOT5     ",   \
-  "    UD NOT6     ",   \
-  "    UD NOT7     ",   \
-  "    UD NOT8     ",   \
-  "    UD NOT9     ",   \
-  "    UD NOT10    ",   \
-  "    UD NOT11    ",   \
-  "    UD NOT12    ",   \
-  "    UD NOT13    ",   \
-  "    UD NOT14    ",   \
-  "    UD NOT15    ",   \
-  "    UD NOT16    ",   \
-  " Ош.настр.р.лог."
+  " Dst Rec InPro  ",   \
+  " Bin Rec InPro  ",   \
+  " Trip via Prot  ",   \
+  "  Open CB Com   ",   \
+  "  Close CB Com  ",   \
+  " SetPoints gr-1 ",   \
+  " SetPoints gr-2 ",   \
+  " SetPoints gr-3 ",   \
+  " SetPoints gr-4 ",   \
+  "SP gr chg BI pre",   \
+  " SP gr chg Blk  ",   \
+  "Rem Ctr R Bl Res",   \
+  "  Rem Ctl Ena   ",   \
+  " Settings change",   \
+  "    OCP1 Blk    ",   \
+  "    OCP2 Blk    ",   \
+  "  OCP2 Acc Blk  ",   \
+  "    OCP3 Blk    ",   \
+  "    OCP4 Blk    ",   \
+  "  DOCP1 Fw Sec  ",   \
+  "  DOCP1 Bw Sec  ",   \
+  "   OCP1 Start   ",   \
+  " DOCP1 Fw Start ",   \
+  " DOCP1 Bw Start ",   \
+  " VOCP1 U Start  ",   \
+  "  VOCP1 Start   ",   \
+  "    OCP1 Op     ",   \
+  "  DOCP2 Fw Sec  ",   \
+  "  DOCP2 Bw Sec  ",   \
+  "   OCP2 Start   ",   \
+  " DOCP2 Fw Start ",   \
+  " DOCP2 Bw Start ",   \
+  " VOCP2 U Start  ",   \
+  "  VOCP2 Start   ",   \
+  "    OCP2 Op     ",   \
+  "  DOCP3 Fw Sec  ",   \
+  "  DOCP3 Bw Sec  ",   \
+  "   OCP3 Start   ",   \
+  " DOCP3 Fw Start ",   \
+  " DOCP3 Bw Start ",   \
+  " VOCP3 U Start  ",   \
+  "  VOCP3 Start   ",   \
+  "    OCP3 Op     ",   \
+  "  DOCP4 Fw Sec  ",   \
+  "  DOCP4 Bw Sec  ",   \
+  "   OCP4 Start   ",   \
+  " DOCP4 Fw Start ",   \
+  " DOCP4 Bw Start ",   \
+  " VOCP4 U Start  ",   \
+  "  VOCP4 Start   ",   \
+  "    OCP4 Op     ",   \
+  "   OCP U Blk    ",   \
+  " OCP U Malfunc  ",   \
+  "   LVOCP1 Blk   ",   \
+  "   LVOCP2 Blk   ",   \
+  " LVOCP2 acc Blk ",   \
+  "  LVOCP1 Start  ",   \
+  "   LVOCP1 Op    ",   \
+  "  LVOCP2 Start  ",   \
+  "   LVOCP2 Op    ",   \
+  "    AFD Blk     ",   \
+  "AFD via BI Start",   \
+  " AFD via BI St  ",   \
+  "   AFD Start    ",   \
+  "     AFD Op     ",   \
+  "   SDEFP Blk    ",   \
+  "  SDEFP Start   ",   \
+  "    SDEFP Op    ",   \
+  "  SEFOCP Start  ",   \
+  "   SEFOCP Op    ",   \
+  "  SEFOVP Start  ",   \
+  "   SEFOVP Op    ",   \
+  "   SDEFP Sec    ",   \
+  "   DEFP1 Blk    ",   \
+  "  DEFP1 Sec Fw  ",   \
+  "  DEFP1 Sec Bw  ",   \
+  " DEFP3I01 Fw St ",   \
+  " DEFP3I01 Bw St ",   \
+  " DEFP3U01 Fw St ",   \
+  " DEFP3U01 Bw St ",   \
+  " DEFP1 Fw Start ",   \
+  " DEFP1 Bw Start ",   \
+  "    DEFP1 Op    ",   \
+  "   DEFP2 Blk    ",   \
+  "  DEFP2 Sec Fw  ",   \
+  "  DEFP2 Sec Bw  ",   \
+  " DEFP3I02 Fw St ",   \
+  " DEFP3I02 Bw St ",   \
+  " DEFP3U02 Fw St ",   \
+  " DEFP3U02 Bw St ",   \
+  " DEFP2 Fw Start ",   \
+  " DEFP2 Bw Start ",   \
+  "    DEFP2 Op    ",   \
+  "   DEFP3 Blk    ",   \
+  "  DEFP3 Sec Fw  ",   \
+  "  DEFP3 Sec Bw  ",   \
+  " DEFP3I03 Fw St ",   \
+  " DEFP3I03 Bw St ",   \
+  " DEFP3U03 Fw St ",   \
+  " DEFP3U03 Bw St ",   \
+  " DEFP3 Fw Start ",   \
+  " DEFP3 Bw Start ",   \
+  "    DEFP3 Op    ",   \
+  "     AR Blk     ",   \
+  "   AR Cycle 1   ",   \
+  "   AR Cycle 2   ",   \
+  "   AR Cycle 3   ",   \
+  "   AR Cycle 4   ",   \
+  "    AR InPro    ",   \
+  " LFС/FAR vBI St ",   \
+  "    LFС1 Blk    ",   \
+  "    LFС2 Blk    ",   \
+  "    FAR Ena     ",   \
+  "    FAR Blk     ",   \
+  "   LFС1 Start   ",   \
+  "   FAR1 Start   ",   \
+  "   LFС/FAR 1    ",   \
+  "   LFС2 Start   ",   \
+  "   FAR2 Start   ",   \
+  "   LFС/FAR 2    ",   \
+  " CBF vBI Start  ",   \
+  "   CBF Start    ",   \
+  "   CBF In Op    ",   \
+  "   CBF Ex Op    ",   \
+  "   NSOCP Blk    ",   \
+  "  NSOCP Start   ",   \
+  "    NSOCP Op    ",   \
+  "    UVP1 Blk    ",   \
+  " UVP1 vBI Start ",   \
+  "    UVP2 Blk    ",   \
+  " UVP2 vBI Start ",   \
+  "   UVP1 Start   ",   \
+  "   UVP1 UBlk    ",   \
+  "   UVP1 IBlk    ",   \
+  "    UVP1 Op     ",   \
+  "   UVP2 Start   ",   \
+  "   UVP2 UBlk    ",   \
+  "   UVP2 IBlk    ",   \
+  "    UVP2 Op     ",   \
+  "    OVP1 Blk    ",   \
+  "   OVP1 Start   ",   \
+  "    OVP1 Op     ",   \
+  "    OVP2 Blk    ",   \
+  "   OVP2 Start   ",   \
+  "    OVP2 Op     ",   \
+  "   MFPx Block   ",   \
+  "   MFPx Start   ",   \
+  "      MFPx      ",   \
+  "  UD-Func 1 In  ",   \
+  " UD-Func 1 Out  ",   \
+  "  UD-Func 2 In  ",   \
+  " UD-Func 2 Out  ",   \
+  "  UD-Func 3 In  ",   \
+  " UD-Func 3 Out  ",   \
+  "  UD-Func 4 In  ",   \
+  " UD-Func 4 Out  ",   \
+  "  UD-Func 5 In  ",   \
+  " UD-Func 5 Out  ",   \
+  "  UD-Func 6 In  ",   \
+  " UD-Func 6 Out  ",   \
+  "  UD-Func 7 In  ",   \
+  " UD-Func 7 Out  ",   \
+  "  UD-Func 8 In  ",   \
+  " UD-Func 8 Out  ",   \
+  "  UD-FF 1 Set   ",   \
+  " UD-FF 1 Reset  ",   \
+  "  UD-FF 1 Out   ",   \
+  "  UD-FF 2 Set   ",   \
+  " UD-FF 2 Reset  ",   \
+  "  UD-FF 2 Out   ",   \
+  "  UD-FF 3 Set   ",   \
+  " UD-FF 3 Reset  ",   \
+  "  UD-FF 3 Out   ",   \
+  "  UD-FF 4 Set   ",   \
+  " UD-FF 4 Reset  ",   \
+  "  UD-FF 4 Out   ",   \
+  "     AND 1      ",   \
+  "     AND 2      ",   \
+  "     AND 3      ",   \
+  "     AND 4      ",   \
+  "     AND 5      ",   \
+  "     AND 6      ",   \
+  "     AND 7      ",   \
+  "     AND 8      ",   \
+  "      OR 1      ",   \
+  "      OR 2      ",   \
+  "      OR 3      ",   \
+  "      OR 4      ",   \
+  "      OR 5      ",   \
+  "      OR 6      ",   \
+  "      OR 7      ",   \
+  "      OR 8      ",   \
+  "     XOR 1      ",   \
+  "     XOR 2      ",   \
+  "     XOR 3      ",   \
+  "     XOR 4      ",   \
+  "     XOR 5      ",   \
+  "     XOR 6      ",   \
+  "     XOR 7      ",   \
+  "     XOR 8      ",   \
+  "     NOT 1      ",   \
+  "     NOT 2      ",   \
+  "     NOT 3      ",   \
+  "     NOT 4      ",   \
+  "     NOT 5      ",   \
+  "     NOT 6      ",   \
+  "     NOT 7      ",   \
+  "     NOT 8      ",   \
+  "     NOT 9      ",   \
+  "     NOT 10     ",   \
+  "     NOT 11     ",   \
+  "     NOT 12     ",   \
+  "     NOT 13     ",   \
+  "     NOT 14     ",   \
+  "     NOT 15     ",   \
+  "     NOT 16     ",   \
+  "  UD-Logic Er   "
 
 #define NAME_RANG_KZ    \
   "  Блок.вкл.ВВ   ",   \

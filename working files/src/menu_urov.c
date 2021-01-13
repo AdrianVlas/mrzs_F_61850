@@ -302,7 +302,7 @@ void make_ekran_control_urov()
       "    via OVP2    ",
       "    via LFC1    ",
       "    via LFC2    ",
-      "  Ïóñê îò ÓÇx   "
+      "   MFPx Start   "
     },
     {
       "      ÓÐÎÂ      ",

@@ -342,7 +342,7 @@ void make_ekran_transformator_control(void)
       " Виб.U для зах. "
     },
     {
-      " Выб.U для защит"
+      "U protection use"
     },
     {
       " Выб.U для защит"

@@ -14,7 +14,7 @@ void make_ekran_timeout_zdz(unsigned int group)
       "     T ÇÄÇ      "
     },
     {
-      "     T ÇÄÇ      "
+      "    AFD Del     "
     },
     {
       "     T ÇÄÇ      "
@@ -153,12 +153,12 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
-      "      ÎÂÄ1      ",
-      "      ÎÂÄ2      ",
-      "      ÎÂÄ3      ",
-      "  Ïîðîã ÷óâñò.  ",
+      "   SENSSARC1    ",
+      "   SENSSARC2    ",
+      "   SENSSARC3    ",
+      "  sensitivity   ",
 #endif
-      "   Âûáîð ÇÄÇ    ",
+      "  AFD settings  ",
       "    via OCP1    ",
       "    via OCP2    ",
       "    via OCP3    ",
@@ -202,7 +202,7 @@ void make_ekran_control_zdz()
    {4, 5},
    {4, 4},
    {5, 6},
-   {4, 4}
+   {4, 5}
   };
   const unsigned char information_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER][MAX_COL_LCD] = 
   {

@@ -236,10 +236,10 @@ ERROR_CB_FIX
   " Ош.воcст.с.вых ",   \
   "Инф.вых./св.нет ",   \
   " Ош.зап.вых./св.",   \
-  " Ош.триг.инф.   ",   \
-  " Триг.инф.нет   ",   \
-  "Ош.зап.триг.инф.",   \
-  "Ош.контр.триг.и.",   \
+  "  Ош.Ин.ЭнНезСЛ ",   \
+  " Ин.ЭнНезСЛ Нет ",   \
+  " Ош.З.Ин.ЭнНезСЛ",   \
+  " Ош.К.Ин.ЭнНезСЛ",   \
   " Ош.инф.ан.рег. ",   \
   " Инф.ан.рег.нет ",   \
   "Ош.зап.и.ан.рег.",   \
@@ -325,18 +325,18 @@ ERROR_CB_FIX
   "КП:Ош.приема к.2",   \
   "КП:Ош.пакета к.2",   \
   " КП:Ош.запр.к.2 ",   \
-  " БА1 ф.         ",   \
-  " БА1 к.         ",   \
-  " БДВВ5_1 ф.     ",   \
-  " БДВВ5_1 к.     ",   \
-  " БДВВ5_2 ф.     ",   \
-  " БДВВ5_2 к.     ",   \
-  " БДВ-ДЗ ф.      ",   \
-  " БДВ-ДЗ к.      ",   \
-  " БДЗ ф.         ",   \
-  " БДЗ к.         ",   \
-  " БДВВ6 ф.       ",   \
-  " БДВВ6 к.       ",   \
+  " БА1 от.        ",   \
+  " БА1 п.         ",   \
+  " БДВВ5_1 от.    ",   \
+  " БДВВ5_1 п.     ",   \
+  " БДВВ5_2 от.    ",   \
+  " БДВВ5_2 п.     ",   \
+  " БДВ-ДЗ от.     ",   \
+  " БДВ-ДЗ п.      ",   \
+  " БДЗ от.        ",   \
+  " БДЗ п.         ",   \
+  " БДВВ6 от.      ",   \
+  " БДВВ6 п.       ",   \
   " КП ф.          ",   \
   " Ошибка 117     ",   \
   " Ошибка 118     ",   \
@@ -358,10 +358,10 @@ ERROR_CB_FIX
   " Пом.відн.с.вих.",   \
   "Інф.вих./св.нема",   \
   "Пом.зап.вих./св.",   \
-  " Пом.триґ.інф.  ",   \
-  " Триґ.інф.нема  ",   \
-  " Пом.зап.триґ.і.",   \
-  "Пом.контр.триґ.і",   \
+  " Пом.Ін.ЕнНезСЛ ",   \
+  " Ін.ЕнНезСЛ Нема",   \
+  "Пом.З.Ін.ЕнНезСЛ",   \
+  "Пом.К.Ін.ЕнНезСЛ",   \
   " Пом.інф.ан.р.  ",   \
   " Інф.ан.р.нема  ",   \
   " Пом.зап.і.ан.р.",   \
@@ -447,141 +447,141 @@ ERROR_CB_FIX
   "КП:Пом.прийм.к.2",   \
   " КП:Пом.п-ту к.2",   \
   " КП:Пом.зап.к.2 ",   \
-  " БА1 ф.         ",   \
-  " БА1 к.         ",   \
-  " БДВВ5_1 ф.     ",   \
-  " БДВВ5_1 к.     ",   \
-  " БДВВ5_2 ф.     ",   \
-  " БДВВ5_2 к.     ",   \
-  " БДВ-ДЗ ф.      ",   \
-  " БДВ-ДЗ к.      ",   \
-  " БДЗ ф.         ",   \
-  " БДЗ к.         ",   \
-  " БДВВ6 ф.       ",   \
-  " БДВВ6 к.       ",   \
+  " БА1 від.       ",   \
+  " БА1 п.         ",   \
+  " БДВВ5_1 від.   ",   \
+  " БДВВ5_1 п.     ",   \
+  " БДВВ5_2 від.   ",   \
+  " БДВВ5_2 п.     ",   \
+  " БДВ-ДЗ від.    ",   \
+  " БДВ-ДЗ п.      ",   \
+  " БДЗ від.       ",   \
+  " БДЗ п.         ",   \
+  " БДВВ6 від.     ",   \
+  " БДВВ6 п.       ",   \
   " КП ф.          ",   \
   " Помилка 117    ",   \
   " Помилка 118    ",   \
   " Помилка 119    "
 
 # define NAME_DIAGN_EN  \
-  " I2C Err.       ",   \
-  " Settings Err.  ",   \
+  " I2C Er         ",   \
+  " Settings Er    ",   \
   " No settings    ",   \
-  " Sett.W.Err.    ",   \
-  " Sett.Ctrl.Err. ",   \
-  " Sett.Type Err. ",   \
-  " Adjust Err.    ",   \
+  " Sett W Er      ",   \
+  " Sett Ctl Er    ",   \
+  " Sett Type Er   ",   \
+  " Adjust Er      ",   \
   " No adjust      ",   \
-  " Adjust W.Err.  ",   \
-  "Adjust Ctrl.Err.",   \
-  " Adjust-Set Err.",   \
-  "Tr.LED Rest Err.",   \
-  "Sign DO Rest Err",   \
-  " No DO/LED Inf. ",   \
-  " DO/LED W Err.  ",   \
-  " Ош.триг.инф.   ",   \
-  " Триг.инф.нет   ",   \
-  "Ош.зап.триг.инф.",   \
-  "Ош.контр.триг.и.",   \
-  " An.Rec.Inf.Err.",   \
-  " No An.Rec.Inf. ",   \
-  "An.Rec.Inf.W.Err",   \
-  "An.Rec.Ctrl.Err.",   \
-  " D.Rec.Inf.Err. ",   \
-  " No D.Rec.Inf.  ",   \
-  "Inf.D.Rec.W.Err.",   \
-  " D.Rec.Ctrl.Err.",   \
-  " PER Inf.Err.   ",   \
-  " No Inf.of PER  ",   \
-  "Inf.W.Err.of PER",   \
-  " PER Ctrl.Err.  ",   \
-  " Res.C.Inf.Err. ",   \
-  " No Res.C.Inf.  ",   \
-  "Inf.Res.C.W.Err.",   \
-  " Res.C.Ctrl.Err.",   \
-  " Ош.к.с.энергий ",   \
-  " Энергий нет    ",   \
-  " Ош.зап.энергий ",   \
+  " Adjust W Er    ",   \
+  "Adjust Ctl Er   ",   \
+  " Adjust-Set Er  ",   \
+  "Tr LED Rest Er  ",   \
+  "Sign BO Rest Er ",   \
+  " No BO/LED Inf  ",   \
+  " BO/LED W Er    ",   \
+  " Nvol LS Inf Er ",   \
+  " No Nvol LS Inf ",   \
+  "Nvol LS Inf W Er",   \
+  "Nvol LS Inf C Er",   \
+  " Dst Rec Er     ",   \
+  " Dst Rec No info",   \
+  " Dst Rec W Er   ",   \
+  " Dst Rec Ctr Er ",   \
+  " Bin Rec Er     ",   \
+  " Bin Rec No info",   \
+  " Bin Rec W Er   ",   \
+  " Bin Rec Ctr Er ",   \
+  " Diag Rec Er    ",   \
+  "Diag Rec No info",   \
+  " Diag Rec W Er  ",   \
+  "Diag Rec Ctr Er ",   \
+  " CB Res Coun Er ",   \
+  "CB Res Ctr No In",   \
+  " CB Res Ctr W Er",   \
+  " CB R Cnt Ctr Er",   \
+  " Energy calc Er ",   \
+  " Energy calc Abs",   \
+  "Energy calc W Er",   \
   " RTC:Battery low",   \
-  " RTC:Osc.stop   ",   \
-  " RTC:Osc.fail   ",   \
+  " RTC:Osc stop   ",   \
+  " RTC:Osc fail   ",   \
   " RTC:Halt update",   \
-  "RTC:No def.sett.",   \
+  "RTC:No def sett ",   \
   " ADC:VREF fail  ",   \
-  " ADC SPI Err.   ",   \
-  "Переп.буф.ц.осц.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " DO?.? Ctrl.Err.",   \
-  " An.Rec.busy    ",   \
-  " An.Rec.buff.OVF",   \
-  "Undef.An.Rec.Err",   \
+  " ADC SPI Er     ",   \
+  "UnAp D Buf Ovrfl",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " BO?.? Ctl Er   ",   \
+  " Dst Rec Busy   ",   \
+  " Dst Rec Buf Ovf",   \
+  "UnDef Dst Rec Er",   \
   "An.Rec.Data lost",   \
-  " D.Rec.busy     ",   \
-  "Undef.D.Rec.Err.",   \
-  " D.Rec.Data lost",   \
-  "OVF of PER buff.",   \
-  " PER Data lost  ",   \
+  " Bin Rec busy   ",   \
+  "UnDef Bin Rec Er",   \
+  "Bin Rec Dat Lost",   \
+  "OVF of PER buff ",   \
+  " PER Dat lost   ",   \
   " Device Start   ",   \
   " Device Restart ",   \
   " Device SFTRST  ",   \
   " Device Stop    ",   \
-  " Пропад.питания ",   \
+  " Power Outage   ",   \
   " LCD Fail       ",   \
-  " EDF SPI Err.   ",   \
-  " Ext.SRAM Err.  ",   \
-  " Int.FLASH Err. ",   \
-  " Ош.выб.гр.уст. ",   \
-  " Пот.д.энергии  ",   \
-  " Test ОВД1      ",   \
-  " Test ОВД2      ",   \
-  " Test ОВД3      ",   \
-  "ЦП:Ош.приема к.1",   \
-  "ЦП:Ош.пакета к.1",   \
-  "ЦП:Ош.ответа к.1",   \
-  " ЦП:Нет отв.к.1 ",   \
-  "КП:Ош.приема к.1",   \
-  "КП:Ош.пакета к.1",   \
-  " КП:Ош.запр.к.1 ",   \
-  " КП:Нет запр.к.1",   \
-  "ЦП:Ош.приема к.2",   \
-  "ЦП:Ош.пакета к.2",   \
-  "ЦП:Ош.ответа к.2",   \
-  " ЦП:Нет отв.к.2 ",   \
-  "КП:Ош.приема к.2",   \
-  "КП:Ош.пакета к.2",   \
-  " КП:Ош.запр.к.2 ",   \
-  " BA1 f.         ",   \
-  " BA1 ctrl.      ",   \
-  " BDVV5_1 f.     ",   \
-  " BDVV5_1 ctrl.  ",   \
-  " BDVV5_2 f.     ",   \
-  " BDVV5_2 ctrl.  ",   \
-  " BDV-DZ f.      ",   \
-  " BDV-DZ ctrl.   ",   \
-  " BDZ f.         ",   \
-  " BDZ ctrl.      ",   \
-  " BDVV6 f.       ",   \
-  " BDVV6 ctrl.    ",   \
-  " CB f.          ",   \
+  " EDF SPI Er     ",   \
+  " Ext SRAM Er    ",   \
+  " Flash Mem Er   ",   \
+  " SP Gr Sel Er   ",   \
+  " En Ctr Dat Lost",   \
+  " Sensor1 Test   ",   \
+  " Sensor2 Test   ",   \
+  " Sensor3 Test   ",   \
+  " CPU:Rec Ch1 err",   \
+  "CPU:Pack Ch1 err",   \
+  "CPU:Send Ch1 err",   \
+  " CPU:No resp Ch1",   \
+  " CU:Rec  Ch1 err",   \
+  " CU:Pack Ch1 err",   \
+  " CU:Send Ch1 err",   \
+  " CU:No resp Ch1 ",   \
+  " CPU:Rec Ch2 err",   \
+  "CPU:Pack Ch2 err",   \
+  "CPU:Send Ch2 err",   \
+  " CPU:No resp Ch2",   \
+  " CU:Rec Ch2 err ",   \
+  " CU:Pack Ch2 err",   \
+  " CU:Send Ch2 err",   \
+  " AIU01 abs      ",   \
+  " AIU01 ver      ",   \
+  " BIOU05_X abs   ",   \
+  " BIOU05_X ver   ",   \
+  " BIOU05_Y abs   ",   \
+  " BIOU05_Y ver   ",   \
+  " BIASU01 abs    ",   \
+  " BIASU01 ver    ",   \
+  " ASU abs        ",   \
+  " ASU ver        ",   \
+  " BIOU06_Z abs   ",   \
+  " BIOU06_Z ver   ",   \
+  " CU:No resp Ch2 ",   \
   " Error 117      ",   \
   " Error 118      ",   \
   " Error 119      "

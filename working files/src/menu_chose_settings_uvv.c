@@ -29,7 +29,7 @@ void make_ekran_chose_settings_uvv(void)
       " BI signal type ",
       " BO Type        ",
       " LED Type       ",
-      "   F-Key Mode   "
+      " UD-Key Mode    "
     },
     {
       " Äîïóñê ä.âõîäà ",
@@ -422,7 +422,7 @@ void make_ekran_type_output_uvv(void)
         {
           {2, 2, 0, 1},
           {2, 2, 0, 1},
-          {3, 4, 2, 2},
+          {4, 3, 1, 2},
           {2, 2, 0, 1}
         };
 
@@ -602,14 +602,14 @@ void make_ekran_type_button_uvv(void)
         {
           {"     ÊÍÎÏÊÀ     ", "      ÊËŞ×      "},
           {"     ÊÍÎÏÊÀ     ", "      ÊËŞ×      "},
-          {"     ÊÍÎÏÊÀ     ", "      ÊËŞ×      "},
+          {"      KEY       ", "     SWITCH     "},
           {"     ÊÍÎÏÊÀ     ", "      ÊËŞ×      "}
         };
         const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
         {
           {4, 5},
           {4, 5},
-          {4, 5},
+          {5, 4},
           {4, 5}
         };
 

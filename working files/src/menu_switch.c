@@ -16,8 +16,8 @@ void make_ekran_choose_CBOn_CBOff(void)
       " ¡¬‚≥ÏÍ.        "
     },
     {
-      " Off CB         ",
-      " On CB          "
+      " Open CB Unit   ",
+      " Close CB Unit  "
     },
     {
       " ¡Œ             ",

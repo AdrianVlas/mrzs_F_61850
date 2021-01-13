@@ -53,7 +53,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "NPSP      ",
      "UVP       ",
      "OVP       ",
-     "UP        ",
+     "MFP       ",
      "FL        ",
      "UD-logic  "
     },

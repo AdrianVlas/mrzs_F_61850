@@ -75,12 +75,12 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
       " OR             ",
       " XOR            ",
       " NOT            ",
-      " Tr.F.          "
+      " Transfer func  "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
       ,
-      " In.GOOSE Bl.   ",
-      " In.MMS Block   ",
-      " бла            "
+      " GSERECEIVxx    ",
+      " MMSRECEIVxx    ",
+      " NETSENDxx      "
 #endif
     },
     {

@@ -79,7 +79,7 @@ void make_ekran_main(void)
      " NSOCP          ",
      " UVP            ",
      " OVP            ",
-     " UP             ",
+     " MFP            ",
      " FL             "
     },
     {

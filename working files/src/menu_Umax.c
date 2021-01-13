@@ -20,7 +20,7 @@ void make_ekran_setpoint_Umax(unsigned int group)
     {
       "   OVP1 StVal   ",
       "   OVP2 StVal   ",
-      "    КП Umax     "
+      "     RR OVP     "
     },
     {
       " Уставка ЗНмакс1",

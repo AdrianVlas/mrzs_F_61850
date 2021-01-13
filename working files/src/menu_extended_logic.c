@@ -35,7 +35,7 @@ void make_ekran_extended_logic(void)
       " OR             ",
       " XOR            ",
       " NOT            ",
-      " Перед.функции  "
+      " Transfer func  "
     },
     {
       " Общие уставки  ",
