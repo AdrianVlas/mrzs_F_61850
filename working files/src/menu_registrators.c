@@ -68,11 +68,11 @@ void make_ekran_list_registrators(void)
 /*****************************************************/
 void make_ekran_list_records_registrator(unsigned int type_registrator)
 {
-  unsigned char name_string[MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS][MAX_COL_LCD] =
+  unsigned char name_string[MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS][MAX_COL_LCD];
+  for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
   {
-    "                ",
-    "                "
-  };
+    for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++) name_string[index_1][index_2] = ' ';
+  }
 
   int index_language = index_language_in_array(current_settings.language);
   
@@ -109,10 +109,10 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
       }
     };
 
-    for(int index_1 = 0; index_1 < 2; index_1++)
+    for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
     {
       for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-        name_string[index_1][index_2] = information[index_language][index_1][index_2];
+        name_string[index_1][index_2] = (index_1 < 2) ? information[index_language][index_1][index_2] : ' ';
     }
 
     //Курсор не видимий
@@ -191,10 +191,10 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
       }
     };
 
-    for(int index_1 = 0; index_1 < 2; index_1++)
+    for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
     {
       for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
-        name_string[index_1][index_2] = information[index_language][index_1][index_2];
+        name_string[index_1][index_2] = (index_1 < 2) ? information[index_language][index_1][index_2] : ' ';
     }
 
     //Курсор не видимий
@@ -382,7 +382,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
     unsigned char name_string[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
     {
       "   XX-XX-20XX   ",
-      "   XX:XX:XX.XX  ",
+      "  XX:XX:XX.XXX  "
     };
   
     unsigned int position_temp = current_ekran.index_position;
@@ -393,6 +393,8 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
     /******************************************/
     //Заповнюємо поля відповідними цифрами
     /******************************************/
+    time_t time_dat_tmp;
+    int32_t time_ms_tmp;
     if (type_of_registrator == 2)
     {
       __HEADER_AR header_ar_tmp;
@@ -402,75 +404,62 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
       щоб легше було можливість читати поля
       */
       header_ar_tmp = *((__HEADER_AR*)buffer_for_manu_read_record);
-      unsigned int field;
-      
-      //День
-      field = header_ar_tmp.time[4];
-      name_string[ROW_R_Y_][COL_DY1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_DY2_R] = (field & 0xf) + 0x30;
-
-      //Місяць
-      field = header_ar_tmp.time[5];
-      name_string[ROW_R_Y_][COL_MY1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_MY2_R] = (field & 0xf) + 0x30;
-
-      //Рік
-      field = header_ar_tmp.time[6];
-      name_string[ROW_R_Y_][COL_SY1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_SY2_R] = (field & 0xf) + 0x30;
-
-      //Година
-      field = header_ar_tmp.time[3];
-      name_string[ROW_R_T_][COL_HT1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_HT2_R] = (field & 0xf) + 0x30;
-
-      //Хвилини
-      field = header_ar_tmp.time[2];
-      name_string[ROW_R_T_][COL_MT1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_MT2_R] = (field & 0xf) + 0x30;
-
-      //Секунди
-      field = header_ar_tmp.time[1];
-      name_string[ROW_R_T_][COL_ST1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_ST2_R] = (field & 0xf) + 0x30;
-
-      //Соті секунд
-      field = header_ar_tmp.time[0];
-      name_string[ROW_R_T_][COL_HST1_R] = (field >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_HST2_R] = (field & 0xf) + 0x30;
+      time_dat_tmp = header_ar_tmp.time_dat;
+      time_ms_tmp = header_ar_tmp.time_ms;
 
       //Позначаємо, що більше цей екран перерисовувати не треба
       rewrite_ekran_once_more = 0;
     }
     else
     {
+      for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&time_dat_tmp) + i) =  buffer_for_manu_read_record[1 + i];
+      for(size_t i = 0; i < sizeof(int32_t); i++) *((unsigned char*)(&time_ms_tmp) + i) = buffer_for_manu_read_record[1 + sizeof(time_t) + i];
+    }
+    
+    if (time_dat_tmp != 0)
+    {
+      struct tm *p = localtime(&time_dat_tmp);
+      int field;
+      
       //День
-      name_string[ROW_R_Y_][COL_DY1_R] = (buffer_for_manu_read_record[5] >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_DY2_R] = (buffer_for_manu_read_record[5] & 0xf) + 0x30;
+      field = p->tm_mday;
+      name_string[ROW_R_Y_][COL_DY1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_Y_][COL_DY2_R] = (field % 10) + 0x30;
 
       //Місяць
-      name_string[ROW_R_Y_][COL_MY1_R] = (buffer_for_manu_read_record[6] >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_MY2_R] = (buffer_for_manu_read_record[6] & 0xf) + 0x30;
+      field = p->tm_mon + 1;
+      name_string[ROW_R_Y_][COL_MY1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_Y_][COL_MY2_R] = (field % 10) + 0x30;
 
       //Рік
-      name_string[ROW_R_Y_][COL_SY1_R] = (buffer_for_manu_read_record[7] >>  4) + 0x30;
-      name_string[ROW_R_Y_][COL_SY2_R] = (buffer_for_manu_read_record[7] & 0xf) + 0x30;
+      field = p->tm_year - 100;
+      name_string[ROW_R_Y_][COL_SY1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_Y_][COL_SY2_R] = (field % 10) + 0x30;
 
       //Година
-      name_string[ROW_R_T_][COL_HT1_R] = (buffer_for_manu_read_record[4] >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_HT2_R] = (buffer_for_manu_read_record[4] & 0xf) + 0x30;
+      field = p->tm_hour;
+      name_string[ROW_R_T_][COL_HT1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_T_][COL_HT2_R] = (field % 10) + 0x30;
 
       //Хвилини
-      name_string[ROW_R_T_][COL_MT1_R] = (buffer_for_manu_read_record[3] >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_MT2_R] = (buffer_for_manu_read_record[3] & 0xf) + 0x30;
+      field = p->tm_min;
+      name_string[ROW_R_T_][COL_MT1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_T_][COL_MT2_R] = (field % 10) + 0x30;
 
       //Секунди
-      name_string[ROW_R_T_][COL_ST1_R] = (buffer_for_manu_read_record[2] >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_ST2_R] = (buffer_for_manu_read_record[2] & 0xf) + 0x30;
+      field = p->tm_sec;
+      name_string[ROW_R_T_][COL_ST1_R] = (field / 10) + 0x30;
+      name_string[ROW_R_T_][COL_ST2_R] = (field % 10) + 0x30;
 
-      //Соті секунд
-      name_string[ROW_R_T_][COL_HST1_R] = (buffer_for_manu_read_record[1] >>  4) + 0x30;
-      name_string[ROW_R_T_][COL_HST2_R] = (buffer_for_manu_read_record[1] & 0xf) + 0x30;
+      //Тисячні секунд
+      field = time_ms_tmp;
+      name_string[ROW_R_T_][COL_HST1_R] = (field / 100) + 0x30;
+      field %= 100;
+      
+      name_string[ROW_R_T_][COL_HST2_R] = (field / 10) + 0x30;
+      field %= 10;
+      
+      name_string[ROW_R_T_][COL_HST3_R] = field + 0x30;
     }
 
     //Копіюємо  рядки у робочий екран
@@ -587,11 +576,11 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
 /*****************************************************/
 void make_ekran_title_analog_value_records_digital_registrator(void)
 {
-  unsigned char name_string[MAX_ROW_FOR_TITLE_EKRAN_ANALOG_VALUES_DR][MAX_COL_LCD] =
+  unsigned char name_string[MAX_ROW_FOR_TITLE_EKRAN_ANALOG_VALUES_DR][MAX_COL_LCD];
+  for(int index_1 = 0; index_1 < MAX_ROW_LCD; index_1++)
   {
-    "                ",
-    "                "
-  };
+    for(int index_2 = 0; index_2 < MAX_COL_LCD; index_2++) name_string[index_1][index_2] = ' ';
+  }
   int index_language = index_language_in_array(current_settings.language);
   
   unsigned int position_temp = current_ekran.index_position;
@@ -775,7 +764,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
     {
       " 3I0  =         ",
       " 3I0**=         ",
-      " 3I0 .=         ",
+      " 3I0-1=         ",
       " Ia   =         ",
       " Ib   =         ",
       " Ic   =         ",
@@ -786,6 +775,8 @@ void make_ekran_analog_value_records_digital_registrator(void)
       " Ub   =         ",
       " Uc   =         ",
       " 3U0  =         ",
+      " U2   =         ",
+      " U1   =         ",
       " Uab  =         ",
       " Ubc  =         ",
       " Uca  =         ",
@@ -803,14 +794,14 @@ void make_ekran_analog_value_records_digital_registrator(void)
 
     for (unsigned int i = 0; i < MAX_ROW_FOR_EKRAN_ANALOG_VALUES_DR; i++)
     {
-      if (i < 16)
+      if (i < 18)
       {
        //Струми і напруги
-       if (i == 2)
-       {
-         if (index_language == INDEX_LANGUAGE_EN) name_string[i][4] = 'c';
-         else name_string[i][4] = 'р';
-       }
+//       if (i == 2)
+//       {
+//         if (index_language == INDEX_LANGUAGE_EN) name_string[i][4] = 'c';
+//         else name_string[i][4] = 'р';
+//       }
 
         unsigned int temp_measurement = *(point_unsigned_int + i);
         unsigned int start_number_digit_after_point;
@@ -818,7 +809,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
         else start_number_digit_after_point = 3;
         convert_and_insert_char_for_measurement(start_number_digit_after_point, temp_measurement, 1, 1, name_string[i], 7);
       }
-      else if (i == 16)
+      else if (i == 18)
       {
         //Частота
         int temp_measurement = *(((int *)point_unsigned_int) + i);
@@ -839,7 +830,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
         }
         convert_and_insert_char_for_frequency(temp_measurement, name_string[i]);
       }
-      else if (i < 23)
+      else if (i < 25)
       {
        //Опори
         const unsigned int index_of_start_position_array[MAX_NAMBER_LANGUAGE] = {4, 4, 5, 4};
@@ -900,7 +891,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
 #undef SIZE_UNDEF
         }
       }
-      else if ((i == 23) && (type_view_max_values_dr == IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE))
+      else if ((i == 25) && (type_view_max_values_dr == IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE))
       {
         //Місце пошкодження
 #define SIZE_NAME_FIELD         2
@@ -979,7 +970,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
       
       if (i < 9)
         name_string[i][MAX_COL_LCD - 1] = odynyci_vymirjuvannja[index_language][INDEX_A];
-      else if (i < 16)
+      else if (i < 18)
         name_string[i][MAX_COL_LCD - 1] = odynyci_vymirjuvannja[index_language][INDEX_V];
       else
       {
@@ -1041,7 +1032,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
 
     if (type_view_max_values_dr != IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE)
     {
-      int shift_ind = 23 - additional_current;
+      int shift_ind = 25 - additional_current;
       if ((shift_ind + 1) <= position_temp) position_temp--;
       do  
       {
@@ -1135,921 +1126,127 @@ void make_ekran_changing_signals_digital_registrator(void)
   if (buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] == LABEL_START_RECORD_DR)
   {
     //Пеший байт сходиться із міткою початку запису - вважаємо, що у буфері достовірні дані
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG][MAX_COL_LCD] = 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    const unsigned char name_string[MAX_NAMBER_LANGUAGE][ NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+#else
+    const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+#endif
     {
-      {
-        "  Блок.вкл.ВВ   ",
-        " Сброс индикации",
-        "   Сброс реле   ",
-        " Местн./Дистанц.",
-        "  Положение ВВ  ",
-        "Откл.от вн.защит",
-        "     Вкл.ВВ     ",
-        " Контроль Вкл.  ",
-        "    Откл.ВВ     ",
-        " Контроль Откл. ",
-        "   Привод ВВ    ",
-        " Прев.Iот.ном.  ",
-        " Крит.Ресурс ВВ ",
-        " Исч.Ресурс ВВ  ",
-        "  Неиспр.Общая  ",
-        "  Неиспр.Авар.  ",
-        " Работа Ан.Рег. ",
-        " Работа Д.Рег.  ",
-        " Откл.от защит  ",
-        "   Работа БО    ",
-        "   Работа БВ    ",
-        " 1-я гр.уставок ",
-        " 2-я гр.уставок ",
-        " 3-я гр.уставок ",
-        " 4-я гр.уставок ",
-        " Инв.ДВ гр.уст. ",
-        "Блк.гр.уст.от з.",
-        " С.блк.Гот.к ТУ ",
-        " Готовность к ТУ",
-        "   Блок.МТЗ1    ",
-        "   Блок.МТЗ2    ",
-        " Блок.уск.МТЗ2  ",
-        "   Блок.МТЗ3    ",
-        "   Блок.МТЗ4    ",
-        " Сект.МТЗН1 вп. ",
-        " Сект.МТЗН1 наз.",
-        "    ПО МТЗ1     ",
-        " ПО МТЗН1 вперёд",
-        " ПО МТЗН1 назад ",
-        "  ПО U МТЗПН1   ",
-        "   ПО МТЗПН1    ",
-        "      МТЗ1      ",
-        " Сект.МТЗН2 вп. ",
-        " Сект.МТЗН2 наз.",
-        "    ПО МТЗ2     ",
-        " ПО МТЗН2 вперёд",
-        " ПО МТЗН2 назад ",
-        "  ПО U МТЗПН2   ",
-        "   ПО МТЗПН2    ",
-        "      МТЗ2      ",
-        " Сект.МТЗН3 вп. ",
-        " Сект.МТЗН3 наз.",
-        "    ПО МТЗ3     ",
-        " ПО МТЗН3 вперёд",
-        " ПО МТЗН3 назад ",
-        "  ПО U МТЗПН3   ",
-        "   ПО МТЗПН3    ",
-        "      МТЗ3      ",
-        " Сект.МТЗН4 вп. ",
-        " Сект.МТЗН4 наз.",
-        "    ПО МТЗ4     ",
-        " ПО МТЗН4 вперёд",
-        " ПО МТЗН4 назад ",
-        "  ПО U МТЗПН4   ",
-        "   ПО МТЗПН4    ",
-        "      МТЗ4      ",
-        " ПО блок.U МТЗН ",
-        "    НЦН-МТЗ     ",
-        "Блок.МТЗ 0.4кВ 1",
-        "Блок.МТЗ 0.4кВ 2",
-        "Бл.у.МТЗ 0.4кВ 2",
-        " ПО МТЗ 0.4кВ 1 ",
-        "  МТЗ 0.4кВ 1   ",
-        " ПО МТЗ 0.4кВ 2 ",
-        "  МТЗ 0.4кВ 2   ",
-        " Пуск ЗДЗ от ДВ ",
-        "      ЗДЗ       ",
-        "    Блок.НЗЗ    ",
-        "     ПО НЗЗ     ",
-        "      НЗЗ       ",
-        "   ПО ЗЗ(3I0)   ",
-        "    ЗЗ(3I0)     ",
-        "   ПО ЗЗ(3U0)   ",
-        "    ЗЗ(3U0)     ",
-        "   Сектор НЗЗ   ",
-        "   Блок.ТЗНП1   ",
-        " Сект.ТЗНП1 вп. ",
-        " Сект.ТЗНП1 наз.",
-        "ПО 3I0 ТЗНП1 вп.",
-        "ПО 3I0 ТЗНП1 наз",
-        "ПО 3U0 ТЗНП1 вп.",
-        "ПО 3U0 ТЗНП1 наз",
-        "  ПО ТЗНП1 вп.  ",
-        " ПО ТЗНП1 наз.  ",
-        "     ТЗНП1      ",
-        "   Блок.ТЗНП2   ",
-        " Сект.ТЗНП2 вп. ",
-        " Сект.ТЗНП2 наз.",
-        "ПО 3I0 ТЗНП2 вп.",
-        "ПО 3I0 ТЗНП2 наз",
-        "ПО 3U0 ТЗНП2 вп.",
-        "ПО 3U0 ТЗНП2 наз",
-        "  ПО ТЗНП2 вп.  ",
-        " ПО ТЗНП2 наз.  ",
-        "     ТЗНП2      ",
-        "   Блок.ТЗНП3   ",
-        " Сект.ТЗНП3 вп. ",
-        " Сект.ТЗНП3 наз.",
-        "ПО 3I0 ТЗНП3 вп.",
-        "ПО 3I0 ТЗНП3 наз",
-        "ПО 3U0 ТЗНП3 вп.",
-        "ПО 3U0 ТЗНП3 наз",
-        "  ПО ТЗНП3 вп.  ",
-        " ПО ТЗНП3 наз.  ",
-        "     ТЗНП3      ",
-        " Стат.блок.АПВ  ",
-        "      АПВ       ",
-        "      АПВ2      ",
-        "      АПВ3      ",
-        "      АПВ4      ",
-        "   Работа АПВ   ",
-        " АЧР/ЧАПВ от ДВ ",
-        "   Блок.АЧР1    ",
-        "   Блок.АЧР2    ",
-        "   Разр.ЧАПВ    ",
-        "   Блок.ЧАПВ    ",
-        "    ПО АЧР1     ",
-        "    ПО ЧАПВ1    ",
-        "   АЧР/ЧАПВ1    ",
-        "    ПО АЧР2     ",
-        "    ПО ЧАПВ2    ",
-        "   АЧР/ЧАПВ2    ",
-        " Пуск УРОВ от ДВ",
-        "    ПО УРОВ     ",
-        "     УРОВ1      ",
-        "     УРОВ2      ",
-        " Блок.ЗОП(КОФ)  ",
-        "  ПО ЗОП(КОФ)   ",
-        "    ЗОП(КОФ)    ",
-        "  Блок.ЗНмин1   ",
-        "  Пуск ЗНмин1   ",
-        "  Блок.ЗНмин2   ",
-        "  Пуск ЗНмин2   ",
-        "   ПО ЗНмин1    ",
-        " ПО Uблк.ЗНмин1 ",
-        " ПО Iблк.ЗНмин1 ",
-        "     ЗНмин1     ",
-        "     ПО ЗНмин2  ",
-        " ПО Uблк.ЗНмин2 ",
-        " ПО Iблк.ЗНмин2 ",
-        "     ЗНмин2     ",
-        "  Блок.ЗНмакс1  ",
-        "   ПО ЗНмакс1   ",
-        "    ЗНмакс1     ",
-        "  Блок.ЗНмакс2  ",
-        "   ПО ЗНмакс2   ",
-        "    ЗНмакс2     ",
-        " Вх.О-функции1  ",
-        " Вых.О-функции1 ",
-        " Вх.О-функции2  ",
-        " Вых.О-функции2 ",
-        " Вх.О-функции3  ",
-        " Вых.О-функции3 ",
-        " Вх.О-функции4  ",
-        " Вых.О-функции4 ",
-        " Вх.О-функции5  ",
-        " Вых.О-функции5 ",
-        " Вх.О-функции6  ",
-        " Вых.О-функции6 ",
-        " Вх.О-функции7  ",
-        " Вых.О-функции7 ",
-        " Вх.О-функции8  ",
-        " Вых.О-функции8 ",
-        " Уст.О-триггера1",
-        " Сбр.О-триггера1",
-        " Вых.О-триггера1",
-        " Уст.О-триггера2",
-        " Сбр.О-триггера2",
-        " Вых.О-триггера2",
-        " Уст.О-триггера3",
-        " Сбр.О-триггера3",
-        " Вых.О-триггера3",
-        " Уст.О-триггера4",
-        " Сбр.О-триггера4",
-        " Вых.О-триггера4",
-        "      О-И1      ",
-        "      О-И2      ",
-        "      О-И3      ",
-        "      О-И4      ",
-        "      О-И5      ",
-        "      О-И6      ",
-        "      О-И7      ",
-        "      О-И8      ",
-        "     О-ИЛИ1     ",
-        "     О-ИЛИ2     ",
-        "     О-ИЛИ3     ",
-        "     О-ИЛИ4     ",
-        "     О-ИЛИ5     ",
-        "     О-ИЛИ6     ",
-        "     О-ИЛИ7     ",
-        "     О-ИЛИ8     ",
-        "  О-Искл.ИЛИ1   ",
-        "  О-Искл.ИЛИ2   ",
-        "  О-Искл.ИЛИ3   ",
-        "  О-Искл.ИЛИ4   ",
-        "  О-Искл.ИЛИ5   ",
-        "  О-Искл.ИЛИ6   ",
-        "  О-Искл.ИЛИ7   ",
-        "  О-Искл.ИЛИ8   ",
-        "     О-НЕ1      ",
-        "     О-НЕ2      ",
-        "     О-НЕ3      ",
-        "     О-НЕ4      ",
-        "     О-НЕ5      ",
-        "     О-НЕ6      ",
-        "     О-НЕ7      ",
-        "     О-НЕ8      ",
-        "     О-НЕ9      ",
-        "     О-НЕ10     ",
-        "     О-НЕ11     ",
-        "     О-НЕ12     ",
-        "     О-НЕ13     ",
-        "     О-НЕ14     ",
-        "     О-НЕ15     ",
-        "     О-НЕ16     ",
-        " Ош.настр.р.лог."
-      },
-      {
-        " Блок.ввімкн.ВВ ",
-        " Скид.індикації ",
-        "   Скид.реле    ",
-        " Місц./Дистанц. ",
-        "    Стан ВВ     ",
-        "Вимк.від зовн.з.",
-        "    Ввімк.ВВ    ",
-        " Контроль Ввімк.",
-        "    Вимк.ВВ     ",
-        " Контроль Вимк. ",
-        "   Привід ВВ    ",
-        " Перев.Iв.ном.  ",
-        " Крит.Ресурс ВВ ",
-        " Вич.Ресурс ВВ  ",
-        " Неспр.Загальна ",
-        "  Неспр.Авар.   ",
-        " Роб.Ан.Реєстр. ",
-        " Роб.Д.Реєстр.  ",
-        " Вимк.від зах.  ",
-        " Робота БВимк.  ",
-        " Робота БВвімк. ",
-        " 1-а гр.уставок ",
-        " 2-а гр.уставок ",
-        " 3-а гр.уставок ",
-        " 4-а гр.уставок ",
-        " Інв.ДВ гр.уст. ",
-        "Бл.гр.уст.від з.",
-        " С.блк.Гот.до ТУ",
-        "Готовність до ТУ",
-        "   Блок.МСЗ1    ",
-        "   Блок.МСЗ2    ",
-        " Блок.приск.МСЗ2",
-        "   Блок.МСЗ3    ",
-        "   Блок.МСЗ4    ",
-        " Сект.МСЗН1 вп. ",
-        " Сект.МСЗН1 наз.",
-        "    ПО МСЗ1     ",
-        " ПО МСЗН1 вперед",
-        " ПО МСЗН1 назад ",
-        "  ПО U МСЗПН1   ",
-        "   ПО МСЗПН1    ",
-        "      МСЗ1      ",
-        " Сект.МСЗН2 вп. ",
-        " Сект.МСЗН2 наз.",
-        "    ПО МСЗ2     ",
-        " ПО МСЗН2 вперед",
-        " ПО МСЗН2 назад ",
-        "  ПО U МСЗПН2   ",
-        "   ПО МСЗПН2    ",
-        "      МСЗ2      ",
-        " Сект.МСЗН3 вп. ",
-        " Сект.МСЗН3 наз.",
-        "    ПО МСЗ3     ",
-        " ПО МСЗН3 вперед",
-        " ПО МСЗН3 назад ",
-        "  ПО U МСЗПН3   ",
-        "   ПО МСЗПН3    ",
-        "      МСЗ3      ",
-        " Сект.МСЗН4 вп. ",
-        " Сект.МСЗН4 наз.",
-        "    ПО МСЗ4     ",
-        " ПО МСЗН4 вперед",
-        " ПО МСЗН4 назад ",
-        "  ПО U МСЗПН4   ",
-        "   ПО МСЗПН4    ",
-        "      МСЗ4      ",
-        " ПО блок.U МСЗН ",
-        "    НКН-МСЗ     ",
-        "Блок.МСЗ 0.4кВ 1",
-        "Блок.МСЗ 0.4кВ 2",
-        "Бл.п.МСЗ 0.4кВ 2",
-        " ПО МСЗ 0.4кВ 1 ",
-        "  МСЗ 0.4кВ 1   ",
-        " ПО МСЗ 0.4кВ 2 ",
-        "  МСЗ 0.4кВ 2   ",
-        " Пуск ЗДЗ від ДВ",
-        "      ЗДЗ       ",
-        "    Блок.НЗЗ    ",
-        "     ПО НЗЗ     ",
-        "      НЗЗ       ",
-        "   ПО ЗЗ(3I0)   ",
-        "    ЗЗ(3I0)     ",
-        "   ПО ЗЗ(3U0)   ",
-        "    ЗЗ(3U0)     ",
-        "   Сектор НЗЗ   ",
-        "   Блок.СЗНП1   ",
-        " Сект.СЗНП1 вп. ",
-        " Сект.СЗНП1 наз.",
-        "ПО 3I0 СЗНП1 вп.",
-        "ПО 3I0 СЗНП1 наз",
-        "ПО 3U0 СЗНП1 вп.",
-        "ПО 3U0 СЗНП1 наз",
-        "  ПО СЗНП1 вп.  ",
-        " ПО СЗНП1 наз.  ",
-        "     СЗНП1      ",
-        "   Блок.СЗНП2   ",
-        " Сект.СЗНП2 вп. ",
-        " Сект.СЗНП2 наз.",
-        "ПО 3I0 СЗНП2 вп.",
-        "ПО 3I0 СЗНП2 наз",
-        "ПО 3U0 СЗНП2 вп.",
-        "ПО 3U0 СЗНП2 наз",
-        "  ПО СЗНП2 вп.  ",
-        " ПО СЗНП2 наз.  ",
-        "     СЗНП2      ",
-        "   Блок.СЗНП3   ",
-        " Сект.СЗНП3 вп. ",
-        " Сект.СЗНП3 наз.",
-        "ПО 3I0 СЗНП3 вп.",
-        "ПО 3I0 СЗНП3 наз",
-        "ПО 3U0 СЗНП3 вп.",
-        "ПО 3U0 СЗНП3 наз",
-        "  ПО СЗНП3 вп.  ",
-        " ПО СЗНП3 наз.  ",
-        "     СЗНП3      ",
-        " Стат.блок.АПВ  ",
-        "      АПВ       ",
-        "      АПВ2      ",
-        "      АПВ3      ",
-        "      АПВ4      ",
-        "   Робота АПВ   ",
-        " АЧР/ЧАПВ від ДВ",
-        "   Блок.АЧР1    ",
-        "   Блок.АЧР2    ",
-        "  Дозвіл ЧАПВ   ",
-        "   Блок.ЧАПВ    ",
-        "    ПО АЧР1     ",
-        "    ПО ЧАПВ1    ",
-        "   АЧР/ЧАПВ1    ",
-        "    ПО АЧР2     ",
-        "    ПО ЧАПВ2    ",
-        "   АЧР/ЧАПВ2    ",
-        "Пуск ПРВВ від ДВ",
-        "    ПО ПРВВ     ",
-        "     ПРВВ1      ",
-        "     ПРВВ2      ",
-        " Блок.ЗЗП(КОФ)  ",
-        "  ПО ЗЗП(КОФ)   ",
-        "    ЗЗП(КОФ)    ",
-        "  Блок.ЗНмін1   ",
-        "  Пуск ЗНмін1   ",
-        "  Блок.ЗНмін2   ",
-        "  Пуск ЗНмін2   ",
-        "   ПО ЗНмін1    ",
-        " ПО Uблк.ЗНмін1 ",
-        " ПО Iблк.ЗНмін1 ",
-        "     ЗНмін1     ",
-        "     ПО ЗНмін2  ",
-        " ПО Uблк.ЗНмін2 ",
-        " ПО Iблк.ЗНмін2 ",
-        "     ЗНмін2     ",
-        "  Блок.ЗНмакс1  ",
-        "   ПО ЗНмакс1   ",
-        "    ЗНмакс1     ",
-        "  Блок.ЗНмакс2  ",
-        "   ПО ЗНмакс2   ",
-        "    ЗНмакс2     ",
-        " Вх.В-функції1  ",
-        " Вих.В-функції1 ",
-        " Вх.В-функції2  ",
-        " Вих.В-функції2 ",
-        " Вх.В-функції3  ",
-        " Вих.В-функції3 ",
-        " Вх.В-функції4  ",
-        " Вих.В-функції4 ",
-        " Вх.В-функції5  ",
-        " Вих.В-функції5 ",
-        " Вх.В-функції6  ",
-        " Вих.В-функції6 ",
-        " Вх.В-функції7  ",
-        " Вих.В-функції7 ",
-        " Вх.В-функції8  ",
-        " Вих.В-функції8 ",
-        " Вст.В-триґера1 ",
-        " Ск.В-триґера1  ",
-        " Вих.В-триґера1 ",
-        " Вст.В-триґера2 ",
-        " Ск.В-триґера2  ",
-        " Вих.В-триґера2 ",
-        " Вст.В-триґера3 ",
-        " Ск.В-триґера3  ",
-        " Вих.В-триґера3 ",
-        " Вст.В-триґера4 ",
-        " Ск.В-триґера4  ",
-        " Вих.В-триґера4 ",
-        "      В-І1      ",
-        "      В-І2      ",
-        "      В-І3      ",
-        "      В-І4      ",
-        "      В-І5      ",
-        "      В-І6      ",
-        "      В-І7      ",
-        "      В-І8      ",
-        "     В-АБО1     ",
-        "     В-АБО2     ",
-        "     В-АБО3     ",
-        "     В-АБО4     ",
-        "     В-АБО5     ",
-        "     В-АБО6     ",
-        "     В-АБО7     ",
-        "     В-АБО8     ",
-        "  В-Викл.АБО1   ",
-        "  В-Викл.АБО2   ",
-        "  В-Викл.АБО3   ",
-        "  В-Викл.АБО4   ",
-        "  В-Викл.АБО5   ",
-        "  В-Викл.АБО6   ",
-        "  В-Викл.АБО7   ",
-        "  В-Викл.АБО8   ",
-        "     В-НЕ1      ",
-        "     В-НЕ2      ",
-        "     В-НЕ3      ",
-        "     В-НЕ4      ",
-        "     В-НЕ5      ",
-        "     В-НЕ6      ",
-        "     В-НЕ7      ",
-        "     В-НЕ8      ",
-        "     В-НЕ9      ",
-        "     В-НЕ10     ",
-        "     В-НЕ11     ",
-        "     В-НЕ12     ",
-        "     В-НЕ13     ",
-        "     В-НЕ14     ",
-        "     В-НЕ15     ",
-        "     В-НЕ16     ",
-        " Пом.нал.р.лог. "
-      },
-      {
-        " ON CB Blocking ",
-        "Indication Reset",
-        "  Relay Reset   ",
-        "  Local/Remote  ",
-        "  State of CB   ",
-        "Откл.от вн.защит",
-        "     On CB      ",
-        " On CB Control  ",
-        "     Off CB     ",
-        " Off CB Control ",
-        "  CB Actuator   ",
-        " Прев.Iот.ном.  ",
-        " Крит.Ресурс ВВ ",
-        " Исч.Ресурс ВВ  ",
-        "  Total Fault   ",
-        " Emergence Fault",
-        "An.Rec.Operation",
-        " D.Rec.Operation",
-        " Откл.от защит  ",
-        "Off CB Operation",
-        " On CB Operation",
-        " Pick-up Set 1  ",
-        " Pick-up Set 2  ",
-        " Pick-up Set 3  ",
-        " Pick-up Set 4  ",
-        " Инв.ДВ гр.уст. ",
-        "Блк.гр.уст.от з.",
-        " С.блк.Гот.к ТУ ",
-        " Готовность к ТУ",
-        "  Blc.of OCP1   ",
-        "  Blc.of OCP2   ",
-        "  OCP2 Acc.Blc. ",
-        "  Blc.of OCP3   ",
-        "  Blc.of OCP4   ",
-        " Сект.МТЗН1 вп. ",
-        " Сект.МТЗН1 наз.",
-        "    OCP1 SE     ",
-        " ПО МТЗН1 вперёд",
-        " ПО МТЗН1 назад ",
-        "  ПО U МТЗПН1   ",
-        "   ПО МТЗПН1    ",
-        "      OCP1      ",
-        " Сект.МТЗН2 вп. ",
-        " Сект.МТЗН2 наз.",
-        "    OCP2 SE     ",
-        " ПО МТЗН2 вперёд",
-        " ПО МТЗН2 назад ",
-        "  ПО U МТЗПН2   ",
-        "   ПО МТЗПН2    ",
-        "      OCP2      ",
-        " Сект.МТЗН3 вп. ",
-        " Сект.МТЗН3 наз.",
-        "    OCP3 SE     ",
-        " ПО МТЗН3 вперёд",
-        " ПО МТЗН3 назад ",
-        "  ПО U МТЗПН3   ",
-        "   ПО МТЗПН3    ",
-        "      OCP3      ",
-        " Сект.МТЗН4 вп. ",
-        " Сект.МТЗН4 наз.",
-        "    OCP4 SE     ",
-        " ПО МТЗН4 вперёд",
-        " ПО МТЗН4 назад ",
-        "  ПО U МТЗПН4   ",
-        "   ПО МТЗПН4    ",
-        "      OCP4      ",
-        " ПО блок.U МТЗН ",
-        "    НЦН-МТЗ     ",
-        "OCP 0.4kV 1 Blc.",
-        "OCP 0.4kV 2 Blc.",
-        "OCP 0.4kV 2 Ac.B",
-        " OCP 0.4kV 1 SE ",
-        "  OCP 0.4kV 1   ",
-        " OCP 0.4kV 2 SE ",
-        "  OCP 0.4kV 2   ",
-        " Пуск ЗДЗ от ДВ ",
-        "      ЗДЗ       ",
-        "    Блок.НЗЗ    ",
-        "     ПО НЗЗ     ",
-        "      НЗЗ       ",
-        "  SGFP(3Io) SE  ",
-        "   SGFP(3Io)    ",
-        "   ПО ЗЗ(3U0)   ",
-        "    ЗЗ(3U0)     ",
-        "   Сектор НЗЗ   ",
-        "   Блок.ТЗНП1   ",
-        " Сект.ТЗНП1 вп. ",
-        " Сект.ТЗНП1 наз.",
-        "ПО 3I0 ТЗНП1 вп.",
-        "ПО 3I0 ТЗНП1 наз",
-        "ПО 3U0 ТЗНП1 вп.",
-        "ПО 3U0 ТЗНП1 наз",
-        "  ПО ТЗНП1 вп.  ",
-        " ПО ТЗНП1 наз.  ",
-        "     ТЗНП1      ",
-        "   Блок.ТЗНП2   ",
-        " Сект.ТЗНП2 вп. ",
-        " Сект.ТЗНП2 наз.",
-        "ПО 3I0 ТЗНП2 вп.",
-        "ПО 3I0 ТЗНП2 наз",
-        "ПО 3U0 ТЗНП2 вп.",
-        "ПО 3U0 ТЗНП2 наз",
-        "  ПО ТЗНП2 вп.  ",
-        " ПО ТЗНП2 наз.  ",
-        "     ТЗНП2      ",
-        "   Блок.ТЗНП3   ",
-        " Сект.ТЗНП3 вп. ",
-        " Сект.ТЗНП3 наз.",
-        "ПО 3I0 ТЗНП3 вп.",
-        "ПО 3I0 ТЗНП3 наз",
-        "ПО 3U0 ТЗНП3 вп.",
-        "ПО 3U0 ТЗНП3 наз",
-        "  ПО ТЗНП3 вп.  ",
-        " ПО ТЗНП3 наз.  ",
-        "     ТЗНП3      ",
-        " Стат.блок.АПВ  ",
-        "       AR       ",
-        "      AR2       ",
-        "      AR3       ",
-        "      AR4       ",
-        "   Работа АПВ   ",
-        "UFLS/FAR from DI",
-        "   Блок.АЧР1    ",
-        "   Блок.АЧР2    ",
-        "   Разр.ЧАПВ    ",
-        "   Блок.ЧАПВ    ",
-        "    ПО АЧР1     ",
-        "   ПО ЧАПВ1     ",
-        "   UFLS/FAR1    ",
-        "    ПО АЧР2     ",
-        "   ПО ЧАПВ2     ",
-        "   UFLS/FAR2    ",
-        " CBFP Start f.DI",
-        "    CBFP SE     ",
-        "     CBFP1      ",
-        "     CBFP2      ",
-        "  Blc.of NPSP   ",
-        "    NPSP SE     ",
-        "      NPSP      ",
-        "   Блок.Umin1   ",
-        "   Пуск Umin1   ",
-        "   Блок.Umin2   ",
-        "   Пуск Umin2   ",
-        "    ПО Umin1    ",
-        " ПО Uблк.Umin1  ",
-        " ПО Iблк.Umin1  ",
-        "     Umin1      ",
-        "    ПО Umin2    ",
-        " ПО Uблк.Umin2  ",
-        " ПО Iблк.Umin2  ",
-        "     Umin2      ",
-        "   Блок.Umax1   ",
-        "    ПО Umax1    ",
-        "     Umax1      ",
-        "   Блок.Umax2   ",
-        "    ПО Umax2    ",
-        "     Umax2      ",
-        "    UDF1 In     ",
-        "    UDF1 Out    ",
-        "    UDF2 In     ",
-        "    UDF2 Out    ",
-        "    UDF3 In     ",
-        "    UDF3 Out    ",
-        "    UDF4 In     ",
-        "    UDF4 Out    ",
-        "    UDF5 In     ",
-        "    UDF5 Out    ",
-        "    UDF6 In     ",
-        "    UDF6 Out    ",
-        "    UDF7 In     ",
-        "    UDF7 Out    ",
-        "    UDF8 In     ",
-        "    UDF8 Out    ",
-        "UD Flip-Flop1 S.",
-        "UD Flip-Flop1 R.",
-        "UD Flip-Flop1 O.",
-        "UD Flip-Flop2 S.",
-        "UD Flip-Flop2 R.",
-        "UD Flip-Flop2 O.",
-        "UD Flip-Flop3 S.",
-        "UD Flip-Flop3 R.",
-        "UD Flip-Flop3 O.",
-        "UD Flip-Flop4 S.",
-        "UD Flip-Flop4 R.",
-        "UD Flip-Flop4 O.",
-        "    UD AND1     ",
-        "    UD AND2     ",
-        "    UD AND3     ",
-        "    UD AND4     ",
-        "    UD AND5     ",
-        "    UD AND6     ",
-        "    UD AND7     ",
-        "    UD AND8     ",
-        "     UD OR1     ",
-        "     UD OR2     ",
-        "     UD OR3     ",
-        "     UD OR4     ",
-        "     UD OR5     ",
-        "     UD OR6     ",
-        "     UD OR7     ",
-        "     UD OR8     ",
-        "    UD XOR1     ",
-        "    UD XOR2     ",
-        "    UD XOR3     ",
-        "    UD XOR4     ",
-        "    UD XOR5     ",
-        "    UD XOR6     ",
-        "    UD XOR7     ",
-        "    UD XOR8     ",
-        "    UD NOT1     ",
-        "    UD NOT2     ",
-        "    UD NOT3     ",
-        "    UD NOT4     ",
-        "    UD NOT5     ",
-        "    UD NOT6     ",
-        "    UD NOT7     ",
-        "    UD NOT8     ",
-        "    UD NOT9     ",
-        "    UD NOT10    ",
-        "    UD NOT11    ",
-        "    UD NOT12    ",
-        "    UD NOT13    ",
-        "    UD NOT14    ",
-        "    UD NOT15    ",
-        "    UD NOT16    ",
-        " Ош.настр.р.лог."
-      },
-      {
-        "  Блок.вкл.ВВ   ",
-        " Сброс индикации",
-        "   Сброс реле   ",
-        " Местн./Дистанц.",
-        "  Положение ВВ  ",
-        "Откл.от вн.защит",
-        "     Вкл.ВВ     ",
-        " Контроль Вкл.  ",
-        "    Откл.ВВ     ",
-        " Контроль Откл. ",
-        "   Привод ВВ    ",
-        " Прев.Iот.ном.  ",
-        " Крит.Ресурс ВВ ",
-        " Исч.Ресурс ВВ  ",
-        "  Неиспр.Общая  ",
-        "  Неиспр.Авар.  ",
-        " Работа Ан.Рег. ",
-        " Работа Д.Рег.  ",
-        " Откл.от защит  ",
-        "   Работа БО    ",
-        "   Работа БВ    ",
-        " 1-я гр.уставок ",
-        " 2-я гр.уставок ",
-        " 3-я гр.уставок ",
-        " 4-я гр.уставок ",
-        " Инв.ДВ гр.уст. ",
-        "Блк.гр.уст.от з.",
-        " С.блк.Гот.к ТУ ",
-        " Готовность к ТУ",
-        "   Блок.МТЗ1    ",
-        "   Блок.МТЗ2    ",
-        " Блок.уск.МТЗ2  ",
-        "   Блок.МТЗ3    ",
-        "   Блок.МТЗ4    ",
-        " Сект.МТЗН1 вп. ",
-        " Сект.МТЗН1 наз.",
-        "    ПО МТЗ1     ",
-        " ПО МТЗН1 вперёд",
-        " ПО МТЗН1 назад ",
-        "  ПО U МТЗПН1   ",
-        "   ПО МТЗПН1    ",
-        "      МТЗ1      ",
-        " Сект.МТЗН2 вп. ",
-        " Сект.МТЗН2 наз.",
-        "    ПО МТЗ2     ",
-        " ПО МТЗН2 вперёд",
-        " ПО МТЗН2 назад ",
-        "  ПО U МТЗПН2   ",
-        "   ПО МТЗПН2    ",
-        "      МТЗ2      ",
-        " Сект.МТЗН3 вп. ",
-        " Сект.МТЗН3 наз.",
-        "    ПО МТЗ3     ",
-        " ПО МТЗН3 вперёд",
-        " ПО МТЗН3 назад ",
-        "  ПО U МТЗПН3   ",
-        "   ПО МТЗПН3    ",
-        "      МТЗ3      ",
-        " Сект.МТЗН4 вп. ",
-        " Сект.МТЗН4 наз.",
-        "    ПО МТЗ4     ",
-        " ПО МТЗН4 вперёд",
-        " ПО МТЗН4 назад ",
-        "  ПО U МТЗПН4   ",
-        "   ПО МТЗПН4    ",
-        "      МТЗ4      ",
-        " ПО блок.U МТЗН ",
-        "    НЦН-МТЗ     ",
-        "Блок.МТЗ 0.4кВ 1",
-        "Блок.МТЗ 0.4кВ 2",
-        "Бл.у.МТЗ 0.4кВ 2",
-        " ПО МТЗ 0.4кВ 1 ",
-        "  МТЗ 0.4кВ 1   ",
-        " ПО МТЗ 0.4кВ 2 ",
-        "  МТЗ 0.4кВ 2   ",
-        " Пуск ЗДЗ от ДВ ",
-        "      ЗДЗ       ",
-        "    Блок.НЗЗ    ",
-        "     ПО НЗЗ     ",
-        "      НЗЗ       ",
-        "   ПО ЗЗ(3I0)   ",
-        "    ЗЗ(3I0)     ",
-        "   ПО ЗЗ(3U0)   ",
-        "    ЗЗ(3U0)     ",
-        "   Сектор НЗЗ   ",
-        "   Блок.ТЗНП1   ",
-        " Сект.ТЗНП1 вп. ",
-        " Сект.ТЗНП1 наз.",
-        "ПО 3I0 ТЗНП1 вп.",
-        "ПО 3I0 ТЗНП1 наз",
-        "ПО 3U0 ТЗНП1 вп.",
-        "ПО 3U0 ТЗНП1 наз",
-        "  ПО ТЗНП1 вп.  ",
-        " ПО ТЗНП1 наз.  ",
-        "     ТЗНП1      ",
-        "   Блок.ТЗНП2   ",
-        " Сект.ТЗНП2 вп. ",
-        " Сект.ТЗНП2 наз.",
-        "ПО 3I0 ТЗНП2 вп.",
-        "ПО 3I0 ТЗНП2 наз",
-        "ПО 3U0 ТЗНП2 вп.",
-        "ПО 3U0 ТЗНП2 наз",
-        "  ПО ТЗНП2 вп.  ",
-        " ПО ТЗНП2 наз.  ",
-        "     ТЗНП2      ",
-        "   Блок.ТЗНП3   ",
-        " Сект.ТЗНП3 вп. ",
-        " Сект.ТЗНП3 наз.",
-        "ПО 3I0 ТЗНП3 вп.",
-        "ПО 3I0 ТЗНП3 наз",
-        "ПО 3U0 ТЗНП3 вп.",
-        "ПО 3U0 ТЗНП3 наз",
-        "  ПО ТЗНП3 вп.  ",
-        " ПО ТЗНП3 наз.  ",
-        "     ТЗНП3      ",
-        " Стат.блок.АПВ  ",
-        "      АПВ       ",
-        "      АПВ2      ",
-        "      АПВ3      ",
-        "      АПВ4      ",
-        "   Работа АПВ   ",
-        " АЧР/ЧАПВ от ДВ ",
-        "   Блок.АЧР1    ",
-        "   Блок.АЧР2    ",
-        "   Разр.ЧАПВ    ",
-        "   Блок.ЧАПВ    ",
-        "    ПО АЧР1     ",
-        "    ПО ЧАПВ1    ",
-        "   АЧР/ЧАПВ1    ",
-        "    ПО АЧР2     ",
-        "    ПО ЧАПВ2    ",
-        "   АЧР/ЧАПВ2    ",
-        " Пуск УРОВ от ДВ",
-        "    ПО УРОВ     ",
-        "     УРОВ1      ",
-        "     УРОВ2      ",
-        " Блок.ЗОП(КОФ)  ",
-        "  ПО ЗОП(КОФ)   ",
-        "    ЗОП(КОФ)    ",
-        "  Блок.ЗНмин1   ",
-        "  Пуск ЗНмин1   ",
-        "  Блок.ЗНмин2   ",
-        "  Пуск ЗНмин2   ",
-        "   ПО ЗНмин1    ",
-        " ПО Uблк.ЗНмин1 ",
-        " ПО Iблк.ЗНмин1 ",
-        "     ЗНмин1     ",
-        "     ПО ЗНмин2  ",
-        " ПО Uблк.ЗНмин2 ",
-        " ПО Iблк.ЗНмин2 ",
-        "     ЗНмин2     ",
-        "  Блок.ЗНмакс1  ",
-        "   ПО ЗНмакс1   ",
-        "    ЗНмакс1     ",
-        "  Блок.ЗНмакс2  ",
-        "   ПО ЗНмакс2   ",
-        "    ЗНмакс2     ",
-        " Вх.О-функции1  ",
-        " Вых.О-функции1 ",
-        " Вх.О-функции2  ",
-        " Вых.О-функции2 ",
-        " Вх.О-функции3  ",
-        " Вых.О-функции3 ",
-        " Вх.О-функции4  ",
-        " Вых.О-функции4 ",
-        " Вх.О-функции5  ",
-        " Вых.О-функции5 ",
-        " Вх.О-функции6  ",
-        " Вых.О-функции6 ",
-        " Вх.О-функции7  ",
-        " Вых.О-функции7 ",
-        " Вх.О-функции8  ",
-        " Вых.О-функции8 ",
-        " Уст.О-триггера1",
-        " Сбр.О-триггера1",
-        " Вых.О-триггера1",
-        " Уст.О-триггера2",
-        " Сбр.О-триггера2",
-        " Вых.О-триггера2",
-        " Уст.О-триггера3",
-        " Сбр.О-триггера3",
-        " Вых.О-триггера3",
-        " Уст.О-триггера4",
-        " Сбр.О-триггера4",
-        " Вых.О-триггера4",
-        "      О-И1      ",
-        "      О-И2      ",
-        "      О-И3      ",
-        "      О-И4      ",
-        "      О-И5      ",
-        "      О-И6      ",
-        "      О-И7      ",
-        "      О-И8      ",
-        "     О-ИЛИ1     ",
-        "     О-ИЛИ2     ",
-        "     О-ИЛИ3     ",
-        "     О-ИЛИ4     ",
-        "     О-ИЛИ5     ",
-        "     О-ИЛИ6     ",
-        "     О-ИЛИ7     ",
-        "     О-ИЛИ8     ",
-        "  О-Искл.ИЛИ1   ",
-        "  О-Искл.ИЛИ2   ",
-        "  О-Искл.ИЛИ3   ",
-        "  О-Искл.ИЛИ4   ",
-        "  О-Искл.ИЛИ5   ",
-        "  О-Искл.ИЛИ6   ",
-        "  О-Искл.ИЛИ7   ",
-        "  О-Искл.ИЛИ8   ",
-        "     О-НЕ1      ",
-        "     О-НЕ2      ",
-        "     О-НЕ3      ",
-        "     О-НЕ4      ",
-        "     О-НЕ5      ",
-        "     О-НЕ6      ",
-        "     О-НЕ7      ",
-        "     О-НЕ8      ",
-        "     О-НЕ9      ",
-        "     О-НЕ10     ",
-        "     О-НЕ11     ",
-        "     О-НЕ12     ",
-        "     О-НЕ13     ",
-        "     О-НЕ14     ",
-        "     О-НЕ15     ",
-        "     О-НЕ16     ",
-        " Ош.настр.р.лог."
-      }
+      {NAME_RANG_RU},
+      {NAME_RANG_UA},
+      {NAME_RANG_EN},
+      {NAME_RANG_KZ},
     };
+    
+    uint8_t name_string_tmp[NUMBER_TOTAL_SIGNAL_FOR_RANG][MAX_COL_LCD];
+    for(int index_1 = 0; index_1 < NUMBER_TOTAL_SIGNAL_FOR_RANG; index_1++)
+    {
+      size_t index_row;
+      if (index_1 < NUMBER_GENERAL_SIGNAL_FOR_RANG) 
+      {
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
+        {
+          index_row = index_1;
+        }
+        else if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) 
+        {
+          index_row = RANG_BLOCK_IN_GOOSE1 + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) % 1);
+        }
+        else if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) 
+        {
+          index_row = RANG_BLOCK_IN_MMS1 + (1 - N_IN_GOOSE) + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) % 1);
+        }
+        else
+        {
+          index_row = RANG_BLOCK_OUT_LAN1 + (1 - N_IN_GOOSE) + (1 - N_IN_MMS) + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) % 1);
+        }
+#else
+        index_row = index_1;
+#endif        
+      }
+      else if (index_1 < RANG_BLOCK_UP1) 
+      {
+        index_row = index_1
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                     + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                     ;
+      }
+      else if (index_1 < (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
+      {
+        index_row = RANG_BLOCK_UP1
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                     + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif
+                     + ((index_1 - RANG_BLOCK_UP1) % 3);
+      }
+      else
+      {
+        index_row = index_1 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                    + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
+      }
+      
+      for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+      {
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+        if (
+            (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
+            (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&
+            (index_2 >=  index_n_In_GOOSE[index_language][(index_1 - RANG_BLOCK_IN_GOOSE1) % 1]) &&
+            (index_2 <= (index_n_In_GOOSE[index_language][(index_1 - RANG_BLOCK_IN_GOOSE1) % 1] + 1)) 
+           )   
+        {
+          unsigned int n = index_1 - RANG_BLOCK_IN_GOOSE1;
+          if ((n + 1) < 10)
+          {
+            if (index_2 == index_n_In_GOOSE[index_language][n % 1])
+              name_string_tmp[index_1][index_2] = 0x30 + (n + 1);
+            else
+              name_string_tmp[index_1][index_2] = ' ';
+          }
+          else
+          {
+            if (index_2 == index_n_In_GOOSE[index_language][n % 1])
+              name_string_tmp[index_1][index_2] = 0x30 + (n / 1 + 1) / 10;
+            else
+              name_string_tmp[index_1][index_2] = 0x30 + (n / 1 + 1) % 10;
+          }
+        }
+        else if (
+                 (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN)))  &&
+                 (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) &&
+                 (index_2 == index_n_In_MMS[index_language][(index_1 - RANG_BLOCK_IN_MMS1) % 1]) 
+                )   
+        {
+          name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_IN_MMS1) / 1 + 1);
+        }
+        else if (
+                 (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN)))  &&
+                 (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG)) &&
+                 (index_2 == index_n_Out_LAN[index_language][(index_1 - RANG_BLOCK_OUT_LAN1) % 1]) 
+                )   
+        {
+          name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_OUT_LAN1) / 1 + 1);
+        }
+        else 
+#endif
+        {
+          if (
+              (index_1 >=  RANG_BLOCK_UP1)  &&
+              (index_1 <  (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG)) &&
+              (index_2 == index_number_UP[index_language][(index_1 - RANG_BLOCK_UP1) % 3]) 
+             )   
+          {
+            name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_UP1) / 3 + 1);
+          }
+          else name_string_tmp[index_1][index_2] = name_string[index_language][index_row][index_2];
+        }
+      }
+    }
   
     unsigned int max_number_changers_in_record = buffer_for_manu_read_record[FIRST_INDEX_NUMBER_CHANGES_DR] | (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_CHANGES_DR + 1]<<8);
     unsigned int position_temp;
@@ -2059,6 +1256,7 @@ void make_ekran_changing_signals_digital_registrator(void)
     //Перевіряємо, чи ми не вийшли за границі
     if (current_ekran.index_position < 0) current_ekran.index_position = max_number_changers_in_record - 1;
     else if (current_ekran.index_position >= ((int)max_number_changers_in_record)) current_ekran.index_position = 0;
+    current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
     position_in_current_level_menu[EKRAN_CHANGES_SIGNALS_DR] = current_ekran.index_position;
 
     position_temp = current_ekran.index_position;
@@ -2074,30 +1272,32 @@ void make_ekran_changing_signals_digital_registrator(void)
         int index_of_the_slice = 0; //починаємо з першого зрізу
         unsigned int current_number_changes = 0;
         while (
-               ((current_number_changes + buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice) + (33 - 1)]) < (index_of_ekran + 1)) &&
+               ((current_number_changes + buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + (38 - 2)] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + (38 - 1)] << 8)) < (index_of_ekran + 1)) &&
                (index_of_the_slice < MAX_EVENTS_IN_ONE_RECORD)  
               )
         {
-          current_number_changes += buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice) + (33 - 1)];
+          current_number_changes += (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + (38 - 2)] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + (38 - 1)] << 8));
           index_of_the_slice++;
         }
-        array_new[0] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) +  3] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) +  4]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) +  5]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) +  6]<<24);
-        array_new[1] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) +  7] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) +  8]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) +  9]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 10]<<24);
-        array_new[2] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 11] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 12]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 13]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 14]<<24);
-        array_new[3] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 15] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 16]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 17]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 18]<<24);
-        array_new[4] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 19] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 20]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 21]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 22]<<24);
-        array_new[5] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 23] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 24]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 25]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 26]<<24);
-        array_new[6] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 27] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 28]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 29]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 30]<<24);
-        array_new[7] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice    ) + 31];
+        array_new[0] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) +  3] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) +  4]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) +  5]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) +  6]<<24);
+        array_new[1] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) +  7] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) +  8]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) +  9]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 10]<<24);
+        array_new[2] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 11] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 12]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 13]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 14]<<24);
+        array_new[3] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 15] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 16]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 17]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 18]<<24);
+        array_new[4] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 19] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 20]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 21]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 22]<<24);
+        array_new[5] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 23] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 24]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 25]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 26]<<24);
+        array_new[6] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 27] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 28]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 29]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 30]<<24);
+        array_new[7] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 31] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 32]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 33]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 34]<<24);
+        array_new[8] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice    ) + 35];
 
-        array_old[0] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) +  3] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) +  4]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) +  5]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) +  6]<<24);
-        array_old[1] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) +  7] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) +  8]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) +  9]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 10]<<24);
-        array_old[2] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 11] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 12]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 13]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 14]<<24);
-        array_old[3] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 15] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 16]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 17]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 18]<<24);
-        array_old[4] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 19] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 20]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 21]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 22]<<24);
-        array_old[5] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 23] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 24]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 25]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 26]<<24);
-        array_old[6] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 27] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 28]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 29]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 30]<<24);
-        array_old[7] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice - 1) + 31];
+        array_old[0] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) +  3] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) +  4]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) +  5]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) +  6]<<24);
+        array_old[1] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) +  7] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) +  8]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) +  9]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 10]<<24);
+        array_old[2] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 11] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 12]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 13]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 14]<<24);
+        array_old[3] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 15] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 16]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 17]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 18]<<24);
+        array_old[4] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 19] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 20]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 21]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 22]<<24);
+        array_old[5] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 23] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 24]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 25]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 26]<<24);
+        array_old[6] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 27] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 28]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 29]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 30]<<24);
+        array_old[7] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 31] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 32]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 33]<<16) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 34]<<24);
+        array_old[8] = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice - 1) + 35];
         
         //Визначаємо, які сигнали змінилися
         for (unsigned int j = 0; j < N_BIG; j++) array_changing[j] = array_new[j] ^ array_old[j];
@@ -2125,7 +1325,7 @@ void make_ekran_changing_signals_digital_registrator(void)
               if (k == 0)
               {
                 //У першому рядку відображаємо назву сигналу, який змінився
-                for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[(i<<1)+k][j] = name_string[index_language][index_of_function_in_the_slice][j];
+                for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[(i<<1)+k][j] = name_string_tmp[index_of_function_in_the_slice][j];
               }
               else
               {
@@ -2146,7 +1346,7 @@ void make_ekran_changing_signals_digital_registrator(void)
                   {"Pass.", "Act. "},
                   {"Пасс.", "Акт. "}
                 };
-                unsigned int time_of_slice = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice) + 0] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice) + 1]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 33*(1 + index_of_the_slice) + 2]<<16);
+                unsigned int time_of_slice = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + 0] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + 1]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + 2]<<16);
                 
                 //Конвертуємо цей час у рядок
                 unsigned int ost, local_index = 0;
@@ -2415,23 +1615,74 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
         NAME_DIAGN_KZ
       }
     };
-  
-    unsigned int max_number_changers_in_record = buffer_for_manu_read_record[8];
+
+    unsigned char name_string_tmp[MAX_ROW_FOR_DIAGNOSTYKA][MAX_COL_LCD];
+
+    for(unsigned int index_1 = 0; index_1 < MAX_ROW_FOR_DIAGNOSTYKA; index_1++)
+    {
+      for(unsigned int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+        name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
+      
+      if ((index_1 >= ERROR_DIGITAL_OUTPUT_1_BIT) && (index_1 < (ERROR_DIGITAL_OUTPUT_1_BIT + NUMBER_OUTPUTS)))
+      {
+        uint32_t value = 0;
+        uint32_t index_board = 0, index_number = 0;
+        for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+        {
+          if (name_string_tmp[index_1][index_2] == '?')
+          {
+            if (value == 0)
+            {
+              //Це є умовою фіксації слова
+              index_board = index_2;
+              value = (index_1 - ERROR_DIGITAL_OUTPUT_1_BIT) + 1;
+            }
+            else
+            {
+              //Це є умовою фіксації номеру на слоті
+              index_number = index_2;
+              break;
+            }
+          }
+        }
+        
+        int tmp_1 = -1, tmp_2 = -1;
+        for (size_t i = 0; i < N_OUTPUT_BOARDS; i++)
+        {
+          if (value <= output_boards[i][0])
+          {
+            tmp_1 = output_boards[i][1];
+            tmp_2 = (i == 0) ? value : value - output_boards[i - 1][0];
+          
+            break;
+          }
+        }
+        
+        name_string_tmp[index_1][index_board]  = tmp_1 + 0x40;
+        name_string_tmp[index_1][index_number] = tmp_2 + 0x30;
+      }
+    }
+    
+    unsigned int max_number_changers_in_record = buffer_for_manu_read_record[13];
     unsigned int position_temp;
     unsigned int index_of_ekran;
-    unsigned int diagnostic_old[3], diagnostic_new[3], diagnostic_changing[3];
+    unsigned int diagnostic_old[N_DIAGN], diagnostic_new[N_DIAGN], diagnostic_changing[N_DIAGN];
 
-    diagnostic_old[0] = buffer_for_manu_read_record[ 9] + (buffer_for_manu_read_record[10]<<8) + (buffer_for_manu_read_record[11]<<16) + (buffer_for_manu_read_record[12]<<24);
-    diagnostic_old[1] = buffer_for_manu_read_record[13] + (buffer_for_manu_read_record[14]<<8) + (buffer_for_manu_read_record[15]<<16) + (buffer_for_manu_read_record[16]<<24);
-    diagnostic_old[2] = buffer_for_manu_read_record[17] + (buffer_for_manu_read_record[18]<<8) + (buffer_for_manu_read_record[19]<<16);
-    diagnostic_new[0] = buffer_for_manu_read_record[20] + (buffer_for_manu_read_record[21]<<8) + (buffer_for_manu_read_record[22]<<16) + (buffer_for_manu_read_record[23]<<24);
-    diagnostic_new[1] = buffer_for_manu_read_record[24] + (buffer_for_manu_read_record[25]<<8) + (buffer_for_manu_read_record[26]<<16) + (buffer_for_manu_read_record[27]<<24);
-    diagnostic_new[2] = buffer_for_manu_read_record[28] + (buffer_for_manu_read_record[29]<<8) + (buffer_for_manu_read_record[30]<<16);
+    for (size_t i = 0; i < N_DIAGN_BYTES; i ++)
+    {
+      size_t n_word = i >> 2;
+      size_t n_byte = i & 0x3;
+      if (n_byte == 0)
+      {
+        diagnostic_old[n_word] = 0;
+        diagnostic_new[n_word] = 0;
+      }
+      diagnostic_old[n_word] |= buffer_for_manu_read_record[14                 + i] << (8*n_byte);
+      diagnostic_new[n_word] |= buffer_for_manu_read_record[14 + N_DIAGN_BYTES + i] << (8*n_byte);
+    }
         
     //Визначаємо, які сигнали змінилися
-    diagnostic_changing[0] = diagnostic_new[0] ^ diagnostic_old[0];
-    diagnostic_changing[1] = diagnostic_new[1] ^ diagnostic_old[1];
-    diagnostic_changing[2] = diagnostic_new[2] ^ diagnostic_old[2];
+    for (size_t i = 0; i < N_DIAGN; i ++) diagnostic_changing[i] = diagnostic_new[i] ^ diagnostic_old[i];
     
     //Перевіряємо, чи ми не вийшли за границі
     if (current_ekran.index_position < 0) current_ekran.index_position = max_number_changers_in_record - 1;
@@ -2471,7 +1722,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
               if (k == 0)
               {
                 //У першому рядку відображаємо назву діагностики, який змінився
-                for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[(i<<1)+k][j] = name_string[index_language][index_of_diagnostic_in_the_slice][j];
+                for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[(i<<1)+k][j] = name_string_tmp[index_of_diagnostic_in_the_slice][j];
               }
               else
               {

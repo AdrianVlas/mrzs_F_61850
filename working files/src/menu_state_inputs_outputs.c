@@ -70,63 +70,63 @@ input_output
 /*******************************************************/
 void make_ekran_state_inputs_or_outputs(unsigned int input_output)
 {
-#define MAX_COL_LCD_PART1 7
+#define MAX_COL_LCD_PART1 10
 
   const unsigned char title_input_output[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD_PART1] = 
   {
     {
-      " Двх   ",
-      " Двых  "
+      " Двх.     ",
+      " Двых.    "
     },
     {
-      " Двх   ",
-      " Двих  "
+      " Двх.     ",
+      " Двих.    "
     },
     {
-      " DI    ",
-      " DO    "
+      " DI.      ",
+      " DO.      "
     },
     {
-      " Дк    ",
-      " Дшыf  "
+      " Дк.      ",
+      " Дшыf.    "
     }
   };
   
   const unsigned int index_of_number_di_do[MAX_NAMBER_LANGUAGE][2] = 
   {
-    {4, 5},
-    {4, 5},
-    {3, 3},
-    {3, 5}
+    {5, 6},
+    {5, 6},
+    {4, 4},
+    {4, 6}
   };
     
   const unsigned char information_active[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
   {
-    " Активный",
-    " Активний",
-    "   Active",
-    "  Активті"
+    "Акт.  ",
+    "Акт.  ",
+    "Act.  ",
+    "Акт.  "
   };
   const unsigned char information_pasive[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
   {
-    "Паcсивный",
-    " Пасивний",
-    "  Passive",
-    " Пассивті"
+    "Паcс. ",
+    "Пас.  ",
+    "Pass. ",
+    "Пасс. "
   };
   const unsigned char information_close[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1]  = 
   {
-    "  Замкнут",
-    "   Замкн.",
-    "   Closed",
-    "  Замкнут"
+    "Замк. ",
+    "Замкн.",
+    "Closed",
+    "Замк. "
   };
   const unsigned char information_open[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1]   = 
   {
-    "Разомкнут",
-    " Разімкн.",
-    "   Opened",
-    "Разомкнут"
+    "Разомк",
+    "Розімк",
+    "Opened",
+    "Разомк"
   };
   
   int index_language = index_language_in_array(current_settings.language);
@@ -156,30 +156,53 @@ void make_ekran_state_inputs_or_outputs(unsigned int input_output)
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
     unsigned int number = index_of_ekran + 1;
-    unsigned int tmp_1 = (number / 10), tmp_2 = number - tmp_1*10;
+    int tmp_1 = -1, tmp_2 = -1;
+
+    if (input_output == ID_INPUT)
+    {
+      for (size_t j = 0; j < N_INPUT_BOARDS; j++)
+      {
+        if (number <= input_boards[j][0])
+        {
+          tmp_1 = input_boards[j][1];
+          tmp_2 = (j == 0) ? number : number - input_boards[j - 1][0];
+          
+          break;
+        }
+      }
+    }
+    else
+    {
+      for (size_t j = 0; j < N_OUTPUT_BOARDS; j++)
+      {
+        if (number <= output_boards[j][0])
+        {
+          tmp_1 = output_boards[j][1];
+          tmp_2 = (j == 0) ? number : number - output_boards[j - 1][0];
+          
+          break;
+        }
+      }
+    }
+
     //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
     if (index_of_ekran < max_row)
       for (unsigned int j = 0; j<MAX_COL_LCD; j++)
       {
         if (j < MAX_COL_LCD_PART1)
         {
-          if ((j < index_of_number_di_do_tmp) || (j > (index_of_number_di_do_tmp + 1)))
+          if ((j < index_of_number_di_do_tmp) || (j > (index_of_number_di_do_tmp + 2)))
             working_ekran[i][j] = title_input_output[index_language][input_output][j];
-          else if (j == index_of_number_di_do_tmp)
+          else if (j == (index_of_number_di_do_tmp + 0))
           {
-            if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x30;
+            if (tmp_1 < 0) working_ekran[i][j] = '?';
+            else if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x40;
           }
+          else if (j == (index_of_number_di_do_tmp + 1)) working_ekran[i][j] = '.';
           else     
           {
-            if (tmp_1 > 0 )
-            {
-              working_ekran[i][j] = tmp_2 + 0x30;
-            }
-            else
-            {
-              working_ekran[i][j - 1] = tmp_2 + 0x30;
-              working_ekran[i][j] = ' ';
-            }
+            if (tmp_2 < 0) working_ekran[i][j] = '?';
+            else working_ekran[i][j] = tmp_2 + 0x30;
           }
         }
         else

@@ -1,6 +1,10 @@
 #ifndef __MACROSES__
 #define __MACROSES__
 
+#define UNUSED(x) (void)(x)
+
+#define MASKA_FOR_BIT(_n)      (1 << _n)
+
 #define _CHECK_SET_BIT(_array, _number_bit)                                     \
     (_array[_number_bit >> 5] & ( (unsigned int)( 1 << (_number_bit & 0x1f)) ) )                           
 
@@ -10,7 +14,8 @@
 #define _CLEAR_BIT(_array, _number_bit)                                         \
       _array[_number_bit >> 5] &= (unsigned int)(~(1 << (_number_bit & 0x1f)))
 
-#define _DEVICE_REGISTER(addr,offset)   *(unsigned short int *)(addr + (offset<<1) )
+//#define _DEVICE_REGISTER(addr,offset)   *(unsigned short int *)(addr + (offset<<1) )
+#define _DEVICE_REGISTER_V2(addr,offset)   *(uint16_t *)(addr + offset)
 
 #define _NUMBER_CHANGES_INTO_UNSIGNED_INT_ARRAY(_array1, _array2, _number_items, _rezultat) \
         {                                                                        \
@@ -56,7 +61,7 @@
 
 #define _CLEAR_STATE(_output, _output_bit) _output &= (unsigned int)(~(1 << _output_bit))
 
-#define _SET_STATE(_output, _output_bit) _output |= (unsigned int)(1 << _output_bit)
+#define _SET_STATE(_output, _output_bit) _output |= (1u << _output_bit)
 
 #define _GET_OUTPUT_STATE(_input, _input_bit) ((_input & ((unsigned int)(1 << _input_bit))) != 0)
 
@@ -527,6 +532,16 @@
           else _output &= (unsigned int)(~(1 << _output_bit));                  \
         }                                                                       \
       }
+
+#define AR_WRITE(index, data)                                                           \
+{                                                                                       \
+  int16_t test_data = index & 0xffff;                                                   \
+  if ((array_ar[index] = test_data) != test_data) _SET_BIT(set_diagnostyka, ERROR_EXTERNAL_SRAM_BIT); \
+                                                                                        \
+  array_ar[index++] = data;                                                             \
+}
+
+#define INT_TO_BCD(_data) ((((_data) / 10) << 4) | ((_data) % 10))
 
 #endif 
 

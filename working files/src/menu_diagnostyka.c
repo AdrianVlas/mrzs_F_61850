@@ -3,7 +3,7 @@
 /*****************************************************/
 //Формуємо екран відображення діагностики
 /*****************************************************/
-void make_ekran_diagnostyka(unsigned int volatile *diagnostyka_tmp)
+void make_ekran_diagnostyka(unsigned int volatile diagnostyka_tmp[])
 {
 #define NUMBER_ROW_FOR_NO_ERRORS 2
   
@@ -34,32 +34,14 @@ void make_ekran_diagnostyka(unsigned int volatile *diagnostyka_tmp)
 
   int index_language = index_language_in_array(current_settings.language);
   
-    
-  if (
-      (*(diagnostyka_tmp + 0) == 0) &&
-      (*(diagnostyka_tmp + 1) == 0) &&
-      (*(diagnostyka_tmp + 2) == 0) 
-     )
+  unsigned int not_null = false;
+  for (size_t i = 0; i < N_DIAGN; i++) 
   {
-    //Це означає, що ніякої помилки не зафіксовано
-     
-    //Текучу позицію в сипску переводимо на сам початок
-    current_ekran.index_position = 0;
-    position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = 0;
-
-    //Копіюємо  рядки у робочий екран
-    for (unsigned int i=0; i< MAX_ROW_LCD; i++)
-    {
-      //Копіюємо в робочий екран інформацію, що нічого не відранжовано
-      if (i < 2)
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
-      else
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
-    }
-    //Курсор не видимий
-    current_ekran.cursor_on = 0;
+    not_null |= (diagnostyka_tmp[i] != 0);
+    if (not_null) break;
   }
-  else
+              
+  if (not_null)
   {
     /************************************************************/
     //Формуємо список із помилок які реально присутні
@@ -70,6 +52,45 @@ void make_ekran_diagnostyka(unsigned int volatile *diagnostyka_tmp)
     {
       for(unsigned int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
         name_string_tmp[index_1][index_2] = name_string[index_language][NUMBER_ROW_FOR_NO_ERRORS + index_1][index_2];
+      
+      if ((index_1 >= ERROR_DIGITAL_OUTPUT_1_BIT) && (index_1 < (ERROR_DIGITAL_OUTPUT_1_BIT + NUMBER_OUTPUTS)))
+      {
+        uint32_t value = 0;
+        uint32_t index_board = 0, index_number = 0;
+        for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+        {
+          if (name_string_tmp[index_1][index_2] == '?')
+          {
+            if (value == 0)
+            {
+              //Це є умовою фіксації слова
+              index_board = index_2;
+              value = (index_1 - ERROR_DIGITAL_OUTPUT_1_BIT) + 1;
+            }
+            else
+            {
+              //Це є умовою фіксації номеру на слоті
+              index_number = index_2;
+              break;
+            }
+          }
+        }
+        
+        int tmp_1 = -1, tmp_2 = -1;
+        for (size_t i = 0; i < N_OUTPUT_BOARDS; i++)
+        {
+          if (value <= output_boards[i][0])
+          {
+            tmp_1 = output_boards[i][1];
+            tmp_2 = (i == 0) ? value : value - output_boards[i - 1][0];
+          
+            break;
+          }
+        }
+        
+        name_string_tmp[index_1][index_board]  = tmp_1 + 0x40;
+        name_string_tmp[index_1][index_number] = tmp_2 + 0x30;
+      }
     }
 
     unsigned int index_of_ekran;
@@ -116,6 +137,26 @@ void make_ekran_diagnostyka(unsigned int volatile *diagnostyka_tmp)
 
     //Курсор видимий
     current_ekran.cursor_on = 1;
+  }
+  else
+  {
+    //Це означає, що ніякої помилки не зафіксовано
+     
+    //Текучу позицію в сипску переводимо на сам початок
+    current_ekran.index_position = 0;
+    position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = 0;
+
+    //Копіюємо  рядки у робочий екран
+    for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+    {
+      //Копіюємо в робочий екран інформацію, що нічого не відранжовано
+      if (i < 2)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+      else
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+    }
+    //Курсор не видимий
+    current_ekran.cursor_on = 0;
   }
 
   //Курсор по горизонталі відображається на першій позиції

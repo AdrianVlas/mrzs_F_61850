@@ -14,7 +14,8 @@ void make_ekran_extended_logic(void)
       " О-И            ",
       " О-ИЛИ          ",
       " О-Искл.ИЛИ     ",
-      " О-НЕ           "
+      " О-НЕ           ",
+      " Перед.функции  "
     },
     {
       " Заг.уставки    ",
@@ -23,7 +24,8 @@ void make_ekran_extended_logic(void)
       " В-І            ",
       " В-АБО          ",
       " В-Викл.АБО     ",
-      " В-НЕ           "
+      " В-НЕ           ",
+      " Перед.функції  "
     },
     {
       " General pickups",
@@ -32,7 +34,8 @@ void make_ekran_extended_logic(void)
       " UD AND         ",
       " UD OR          ",
       " UD XOR         ",
-      " UD NOT         "
+      " UD NOT         ",
+      " Перед.функции  "
     },
     {
       " Общие уставки  ",
@@ -41,7 +44,8 @@ void make_ekran_extended_logic(void)
       " О-И            ",
       " О-ИЛИ          ",
       " О-Искл.ИЛИ     ",
-      " О-НЕ           "
+      " О-НЕ           ",
+      " Перед.функции  "
     }
   };
 

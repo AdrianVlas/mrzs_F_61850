@@ -178,10 +178,16 @@
 #define TIMEOUT_MTZ04_2_VVID_PR_MIN             200
 #define TIMEOUT_MTZ04_2_VVID_PR_MAX             5000
 
+#define TIMEOUT_ZDZ_MIN                         0
+#define TIMEOUT_ZDZ_MAX                         1000
+
+#define ZDZ_CTRL_MIN                            _ZDZ_CTRL_MIN
+#define ZDZ_CTRL_MAX                            _ZDZ_CTRL_MAX
+
 #define SETPOINT_ZZ_3I0_MIN           10
 #define SETPOINT_ZZ_3I0_MAX           2000
 
-#define SETPOINT_ZZ_3U0_MIN           10000
+#define SETPOINT_ZZ_3U0_MIN           5000
 #define SETPOINT_ZZ_3U0_MAX           150000
 
 #define TIMEOUT_ZZ_3I0_MIN            100
@@ -190,46 +196,46 @@
 #define TIMEOUT_ZZ_3U0_MIN            0
 #define TIMEOUT_ZZ_3U0_MAX            32000
 
-#define SETPOINT_TZNP1_3I0_VPERED_MIN 1250
+#define SETPOINT_TZNP1_3I0_VPERED_MIN 500
 #define SETPOINT_TZNP1_3I0_VPERED_MAX 150000
 
-#define SETPOINT_TZNP1_3U0_VPERED_MIN 10000
+#define SETPOINT_TZNP1_3U0_VPERED_MIN 5000
 #define SETPOINT_TZNP1_3U0_VPERED_MAX 150000
 
-#define SETPOINT_TZNP1_3I0_NAZAD_MIN  1250
+#define SETPOINT_TZNP1_3I0_NAZAD_MIN  500
 #define SETPOINT_TZNP1_3I0_NAZAD_MAX  150000
 
-#define SETPOINT_TZNP1_3U0_NAZAD_MIN  10000
+#define SETPOINT_TZNP1_3U0_NAZAD_MIN  5000
 #define SETPOINT_TZNP1_3U0_NAZAD_MAX  150000
 
 #define SETPOINT_TZNP1_ANGLE_MIN      0
 #define SETPOINT_TZNP1_ANGLE_MAX      90
 
-#define SETPOINT_TZNP2_3I0_VPERED_MIN 1250
+#define SETPOINT_TZNP2_3I0_VPERED_MIN 500
 #define SETPOINT_TZNP2_3I0_VPERED_MAX 150000
 
-#define SETPOINT_TZNP2_3U0_VPERED_MIN 10000
+#define SETPOINT_TZNP2_3U0_VPERED_MIN 5000
 #define SETPOINT_TZNP2_3U0_VPERED_MAX 150000
 
-#define SETPOINT_TZNP2_3I0_NAZAD_MIN  1250
+#define SETPOINT_TZNP2_3I0_NAZAD_MIN  500
 #define SETPOINT_TZNP2_3I0_NAZAD_MAX  150000
 
-#define SETPOINT_TZNP2_3U0_NAZAD_MIN  10000
+#define SETPOINT_TZNP2_3U0_NAZAD_MIN  5000
 #define SETPOINT_TZNP2_3U0_NAZAD_MAX  150000
 
 #define SETPOINT_TZNP2_ANGLE_MIN      0
 #define SETPOINT_TZNP2_ANGLE_MAX      90
 
-#define SETPOINT_TZNP3_3I0_VPERED_MIN 1250
+#define SETPOINT_TZNP3_3I0_VPERED_MIN 500
 #define SETPOINT_TZNP3_3I0_VPERED_MAX 150000
 
-#define SETPOINT_TZNP3_3U0_VPERED_MIN 10000
+#define SETPOINT_TZNP3_3U0_VPERED_MIN 5000
 #define SETPOINT_TZNP3_3U0_VPERED_MAX 150000
 
-#define SETPOINT_TZNP3_3I0_NAZAD_MIN  1250
+#define SETPOINT_TZNP3_3I0_NAZAD_MIN  500
 #define SETPOINT_TZNP3_3I0_NAZAD_MAX  150000
 
-#define SETPOINT_TZNP3_3U0_NAZAD_MIN  10000
+#define SETPOINT_TZNP3_3U0_NAZAD_MIN  5000
 #define SETPOINT_TZNP3_3U0_NAZAD_MAX  150000
 
 #define SETPOINT_TZNP3_ANGLE_MIN      0
@@ -325,13 +331,13 @@
 #define TIMEOUT_ZOP_MIN               0
 #define TIMEOUT_ZOP_MAX               32000
 
-#define SETPOINT_UMIN1_MIN            14000
+#define SETPOINT_UMIN1_MIN            5000
 #define SETPOINT_UMIN1_MAX            110000
 
 #define SETPOINT_UMIN1_IBLK_MIN       250
 #define SETPOINT_UMIN1_IBLK_MAX       5000
 
-#define SETPOINT_UMIN2_MIN            14000
+#define SETPOINT_UMIN2_MIN            5000
 #define SETPOINT_UMIN2_MAX            110000
 
 #define SETPOINT_UMIN2_IBLK_MIN       250
@@ -349,11 +355,36 @@
 #define SETPOINT_UMAX2_MIN            23000
 #define SETPOINT_UMAX2_MAX            140000
 
+#define SETPOINT_KP_UMAX_MIN          50
+#define SETPOINT_KP_UMAX_DEFAULT      95
+#define SETPOINT_KP_UMAX_MAX          96
+
 #define TIMEOUT_UMAX1_MIN             0
-#define TIMEOUT_UMAX1_MAX             300000
+#define TIMEOUT_UMAX1_MAX             600000
 
 #define TIMEOUT_UMAX2_MIN             0
-#define TIMEOUT_UMAX2_MAX             300000
+#define TIMEOUT_UMAX2_MAX             600000
+
+#define SETPOINT_UP_I_MIN             500
+#define SETPOINT_UP_I_MAX             150000
+
+#define SETPOINT_UP_3I0_MIN           10
+#define SETPOINT_UP_3I0_MAX           2000
+
+#define SETPOINT_UP_U_MIN             5000
+#define SETPOINT_UP_U_MAX             140000
+
+#define SETPOINT_UP_P_MIN             10
+#define SETPOINT_UP_P_MAX             2000000
+
+#define SETPOINT_UP_KP_MORE_MIN  50
+#define SETPOINT_UP_KP_MORE_MAX  95
+
+#define SETPOINT_UP_KP_LESS_MIN  105
+#define SETPOINT_UP_KP_LESS_MAX  150
+
+#define TIMEOUT_UP_MIN                0
+#define TIMEOUT_UP_MAX                600000
 
 #define SETPOINT_Inom_MIN             5
 #define SETPOINT_Inom_MAX             (SETPOINT_Inom_MIN*KOEF_TT_MAX)
@@ -387,8 +418,36 @@
 #define TIMEOUT_DEACTIVATION_PASSWORD_MIN       30
 #define TIMEOUT_DEACTIVATION_PASSWORD_MAX       3600
 
+#define TIMEOUT_NEW_SETTINGS_MIN       60
+#define TIMEOUT_NEW_SETTINGS_MAX       3600
+
 #define KOEF_ADDRESS_MIN              1
 #define KOEF_ADDRESS_MAX              247
+
+#define NETWORK_MASK_MIN              8
+#define NETWORK_MASK_DEFAULT          24
+#define NETWORK_MASK_MAX              32
+
+#define NETWORK_PORT_MIN              0
+#define NETWORK_PORT_MAX              65535
+
+#define NETWORK_PERIOD_SYNC_MIN       0
+#define NETWORK_PERIOD_SYNC_MAX       65535
+
+#define TIME_ZONE_MIN                 (-11)
+#define TIME_ZONE_MAX                 12
+
+#define DST_RULE_MM_MIN               _Jan
+#define DST_RULE_MM_MAX               _Dec
+
+#define DST_RULE_DOW_MIN              _Sun
+#define DST_RULE_DOW_MAX              _Sat
+
+#define DST_RULE_DR_MIN               _N1
+#define DST_RULE_DR_MAX               _NL
+
+#define DST_RULE_HH_MIN               0
+#define DST_RULE_HH_MAX               23
 
 #define MAX_NUMBER_SPEEDS_INTERFACE    7
 #define VALUE_SPEED_INTERFACE_MIN      0
@@ -430,10 +489,10 @@
 #define NUMBER_DEFINED_NOT_MAX        NUMBER_DEFINED_NOT
 
 #define TIMEOUT_DF_PAUSE_MIN          0
-#define TIMEOUT_DF_PAUSE_MAX          300000
+#define TIMEOUT_DF_PAUSE_MAX          600000
 
 #define TIMEOUT_DF_WORK_MIN           0
-#define TIMEOUT_DF_WORK_MAX           300000
+#define TIMEOUT_DF_WORK_MAX           600000
 
 #define TIMEOUT_PREFAULT_MIN          100
 #define TIMEOUT_PREFAULT_MAX          5000

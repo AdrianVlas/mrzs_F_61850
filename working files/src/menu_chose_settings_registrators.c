@@ -149,22 +149,24 @@ void make_ekran_timeout_analog_registrator(void)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_TIMEOUT_ANALOG_REGISTRATOR<<1))//Множення на два константи MAX_ROW_FOR_TIMEOUT_ANALOG_REGISTRATOR потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_TIMEOUT_ANALOG_REGISTRATOR)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_TMOPREFAULT)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_TMOPREFAULT)
         {
           vaga = 1000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки "Час доаварійного масиву"
-          if (current_ekran.edition == 0) value = current_settings.prefault_number_periods*20; //у змінну value поміщаємо значення витримки "Час доаварійного масиву" але виражену не у періодах, а у мілісекундах
+          if (view == true) value = current_settings.prefault_number_periods*20; //у змінну value поміщаємо значення витримки "Час доаварійного масиву" але виражену не у періодах, а у мілісекундах
           else value = edition_settings.prefault_number_periods*20;
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOPOSTFAULT)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOPOSTFAULT)
         {
           vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки "Час пісдяаварійного масиву"
-          if (current_ekran.edition == 0) value = current_settings.postfault_number_periods*20; //у змінну value поміщаємо значення витримки "Час післяаварійного масиву" але виражену не у періодах, а у мілісекундах
+          if (view == true) value = current_settings.postfault_number_periods*20; //у змінну value поміщаємо значення витримки "Час післяаварійного масиву" але виражену не у періодах, а у мілісекундах
           else value = edition_settings.postfault_number_periods*20;
         }
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
@@ -174,7 +176,7 @@ void make_ekran_timeout_analog_registrator(void)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_TMOPREFAULT)
+          if (index_of_ekran_tmp == INDEX_ML_TMOPREFAULT)
           {
             if (
                 ((j < COL_TMO_PREFAULT_BEGIN) ||  (j > COL_TMO_PREFAULT_END )) &&
@@ -183,9 +185,9 @@ void make_ekran_timeout_analog_registrator(void)
             else if (j == COL_TMO_PREFAULT_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_PREFAULT_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_PREFAULT_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_PREFAULT_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOPOSTFAULT)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOPOSTFAULT)
           {
             if (
                 ((j < COL_TMO_POSTFAULT_BEGIN) ||  (j > COL_TMO_POSTFAULT_END )) &&
@@ -194,7 +196,7 @@ void make_ekran_timeout_analog_registrator(void)
             else if (j == COL_TMO_POSTFAULT_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_POSTFAULT_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_POSTFAULT_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_POSTFAULT_COMMA, view, 0);
           }
         }
       }

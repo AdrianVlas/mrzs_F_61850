@@ -9,19 +9,23 @@ void make_ekran_setpoint_Umax(unsigned int group)
   {
     {
       " Уставка ЗНмакс1",
-      " Уставка ЗНмакс2"
+      " Уставка ЗНмакс2",
+      "   КВ ЗНмакс    "
     },
     {
       " Уставка ЗНмакс1",
-      " Уставка ЗНмакс2"
+      " Уставка ЗНмакс2",
+      "   КП ЗНмакс    "
     },
     {
       " Уставка Umax1  ",
-      " Уставка Umax2  "
+      " Уставка Umax2  ",
+      "    КП Umax     "
     },
     {
       " Уставка ЗНмакс1",
-      " Уставка ЗНмакс2"
+      " Уставка ЗНмакс2",
+      "   КВ ЗНмакс    "
     }
   };
   int index_language = index_language_in_array(current_settings.language);
@@ -35,23 +39,31 @@ void make_ekran_setpoint_Umax(unsigned int group)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_SETPOINT_UMAX<<1))//Множення на два константи MAX_ROW_FOR_SETPOINT_UMAX потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_SETPOINT_UMAX)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_STPUMAX1)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_STPUMAX1)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для уставки Umax1
-          if (current_ekran.edition == 0) value = current_settings.setpoint_Umax1[group]; //у змінну value поміщаємо значення уставки Umax1
+          if (view == true) value = current_settings.setpoint_Umax1[group]; //у змінну value поміщаємо значення уставки Umax1
           else value = edition_settings.setpoint_Umax1[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_STPUMAX2)
+        else if (index_of_ekran_tmp == INDEX_ML_STPUMAX2)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для уставки Umax2
-          if (current_ekran.edition == 0) value = current_settings.setpoint_Umax2[group]; //у змінну value поміщаємо значення уставки Umax2
+          if (view == true) value = current_settings.setpoint_Umax2[group]; //у змінну value поміщаємо значення уставки Umax2
           else value = edition_settings.setpoint_Umax2[group];
+        }
+        else if (index_of_ekran_tmp == INDEX_ML_STP_KP_UMAX)
+        {
+          vaga = 100; //максимальний ваговий коефіцієнт для вилілення старшого розряду
+          if (view == true) value = current_settings.setpoint_kp_Umax[group]; //у змінну value поміщаємо значення уставки
+          else value = edition_settings.setpoint_kp_Umax[group];
         }
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
       }
@@ -60,7 +72,7 @@ void make_ekran_setpoint_Umax(unsigned int group)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_STPUMAX1)
+          if (index_of_ekran_tmp == INDEX_ML_STPUMAX1)
           {
             if (
                 ((j < COL_SETPOINT_UMAX1_BEGIN) ||  (j > COL_SETPOINT_UMAX1_END ))  &&
@@ -69,9 +81,9 @@ void make_ekran_setpoint_Umax(unsigned int group)
             else if (j == COL_SETPOINT_UMAX1_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_UMAX1_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_V];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_UMAX1_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_UMAX1_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_STPUMAX2)
+          else if (index_of_ekran_tmp == INDEX_ML_STPUMAX2)
           {
             if (
                 ((j < COL_SETPOINT_UMAX2_BEGIN) ||  (j > COL_SETPOINT_UMAX2_END ))  &&
@@ -80,7 +92,14 @@ void make_ekran_setpoint_Umax(unsigned int group)
             else if (j == COL_SETPOINT_UMAX2_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_SETPOINT_UMAX2_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_V];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_UMAX2_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_UMAX2_COMMA, view, 0);
+          }
+          else if (index_of_ekran_tmp == INDEX_ML_STP_KP_UMAX)
+          {
+            if ((j < COL_SETPOINT_KP_UMAX_BEGIN) ||  (j > COL_SETPOINT_KP_UMAX_END )) working_ekran[i][j] = ' ';
+            else if (j == COL_SETPOINT_KP_UMAX_COMMA )working_ekran[i][j] = ',';
+            else
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_KP_UMAX_COMMA, view, 0);
           }
         }
       }
@@ -107,6 +126,11 @@ void make_ekran_setpoint_Umax(unsigned int group)
     {
       current_ekran.position_cursor_x = COL_SETPOINT_UMAX2_BEGIN;
       last_position_cursor_x = COL_SETPOINT_UMAX2_END;
+    }
+    else if (current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+    {
+      current_ekran.position_cursor_x = COL_SETPOINT_KP_UMAX_BEGIN;
+      last_position_cursor_x = COL_SETPOINT_KP_UMAX_END;
     }
     
     //Підтягуємо курсор до першого символу
@@ -163,22 +187,24 @@ void make_ekran_timeout_Umax(unsigned int group)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_TIMEOUT_UMAX<<1))//Множення на два константи MAX_ROW_FOR_TIMEOUT_UMAX потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < MAX_ROW_FOR_TIMEOUT_UMAX)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
-        if ((index_of_ekran>>1) == INDEX_ML_TMOUMAX1)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
+        if (index_of_ekran_tmp == INDEX_ML_TMOUMAX1)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки Umax1
-          if (current_ekran.edition == 0) value = current_settings.timeout_Umax1[group]; //у змінну value поміщаємо значення витримки Umax1
+          if (view == true) value = current_settings.timeout_Umax1[group]; //у змінну value поміщаємо значення витримки Umax1
           else value = edition_settings.timeout_Umax1[group];
         }
-        else if ((index_of_ekran>>1) == INDEX_ML_TMOUMAX2)
+        else if (index_of_ekran_tmp == INDEX_ML_TMOUMAX2)
         {
           vaga = 100000; //максимальний ваговий коефіцієнт для вилілення старшого розряду для витримки Umax2
-          if (current_ekran.edition == 0) value = current_settings.timeout_Umax2[group]; //у змінну value поміщаємо значення витримки Umax2
+          if (view == true) value = current_settings.timeout_Umax2[group]; //у змінну value поміщаємо значення витримки Umax2
           else value = edition_settings.timeout_Umax2[group];
         }
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
@@ -188,7 +214,7 @@ void make_ekran_timeout_Umax(unsigned int group)
         //У парному номері рядку виводимо значення уставки
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((index_of_ekran>>1) == INDEX_ML_TMOUMAX1)
+          if (index_of_ekran_tmp == INDEX_ML_TMOUMAX1)
           {
             if (
                 ((j < COL_TMO_UMAX1_BEGIN) ||  (j > COL_TMO_UMAX1_END )) &&
@@ -197,9 +223,9 @@ void make_ekran_timeout_Umax(unsigned int group)
             else if (j == COL_TMO_UMAX1_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_UMAX1_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_UMAX1_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_UMAX1_COMMA, view, 0);
           }
-          else if ((index_of_ekran>>1) == INDEX_ML_TMOUMAX2)
+          else if (index_of_ekran_tmp == INDEX_ML_TMOUMAX2)
           {
             if (
                 ((j < COL_TMO_UMAX2_BEGIN) ||  (j > COL_TMO_UMAX2_END )) &&
@@ -208,7 +234,7 @@ void make_ekran_timeout_Umax(unsigned int group)
             else if (j == COL_TMO_UMAX2_COMMA )working_ekran[i][j] = ',';
             else if (j == (COL_TMO_UMAX2_END + 2)) working_ekran[i][j] = odynyci_vymirjuvannja[index_language][INDEX_SECOND];
             else
-              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_UMAX2_COMMA, 0);
+              calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_TMO_UMAX2_COMMA, view, 0);
           }
         }
       }
@@ -297,12 +323,13 @@ void make_ekran_control_Umax()
 
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_CONTROL_UMAX<<1))//Множення на два константи MAX_ROW_FOR_CONTROL_UMAX потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_CONTROL_UMAX)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
@@ -363,14 +390,14 @@ void make_ekran_control_Umax()
          },
         };
 
-        unsigned int index_ctr = (index_of_ekran>>1);
+        unsigned int index_ctr = index_of_ekran_tmp;
 
         unsigned int temp_data;
         if(current_ekran.edition == 0) temp_data = current_settings.control_Umax;
         else temp_data = edition_settings.control_Umax;
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_ctr][index_language][(temp_data >> index_ctr) & 0x1][j];
-        current_ekran.position_cursor_x = cursor_x[index_ctr][index_language][(temp_data >> index_ctr) & 0x1];
+        if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x[index_ctr][index_language][(temp_data >> index_ctr) & 0x1];
       }
     }
     else

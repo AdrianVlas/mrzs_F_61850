@@ -12,36 +12,28 @@ void make_ekran_chose_extra_settings(void)
       " Вх.напряжения  ",
       "Бл.Гот.к ТУ от з",
       " Инф.об отключ. ",
-      " Контр.акт.ФК   ",
-      " Бл.Вкл.ВВ от ДВ",
-      "Бл.Откл.ВВ от ДВ"
+      " Контр.акт.ФК   "
     },
     {
       "    Ib/I0.4     ",
       " Вхідні напруги ",
       "Бл.Гот.до ТУ в.з",
       "Інф.про вимкнен.",
-      " Контр.акт.ФК   ",
-      " Бл.Ввімк.від ДВ",
-      " Бл.Вимк.від ДВ "
+      " Контр.акт.ФК   "
     },
     {
       "    Ib/I0.4     ",
       " Вх.напряжения  ",
       "Бл.Гот.к ТУ от з",
       " Инф.об отключ. ",
-      " FK activ.Ctrl  ",
-      " Blc.On CB fr.DI", 
-      "Blc.Off CB fr.DI"
+      " FK activ.Ctrl  "
     },
     {
       "    Ib/I0.4     ",
       " Вх.напряжения  ",
       "Бл.Гот.к ТУ от з",
       " Инф.об отключ. ",
-      " Контр.акт.ФК   ",
-      " Бл.Вкл.ВВ от ДВ",
-      "Бл.Откл.ВВ от ДВ"
+      " Контр.акт.ФК   "
     }
   };
   int index_language = index_language_in_array(current_settings.language);
@@ -54,12 +46,13 @@ void make_ekran_chose_extra_settings(void)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS<<1))//Множення на два константи MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
@@ -77,18 +70,6 @@ void make_ekran_chose_extra_settings(void)
             {"     Фазні      ", "    Лінійні     "},
             {"     Фазные     ", "    Линейные    "},
             {"     Фазные     ", "    Линейные    "}
-          },
-          {
-            {"     Откл.      ", "      Вкл.      "},
-            {"     Вимк.      ", "     Ввімк.     "},
-            {"      Off       ", "       On       "},
-            {"     Сљнд.      ", "     Косу.      "}
-          },
-          {
-            {"     Откл.      ", "      Вкл.      "},
-            {"     Вимк.      ", "     Ввімк.     "},
-            {"      Off       ", "       On       "},
-            {"     Сљнд.      ", "     Косу.      "}
           },
           {
             {"     Откл.      ", "      Вкл.      "},
@@ -140,29 +121,20 @@ void make_ekran_chose_extra_settings(void)
             {4, 4},
             {5, 6},
             {4, 4}
-          },
-          {
-            {4, 5},
-            {4, 4},
-            {5, 6},
-            {4, 4}
-          },
-          {
-            {4, 5},
-            {4, 4},
-            {5, 6},
-            {4, 4}
           }
         };
         
-        unsigned int index_ctr = (index_of_ekran>>1);
+        unsigned int index_ctr = index_of_ekran_tmp;
 
         unsigned int temp_data;
         if(current_ekran.edition == 0) temp_data = current_settings.control_extra_settings_1;
         else temp_data = edition_settings.control_extra_settings_1;
           
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_ctr][index_language][(temp_data >> index_ctr) & 0x1][j];
-        current_ekran.position_cursor_x = cursor_x[index_ctr][index_language][(temp_data >> index_ctr) & 0x1];
+        if (position_temp == index_of_ekran_tmp)
+        {
+          current_ekran.position_cursor_x = cursor_x[index_ctr][index_language][(temp_data >> index_ctr) & 0x1];
+        }
       }
     }
     else

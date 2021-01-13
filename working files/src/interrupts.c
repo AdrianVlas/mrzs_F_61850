@@ -1,5 +1,10 @@
 #include "header.h"
 
+#define BACKLIGHTING_ON         1
+#define BACKLIGHTING_OFF        300
+
+uint32_t time_backlighting =    BACKLIGHTING_ON*100;
+
 /*****************************************************/
 //Перевірка на помилки у процесі транзакції черз I2C
 /*****************************************************/
@@ -81,14 +86,14 @@ void I2C_EV_IRQHandler(void)
         //Підготовлюємо буфер для передачі в мікросхему для запису (адреса)
         if (driver_i2c.device_id == EEPROM_ADDRESS)
         {
-          //Внутрішня адреса для EEPROM сттановить 2 байти
+          //Внутрішня адреса для EEPROM становить 2 байти
           Temporaty_I2C_Buffer[0] = ((driver_i2c.internal_address & 0xFF00) >> 8);
           Temporaty_I2C_Buffer[1] = (driver_i2c.internal_address & 0x00FF);
           number_transmit_with_i2c = 2;
         }
         else
         {
-          //Внутрішня адреса для RTC сттановить 1 байт
+          //Внутрішня адреса для RTC становить 1 байт
           Temporaty_I2C_Buffer[0] = (driver_i2c.internal_address & 0x00FF);
           number_transmit_with_i2c = 1;
         }
@@ -334,6 +339,23 @@ void TIM5_IRQHandler(void)
     */
     adc_DATA_VAL_read = true;
     
+    /***********************************************************************************************/
+    //Для випадку, коли немає оцифровки "контрольних точок", то цей код буде запускатися з цього місця
+    /***********************************************************************************************/
+    //Подальші дії виконуємо тільки тоді, коли зараз не іде обмін
+    if (
+        ((GPIO_SPI_ADC->ODR & GPIO_NSSPin_ADC) != 0) &&
+        (semaphore_adc_irq == false)  
+       )   
+    {
+      /*
+      Це є умовою на цьому місці (переривання від таймеру має вищий пріоритет
+      ніж перериванні від SPI) не ведеться зчитування значень з АЦП або їх обробка
+      */
+      control_reading_ADCs();
+    }
+    /***********************************************************************************************/
+
     /***********************************************************/
     //Встановлюємо "значення лічильника для наступного переривання"
     /***********************************************************/
@@ -433,10 +455,10 @@ void TIM5_IRQHandler(void)
     }
     /***/
 
-    /*
-    Виставляємо повідослення пор необхідність оцифрувати каналів тестових значень
-    */
-    adc_TEST_VAL_read = true;
+//    /*
+//    Виставляємо повідослення пор необхідність оцифрувати каналів тестових значень
+//    */
+//    adc_TEST_VAL_read = true;
     
     /***********************************************************/
     //Встановлюємо "значення лічильника для наступного переривання"
@@ -492,26 +514,26 @@ void TIM5_IRQHandler(void)
     while (repeat != 0);
     /***********************************************************/
 
-    /***********************************************************/
-    //Виставляємо повідомлення про те, що почато оцифровку всіх груп
-    /***********************************************************/
-    control_word_of_watchdog |= WATCHDOG_MEASURE_START_TEST_VAL;
-    /***********************************************************/
+//    /***********************************************************/
+//    //Виставляємо повідомлення про те, що почато оцифровку всіх груп
+//    /***********************************************************/
+//    control_word_of_watchdog |= WATCHDOG_MEASURE_START_TEST_VAL;
+//    /***********************************************************/
     /***********************************************************************************************/
   }
   
-  //Подальші дії виконуємо тільки тоді, коли зараз не іде обмін
-  if (
-      ((GPIO_SPI_ADC->ODR & GPIO_NSSPin_ADC) != 0) &&
-      (semaphore_adc_irq == false)  
-     )   
-  {
-    /*
-    Це є умовою на цьому місці (переривання від таймеру має вищий пріоритет
-    ніж перериванні від SPI) не ведеться зчитування значень з АЦП або їх обробка
-    */
-    control_reading_ADCs();
-  }
+//  //Подальші дії виконуємо тільки тоді, коли зараз не іде обмін
+//  if (
+//      ((GPIO_SPI_ADC->ODR & GPIO_NSSPin_ADC) != 0) &&
+//      (semaphore_adc_irq == false)  
+//     )   
+//  {
+//    /*
+//    Це є умовою на цьому місці (переривання від таймеру має вищий пріоритет
+//    ніж перериванні від SPI) не ведеться зчитування значень з АЦП або їх обробка
+//    */
+//    control_reading_ADCs();
+//  }
   
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordExitISR();
@@ -673,6 +695,7 @@ void TIM4_IRQHandler(void)
     check_state_key(KEYBOARD_SW_A, KEYBOARD_SW_A_PIN, BIT_KEY_ENTER);
     check_state_key(KEYBOARD_SW_B, KEYBOARD_SW_B_PIN, BIT_KEY_DOWN);
     check_state_key(KEYBOARD_SW_C, KEYBOARD_SW_C_PIN, BIT_KEY_RIGHT);
+    check_state_key(KEYBOARD_SW_D, KEYBOARD_SW_D_PIN, BIT_KEY_C);
     GPIO_SetBits(KEYBOARD, KEYBOARD_SW_1_PIN);
     
     //Робимо невелику затримку
@@ -683,6 +706,7 @@ void TIM4_IRQHandler(void)
     check_state_key(KEYBOARD_SW_A, KEYBOARD_SW_A_PIN, BIT_KEY_ESC);
     check_state_key(KEYBOARD_SW_B, KEYBOARD_SW_B_PIN, BIT_KEY_LEFT);
     check_state_key(KEYBOARD_SW_C, KEYBOARD_SW_C_PIN, BIT_KEY_UP);
+    check_state_key(KEYBOARD_SW_D, KEYBOARD_SW_D_PIN, BIT_KEY_I);
     GPIO_SetBits(KEYBOARD, KEYBOARD_SW_2_PIN);
 
     //Робимо невелику затримку
@@ -693,6 +717,7 @@ void TIM4_IRQHandler(void)
     check_state_key(KEYBOARD_SW_A, KEYBOARD_SW_A_PIN, BIT_KEY_1);
     check_state_key(KEYBOARD_SW_B, KEYBOARD_SW_B_PIN, BIT_KEY_2);
     check_state_key(KEYBOARD_SW_C, KEYBOARD_SW_C_PIN, BIT_KEY_3);
+    check_state_key(KEYBOARD_SW_D, KEYBOARD_SW_D_PIN, BIT_KEY_O);
     GPIO_SetBits(KEYBOARD, KEYBOARD_SW_3_PIN);
 
     //Робимо невелику затримку
@@ -706,11 +731,91 @@ void TIM4_IRQHandler(void)
     GPIO_SetBits(KEYBOARD, KEYBOARD_SW_4_PIN);
     /***************************/
   
+    uint32_t  maska_all_keys = (uint32_t)(
+                                          (1<<BIT_KEY_ENTER) |
+                                          (1<<BIT_KEY_DOWN) |
+                                          (1<<BIT_KEY_RIGHT) |
+                                          (1<<BIT_KEY_ESC) |
+                                          (1<<BIT_KEY_LEFT) |
+                                          (1<<BIT_KEY_UP) |
+                                          (1<<BIT_KEY_1) |
+                                          (1<<BIT_KEY_2) |
+                                          (1<<BIT_KEY_3) |
+                                          (1<<BIT_KEY_4) |
+                                          (1<<BIT_KEY_5) |
+                                          (1<<BIT_KEY_6) |
+                                          (1<<BIT_KEY_C) |
+                                          (1<<BIT_KEY_I) |
+                                          (1<<BIT_KEY_O)
+                                         );
+    if ((LCD_BL->ODR & LCD_BL_PIN) != (uint32_t)Bit_RESET)
+    {
+      //Підсвітка ввімкнута
+      if ((new_state_keyboard & maska_all_keys) != 0) time_backlighting = BACKLIGHTING_OFF*100;
+      if (
+           (time_backlighting > 0) && /*випадок старту з викнутою підсвіткою*/
+           (--time_backlighting == 0) /*закінчився час роботи приладу без підсвітки після старту приладу*/
+         )
+      {
+        //Умова вивмкнення підсвітки
+        LCD_BL->BSRRH = LCD_BL_PIN;
+      }
+      
+    }
+    else
+    {
+      //Підсвітка вимкнута
+      if (
+          ((new_state_keyboard & maska_all_keys) != 0) /*умова ввімкнення підсвітки по натискуванні кнопки*/
+          ||  
+          (
+           (time_backlighting > 0)  && /*випадок старту з викнутою підсвіткою*/
+           (--time_backlighting == 0) && /*закінчився час роботи приладу без підсвітки після старту приладу*/
+           ((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET) /*є оперативне живлення*/
+          )   
+         )
+      {
+        //Умова ввімкнення підсвітки після старту приладу
+        LCD_BL->BSRRL = LCD_BL_PIN;
+        time_backlighting = BACKLIGHTING_OFF*100;
+
+        uint32_t  maska_wake_up_keys = (uint32_t)(
+                                                  (1<<BIT_KEY_ENTER) |
+                                                  (1<<BIT_KEY_DOWN) |
+                                                  (1<<BIT_KEY_RIGHT) |
+                                                  (1<<BIT_KEY_ESC) |
+                                                  (1<<BIT_KEY_LEFT) |
+                                                  (1<<BIT_KEY_UP)
+                                                 );
+        new_state_keyboard &= (unsigned int)(~maska_wake_up_keys);
+      }
+    }
+
     /***************************/
     //Обробка алгоритму функціональних кнопок
     /***************************/
-    new_state_keyboard_for_db |= (unsigned int)(new_state_keyboard & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)));/*new_state_keyboard змінюється і потім аналізується у функції main_manu_function, тому для аналізу натискування функціональних кнопок натискування цих кнопок аналізуємо через іншу змінну*/
-    new_state_keyboard        &= (unsigned int)(~((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)));
+    new_state_keyboard_for_db |= (unsigned int)(new_state_keyboard & (
+                                                                      (1<<BIT_KEY_1) |
+                                                                      (1<<BIT_KEY_2) |
+                                                                      (1<<BIT_KEY_3) |
+                                                                      (1<<BIT_KEY_4) |
+                                                                      (1<<BIT_KEY_5) |
+                                                                      (1<<BIT_KEY_6) |
+                                                                      (1<<BIT_KEY_C) |
+                                                                      (1<<BIT_KEY_I) |
+                                                                      (1<<BIT_KEY_O)
+                                                                      ));/*new_state_keyboard змінюється і потім аналізується у функції main_manu_function, тому для аналізу натискування функціональних кнопок натискування цих кнопок аналізуємо через іншу змінну*/
+    new_state_keyboard        &= (unsigned int)(~(
+                                                  (1<<BIT_KEY_1) |
+                                                  (1<<BIT_KEY_2) |
+                                                  (1<<BIT_KEY_3) |
+                                                  (1<<BIT_KEY_4) |
+                                                  (1<<BIT_KEY_5) |
+                                                  (1<<BIT_KEY_6) |
+                                                  (1<<BIT_KEY_C) |
+                                                  (1<<BIT_KEY_I) |
+                                                  (1<<BIT_KEY_O)
+                                                 ));
     
     //Перевірка на те, чи вже кнопка відпущена чи ще натиснута
     if (time_set_keyboard[BIT_KEY_1] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_1));
@@ -719,8 +824,11 @@ void TIM4_IRQHandler(void)
     if (time_set_keyboard[BIT_KEY_4] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_4));
     if (time_set_keyboard[BIT_KEY_5] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_5));
     if (time_set_keyboard[BIT_KEY_6] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_6));
+    if (time_set_keyboard[BIT_KEY_C] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_C));
+    if (time_set_keyboard[BIT_KEY_I] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_I));
+    if (time_set_keyboard[BIT_KEY_O] == 0) new_state_keyboard_for_db &= (unsigned int)(~(1<<BIT_KEY_O));
 
-    if ((new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6))) != 0)
+    if ((new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O))) != 0)
     {
       if (
           ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_FB_ACTIVATION) == 0)
@@ -732,8 +840,10 @@ void TIM4_IRQHandler(void)
         Натиснути функціональна кнопка підтверджена натискуванням кнопки ENTER  
         Натиснуті кнопки переносимо до спеціальної змінної, щоб їх обслуговувати  у системі захистів
         ***************************/
-        pressed_buttons    |= (new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6))) >> BIT_KEY_1;
-        new_state_keyboard_for_db &= (unsigned int)(~((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)));
+        mutex_buttons = true;
+        pressed_buttons    |= (new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O))) >> BIT_KEY_1;
+        mutex_buttons = false;
+        new_state_keyboard_for_db &= (unsigned int)(~((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O)));
         /***************************/
 
         if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_FB_ACTIVATION) != 0)
@@ -785,18 +895,6 @@ void TIM4_IRQHandler(void)
     /***********************************************************/
 
     /***********************************************************/
-    //Аналіз запуску, або розблоукування запуску періодичних задач
-    /***********************************************************/
-    if (_CHECK_SET_BIT(control_i2c_taskes, TASK_BLK_WRITING_EEPROM_BIT) != 0)
-    {
-      //Розблоковуємо запуск заблокованих задач для драйверу I2C
-       _CLEAR_BIT(control_i2c_taskes, TASK_BLK_WRITING_EEPROM_BIT);
-      //Остаточне розблокування відбудеться після засинхронізацією з зняття миттєвих виборок з АЦП
-      _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-    }
-    /***********************************************************/
-
-    /***********************************************************/
     //Лічильник ресурсу + періодичні операції раз у секунду
     /***********************************************************/
     static unsigned int number_ticks_for_OF_bit_reset;
@@ -817,7 +915,7 @@ void TIM4_IRQHandler(void)
       
       //Запуск читання часу з RTC тільки піся успішного зчитування настройок
       //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
-      if ((state_i2c_task & STATE_SETTINGS_EEPROM_GOOD) != 0) 
+      if ((state_spi1_task & STATE_SETTINGS_EEPROM_GOOD) != 0) 
       {
         _SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT);
         _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
@@ -826,25 +924,40 @@ void TIM4_IRQHandler(void)
       //Запусаємо раз у секунду самоконтроль важливих змінних
       periodical_tasks_TEST_SETTINGS            = periodical_tasks_TEST_USTUVANNJA          = periodical_tasks_TEST_TRG_FUNC                = 
       periodical_tasks_TEST_INFO_REJESTRATOR_AR = periodical_tasks_TEST_INFO_REJESTRATOR_DR = periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR = 
-      periodical_tasks_TEST_RESURS              = periodical_tasks_TEST_FLASH_MEMORY        = periodical_tasks_CALCULATION_ANGLE            = true;
+      periodical_tasks_TEST_RESURS              = periodical_tasks_TEST_FLASH_MEMORY        = periodical_tasks_CALCULATION_ANGLE            =  true;
       
       number_inputs_for_fix_one_second = 0;
       
       if(++number_seconds >= 60)
       {
         number_seconds = 0;
-        if(
-           ((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET) &&
-           (++number_minutes >= PERIOD_SAVE_ENERGY_IN_MINUTES)
-          )   
+        if((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET)
         {
-          number_minutes = 0;
+          reinit_LCD = true;
+          if (++number_minutes >= PERIOD_SAVE_ENERGY_IN_MINUTES)
+          {
+            number_minutes = 0;
           
-          //Запускаємо запис у EEPROM
-          _SET_BIT(control_i2c_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+            //Запускаємо запис у EEPROM
+            _SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+          }
         }
       }
       
+      //Робота з таймером очікування нових змін налаштувань
+      if (
+          (restart_timeout_idle_new_settings != 0) ||
+          (_CHECK_SET_BIT(active_functions, RANG_SETTINGS_CHANGED) == 0)  
+         )
+      {
+        timeout_idle_new_settings  = 0;
+        if (restart_timeout_idle_new_settings != 0) restart_timeout_idle_new_settings = false;
+      }
+      else 
+      { 
+        if (timeout_idle_new_settings < (current_settings.timeout_idle_new_settings)) timeout_idle_new_settings++;
+      }
+
       //Робота з таймерами простою USB
       if ((restart_timeout_interface & (1 << USB_RECUEST  )) != 0) 
       {
@@ -867,6 +980,19 @@ void TIM4_IRQHandler(void)
         if (timeout_idle_RS485 < (current_settings.timeout_deactivation_password_interface_RS485)) timeout_idle_RS485++;
       }
 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      //Робота з таймерами простою LAN
+      if ((restart_timeout_interface & (1 << LAN_RECUEST)) != 0) 
+      {
+        timeout_idle_LAN = 0;
+        restart_timeout_interface &= (unsigned int)(~(1 << LAN_RECUEST));
+      }
+      else 
+      {
+        if (timeout_idle_LAN < (current_settings.timeout_deactivation_password_interface_LAN)) timeout_idle_LAN++;
+      }
+#endif
+
       //Ресурс
       if (restart_resurs_count == 0)
       {
@@ -885,6 +1011,30 @@ void TIM4_IRQHandler(void)
         resurs_global_max = 0;
       }
     }
+    /***********************************************************/
+
+    /***********************************************************/
+    //Виставляємо повідомлення про те, що канал 1 TIM4, що відповідає за періодичні функції клавіатури працює
+    /***********************************************************/
+    if (watchdog_l2)
+    {
+      GPIO_WriteBit(
+                    GPIO_EXTERNAL_WATCHDOG,
+                    GPIO_PIN_EXTERNAL_WATCHDOG,
+                    (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
+                   );
+
+      if (periodical_tasks_CALC_ENERGY_DATA != 0)
+      {
+        //Стоїть у черзі активна задача розразунку потужності і енергій
+      
+        calc_power_and_energy();
+
+        //Скидаємо активну задачу розрахунку потужності і енергій
+        periodical_tasks_CALC_ENERGY_DATA = false;
+      }
+    }
+    else control_word_of_watchdog |= WATCHDOG_KYYBOARD;
     /***********************************************************/
 
     /***********************************************************/
@@ -935,17 +1085,12 @@ void TIM4_IRQHandler(void)
     while (repeat != 0);
     /***********************************************************/
 
-    /***********************************************************/
-    //Виставляємо повідомлення про те, що канал 1 TIM4, що відповідає за періодичні функції клавіатури працює
-    /***********************************************************/
-    control_word_of_watchdog |= WATCHDOG_KYYBOARD;
-    /***********************************************************/
     /***********************************************************************************************/
   }
   else if (TIM_GetITStatus(TIM4, TIM_IT_CC2) != RESET)
   {
     /***********************************************************************************************/
-    //Переривання відбулося вік каналу 2, який генерує переривання кожні 1 мс, для опраціьовування управління мікросхемами DataFlash і формування нових записів реєстратора програмних подій
+    //Переривання відбулося від каналу 2, який генерує переривання кожні 1 мс, для опраціьовування управління мікросхемами DataFlash і формування нових записів реєстратора програмних подій
     /***********************************************************************************************/
     TIM4->SR = (uint16_t)((~(uint32_t)TIM_IT_CC2) & 0xffff);
     uint16_t current_tick = TIM4->CCR2;
@@ -961,6 +1106,9 @@ void TIM4_IRQHandler(void)
                                      TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH    |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB   |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485 |
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN |
+#endif
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU
                                     )
          ) == 0
@@ -970,7 +1118,7 @@ void TIM4_IRQHandler(void)
       //Виставлено каманда очистити реєстратор програмних подій
 
       //Виставляємо команду запису цієї структури у EEPROM
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
 
       //Очищаємо структуру інформації по реєстраторі програмних помилок
       info_rejestrator_pr_err.next_address = MIN_ADDRESS_PR_ERR_AREA;
@@ -981,7 +1129,10 @@ void TIM4_IRQHandler(void)
       number_record_of_pr_err_into_menu  = 0xffff;
       number_record_of_pr_err_into_USB   = 0xffff;
       number_record_of_pr_err_into_RS485 = 0xffff;
-
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+      number_record_of_pr_err_into_LAN = 0xffff;
+#endif
+      
       //Знімаємо команду очистки реєстратора програмних подій
       clean_rejestrators &= (unsigned int)(~CLEAN_PR_ERR);
     }
@@ -990,7 +1141,11 @@ void TIM4_IRQHandler(void)
     /***********************************************************/
     //Періодично запускаємо звертання то мікросхем DataFlash
     /***********************************************************/
-    if (((DMA_StreamSPI_DF_Tx->CR & (uint32_t)DMA_SxCR_EN) == 0) && ((DMA_StreamSPI_DF_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0))
+    if (
+        (mutex_spi1 == false) &&
+        (state_execution_spi1 < 0) &&
+        (((DMA_StreamSPI_EDF_Tx->CR & (uint32_t)DMA_SxCR_EN) == 0) && ((DMA_StreamSPI_EDF_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0))
+       )   
     {
       if ((number_chip_dataflsh_exchange >= INDEX_DATAFLASH_1) && (number_chip_dataflsh_exchange <= INDEX_DATAFLASH_2))
       {
@@ -1004,10 +1159,12 @@ void TIM4_IRQHandler(void)
               /***
               Перший раз вже зчитаний час з моменту перезапуску
               ***/
-              (_CHECK_SET_BIT(    diagnostyka, EVENT_START_SYSTEM_BIT  ) == 0) &&
-              (_CHECK_SET_BIT(set_diagnostyka, EVENT_START_SYSTEM_BIT  ) == 0) &&
-              (_CHECK_SET_BIT(    diagnostyka, EVENT_RESTART_SYSTEM_BIT) == 0) &&
-              (_CHECK_SET_BIT(set_diagnostyka, EVENT_RESTART_SYSTEM_BIT) == 0) &&
+              (_CHECK_SET_BIT(    diagnostyka, EVENT_START_SYSTEM_BIT       ) == 0) &&
+              (_CHECK_SET_BIT(set_diagnostyka, EVENT_START_SYSTEM_BIT       ) == 0) &&
+              (_CHECK_SET_BIT(    diagnostyka, EVENT_RESTART_SYSTEM_BIT     ) == 0) &&
+              (_CHECK_SET_BIT(set_diagnostyka, EVENT_RESTART_SYSTEM_BIT     ) == 0) &&
+              (_CHECK_SET_BIT(    diagnostyka, EVENT_SOFT_RESTART_SYSTEM_BIT) == 0) &&
+              (_CHECK_SET_BIT(set_diagnostyka, EVENT_SOFT_RESTART_SYSTEM_BIT) == 0) &&
               /***/
               ((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET) && /*На даний момент на вході блоку живлення подається живлення*/ 
               /***/
@@ -1016,21 +1173,33 @@ void TIM4_IRQHandler(void)
              )
           {
             unsigned int head = head_fifo_buffer_pr_err_records, tail = tail_fifo_buffer_pr_err_records;
-            if (head != tail) control_tasks_dataflash |= TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH;  //Є нові записи у буфері подій  
+            if (
+                (head != tail) || 
+                (_CHECK_SET_BIT(diagnostyka, ERROR_PR_ERR_OVERLOAD_BIT) != 0)
+               )
+            {
+              control_tasks_dataflash |= TASK_WRITE_PR_ERR_RECORDS_INTO_DATAFLASH;  //Є нові записи у буфері подій  
+            }
           }
         
           //Аналізуємо прийняті дані, якщо такі є і чекають на аналіз
           main_function_for_dataflash_resp(number_chip_dataflsh_exchange);
 
-          //Змінюємо номер DataFlash з яким буде іти зараз робота
-          if (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE)
+          if (
+              (control_spi1_taskes[0] == 0) &&
+              (control_spi1_taskes[1] == 0) 
+             )
           {
-            //Змінюємо номер мікросхеми, до якої ми будемо звертатися при натупних трансакціях, якщо зараз не запущена ніяка трансакція
-            number_chip_dataflsh_exchange = (number_chip_dataflsh_exchange + 1) & (NUMBER_DATAFLASH_CHIP - 1);
-          }
+            //Змінюємо номер DataFlash з яким буде іти зараз робота
+            if (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE)
+            {
+              //Змінюємо номер мікросхеми, до якої ми будемо звертатися при натупних трансакціях, якщо зараз не запущена ніяка трансакція
+              number_chip_dataflsh_exchange = (number_chip_dataflsh_exchange + 1) & (NUMBER_DATAFLASH_CHIP - 1);
+            }
 
-          //Робимо запит на нову мікросхему DataFlash, якщо э такий
-          main_function_for_dataflash_req(number_chip_dataflsh_exchange);
+            //Робимо запит на нову мікросхему DataFlash, якщо э такий
+            main_function_for_dataflash_req(number_chip_dataflsh_exchange);
+          }
         }
         else
         {
@@ -1047,7 +1216,7 @@ void TIM4_IRQHandler(void)
               виконується незаплпнованим шляхом - тому перезапуск
               */
                
-              if ((RxBuffer_SPI_DF[1] & (1<< 7)) != 0) dataflash_not_busy |= (1 << number_chip_dataflsh_exchange);
+              if ((RxBuffer_SPI_EDF[1] & (1<< 7)) != 0) dataflash_not_busy |= (1 << number_chip_dataflsh_exchange);
               else dataflash_not_busy &= (unsigned int)(~(1 << number_chip_dataflsh_exchange));
         
               driver_spi_df[number_chip_dataflsh_exchange].state_execution = TRANSACTION_EXECUTING_NONE;
@@ -1074,14 +1243,14 @@ void TIM4_IRQHandler(void)
             }
             else
             {
-              //Мікросхема готова до повторного виконання операції, під час якої виникла помилкова ситуація на SPI_DF
+              //Мікросхема готова до повторного виконання операції, під час якої виникла помилкова ситуація на SPI_EDF
 
               //Відновлюємо буфер передавання, який був під час помилки
-              if ((number_bytes_transfer_spi_df_copy != 0) && (number_bytes_transfer_spi_df_copy < sizeof(TxBuffer_SPI_DF)))
+              if ((number_bytes_transfer_spi_df_copy != 0) && (number_bytes_transfer_spi_df_copy < sizeof(TxBuffer_SPI_EDF)))
               {
                 number_bytes_transfer_spi_df = number_bytes_transfer_spi_df_copy;
                 for(unsigned int i = 0; i < number_bytes_transfer_spi_df; i++)
-                  TxBuffer_SPI_DF[i] = TxBuffer_SPI_DF_copy[i];
+                  TxBuffer_SPI_EDF[i] = TxBuffer_SPI_DF_copy[i];
 
                 /*
                 Знімаємо помітку, що зафіксовано помилку при обміні, бо ми будемо 
@@ -1126,14 +1295,14 @@ void TIM4_IRQHandler(void)
     if (periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR != 0)
     {
       //Стоїть у черзі активна задача зроботи резервні копії даних
-      if ((state_i2c_task & STATE_INFO_REJESTRATOR_PR_ERR_EEPROM_GOOD) != 0)
+      if ((state_spi1_task & STATE_INFO_REJESTRATOR_PR_ERR_EEPROM_GOOD) != 0)
       {
         //Робимо копію тільки тоді, коли структура інформації реєстратора успішно зчитана і сформована контрольна сума
         if (
-            (_CHECK_SET_BIT(control_i2c_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) == 0) &&
-            (_CHECK_SET_BIT(control_i2c_taskes, TASK_WRITING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT    ) == 0) &&
-            (_CHECK_SET_BIT(control_i2c_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT ) == 0) &&
-            (_CHECK_SET_BIT(control_i2c_taskes, TASK_READING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT    ) == 0)
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT    ) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT ) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT    ) == 0)
            ) 
         {
           //На даний моммент не іде читання-запис структури інформації реєстратора, тому можна здійснити копіювання
@@ -1235,9 +1404,9 @@ void TIM4_IRQHandler(void)
 /*****************************************************/
 
 /*****************************************************/
-//Переривання від генеррації події про помилку для SPI_DF
+//Переривання від генеррації події про помилку для SPI_EDF
 /*****************************************************/
-void SPI_DF_IRQHandler(void)
+void SPI_EDF_IRQHandler(void)
 {
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordEnterISR();
@@ -1252,36 +1421,36 @@ void SPI_DF_IRQHandler(void)
   у ньому має бути зафіксована причина генерації переривання
   Цю змінну будемо використовувати при аналізі помилки
   */
-  uint16_t spi_df_status = SPI_DF->SR;
+  uint16_t spi_status = SPI_EDF->SR;
   
-  /*Забороняємо генерацію переривань від потоку DMA_StreamSPI_DF_Rx*/
-  DMA_StreamSPI_DF_Rx->CR &= ~DMA_IT_TC;
+  /*Забороняємо генерацію переривань від потоку DMA_StreamSPI_EDF_Rx*/
+  DMA_StreamSPI_EDF_Rx->CR &= ~DMA_IT_TC;
 
   /*
   Можливо зараз ще продовжується робота DMA контролера по прийом/передачі даних,
   але осекільки зафіксовано помилку у процесі обміну, то зупиняємо їх
   */
-  DMA_StreamSPI_DF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Tx->NDTR = 0;
-  DMA_StreamSPI_DF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Rx->NDTR = 0;
+  DMA_StreamSPI_EDF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Tx->NDTR = 0;
+  DMA_StreamSPI_EDF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Rx->NDTR = 0;
 
-  /*Тимчасово забороняємо переривання від помилок на SPI_DF*/
-  SPI_I2S_ITConfig(SPI_DF, SPI_I2S_IT_ERR, DISABLE);
+  /*Тимчасово забороняємо переривання від помилок на SPI_EDF*/
+  SPI_I2S_ITConfig(SPI_EDF, SPI_I2S_IT_ERR, DISABLE);
 
   /*
   Очікуємо поки TXE=1 і BSY=0 - це ознака повногго завершення передачі даних,
   а ознакою завершення прийому дані - це є генерація цього переривання
   */
-  while ((SPI_DF->SR & SPI_I2S_FLAG_TXE) == 0);
-  while ((SPI_DF->SR & SPI_I2S_FLAG_BSY) != 0);
+  while ((SPI_EDF->SR & SPI_I2S_FLAG_TXE) == 0);
+  while ((SPI_EDF->SR & SPI_I2S_FLAG_BSY) != 0);
 
   /*Знімаємо Chip_select переводом NSS  у 1*/
-  GPIO_SPI_DF->BSRRL = GPIO_NSSPin_DF;
+  GPIO_SPI_EDF->BSRRL = GPIO_NSSPin_EDF;
 
   if (
-      ((spi_df_status & SPI_I2S_FLAG_OVR) != 0) ||
-      ((SPI_DF->SR    & SPI_I2S_FLAG_OVR) != 0)
+      ((spi_status  & SPI_I2S_FLAG_OVR) != 0) ||
+      ((SPI_EDF->SR & SPI_I2S_FLAG_OVR) != 0)
      )
   {
     //Подія про переповнення приймача
@@ -1289,15 +1458,15 @@ void SPI_DF_IRQHandler(void)
     do
     {
       //Очищаємо цю подією такою комбінацією читань:
-      SPI_DF->DR;
-      SPI_DF->SR;
+      SPI_EDF->DR;
+      SPI_EDF->SR;
     }
-    while((SPI_DF->SR & SPI_I2S_FLAG_OVR) != 0);
+    while((SPI_EDF->SR & SPI_I2S_FLAG_OVR) != 0);
   }
 
   if (
-      ((spi_df_status & SPI_FLAG_MODF) != 0) ||
-      ((SPI_DF->SR    & SPI_FLAG_MODF) != 0)  
+      ((spi_status  & SPI_FLAG_MODF) != 0) ||
+      ((SPI_EDF->SR & SPI_FLAG_MODF) != 0)  
      )   
   {
     //Подія "Master mode fault" - теоретично нікли не малаб виникати
@@ -1305,16 +1474,16 @@ void SPI_DF_IRQHandler(void)
     do
     {
       //Очищаємо цю подією такою комбінацією:
-      SPI_DF->SR;
+      SPI_EDF->SR;
 
-      //Забороняємо SPI_DF
-      SPI_Cmd(SPI_DF, DISABLE);
-      //Забороняємо SPI_DF DMA Tx запити
-      SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Tx, DISABLE);
-      //Забороняємо SPI_DF DMA Rx запити
-      SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Rx, DISABLE);
+      //Забороняємо SPI_EDF
+      SPI_Cmd(SPI_EDF, DISABLE);
+      //Забороняємо SPI_EDF DMA Tx запити
+      SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Tx, DISABLE);
+      //Забороняємо SPI_EDF DMA Rx запити
+      SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Rx, DISABLE);
     
-      //Примусово переводимо SPI_DF у Slave-режимі
+      //Примусово переводимо SPI_EDF у Slave-режимі
       SPI_InitTypeDef  SPI_InitStructure;
       SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
       SPI_InitStructure.SPI_Mode = SPI_Mode_Slave;
@@ -1322,38 +1491,38 @@ void SPI_DF_IRQHandler(void)
       SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
       SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
       SPI_InitStructure.SPI_NSS =  SPI_NSS_Soft;
-      SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4/*SPI_BaudRatePrescaler_2*/;
+      SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
       SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
       SPI_InitStructure.SPI_CRCPolynomial = 7;
-      SPI_Init(SPI_DF, &SPI_InitStructure);
-      //Дозволяємо SPI_DF - у Slave-режимі
-      SPI_Cmd(SPI_DF, ENABLE);
+      SPI_Init(SPI_EDF, &SPI_InitStructure);
+      //Дозволяємо SPI_EDF - у Slave-режимі
+      SPI_Cmd(SPI_EDF, ENABLE);
 
-      //Знову забороняємо SPI_DF для перенастройки у Master-режим
-      SPI_Cmd(SPI_DF, DISABLE);
+      //Знову забороняємо SPI_EDF для перенастройки у Master-режим
+      SPI_Cmd(SPI_EDF, DISABLE);
     
-      //Повертаємо SPI_DF у Master-режим
+      //Повертаємо SPI_EDF у Master-режим
       SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-      SPI_Init(SPI_DF, &SPI_InitStructure);
+      SPI_Init(SPI_EDF, &SPI_InitStructure);
 
-      //Забороняємо SPI_DF DMA Tx запити
-      SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Tx, DISABLE);
-      //Забороняємо SPI_DF DMA Rx запити
-      SPI_I2S_DMACmd(SPI_DF, SPI_I2S_DMAReq_Rx, DISABLE);
+      //Забороняємо SPI_EDF DMA Tx запити
+      SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Tx, DISABLE);
+      //Забороняємо SPI_EDF DMA Rx запити
+      SPI_I2S_DMACmd(SPI_EDF, SPI_I2S_DMAReq_Rx, DISABLE);
 
-      //Очищаємо прапореці, що сигналізує про завершення прийом/передачі даних для DMA по потоку DMA_StreamSPI_DF_Rx і DMA_StreamSPI_DF_Tx
-      DMA_ClearFlag(DMA_StreamSPI_DF_Rx, DMA_FLAG_TCSPI_DF_Rx | DMA_FLAG_HTSPI_DF_Rx | DMA_FLAG_TEISPI_DF_Rx | DMA_FLAG_DMEISPI_DF_Rx | DMA_FLAG_FEISPI_DF_Rx);
-      DMA_ClearFlag(DMA_StreamSPI_DF_Tx, DMA_FLAG_TCSPI_DF_Tx | DMA_FLAG_HTSPI_DF_Tx | DMA_FLAG_TEISPI_DF_Tx | DMA_FLAG_DMEISPI_DF_Tx | DMA_FLAG_FEISPI_DF_Tx);
+      //Очищаємо прапореці, що сигналізує про завершення прийом/передачі даних для DMA по потоку DMA_StreamSPI_EDF_Rx і DMA_StreamSPI_EDF_Tx
+      DMA_ClearFlag(DMA_StreamSPI_EDF_Rx, DMA_FLAG_TCSPI_EDF_Rx | DMA_FLAG_HTSPI_EDF_Rx | DMA_FLAG_TEISPI_EDF_Rx | DMA_FLAG_DMEISPI_EDF_Rx | DMA_FLAG_FEISPI_EDF_Rx);
+      DMA_ClearFlag(DMA_StreamSPI_EDF_Tx, DMA_FLAG_TCSPI_EDF_Tx | DMA_FLAG_HTSPI_EDF_Tx | DMA_FLAG_TEISPI_EDF_Tx | DMA_FLAG_DMEISPI_EDF_Tx | DMA_FLAG_FEISPI_EDF_Tx);
 
-      //Дозволяємо SPI_DF
-      SPI_Cmd(SPI_DF, ENABLE);
+      //Дозволяємо SPI_EDF
+      SPI_Cmd(SPI_EDF, ENABLE);
     }
-    while ((SPI_DF->SR & SPI_FLAG_MODF) != 0);
+    while ((SPI_EDF->SR & SPI_FLAG_MODF) != 0);
   }
 
   if (
-      ((spi_df_status & SPI_FLAG_CRCERR) != 0) ||
-      ((SPI_DF->SR    & SPI_FLAG_CRCERR) != 0)  
+      ((spi_status  & SPI_FLAG_CRCERR) != 0) ||
+      ((SPI_EDF->SR & SPI_FLAG_CRCERR) != 0)  
      )   
   {
     //Подія "CRC error" - ніколи не мала б виникати у нашоій програмі
@@ -1362,7 +1531,12 @@ void SPI_DF_IRQHandler(void)
     total_error_sw_fixed(34);
   }
 
-  if ((number_chip_dataflsh_exchange >= INDEX_DATAFLASH_1) && (number_chip_dataflsh_exchange <= INDEX_DATAFLASH_2))
+  if (state_execution_spi1 >= 0) 
+  {
+    //Відбувався обмін з EEPROM. Помічаємо, що відбулася помилка у процесі виконання попередньої операції прийом-передачі
+    state_execution_spi1 = 2;
+  }
+  else if ((number_chip_dataflsh_exchange >= INDEX_DATAFLASH_1) && (number_chip_dataflsh_exchange <= INDEX_DATAFLASH_2))
   {
     if(driver_spi_df[number_chip_dataflsh_exchange].state_execution != TRANSACTION_EXECUTING_NONE)
     {
@@ -1397,11 +1571,11 @@ void SPI_DF_IRQHandler(void)
         }
           
         //Робимо резервну копію кількості байт для передавання і буфер передавання
-        if ((number_bytes_transfer_spi_df != 0) && (number_bytes_transfer_spi_df < sizeof(TxBuffer_SPI_DF)))
+        if ((number_bytes_transfer_spi_df != 0) && (number_bytes_transfer_spi_df < sizeof(TxBuffer_SPI_EDF)))
         {
           number_bytes_transfer_spi_df_copy = number_bytes_transfer_spi_df;
           for(unsigned int i = 0; i < number_bytes_transfer_spi_df_copy; i++)
-            TxBuffer_SPI_DF_copy[i] = TxBuffer_SPI_DF[i];
+            TxBuffer_SPI_DF_copy[i] = TxBuffer_SPI_EDF[i];
         }
         else
         {
@@ -1423,11 +1597,11 @@ void SPI_DF_IRQHandler(void)
     total_error_sw_fixed(35);
   }
   
-  /*Виставляємо повідомлення про помилку обміну через SPI_DF*/
-  _SET_BIT(set_diagnostyka, ERROR_SPI_DF_BIT);
+  /*Виставляємо повідомлення про помилку обміну через SPI_EDF*/
+  _SET_BIT(set_diagnostyka, ERROR_SPI_EDF_BIT);
 
-  //Дозволяємо переривання від помилок на SPI_DF
-  SPI_I2S_ITConfig(SPI_DF, SPI_I2S_IT_ERR, ENABLE);
+  //Дозволяємо переривання від помилок на SPI_EDF
+  SPI_I2S_ITConfig(SPI_EDF, SPI_I2S_IT_ERR, ENABLE);
   
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordExitISR();
@@ -1436,9 +1610,9 @@ void SPI_DF_IRQHandler(void)
 /*****************************************************/
   
 /*****************************************************/
-//Перереривання від завершення прийому DMA_StreamSPI_DF_Rx
+//Перереривання від завершення прийому DMA_StreamSPI_EDF_Rx
 /*****************************************************/
-void DMA_StreamSPI_DF_Rx_IRQHandler(void)
+void DMA_StreamSPI_EDF_Rx_IRQHandler(void)
 {
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordEnterISR();
@@ -1448,26 +1622,31 @@ void DMA_StreamSPI_DF_Rx_IRQHandler(void)
   Очікуємо поки TXE=1 і BSY=0 - це ознака повногго завершення передачі даних,
   а ознакою завершення прийому дані - це є генерація цього переривання
   */
-  while ((SPI_DF->SR & SPI_I2S_FLAG_TXE) == 0);
-  while ((SPI_DF->SR & SPI_I2S_FLAG_BSY) != 0);
+  while ((SPI_EDF->SR & SPI_I2S_FLAG_TXE) == 0);
+  while ((SPI_EDF->SR & SPI_I2S_FLAG_BSY) != 0);
 
   //Знімаємо Chip_select переводом NSS  у 1
-  GPIO_SPI_DF->BSRRL = GPIO_NSSPin_DF;
+  GPIO_SPI_EDF->BSRRL = GPIO_NSSPin_EDF;
   
   //Зупиняємо потоки DMA
-  DMA_StreamSPI_DF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Tx->NDTR = 0;
-  DMA_StreamSPI_DF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
-  DMA_StreamSPI_DF_Rx->NDTR = 0;
+  DMA_StreamSPI_EDF_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Tx->NDTR = 0;
+  DMA_StreamSPI_EDF_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;
+  DMA_StreamSPI_EDF_Rx->NDTR = 0;
 
-  //Забороняємо генерацію переривань від потоку DMA_StreamSPI_DF_Rx
-  DMA_StreamSPI_DF_Rx->CR &= ~DMA_IT_TC;
+  //Забороняємо генерацію переривань від потоку DMA_StreamSPI_EDF_Rx
+  DMA_StreamSPI_EDF_Rx->CR &= ~DMA_IT_TC;
   
-  //Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA по потоку DMA_StreamSPI_DF_Rx
-  DMA_ClearFlag(DMA_StreamSPI_DF_Rx, DMA_FLAG_TCSPI_DF_Rx | DMA_FLAG_HTSPI_DF_Rx | DMA_FLAG_TEISPI_DF_Rx | DMA_FLAG_DMEISPI_DF_Rx | DMA_FLAG_FEISPI_DF_Rx);
+  //Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA по потоку DMA_StreamSPI_EDF_Rx
+  DMA_ClearFlag(DMA_StreamSPI_EDF_Rx, DMA_FLAG_TCSPI_EDF_Rx | DMA_FLAG_HTSPI_EDF_Rx | DMA_FLAG_TEISPI_EDF_Rx | DMA_FLAG_DMEISPI_EDF_Rx | DMA_FLAG_FEISPI_EDF_Rx);
   
   //Виставляємо повідомлення, що дані передані і готові до наступного аналізу
-  if ((number_chip_dataflsh_exchange == INDEX_DATAFLASH_1) || (number_chip_dataflsh_exchange == INDEX_DATAFLASH_2))
+  if (state_execution_spi1 == 0) 
+  {
+    //Відбувався обмін з EEPROM. Помічаємо, що він завершився
+    state_execution_spi1 = 1;
+  }
+  else if ((number_chip_dataflsh_exchange == INDEX_DATAFLASH_1) || (number_chip_dataflsh_exchange == INDEX_DATAFLASH_2))
     driver_spi_df[number_chip_dataflsh_exchange].state_execution = TRANSACTION_EXECUTED_WAIT_ANALIZE;
   else
   {
@@ -1475,8 +1654,8 @@ void DMA_StreamSPI_DF_Rx_IRQHandler(void)
     total_error_sw_fixed(20);
   }
       
-  //Обмін відбувся вдало - скидаємо повідомлення про попередньо можливу помилку обміну через SPI_DF
-  _SET_BIT(clear_diagnostyka, ERROR_SPI_DF_BIT);
+  //Обмін відбувся вдало - скидаємо повідомлення про попередньо можливу помилку обміну через SPI_EDF
+  _SET_BIT(clear_diagnostyka, ERROR_SPI_EDF_BIT);
   
 #ifdef SYSTEM_VIEWER_ENABLE
   SEGGER_SYSVIEW_RecordExitISR();
@@ -1605,16 +1784,21 @@ void EXITI_POWER_IRQHandler(void)
 
       //Виставляємо повідомлення про цю подію
       _SET_BIT(clear_diagnostyka, EVENT_DROP_POWER_BIT);
+      reinit_LCD = true;
     }
     else
     {
       //Живлення пропало на вході блоку живлення
 
+      //Вимикаємо підсвітку
+      LCD_BL->BSRRH = LCD_BL_PIN;
+      time_backlighting = 0;
+      
       //Виставляємо повідомлення про цю подію
       _SET_BIT(set_diagnostyka, EVENT_DROP_POWER_BIT);
 
       //Запускаємо запис у EEPROM
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
       number_minutes = 0;
     }
   }
@@ -1630,3 +1814,5 @@ void EXITI_POWER_IRQHandler(void)
 /*****************************************************/
 /*****************************************************/
 
+#undef BACKLIGHTING_ON
+#undef BACKLIGHTING_OFF

@@ -4,10 +4,16 @@
 #define EKRAN_SETPOINT_SWITCH          (EKRAN_CHOOSE_SETTINGS_SWITCHER  + 1)
 #define EKRAN_TIMEOUT_SWITCH           (EKRAN_SETPOINT_SWITCH  + 1)
 #define EKRAN_CONTROL_SWITCH           (EKRAN_TIMEOUT_SWITCH  + 1)
+#define EKRAN_CHOOSE_RANG_SWITCH       (EKRAN_CONTROL_SWITCH  + 1)
+#define EKRAN_RANGUVANNJA_OFF_CB       (EKRAN_CHOOSE_RANG_SWITCH + 1) 
+#define EKRAN_RANGUVANNJA_ON_CB        (EKRAN_RANGUVANNJA_OFF_CB + 1) 
 
 #define MAX_ROW_FOR_SETPOINT_SWITCH       7
 #define MAX_ROW_FOR_TIMEOUT_SWITCH        4
 #define MAX_ROW_FOR_CONTROL_SWITCH        2
+#define MAX_ROW_FOR_RANG_SWITCH           2
+#define MAX_ROW_RANGUVANNJA_OFF_CB        NUMBER_TOTAL_SIGNAL_FOR_RANG
+#define MAX_ROW_RANGUVANNJA_ON_CB         NUMBER_TOTAL_SIGNAL_FOR_RANG
 
 #define INDEX_ML_STPInom                  0
 #define INDEX_ML_STPRKS_Inom              1
@@ -18,7 +24,7 @@
 #define INDEX_ML_STPPOCHATKOVA_K_VYMK     6
 
 #define COL_SETPOINT_Inom_BEGIN                 5
-#define COL_SETPOINT_Inom_END                   8
+#define COL_SETPOINT_Inom_END                   9
 
 #define COL_SETPOINT_RKS_Inom_BEGIN             5
 #define COL_SETPOINT_RKS_Inom_END               10
@@ -70,5 +76,7 @@
                                             CTR_RESURS_VV       \
                                           )
 
+#define INDEX_ML_RANG_OFF_CB              0
+#define INDEX_ML_RANG_ON_CB               1
 
 #endif

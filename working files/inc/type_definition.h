@@ -2,6 +2,7 @@
 #define __TYPE_DEFINITION__
 
 #define SRAM1 _Pragma("location=\"variables_RAM1\"")
+#define SRAM1_AR _Pragma("location=\"Analog_Registrator_Buffer\"")
 
 typedef struct
 {
@@ -52,6 +53,10 @@ typedef struct
   unsigned int ranguvannja_analog_registrator[N_BIG];     //Ранжування аналогового реєстратора
   unsigned int ranguvannja_digital_registrator[N_BIG];    //Ранжування дискретного реєстратора
   
+  //Блок ввімкнення-вимкнення вимикача
+  unsigned int ranguvannja_off_cb[N_BIG];                 //Ранжування блоку вимкнення силового вимикача
+  unsigned int ranguvannja_on_cb[N_BIG];                  //Ранжування блоку ввімкнення силового вимикача
+  
   //Тип дискретних виходів
   unsigned int type_of_output;                        //Тип дискретних виходів
                                                       //0 - Командний
@@ -78,8 +83,8 @@ typedef struct
   unsigned int type_df;                                                 //Тип опреділювальної функції
                                                                         //0 - Пряма
                                                                         //1 - Зворотня
-  unsigned int timeout_pause_df[NUMBER_DEFINED_FUNCTIONS];              //Час затримки спрацюваня опреділювальної функції
-  unsigned int timeout_work_df[NUMBER_DEFINED_FUNCTIONS];               //Час роботи опреділювальної функції
+  int timeout_pause_df[NUMBER_DEFINED_FUNCTIONS];                       //Час затримки спрацюваня опреділювальної функції
+  int timeout_work_df[NUMBER_DEFINED_FUNCTIONS];                        //Час роботи опреділювальної функції
   unsigned int ranguvannja_df_source_plus[N_BIG*NUMBER_DEFINED_FUNCTIONS];  //Ранжування прямих команд опреділювальниї функцій
   unsigned int ranguvannja_df_source_minus[N_BIG*NUMBER_DEFINED_FUNCTIONS]; //Ранжування інверсних команд опреділювальниї функцій
   unsigned int ranguvannja_df_source_blk[N_BIG*NUMBER_DEFINED_FUNCTIONS];   //Ранжування команд блокування опреділювальниї функцій
@@ -94,7 +99,18 @@ typedef struct
   unsigned int ranguvannja_d_xor[N_BIG*NUMBER_DEFINED_XOR];                     //Ранжування команд джерел визначуваних "Викл.АБО"
   unsigned int ranguvannja_d_not[N_BIG*NUMBER_DEFINED_NOT];                     //Ранжування команд джерел визначуваних "НЕ"
   
-  unsigned int ranguvannja_buttons[NUMBER_DEFINED_BUTTONS];                     //Ранжування опреділюваних кнопок
+  uint32_t ranguvannja_tf[NUMBER_TRANSFER_FUNCTIONS];                           //Ранжування передавальних функцій
+  
+  uint32_t buttons_mode;                                                        //Режими роботи ФК
+                                                                                //0 - Звичайна кнопка
+                                                                                //1 - Двопозиційний ключ
+  unsigned int ranguvannja_buttons[N_SMALL*NUMBER_DEFINED_BUTTONS];             //Ранжування опреділюваних кнопок
+  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  uint32_t ranguvannja_In_GOOSE[N_IN_GOOSE][N_IN_GOOSE_MMS_OUT][N_SMALL];       //Ранжування виходів Вхідних GOOSE блоків
+  uint32_t ranguvannja_In_MMS[N_IN_MMS][N_IN_GOOSE_MMS_OUT][N_SMALL];           //Ранжування виходів Вхідних MMS блоків
+  uint16_t ranguvannja_Out_LAN[N_OUT_LAN][N_OUT_LAN_IN][MAX_FUNCTIONS_IN_OUT_LAN];//Ранжування входів  Вихідних мережевих блоків
+#endif  
   
   unsigned int configuration;         //Конфігурація приладу
   
@@ -179,7 +195,25 @@ typedef struct
   unsigned int control_mtz04;                                 //Поле для управління МТЗ 0.4кВ
   
   //ЗДЗ
+  int32_t timeout_zdz[NUMBER_GROUP_USTAVOK];                //Витримка ЗДЗ
   unsigned int control_zdz;                                 //Поле для управління ЗДЗ
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+   int32_t zdz_ovd_porig;                                   //Поріг спрацювання ОВД
+#endif
+  int32_t ctrl_zdz_type;                                    //Тип контролю ЗДЗ
+                                                            /*
+                                                            0 - Без контролю
+                                                            1 - Контроль по I
+                                                            2 - Контроль по U
+                                                            3 - Контроль по I або U
+                                                            4 - Контроль по I і U
+                                                            */
 
   //ЗЗ
   unsigned int setpoint_zz_3I0[NUMBER_GROUP_USTAVOK];       //уставка ЗЗ/3I0
@@ -272,14 +306,23 @@ typedef struct
   //Umax
   unsigned int setpoint_Umax1[NUMBER_GROUP_USTAVOK];        //уставка Umax1
   unsigned int setpoint_Umax2[NUMBER_GROUP_USTAVOK];        //уставка Umax2
+  uint32_t setpoint_kp_Umax[NUMBER_GROUP_USTAVOK];          //Уставка коефіцієнт повернення ЗНмакс
   int timeout_Umax1[NUMBER_GROUP_USTAVOK];                  //Витримка  Umax1
   int timeout_Umax2[NUMBER_GROUP_USTAVOK];                  //Витримка  Umax2
   unsigned int control_Umax;                                //Поле для управління Umax
+  
+  //Універсальний захист
+  int32_t setpoint_UP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];      //Уставка для всіх ступенів
+  uint32_t setpoint_UP_KP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];  //Уставка для "Коефіцієнта повернення" всіх ступенів
+  int32_t timeout_UP[NUMBER_UP][1][NUMBER_GROUP_USTAVOK];       //Витримка для Універсального захисту
+  uint32_t control_UP;                                          //Поля для управління
+  int32_t ctrl_UP_input[NUMBER_UP];                             //Вибір входу Універсального захисту
 
   unsigned int T0;                      //Коефіцієнт трансформації для трансформатора 3I0
   unsigned int TCurrent;                //Коефіцієнт трансформації для трансформатора струмів
   unsigned int TCurrent04;              //Коефіцієнт трансформації для трансформатора струмів сторони 0.4кВ
   unsigned int TVoltage;                //Коефіцієнт трансформації для трансформатора напруг
+  unsigned int control_transformator;   //налаштування для меню "Трансформатор"
   
   unsigned int password1;                                       //Пароль для редагування з меню
   unsigned int password2;                                       //Пароль для очистки лічилчників енегії і ресурсу вимикача
@@ -287,7 +330,13 @@ typedef struct
   unsigned int password_interface_USB;                          //Пароль для редагування з інтерфейсу USB
   unsigned int timeout_deactivation_password_interface_RS485;   //Час деактивації паролю для редагування з інтерфейсу RS485
   unsigned int password_interface_RS485;                        //Пароль для редагування з інтерфейсу RS485
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  unsigned int timeout_deactivation_password_interface_LAN;   //Час деактивації паролю для редагування з інтерфейсу LAN
+  unsigned int password_interface_LAN;                        //Пароль для редагування з інтерфейсу LAN
+#endif  
   
+  unsigned int timeout_idle_new_settings;
+
   //Вимикач
   unsigned int setpoint_Inom;                   //Номінальний струм вимикача
   unsigned int setpoint_r_kom_st_Inom;          //Ресурс комунікаційної стійкості при номінальному струмі вимикача
@@ -315,7 +364,7 @@ typedef struct
   //Комунікація
   unsigned int name_of_cell[MAX_CHAR_IN_NAME_OF_CELL];//І'мя ячейки
   unsigned short int user_register[(M_ADDRESS_LAST_USER_REGISTER_DATA - M_ADDRESS_FIRST_USER_REGISTER_DATA) + 1]; //Регістри користувача
-  unsigned int volatile address;                      //Адреса
+  unsigned int address;                                //Адреса
   int speed_RS485;                                    //швидкість обміну
                                                         // 0 - 9600
                                                         // 1 - 14400
@@ -336,21 +385,44 @@ typedef struct
   int language;                                         //мова меню  0= змінна мов не підтримується; 1=RU; 2=UA; 3=EN; 4=KZ; 5=др.
   
   unsigned int control_extra_settings_1;                //Поле для додаткових налаштувань
-
   
-  unsigned char time_setpoints[7+1];                     //Час останніх змін уставок-витримок-управління
-                                                         //Останній байт масиву сигналізує мітку звідки зміни були проведені
-                                                            //0 - мінімальні параметри
+  int32_t time_zone;                                    //Часова зона
+  uint32_t dst;                                         //Перехід на літній час
+  uint32_t dst_on_rule;                                 //Правило переходу на Літній час
+  uint32_t dst_off_rule;                                //Правило переходу на стандартний час
+  
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  //IP4
+  uint16_t IP4[4];                                      //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
+  uint32_t mask;                                        //XX
+  uint16_t gateway[4];                                  //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
+  
+  uint16_t IP_time_server[4];                           //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
+  uint32_t port_time_server;
+  uint32_t period_sync;
+  
+#endif
+  
+  time_t time_setpoints;                                    //Час останніх змін уставок-витримок-управління
+  unsigned char source_setpoints;                           //0 - мінімальні параметри
                                                             //1 - клавіатура
                                                             //2 - USB
                                                             //3 - RS-485
+                                                            //4 - Ethernet
   
-  unsigned char time_ranguvannja[7+1];                    //Час останніх змін ранжування
-                                                            //0 - мінімальні параметри
+  time_t time_ranguvannja;                                  //Час останніх змін ранжування
+  unsigned char source_ranguvannja;                         //0 - мінімальні параметри
                                                             //1 - клавіатура
                                                             //2 - USB
                                                             //3 - RS-485
+                                                            //4 - Ethernet
 } __SETTINGS;
+
+typedef struct _info_vymk
+{
+  time_t time_dat;
+  int32_t time_ms;
+} __info_vymk;
 
 typedef struct
 {
@@ -379,7 +451,7 @@ typedef struct
   unsigned int number_bytes;
   
   //Вказівник на буфер (корисний)
-  uint8_t volatile* point_buffer;
+  uint8_t *point_buffer;
 
 } __DRIVER_I2C;
 
@@ -401,7 +473,8 @@ typedef struct
 typedef struct
 {
   unsigned char label_start_record;
-  unsigned char time[7]; 
+  time_t time_dat; 
+  int32_t time_ms;
   unsigned int T0;
   unsigned int TCurrent;
   unsigned int TCurrent04;
@@ -494,5 +567,68 @@ typedef struct
 //  int number_per_index;
 //  int real_number;
 //} EL_FILTER_STRUCT;
+
+typedef enum _getting_data
+{
+  GET_DATA_FOR_EDITING = 0,
+  GET_DATA_IMMEDITATE
+} __getting_data;
+
+typedef enum _setting_data
+{
+  SET_DATA_INTO_EDIT_TABLE = 0,
+  SET_DATA_IMMEDITATE
+} __settings_data;
+
+typedef struct _vd
+{
+           int sign;
+  unsigned int begin;
+  unsigned int comma;
+  unsigned int end;
+  unsigned int u_begin;
+  unsigned int u_end;
+  const unsigned char *p_unit;
+} __vd;
+
+typedef struct _ctrl_info
+{
+  const uint8_t *information;
+  unsigned int cursor_x;
+} __ctrl_info;
+
+typedef enum _index_I_U
+{
+  INDEX_I = 0,
+  INDEX_U,
+  
+  _NUMBER_FOR_I_U
+} __index_I_U;
+
+typedef enum _id_input_output
+{
+  ID_INPUT = 0,
+  ID_OUTPUT,
+  ID_LED,
+  ID_DF,
+  ID_DB,
+  ID_DT,
+  ID_AND,
+  ID_OR,
+  ID_XOR,
+  ID_NOT,
+  ID_TF,
+
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  
+  ID_IN_GOOSE,
+  ID_IN_MMS,
+  ID_OUT_LAN,
+#endif
+  
+  _MAX_ID_INPUT_OUPUT
+  
+} __id_input_output;
 
 #endif

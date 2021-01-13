@@ -11,12 +11,17 @@
 #define EKRAN_TIMEOUT_UMAX_GROUP4    (EKRAN_TIMEOUT_UMAX_GROUP3  + 1)
 #define EKRAN_CONTROL_UMAX           (EKRAN_CONTROL_UMIN  + 1)
 
-#define MAX_ROW_FOR_SETPOINT_UMAX        2
 #define MAX_ROW_FOR_TIMEOUT_UMAX         2
 #define MAX_ROW_FOR_CONTROL_UMAX         4
 
-#define INDEX_ML_STPUMAX1                0
-#define INDEX_ML_STPUMAX2                1
+enum _index_ml_stp_Umax
+{
+  INDEX_ML_STPUMAX1 = 0,
+  INDEX_ML_STPUMAX2,
+  INDEX_ML_STP_KP_UMAX,
+  
+  MAX_ROW_FOR_SETPOINT_UMAX
+};
 
 #define INDEX_ML_TMOUMAX1                0
 #define INDEX_ML_TMOUMAX2                1
@@ -28,6 +33,10 @@
 #define COL_SETPOINT_UMAX2_BEGIN         5
 #define COL_SETPOINT_UMAX2_COMMA         8
 #define COL_SETPOINT_UMAX2_END           9
+
+#define COL_SETPOINT_KP_UMAX_BEGIN       6
+#define COL_SETPOINT_KP_UMAX_COMMA       7
+#define COL_SETPOINT_KP_UMAX_END         9
 
 #define COL_TMO_UMAX1_BEGIN              3
 #define COL_TMO_UMAX1_COMMA              6

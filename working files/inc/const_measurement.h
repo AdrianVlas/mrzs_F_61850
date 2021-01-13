@@ -25,14 +25,12 @@
 #define MIN_TICK_PERIOD (MEASUREMENT_TIM_FREQUENCY/MAX_FREQUENCY - 1)
 #define MAX_TICK_PERIOD (MEASUREMENT_TIM_FREQUENCY/MIN_FREQUENCY + 1)
 
-#define NUMBER_ADCs                     2
+#define NUMBER_ADCs                     1
 #define NUMBER_CANALs_ADC               16
 #define NUMBER_INPUTs_ADCs              (NUMBER_ADCs*NUMBER_CANALs_ADC)
 
 #define VAGA_NUMBER_POINT                5
 #define NUMBER_POINT                     (1 << VAGA_NUMBER_POINT)
-
-#define NUMBER_PERIOD_TRANSMIT           10
 
 /*
 Коефіцієнт, який переводить число з АЦП у мА
@@ -144,38 +142,22 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
 #define VDD_NORMAL_VALUE                0xb00
 
 //Канали
-#define C_GND_ADC1_1            0
-#define C_Ia_1                  1
-#define C_Ia_16                 2
-#define C_Ib_1                  3
-#define C_Ib_16                 4
-#define C_Ic_1                  5
-#define C_Ic_16                 6
-#define C_3I0_1                 7
-#define C_3I0_16                8
-#define C_3I0_256               9
-#define C_GND_ADC1_2            10
-#define C_GND_ADC1_3            11
-#define C_GND_ADC1_4            12
-#define C_GND_ADC1_5            13
-#define C_VREF_ADC1             14
-#define C_VDD_ADC1              15
-#define C_GND_ADC2_1            (0  + NUMBER_CANALs_ADC)
-#define C_Ua_1                  (1  + NUMBER_CANALs_ADC)
-#define C_Ua_16                 (2  + NUMBER_CANALs_ADC)
-#define C_Ub_1                  (3  + NUMBER_CANALs_ADC)
-#define C_Ub_16                 (4  + NUMBER_CANALs_ADC)
-#define C_Uc_1                  (5  + NUMBER_CANALs_ADC)
-#define C_Uc_16                 (6  + NUMBER_CANALs_ADC)
-#define C_3U0_1                 (7  + NUMBER_CANALs_ADC)
-#define C_3U0_16                (8  + NUMBER_CANALs_ADC)
-//#define C_VREF_ADC2_2           (9  + NUMBER_CANALs_ADC)
-//#define C_VREF_ADC2_3           (10 + NUMBER_CANALs_ADC)
-//#define C_VREF_ADC2_4           (11 + NUMBER_CANALs_ADC)
-#define C_GND_ADC2_2            (12 + NUMBER_CANALs_ADC)
-#define C_GND_ADC2_3            (13 + NUMBER_CANALs_ADC)
-#define C_VREF_ADC2_1           (14 + NUMBER_CANALs_ADC)
-#define C_VDD_ADC2              (15 + NUMBER_CANALs_ADC)
+#define C_3I0_256               0
+#define C_3I0_16                1
+#define C_Ic_1                  2
+#define C_Ic_16                 3
+#define C_Ib_1                  4
+#define C_Ib_16                 5
+#define C_Ia_1                  6
+#define C_Ia_16                 7
+#define C_3U0_1                 8
+#define C_3U0_16                9
+#define C_Uc_1                  10
+#define C_Uc_16                 11
+#define C_Ua_16                 12
+#define C_Ua_1                  13
+#define C_Ub_16                 14
+#define C_Ub_1                  15
 
 #define READ_3U0 (                    \
                   (1 << C_3U0_1  ) |  \
@@ -198,7 +180,6 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
                  )
 
 #define READ_I   (                     \
-                  (1 << C_3I0_1  ) |   \
                   (1 << C_3I0_16 ) |   \
                   (1 << C_3I0_256) |   \
                   (1 << C_Ia_1   ) |   \
@@ -217,31 +198,32 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
                         READ_3U0  \
                       )
 
-#define READ_TEST_VAL  (                                  \
-                        (1 << C_GND_ADC1_1)             | \
-                        (1 << C_GND_ADC1_2)             | \
-                        (1 << C_GND_ADC1_3)             | \
-                        (1 << C_GND_ADC1_4)             | \
-                        (1 << C_GND_ADC1_5)             | \
-                        (1 << C_VREF_ADC1 )             | \
-                        (1 << C_VDD_ADC1  )             | \
-                        (1 << C_GND_ADC2_1)             | \
-                        (1 << C_GND_ADC2_2)             | \
-                        (1 << C_GND_ADC2_3)             | \
-                        (1 << C_VREF_ADC2_1)            | \
-                      /*(1 << C_VREF_ADC2_2)            |*/\
-                      /*(1 << C_VREF_ADC2_3)            |*/\
-                      /*(1 << C_VREF_ADC2_4)            |*/\
-          (unsigned int)(1 << C_VDD_ADC2  )               \
-                       )
+//#define READ_TEST_VAL  (                                  \
+//                        (1 << C_GND_ADC1_1)             | \
+//                        (1 << C_GND_ADC1_2)             | \
+//                        (1 << C_GND_ADC1_3)             | \
+//                        (1 << C_GND_ADC1_4)             | \
+//                        (1 << C_GND_ADC1_5)             | \
+//                        (1 << C_VREF_ADC1 )             | \
+//                        (1 << C_VDD_ADC1  )             | \
+//                        (1 << C_GND_ADC2_1)             | \
+//                        (1 << C_GND_ADC2_2)             | \
+//                        (1 << C_GND_ADC2_3)             | \
+//                        (1 << C_VREF_ADC2_1)            | \
+//                      /*(1 << C_VREF_ADC2_2)            |*/\
+//                      /*(1 << C_VREF_ADC2_3)            |*/\
+//                      /*(1 << C_VREF_ADC2_4)            |*/\
+//          (unsigned int)(1 << C_VDD_ADC2  )               \
+//                       )
 
 #define DATA_VAL_READ_BIT       0
 #define DATA_VAL_READ           (1 << DATA_VAL_READ_BIT)
-#define TEST_VAL_READ_BIT       1
-#define TEST_VAL_READ           (1 << TEST_VAL_READ_BIT)
+//#define TEST_VAL_READ_BIT       1
+//#define TEST_VAL_READ           (1 << TEST_VAL_READ_BIT)
 
-#define NUMBER_GND_ADC1         5
-#define NUMBER_GND_ADC2         3
+//#define NUMBER_GND_ADC1         5
+
+//#define NUMBER_GND_ADC2         3
 
 #define NUMBER_VREF_ADC2        1/*4*/
 
@@ -256,23 +238,30 @@ Koef_1 = 74.831881801009052122160116719483 (4790/64 = 74.84375)
 #define I_Uc          6
 #define I_3U0         7
 
-#define IM_3I0_i       0
-#define IM_3I0         1
-#define IM_3I0_other_g 2
-#define IM_3I0_r       3
-#define IM_IA          4
-#define IM_IB          5
-#define IM_IC          6
-#define IM_I2          7
-#define IM_I1          8
-#define IM_I04         9
-#define IM_UA          10
-#define IM_UB          11
-#define IM_UC          12
-#define IM_3U0         13
-#define IM_UAB         14
-#define IM_UBC         15
-#define IM_UCA         16
+enum _index_meas
+{
+  IM_3I0_i = 0,
+  IM_3I0,
+  IM_3I0_other_g,
+  IM_3I0_r,
+  IM_IA,
+  IM_IB,
+  IM_IC,
+  IM_I2,
+  IM_I1,
+  IM_I04,
+  IM_UA,
+  IM_UB,
+  IM_UC,
+  IM_3U0,
+  IM_UAB,
+  IM_UBC,
+  IM_UCA,
+  IM_U2,
+  IM_U1,
+  
+  _NUMBER_IM
+};
 
 #define PORIG_FOR_FAPCH 10000
 

@@ -11,7 +11,10 @@ void main_manu_function(void)
   if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_WINDOW_OFF_CB) != 0)
   {
     if (
-        (info_vidkluchennja_vymykacha != 0) &&
+        (
+         (info_vidkluchennja_vymykacha[0] != 0) ||
+         (info_vidkluchennja_vymykacha[1] != 0)
+        ) &&   
         (current_ekran.current_level != EKRAN_VIDKLUCHENNJA) &&
         ((new_state_keyboard & (1<<BIT_REWRITE)) == 0)
        )   
@@ -40,7 +43,8 @@ void main_manu_function(void)
   else
   {
     //Очищаємо інформацію про спрацювання захистів
-    info_vidkluchennja_vymykacha = 0;
+    info_vidkluchennja_vymykacha[0] = 0;
+    info_vidkluchennja_vymykacha[1] = 0;
   }
   
   //Перевіряємо чи якась кнопка натиснута
@@ -308,13 +312,14 @@ void main_manu_function(void)
                 //Вводимо нове значення у дію
                 *p_password = new_setting_password;
 
-                //Помічаємо, що таблиця змінилася і її треба буде з системи захистів зкопіювати у таблицю з якою працює система захистів (хоч ця операція і є зайвою, бо не було змін тих полів, які використовуються системою захистів, але це я зробив для універсальності, щоб завжди дві таблиці були ідентичні)
-                changed_settings = CHANGED_ETAP_ENDED;
-                
                 //Не формуємо запис у таблиці настройок про зміну конфігурації, бо її як такої не було. Просто змінився пароль доступу з меню
                 //але ініціюємо запис у EEPROM настройок
                 //Запускаємо запис у EEPROM
-                _SET_BIT(control_i2c_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT);
+                if (_CHECK_SET_BIT(active_functions, RANG_SETTINGS_CHANGED) == 0) current_settings_interfaces = current_settings;
+                _SET_BIT(control_spi1_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT);
+                
+                //Помічаємо, що таблиця змінилася і її треба буде з системи захистів зкопіювати у таблицю з якою працює система захистів (хоч ця операція і є зайвою, бо не було змін тих полів, які використовуються системою захистів, але це я зробив для універсальності, щоб завжди дві таблиці були ідентичні)
+                changed_settings = CHANGED_ETAP_ENDED;
                 
                 //Вихід у режимі редагування
                 current_ekran.edition = 0;
@@ -555,6 +560,8 @@ void main_manu_function(void)
                 current_ekran.index_position++;
               if ((current_ekran.index_position == INDEX_ML1_UMAX) && ((current_settings.configuration & (1<<UMAX_BIT_CONFIGURATION)) == 0))
                 current_ekran.index_position++;
+              if ((current_ekran.index_position == INDEX_ML1_UP) && ((current_settings.configuration & (1<<UP_BIT_CONFIGURATION)) == 0))
+                current_ekran.index_position++;
               if ((current_ekran.index_position == INDEX_ML1_VMP) && ((current_settings.configuration & (1<<VMP_BIT_CONFIGURATION)) == 0))
                 current_ekran.index_position++;
             }
@@ -689,6 +696,7 @@ void main_manu_function(void)
                       (current_ekran.index_position == INDEX_ML1_ZOP       ) ||
                       (current_ekran.index_position == INDEX_ML1_UMIN      ) ||
                       (current_ekran.index_position == INDEX_ML1_UMAX      ) || 
+                      (current_ekran.index_position == INDEX_ML1_UP        ) || 
                       (current_ekran.index_position == INDEX_ML1_VMP       ) 
                      )
               {
@@ -714,6 +722,8 @@ void main_manu_function(void)
                 else if(current_ekran.index_position == INDEX_ML1_UMIN) current_ekran.current_level = EKRAN_CHOOSE_SETTINGS_UMIN;
                 //Переходимо на меню Umax
                 else if(current_ekran.index_position == INDEX_ML1_UMAX) current_ekran.current_level = EKRAN_CHOOSE_SETTINGS_UMAX;
+                //Переходимо на меню Umax
+                else if(current_ekran.index_position == INDEX_ML1_UP) current_ekran.current_level = EKRAN_CHOOSE_SETTINGS_UP;
                 //Переходимо на меню "Визначення місця пошкодження"
                 else if(current_ekran.index_position == INDEX_ML1_VMP) current_ekran.current_level = EKRAN_CHOOSE_SETTINGS_VMP;
                 
@@ -741,6 +751,8 @@ void main_manu_function(void)
                 if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_MAIN - 1;
 
                 if ((current_ekran.index_position == INDEX_ML1_VMP) && ((current_settings.configuration & (1<<VMP_BIT_CONFIGURATION)) == 0))
+                  current_ekran.index_position--;
+                if ((current_ekran.index_position == INDEX_ML1_UP) && ((current_settings.configuration & (1<<UP_BIT_CONFIGURATION)) == 0))
                   current_ekran.index_position--;
                 if ((current_ekran.index_position == INDEX_ML1_UMAX) && ((current_settings.configuration & (1<<UMAX_BIT_CONFIGURATION)) == 0))
                   current_ekran.index_position--;
@@ -805,6 +817,8 @@ void main_manu_function(void)
                   current_ekran.index_position++;
                 if ((current_ekran.index_position == INDEX_ML1_UMAX) && ((current_settings.configuration & (1<<UMAX_BIT_CONFIGURATION)) == 0))
                   current_ekran.index_position++;
+                if ((current_ekran.index_position == INDEX_ML1_UP) && ((current_settings.configuration & (1<<UP_BIT_CONFIGURATION)) == 0))
+                  current_ekran.index_position++;
                 if ((current_ekran.index_position == INDEX_ML1_VMP) && ((current_settings.configuration & (1<<VMP_BIT_CONFIGURATION)) == 0))
                   current_ekran.index_position++;
               }
@@ -847,33 +861,33 @@ void main_manu_function(void)
           //Пріоритет стоїть на обновлені екрану
           if((new_state_keyboard & (1<<BIT_REWRITE)) !=0)
           {
-            if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_TIME) current_ekran.index_position = 0;
-            /**************************************************/
-            //Курсор має бути на першому символі рядка з даними
-            /**************************************************/
-            if(current_ekran.index_position == ROW_Y_)
-            {
-              current_ekran.position_cursor_x = COL_DY1;
-            }
-            else if(current_ekran.index_position == ROW_T_)
-            {
-              current_ekran.index_position = ROW_Y_;
-              current_ekran.position_cursor_x = COL_DY1;
-            }
-            else if(current_ekran.index_position == ROW_N_)
-            {
-              current_ekran.index_position = ROW_K_;
-              current_ekran.position_cursor_x = COL_SK1;
-            }
-            else if(current_ekran.index_position == ROW_K_)
-            {
-              current_ekran.position_cursor_x = COL_SK1;
-            }
-            /**************************************************/
-            position_in_current_level_menu[EKRAN_TIME] = current_ekran.index_position;
-
             if (current_ekran.edition == 0)
             {
+              if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_TIME) current_ekran.index_position = 0;
+              /**************************************************/
+              //Курсор має бути на першому символі рядка з даними
+              /**************************************************/
+              if(current_ekran.index_position == ROW_Y_)
+              {
+                current_ekran.position_cursor_x = COL_DY1;
+              }
+              else if(current_ekran.index_position == ROW_T_)
+              {
+                current_ekran.index_position = ROW_Y_;
+                current_ekran.position_cursor_x = COL_DY1;
+              }
+              else if(current_ekran.index_position == ROW_N_)
+              {
+                current_ekran.index_position = ROW_K_;
+                current_ekran.position_cursor_x = COL_SK1;
+              }
+              else if(current_ekran.index_position == ROW_K_)
+              {
+                current_ekran.position_cursor_x = COL_SK1;
+              }
+              /**************************************************/
+              position_in_current_level_menu[EKRAN_TIME] = current_ekran.index_position;
+
               current_ekran.cursor_on = 0;
               current_ekran.cursor_blinking_on = 0;
             }
@@ -887,11 +901,26 @@ void main_manu_function(void)
           {
             if (new_state_keyboard == (1<<BIT_KEY_ENTER))
             {
+              static int tm_isdst;
               //Натиснута кнопка ENTER
               if(current_ekran.edition == 0)
               {
                 //Копіюємо текчий масив часу у масив для редагування
-                for(unsigned int i=0; i < 7; i++) time_edit[i] = time[i]; /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                copying_time_dat = 1;
+                time_t time_dat_tmp = time_dat_copy;
+                int32_t time_ms_tmp = time_ms_copy;
+                copying_time_dat = 0;
+                struct tm *p;
+                p = localtime(&time_dat_tmp);
+
+                time_edit[0] = INT_TO_BCD(time_ms_tmp/10);
+                time_edit[1] = INT_TO_BCD(p->tm_sec) & 0x7F;
+                time_edit[2] = INT_TO_BCD(p->tm_min) & 0x7F;
+                time_edit[3] = INT_TO_BCD(p->tm_hour) & 0x3F;
+                time_edit[4] = INT_TO_BCD(p->tm_mday) & 0x3F;
+                time_edit[5] = INT_TO_BCD(p->tm_mon + 1) & 0x1F;
+                time_edit[6] = INT_TO_BCD(p->tm_year - 100) & 0xFF;
+
                 calibration_edit = calibration;
                   
                 //Підготовка до режиму редагування - включаємо мигаючий курсор
@@ -914,14 +943,61 @@ void main_manu_function(void)
               {
                 //Перевіряємо чи якісь зміни відбулися
                 unsigned int found_changes = 0, i = 0;
+
+                copying_time_dat = 1;
+                time_t time_dat_tmp = time_dat_copy;
+                int32_t time_ms_tmp = time_ms_copy;
+                copying_time_dat = 0;
+                struct tm *p;
+                p = localtime(&time_dat_tmp);
+                tm_isdst = p->tm_isdst;
+
                 while ((i < 7) && (found_changes == 0))
                 {
-                  if (time[i] != time_edit[i]) found_changes = 1; /*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                  switch (i)
+                  {
+                  case 0:
+                    {
+                      if (INT_TO_BCD(time_ms_tmp/10) != time_edit[0]) found_changes = 1;
+                      break;
+                    }
+                  case 1:
+                    {
+                      if ((INT_TO_BCD(p->tm_sec) & 0x7F) != time_edit[1]) found_changes = 1;
+                      break;
+                    }
+                  case 2:
+                    {
+                      if ((INT_TO_BCD(p->tm_min) & 0x7F) != time_edit[2]) found_changes = 1;
+                      break;
+                    }
+                  case 3:
+                    {
+                      if ((INT_TO_BCD(p->tm_hour) & 0x3F) != time_edit[3]) found_changes = 1;
+                      break;
+                    }
+                  case 4:
+                    {
+                      if ((INT_TO_BCD(p->tm_mday) & 0x3F) != time_edit[4]) found_changes = 1;
+                      break;
+                    }
+                  case 5:
+                    {
+                      if ((INT_TO_BCD(p->tm_mon + 1) & 0x1F) != time_edit[5]) found_changes = 1;
+                      break;
+                    }
+                  case 6:
+                    {
+                      if (INT_TO_BCD(p->tm_year - 100) != time_edit[6]) found_changes = 1;
+                      break;
+                    }
+                  default: break;
+                  }
                   i++;
                 }
                 if (found_changes == 0)
                 {
-                  if (calibration != calibration_edit) found_changes = 1;/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+                  if (calibration != calibration_edit) found_changes = 1;
                 }
                 
                 //Виходимо з режиму редагування
@@ -937,14 +1013,49 @@ void main_manu_function(void)
                 if (check_data_for_data_time_menu() ==1)
                 {
                   //Дані достовірні
-                  //Копіюємо масив для редагування часу у текчий масив
-                  for(unsigned int i=0; i < 7; i++) time[i] = time_edit[i];/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
-                  calibration = calibration_edit;/*використовувати time_copy і calibration_copy не треба бо ф-ції main_manu_function() і main_routines_for_i2c() викликаються з найнижчого рівня*/ 
+
+                  time_ms_save_l = 0;
+                  
+                  struct tm orig;
+                  unsigned int tmp_reg = time_edit[1];
+                  orig.tm_sec = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+                  tmp_reg = time_edit[2];
+                  orig.tm_min = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+                  tmp_reg = time_edit[3];
+                  orig.tm_hour = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+                  tmp_reg = time_edit[4];
+                  orig.tm_mday = 10*(tmp_reg >> 4) + (tmp_reg & 0xf);
+
+                  tmp_reg = time_edit[5];
+                  orig.tm_mon = 10*(tmp_reg >> 4) + (tmp_reg & 0xf) - 1;
+
+                  tmp_reg = time_edit[6];
+                  orig.tm_year = 10*(tmp_reg >> 4) + (tmp_reg & 0xf) + 100;
+
+                  orig.tm_wday = 0;
+                  orig.tm_yday = 0;
+                  orig.tm_isdst = (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) ? tm_isdst : 0;
+                  //Робота з Watchdog
+                  watchdog_routine();
+                  time_dat_save_l = mktime (&orig);
+                  if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
+                  {
+                    struct tm *p_tmp = localtime(&time_dat_save_l);
+                    if (tm_isdst != p_tmp->tm_isdst) 
+                    {
+                      orig.tm_isdst = p_tmp->tm_isdst;
+                      //Робота з Watchdog
+                      watchdog_routine();
+                      time_dat_save_l = mktime (&orig);
+                    }
+                  }
+                  save_time_dat_l = 3;
+                  
+                  calibration = calibration_edit;
                   current_ekran.edition = 0;
-                  //Виставляємо повідомлення запису часу в RTC
-                  //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
-                  _SET_BIT(control_i2c_taskes, TASK_START_WRITE_RTC_BIT);
-                  _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
                 }
                 else
                 {
@@ -1423,6 +1534,10 @@ void main_manu_function(void)
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP3_MTZ04:
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_MTZ04:
     case EKRAN_CHOOSE_SETTINGS_ZDZ:
+    case EKRAN_CHOOSE_TIMEOUT_GROUP1_ZDZ:
+    case EKRAN_CHOOSE_TIMEOUT_GROUP2_ZDZ:
+    case EKRAN_CHOOSE_TIMEOUT_GROUP3_ZDZ:
+    case EKRAN_CHOOSE_TIMEOUT_GROUP4_ZDZ:
     case EKRAN_CHOOSE_SETTINGS_ZZ:
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_ZZ:
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP2_ZZ:
@@ -1463,16 +1578,59 @@ void main_manu_function(void)
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP2_UMAX:
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP3_UMAX:
     case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UMAX:
+    case EKRAN_CHOOSE_SETTINGS_UP:
+    case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP:
+    case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP2_UP:
+    case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP3_UP:
+    case EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UP:
+    case EKRAN_TRANSFORMATOR_INFO:
     case EKRAN_CHOSE_SETTINGS:
     case EKRAN_LEVEL_CHOOSE_PASSWORDS:
     case EKRAN_LIST_INPUTS_FOR_RANGUVANNJA:
     case EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA:
     case EKRAN_LIST_LEDS_FOR_RANGUVANNJA:
     case EKRAN_CHOOSE_SETTINGS_SWITCHER:
+    case EKRAN_CHOOSE_RANG_SWITCH:
     case EKRAN_CHOOSE_SETTINGS_UVV:
     case EKRAN_CHOSE_COMMUNICATION_PARAMETERS:
     case EKRAN_VIEW_NAME_OF_CELL:
     case EKRAN_CHOSE_SETTING_RS485:
+    case EKRAN_PHY_LAYER_RS485:
+    case EKRAN_PROTOCOL_RS485:
+    case EKRAN_CHOSE_DATA_TIME:
+      
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    case EKRAN_LIST_TYPE_IEC61850_NODES:
+    case EKRAN_LIST_IN_GOOSE:
+    case EKRAN_LIST_IN_MMS:
+    case EKRAN_LIST_OUT_LAN:
+    case EKRAN_IN_GOOSE1:
+    case EKRAN_IN_GOOSE2:
+    case EKRAN_IN_GOOSE3:
+    case EKRAN_IN_GOOSE4:
+    case EKRAN_IN_GOOSE5:
+    case EKRAN_IN_GOOSE6:
+    case EKRAN_IN_GOOSE7:
+    case EKRAN_IN_GOOSE8:
+    case EKRAN_IN_GOOSE9:
+    case EKRAN_IN_GOOSE10:
+    case EKRAN_IN_GOOSE11:
+    case EKRAN_IN_GOOSE12:
+    case EKRAN_IN_GOOSE13:
+    case EKRAN_IN_GOOSE14:
+    case EKRAN_IN_GOOSE15:
+    case EKRAN_IN_GOOSE16:
+    case EKRAN_IN_MMS1:
+    case EKRAN_IN_MMS2:
+    case EKRAN_IN_MMS3:
+    case EKRAN_IN_MMS4:
+    case EKRAN_OUT_LAN1:
+    case EKRAN_OUT_LAN2:
+    case EKRAN_OUT_LAN3:
+    case EKRAN_OUT_LAN4:
+    case EKRAN_CHOSE_SETTING_ETHERNET:
+#endif
+      
     case EKRAN_VIEW_LIST_OF_REGISTRATORS:
     case EKRAN_VIEW_SETTINGS_OF_ANALOG_REGISTRATORS:
     case EKRAN_EXTENDED_LIGIC:
@@ -1504,6 +1662,7 @@ void main_manu_function(void)
     case EKRAN_LIST_D_OR:
     case EKRAN_LIST_D_XOR:
     case EKRAN_LIST_D_NOT:
+    case EKRAN_LIST_TF_FOR_RANGUVANNJA:
     case EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA:
     case EKRAN_INFO:
     case EKRAN_DATE_TIME_PZ:
@@ -1593,7 +1752,7 @@ void main_manu_function(void)
             {
               int max_row = 1;
               if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
-                max_row += 3;
+                max_row += 3 + 2;
 
               if(current_ekran.index_position >= max_row) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_MEASURMENT_VOLTAGE_PHASE] = current_ekran.index_position;
@@ -1656,6 +1815,7 @@ void main_manu_function(void)
             else if (current_ekran.current_level == EKRAN_ENERGY)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_ENERGY) current_ekran.index_position = 0;
+              current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
               position_in_current_level_menu[EKRAN_ENERGY] = current_ekran.index_position;
               //Формуємо екран відображення вікна технічного обліку електроенергії
               make_ekran_energy(pervynna_vtorynna);
@@ -1670,6 +1830,7 @@ void main_manu_function(void)
             else if (
                      (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_MTZ       )||
                      (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_MTZ04     )||
+                     (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ       )||
                      (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZZ        )||
                      (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_TZNP      )||
                      (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_APV       )||
@@ -1677,7 +1838,8 @@ void main_manu_function(void)
                      (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UROV      )|| 
                      (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZOP       )|| 
                      (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMIN      )||
-                     (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMAX      )
+                     (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMAX      )||
+                     (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UP        )
                     )   
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TWO_GROUP) current_ekran.index_position = 0;
@@ -1731,6 +1893,11 @@ void main_manu_function(void)
                       (current_ekran.current_level >= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UMAX) &&
                       (current_ekran.current_level <= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UMAX)
                      )
+                     ||  
+                     (
+                      (current_ekran.current_level >= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP) &&
+                      (current_ekran.current_level <= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UP)
+                     )
                     )
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETPOINTS_TIMEOUTS) current_ekran.index_position = 0;
@@ -1740,6 +1907,11 @@ void main_manu_function(void)
               make_ekran_chose_setpoint_and_timeout();
             }
             else if (
+                     (
+                      (current_ekran.current_level >= EKRAN_CHOOSE_TIMEOUT_GROUP1_ZDZ) &&
+                      (current_ekran.current_level <= EKRAN_CHOOSE_TIMEOUT_GROUP4_ZDZ)
+                     )
+                     ||  
                      (
                       (current_ekran.current_level >= EKRAN_CHOOSE_TIMEOUT_GROUP1_APV) &&
                       (current_ekran.current_level <= EKRAN_CHOOSE_TIMEOUT_GROUP4_APV)
@@ -1752,21 +1924,40 @@ void main_manu_function(void)
                 //Формуємо екран витримки для захистів у яких є багато груп уставок
               make_ekran_chose_timeout();
             }
-            else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ)
+            else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
             {
-              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_CONTROL) current_ekran.index_position = 0;
-              position_in_current_level_menu[EKRAN_CHOOSE_SETTINGS_ZDZ] = current_ekran.index_position;
-              //Формуємо екран настройки для ЗДЗ
-              make_ekran_chose_control();
+              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL) current_ekran.index_position = 0;
+              while(
+                    ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+                    &&
+                    (current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_CONTROL)
+                   )
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL) current_ekran.index_position = 0;
+              }
+              
+              position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+
+              //Формуємо екран уставки-настройки
+              make_ekran_chose_setpoint_control_transformator();
             }
             else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
             {
-              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_ANY_PROTECTION) current_ekran.index_position = 0;
+              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_SWITCHER) current_ekran.index_position = 0;
               
               position_in_current_level_menu[EKRAN_CHOOSE_SETTINGS_SWITCHER] = current_ekran.index_position;
 
-              //Формуємо екран уставки-витримки-настройки для всіх захистів
-              make_ekran_chose_settings_any_protection();
+              //Формуємо екран уставки-витримки-настройки-ранжування вимикача
+              make_ekran_chose_settings_switcher();
+            }
+            else if (current_ekran.current_level == EKRAN_CHOOSE_RANG_SWITCH)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_RANG_SWITCH) current_ekran.index_position = 0;
+              
+              position_in_current_level_menu[EKRAN_CHOOSE_RANG_SWITCH] = current_ekran.index_position;
+
+              //Формуємо екран БВимк./БВвімк.
+              make_ekran_choose_CBOn_CBOff();
             }
             else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_VMP)
             {
@@ -1815,7 +2006,7 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_LIST_INPUTS_FOR_RANGUVANNJA] = current_ekran.index_position;
             
               //Формуємо екран заголовків дискретних входів для ранжування
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(0);
+              make_ekran_chose_of_list_for_ranguvannja(ID_INPUT);
             }
             else if (current_ekran.current_level == EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA)
             {
@@ -1823,7 +2014,7 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA] = current_ekran.index_position;
             
               //Формуємо екран заголовків дискретних виходів для ранжування
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(1);
+              make_ekran_chose_of_list_for_ranguvannja(ID_OUTPUT);
             }
             else if (current_ekran.current_level == EKRAN_LIST_LEDS_FOR_RANGUVANNJA)
             {
@@ -1831,7 +2022,7 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_LIST_LEDS_FOR_RANGUVANNJA] = current_ekran.index_position;
             
               //Формуємо екран заголовків світоіндикаторів для ранжування
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(2);
+              make_ekran_chose_of_list_for_ranguvannja(ID_LED);
             }
             else if (current_ekran.current_level == EKRAN_CHOSE_COMMUNICATION_PARAMETERS)
             {
@@ -1854,6 +2045,96 @@ void main_manu_function(void)
               //Формуємо екран відображення списку настройок для інтерфейсу RS-485
               make_ekran_chose_setting_rs485();
             }
+            else if (current_ekran.current_level == EKRAN_PHY_LAYER_RS485)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_PHY_LAYER_RS485) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_PHY_LAYER_RS485] = current_ekran.index_position;
+              //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
+              make_ekran_phy_layer_rs485();
+            }
+            else if (current_ekran.current_level == EKRAN_PROTOCOL_RS485)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_PROTOCOLS_RS485) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_PROTOCOL_RS485] = current_ekran.index_position;
+              //Формуємо екран відображення списку налаштувань протоколу RS-485
+              make_ekran_protocols_rs485();
+            }
+            else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+              if ((current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) == 0)
+              {
+                while(
+                      (current_ekran.index_position == INDEX_ML_CHDT_DST_ON) ||
+                      (current_ekran.index_position == INDEX_ML_CHDT_DST_OFF)
+                     )
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+                }
+              }
+
+              position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
+              //Формуємо екран вибору налаштувань дати і часу
+              make_ekran_chose_data_time_settings();
+            }
+#if (MODYFIKACIA_VERSII_PZ >= 10)            
+            else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_TYPE_IEC61850_NODES) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_LIST_TYPE_IEC61850_NODES] = current_ekran.index_position;
+            
+              //Формуємо екран заголовків для типів логічних вузлів для IEC 61850
+              make_ekran_type_IEC61850_nodes();
+            }
+            else if (current_ekran.current_level == EKRAN_LIST_IN_GOOSE)
+            {
+              if(current_ekran.index_position >= N_IN_GOOSE) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_LIST_IN_GOOSE] = current_ekran.index_position;
+            
+              //Формуємо екран заголовків вхідних GOOSE блоків
+              make_ekran_chose_of_list_for_ranguvannja(ID_IN_GOOSE);
+            }
+            else if (current_ekran.current_level == EKRAN_LIST_IN_MMS)
+            {
+              if(current_ekran.index_position >= N_IN_MMS) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_LIST_IN_MMS] = current_ekran.index_position;
+            
+              //Формуємо екран заголовків вхідних MMS блоків
+              make_ekran_chose_of_list_for_ranguvannja(ID_IN_MMS);
+            }
+            else if (current_ekran.current_level == EKRAN_LIST_OUT_LAN)
+            {
+              if(current_ekran.index_position >= N_OUT_LAN) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_LIST_OUT_LAN] = current_ekran.index_position;
+            
+              //Формуємо екран заголовків вихідний мережевий блок
+              make_ekran_chose_of_list_for_ranguvannja(ID_OUT_LAN);
+            }
+            else if (
+                     ((current_ekran.current_level >= EKRAN_IN_GOOSE1) && (current_ekran.current_level <= EKRAN_IN_GOOSE16)) ||
+                     ((current_ekran.current_level >= EKRAN_IN_MMS1  ) && (current_ekran.current_level <= EKRAN_IN_MMS4))
+                    )   
+            {
+              if(current_ekran.index_position >= N_IN_GOOSE_MMS_OUT) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+              //Формуємо екран заголовків виходів
+              make_ekran_list_in_out_for_iec61850(0, N_IN_GOOSE_MMS_OUT);
+            }
+            else if ((current_ekran.current_level >= EKRAN_OUT_LAN1) && (current_ekran.current_level <= EKRAN_OUT_LAN4))
+            {
+              if(current_ekran.index_position >= N_OUT_LAN_IN) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+              //Формуємо екран заголовків виходів
+              make_ekran_list_in_out_for_iec61850(1, N_OUT_LAN_IN);
+            }
+            else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTING_ETHERNET) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_CHOSE_SETTING_ETHERNET] = current_ekran.index_position;
+              //Формуємо екран відображення списку настройок для інтерфейсу Ethernet
+              make_ekran_chose_setting_Ethernet();
+            }
+#endif
             else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_LIST_OF_REGISTRATORS) current_ekran.index_position = 0;
@@ -1906,7 +2187,7 @@ void main_manu_function(void)
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
             
               //Формуємо екран заголовків опреділювальних функцій
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(3);
+              make_ekran_chose_of_list_for_ranguvannja(ID_DF);
             }
             else if ((current_ekran.current_level >= EKRAN_LIST_TYPE_SOURCE_DF1) && (current_ekran.current_level <= EKRAN_LIST_TYPE_SOURCE_DF8))
             {
@@ -1921,7 +2202,7 @@ void main_manu_function(void)
               if(current_ekran.index_position >= MAX_ROW_FOR_LIST_DT) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_LIST_DT] = current_ekran.index_position;
               //Формуємо екран заголовків опреділювальних триґерів
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(5);
+              make_ekran_chose_of_list_for_ranguvannja(ID_DT);
             }
             else if ((current_ekran.current_level >= EKRAN_SET_RESET_DT1) && (current_ekran.current_level <= EKRAN_SET_RESET_DT4))
             {
@@ -1942,28 +2223,36 @@ void main_manu_function(void)
               if(current_ekran.index_position >= MAX_ROW_FOR_LIST_D_AND) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_LIST_D_AND] = current_ekran.index_position;
               //Формуємо екран заголовків визначуваних "І"
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(6);
+              make_ekran_chose_of_list_for_ranguvannja(ID_AND);
             }
             else if (current_ekran.current_level == EKRAN_LIST_D_OR)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_LIST_D_OR) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_LIST_D_OR] = current_ekran.index_position;
               //Формуємо екран заголовків визначуваних "АБО"
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(7);
+              make_ekran_chose_of_list_for_ranguvannja(ID_OR);
             }
             else if (current_ekran.current_level == EKRAN_LIST_D_XOR)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_LIST_D_XOR) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_LIST_D_XOR] = current_ekran.index_position;
               //Формуємо екран заголовків визначуваних "Викл.АБО"
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(8);
+              make_ekran_chose_of_list_for_ranguvannja(ID_XOR);
             }
             else if (current_ekran.current_level == EKRAN_LIST_D_NOT)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_LIST_D_NOT) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_LIST_D_NOT] = current_ekran.index_position;
               //Формуємо екран заголовків визначуваних "НЕ"
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(9);
+              make_ekran_chose_of_list_for_ranguvannja(ID_NOT);
+            }
+            else if (current_ekran.current_level == EKRAN_LIST_TF_FOR_RANGUVANNJA)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_LIST_TF) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+            
+              //Формуємо екран заголовків передавальних функцій
+              make_ekran_chose_of_list_for_ranguvannja(ID_TF);
             }
             else if (current_ekran.current_level == EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA)
             {
@@ -1971,7 +2260,7 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA] = current_ekran.index_position;
             
               //Формуємо екран заголовків функціональних кнопок для ранжування
-              make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(4);
+              make_ekran_chose_of_list_for_ranguvannja(ID_DB);
             }
             else if (current_ekran.current_level == EKRAN_INFO)
             {
@@ -2012,25 +2301,32 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
               
-              if (
-                  (diagnostyka[0] == 0) &&
-                  (diagnostyka[1] == 0) &&
-                  ((diagnostyka[2] & USED_BITS_IN_LAST_INDEX) == 0)
-                 )
+              unsigned int diagnostyka_tmp[N_DIAGN];
+              for (size_t i = 0; i < N_DIAGN; i++) diagnostyka_tmp[i] = diagnostyka[i];
+              
+              unsigned int not_null = false;
+              for (size_t i = 0; i < N_DIAGN; i++) 
               {
-                current_ekran.index_position = 0;
+                not_null |= (diagnostyka_tmp[i] != 0);
+                if (not_null) break;
               }
-              else
+              
+              if (not_null)
               {
-                while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
+                while (_CHECK_SET_BIT(diagnostyka_tmp, current_ekran.index_position) ==0)
                 {
                   current_ekran.index_position++;
                   if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
                 }
               }
+              else
+              {
+                current_ekran.index_position = 0;
+              }
+              
               position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
               //Формуємо екран діагностики
-              make_ekran_diagnostyka(diagnostyka);
+              make_ekran_diagnostyka(diagnostyka_tmp);
             }
             else if (current_ekran.current_level == EKRAN_LIST_INPUTS_OUTPUTS)
             {
@@ -2145,7 +2441,7 @@ void main_manu_function(void)
                        || 
                        (
                         (type_view_max_values_dr != IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE) && 
-                        (current_ekran.index_position == 23)  
+                        (current_ekran.index_position == 25)  
                        )   
                       )   
                   current_ekran.index_position++;
@@ -2370,13 +2666,39 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ)
               {
-                //Натисну кнопка Enter у вікні вибору настройок для ЗДЗ
-                if (current_ekran.index_position == INDEX_ML_WITH_CONTROL_CONTROL)
+                //Натисну кнопка Enter у вікні вибору група1-...-групаN-настройки ЗДЗ
+                if(
+                   (current_ekran.index_position >= INDEX_ML_GROUP1) &&
+                   (current_ekran.index_position <= INDEX_ML_GROUP4)
+                  )  
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення обраної групи уставок для ЗДЗ
+                  current_ekran.current_level = EKRAN_CHOOSE_TIMEOUT_GROUP1_ZDZ + (current_ekran.index_position - INDEX_ML_GROUP1);
+                }
+                else if (current_ekran.index_position == INDEX_ML_CONTROL_WITH_GROUPS)
                 {
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення управлінської інформації для ЗДЗ
                   current_ekran.current_level = EKRAN_CONTROL_ZDZ;
                 } 
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+                current_ekran.cursor_on = 1;
+                current_ekran.cursor_blinking_on = 0;
+              }
+              else if (
+                       (current_ekran.current_level >= EKRAN_CHOOSE_TIMEOUT_GROUP1_ZDZ) &&
+                       (current_ekran.current_level <= EKRAN_CHOOSE_TIMEOUT_GROUP4_ZDZ)
+                      )
+              {
+                //Натисну кнопка Enter у вікні вибору витримок ЗДЗ
+                if(current_ekran.index_position == INDEX_ML_WITH_TIMEOUT_TIMEOUT)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення витримок для ЗДЗ
+                  current_ekran.current_level = EKRAN_TIMEOUT_ZDZ_GROUP1 + (current_ekran.current_level - EKRAN_CHOOSE_TIMEOUT_GROUP1_ZDZ);
+                }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
@@ -2726,26 +3048,120 @@ void main_manu_function(void)
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
+              else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UP)
+              {
+                //Натисну кнопка Enter у вікні вибору група1-...-групаN-настройки УЗ
+                if(
+                   (current_ekran.index_position >= INDEX_ML_GROUP1) &&
+                   (current_ekran.index_position <= INDEX_ML_GROUP4)
+                  )  
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення обраної групи уставок для УЗ
+                  current_ekran.current_level = EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP + (current_ekran.index_position - INDEX_ML_GROUP1);
+                }
+                else if (current_ekran.index_position == INDEX_ML_CONTROL_WITH_GROUPS)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення управлінської інформації для УЗ
+                  current_ekran.current_level = EKRAN_CONTROL_UP;
+                } 
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+                current_ekran.cursor_on = 1;
+                current_ekran.cursor_blinking_on = 0;
+              }
+              else if (
+                       (current_ekran.current_level >= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP) &&
+                       (current_ekran.current_level <= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UP)
+                      )
+              {
+                //Натисну кнопка Enter у вікні вибору уставок-витримок УЗ
+                if(current_ekran.index_position == INDEX_ML_SETPOINT)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення уставок для УЗ
+                  current_ekran.current_level = EKRAN_SETPOINT_UP_GROUP1 + (current_ekran.current_level - EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP);
+                }
+                else if(current_ekran.index_position == INDEX_ML_TIMEOUT)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення витримок для УЗ
+                  current_ekran.current_level = EKRAN_TIMEOUT_UP_GROUP1 + (current_ekran.current_level - EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP);
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              {
+                //Натисну кнопка Enter у вікні вибору уставок-настройок трансформатора
+                if(current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_SETPOINT)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення уставок для вимикача
+                  current_ekran.current_level = EKRAN_TRANSFORMATOR_INFO_SETPOINT;
+                }
+                else if (current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_CONTROL)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення управлінської інформації для вимикача
+                  current_ekran.current_level = EKRAN_TRANSFORMATOR_INFO_CONTROL;
+                } 
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+                current_ekran.cursor_on = 1;
+                current_ekran.cursor_blinking_on = 0;
+              }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
               {
                 //Натисну кнопка Enter у вікні вибору настройок виключателя
-                if(current_ekran.index_position == INDEX_ML_SETPOINT)
+                if(current_ekran.index_position == INDEX_ML_SETPOINT_SWITCHER)
                 {
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення уставок для вимикача
                   current_ekran.current_level = EKRAN_SETPOINT_SWITCH;
                 }
-                else if (current_ekran.index_position == INDEX_ML_TIMEOUT)
+                else if (current_ekran.index_position == INDEX_ML_TIMEOUT_SWITCHER)
                 {
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення витримок для вимикача
                   current_ekran.current_level = EKRAN_TIMEOUT_SWITCH;
                 } 
-                else if (current_ekran.index_position == INDEX_ML_CONTROL)
+                else if (current_ekran.index_position == INDEX_ML_CONTROL_SWITCHER)
                 {
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення управлінської інформації для вимикача
                   current_ekran.current_level = EKRAN_CONTROL_SWITCH;
+                } 
+                else if (current_ekran.index_position == INDEX_ML_RANG_SWITCHER)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення ранжування управління вимикачем
+                  current_ekran.current_level = EKRAN_CHOOSE_RANG_SWITCH;
+                } 
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+                current_ekran.cursor_on = 1;
+                current_ekran.cursor_blinking_on = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_CHOOSE_RANG_SWITCH)
+              {
+                //Натисну кнопка Enter у вікні вибору Бвимк./БВвімк.
+                if(current_ekran.index_position == INDEX_ML_RANG_OFF_CB)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення ранжування ББвимк.
+                  current_ekran.current_level = EKRAN_RANGUVANNJA_OFF_CB;
+                  //Для того, щоб при першому входженні завжди список починався із першої ранжованої функції обнуляємо цю позицію
+                  position_in_current_level_menu[current_ekran.current_level] = 0;
+                }
+                else if (current_ekran.index_position == INDEX_ML_RANG_ON_CB)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення ранжування ББввімк.
+                  current_ekran.current_level = EKRAN_RANGUVANNJA_ON_CB;
+                  //Для того, щоб при першому входженні завжди список починався із першої ранжованої функції обнуляємо цю позицію
+                  position_in_current_level_menu[current_ekran.current_level] = 0;
                 } 
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
@@ -2793,6 +3209,12 @@ void main_manu_function(void)
                   //Переходимо на меню відображення вибору міток настройок
                   current_ekran.current_level = EKRAN_POINT_TIME_SETTINGS;
                 }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if(current_ekran.index_position == INDEX_OF_IEC61850)
+                {
+                  current_ekran.current_level = EKRAN_LIST_TYPE_IEC61850_NODES;
+                }
+#endif
                 else if(current_ekran.index_position == INDEX_OF_INPUTS_RANGUVANNJA)
                 {
                   //Запам'ятовуємо поперердній екран
@@ -2834,6 +3256,12 @@ void main_manu_function(void)
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення настройок комунікації
                   current_ekran.current_level = EKRAN_CHOSE_COMMUNICATION_PARAMETERS;
+                }
+                else if(current_ekran.index_position == INDEX_OF_DATA_AND_TIME)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення налаштувань дати і часу
+                  current_ekran.current_level = EKRAN_CHOSE_DATA_TIME;
                 }
                 else if(current_ekran.index_position == INDEX_OF_REGISTRATORS)
                 {
@@ -2963,6 +3391,12 @@ void main_manu_function(void)
                   //Переходимо на меню відображення типу свівтлоіндикаторів
                   current_ekran.current_level = EKRAN_TYPE_LED_UVV;
                 }
+                else if(current_ekran.index_position == INDEX_ML_UVV_TYPE_DB)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення типу ФК
+                  current_ekran.current_level = EKRAN_TYPE_BUTTON_UVV;
+                }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
@@ -2975,24 +3409,44 @@ void main_manu_function(void)
                   //Переходимо на меню відображення імені ячейки
                   current_ekran.current_level = EKRAN_VIEW_NAME_OF_CELL;
                 }
-                else if(current_ekran.index_position == INDEX_ML_CHCP_ADDRESS)
-                {
-                  //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення мережевої адреси
-                  current_ekran.current_level = EKRAN_ADDRESS;
-                }
                 else if(current_ekran.index_position == INDEX_ML_CHCP_SETTING_RS485)
                 {
                   //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення мережевої адреси
+                  //Переходимо на меню відображення списку нашаштувань RS-485
                   current_ekran.current_level = EKRAN_CHOSE_SETTING_RS485;
                 }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if(current_ekran.index_position == INDEX_ML_CHCP_SETTING_ETHERNET)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку нашаштувань Ethernet
+                  current_ekran.current_level = EKRAN_CHOSE_SETTING_ETHERNET;
+                }
+#endif
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
               else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_RS485)
               {
                 //Натисну кнопка Enter у вікні вибору вікна настройок RS-485
+                if(current_ekran.index_position == INDEX_ML_PHY_LAYER_RS485)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення налаштувань фізичного рівня RS-485
+                  current_ekran.current_level = EKRAN_PHY_LAYER_RS485;
+                }
+                else if(current_ekran.index_position == INDEX_ML_PROTOCOL_RS485)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення протоколів RS-485
+                  current_ekran.current_level = EKRAN_PROTOCOL_RS485;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_PHY_LAYER_RS485)
+              {
+                //Натисну кнопка Enter у вікні вибору вікна настройок фізичного рівня RS-485
                 if(current_ekran.index_position == INDEX_ML_CHSRS485_SPEED)
                 {
                   //Запам'ятовуємо поперердній екран
@@ -3017,6 +3471,132 @@ void main_manu_function(void)
                   //Переходимо на меню відображення інфрпмації по time-out наступного символу
                   current_ekran.current_level = EKRAN_VIEW_TIMEOUT_RS485;
                 }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_PROTOCOL_RS485)
+              {
+                //Натисну кнопка Enter у вікні вибору налаштувань протоколу RS-485
+                if(current_ekran.index_position == INDEX_ML_ADDRESS)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення мережевої адреси
+                  current_ekran.current_level = EKRAN_ADDRESS_RS485;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
+              {
+                //Натисну кнопка Enter у вікні вибору вікна настройок УВВ
+                if(current_ekran.index_position == INDEX_TYPE_IEC61850_IN_GOOSE)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку вхідних GOOSE блоків
+                  current_ekran.current_level = EKRAN_LIST_IN_GOOSE;
+                }
+                else if(current_ekran.index_position == INDEX_TYPE_IEC61850_IN_MMS)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку вхідних MMS блоків
+                  current_ekran.current_level = EKRAN_LIST_IN_MMS;
+                }
+                else if(current_ekran.index_position == INDEX_TYPE_IEC61850_OUT_LAN)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку вихідних мережевих блоків
+                  current_ekran.current_level = EKRAN_LIST_OUT_LAN;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_IN_GOOSE)
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення вибору списку виходів Вх.GOOSE блоку
+                current_ekran.current_level = EKRAN_IN_GOOSE1 + current_ekran.index_position;
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_IN_MMS)
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення вибору  списку виходів Вх.MMS блоку
+                current_ekran.current_level = EKRAN_IN_MMS1 + current_ekran.index_position;
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_OUT_LAN)
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення вибору  списку входів Вих. мережевого блоку
+                current_ekran.current_level = EKRAN_OUT_LAN1 + current_ekran.index_position;
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (
+                       ((current_ekran.current_level >= EKRAN_IN_GOOSE1) && (current_ekran.current_level <= EKRAN_IN_GOOSE16)) ||
+                       ((current_ekran.current_level >= EKRAN_IN_MMS1  ) && (current_ekran.current_level <= EKRAN_IN_MMS4   ))
+                      )   
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення списку ранжованих функцій (малий список)
+                current_ekran.current_level = EKRAN_LN_FOR_IEC61850_RANG_SMALL;
+                //Для того, щоб при першому входженні завжди список починався із першої ранжованої функції обнуляємо цю позицію
+                position_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL] = 0;
+                current_ekran.index_position = position_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL];
+                current_ekran.edition = 0;
+              }
+              else if ((current_ekran.current_level >= EKRAN_OUT_LAN1 ) && (current_ekran.current_level <= EKRAN_OUT_LAN4  ))
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення списку ранжованих функцій (великий список)
+                current_ekran.current_level = EKRAN_LN_FOR_IEC61850_RANG;
+                //Для того, щоб при першому входженні завжди список починався із першої ранжованої функції обнуляємо цю позицію
+                position_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG] = 0;
+                current_ekran.index_position = position_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
+              {
+                //Натисну кнопка Enter у вікні вибору налаштувань Ethernet
+                if(current_ekran.index_position == INDEX_ML_NETWORK_LAYER_ETHERNET)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення мережевих налаштувань
+                  current_ekran.current_level = EKRAN_SETTING_NETWORK_LAYER_ETHERNET;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+#endif
+              else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
+              {
+                //Натисну кнопка Enter у вікні вибору вікна настройок налаштувань дл дати і часу
+                if(current_ekran.index_position == INDEX_ML_CHDT_TIME_ZONE)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення налаштувань часової зони і правил переходу на літній час
+                  current_ekran.current_level = EKRAN_TIME_ZONE;
+                }
+                else if(
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_ON) ||
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_OFF)
+                       )
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення правил переходу між літнім часом і стандартним часом
+                  current_ekran.current_level = EKRAN_DST_RULE;
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if(current_ekran.index_position == INDEX_ML_CHDT_SYNCHRO)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення наштувань для синхронізації по мережі
+                  current_ekran.current_level = EKRAN_SYNCHRO;
+                }
+#endif
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
@@ -3101,6 +3681,12 @@ void main_manu_function(void)
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення списку визначуваних "НЕ"
                   current_ekran.current_level = EKRAN_LIST_D_NOT;
+                }
+                else if(current_ekran.index_position == INDEX_OF_TRANSFER_FUNCTIONS)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку визначуваних "НЕ"
+                  current_ekran.current_level = EKRAN_LIST_TF_FOR_RANGUVANNJA;
                 }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
@@ -3221,6 +3807,14 @@ void main_manu_function(void)
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
+              else if (current_ekran.current_level == EKRAN_LIST_TF_FOR_RANGUVANNJA)
+              {
+                //Запам'ятовуємо поперердній екран
+                //Переходимо на меню відображення вибору типу джерел для ранжування передавальної функції
+                current_ekran.current_level = EKRAN_LIST_SOURCE_TF1 + current_ekran.index_position;
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
               else if (current_ekran.current_level == EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA)
               {
                 //Запам'ятовуємо поперердній екран
@@ -3234,7 +3828,13 @@ void main_manu_function(void)
               else if (current_ekran.current_level == EKRAN_INFO)
               {
                 //Натисну кнопка Enter у вікні інформації по версії прошивки і карти пам'яті
-                if(current_ekran.index_position == INDEX_ML_INFO_FIRMWARE)
+                if(
+                   (current_ekran.index_position == INDEX_ML_INFO_FIRMWARE) 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                   ||
+                   (current_ekran.index_position == INDEX_ML_INFO_FIRMWARE_CB)
+#endif
+                  )   
                 {
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення кдати і часу створення прошивки
@@ -3552,7 +4152,7 @@ void main_manu_function(void)
               {
                 int max_row = 1;
                 if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
-                  max_row += 3;
+                  max_row += 3 + 2;
 
                 if(--current_ekran.index_position < 0) current_ekran.index_position = max_row - 1;
                 if(current_ekran.index_position < 0) 
@@ -3624,7 +4224,9 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_ENERGY)
               {
-                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_ENERGY - 1;
+                current_ekran.index_position -= (MAX_ROW_LCD >> 1);
+                if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_ENERGY - 1;
+                current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                 position_in_current_level_menu[EKRAN_ENERGY] = current_ekran.index_position;
                 //Формуємо екран відображення вікна технічного обліку келектроенергії
                 make_ekran_energy(pervynna_vtorynna);
@@ -3640,13 +4242,15 @@ void main_manu_function(void)
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_MTZ       )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_MTZ04     )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZZ        )||
+                       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ       )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_TZNP      )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_APV       )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ACHR_CHAPV)||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UROV      )|| 
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZOP       )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMIN      )||
-                       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMAX      )
+                       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMAX      )||
+                       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UP        )
                       )   
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TWO_GROUP - 1;
@@ -3699,6 +4303,11 @@ void main_manu_function(void)
                         (current_ekran.current_level >= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UMAX) &&
                         (current_ekran.current_level <= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UMAX)
                        )
+                       ||  
+                       (
+                        (current_ekran.current_level >= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP) &&
+                        (current_ekran.current_level <= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UP)
+                       )
                       )
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETPOINTS_TIMEOUTS - 1;
@@ -3709,6 +4318,11 @@ void main_manu_function(void)
                 make_ekran_chose_setpoint_and_timeout();
               }
               else if (
+                       (
+                        (current_ekran.current_level >= EKRAN_CHOOSE_TIMEOUT_GROUP1_ZDZ) &&
+                        (current_ekran.current_level <= EKRAN_CHOOSE_TIMEOUT_GROUP4_ZDZ)
+                       )
+                       ||  
                        (
                         (current_ekran.current_level >= EKRAN_CHOOSE_TIMEOUT_GROUP1_APV) &&
                         (current_ekran.current_level <= EKRAN_CHOOSE_TIMEOUT_GROUP4_APV)
@@ -3722,21 +4336,40 @@ void main_manu_function(void)
                 //Формуємо екран витримки для захистів у яких є багато груп уставок
                 make_ekran_chose_timeout();
               }
-              else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ)
+              else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
               {
-                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_CONTROL - 1;
-                position_in_current_level_menu[EKRAN_CHOOSE_SETTINGS_ZDZ] = current_ekran.index_position;
-                //Формуємо екран настройки для ЗДЗ
-                make_ekran_chose_control();
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL - 1;
+                while(
+                      ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+                      &&
+                      (current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_CONTROL)
+                     )
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL - 1;
+                }
+              
+                position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+
+                //Формуємо екран уставки-настройки
+                make_ekran_chose_setpoint_control_transformator();
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
               {
-                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_ANY_PROTECTION - 1;
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTINGS_SWITCHER - 1;
               
                 position_in_current_level_menu[EKRAN_CHOOSE_SETTINGS_SWITCHER] = current_ekran.index_position;
 
-                //Формуємо екран уставки-витримки-настройки для всіх захистів
-                make_ekran_chose_settings_any_protection();
+                //Формуємо екран уставки-витримки-настройки-ранжування вимикача
+                make_ekran_chose_settings_switcher();
+              }
+              else if (current_ekran.current_level == EKRAN_CHOOSE_RANG_SWITCH)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_RANG_SWITCH - 1;
+              
+                position_in_current_level_menu[EKRAN_CHOOSE_RANG_SWITCH] = current_ekran.index_position;
+
+                //Формуємо екран БВимк./БВвімк.
+                make_ekran_choose_CBOn_CBOff();
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_VMP)
               {
@@ -3775,21 +4408,21 @@ void main_manu_function(void)
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA - 1;
                 position_in_current_level_menu[EKRAN_LIST_INPUTS_FOR_RANGUVANNJA] = current_ekran.index_position;
                 //Формуємо екран заголовків дискретних входів для ранжування
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(0);
+                make_ekran_chose_of_list_for_ranguvannja(ID_INPUT);
               }
               else if (current_ekran.current_level == EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA - 1;
                 position_in_current_level_menu[EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA] = current_ekran.index_position;
                 //Формуємо екран заголовків дискретних виходів для ранжування
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(1);
+                make_ekran_chose_of_list_for_ranguvannja(ID_OUTPUT);
               }
               else if (current_ekran.current_level == EKRAN_LIST_LEDS_FOR_RANGUVANNJA)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_LIST_LEDS_FOR_RANGUVANNJA - 1;
                 position_in_current_level_menu[EKRAN_LIST_LEDS_FOR_RANGUVANNJA] = current_ekran.index_position;
                 //Формуємо екран заголовків світоіндикаторів для ранжування
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(2);
+                make_ekran_chose_of_list_for_ranguvannja(ID_LED);
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UVV)
               {
@@ -3820,6 +4453,96 @@ void main_manu_function(void)
                //Формуємо екран відображення списку настройок для інтерфейсу RS-485
                make_ekran_chose_setting_rs485();
               }
+              else if (current_ekran.current_level == EKRAN_PHY_LAYER_RS485)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_PHY_LAYER_RS485 - 1;
+                position_in_current_level_menu[EKRAN_PHY_LAYER_RS485] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
+               make_ekran_phy_layer_rs485();
+              }
+              else if (current_ekran.current_level == EKRAN_PROTOCOLS_RS485)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_PROTOCOLS_RS485 - 1;
+                position_in_current_level_menu[EKRAN_PROTOCOLS_RS485] = current_ekran.index_position;
+               //Формуємо екран відображення списку налаштувань протоколу RS-485
+               make_ekran_protocols_rs485();
+              }
+              else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS - 1;
+                if ((current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) == 0)
+                {
+                  while(
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_ON) ||
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_OFF)
+                       )
+                  {
+                    if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS - 1;
+                  }
+                }
+
+                position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
+                //Формуємо екран вибору налаштувань дати і часу
+                make_ekran_chose_data_time_settings();
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)              
+              else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TYPE_IEC61850_NODES - 1;
+                position_in_current_level_menu[EKRAN_LIST_TYPE_IEC61850_NODES] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків для типів логічних вузлів для IEC 61850
+                make_ekran_type_IEC61850_nodes();
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_IN_GOOSE)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = N_IN_GOOSE - 1;
+                position_in_current_level_menu[EKRAN_LIST_IN_GOOSE] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків вхідних GOOSE блоків
+                make_ekran_chose_of_list_for_ranguvannja(ID_IN_GOOSE);
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_IN_MMS)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = N_IN_MMS - 1;
+                position_in_current_level_menu[EKRAN_LIST_IN_MMS] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків вхідних MMS блоків
+                make_ekran_chose_of_list_for_ranguvannja(ID_IN_MMS);
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_OUT_LAN)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = N_OUT_LAN - 1;
+                position_in_current_level_menu[EKRAN_LIST_OUT_LAN] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків вихідний мережевий блок
+                make_ekran_chose_of_list_for_ranguvannja(ID_OUT_LAN);
+              }
+              else if (
+                       ((current_ekran.current_level >= EKRAN_IN_GOOSE1) && (current_ekran.current_level <= EKRAN_IN_GOOSE16)) ||
+                       ((current_ekran.current_level >= EKRAN_IN_MMS1  ) && (current_ekran.current_level <= EKRAN_IN_MMS4))
+                      )   
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = N_IN_GOOSE_MMS_OUT - 1;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків виходів
+                make_ekran_list_in_out_for_iec61850(0, N_IN_GOOSE_MMS_OUT);
+              }
+              else if ((current_ekran.current_level >= EKRAN_OUT_LAN1) && (current_ekran.current_level <= EKRAN_OUT_LAN4))
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = N_OUT_LAN_IN - 1;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків виходів
+                make_ekran_list_in_out_for_iec61850(1, N_OUT_LAN_IN);
+              }
+              else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CHOSE_SETTING_ETHERNET - 1;
+                position_in_current_level_menu[EKRAN_CHOSE_SETTING_ETHERNET] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок для інтерфейсу Ethernet
+               make_ekran_chose_setting_Ethernet();
+              }
+#endif
               else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_LIST_OF_REGISTRATORS - 1;
@@ -3872,7 +4595,7 @@ void main_manu_function(void)
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_FOR_LIST_DF - 1;
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
                 //Формуємо екран заголовків опреділювальних функцій
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(3);
+                make_ekran_chose_of_list_for_ranguvannja(ID_DF);
               }
               else if ((current_ekran.current_level >= EKRAN_LIST_TYPE_SOURCE_DF1) && (current_ekran.current_level <= EKRAN_LIST_TYPE_SOURCE_DF8))
               {
@@ -3886,7 +4609,7 @@ void main_manu_function(void)
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_FOR_LIST_DT - 1;
                 position_in_current_level_menu[EKRAN_LIST_DT] = current_ekran.index_position;
                 //Формуємо екран заголовків опреділювальних триґерів
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(5);
+                make_ekran_chose_of_list_for_ranguvannja(ID_DT);
               }
               else if ((current_ekran.current_level >= EKRAN_SET_RESET_DT1) && (current_ekran.current_level <= EKRAN_SET_RESET_DT4))
               {
@@ -3907,35 +4630,42 @@ void main_manu_function(void)
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_FOR_LIST_D_AND - 1;
                 position_in_current_level_menu[EKRAN_LIST_D_AND] = current_ekran.index_position;
                 //Формуємо екран заголовків визначуваних "І"
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(6);
+                make_ekran_chose_of_list_for_ranguvannja(ID_AND);
               }
               else if (current_ekran.current_level == EKRAN_LIST_D_OR)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_FOR_LIST_D_OR - 1;
                 position_in_current_level_menu[EKRAN_LIST_D_OR] = current_ekran.index_position;
                 //Формуємо екран заголовків визначуваних "АБО"
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(7);
+                make_ekran_chose_of_list_for_ranguvannja(ID_OR);
               }
               else if (current_ekran.current_level == EKRAN_LIST_D_XOR)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_FOR_LIST_D_XOR - 1;
                 position_in_current_level_menu[EKRAN_LIST_D_XOR] = current_ekran.index_position;
                 //Формуємо екран заголовків визначуваних "Викл.АБО"
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(8);
+                make_ekran_chose_of_list_for_ranguvannja(ID_XOR);
               }
               else if (current_ekran.current_level == EKRAN_LIST_D_NOT)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_FOR_LIST_D_NOT - 1;
                 position_in_current_level_menu[EKRAN_LIST_D_NOT] = current_ekran.index_position;
                 //Формуємо екран заголовків визначуваних "НЕ"
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(9);
+                make_ekran_chose_of_list_for_ranguvannja(ID_NOT);
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_TF_FOR_RANGUVANNJA)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_FOR_LIST_TF - 1;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків передавальних функцій
+                make_ekran_chose_of_list_for_ranguvannja(ID_TF);
               }
               else if (current_ekran.current_level == EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position =  MAX_ROW_LIST_BUTTONS_FOR_RANGUVANNJA - 1;
                 position_in_current_level_menu[EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA] = current_ekran.index_position;
                 //Формуємо екран заголовків функціональних кнопок для ранжування
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(4);
+                make_ekran_chose_of_list_for_ranguvannja(ID_DB);
               }
               else if(current_ekran.current_level == EKRAN_INFO)
               {
@@ -3974,26 +4704,33 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_DIAGNOSTYKA)
               {
-                if (
-                    (diagnostyka[0] == 0) &&
-                    (diagnostyka[1] == 0) &&
-                    ((diagnostyka[2] & USED_BITS_IN_LAST_INDEX) == 0)
-                   )
+                unsigned int diagnostyka_tmp[N_DIAGN];
+                for (size_t i = 0; i < N_DIAGN; i++) diagnostyka_tmp[i] = diagnostyka[i];
+              
+                unsigned int not_null = false;
+                for (size_t i = 0; i < N_DIAGN; i++) 
                 {
-                  current_ekran.index_position = 0;
+                  not_null |= (diagnostyka_tmp[i] != 0);
+                  if (not_null) break;
                 }
-                else
+              
+                if (not_null)
                 {
                   if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_DIAGNOSTYKA - 1;
-                  while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
+                  while (_CHECK_SET_BIT(diagnostyka_tmp, current_ekran.index_position) ==0)
                   {
                     current_ekran.index_position--;
                     if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_DIAGNOSTYKA - 1;
                   }
                 }
+                else
+                {
+                  current_ekran.index_position = 0;
+                }
+
                 position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
                 //Формуємо екран діагностики
-                make_ekran_diagnostyka(diagnostyka);
+                make_ekran_diagnostyka(diagnostyka_tmp);
               }
               else if(current_ekran.current_level == EKRAN_LIST_INPUTS_OUTPUTS)
               {
@@ -4076,7 +4813,7 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_CHANGES_SIGNALS_DR)
               {
-                current_ekran.index_position--;
+                current_ekran.index_position -= (MAX_ROW_LCD >> 1);
                 //Формуємо екран відображення змін сигналів - записаних у дискретному реєстраторі
                 make_ekran_changing_signals_digital_registrator();
               }
@@ -4115,7 +4852,7 @@ void main_manu_function(void)
                          || 
                          (
                           (type_view_max_values_dr != IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE) && 
-                          (current_ekran.index_position == 23)  
+                          (current_ekran.index_position == 25)  
                          )   
                         )   
                     current_ekran.index_position--;
@@ -4215,7 +4952,7 @@ void main_manu_function(void)
               {
                 int max_row = 1;
                 if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
-                  max_row += 3;
+                  max_row += 3 + 2;
 
                 if(++current_ekran.index_position >= max_row) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_MEASURMENT_VOLTAGE_PHASE] = current_ekran.index_position;
@@ -4277,7 +5014,9 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_ENERGY)
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_ENERGY) current_ekran.index_position =  0;
+                current_ekran.index_position += (MAX_ROW_LCD >> 1);
+                if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_ENERGY) current_ekran.index_position =  0;
+                current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                 position_in_current_level_menu[EKRAN_ENERGY] = current_ekran.index_position;
                 //Формуємо екран відображення вікна технічного обліку келектроенергії
                 make_ekran_energy(pervynna_vtorynna);
@@ -4292,6 +5031,7 @@ void main_manu_function(void)
               else if (
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_MTZ       )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_MTZ04     )||
+                       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ        )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZZ        )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_TZNP      )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_APV       )||
@@ -4299,7 +5039,8 @@ void main_manu_function(void)
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UROV      )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZOP       )||
                        (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMIN      )||
-                       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMAX      )
+                       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UMAX      )||
+                       (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UP        )
                       )   
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TWO_GROUP) current_ekran.index_position = 0;
@@ -4353,6 +5094,11 @@ void main_manu_function(void)
                         (current_ekran.current_level >= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UMAX) &&
                         (current_ekran.current_level <= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UMAX)
                        )
+                       ||  
+                       (
+                        (current_ekran.current_level >= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP1_UP) &&
+                        (current_ekran.current_level <= EKRAN_CHOOSE_SETPOINT_TIMEOUT_GROUP4_UP)
+                       )
                       )
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETPOINTS_TIMEOUTS) current_ekran.index_position = 0;
@@ -4363,6 +5109,11 @@ void main_manu_function(void)
                 make_ekran_chose_setpoint_and_timeout();
               }
               else if (
+                       (
+                        (current_ekran.current_level >= EKRAN_CHOOSE_TIMEOUT_GROUP1_ZDZ) &&
+                        (current_ekran.current_level <= EKRAN_CHOOSE_TIMEOUT_GROUP4_ZDZ)
+                       )
+                       ||  
                        (
                         (current_ekran.current_level >= EKRAN_CHOOSE_TIMEOUT_GROUP1_APV) &&
                         (current_ekran.current_level <= EKRAN_CHOOSE_TIMEOUT_GROUP4_APV)
@@ -4376,30 +5127,40 @@ void main_manu_function(void)
                 //Формуємо екран витримки для захистів у яких є багато груп уставок
                 make_ekran_chose_timeout();
               }
-              else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_ZDZ)
+              else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_CONTROL) current_ekran.index_position = 0;
-                position_in_current_level_menu[EKRAN_CHOOSE_SETTINGS_ZDZ] = current_ekran.index_position;
-                //Формуємо екран настройки для ЗДЗ
-                make_ekran_chose_control();
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL) current_ekran.index_position = 0;
+                while(
+                      ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+                      &&
+                      (current_ekran.index_position == INDEX_ML_WITH_SETPOINT_CONTROL_CONTROL)
+                     )
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL) current_ekran.index_position = 0;
+                }
+              
+                position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+
+                //Формуємо екран уставки-настройки
+                make_ekran_chose_setpoint_control_transformator();
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_ANY_PROTECTION) current_ekran.index_position = 0;
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_SWITCHER) current_ekran.index_position = 0;
               
                 position_in_current_level_menu[EKRAN_CHOOSE_SETTINGS_SWITCHER] = current_ekran.index_position;
 
-                //Формуємо екран уставки-витримки-настройки для всіх захистів
-                make_ekran_chose_settings_any_protection();
+                //Формуємо екран уставки-витримки-настройки-ранжування вимикача
+                make_ekran_chose_settings_switcher();
               }
-              else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_SWITCHER)
+              else if (current_ekran.current_level == EKRAN_CHOOSE_RANG_SWITCH)
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_ANY_PROTECTION) current_ekran.index_position = 0;
+                if(++current_ekran.index_position >= MAX_ROW_FOR_RANG_SWITCH) current_ekran.index_position = 0;
               
-                position_in_current_level_menu[EKRAN_CHOOSE_SETTINGS_SWITCHER] = current_ekran.index_position;
+                position_in_current_level_menu[EKRAN_CHOOSE_RANG_SWITCH] = current_ekran.index_position;
 
-                //Формуємо екран уставки-витримки-настройки для всіх захистів
-                make_ekran_chose_settings_any_protection();
+                //Формуємо екран БВимк./БВвімк.
+                make_ekran_choose_CBOn_CBOff();
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_VMP)
               {
@@ -4443,7 +5204,7 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_INPUTS_FOR_RANGUVANNJA] = current_ekran.index_position;
                 //Формуємо екран заголовків дискретних входів для ранжування
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(0);
+                make_ekran_chose_of_list_for_ranguvannja(ID_INPUT);
               }
               else if (current_ekran.current_level == EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA)
               {
@@ -4451,7 +5212,7 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA] = current_ekran.index_position;
                 //Формуємо екран заголовків дискретних виходів для ранжування
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(1);
+                make_ekran_chose_of_list_for_ranguvannja(ID_OUTPUT);
               }
               else if (current_ekran.current_level == EKRAN_LIST_LEDS_FOR_RANGUVANNJA)
               {
@@ -4459,7 +5220,7 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= MAX_ROW_LIST_LEDS_FOR_RANGUVANNJA) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_LEDS_FOR_RANGUVANNJA] = current_ekran.index_position;
                 //Формуємо екран заголовків світоіндикаторів для ранжування
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(2);
+                make_ekran_chose_of_list_for_ranguvannja(ID_LED);
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_UVV)
               {
@@ -4490,6 +5251,96 @@ void main_manu_function(void)
                //Формуємо екран відображення списку настройок для інтерфейсу RS-485
                 make_ekran_chose_setting_rs485();
               }
+              else if (current_ekran.current_level == EKRAN_PHY_LAYER_RS485)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_PHY_LAYER_RS485) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_PHY_LAYER_RS485] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
+                make_ekran_phy_layer_rs485();
+              }
+              else if (current_ekran.current_level == EKRAN_PROTOCOLS_RS485)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_PROTOCOLS_RS485) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_PROTOCOLS_RS485] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок фізичного рівня для інтерфейсу RS-485
+                make_ekran_protocols_rs485();
+              }
+              else if (current_ekran.current_level == EKRAN_CHOSE_DATA_TIME)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+                if ((current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) == 0)
+                {
+                  while(
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_ON) ||
+                        (current_ekran.index_position == INDEX_ML_CHDT_DST_OFF)
+                       )
+                  {
+                    if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS) current_ekran.index_position = 0;
+                  }
+                }
+
+                position_in_current_level_menu[EKRAN_CHOSE_DATA_TIME] = current_ekran.index_position;
+                //Формуємо екран вибору налаштувань дати і часу
+                make_ekran_chose_data_time_settings();
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LIST_TYPE_IEC61850_NODES)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TYPE_IEC61850_NODES) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_LIST_TYPE_IEC61850_NODES] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків для типів логічних вузлів для IEC 61850
+                make_ekran_type_IEC61850_nodes();
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_IN_GOOSE)
+              {
+                if(++current_ekran.index_position >= N_IN_GOOSE) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_LIST_IN_GOOSE] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків вхідних GOOSE блоків
+                make_ekran_chose_of_list_for_ranguvannja(ID_IN_GOOSE);
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_IN_MMS)
+              {
+                if(++current_ekran.index_position >= N_IN_MMS) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_LIST_IN_MMS] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків вхідних MMS блоків
+                make_ekran_chose_of_list_for_ranguvannja(ID_IN_MMS);
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_OUT_LAN)
+              {
+                if(++current_ekran.index_position >= N_OUT_LAN) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_LIST_OUT_LAN] = current_ekran.index_position;
+            
+                //Формуємо екран заголовків вихідний мережевий блок
+                make_ekran_chose_of_list_for_ranguvannja(ID_OUT_LAN);
+              }
+              else if (
+                       ((current_ekran.current_level >= EKRAN_IN_GOOSE1) && (current_ekran.current_level <= EKRAN_IN_GOOSE16)) ||
+                       ((current_ekran.current_level >= EKRAN_IN_MMS1  ) && (current_ekran.current_level <= EKRAN_IN_MMS4))
+                      )   
+              {
+                if(++current_ekran.index_position >= N_IN_GOOSE_MMS_OUT) current_ekran.index_position = 0;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків виходів
+                make_ekran_list_in_out_for_iec61850(0, N_IN_GOOSE_MMS_OUT);
+              }
+              else if ((current_ekran.current_level >= EKRAN_OUT_LAN1) && (current_ekran.current_level <= EKRAN_OUT_LAN4))
+              {
+                if(++current_ekran.index_position >= N_OUT_LAN_IN) current_ekran.index_position = 0;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків виходів
+                make_ekran_list_in_out_for_iec61850(1, N_OUT_LAN_IN);
+              }
+              else if (current_ekran.current_level == EKRAN_CHOSE_SETTING_ETHERNET)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTING_ETHERNET) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_CHOSE_SETTING_ETHERNET] = current_ekran.index_position;
+               //Формуємо екран відображення списку настройок для інтерфейсу Ethernet
+                make_ekran_chose_setting_Ethernet();
+              }
+#endif
               else if (current_ekran.current_level == EKRAN_VIEW_LIST_OF_REGISTRATORS)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_OF_REGISTRATORS) current_ekran.index_position = 0;
@@ -4543,7 +5394,7 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_DF) current_ekran.index_position = 0;
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
                 //Формуємо екран заголовків опреділювальних функцій
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(3);
+                make_ekran_chose_of_list_for_ranguvannja(ID_DF);
               }
               else if ((current_ekran.current_level >= EKRAN_LIST_TYPE_SOURCE_DF1) && (current_ekran.current_level <= EKRAN_LIST_TYPE_SOURCE_DF8))
               {
@@ -4558,7 +5409,7 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_DT) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_DT] = current_ekran.index_position;
                 //Формуємо екран заголовків опреділювальних триґерів
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(5);
+                make_ekran_chose_of_list_for_ranguvannja(ID_DT);
               }
               else if ((current_ekran.current_level >= EKRAN_SET_RESET_DT1) && (current_ekran.current_level <= EKRAN_SET_RESET_DT4))
               {
@@ -4579,28 +5430,35 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_D_AND) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_D_AND] = current_ekran.index_position;
                 //Формуємо екран заголовків визначуваних "І"
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(6);
+                make_ekran_chose_of_list_for_ranguvannja(ID_AND);
               }
               else if (current_ekran.current_level == EKRAN_LIST_D_OR)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_D_OR) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_D_OR] = current_ekran.index_position;
                 //Формуємо екран заголовків визначуваних "АБО"
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(7);
+                make_ekran_chose_of_list_for_ranguvannja(ID_OR);
               }
               else if (current_ekran.current_level == EKRAN_LIST_D_XOR)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_D_XOR) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_D_XOR] = current_ekran.index_position;
                 //Формуємо екран заголовків визначуваних "Викл.АБО"
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(8);
+                make_ekran_chose_of_list_for_ranguvannja(ID_XOR);
               }
               else if (current_ekran.current_level == EKRAN_LIST_D_NOT)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_D_NOT) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_D_NOT] = current_ekran.index_position;
                 //Формуємо екран заголовків визначуваних "НЕ"
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(9);
+                make_ekran_chose_of_list_for_ranguvannja(ID_NOT);
+              }
+              else if (current_ekran.current_level == EKRAN_LIST_TF_FOR_RANGUVANNJA)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_LIST_TF) current_ekran.index_position = 0;
+                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                //Формуємо екран заголовків передавальних функцій
+                make_ekran_chose_of_list_for_ranguvannja(ID_TF);
               }
               else if (current_ekran.current_level == EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA)
               {
@@ -4608,7 +5466,7 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= MAX_ROW_LIST_BUTTONS_FOR_RANGUVANNJA) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA] = current_ekran.index_position;
                 //Формуємо екран заголовків функціональних кнопок для ранжування
-                make_ekran_chose_of_inputs_outputs_leds_df_buttons_for_ranguvannja(4);
+                make_ekran_chose_of_list_for_ranguvannja(ID_DB);
               }
               else if(current_ekran.current_level == EKRAN_INFO)
               {
@@ -4647,26 +5505,33 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_DIAGNOSTYKA)
               {
-                if (
-                    (diagnostyka[0] == 0) &&
-                    (diagnostyka[1] == 0) &&
-                    ((diagnostyka[2] & USED_BITS_IN_LAST_INDEX) == 0)
-                   )
+                unsigned int diagnostyka_tmp[N_DIAGN];
+                for (size_t i = 0; i < N_DIAGN; i++) diagnostyka_tmp[i] = diagnostyka[i];
+              
+                unsigned int not_null = false;
+                for (size_t i = 0; i < N_DIAGN; i++) 
                 {
-                  current_ekran.index_position = 0;
+                  not_null |= (diagnostyka_tmp[i] != 0);
+                  if (not_null) break;
                 }
-                else
+              
+                if (not_null)
                 {
                   if(++current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
-                  while (_CHECK_SET_BIT(diagnostyka, current_ekran.index_position) ==0)
+                  while (_CHECK_SET_BIT(diagnostyka_tmp, current_ekran.index_position) ==0)
                   {
                     current_ekran.index_position++;
                     if(current_ekran.index_position >= ((int)MAX_ROW_FOR_DIAGNOSTYKA)) current_ekran.index_position = 0;
                   }
                 }
+                else
+                {
+                  current_ekran.index_position = 0;
+                }
+
                 position_in_current_level_menu[EKRAN_DIAGNOSTYKA] = current_ekran.index_position;
                 //Формуємо екран діагностики
-                make_ekran_diagnostyka(diagnostyka);
+                make_ekran_diagnostyka(diagnostyka_tmp);
               }
               else if(current_ekran.current_level == EKRAN_LIST_INPUTS_OUTPUTS)
               {
@@ -4743,7 +5608,7 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_CHANGES_SIGNALS_DR)
               {
-                current_ekran.index_position++;
+                current_ekran.index_position += (MAX_ROW_LCD >> 1);
                 //Формуємо екран відображення змін сигналів - записаних у дискретному реєстраторі
                 make_ekran_changing_signals_digital_registrator();
               }
@@ -4782,7 +5647,7 @@ void main_manu_function(void)
                          || 
                          (
                           (type_view_max_values_dr != IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE) && 
-                          (current_ekran.index_position == 23)  
+                          (current_ekran.index_position == 25)  
                          )   
                         )   
                     current_ekran.index_position++;
@@ -4854,6 +5719,10 @@ void main_manu_function(void)
     case EKRAN_TIMEOUT_MTZ04_GROUP3:
     case EKRAN_TIMEOUT_MTZ04_GROUP4:
     case EKRAN_CONTROL_MTZ04:
+    case EKRAN_TIMEOUT_ZDZ_GROUP1:
+    case EKRAN_TIMEOUT_ZDZ_GROUP2:
+    case EKRAN_TIMEOUT_ZDZ_GROUP3:
+    case EKRAN_TIMEOUT_ZDZ_GROUP4:
     case EKRAN_CONTROL_ZDZ:
     case EKRAN_SETPOINT_ZZ_GROUP1:
     case EKRAN_SETPOINT_ZZ_GROUP2:
@@ -4923,7 +5792,17 @@ void main_manu_function(void)
     case EKRAN_TIMEOUT_UMAX_GROUP3:
     case EKRAN_TIMEOUT_UMAX_GROUP4:
     case EKRAN_CONTROL_UMAX:
-    case EKRAN_TRANSFORMATOR_INFO:
+    case EKRAN_SETPOINT_UP_GROUP1:
+    case EKRAN_SETPOINT_UP_GROUP2:
+    case EKRAN_SETPOINT_UP_GROUP3:
+    case EKRAN_SETPOINT_UP_GROUP4:
+    case EKRAN_TIMEOUT_UP_GROUP1:
+    case EKRAN_TIMEOUT_UP_GROUP2:
+    case EKRAN_TIMEOUT_UP_GROUP3:
+    case EKRAN_TIMEOUT_UP_GROUP4:
+    case EKRAN_CONTROL_UP:
+    case EKRAN_TRANSFORMATOR_INFO_SETPOINT:
+    case EKRAN_TRANSFORMATOR_INFO_CONTROL:
     case EKRAN_SETPOINT_SWITCH:
     case EKRAN_TIMEOUT_SWITCH:
     case EKRAN_CONTROL_SWITCH:
@@ -4932,11 +5811,20 @@ void main_manu_function(void)
     case EKRAN_TYPE_INPUT_SIGNAL_UVV:
     case EKRAN_TYPE_OUTPUT_UVV:
     case EKRAN_TYPE_LED_UVV:
-    case EKRAN_ADDRESS:
+    case EKRAN_TYPE_BUTTON_UVV:
+    case EKRAN_ADDRESS_RS485:
     case EKRAN_VIEW_SPEED_RS485:
     case EKRAN_VIEW_PARE_RS485:
     case EKRAN_VIEW_STOP_BITS_RS485:
     case EKRAN_VIEW_TIMEOUT_RS485:
+      
+#if (MODYFIKACIA_VERSII_PZ >= 10)      
+    case EKRAN_SETTING_NETWORK_LAYER_ETHERNET:
+    case EKRAN_SYNCHRO:
+#endif
+      
+    case EKRAN_TIME_ZONE:
+    case EKRAN_DST_RULE:
     case EKRAN_GENERAL_PICKUPS_EL:
     case EKRAN_LIST_TYPE_DF:
     case EKRAN_TIMEOUT_DF1:
@@ -4954,6 +5842,22 @@ void main_manu_function(void)
     case EKRAN_SETPOINT_VMP_FORWARD:
     case EKRAN_SETPOINT_VMP_BACKWARD:
     case EKRAN_CONTROL_VMP:
+    case (EKRAN_LIST_SOURCE_TF1 + 0):
+    case (EKRAN_LIST_SOURCE_TF1 + 1):
+    case (EKRAN_LIST_SOURCE_TF1 + 2):
+    case (EKRAN_LIST_SOURCE_TF1 + 3):
+    case (EKRAN_LIST_SOURCE_TF1 + 4):
+    case (EKRAN_LIST_SOURCE_TF1 + 5):
+    case (EKRAN_LIST_SOURCE_TF1 + 6):
+    case (EKRAN_LIST_SOURCE_TF1 + 7):
+    case (EKRAN_LIST_SOURCE_TF1 + 8):
+    case (EKRAN_LIST_SOURCE_TF1 + 9):
+    case (EKRAN_LIST_SOURCE_TF1 + 10):
+    case (EKRAN_LIST_SOURCE_TF1 + 11):
+    case (EKRAN_LIST_SOURCE_TF1 + 12):
+    case (EKRAN_LIST_SOURCE_TF1 + 13):
+    case (EKRAN_LIST_SOURCE_TF1 + 14):
+    case (EKRAN_LIST_SOURCE_TF1 + 15):
       {
         //Очищаємо всі біти краім упралінських
         unsigned int maska_keyboard_bits = (1<<BIT_KEY_ENTER)| (1<<BIT_KEY_ESC)|(1<<BIT_REWRITE);
@@ -5035,18 +5939,41 @@ void main_manu_function(void)
               //Формуємо екран управлінської інформації для МТЗ 0.4кВ
               make_ekran_control_mtz04();
             }
+            else if(
+                    (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+                    (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+                   )   
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_TIMEOUT_ZDZ) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+
+              //Формуємо екран витримок ЗДЗ
+              int group = (current_ekran.current_level - EKRAN_TIMEOUT_ZDZ_GROUP1);
+              make_ekran_timeout_zdz(group);
+            }
             else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_ZDZ) current_ekran.index_position = 0;
               while(
                     (
-                     (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ1) ||
-                     (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ2) ||
-                     (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ3) ||
-                     (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ4)
-                    )   
-                    &&
-                    ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                     (
+                      (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ1_BIT) ||
+                      (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ2_BIT) ||
+                      (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ3_BIT) ||
+                      (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ4_BIT)
+                     )   
+                     &&
+                     ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                    )
+                    ||  
+                    (
+                     (
+                      (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN1_BIT) ||
+                      (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN2_BIT)
+                     )   
+                     &&
+                     ((current_settings.configuration & (1<<UMIN_BIT_CONFIGURATION)) == 0)
+                    )
                    )
               {
                 current_ekran.index_position++;
@@ -5159,13 +6086,21 @@ void main_manu_function(void)
               if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_APV) current_ekran.index_position = 0;
               while(
                     (
-                     (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
-                     (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
-                     (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
-                     (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
-                    )   
-                    &&
-                    ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                     (
+                      (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
+                      (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
+                      (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
+                      (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
+                     )   
+                     &&
+                     ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                    )
+                    ||  
+                    (
+                     (current_ekran.index_position == INDEX_ML_CTRAPV_BLK_CTRL_PRVV2)
+                     &&
+                     ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
+                    )
                    )
               {
                 current_ekran.index_position++;
@@ -5325,6 +6260,15 @@ void main_manu_function(void)
                      &&
                      ((current_settings.configuration & (1<<ACHR_CHAPV_BIT_CONFIGURATION)) == 0)
                     )
+                    ||
+                    (
+                     (
+                      (current_ekran.index_position >= INDEX_ML_CTRUROV_STARTED_FROM_UP1) &&
+                      (current_ekran.index_position <= INDEX_ML_CTRUROV_STARTED_FROM_UP1 + NUMBER_UP - 1)
+                     )   
+                     &&
+                     ((current_settings.configuration & (1<<UP_BIT_CONFIGURATION)) == 0)
+                    )
                    )
               {
                 current_ekran.index_position++;
@@ -5429,28 +6373,81 @@ void main_manu_function(void)
               //Формуємо екран управлінської інформації для Umax
               make_ekran_control_Umax();
             }
-            else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
+            else if(
+                    (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                    (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                   )   
             {
-              if(current_ekran.index_position >= MAX_ROW_FOR_SETPOINT_SWITCH) current_ekran.index_position = 0;
-              position_in_current_level_menu[EKRAN_SETPOINT_SWITCH] = current_ekran.index_position;
-              //Формуємо екран уставок виключателя
-              make_ekran_setpoint_switch();
+              if(current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP)) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+
+              //Формуємо екран уставок УЗ
+              int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+              make_ekran_setpoint_UP(group);
             }
-            else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+            else if(
+                    (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                    (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                   )   
             {
-              if(current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO) current_ekran.index_position = 0;
+              if(current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_TIMEOUT_UP)) current_ekran.index_position = 0;
+              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+
+              //Формуємо екран витримок УЗ
+              int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+              make_ekran_timeout_UP(group);
+            }
+            else if(current_ekran.current_level == EKRAN_CONTROL_UP)
+            {
+              if(current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_CONTROL_UP)) current_ekran.index_position = 0;
+              __SETTINGS *point = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+              uint32_t ctrl_UP_input = point->ctrl_UP_input[current_ekran.index_position / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)];
+              while (
+                     ((current_ekran.index_position % (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)) == CTR_UP_OR_AND_BIT) &&
+                     (ctrl_UP_input != UP_CTRL_Ia_Ib_Ic) &&
+                     (ctrl_UP_input != UP_CTRL_Ua_Ub_Uc)
+                    )
+              {
+                current_ekran.index_position++;
+                if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_UP) current_ekran.index_position = 0;
+                
+                ctrl_UP_input = point->ctrl_UP_input[current_ekran.index_position / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)];
+              }
+              
+              position_in_current_level_menu[EKRAN_CONTROL_UP] = current_ekran.index_position;
+              
+              //Формуємо екран управлінської інформації для УЗ
+              make_ekran_control_UP();
+            }
+            else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) current_ekran.index_position = 0;
               while(
                     ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
                     &&
                     (current_ekran.index_position == INDEX_ML_TT04)
                    )
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO) current_ekran.index_position = 0;
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) current_ekran.index_position = 0;
               }
 
-              position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+              position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_SETPOINT] = current_ekran.index_position;
               //Формуємо екран інфтрмації по трансформаторах
               make_ekran_transformator();
+            }
+            else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_CONTROL] = current_ekran.index_position;
+              //Формуємо екран відображення налаштувань для меню "Трансформатор"
+              make_ekran_transformator_control();
+            }
+            else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_SETPOINT_SWITCH) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_SETPOINT_SWITCH] = current_ekran.index_position;
+              //Формуємо екран уставок виключателя
+              make_ekran_setpoint_switch();
             }
             else if(current_ekran.current_level == EKRAN_TIMEOUT_SWITCH)
             {
@@ -5518,10 +6515,17 @@ void main_manu_function(void)
               //Формуємо екран типу світилоіндикаторів
               make_ekran_type_led_uvv();
             }
-            else if(current_ekran.current_level == EKRAN_ADDRESS)
+            else if(current_ekran.current_level == EKRAN_TYPE_BUTTON_UVV)
+            {
+              if(current_ekran.index_position >= NUMBER_DEFINED_BUTTONS) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_TYPE_BUTTON_UVV] = current_ekran.index_position;
+              //Формуємо екран типу ФК
+              make_ekran_type_button_uvv();
+            }
+            else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_ADDRESS) current_ekran.index_position = 0;
-              position_in_current_level_menu[EKRAN_ADDRESS] = current_ekran.index_position;
+              position_in_current_level_menu[EKRAN_ADDRESS_RS485] = current_ekran.index_position;
               //Формуємо екран інфтрмації по комунікаційній адресі
               make_ekran_address();
             }
@@ -5553,6 +6557,39 @@ void main_manu_function(void)
               //Формуємо екран інформації по time-out наступного символу
               make_ekran_timeout_interface();
             }
+#if (MODYFIKACIA_VERSII_PZ >= 10)            
+            else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_SETTING_NETWORK_LAYER_ETHERNET] = current_ekran.index_position;
+              //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
+              make_ekran_settings_network_layer_Ethernet();
+            }
+            else if(current_ekran.current_level == EKRAN_SYNCHRO)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_SYNCHRO) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_SYNCHRO] = current_ekran.index_position;
+              //Формуємо екран інфтрмації по налаштуваннях сервера для синхронізації
+              make_ekran_settings_synchro();
+            }
+#endif
+            else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_TIMEZONE_SETTINGS) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_TIME_ZONE] = current_ekran.index_position;
+              //Формуємо екран
+              make_ekran_timezone_dst();
+            }
+            else if(current_ekran.current_level == EKRAN_DST_RULE)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_DST_RULE) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_DST_RULE] = current_ekran.index_position;
+              
+              __SETTINGS *p_settings = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+              uint32_t rule = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? p_settings->dst_on_rule : p_settings->dst_off_rule;
+              //Формуємо екран
+              make_ekran_dst_rule(rule);
+            }
             else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_GENERAL_PICKUPS_EL) current_ekran.index_position = 0;
@@ -5573,6 +6610,12 @@ void main_manu_function(void)
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
               //Формуємо екран таймерів опреділюваних функцій
               make_ekran_timeout_df(current_ekran.current_level - EKRAN_TIMEOUT_DF1);
+            }
+            else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= (EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1)))
+            {
+              if(current_ekran.index_position >= MAX_ROW_LIST_SOURCE_TF) current_ekran.index_position = 0;
+              //Формуємо екран
+              make_ekran_list_source_tf();
             }
             else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
             {
@@ -5916,9 +6959,32 @@ void main_manu_function(void)
                   edition_settings.type_mtz04_2 = current_settings.type_mtz04_2;
                   edition_settings.control_mtz04 = current_settings.control_mtz04;
                 }
+                else if(
+                        (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+                       )   
+                {
+                  int group = (current_ekran.current_level - EKRAN_TIMEOUT_ZDZ_GROUP1);
+
+                  if (current_ekran.index_position == INDEX_ML_TMOZDZ)
+                  {
+                    edition_settings.timeout_zdz[group] = current_settings.timeout_zdz[group];
+                    current_ekran.position_cursor_x = COL_TMO_ZDZ_BEGIN;
+                  }
+                }
                 else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
                 {
                   edition_settings.control_zdz = current_settings.control_zdz;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                  edition_settings.zdz_ovd_porig = current_settings.zdz_ovd_porig;
+#endif
+                  edition_settings.ctrl_zdz_type = current_settings.ctrl_zdz_type;
                 }
                 else if(
                         (current_ekran.current_level >= EKRAN_SETPOINT_ZZ_GROUP1) &&
@@ -6336,6 +7402,11 @@ void main_manu_function(void)
                     edition_settings.setpoint_Umax2[group] = current_settings.setpoint_Umax2[group];
                     current_ekran.position_cursor_x = COL_SETPOINT_UMAX2_BEGIN;
                   }
+                  else if (current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+                  {
+                    edition_settings.setpoint_kp_Umax[group] = current_settings.setpoint_kp_Umax[group];
+                    current_ekran.position_cursor_x = COL_SETPOINT_KP_UMAX_BEGIN;
+                  }
                 }
                 else if(
                         (current_ekran.current_level >= EKRAN_TIMEOUT_UMAX_GROUP1) &&
@@ -6359,7 +7430,94 @@ void main_manu_function(void)
                 {
                   edition_settings.control_Umax = current_settings.control_Umax;
                 }
-                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+                else if(
+                        (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                       )   
+                {
+                  int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+                  
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_SETPOINT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_SETPOINT_UP;
+                  if (_n_index == INDEX_ML_STP_UP)
+                  {
+                    edition_settings.setpoint_UP[_n_UP][0][group] = current_settings.setpoint_UP[_n_UP][0][group];
+                    switch (current_settings.ctrl_UP_input[_n_UP])
+                    {
+                    case UP_CTRL_Ia_Ib_Ic:
+                    case UP_CTRL_Ia:
+                    case UP_CTRL_Ib:
+                    case UP_CTRL_Ic:
+                    case UP_CTRL_I1:
+                    case UP_CTRL_I2:
+                    case UP_CTRL_I04:
+                    case UP_CTRL_3I0_r:
+                      {
+                        current_ekran.position_cursor_x = COL_SETPOINT_UP_I_BEGIN;
+                        break;
+                      }
+                    case UP_CTRL_3I0:
+                    case UP_CTRL_3I0_others:
+                      {
+                        current_ekran.position_cursor_x = COL_SETPOINT_UP_3I0_BEGIN;
+                        break;
+                      }
+                    case UP_CTRL_Ua_Ub_Uc:
+                    case UP_CTRL_Ua:
+                    case UP_CTRL_Ub:
+                    case UP_CTRL_Uc:
+                    case UP_CTRL_U1:
+                    case UP_CTRL_U2:
+                    case UP_CTRL_3U0:
+                      {
+                        current_ekran.position_cursor_x = COL_SETPOINT_UP_U_BEGIN;
+                        break;
+                      }
+                    case UP_CTRL_P:
+                    case UP_CTRL_Q:
+                      {
+                        current_ekran.position_cursor_x = COL_SETPOINT_UP_PQ_BEGIN - 1;
+                        break;
+                      }
+                    case UP_CTRL_S:
+                      {
+                        current_ekran.position_cursor_x = COL_SETPOINT_UP_S_BEGIN;
+                        break;
+                      }
+                    default:
+                      {
+                        //Теоретично цього ніколи не мало б бути
+                        total_error_sw_fixed(93);
+                      }
+                    }
+                  }
+                  else if (_n_index == INDEX_ML_STP_UP_KP)
+                  {
+                    edition_settings.setpoint_UP_KP[_n_UP][0][group] = current_settings.setpoint_UP_KP[_n_UP][0][group];
+                    current_ekran.position_cursor_x = COL_SETPOINT_UP_KP_BEGIN;
+                  }
+                }
+                else if(
+                        (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                       )
+                {
+                  int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+                  
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_TIMEOUT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_TIMEOUT_UP;
+                  if (_n_index == INDEX_ML_TMOUP)
+                  {
+                    edition_settings.timeout_UP[_n_UP][0][group] = current_settings.timeout_UP[_n_UP][0][group];
+                    current_ekran.position_cursor_x = COL_TMO_UP_BEGIN;
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_CONTROL_UP)
+                {
+                  edition_settings.control_UP = current_settings.control_UP;
+                  for (size_t i = 0; i < NUMBER_UP; i++) edition_settings.ctrl_UP_input[i] = current_settings.ctrl_UP_input[i];
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
                 {
                   if (current_ekran.index_position == INDEX_ML_T0)
                   {
@@ -6381,6 +7539,10 @@ void main_manu_function(void)
                     edition_settings.TVoltage = current_settings.TVoltage;
                     current_ekran.position_cursor_x = COL_TN_BEGIN;
                   }
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+                {
+                  edition_settings.control_transformator = current_settings.control_transformator;
                 }
                 else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
                 {
@@ -6502,7 +7664,11 @@ void main_manu_function(void)
                 {
                   edition_settings.type_of_led = current_settings.type_of_led;
                 }
-                else if(current_ekran.current_level == EKRAN_ADDRESS)
+                else if(current_ekran.current_level == EKRAN_TYPE_BUTTON_UVV)
+                {
+                  edition_settings.buttons_mode = current_settings.buttons_mode;
+                }
+                else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
                 {
                   edition_settings.address = current_settings.address;
                   current_ekran.position_cursor_x = COL_ADDRESS_BEGIN;
@@ -6523,6 +7689,69 @@ void main_manu_function(void)
                 {
                   edition_settings.time_out_1_RS485 = current_settings.time_out_1_RS485;
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_BEGIN;
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)                
+                else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+                {
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target, *point_source;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                      point_source = current_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                      point_source = current_settings.gateway;
+                    }
+                    for (size_t i = 0; i < 4; i++) point_target[i] = point_source[i];
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_BEGIN;
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    edition_settings.mask = current_settings.mask;
+                    current_ekran.position_cursor_x = COL_MASK_BEGIN;
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_SYNCHRO)
+                {
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    for (size_t i = 0; i < 4; i++) edition_settings.IP_time_server[i] = current_settings.IP_time_server[i];
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_BEGIN;
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    edition_settings.port_time_server = current_settings.port_time_server;
+                    current_ekran.position_cursor_x = COL_PORT_BEGIN;
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    edition_settings.period_sync = current_settings.period_sync;
+                    current_ekran.position_cursor_x = COL_PERIOD_BEGIN;
+                  }
+                }
+#endif
+                else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+                {
+                  edition_settings.time_zone = current_settings.time_zone;
+                  edition_settings.dst = current_settings.dst;
+                }
+                else if(current_ekran.current_level == EKRAN_DST_RULE)
+                {
+                  if (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON)
+                  {
+                    edition_settings.dst_on_rule = current_settings.dst_on_rule;
+                  }
+                  else
+                  {
+                    edition_settings.dst_off_rule = current_settings.dst_off_rule;
+                  }
                 }
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
@@ -6580,6 +7809,10 @@ void main_manu_function(void)
                       current_settings.timeout_work_df[current_ekran.current_level - EKRAN_TIMEOUT_DF1];
                     current_ekran.position_cursor_x = COL_TMO_DF_PAUSE_BEGIN;
                   }
+                }
+                else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1))
+                {
+                  edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] = current_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1];
                 }
                 else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
@@ -6883,9 +8116,35 @@ void main_manu_function(void)
                      )   
                     found_changes = 1;
                 }
+                else if(
+                        (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+                       )   
+                {
+                  int group = (current_ekran.current_level - EKRAN_TIMEOUT_ZDZ_GROUP1);
+                 
+                  if (current_ekran.index_position == INDEX_ML_TMOZDZ)
+                  {
+                    if (edition_settings.timeout_zdz[group] != current_settings.timeout_zdz[group]) found_changes = 1;
+                  }
+                }
                 else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
                 {
-                  if (edition_settings.control_zdz != current_settings.control_zdz) found_changes = 1;
+                  if (
+                      (edition_settings.control_zdz != current_settings.control_zdz) ||
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                      (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
+#endif
+                      (edition_settings.ctrl_zdz_type != current_settings.ctrl_zdz_type)
+                     )
+                    found_changes = 1;
+                       
                 }
                 else if(
                         (current_ekran.current_level >= EKRAN_SETPOINT_ZZ_GROUP1) &&
@@ -7245,6 +8504,10 @@ void main_manu_function(void)
                   {
                     if (edition_settings.setpoint_Umax2[group] != current_settings.setpoint_Umax2[group]) found_changes = 1;
                   }
+                  else if (current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+                  {
+                    if (edition_settings.setpoint_kp_Umax[group] != current_settings.setpoint_kp_Umax[group]) found_changes = 1;
+                  }
                 }
                 else if(
                         (current_ekran.current_level >= EKRAN_TIMEOUT_UMAX_GROUP1) &&
@@ -7266,7 +8529,51 @@ void main_manu_function(void)
                 {
                   if (edition_settings.control_Umax != current_settings.control_Umax) found_changes = 1;
                 }
-                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+                else if(
+                        (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                       )   
+                {
+                  int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+                  
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_SETPOINT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_SETPOINT_UP;
+                  if (_n_index == INDEX_ML_STP_UP)
+                  {
+                    if (edition_settings.setpoint_UP[_n_UP][0][group] != current_settings.setpoint_UP[_n_UP][0][group]) found_changes = 1;
+                  }
+                  else if (_n_index == INDEX_ML_STP_UP_KP)
+                  {
+                    if (edition_settings.setpoint_UP_KP[_n_UP][0][group] != current_settings.setpoint_UP_KP[_n_UP][0][group]) found_changes = 1;
+                  }
+                }
+                else if(
+                        (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                       )
+                {
+                  int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+                  
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_TIMEOUT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_TIMEOUT_UP;
+                  if (_n_index == INDEX_ML_TMOUP)
+                  {
+                    if (edition_settings.timeout_UP[_n_UP][0][group] != current_settings.timeout_UP[_n_UP][0][group]) found_changes = 1;
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_CONTROL_UP)
+                {
+                  if (edition_settings.control_UP != current_settings.control_UP) found_changes = 1;
+                  else
+                  {
+                    for (size_t i = 0; ((i < NUMBER_UP) && (found_changes == 0)); i++)
+                    {
+                      if (edition_settings.ctrl_UP_input[i] != current_settings.ctrl_UP_input[i]) found_changes = 1;
+                    }
+                  }
+                       
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
                 {
                   if (current_ekran.index_position == INDEX_ML_T0)
                   {
@@ -7284,6 +8591,10 @@ void main_manu_function(void)
                   {
                     if (edition_settings.TVoltage != current_settings.TVoltage) found_changes = 1;
                   }
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+                {
+                  if (edition_settings.control_transformator != current_settings.control_transformator) found_changes = 1;
                 }
                 else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
                 {
@@ -7392,7 +8703,11 @@ void main_manu_function(void)
                 {
                   if (edition_settings.type_of_led != current_settings.type_of_led) found_changes = 1;
                 }
-                else if(current_ekran.current_level == EKRAN_ADDRESS)
+                else if(current_ekran.current_level == EKRAN_TYPE_BUTTON_UVV)
+                {
+                  if (edition_settings.buttons_mode != current_settings.buttons_mode) found_changes = 1;
+                }
+                else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
                 {
                   unsigned int edit_value = edition_settings.address;
                   if (edit_value != current_settings.address) found_changes = 1;
@@ -7412,6 +8727,80 @@ void main_manu_function(void)
                 else if(current_ekran.current_level == EKRAN_VIEW_TIMEOUT_RS485)
                 {
                   if (edition_settings.time_out_1_RS485 != current_settings.time_out_1_RS485) found_changes = 1;
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+                {
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target, *point_source;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                      point_source = current_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                      point_source = current_settings.gateway;
+                    }
+                    for (size_t i = 0; i < 4; i++) 
+                    {
+                      if (point_target[i] != point_source[i])
+                      {
+                        found_changes = 1;
+                        break;
+                      }
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    if (edition_settings.mask != current_settings.mask) found_changes = 1;
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_SYNCHRO)
+                {
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    for (size_t i = 0; i < 4; i++) 
+                    {
+                      if (edition_settings.IP_time_server[i] != current_settings.IP_time_server[i])
+                      {
+                        found_changes = 1;
+                        break;
+                      }
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    if (edition_settings.port_time_server != current_settings.port_time_server) found_changes = 1;
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    if (edition_settings.period_sync != current_settings.period_sync) found_changes = 1;
+                  }
+                }
+#endif
+                else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+                {
+                  if (
+                      (edition_settings.time_zone != current_settings.time_zone) ||
+                      (edition_settings.dst != current_settings.dst)
+                     )found_changes = 1;
+                }
+                else if(current_ekran.current_level == EKRAN_DST_RULE)
+                {
+                  if (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON)
+                  {
+                    if (edition_settings.dst_on_rule != current_settings.dst_on_rule)  found_changes = 1;
+                  }
+                  else
+                  {
+                    if (edition_settings.dst_off_rule != current_settings.dst_off_rule)  found_changes = 1;
+                  }
                 }
                 else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
                 {
@@ -7462,6 +8851,10 @@ void main_manu_function(void)
                         current_settings.timeout_work_df[current_ekran.current_level - EKRAN_TIMEOUT_DF1])
                       found_changes = 1;
                   }
+                }
+                else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= (EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1)))
+                {
+                  if (edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] != current_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1]) found_changes = 1;
                 }
                 else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
@@ -8475,16 +9868,75 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
+                else if(
+                        (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+                       )   
+                {
+                  int group = (current_ekran.current_level - EKRAN_TIMEOUT_ZDZ_GROUP1);
+                  
+                  if (current_ekran.index_position == INDEX_ML_TMOZDZ)
+                  {
+                    if (check_data_setpoint(edition_settings.timeout_zdz[group], TIMEOUT_ZDZ_MIN, TIMEOUT_ZDZ_MAX) == 1)
+                    {
+                      if (edition_settings.timeout_zdz[group] != current_settings.timeout_zdz[group])
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                        current_settings.timeout_zdz[group] = edition_settings.timeout_zdz[group];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                }
                 else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
                 {
-                  if ((edition_settings.control_zdz & ((unsigned int)(~CTR_ZDZ_MASKA))) == 0)
+                  if (
+                      ((edition_settings.control_zdz & ((unsigned int)(~CTR_ZDZ_MASKA))) == 0) &&
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                      (edition_settings.zdz_ovd_porig < ZDZ_CTRL_PORIG_N) &&
+#endif
+                      (edition_settings.ctrl_zdz_type < _ZDZ_CTRL_NUMBER)
+                     )   
                   {
-                    if (edition_settings.control_zdz != current_settings.control_zdz)
+                    if (
+                        (edition_settings.control_zdz != current_settings.control_zdz) ||
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                        (edition_settings.zdz_ovd_porig != current_settings.zdz_ovd_porig) ||
+#endif
+                        (edition_settings.ctrl_zdz_type != current_settings.ctrl_zdz_type)
+                       )   
                     {
                       //Помічаємо, що поле структури зараз буде змінене
                       changed_settings = CHANGED_ETAP_EXECUTION;
                         
                       current_settings.control_zdz = edition_settings.control_zdz;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                      current_settings.zdz_ovd_porig = edition_settings.zdz_ovd_porig;
+#endif
+                      current_settings.ctrl_zdz_type = edition_settings.ctrl_zdz_type;
                       //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                       fix_change_settings(0, 1);
                     }
@@ -9697,6 +11149,23 @@ void main_manu_function(void)
                       current_ekran.edition = 0;
                     }
                   }
+                  else if (current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+                  {
+                    if (check_data_setpoint(edition_settings.setpoint_kp_Umax[group], SETPOINT_KP_UMAX_MIN, SETPOINT_KP_UMAX_MAX) == 1)
+                    {
+                      if (edition_settings.setpoint_kp_Umax[group] != current_settings.setpoint_kp_Umax[group])
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                        current_settings.setpoint_kp_Umax[group] = edition_settings.setpoint_kp_Umax[group];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
                 }
                 else if(
                         (current_ekran.current_level >= EKRAN_TIMEOUT_UMAX_GROUP1)&&
@@ -9757,7 +11226,197 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
-                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+                else if(
+                        (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                       )   
+                {
+                  int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+                  
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_SETPOINT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_SETPOINT_UP;
+                  if (_n_index == INDEX_ML_STP_UP)
+                  {
+                    uint32_t min, max, PQ = false;
+                    switch (current_settings.ctrl_UP_input[_n_UP])
+                    {
+                    case UP_CTRL_Ia_Ib_Ic:
+                    case UP_CTRL_Ia:
+                    case UP_CTRL_Ib:
+                    case UP_CTRL_Ic:
+                    case UP_CTRL_I1:
+                    case UP_CTRL_I2:
+                    case UP_CTRL_I04:
+                    case UP_CTRL_3I0_r:
+                      {
+                        min = SETPOINT_UP_I_MIN;
+                        max = SETPOINT_UP_I_MAX;
+                        break;
+                      }
+                    case UP_CTRL_3I0:
+                    case UP_CTRL_3I0_others:
+                      {
+                        min = SETPOINT_UP_3I0_MIN;
+                        max = SETPOINT_UP_3I0_MAX;
+                        break;
+                      }
+                    case UP_CTRL_Ua_Ub_Uc:
+                    case UP_CTRL_Ua:
+                    case UP_CTRL_Ub:
+                    case UP_CTRL_Uc:
+                    case UP_CTRL_U1:
+                    case UP_CTRL_U2:
+                    case UP_CTRL_3U0:
+                      {
+                        min = SETPOINT_UP_U_MIN;
+                        max = SETPOINT_UP_U_MAX;
+                        break;
+                      }
+                    case UP_CTRL_P:
+                    case UP_CTRL_Q:
+                      {
+                        PQ = true;
+                        min = SETPOINT_UP_P_MIN;
+                        max = SETPOINT_UP_P_MAX;
+                        break;
+                      }
+                    case UP_CTRL_S:
+                      {
+                        min = SETPOINT_UP_P_MIN;
+                        max = SETPOINT_UP_P_MAX;
+                        break;
+                      }
+                    default:
+                      {
+                        //Теоретично цього ніколи не мало б бути
+                        total_error_sw_fixed(94);
+                      }
+                    }
+                    if (
+                        (
+                         (PQ == false) &&
+                         (check_data_setpoint(edition_settings.setpoint_UP[_n_UP][0][group], min, max) == 1)
+                        )   
+                        ||  
+                        (
+                         (PQ == true) &&
+                         (check_data_setpoint(abs(edition_settings.setpoint_UP[_n_UP][0][group]), min, max) == 1)
+                        )   
+                       )   
+                    {
+                      if (edition_settings.setpoint_UP[_n_UP][0][group] != current_settings.setpoint_UP[_n_UP][0][group])
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                        current_settings.setpoint_UP[_n_UP][0][group] = edition_settings.setpoint_UP[_n_UP][0][group];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                  else if (_n_index == INDEX_ML_STP_UP_KP)
+                  {
+                    uint32_t maska = MASKA_FOR_BIT(_n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));
+                    uint32_t min, max;
+                    if ((current_settings.control_UP & maska) != 0)
+                    {
+                      min = SETPOINT_UP_KP_LESS_MIN;
+                      max = SETPOINT_UP_KP_LESS_MAX;
+                    }
+                    else
+                    {
+                      min = SETPOINT_UP_KP_MORE_MIN;
+                      max = SETPOINT_UP_KP_MORE_MAX;
+                    }
+                    
+                    if (check_data_setpoint(edition_settings.setpoint_UP_KP[_n_UP][0][group], min, max) == 1)
+                    {
+                      if (edition_settings.setpoint_UP_KP[_n_UP][0][group] != current_settings.setpoint_UP_KP[_n_UP][0][group])
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                        current_settings.setpoint_UP_KP[_n_UP][0][group] = edition_settings.setpoint_UP_KP[_n_UP][0][group];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                }
+                else if(
+                        (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                        (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                       )
+                {
+                  int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+                  
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_TIMEOUT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_TIMEOUT_UP;
+                  if (_n_index == INDEX_ML_TMOUP)
+                  {
+                    if (check_data_setpoint(edition_settings.timeout_UP[_n_UP][0][group], TIMEOUT_UP_MIN, TIMEOUT_UP_MAX) == 1)
+                    {
+                      if (edition_settings.timeout_UP[_n_UP][0][group] != current_settings.timeout_UP[_n_UP][0][group])
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                        current_settings.timeout_UP[_n_UP][0][group] = edition_settings.timeout_UP[_n_UP][0][group];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_CONTROL_UP)
+                {
+                  if (
+                      ((edition_settings.control_UP & ((unsigned int)(~CTR_UP_MASKA))) == 0) &&
+                      (edition_settings.ctrl_UP_input[0] < _UP_CTRL_NUMBER) &&
+                      (edition_settings.ctrl_UP_input[1] < _UP_CTRL_NUMBER) &&
+                      (edition_settings.ctrl_UP_input[2] < _UP_CTRL_NUMBER) &&
+                      (edition_settings.ctrl_UP_input[3] < _UP_CTRL_NUMBER) &&
+                      (edition_settings.ctrl_UP_input[4] < _UP_CTRL_NUMBER) &&
+                      (edition_settings.ctrl_UP_input[5] < _UP_CTRL_NUMBER) &&
+                      (edition_settings.ctrl_UP_input[6] < _UP_CTRL_NUMBER) &&
+                      (edition_settings.ctrl_UP_input[7] < _UP_CTRL_NUMBER)
+                     )   
+                  {
+                    if (
+                        (edition_settings.control_UP != current_settings.control_UP) ||
+                        (edition_settings.ctrl_UP_input[0] != current_settings.ctrl_UP_input[0]) ||
+                        (edition_settings.ctrl_UP_input[1] != current_settings.ctrl_UP_input[1]) ||
+                        (edition_settings.ctrl_UP_input[2] != current_settings.ctrl_UP_input[2]) ||
+                        (edition_settings.ctrl_UP_input[3] != current_settings.ctrl_UP_input[3]) ||
+                        (edition_settings.ctrl_UP_input[4] != current_settings.ctrl_UP_input[4]) ||
+                        (edition_settings.ctrl_UP_input[5] != current_settings.ctrl_UP_input[5]) ||
+                        (edition_settings.ctrl_UP_input[6] != current_settings.ctrl_UP_input[6]) ||
+                        (edition_settings.ctrl_UP_input[7] != current_settings.ctrl_UP_input[7])
+                       )   
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+                      
+                      for (size_t i = 0; i < NUMBER_UP; i++)
+                      {
+                        action_after_changing_input_UP(&current_settings, i, edition_settings.ctrl_UP_input[i]);
+                      }
+                      action_after_changing_ctrl_UP(&current_settings,  edition_settings.control_UP);
+                      //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
                 {
                   if (current_ekran.index_position == INDEX_ML_T0)
                   {
@@ -9826,6 +11485,24 @@ void main_manu_function(void)
                       //Виходимо з режиму редагування
                       current_ekran.edition = 0;
                     }
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+                {
+                  if ((edition_settings.control_transformator  & ((unsigned int)(~CTR_TRANSFORMATOR_MASKA))) == 0)
+                  {
+                    if (edition_settings.control_transformator != current_settings.control_transformator)
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                      current_settings.control_transformator = edition_settings.control_transformator;
+                      
+                      //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
                   }
                 }
                 else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
@@ -10234,7 +11911,26 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
-                else if(current_ekran.current_level == EKRAN_ADDRESS)
+                else if(current_ekran.current_level == EKRAN_TYPE_BUTTON_UVV)
+                {
+                  if ((edition_settings.buttons_mode & ((unsigned int)(~((1 << NUMBER_DEFINED_BUTTONS) - 1)))) == 0)
+                  {
+                    if (edition_settings.buttons_mode != current_settings.buttons_mode)
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+
+                      //Зміна режиму відбудеться у цій функції рахом з можливими змінами у ранжуванні ФК
+                      action_during_changing_button_mode(&current_settings, &edition_settings);
+
+                      //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
                 {
                   if (check_data_setpoint(edition_settings.address, KOEF_ADDRESS_MIN, KOEF_ADDRESS_MAX) == 1)
                   {
@@ -10327,6 +12023,220 @@ void main_manu_function(void)
                       current_settings.time_out_1_RS485 = edition_settings.time_out_1_RS485;
                       //Підраховуємо нову величину затримки у бітах, яка допускається між байтами у RS-485 згідно з визначеними настройками
                       calculate_namber_bit_waiting_for_rs_485();
+                      //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+                {
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target, *point_source;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                      point_source = current_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                      point_source = current_settings.gateway;
+                    }
+                   
+                    
+                    enum comp {EQUAL, OUT_OF_RANGE, IN_RANGE} comparation = EQUAL;
+                    for (size_t i = 0; i < 4; i++) 
+                    {
+                      if (point_target[i] != point_source[i])
+                      {
+                        comparation = IN_RANGE;
+                        if ((point_target[i] >> 8) != 0)
+                        {
+                          comparation = OUT_OF_RANGE;
+                          break;
+                        }
+                      }
+                    }
+                    
+                    if (comparation != OUT_OF_RANGE)
+                    {
+                      if (comparation == IN_RANGE)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        for (size_t i = 0; i < 4; i++) point_source[i] = point_target[i];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    if (check_data_setpoint(edition_settings.mask, NETWORK_MASK_MIN, NETWORK_MASK_MAX) == 1)
+                    {
+                      if (edition_settings.mask != current_settings.mask)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        current_settings.mask = edition_settings.mask;
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_SYNCHRO)
+                {
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    enum comp {EQUAL, OUT_OF_RANGE, IN_RANGE} comparation = EQUAL;
+                    for (size_t i = 0; i < 4; i++) 
+                    {
+                      if (edition_settings.IP_time_server[i] != current_settings.IP_time_server[i])
+                      {
+                        comparation = IN_RANGE;
+                        if ((edition_settings.IP_time_server[i] >> 8) != 0)
+                        {
+                          comparation = OUT_OF_RANGE;
+                          break;
+                        }
+                      }
+                    }
+                    
+                    if (comparation != OUT_OF_RANGE)
+                    {
+                      if (comparation == IN_RANGE)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        for (size_t i = 0; i < 4; i++) current_settings.IP_time_server[i] = edition_settings.IP_time_server[i];
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    if (check_data_setpoint(edition_settings.port_time_server, NETWORK_PORT_MIN, NETWORK_PORT_MAX) == 1)
+                    {
+                      if (edition_settings.port_time_server != current_settings.port_time_server)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        current_settings.port_time_server = edition_settings.port_time_server;
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    if (check_data_setpoint(edition_settings.period_sync, NETWORK_PERIOD_SYNC_MIN, NETWORK_PERIOD_SYNC_MAX) == 1)
+                    {
+                      if (edition_settings.period_sync != current_settings.period_sync)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+
+                        current_settings.period_sync = edition_settings.period_sync;
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+
+                        //Помічаємо, що треба перезапустити КП
+                        _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                }
+#endif                
+                else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+                {
+                  if (
+                      ((edition_settings.time_zone >= TIME_ZONE_MIN) || (edition_settings.time_zone <= TIME_ZONE_MAX)) &&
+                      ((edition_settings.dst  & ((unsigned int)(~CTR_TZ_MASKA))) == 0)
+                     )   
+                  {
+                    if (
+                        (edition_settings.time_zone != current_settings.time_zone) ||
+                        (edition_settings.dst != current_settings.dst)
+                       )   
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                      current_settings.time_zone = edition_settings.time_zone;
+                      current_settings.dst = edition_settings.dst;
+#if (__VER__ >= 8000000)
+                      _ForceReloadDstRules();
+#endif
+                      
+                      //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_DST_RULE)
+                {
+                  uint32_t *p_rule_target = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? &edition_settings.dst_on_rule : &edition_settings.dst_off_rule;
+                  int mounth = (*p_rule_target >> POS_MM) & ((1 << SHIFT_MM) - 1);
+                  int dow = (*p_rule_target >> POS_DOW) & ((1 << SHIFT_DOW) - 1);
+                  int wr = (*p_rule_target >> POS_WR) & ((1 << SHIFT_WR) - 1);
+                  int hour = (*p_rule_target >> POS_HH) & ((1 << SHIFT_HH) - 1);
+
+                  if (
+                      (
+                       (mounth >= DST_RULE_MM_MIN ) && (mounth <= DST_RULE_MM_MAX )) &&
+                      ((dow    >= DST_RULE_DOW_MIN) && (dow    <= DST_RULE_DOW_MAX)) &&
+                      ((wr     >= DST_RULE_DR_MIN ) && (wr     <= DST_RULE_DR_MAX )) &&
+                      ((hour   >= DST_RULE_HH_MIN ) && (hour   <= DST_RULE_HH_MAX ))
+                     )   
+                  {
+                    uint32_t *p_rule_source = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? &current_settings.dst_on_rule : &current_settings.dst_off_rule;
+                    if (*p_rule_target != *p_rule_source)
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                      *p_rule_source = *p_rule_target;
+#if (__VER__ >= 8000000)
+                      _ForceReloadDstRules();
+#endif
+                      
                       //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                       fix_change_settings(0, 1);
                     }
@@ -10532,6 +12442,29 @@ void main_manu_function(void)
                     }
                   }
                 }
+                else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1))
+                {
+                  uint32_t value_after = edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1];
+                  if (
+                      ((value_after         & 0xffff) < (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG      )) &&
+                      (((value_after >> 16) & 0xffff) < (1 + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL))
+                     )   
+                  {
+                    uint32_t value_before = current_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1];
+                    if (value_after != value_before)   
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+
+                      current_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] = 
+                        edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1];
+                      //Формуємо запис у таблиці настройок про зміну ранжування і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(1, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
                 else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
                   /*Встановлюємо симафор - суть якого полягає у тому, що якщо процес запису нової 
@@ -10558,7 +12491,7 @@ void main_manu_function(void)
                           current_settings.prefault_number_periods = edition_settings.prefault_number_periods;
                           //Виконуємо дії по зміні часових витримок аналогового реєстратора
                           actions_after_changing_tiomouts_ar();
-                          //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                          //Формуємо запис у таблиці настройок про зміну  і ініціюємо запис у EEPROM нових настройок
                           fix_change_settings(0, 1);
                         }
                         //Виходимо з режиму редагування
@@ -10618,9 +12551,8 @@ void main_manu_function(void)
                       //Помічаємо, що поле структури зараз буде змінене
                       changed_settings = CHANGED_ETAP_EXECUTION;
                         
-                      current_settings.control_extra_settings_1 = edition_settings.control_extra_settings_1;
                       //Обновляємо значення
-                      action_after_changing_Ib_I04(&current_settings);
+                      action_after_changing_extra_settings(edition_settings.control_extra_settings_1, &current_settings);
                       
                       //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                       fix_change_settings(0, 1);
@@ -10903,21 +12835,53 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для МТЗ 0.4кВ
                 make_ekran_control_mtz04();
               }
+              else if(
+                      (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+                     )   
+              {
+                int group = (current_ekran.current_level - EKRAN_TIMEOUT_ZDZ_GROUP1);
+                
+                if(current_ekran.edition == 0)
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TIMEOUT_ZDZ - 1;
+                  position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (current_ekran.index_position == INDEX_ML_TMOZDZ)
+                    edition_settings.timeout_zdz[group] = edit_setpoint(1, edition_settings.timeout_zdz[group], 1, COL_TMO_ZDZ_COMMA, COL_TMO_ZDZ_END, 1);
+                }
+                //Формуємо екран витримок ЗДЗ
+                make_ekran_timeout_zdz(group);
+              }
               else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
               {
                 current_ekran.index_position--;
                 
                 if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CONTROL_ZDZ - 1;
                 while(
-                      (  
-                       (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ1) ||
-                       (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ2) ||
-                       (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ3) ||
-                       (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ4)
-                      )   
-                      &&
-                      ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
-                    )
+                      (
+                       (
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ1_BIT) ||
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ2_BIT) ||
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ3_BIT) ||
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ4_BIT)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      )
+                      ||  
+                      (
+                       (
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN1_BIT) ||
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN2_BIT)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<UMIN_BIT_CONFIGURATION)) == 0)
+                      )
+                     )
                 {
                   current_ekran.index_position--;
                   if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CONTROL_ZDZ - 1;
@@ -11147,15 +13111,23 @@ void main_manu_function(void)
                 
                 if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CONTROL_APV - 1;
                 while(
-                      (  
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
-                      )   
-                      &&
-                      ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
-                    )
+                      (
+                       (
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      )
+                      ||  
+                      (
+                       (current_ekran.index_position == INDEX_ML_CTRAPV_BLK_CTRL_PRVV2)
+                       &&
+                       ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
+                      )
+                     )
                 {
                   current_ekran.index_position--;
                   if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CONTROL_APV - 1;
@@ -11367,6 +13339,15 @@ void main_manu_function(void)
                        &&
                        ((current_settings.configuration & (1<<ACHR_CHAPV_BIT_CONFIGURATION)) == 0)
                       )
+                      ||
+                      (
+                       (
+                        (current_ekran.index_position >= INDEX_ML_CTRUROV_STARTED_FROM_UP1) &&
+                        (current_ekran.index_position <= INDEX_ML_CTRUROV_STARTED_FROM_UP1 + NUMBER_UP - 1)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<UP_BIT_CONFIGURATION)) == 0)
+                      )
                     )
                 {
                   current_ekran.index_position--;
@@ -11501,6 +13482,8 @@ void main_manu_function(void)
                     edition_settings.setpoint_Umax1[group] = edit_setpoint(1, edition_settings.setpoint_Umax1[group], 1, COL_SETPOINT_UMAX1_COMMA, COL_SETPOINT_UMAX1_END, 100);
                   else if (current_ekran.index_position == INDEX_ML_STPUMAX2)
                     edition_settings.setpoint_Umax2[group] = edit_setpoint(1, edition_settings.setpoint_Umax2[group], 1, COL_SETPOINT_UMAX2_COMMA, COL_SETPOINT_UMAX2_END, 100);
+                  else if (current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+                    edition_settings.setpoint_kp_Umax[group] = edit_setpoint(1, edition_settings.setpoint_kp_Umax[group], 1, COL_SETPOINT_KP_UMAX_COMMA, COL_SETPOINT_KP_UMAX_END, 1);
                 }
                 //Формуємо екран уставок Umax
                 make_ekran_setpoint_Umax(group);
@@ -11535,21 +13518,170 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для Umax
                 make_ekran_control_Umax();
               }
-              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              else if(
+                      (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                     )   
+              {
+                int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+                
+                if(current_ekran.edition == 0)
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP - 1;
+                  position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_SETPOINT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_SETPOINT_UP;
+                  
+                  if (_n_index == INDEX_ML_STP_UP)
+                  {
+                    uint32_t comma, end, min_step;
+                    int32_t sign_before = 1, sign_after = 1;
+                    switch (current_settings.ctrl_UP_input[_n_UP])
+                    {
+                    case UP_CTRL_Ia_Ib_Ic:
+                    case UP_CTRL_Ia:
+                    case UP_CTRL_Ib:
+                    case UP_CTRL_Ic:
+                    case UP_CTRL_I1:
+                    case UP_CTRL_I2:
+                    case UP_CTRL_I04:
+                    case UP_CTRL_3I0_r:
+                      {
+                        comma = COL_SETPOINT_UP_I_COMMA;
+                        end = COL_SETPOINT_UP_I_END;
+                        min_step = 10;
+                        break;
+                      }
+                    case UP_CTRL_3I0:
+                    case UP_CTRL_3I0_others:
+                      {
+                        comma = COL_SETPOINT_UP_3I0_COMMA;
+                        end = COL_SETPOINT_UP_3I0_END;
+                        min_step = 1;
+                        break;
+                      }
+                    case UP_CTRL_Ua_Ub_Uc:
+                    case UP_CTRL_Ua:
+                    case UP_CTRL_Ub:
+                    case UP_CTRL_Uc:
+                    case UP_CTRL_U1:
+                    case UP_CTRL_U2:
+                    case UP_CTRL_3U0:
+                      {
+                        comma = COL_SETPOINT_UP_U_COMMA;
+                        end = COL_SETPOINT_UP_U_END;
+                        min_step = 100;
+                        break;
+                      }
+                    case UP_CTRL_P:
+                    case UP_CTRL_Q:
+                      {
+                        if (edition_settings.setpoint_UP[_n_UP][0][group] < 0) sign_before = -1;
+                        if (current_ekran.position_cursor_x == (COL_SETPOINT_UP_PQ_BEGIN - 1))
+                        {
+                          sign_after = -sign_before;
+                        }
+                        else
+                        {
+                          sign_after = sign_before;
+                          comma = COL_SETPOINT_UP_PQ_COMMA;
+                          end = COL_SETPOINT_UP_PQ_END;
+                          min_step = 1;
+                        }
+                        break;
+                      }
+                    case UP_CTRL_S:
+                      {
+                        comma = COL_SETPOINT_UP_S_COMMA;
+                        end = COL_SETPOINT_UP_S_END;
+                        min_step = 1;
+                        break;
+                      }
+                    default:
+                      {
+                        //Теоретично цього ніколи не мало б бути
+                        total_error_sw_fixed(95);
+                      }
+                    }
+                    
+                    if (sign_before == sign_after)
+                      edition_settings.setpoint_UP[_n_UP][0][group] = sign_after*edit_setpoint(1, abs(edition_settings.setpoint_UP[_n_UP][0][group]), 1, comma, end, min_step);
+                    else
+                      edition_settings.setpoint_UP[_n_UP][0][group] = sign_after*abs(edition_settings.setpoint_UP[_n_UP][0][group]);
+                  }
+                  else if (_n_index == INDEX_ML_STP_UP_KP)
+                    edition_settings.setpoint_UP_KP[_n_UP][0][group] = edit_setpoint(1, edition_settings.setpoint_UP_KP[_n_UP][0][group], 1, COL_SETPOINT_UP_KP_COMMA, COL_SETPOINT_UP_KP_END, 1);
+                }
+                //Формуємо екран уставок УЗ
+                make_ekran_setpoint_UP(group);
+              }
+              else if(
+                      (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                     )   
+              {
+                int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+
+                if(current_ekran.edition == 0)
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_UP*MAX_ROW_FOR_TIMEOUT_UP - 1;
+                  position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_TIMEOUT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_TIMEOUT_UP;
+
+                  if (_n_index == INDEX_ML_TMOUP)
+                    edition_settings.timeout_UP[_n_UP][0][group] = edit_setpoint(1, edition_settings.timeout_UP[_n_UP][0][group], 1, COL_TMO_UP_COMMA, COL_TMO_UP_END, 10);
+                }
+                //Формуємо екран витримок УЗ
+                make_ekran_timeout_UP(group);
+              }
+              else if(current_ekran.current_level == EKRAN_CONTROL_UP)
+              {
+                current_ekran.index_position--;
+                if(current_ekran.index_position < 0) current_ekran.index_position = (NUMBER_UP*MAX_ROW_FOR_CONTROL_UP) - 1;
+
+                __SETTINGS *point = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+                uint32_t ctrl_UP_input = point->ctrl_UP_input[current_ekran.index_position / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)];
+                while (
+                       ((current_ekran.index_position % (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)) == CTR_UP_OR_AND_BIT) &&
+                       (ctrl_UP_input != UP_CTRL_Ia_Ib_Ic) &&
+                       (ctrl_UP_input != UP_CTRL_Ua_Ub_Uc)
+                      )
+                {
+                  current_ekran.index_position--;
+                  if(current_ekran.index_position < 0) current_ekran.index_position = (NUMBER_UP*MAX_ROW_FOR_CONTROL_UP) - 1;
+                
+                  ctrl_UP_input = point->ctrl_UP_input[current_ekran.index_position / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)];
+                }
+              
+                position_in_current_level_menu[EKRAN_CONTROL_UP] = current_ekran.index_position;
+              
+                //Формуємо екран управлінської інформації для УЗ
+                make_ekran_control_UP();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
               {
                 if(current_ekran.edition == 0)
                 {
-                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO - 1;
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT - 1;
                   while(
                         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
                         &&
                         (current_ekran.index_position == INDEX_ML_TT04)
                        )
                   {
-                    if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO - 1;
+                    if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT - 1;
                   }
                   
-                  position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+                  position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_SETPOINT] = current_ekran.index_position;
                 }
                 else
                 {
@@ -11565,6 +13697,13 @@ void main_manu_function(void)
                 }
                 //Формуємо екран інфтрмації по трансформаторах
                 make_ekran_transformator();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL - 1;
+                position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_CONTROL] = current_ekran.index_position;
+                //Формуємо екран відображення налаштувань меню "Трансформатор"
+                make_ekran_transformator_control();
               }
               else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
               {
@@ -11706,12 +13845,19 @@ void main_manu_function(void)
                 //Формуємо екран типу світлоіндикатора
                 make_ekran_type_led_uvv();
               }
-              else if(current_ekran.current_level == EKRAN_ADDRESS)
+              else if(current_ekran.current_level == EKRAN_TYPE_BUTTON_UVV)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_DEFINED_BUTTONS - 1;
+                position_in_current_level_menu[EKRAN_TYPE_BUTTON_UVV] = current_ekran.index_position;
+                //Формуємо екран типу ФК
+                make_ekran_type_button_uvv();
+              }
+              else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
               {
                 if(current_ekran.edition == 0)
                 {
                   if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_ADDRESS - 1;
-                  position_in_current_level_menu[EKRAN_ADDRESS] = current_ekran.index_position;
+                  position_in_current_level_menu[EKRAN_ADDRESS_RS485] = current_ekran.index_position;
                 }
                 else
                 {
@@ -11787,6 +13933,89 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET - 1;
+                  position_in_current_level_menu[EKRAN_SETTING_NETWORK_LAYER_ETHERNET] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                    }
+                    
+                    size_t index = (current_ekran.position_cursor_x - COL_IP4_GATEWAY_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                    point_target[index] = edit_setpoint(1, point_target[index], 0, 0, COL_IP4_GATEWAY_BEGIN + (3 + 1)*(index + 1) - 1 - 1, 1);
+                    
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    edition_settings.mask = edit_setpoint(1, edition_settings.mask, 0, 0, COL_MASK_END, 1);
+                  }
+                }
+                //Формуємо екран інфтрмації по комунікаційній адресі
+                make_ekran_settings_network_layer_Ethernet();
+              }
+              else if(current_ekran.current_level == EKRAN_SYNCHRO)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_SYNCHRO - 1;
+                  position_in_current_level_menu[EKRAN_SYNCHRO] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    size_t index = (current_ekran.position_cursor_x - COL_IP4_SERVER_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                    edition_settings.IP_time_server[index] = edit_setpoint(1, edition_settings.IP_time_server[index], 0, 0, COL_IP4_SERVER_BEGIN + (3 + 1)*(index + 1) - 1 - 1, 1);
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    edition_settings.port_time_server = edit_setpoint(1, edition_settings.port_time_server, 0, 0, COL_PORT_END, 1);
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    edition_settings.period_sync = edit_setpoint(1, edition_settings.period_sync, 0, 0, COL_PEDIOD_END, 1);
+                  }
+                }
+                //Формуємо екран
+                make_ekran_settings_synchro();
+              }
+#endif              
+              else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TIMEZONE_SETTINGS - 1;
+                position_in_current_level_menu[EKRAN_TIME_ZONE] = current_ekran.index_position;
+                //Формуємо екран
+                make_ekran_timezone_dst();
+              }
+              else if(current_ekran.current_level == EKRAN_DST_RULE)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_DST_RULE - 1;
+                position_in_current_level_menu[EKRAN_DST_RULE] = current_ekran.index_position;
+              
+                __SETTINGS *p_settings = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+                uint32_t rule = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? p_settings->dst_on_rule : p_settings->dst_off_rule;
+                //Формуємо екран
+                make_ekran_dst_rule(rule);
+              }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.edition == 0)
@@ -11855,6 +14084,12 @@ void main_manu_function(void)
                 }
                 //Формуємо екран таймерів опреділюваних функцій
                 make_ekran_timeout_df(current_ekran.current_level - EKRAN_TIMEOUT_DF1);
+              }
+              else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= (EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1)))
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_LIST_SOURCE_TF - 1;
+                //Формуємо екран
+                make_ekran_list_source_tf();
               }
               else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
               {
@@ -12132,20 +14367,52 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для МТЗ 0.4кВ
                 make_ekran_control_mtz04();
               }
+              else if(
+                      (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+                     )   
+              {
+                int group = (current_ekran.current_level - EKRAN_TIMEOUT_ZDZ_GROUP1);
+
+                if(current_ekran.edition == 0)
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_TIMEOUT_ZDZ) current_ekran.index_position = 0;
+                  position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (current_ekran.index_position == INDEX_ML_TMOZDZ)
+                    edition_settings.timeout_zdz[group] = edit_setpoint(0, edition_settings.timeout_zdz[group], 1, COL_TMO_ZDZ_COMMA, COL_TMO_ZDZ_END, 1);
+                }
+                //Формуємо екран витримок ЗДЗ
+                make_ekran_timeout_zdz(group);
+              }
               else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
               {
                 current_ekran.index_position++;
                 
                 if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_ZDZ) current_ekran.index_position = 0;
                 while(
-                      (  
-                       (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ1) ||
-                       (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ2) ||
-                       (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ3) ||
-                       (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ4)
-                      )   
-                      &&
-                      ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      (
+                       (
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ1_BIT) ||
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ2_BIT) ||
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ3_BIT) ||
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ4_BIT)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      )
+                      ||  
+                      (
+                       (
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN1_BIT) ||
+                        (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN2_BIT)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<UMIN_BIT_CONFIGURATION)) == 0)
+                      )
                      )
                 {
                   current_ekran.index_position++;
@@ -12376,14 +14643,22 @@ void main_manu_function(void)
                 
                 if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_APV) current_ekran.index_position = 0;
                 while(
-                      (  
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
-                       (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
-                      )   
-                      &&
-                      ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      (
+                       (
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) ||
+                        (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
+                      )
+                      ||  
+                      (
+                       (current_ekran.index_position == INDEX_ML_CTRAPV_BLK_CTRL_PRVV2)
+                       &&
+                       ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
+                      )
                      )
                 {
                   current_ekran.index_position++;
@@ -12596,6 +14871,15 @@ void main_manu_function(void)
                        &&
                        ((current_settings.configuration & (1<<ACHR_CHAPV_BIT_CONFIGURATION)) == 0)
                       )
+                      ||
+                      (
+                       (
+                        (current_ekran.index_position >= INDEX_ML_CTRUROV_STARTED_FROM_UP1) &&
+                        (current_ekran.index_position <= INDEX_ML_CTRUROV_STARTED_FROM_UP1 + NUMBER_UP - 1)
+                       )   
+                       &&
+                       ((current_settings.configuration & (1<<UP_BIT_CONFIGURATION)) == 0)
+                      )
                      )
                 {
                   current_ekran.index_position++;
@@ -12730,6 +15014,8 @@ void main_manu_function(void)
                     edition_settings.setpoint_Umax1[group] = edit_setpoint(0, edition_settings.setpoint_Umax1[group], 1, COL_SETPOINT_UMAX1_COMMA, COL_SETPOINT_UMAX1_END, 100);
                   else if (current_ekran.index_position == INDEX_ML_STPUMAX2)
                     edition_settings.setpoint_Umax2[group] = edit_setpoint(0, edition_settings.setpoint_Umax2[group], 1, COL_SETPOINT_UMAX2_COMMA, COL_SETPOINT_UMAX2_END, 100);
+                  else if (current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+                    edition_settings.setpoint_kp_Umax[group] = edit_setpoint(0, edition_settings.setpoint_kp_Umax[group], 1, COL_SETPOINT_KP_UMAX_COMMA, COL_SETPOINT_KP_UMAX_END, 1);
                 }
                 //Формуємо екран уставок Umax
                 make_ekran_setpoint_Umax(group);
@@ -12764,21 +15050,170 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для Umax
                 make_ekran_control_Umax();
               }
-              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              else if(
+                      (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                     )   
+              {
+                int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+                
+                if(current_ekran.edition == 0)
+                {
+                  if(++current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_SETPOINT_UP)) current_ekran.index_position = 0;
+                  position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_SETPOINT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_SETPOINT_UP;
+                  
+                  if (_n_index == INDEX_ML_STP_UP)
+                  {
+                    uint32_t comma, end, min_step;
+                    int32_t sign_before = 1, sign_after = 1;
+                    switch (current_settings.ctrl_UP_input[_n_UP])
+                    {
+                    case UP_CTRL_Ia_Ib_Ic:
+                    case UP_CTRL_Ia:
+                    case UP_CTRL_Ib:
+                    case UP_CTRL_Ic:
+                    case UP_CTRL_I1:
+                    case UP_CTRL_I2:
+                    case UP_CTRL_I04:
+                    case UP_CTRL_3I0_r:
+                      {
+                        comma = COL_SETPOINT_UP_I_COMMA;
+                        end = COL_SETPOINT_UP_I_END;
+                        min_step = 10;
+                        break;
+                      }
+                    case UP_CTRL_3I0:
+                    case UP_CTRL_3I0_others:
+                      {
+                        comma = COL_SETPOINT_UP_3I0_COMMA;
+                        end = COL_SETPOINT_UP_3I0_END;
+                        min_step = 1;
+                        break;
+                      }
+                    case UP_CTRL_Ua_Ub_Uc:
+                    case UP_CTRL_Ua:
+                    case UP_CTRL_Ub:
+                    case UP_CTRL_Uc:
+                    case UP_CTRL_U1:
+                    case UP_CTRL_U2:
+                    case UP_CTRL_3U0:
+                      {
+                        comma = COL_SETPOINT_UP_U_COMMA;
+                        end = COL_SETPOINT_UP_U_END;
+                        min_step = 100;
+                        break;
+                      }
+                    case UP_CTRL_P:
+                    case UP_CTRL_Q:
+                      {
+                        if (edition_settings.setpoint_UP[_n_UP][0][group] < 0) sign_before = -1;
+                        if (current_ekran.position_cursor_x == (COL_SETPOINT_UP_PQ_BEGIN - 1))
+                        {
+                          sign_after = -sign_before;
+                        }
+                        else
+                        {
+                          sign_after = sign_before;
+                          comma = COL_SETPOINT_UP_PQ_COMMA;
+                          end = COL_SETPOINT_UP_PQ_END;
+                          min_step = 1;
+                        }
+                        break;
+                      }
+                    case UP_CTRL_S:
+                      {
+                        comma = COL_SETPOINT_UP_S_COMMA;
+                        end = COL_SETPOINT_UP_S_END;
+                        min_step = 1;
+                        break;
+                      }
+                    default:
+                      {
+                        //Теоретично цього ніколи не мало б бути
+                        total_error_sw_fixed(96);
+                      }
+                    }
+                    
+                    if (sign_before == sign_after)
+                      edition_settings.setpoint_UP[_n_UP][0][group] = sign_after*edit_setpoint(0, abs(edition_settings.setpoint_UP[_n_UP][0][group]), 1, comma, end, min_step);
+                    else
+                      edition_settings.setpoint_UP[_n_UP][0][group] = sign_after*abs(edition_settings.setpoint_UP[_n_UP][0][group]);
+                  }
+                  else if (_n_index == INDEX_ML_STP_UP_KP)
+                    edition_settings.setpoint_UP_KP[_n_UP][0][group] = edit_setpoint(0, edition_settings.setpoint_UP_KP[_n_UP][0][group], 1, COL_SETPOINT_UP_KP_COMMA, COL_SETPOINT_UP_KP_END, 1);
+                }
+                //Формуємо екран уставок УЗ
+                make_ekran_setpoint_UP(group);
+              }
+              else if(
+                      (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                     )   
+              {
+                int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+
+                if(current_ekran.edition == 0)
+                {
+                  if(++current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_TIMEOUT_UP)) current_ekran.index_position = 0;
+                  position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_TIMEOUT_UP;
+                  uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_TIMEOUT_UP;
+
+                  if (_n_index == INDEX_ML_TMOUP)
+                    edition_settings.timeout_UP[_n_UP][0][group] = edit_setpoint(0, edition_settings.timeout_UP[_n_UP][0][group], 1, COL_TMO_UP_COMMA, COL_TMO_UP_END, 10);
+                }
+                //Формуємо екран витримок УЗ
+                make_ekran_timeout_UP(group);
+              }
+              else if(current_ekran.current_level == EKRAN_CONTROL_UP)
+              {
+                current_ekran.index_position++;
+                if(current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_CONTROL_UP)) current_ekran.index_position = 0;
+
+                __SETTINGS *point = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+                uint32_t ctrl_UP_input = point->ctrl_UP_input[current_ekran.index_position / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)];
+                while (
+                       ((current_ekran.index_position % (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)) == CTR_UP_OR_AND_BIT) &&
+                       (ctrl_UP_input != UP_CTRL_Ia_Ib_Ic) &&
+                       (ctrl_UP_input != UP_CTRL_Ua_Ub_Uc)
+                      )
+                {
+                  current_ekran.index_position++;
+                  if(current_ekran.index_position >= (NUMBER_UP*MAX_ROW_FOR_CONTROL_UP)) current_ekran.index_position = 0;
+                
+                  ctrl_UP_input = point->ctrl_UP_input[current_ekran.index_position / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I)];
+                }
+              
+                position_in_current_level_menu[EKRAN_CONTROL_UP] = current_ekran.index_position;
+              
+                //Формуємо екран управлінської інформації для УЗ
+                make_ekran_control_UP();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
               {
                 if(current_ekran.edition == 0)
                 {
-                  if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO) current_ekran.index_position = 0;
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) current_ekran.index_position = 0;
                   while(
                         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
                         &&
                         (current_ekran.index_position == INDEX_ML_TT04)
                        )
                   {
-                    if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO) current_ekran.index_position = 0;
+                    if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) current_ekran.index_position = 0;
                   }
                   
-                  position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO] = current_ekran.index_position;
+                  position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_SETPOINT] = current_ekran.index_position;
                 }
                 else
                 {
@@ -12794,6 +15229,13 @@ void main_manu_function(void)
                 }
                 //Формуємо екран інфтрмації по трансформаторах
                 make_ekran_transformator();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_TRANSFORMATOR_INFO_CONTROL] = current_ekran.index_position;
+                //Формуємо екран відображення налаштувань меню "Трансформатор"
+                make_ekran_transformator_control();
               }
               else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
               {
@@ -12934,12 +15376,19 @@ void main_manu_function(void)
                 //Формуємо екран типу світлоіндикаторів
                 make_ekran_type_led_uvv();
               }
-              else if(current_ekran.current_level == EKRAN_ADDRESS)
+              else if(current_ekran.current_level == EKRAN_TYPE_BUTTON_UVV)
+              {
+                if(++current_ekran.index_position >= NUMBER_DEFINED_BUTTONS) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_TYPE_BUTTON_UVV] = current_ekran.index_position;
+                //Формуємо екран типу ФК
+                make_ekran_type_button_uvv();
+              }
+              else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
               {
                 if(current_ekran.edition == 0)
                 {
                   if(++current_ekran.index_position >= MAX_ROW_FOR_ADDRESS) current_ekran.index_position = 0;
-                  position_in_current_level_menu[EKRAN_ADDRESS] = current_ekran.index_position;
+                  position_in_current_level_menu[EKRAN_ADDRESS_RS485] = current_ekran.index_position;
                 }
                 else
                 {
@@ -13015,6 +15464,90 @@ void main_manu_function(void)
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
               }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET) current_ekran.index_position = 0;
+                  position_in_current_level_menu[EKRAN_SETTING_NETWORK_LAYER_ETHERNET] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (
+                      (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                      (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                     )   
+                  {
+                    uint16_t *point_target;
+                    if (current_ekran.index_position == INDEX_ML_NL_IPV4)
+                    {
+                      point_target = edition_settings.IP4;
+                    }
+                    else
+                    {
+                      point_target = edition_settings.gateway;
+                    }
+                    
+                    size_t index = (current_ekran.position_cursor_x - COL_IP4_GATEWAY_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                    point_target[index] = edit_setpoint(0, point_target[index], 0, 0, COL_IP4_GATEWAY_BEGIN + (3 + 1)*(index + 1) - 1 - 1, 1);
+                    
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                  {
+                    edition_settings.mask = edit_setpoint(0, edition_settings.mask, 0, 0, COL_MASK_END, 1);
+                  }
+                }
+                //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
+                make_ekran_settings_network_layer_Ethernet();
+              }
+              else if(current_ekran.current_level == EKRAN_SYNCHRO)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_SYNCHRO) current_ekran.index_position = 0;
+                  position_in_current_level_menu[EKRAN_SYNCHRO] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                  {
+                    size_t index = (current_ekran.position_cursor_x - COL_IP4_SERVER_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                    edition_settings.IP_time_server[index] = edit_setpoint(0, edition_settings.IP_time_server[index], 0, 0, COL_IP4_SERVER_BEGIN + (3 + 1)*(index + 1) - 1 - 1, 1);
+                    
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                  {
+                    edition_settings.port_time_server = edit_setpoint(0, edition_settings.port_time_server, 0, 0, COL_PORT_END, 1);
+                  }
+                  else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                  {
+                    edition_settings.period_sync = edit_setpoint(0, edition_settings.period_sync, 0, 0, COL_PEDIOD_END, 1);
+                  }
+                }
+                //Формуємо екран інфтрмації
+                make_ekran_settings_synchro();
+              }
+#endif              
+              else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TIMEZONE_SETTINGS) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_TIME_ZONE] = current_ekran.index_position;
+                //Формуємо екран
+                make_ekran_timezone_dst();
+              }
+              else if(current_ekran.current_level == EKRAN_DST_RULE)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_DST_RULE) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_DST_RULE] = current_ekran.index_position;
+              
+                __SETTINGS *p_settings = (current_ekran.edition == 0) ? &current_settings : &edition_settings;
+                uint32_t rule = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? p_settings->dst_on_rule : p_settings->dst_off_rule;
+                //Формуємо екран
+                make_ekran_dst_rule(rule);
+              }
               else if (current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
                 if(current_ekran.edition == 0)
@@ -13083,6 +15616,12 @@ void main_manu_function(void)
                 }
                 //Формуємо екран таймерів опреділюваних функцій
                 make_ekran_timeout_df(current_ekran.current_level - EKRAN_TIMEOUT_DF1);
+              }
+              else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= (EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1)))
+              {
+                if(++current_ekran.index_position >= MAX_ROW_LIST_SOURCE_TF) current_ekran.index_position = 0;
+                //Формуємо екран
+                make_ekran_list_source_tf();
               }
               else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
               {
@@ -13637,22 +16176,99 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для МТЗ 0.4кВ
                  make_ekran_control_mtz04();
               }
+              else if(
+                      (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+                     )   
+              {
+                if(current_ekran.index_position == INDEX_ML_TMOZDZ)
+                {
+                  if (current_ekran.position_cursor_x == COL_TMO_ZDZ_COMMA )current_ekran.position_cursor_x++;
+                  if ((current_ekran.position_cursor_x < COL_TMO_ZDZ_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_TMO_ZDZ_END))
+                    current_ekran.position_cursor_x = COL_TMO_ZDZ_BEGIN;
+                }
+                //Формуємо екран витримок ЗДЗ
+                int group = (current_ekran.current_level - EKRAN_TIMEOUT_ZDZ_GROUP1);
+                make_ekran_timeout_zdz(group);
+              }
               else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
               {
-                unsigned int maska = 0;
+                if (current_ekran.index_position == CTR_ZDZ_CTRL_TYPE)
+                {
+                  do
+                  {
+                    if (++edition_settings.ctrl_zdz_type >= _ZDZ_CTRL_NUMBER) edition_settings.ctrl_zdz_type = _ZDZ_CTRL_MIN;
+                  }
+                  while(
+                        (
+                         ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0) &&
+                         (
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I      ) ||
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_OR_U ) ||
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
+                         )   
+                        )
+                        ||  
+                        (
+                         ((current_settings.configuration & (1<<UMIN_BIT_CONFIGURATION)) == 0) &&
+                         (
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_U      ) ||
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_OR_U ) ||
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
+                         )   
+                        )
+                        ||  
+                        (
+                         ((current_settings.configuration & (1<<ZZ_BIT_CONFIGURATION)) == 0) &&
+                         (
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_3I0)
+                         )   
+                        )
+                       ); 
+                }
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                else if (current_ekran.index_position == CTR_ZDZ_PORIG)
+                {
+                  if (++edition_settings.zdz_ovd_porig >= ZDZ_CTRL_PORIG_N) edition_settings.zdz_ovd_porig = 0;
+                }
+#endif
+                else
+                {
+                  unsigned int maska = 0;
           
-                //Виділяємо, який біт треба міняти
-                if (current_ekran.index_position == INDEX_ML_CTRZDZ_STATE) maska = CTR_ZDZ_STATE;
-                else if (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ1 ) maska = CTR_ZDZ_STARTED_FROM_MTZ1;
-                else if (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ2 ) maska = CTR_ZDZ_STARTED_FROM_MTZ2;
-                else if (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ3 ) maska = CTR_ZDZ_STARTED_FROM_MTZ3;
-                else if (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ4 ) maska = CTR_ZDZ_STARTED_FROM_MTZ4;
+                  //Виділяємо, який біт треба міняти
+                  if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                  else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
+                  else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
+                  else if (current_ekran.index_position == CTR_ZDZ_OVD3_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD3_STATE_BIT);
+#endif
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ1_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ2_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ3_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ4_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN1_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN2_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
                 
-                //Міняємо на протилежний відповідний біт для вибраної позиції
-                edition_settings.control_zdz ^= maska;
+                  //Міняємо на протилежний відповідний біт для вибраної позиції
+                  edition_settings.control_zdz ^= maska;
+                }
 
                 //Формуємо екран управлінської інформації для ЗДЗ
-                 make_ekran_control_zdz();
+                make_ekran_control_zdz();
               }
               else if(
                       (current_ekran.current_level >= EKRAN_SETPOINT_ZZ_GROUP1) &&
@@ -13983,20 +16599,8 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_CONTROL_APV)
               {
-                unsigned int maska = 0;
-          
-                //Виділяємо, який біт треба міняти
-                if (current_ekran.index_position == INDEX_ML_CTRAPV_STAGE_1) maska = CTR_APV_STAGE_1;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STAGE_2) maska = CTR_APV_STAGE_2;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STAGE_3) maska = CTR_APV_STAGE_3;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STAGE_4) maska = CTR_APV_STAGE_4;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) maska = CTR_APV_STARTED_FROM_MTZ1;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) maska = CTR_APV_STARTED_FROM_MTZ2;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) maska = CTR_APV_STARTED_FROM_MTZ3;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4) maska = CTR_APV_STARTED_FROM_MTZ4;
-                
                 //Міняємо на протилежний відповідний біт для вибраної позиції
-                edition_settings.control_apv ^= maska;
+                edition_settings.control_apv ^= (1 << current_ekran.index_position);
 
                 //Формуємо екран управлінської інформації для АПВ
                  make_ekran_control_apv();
@@ -14144,27 +16748,38 @@ void main_manu_function(void)
                 unsigned int maska = 0;
           
                 //Виділяємо, який біт треба міняти
-                if (current_ekran.index_position == INDEX_ML_CTRUROV_STATE) maska = CTR_UROV_STATE;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ1   ) maska = CTR_UROV_STARTED_FROM_MTZ1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ2   ) maska = CTR_UROV_STARTED_FROM_MTZ2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ3   ) maska = CTR_UROV_STARTED_FROM_MTZ3;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ4   ) maska = CTR_UROV_STARTED_FROM_MTZ4;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1) maska = CTR_UROV_STARTED_FROM_MTZ04_1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2) maska = CTR_UROV_STARTED_FROM_MTZ04_2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ZDZ    ) maska = CTR_UROV_STARTED_FROM_ZDZ;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_3I0    ) maska = CTR_UROV_STARTED_FROM_3I0;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_3U0    ) maska = CTR_UROV_STARTED_FROM_3U0;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_NZZ    ) maska = CTR_UROV_STARTED_FROM_NZZ;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP1  ) maska = CTR_UROV_STARTED_FROM_TZNP1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP2  ) maska = CTR_UROV_STARTED_FROM_TZNP2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP3  ) maska = CTR_UROV_STARTED_FROM_TZNP3;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ZOP1   ) maska = CTR_UROV_STARTED_FROM_ZOP1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN1  ) maska = CTR_UROV_STARTED_FROM_UMIN1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN2  ) maska = CTR_UROV_STARTED_FROM_UMIN2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX1  ) maska = CTR_UROV_STARTED_FROM_UMAX1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX2  ) maska = CTR_UROV_STARTED_FROM_UMAX2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR1  ) maska = CTR_UROV_STARTED_FROM_ACHR1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2  ) maska = CTR_UROV_STARTED_FROM_ACHR2;
+                if (current_ekran.index_position == INDEX_ML_CTRUROV_STATE) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STATE);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ1   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ2   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ3   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ3);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ4   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ4);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ZDZ    ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZDZ);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_3I0    ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3I0);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_3U0    ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3U0);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_NZZ    ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_NZZ);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP1  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP2  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP3  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP3);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ZOP1   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZOP1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN1  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN2  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX1  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX2  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR1  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR2);
+                else
+                {
+                  for (size_t n_UP = 0; n_UP < NUMBER_UP; n_UP++)
+                  {
+                    if (current_ekran.index_position == (INDEX_ML_CTRUROV_STARTED_FROM_UP1 + n_UP))
+                    {
+                      maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UP1 + n_UP);
+                      break;
+                    }
+                  }
+                }
                 
                 //Міняємо на протилежний відповідний біт для вибраної позиції
                 edition_settings.control_urov ^= maska;
@@ -14314,6 +16929,13 @@ void main_manu_function(void)
                       (current_ekran.position_cursor_x > COL_SETPOINT_UMAX2_END))
                     current_ekran.position_cursor_x = COL_SETPOINT_UMAX2_BEGIN;
                 }
+                else if(current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+                {
+                  if (current_ekran.position_cursor_x == COL_SETPOINT_KP_UMAX_COMMA )current_ekran.position_cursor_x++;
+                  if ((current_ekran.position_cursor_x < COL_SETPOINT_KP_UMAX_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_SETPOINT_KP_UMAX_END))
+                    current_ekran.position_cursor_x = COL_SETPOINT_KP_UMAX_BEGIN;
+                }
 
                 //Формуємо екран уставок Umax
                 int group = (current_ekran.current_level - EKRAN_SETPOINT_UMAX_GROUP1);
@@ -14359,7 +16981,157 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для Umax
                  make_ekran_control_Umax();
               }
-              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              else if(
+                      (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                     )   
+              {
+                uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_SETPOINT_UP;
+                
+                if(_n_index == INDEX_ML_STP_UP)
+                {
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_SETPOINT_UP;
+                  int32_t begin, comma, end;
+                  switch (current_settings.ctrl_UP_input[_n_UP])
+                  {
+                  case UP_CTRL_Ia_Ib_Ic:
+                  case UP_CTRL_Ia:
+                  case UP_CTRL_Ib:
+                  case UP_CTRL_Ic:
+                  case UP_CTRL_I1:
+                  case UP_CTRL_I2:
+                  case UP_CTRL_I04:
+                  case UP_CTRL_3I0_r:
+                    {
+                      begin = COL_SETPOINT_UP_I_BEGIN;
+                      comma = COL_SETPOINT_UP_I_COMMA;
+                      end = COL_SETPOINT_UP_I_END;
+                      break;
+                    }
+                  case UP_CTRL_3I0:
+                  case UP_CTRL_3I0_others:
+                    {
+                      begin = COL_SETPOINT_UP_3I0_BEGIN;
+                      comma = COL_SETPOINT_UP_3I0_COMMA;
+                      end = COL_SETPOINT_UP_3I0_END;
+                      break;
+                    }
+                  case UP_CTRL_Ua_Ub_Uc:
+                  case UP_CTRL_Ua:
+                  case UP_CTRL_Ub:
+                  case UP_CTRL_Uc:
+                  case UP_CTRL_U1:
+                  case UP_CTRL_U2:
+                  case UP_CTRL_3U0:
+                    {
+                      begin = COL_SETPOINT_UP_U_BEGIN;
+                      comma = COL_SETPOINT_UP_U_COMMA;
+                      end = COL_SETPOINT_UP_U_END;
+                      break;
+                    }
+                  case UP_CTRL_P:
+                  case UP_CTRL_Q:
+                    {
+                      begin = COL_SETPOINT_UP_PQ_BEGIN - 1;
+                      comma = COL_SETPOINT_UP_PQ_COMMA;
+                      end = COL_SETPOINT_UP_PQ_END;
+                      break;
+                    }
+                  case UP_CTRL_S:
+                    {
+                      begin = COL_SETPOINT_UP_S_BEGIN;
+                      comma = COL_SETPOINT_UP_S_COMMA;
+                      end = COL_SETPOINT_UP_S_END;
+                      break;
+                    }
+                  default:
+                    {
+                      //Теоретично цього ніколи не мало б бути
+                      total_error_sw_fixed(97);
+                    }
+                  }
+                    
+                  if (current_ekran.position_cursor_x == comma )current_ekran.position_cursor_x++;
+                  if ((current_ekran.position_cursor_x < begin) ||
+                      (current_ekran.position_cursor_x > end))
+                    current_ekran.position_cursor_x = begin;
+                }
+                else if(_n_index == INDEX_ML_STP_UP_KP)
+                {
+                  if (current_ekran.position_cursor_x == COL_SETPOINT_UP_KP_COMMA )current_ekran.position_cursor_x++;
+                  if ((current_ekran.position_cursor_x < COL_SETPOINT_UP_KP_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_SETPOINT_UP_KP_END))
+                    current_ekran.position_cursor_x = COL_SETPOINT_UP_KP_BEGIN;
+                }
+
+                //Формуємо екран уставок УЗ
+                int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+                make_ekran_setpoint_UP(group);
+              }
+              else if(
+                      (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                     )  
+              {
+                uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_TIMEOUT_UP;
+
+                if(_n_index == INDEX_ML_TMOUP)
+                {
+                  if (current_ekran.position_cursor_x == COL_TMO_UP_COMMA )current_ekran.position_cursor_x++;
+                  if ((current_ekran.position_cursor_x < COL_TMO_UP_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_TMO_UP_END))
+                    current_ekran.position_cursor_x = COL_TMO_UP_BEGIN;
+                }
+
+                //Формуємо екран витримок УЗ
+                int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+                make_ekran_timeout_UP(group);
+              }
+              else if(current_ekran.current_level == EKRAN_CONTROL_UP)
+              {
+                uint32_t n_UP = current_ekran.index_position / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I);
+                uint32_t n_index = current_ekran.index_position % (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I);
+                if (n_index == CTR_UP_CTRL_INPUT)
+                {
+                  uint32_t ctrl_maska = MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
+                                        MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
+                                        MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));  
+                  edition_settings.control_UP &= (uint32_t)(~ctrl_maska);
+                  
+                  do
+                  {
+                    if (++edition_settings.ctrl_UP_input[n_UP] >= _UP_CTRL_NUMBER) edition_settings.ctrl_UP_input[n_UP] = _UP_CTRL_MIN;
+                  }
+                  while(
+                        ((edition_settings.ctrl_UP_input[n_UP] == UP_CTRL_I04  ) && ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)) ||
+                        ((edition_settings.ctrl_UP_input[n_UP] == UP_CTRL_3I0_r) && ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)) ||
+                        (
+                         (
+                          (edition_settings.ctrl_UP_input[n_UP] == UP_CTRL_U1) ||
+                          (edition_settings.ctrl_UP_input[n_UP] == UP_CTRL_U2)
+                         )
+                         &&
+                         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+                        )
+                       ); 
+                }
+                else
+                {
+                  unsigned int maska = 0;
+          
+                  //Виділяємо, який біт треба міняти
+                  if (n_index == CTR_UP_STATE_BIT) maska = MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));
+                  else if (n_index == CTR_UP_OR_AND_BIT ) maska = MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));
+                  else if (n_index == CTR_UP_MORE_LESS_BIT ) maska = MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));
+                
+                  //Міняємо на протилежний відповідний біт для вибраної позиції
+                  edition_settings.control_UP ^= maska;
+                }
+
+                //Формуємо екран управлінської інформації для УЗ
+                make_ekran_control_UP();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
               {
                 if(current_ekran.index_position == INDEX_ML_T0)
                 {
@@ -14387,6 +17159,17 @@ void main_manu_function(void)
                 }
                 //Формуємо екран відображення інформації по трансформаторах
                 make_ekran_transformator();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+              {
+                //Виділяємо, який біт треба міняти
+                unsigned int maska = (1 << current_ekran.index_position);
+                
+                //Міняємо на протилежний відповідний біт для вибраної позиції
+                edition_settings.control_transformator ^= maska;
+
+                //Формуємо екран відображення налаштувань меню "Трансформатор"
+                make_ekran_transformator_control();
               }
               else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
               {
@@ -14590,7 +17373,12 @@ void main_manu_function(void)
 
                 make_ekran_type_output_uvv();
               }
-              else if(current_ekran.current_level == EKRAN_ADDRESS)
+              else if(current_ekran.current_level == EKRAN_TYPE_BUTTON_UVV)
+              {
+                edition_settings.buttons_mode ^= (1 << current_ekran.index_position);
+                make_ekran_type_button_uvv();
+              }
+              else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
               {
                 if ((current_ekran.position_cursor_x < COL_ADDRESS_BEGIN) ||
                     (current_ekran.position_cursor_x > COL_ADDRESS_END))
@@ -14606,6 +17394,134 @@ void main_manu_function(void)
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_BEGIN;
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+              {
+                if (
+                    (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                    (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                   )   
+                {
+                  if ((current_ekran.position_cursor_x < COL_IP4_GATEWAY_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_GATEWAY_END))
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_BEGIN;
+
+                  size_t index = (current_ekran.position_cursor_x - COL_IP4_GATEWAY_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                  if (current_ekran.position_cursor_x == (COL_IP4_GATEWAY_BEGIN + (3 + 1)*(index + 1) - 1)) current_ekran.position_cursor_x++;
+
+                  if ((current_ekran.position_cursor_x < COL_IP4_GATEWAY_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_GATEWAY_END))
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_BEGIN;
+                }
+                else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                {
+                  if ((current_ekran.position_cursor_x < COL_MASK_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_MASK_END))
+                    current_ekran.position_cursor_x = COL_MASK_BEGIN;
+                }
+                //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
+                make_ekran_settings_network_layer_Ethernet();
+              }
+              else if(current_ekran.current_level == EKRAN_SYNCHRO)
+              {
+                if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                {
+                  if ((current_ekran.position_cursor_x < COL_IP4_SERVER_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_SERVER_END))
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_BEGIN;
+
+                  size_t index = (current_ekran.position_cursor_x - COL_IP4_SERVER_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                  if (current_ekran.position_cursor_x == (COL_IP4_SERVER_BEGIN + (3 + 1)*(index + 1) - 1)) current_ekran.position_cursor_x++;
+
+                  if ((current_ekran.position_cursor_x < COL_IP4_SERVER_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_SERVER_END))
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_BEGIN;
+                }
+                else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                {
+                  if ((current_ekran.position_cursor_x < COL_PORT_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_PORT_END))
+                    current_ekran.position_cursor_x = COL_PORT_BEGIN;
+                }
+                else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                {
+                  if ((current_ekran.position_cursor_x < COL_PERIOD_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_PEDIOD_END))
+                    current_ekran.position_cursor_x = COL_PERIOD_BEGIN;
+                }
+                //Формуємо екран інфтрмації
+                make_ekran_settings_synchro();
+              }
+#endif              
+              else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+              {
+                if (current_ekran.index_position == INDEX_ML_TIME_ZONE)
+                {
+                  if (++edition_settings.time_zone > TIME_ZONE_MAX) edition_settings.time_zone = TIME_ZONE_MIN;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST)
+                {
+                  //Міняємо на протилежний відповідний біт для вибраної позиції
+                  edition_settings.dst ^= MASKA_FOR_BIT(N_BIT_TZ_DST);
+                }
+
+                //Формуємо екран
+                make_ekran_timezone_dst();
+              }
+              else if(current_ekran.current_level == EKRAN_DST_RULE)
+              {
+                uint32_t *p_rule_target = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? &edition_settings.dst_on_rule : &edition_settings.dst_off_rule;
+                unsigned int pos, shift;
+                unsigned int min, max;
+
+                if (current_ekran.index_position == INDEX_ML_DST_MM)
+                {
+                  pos = POS_MM;
+                  shift = SHIFT_MM;
+                  
+                  min = DST_RULE_MM_MIN;
+                  max = DST_RULE_MM_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_DOW)
+                {
+                  pos = POS_DOW;
+                  shift = SHIFT_DOW;
+                  
+                  min = DST_RULE_DOW_MIN;
+                  max = DST_RULE_DOW_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_WR)
+                {
+                  pos = POS_WR;
+                  shift = SHIFT_WR;
+                  
+                  min = DST_RULE_DR_MIN;
+                  max = DST_RULE_DR_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_HH)
+                {
+                  pos = POS_HH;
+                  shift = SHIFT_HH;
+                  
+                  min = DST_RULE_HH_MIN;
+                  max = DST_RULE_HH_MAX;
+                }
+                else
+                {
+                  //Теоретично цього ніколи не мало б бути
+                  total_error_sw_fixed(219);
+                }
+                
+                uint32_t value = (*p_rule_target >> pos) & ((1 << shift) - 1);
+                if (++value > max) value = min;
+                
+                uint32_t bit_maska = ((1u << (pos + shift)) - 1) - ((1u << pos) - 1);
+                *p_rule_target &= ~bit_maska;
+                *p_rule_target |= value << pos;
+
+                //Формуємо екран
+                make_ekran_dst_rule(*p_rule_target);
               }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
@@ -14683,6 +17599,45 @@ void main_manu_function(void)
                 }
                 //Формуємо екран таймерів опреділюваних функцій
                 make_ekran_timeout_df(current_ekran.current_level - EKRAN_TIMEOUT_DF1);
+              }
+              else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= (EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1)))
+              {
+                int32_t index_position = current_ekran.index_position;
+                uint32_t value = (edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] >> (16*index_position)) & 0xffff;
+                  
+                value++;
+                if (
+                    ((current_settings.control_zz & CTR_ZZ1_TYPE) != 0) &&
+                    (index_position == INDEX_ML_LIST_SOURCE_INPUT_TF)
+                   )
+                {
+                  while(
+                        (value == (1 + RANG_PO_NZZ)) ||
+                        (value == (1 + RANG_NZZ)) ||
+                        (value == (1 + RANG_SECTOR_NZZ))
+                       ) 
+                  {
+                    value++;
+                  }
+                }
+
+                if (value >= max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION - 1][index_position]) value = 0;
+                for (size_t i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
+                {
+                  if (
+                      ((current_settings.configuration & (1 << i)) == 0) &&
+                      (value >= max_value_for_tf[1 + i - 1][index_position]) &&
+                      (value <= max_value_for_tf[1 + i    ][index_position])
+                     )
+                  {
+                    value = (i < (TOTAL_NUMBER_PROTECTION - 1)) ? max_value_for_tf[1 + i][index_position] : 0;
+                  }
+                }
+                edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] &= (uint32_t)(~(0xffff << (16*index_position)));
+                edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] |= ((value & 0xffff) << (16*index_position));
+
+                //Формуємо екран
+                make_ekran_list_source_tf();
               }
               else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
               {
@@ -15190,21 +18145,98 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для МТЗ 0.4кВ
                  make_ekran_control_mtz04();
               }
+              else if(
+                      (current_ekran.current_level >= EKRAN_TIMEOUT_ZDZ_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_TIMEOUT_ZDZ_GROUP4)
+                     )   
+              {
+                if(current_ekran.index_position == INDEX_ML_TMOZDZ)
+                {
+                  if (current_ekran.position_cursor_x == COL_TMO_ZDZ_COMMA )current_ekran.position_cursor_x--;
+                  if ((current_ekran.position_cursor_x < COL_TMO_ZDZ_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_TMO_ZDZ_END))
+                    current_ekran.position_cursor_x = COL_TMO_ZDZ_END;
+                }
+                //Формуємо екран витримок ЗДЗ
+                int group = (current_ekran.current_level - EKRAN_TIMEOUT_ZDZ_GROUP1);
+                make_ekran_timeout_zdz(group);
+              }
               else if(current_ekran.current_level == EKRAN_CONTROL_ZDZ)
               {
-                unsigned int maska = 0;
+                if (current_ekran.index_position == CTR_ZDZ_CTRL_TYPE)
+                {
+                  do
+                  {
+                    if (--edition_settings.ctrl_zdz_type < 0) edition_settings.ctrl_zdz_type = _ZDZ_CTRL_NUMBER - 1;
+                  }
+                  while(
+                        (
+                         ((current_settings.configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0) &&
+                         (
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I      ) ||
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_OR_U ) ||
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
+                         )   
+                        )
+                        ||  
+                        (
+                         ((current_settings.configuration & (1<<UMIN_BIT_CONFIGURATION)) == 0) &&
+                         (
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_U      ) ||
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_OR_U ) ||
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_I_AND_U)
+                         )   
+                        )
+                        ||  
+                        (
+                         ((current_settings.configuration & (1<<ZZ_BIT_CONFIGURATION)) == 0) &&
+                         (
+                          (edition_settings.ctrl_zdz_type == ZDZ_CTRL_3I0)
+                         )   
+                        )
+                       ); 
+                }
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                else if (current_ekran.index_position == CTR_ZDZ_PORIG)
+                {
+                  if (--edition_settings.zdz_ovd_porig < 0) edition_settings.zdz_ovd_porig = (ZDZ_CTRL_PORIG_N - 1);
+                }
+#endif
+                else
+                {
+                  unsigned int maska = 0;
           
-                //Виділяємо, який біт треба міняти
-                if (current_ekran.index_position == INDEX_ML_CTRZDZ_STATE) maska = CTR_ZDZ_STATE;
-                else if (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ1 ) maska = CTR_ZDZ_STARTED_FROM_MTZ1;
-                else if (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ2 ) maska = CTR_ZDZ_STARTED_FROM_MTZ2;
-                else if (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ3 ) maska = CTR_ZDZ_STARTED_FROM_MTZ3;
-                else if (current_ekran.index_position == INDEX_ML_CTRZDZ_STARTED_FROM_MTZ4 ) maska = CTR_ZDZ_STARTED_FROM_MTZ4;
+                  //Виділяємо, який біт треба міняти
+                  if (current_ekran.index_position == CTR_ZDZ_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_STATE_BIT);
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)      \
+    )   
+                  else if (current_ekran.index_position == CTR_ZDZ_OVD1_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD1_STATE_BIT);
+                  else if (current_ekran.index_position == CTR_ZDZ_OVD2_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD2_STATE_BIT);
+                  else if (current_ekran.index_position == CTR_ZDZ_OVD3_STATE_BIT) maska = MASKA_FOR_BIT(CTR_ZDZ_OVD3_STATE_BIT);
+#endif
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ1_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ2_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ3_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_MTZ4_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN1_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
+                  else if (current_ekran.index_position == CTR_ZDZ_STARTED_FROM_UMIN2_BIT ) maska = MASKA_FOR_BIT(CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II));
                 
-                //Міняємо на протилежний відповідний біт для вибраної позиції
-                edition_settings.control_zdz ^= maska;
+                  //Міняємо на протилежний відповідний біт для вибраної позиції
+                  edition_settings.control_zdz ^= maska;
+                }
 
-                //Формуємо екран управлінської інформації для ЗДЗ
+                 //Формуємо екран управлінської інформації для ЗДЗ
                  make_ekran_control_zdz();
               }
               else if(
@@ -15536,20 +18568,8 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_CONTROL_APV)
               {
-                unsigned int maska = 0;
-          
-                //Виділяємо, який біт треба міняти
-                if (current_ekran.index_position == INDEX_ML_CTRAPV_STAGE_1) maska = CTR_APV_STAGE_1;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STAGE_2) maska = CTR_APV_STAGE_2;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STAGE_3) maska = CTR_APV_STAGE_3;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STAGE_4) maska = CTR_APV_STAGE_4;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ1) maska = CTR_APV_STARTED_FROM_MTZ1;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ2) maska = CTR_APV_STARTED_FROM_MTZ2;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ3) maska = CTR_APV_STARTED_FROM_MTZ3;
-                else if (current_ekran.index_position == INDEX_ML_CTRAPV_STARTED_FROM_MTZ4) maska = CTR_APV_STARTED_FROM_MTZ4;
-                
                 //Міняємо на протилежний відповідний біт для вибраної позиції
-                edition_settings.control_apv ^= maska;
+                edition_settings.control_apv ^= (1 << current_ekran.index_position);
 
                 //Формуємо екран управлінської інформації для АПВ
                  make_ekran_control_apv();
@@ -15697,27 +18717,38 @@ void main_manu_function(void)
                 unsigned int maska = 0;
           
                 //Виділяємо, який біт треба міняти
-                if (current_ekran.index_position == INDEX_ML_CTRUROV_STATE) maska = CTR_UROV_STATE;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ1   ) maska = CTR_UROV_STARTED_FROM_MTZ1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ2   ) maska = CTR_UROV_STARTED_FROM_MTZ2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ3   ) maska = CTR_UROV_STARTED_FROM_MTZ3;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ4   ) maska = CTR_UROV_STARTED_FROM_MTZ4;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1) maska = CTR_UROV_STARTED_FROM_MTZ04_1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2) maska = CTR_UROV_STARTED_FROM_MTZ04_2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ZDZ    ) maska = CTR_UROV_STARTED_FROM_ZDZ;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_3I0    ) maska = CTR_UROV_STARTED_FROM_3I0;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_3U0    ) maska = CTR_UROV_STARTED_FROM_3U0;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_NZZ    ) maska = CTR_UROV_STARTED_FROM_NZZ;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP1  ) maska = CTR_UROV_STARTED_FROM_TZNP1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP2  ) maska = CTR_UROV_STARTED_FROM_TZNP2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP3  ) maska = CTR_UROV_STARTED_FROM_TZNP3;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ZOP1   ) maska = CTR_UROV_STARTED_FROM_ZOP1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN1  ) maska = CTR_UROV_STARTED_FROM_UMIN1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN2  ) maska = CTR_UROV_STARTED_FROM_UMIN2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX1  ) maska = CTR_UROV_STARTED_FROM_UMAX1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX2  ) maska = CTR_UROV_STARTED_FROM_UMAX2;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR1  ) maska = CTR_UROV_STARTED_FROM_ACHR1;
-                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2  ) maska = CTR_UROV_STARTED_FROM_ACHR2;
+                if (current_ekran.index_position == INDEX_ML_CTRUROV_STATE) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STATE);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ1   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ2   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ3   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ3);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ4   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ4);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_MTZ04_2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ZDZ    ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZDZ);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_3I0    ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3I0);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_3U0    ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3U0);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_NZZ    ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_NZZ);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP1  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP2  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_TZNP3  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_TZNP3);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ZOP1   ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ZOP1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN1  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMIN2  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMIN2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX1  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_UMAX2  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UMAX2);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR1  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR1);
+                else if (current_ekran.index_position == INDEX_ML_CTRUROV_STARTED_FROM_ACHR2  ) maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_ACHR2);
+                else
+                {
+                  for (size_t n_UP = 0; n_UP < NUMBER_UP; n_UP++)
+                  {
+                    if (current_ekran.index_position == (INDEX_ML_CTRUROV_STARTED_FROM_UP1 + n_UP))
+                    {
+                      maska = MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_UP1 + n_UP);
+                      break;
+                    }
+                  }
+                }
                 
                 //Міняємо на протилежний відповідний біт для вибраної позиції
                 edition_settings.control_urov ^= maska;
@@ -15867,6 +18898,13 @@ void main_manu_function(void)
                       (current_ekran.position_cursor_x > COL_SETPOINT_UMAX2_END))
                     current_ekran.position_cursor_x = COL_SETPOINT_UMAX2_END;
                 }
+                else if(current_ekran.index_position == INDEX_ML_STP_KP_UMAX)
+                {
+                  if (current_ekran.position_cursor_x == COL_SETPOINT_KP_UMAX_COMMA )current_ekran.position_cursor_x--;
+                  if ((current_ekran.position_cursor_x < COL_SETPOINT_KP_UMAX_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_SETPOINT_KP_UMAX_END))
+                    current_ekran.position_cursor_x = COL_SETPOINT_KP_UMAX_END;
+                }
 
                 //Формуємо екран уставок Umax
                 int group = (current_ekran.current_level - EKRAN_SETPOINT_UMAX_GROUP1);
@@ -15912,7 +18950,157 @@ void main_manu_function(void)
                 //Формуємо екран управлінської інформації для Umax
                  make_ekran_control_Umax();
               }
-              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)
+              else if(
+                      (current_ekran.current_level >= EKRAN_SETPOINT_UP_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_SETPOINT_UP_GROUP4)
+                     )   
+              {
+                uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_SETPOINT_UP;
+                
+                if(_n_index == INDEX_ML_STP_UP)
+                {
+                  uint32_t _n_UP = current_ekran.index_position / MAX_ROW_FOR_SETPOINT_UP;
+                  int32_t begin, comma, end;
+                  switch (current_settings.ctrl_UP_input[_n_UP])
+                  {
+                  case UP_CTRL_Ia_Ib_Ic:
+                  case UP_CTRL_Ia:
+                  case UP_CTRL_Ib:
+                  case UP_CTRL_Ic:
+                  case UP_CTRL_I1:
+                  case UP_CTRL_I2:
+                  case UP_CTRL_I04:
+                  case UP_CTRL_3I0_r:
+                    {
+                      begin = COL_SETPOINT_UP_I_BEGIN;
+                      comma = COL_SETPOINT_UP_I_COMMA;
+                      end = COL_SETPOINT_UP_I_END;
+                      break;
+                    }
+                  case UP_CTRL_3I0:
+                  case UP_CTRL_3I0_others:
+                    {
+                      begin = COL_SETPOINT_UP_3I0_BEGIN;
+                      comma = COL_SETPOINT_UP_3I0_COMMA;
+                      end = COL_SETPOINT_UP_3I0_END;
+                      break;
+                    }
+                  case UP_CTRL_Ua_Ub_Uc:
+                  case UP_CTRL_Ua:
+                  case UP_CTRL_Ub:
+                  case UP_CTRL_Uc:
+                  case UP_CTRL_U1:
+                  case UP_CTRL_U2:
+                  case UP_CTRL_3U0:
+                    {
+                      begin = COL_SETPOINT_UP_U_BEGIN;
+                      comma = COL_SETPOINT_UP_U_COMMA;
+                      end = COL_SETPOINT_UP_U_END;
+                      break;
+                    }
+                  case UP_CTRL_P:
+                  case UP_CTRL_Q:
+                    {
+                      begin = COL_SETPOINT_UP_PQ_BEGIN - 1;
+                      comma = COL_SETPOINT_UP_PQ_COMMA;
+                      end = COL_SETPOINT_UP_PQ_END;
+                      break;
+                    }
+                  case UP_CTRL_S:
+                    {
+                      begin = COL_SETPOINT_UP_S_BEGIN;
+                      comma = COL_SETPOINT_UP_S_COMMA;
+                      end = COL_SETPOINT_UP_S_END;
+                      break;
+                    }
+                  default:
+                    {
+                      //Теоретично цього ніколи не мало б бути
+                      total_error_sw_fixed(97);
+                    }
+                  }
+                    
+                  if (current_ekran.position_cursor_x == comma )current_ekran.position_cursor_x--;
+                  if ((current_ekran.position_cursor_x < begin) ||
+                      (current_ekran.position_cursor_x > end))
+                    current_ekran.position_cursor_x = end;
+                }
+                else if(_n_index == INDEX_ML_STP_UP_KP)
+                {
+                  if (current_ekran.position_cursor_x == COL_SETPOINT_UP_KP_COMMA )current_ekran.position_cursor_x--;
+                  if ((current_ekran.position_cursor_x < COL_SETPOINT_UP_KP_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_SETPOINT_UP_KP_END))
+                    current_ekran.position_cursor_x = COL_SETPOINT_UP_KP_END;
+                }
+
+                //Формуємо екран уставок УЗ
+                int group = (current_ekran.current_level - EKRAN_SETPOINT_UP_GROUP1);
+                make_ekran_setpoint_UP(group);
+              }
+              else if(
+                      (current_ekran.current_level >= EKRAN_TIMEOUT_UP_GROUP1) &&
+                      (current_ekran.current_level <= EKRAN_TIMEOUT_UP_GROUP4)
+                     )  
+              {
+                uint32_t _n_index = current_ekran.index_position % MAX_ROW_FOR_TIMEOUT_UP;
+
+                if(_n_index == INDEX_ML_TMOUP)
+                {
+                  if (current_ekran.position_cursor_x == COL_TMO_UP_COMMA )current_ekran.position_cursor_x--;
+                  if ((current_ekran.position_cursor_x < COL_TMO_UP_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_TMO_UP_END))
+                    current_ekran.position_cursor_x = COL_TMO_UP_END;
+                }
+
+                //Формуємо екран витримок УЗ
+                int group = (current_ekran.current_level - EKRAN_TIMEOUT_UP_GROUP1);
+                make_ekran_timeout_UP(group);
+              }
+              else if(current_ekran.current_level == EKRAN_CONTROL_UP)
+              {
+                uint32_t n_UP = current_ekran.index_position / (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I);
+                uint32_t n_index = current_ekran.index_position % (_CTR_UP_NEXT_BIT - _CTR_UP_PART_I);
+                if (n_index == CTR_UP_CTRL_INPUT)
+                {
+                  uint32_t ctrl_maska = MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT     - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
+                                        MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT    - (_CTR_UP_PART_II - _CTR_UP_PART_I)) |
+                                        MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));  
+                  edition_settings.control_UP &= (uint32_t)(~ctrl_maska);
+                  
+                  do
+                  {
+                    if (--edition_settings.ctrl_UP_input[n_UP] < 0) edition_settings.ctrl_UP_input[n_UP] = _UP_CTRL_NUMBER - 1;
+                  }
+                  while(
+                        ((edition_settings.ctrl_UP_input[n_UP] == UP_CTRL_I04  ) && ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)) ||
+                        ((edition_settings.ctrl_UP_input[n_UP] == UP_CTRL_3I0_r) && ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)) ||
+                        (
+                         (
+                          (edition_settings.ctrl_UP_input[n_UP] == UP_CTRL_U1) ||
+                          (edition_settings.ctrl_UP_input[n_UP] == UP_CTRL_U2)
+                         )
+                         &&
+                         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+                        )
+                       ); 
+                }
+                else
+                {
+                  unsigned int maska = 0;
+          
+                  //Виділяємо, який біт треба міняти
+                  if (n_index == CTR_UP_STATE_BIT) maska = MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));
+                  else if (n_index == CTR_UP_OR_AND_BIT ) maska = MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_OR_AND_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));
+                  else if (n_index == CTR_UP_MORE_LESS_BIT ) maska = MASKA_FOR_BIT(n_UP*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_MORE_LESS_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I));
+                
+                  //Міняємо на протилежний відповідний біт для вибраної позиції
+                  edition_settings.control_UP ^= maska;
+                }
+
+                //Формуємо екран управлінської інформації для УЗ
+                make_ekran_control_UP();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_SETPOINT)
               {
                 if(current_ekran.index_position == INDEX_ML_T0)
                 {
@@ -15940,6 +19128,17 @@ void main_manu_function(void)
                 }
                 //Формуємо екран відображення інформації по трансформаторах
                 make_ekran_transformator();
+              }
+              else if(current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL)
+              {
+                //Виділяємо, який біт треба міняти
+                unsigned int maska = (1 << current_ekran.index_position);
+                
+                //Міняємо на протилежний відповідний біт для вибраної позиції
+                edition_settings.control_transformator ^= maska;
+
+                //Формуємо екран відображення налаштувань меню "Трансформатор"
+                make_ekran_transformator_control();
               }
               else if(current_ekran.current_level == EKRAN_SETPOINT_SWITCH)
               {
@@ -16148,7 +19347,12 @@ void main_manu_function(void)
 
                 make_ekran_type_output_uvv();
               }
-              else if(current_ekran.current_level == EKRAN_ADDRESS)
+              else if(current_ekran.current_level == EKRAN_TYPE_BUTTON_UVV)
+              {
+                edition_settings.buttons_mode ^= (1 << current_ekran.index_position);
+                make_ekran_type_button_uvv();
+              }
+              else if(current_ekran.current_level == EKRAN_ADDRESS_RS485)
               {
                   if ((current_ekran.position_cursor_x < COL_ADDRESS_BEGIN) ||
                       (current_ekran.position_cursor_x > COL_ADDRESS_END))
@@ -16164,6 +19368,134 @@ void main_manu_function(void)
                   current_ekran.position_cursor_x = COL_TIMEOUT_INTERFACE_END;
                 //Формуємо екран інформації по time-out наступного символу
                 make_ekran_timeout_interface();
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if(current_ekran.current_level == EKRAN_SETTING_NETWORK_LAYER_ETHERNET)
+              {
+                if (
+                    (current_ekran.index_position == INDEX_ML_NL_IPV4) ||
+                    (current_ekran.index_position == INDEX_ML_NL_GATEWAY)
+                   )   
+                {
+                  if ((current_ekran.position_cursor_x < COL_IP4_GATEWAY_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_GATEWAY_END))
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_END;
+
+                  size_t index = (current_ekran.position_cursor_x - COL_IP4_GATEWAY_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                  if (current_ekran.position_cursor_x == (COL_IP4_GATEWAY_BEGIN + (3 + 1)*(index + 1) - 1)) current_ekran.position_cursor_x--;
+
+                  if ((current_ekran.position_cursor_x < COL_IP4_GATEWAY_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_GATEWAY_END))
+                    current_ekran.position_cursor_x = COL_IP4_GATEWAY_END;
+                }
+                else if (current_ekran.index_position == INDEX_ML_NL_MASK)
+                {
+                  if ((current_ekran.position_cursor_x < COL_MASK_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_MASK_END))
+                    current_ekran.position_cursor_x = COL_MASK_END;
+                }
+                //Формуємо екран інфтрмації по налаштуваннях мережевого рівня Ethernet
+                make_ekran_settings_network_layer_Ethernet();
+              }
+              else if(current_ekran.current_level == EKRAN_SYNCHRO)
+              {
+                if (current_ekran.index_position == INDEX_ML_SYN_IPV4)
+                {
+                  if ((current_ekran.position_cursor_x < COL_IP4_SERVER_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_SERVER_END))
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_END;
+
+                  size_t index = (current_ekran.position_cursor_x - COL_IP4_SERVER_BEGIN) >> 2; /*ділення на 4, бо ХХХ. - це чотири цифри*/
+                  if (current_ekran.position_cursor_x == (COL_IP4_SERVER_BEGIN + (3 + 1)*(index + 1) - 1)) current_ekran.position_cursor_x--;
+
+                  if ((current_ekran.position_cursor_x < COL_IP4_SERVER_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_IP4_SERVER_END))
+                    current_ekran.position_cursor_x = COL_IP4_SERVER_END;
+                }
+                else if (current_ekran.index_position == INDEX_ML_SYN_PORT)
+                {
+                  if ((current_ekran.position_cursor_x < COL_PORT_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_PORT_END))
+                    current_ekran.position_cursor_x = COL_PORT_END;
+                }
+                else if (current_ekran.index_position == INDEX_ML_SYN_PERIOD)
+                {
+                  if ((current_ekran.position_cursor_x < COL_PERIOD_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_PEDIOD_END))
+                    current_ekran.position_cursor_x = COL_PEDIOD_END;
+                }
+                //Формуємо екран інфтрмації
+                make_ekran_settings_synchro();
+              }
+#endif              
+              else if(current_ekran.current_level == EKRAN_TIME_ZONE)
+              {
+                if (current_ekran.index_position == INDEX_ML_TIME_ZONE)
+                {
+                  if (--edition_settings.time_zone < TIME_ZONE_MIN) edition_settings.time_zone = TIME_ZONE_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST)
+                {
+                  //Міняємо на протилежний відповідний біт для вибраної позиції
+                  edition_settings.dst ^= MASKA_FOR_BIT(N_BIT_TZ_DST);
+                }
+
+                //Формуємо екран
+                make_ekran_timezone_dst();
+              }
+              else if(current_ekran.current_level == EKRAN_DST_RULE)
+              {
+                uint32_t *p_rule_target = (position_in_current_level_menu[previous_level_in_current_level_menu[EKRAN_DST_RULE]] == INDEX_ML_CHDT_DST_ON) ? &edition_settings.dst_on_rule : &edition_settings.dst_off_rule;
+                unsigned int pos, shift;
+                unsigned int min, max;
+
+                if (current_ekran.index_position == INDEX_ML_DST_MM)
+                {
+                  pos = POS_MM;
+                  shift = SHIFT_MM;
+                  
+                  min = DST_RULE_MM_MIN;
+                  max = DST_RULE_MM_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_DOW)
+                {
+                  pos = POS_DOW;
+                  shift = SHIFT_DOW;
+                  
+                  min = DST_RULE_DOW_MIN;
+                  max = DST_RULE_DOW_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_WR)
+                {
+                  pos = POS_WR;
+                  shift = SHIFT_WR;
+                  
+                  min = DST_RULE_DR_MIN;
+                  max = DST_RULE_DR_MAX;
+                }
+                else if (current_ekran.index_position == INDEX_ML_DST_HH)
+                {
+                  pos = POS_HH;
+                  shift = SHIFT_HH;
+                  
+                  min = DST_RULE_HH_MIN;
+                  max = DST_RULE_HH_MAX;
+                }
+                else
+                {
+                  //Теоретично цього ніколи не мало б бути
+                  total_error_sw_fixed(220);
+                }
+                
+                int32_t value = (*p_rule_target >> pos) & ((1 << shift) - 1);
+                if (--value < (int)min) value = max;
+                
+                uint32_t bit_maska = ((1u << (pos + shift)) - 1) - ((1u << pos) - 1);
+                *p_rule_target &= ~bit_maska;
+                *p_rule_target |= value << pos;
+
+                //Формуємо екран
+                make_ekran_dst_rule(*p_rule_target);
               }
               else if(current_ekran.current_level == EKRAN_GENERAL_PICKUPS_EL)
               {
@@ -16242,6 +19574,45 @@ void main_manu_function(void)
                 //Формуємо екран таймерів опреділюваних функцій
                 make_ekran_timeout_df(current_ekran.current_level - EKRAN_TIMEOUT_DF1);
               }
+              else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= (EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1)))
+              {
+                int32_t index_position = current_ekran.index_position;
+                int32_t value = (edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] >> (16*index_position)) & 0xffff;
+                  
+                value--;
+                if (
+                    ((current_settings.control_zz & CTR_ZZ1_TYPE) != 0) &&
+                    (index_position == INDEX_ML_LIST_SOURCE_INPUT_TF)
+                   )
+                {
+                  while(
+                        (value == (1 + RANG_PO_NZZ)) ||
+                        (value == (1 + RANG_NZZ)) ||
+                        (value == (1 + RANG_SECTOR_NZZ))
+                       ) 
+                  {
+                    value--;
+                  }
+                }
+
+                if (value < 0) value = max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION - 1][index_position] - 1;
+                for (intptr_t i = (TOTAL_NUMBER_PROTECTION - 1); i >= 0; i--)
+                {
+                  if (
+                      ((current_settings.configuration & (1 << i)) == 0) &&
+                      ((uint32_t)value >= max_value_for_tf[1 + i - 1][index_position]) &&
+                      ((uint32_t)value <= max_value_for_tf[1 + i    ][index_position])
+                     ) 
+                  {
+                    value = max_value_for_tf[1 + i - 1][index_position] - 1;
+                  }
+                }
+                edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] &= (uint32_t)(~(0xffff << (16*index_position)));
+                edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] |= ((value & 0xffff) << (16*index_position));
+
+                //Формуємо екран
+                make_ekran_list_source_tf();
+              }
               else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
               {
                 if(current_ekran.index_position == INDEX_ML_TMOPREFAULT)
@@ -16306,6 +19677,7 @@ void main_manu_function(void)
               if (current_ekran.current_level == EKRAN_RESURS)
               {
                 if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_RESURS) current_ekran.index_position = 0;
+                current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                 position_in_current_level_menu[EKRAN_RESURS] = current_ekran.index_position;
                 //Формуємо екран відображення лічильників ресурсу
                 make_ekran_resurs();
@@ -16394,7 +19766,9 @@ void main_manu_function(void)
               {
                 if(current_ekran.current_level == EKRAN_RESURS)
                 {
-                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_RESURS - 1;
+                  current_ekran.index_position -= (MAX_ROW_LCD >> 1);
+                  if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_RESURS - 1;
+                  current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                   position_in_current_level_menu[EKRAN_RESURS] = current_ekran.index_position;
                   //Формуємо екран відображення лічильників ресурсу
                   make_ekran_resurs();
@@ -16411,7 +19785,9 @@ void main_manu_function(void)
               {
                 if(current_ekran.current_level == EKRAN_RESURS)
                 {
-                  if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_RESURS) current_ekran.index_position =  0;
+                  current_ekran.index_position += (MAX_ROW_LCD >> 1);
+                  if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_RESURS) current_ekran.index_position =  0;
+                  current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD - 1)) << (POWER_MAX_ROW_LCD - 1);
                   position_in_current_level_menu[EKRAN_RESURS] = current_ekran.index_position;
                   //Формуємо екран відображення лічильників ресурсу
                   make_ekran_resurs();
@@ -16442,8 +19818,43 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_INPUT_6:
     case EKRAN_RANGUVANNJA_INPUT_7:
     case EKRAN_RANGUVANNJA_INPUT_8:
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )
+
     case EKRAN_RANGUVANNJA_INPUT_9:
     case EKRAN_RANGUVANNJA_INPUT_10:
+    case EKRAN_RANGUVANNJA_INPUT_11:
+    case EKRAN_RANGUVANNJA_INPUT_12:
+    case EKRAN_RANGUVANNJA_INPUT_13:
+    case EKRAN_RANGUVANNJA_INPUT_14:
+    case EKRAN_RANGUVANNJA_INPUT_15:
+    case EKRAN_RANGUVANNJA_INPUT_16:
+
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
+
+    case EKRAN_RANGUVANNJA_INPUT_17:
+    case EKRAN_RANGUVANNJA_INPUT_18:
+    case EKRAN_RANGUVANNJA_INPUT_19:
+    case EKRAN_RANGUVANNJA_INPUT_20:
+
+#endif
+
+#endif
+
     case EKRAN_RANGUVANNJA_OUTPUT_1:
     case EKRAN_RANGUVANNJA_OUTPUT_2:
     case EKRAN_RANGUVANNJA_OUTPUT_3:
@@ -16453,7 +19864,40 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_OUTPUT_7:
     case EKRAN_RANGUVANNJA_OUTPUT_8:
     case EKRAN_RANGUVANNJA_OUTPUT_9:
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )
+
     case EKRAN_RANGUVANNJA_OUTPUT_10:
+    case EKRAN_RANGUVANNJA_OUTPUT_11:
+    case EKRAN_RANGUVANNJA_OUTPUT_12:
+    case EKRAN_RANGUVANNJA_OUTPUT_13:
+    case EKRAN_RANGUVANNJA_OUTPUT_14:
+    case EKRAN_RANGUVANNJA_OUTPUT_15:
+    case EKRAN_RANGUVANNJA_OUTPUT_16:
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )
+
+    case EKRAN_RANGUVANNJA_OUTPUT_17:
+    case EKRAN_RANGUVANNJA_OUTPUT_18:
+    case EKRAN_RANGUVANNJA_OUTPUT_19:
+    case EKRAN_RANGUVANNJA_OUTPUT_20:
+      
+#endif
+
+#endif
+
     case EKRAN_RANGUVANNJA_LED_1:
     case EKRAN_RANGUVANNJA_LED_2:
     case EKRAN_RANGUVANNJA_LED_3:
@@ -16462,8 +19906,19 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_LED_6:
     case EKRAN_RANGUVANNJA_LED_7:
     case EKRAN_RANGUVANNJA_LED_8:
+    case EKRAN_RANGUVANNJA_LED_9:
+    case EKRAN_RANGUVANNJA_LED_10:
+    case EKRAN_RANGUVANNJA_LED_11:
+    case EKRAN_RANGUVANNJA_LED_12:
+    case EKRAN_RANGUVANNJA_LED_13:
+    case EKRAN_RANGUVANNJA_LED_14:
+    case EKRAN_RANGUVANNJA_LED_15:
+    case EKRAN_RANGUVANNJA_LED_16:
+    case EKRAN_RANGUVANNJA_LED_17:
     case EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR:
     case EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR:
+    case EKRAN_RANGUVANNJA_OFF_CB:
+    case EKRAN_RANGUVANNJA_ON_CB:
     case EKRAN_RANGUVANNJA_DF1_PLUS:
     case EKRAN_RANGUVANNJA_DF1_MINUS:
     case EKRAN_RANGUVANNJA_DF1_BLK:
@@ -16550,6 +20005,12 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_BUTTON_4:
     case EKRAN_RANGUVANNJA_BUTTON_5:
     case EKRAN_RANGUVANNJA_BUTTON_6:
+      
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+    case EKRAN_LN_FOR_IEC61850_RANG_SMALL:
+    case EKRAN_LN_FOR_IEC61850_RANG:
+#endif
+      
       {
         //Очищаємо всі біти краім упралінських
         unsigned int maska_keyboard_bits = (1<<BIT_KEY_ENTER)| (1<<BIT_KEY_ESC)|(1<<BIT_REWRITE);
@@ -16566,18 +20027,100 @@ void main_manu_function(void)
           //Пріоритет стоїть на обновлені екрану
           if((new_state_keyboard & (1<<BIT_REWRITE)) !=0)
           {
-            if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_10))
+            if(
+               ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) 
+               ||
+               ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST)) 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+               ||
+               (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)  
+#endif
+              )   
             {
-              if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_INPUT) current_ekran.index_position = 0;
+              unsigned int temp_state[N_SMALL];
+#if (MODYFIKACIA_VERSII_PZ >= 10)              
+              int type_LN = -1;
+              int n_LN = -1;
+#endif
+              
+              if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_buttons :  edition_settings.ranguvannja_buttons;
+                for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i];
+              }
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_inputs :  edition_settings.ranguvannja_inputs;
+                for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + i];
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+              {
+                int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL];
+                if ((prev_ekran >= EKRAN_IN_GOOSE1) && (prev_ekran <= EKRAN_IN_MMS4))
+                {
+                  int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                  prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                  if (
+                      (n_out_in >= 0) &&
+                      ((prev_ekran >= EKRAN_LIST_IN_GOOSE) || (prev_ekran <= EKRAN_LIST_IN_MMS))
+                     )   
+                  {
+                    n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_LN >= 0) &&
+                        (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
+                       )   
+                    {
+                      type_LN = position_in_current_level_menu[prev_ekran];
+                        
+                      if(
+                         (type_LN >= 0)
+                         &&
+                         (
+                          ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (n_LN < N_IN_GOOSE) && (n_out_in < N_IN_GOOSE_MMS_OUT)) ||
+                          ((type_LN == INDEX_TYPE_IEC61850_IN_MMS  ) && (n_LN < N_IN_MMS  ) && (n_out_in < N_IN_GOOSE_MMS_OUT))
+                         ) 
+                        ) 
+                      {
+                        uint32_t *p_rang;
+                        switch (type_LN)
+                        {
+                        case 0:
+                          {
+                            p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_In_GOOSE[n_LN][n_out_in] : edition_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                            break;
+                          }
+                        case 1:
+                          {
+                            p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_In_MMS[n_LN][n_out_in] : edition_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                            break;
+                          }
+                        }
+                          
+                        for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[i];
+                      }
+                      else total_error_sw_fixed(122);
+                    }
+                    else total_error_sw_fixed(121);
+                      
+                  }
+                  else total_error_sw_fixed(120);
+                }
+                else total_error_sw_fixed(119);
+              }
+#endif
+
+              if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL) current_ekran.index_position = 0;
               if(current_ekran.edition == 0)
               {
-                unsigned int temp_state[N_SMALL];
-                temp_state[0] = current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ];
-                temp_state[1] = current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1];
-                
                 if (
                     (temp_state[0] == 0) &&
-                    (temp_state[1] == 0)
+                    (temp_state[1] == 0) &&
+                    (temp_state[2] == 0)
                    ) current_ekran.index_position = 0;
                 else
                 {
@@ -16586,7 +20129,7 @@ void main_manu_function(void)
                   while ((temp_state[current_ekran.index_position >> 5] & (1<<(current_ekran.index_position  & 0x1f))) == 0)
                   {
                     current_ekran.index_position++;
-                    if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_INPUT) current_ekran.index_position = 0;
+                    if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL) current_ekran.index_position = 0;
                   }
                 }
               }
@@ -16599,8 +20142,8 @@ void main_manu_function(void)
                 };
 //                EL_FILTER_STRUCT el_filter[NUMBER_DEFINED_ELEMENTS] =
 //                {
-//                  {1, RANG_INPUT_DF1_IN , RANG_INPUT_DF8_IN   , 1, current_settings.number_defined_df },
-//                  {1, RANG_INPUT_DT1_SET, RANG_INPUT_DT4_RESET, 2, current_settings.number_defined_dt },
+//                  {1, RANG_SMALL_DF1_IN , RANG_SMALL_DF8_IN   , 1, current_settings.number_defined_df },
+//                  {1, RANG_SMALL_DT1_SET, RANG_SMALL_DT4_RESET, 2, current_settings.number_defined_dt },
 //                  {0, 0                 , 0                   , 1, current_settings.number_defined_and},
 //                  {0, 0                 , 0                   , 1, current_settings.number_defined_or },
 //                  {0, 0                 , 0                   , 1, current_settings.number_defined_xor},
@@ -16614,223 +20157,291 @@ void main_manu_function(void)
                                                                      add_filter,
                                                                      /*el_filter,*/
                                                                      1,
-                                                                     NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_APV_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_UROV_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_VMP_SIGNAL_FOR_RANG_INPUT,
-                                                                     NUMBER_EL_SIGNAL_FOR_RANG_INPUT
+                                                                     NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_APV_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_UROV_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_UP_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_VMP_SIGNAL_FOR_RANG_SMALL,
+                                                                     NUMBER_EL_SIGNAL_FOR_RANG_SMALL
                                                                     );
+                  
+                    //Перевіряємо режим рооботи функціональної кнопки (якщо іде редагування ФК)
+                    if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+                    {
+                      uint32_t mode = (current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+                      if (_CHECK_SET_BIT(buttons_mode[mode], current_ekran.index_position) == 0)
+                      {
+                        found_new_index = 0;
+                        current_ekran.index_position++;
+                      }
+                    }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                    {
+                      if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS))
+                      {
+                        if (
+                            (_CHECK_SET_BIT(rang_iec61850_blocks[type_LN], current_ekran.index_position) == 0)
+                            ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (current_ekran.index_position == (RANG_SMALL_BLOCK_IN_GOOSE1 + n_LN)))
+                            ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS) && (current_ekran.index_position == (RANG_SMALL_BLOCK_IN_MMS1 + n_LN)))
+                           )   
+                        {
+                          found_new_index = 0;
+                          current_ekran.index_position++;
+                        }
+                      }
+                      else total_error_sw_fixed(181);
+                    }
+#endif                    
+                    
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
-                    if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_INPUT)
+                    if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)
                     {
                       found_new_index = 0;
                       current_ekran.index_position = 0;
                     }
                 }
               }
+              
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
               //Формуємо екран відображення зранжованих функцій
-              make_ekran_set_function_in_input(current_ekran.current_level);
-            }
-            else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
-            {
-              if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_BUTTON) current_ekran.index_position = 0;
-              if(current_ekran.edition == 0)
-              {
-                unsigned int temp_state = current_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1];
-                if (temp_state == 0) current_ekran.index_position = 0;
-                else
-                {
-                  while ((temp_state & (1<<current_ekran.index_position)) ==0)
-                  {
-                    current_ekran.index_position++;
-                    if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_BUTTON) current_ekran.index_position = 0;
-                  }
-                }
-              }
-              else
-              {
-                unsigned int found_new_index = 0;
-                int add_filter[0 + 1] = 
-                {
-                  -1 /*признак завершення масиву*/
-                };
-//                EL_FILTER_STRUCT el_filter[NUMBER_DEFINED_ELEMENTS] =
-//                {
-//                  {1, RANG_BUTTON_DF1_IN , RANG_BUTTON_DF8_IN   , 1, current_settings.number_defined_df },
-//                  {1, RANG_BUTTON_DT1_SET, RANG_BUTTON_DT4_RESET, 2, current_settings.number_defined_dt },
-//                  {0, 0                  , 0                    , 1, current_settings.number_defined_and},
-//                  {0, 0                  , 0                    , 1, current_settings.number_defined_or },
-//                  {0, 0                  , 0                    , 1, current_settings.number_defined_xor},
-//                  {0, 0                  , 0                    , 1, current_settings.number_defined_not}
-//                };
-                
-                //Перевіряємо, чи даний індекс функції присутній у даній конфігурації 
-                while (found_new_index == 0)
-                {
-                  check_current_index_is_presented_in_configuration(&found_new_index,
-                                                                     add_filter,
-                                                                     /*el_filter,*/
-                                                                     1,
-                                                                     NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_APV_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON,
-                                                                     NUMBER_EL_SIGNAL_FOR_RANG_BUTTON
-                                                                    );
-                    //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
-                    if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_BUTTON)
-                    {
-                      found_new_index = 0;
-                      current_ekran.index_position = 0;
-                    }
-                }
-              }
-              position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
-              //Формуємо екран відображення зранжованих функцій
-              make_ekran_set_function_in_button(current_ekran.current_level);
+              if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN, n_LN
+#endif
+                                                                                                                      );
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN, n_LN
+#endif
+                                                                                                                      );
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state, type_LN, n_LN);
+#endif
             }
             else if(
-                    ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10          )) ||
-                    ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1   ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8              )) ||
+                    ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST        )) ||
+                    ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1   ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17             )) ||
                     ( current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR                                                                 ) ||
                     ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR                                                                ) ||
+                    ( current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB                                                                             ) ||
+                    ( current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB                                                                              ) ||
                     ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK            )) ||
                     ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS)) ||
                     ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8         )) ||
                     ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1       ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8          )) ||
                     ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8         )) ||
                     ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16        ))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    ||
+                    (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)  
+#endif
                    )
             {
-              int max_row_ranguvannja;
+              unsigned int temp_state[N_BIG];
               
-              if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_OUTPUT;
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_LED;
-              else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_ANALOG_REGISTRATOR;
-              else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DIGITAL_REGISTRATOR;
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DF;
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DT;
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_AND;
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_OR;
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_XOR;
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_NOT;
-                
-              if(current_ekran.index_position >= max_row_ranguvannja) current_ekran.index_position = 0;
-              if(current_ekran.edition == 0)
+              if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
               {
-                unsigned int temp_state[N_BIG];
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_outputs :  edition_settings.ranguvannja_outputs;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + i];
+              }
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_leds :  edition_settings.ranguvannja_leds;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + i];
+              }
+              else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_analog_registrator :  edition_settings.ranguvannja_analog_registrator;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+              }
+              else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_digital_registrator :  edition_settings.ranguvannja_digital_registrator;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+              }
+              else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_off_cb :  edition_settings.ranguvannja_off_cb;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+              }
+              else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_on_cb :  edition_settings.ranguvannja_on_cb;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+              }
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
+              {
+                unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_DF1_PLUS;
+                unsigned int type_source = index_in_ekran_list % 3;
+                unsigned int index_of_df = index_in_ekran_list / 3;
+
+                uint32_t *p_rang;
+                switch (type_source) 
+                {
+                case 0:
+                  {
+                    p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_plus :  edition_settings.ranguvannja_df_source_plus;
+                    break;
+                  }
+                case 1:
+                  {
+                    p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_minus :  edition_settings.ranguvannja_df_source_minus;
+                    break;
+                  }
+                case 2:
+                  {
+                    p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_blk :  edition_settings.ranguvannja_df_source_blk;
+                    break;
+                  }
+                default:
+                  {
+                    total_error_sw_fixed(147);
+                  }
+                }
                 
-                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                {
-                  for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1)+i];
-                }
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                {
-                  for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1)+i];
-                }
-                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                {
-                  for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_analog_registrator[i];
-                }
-                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                {
-                  for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_digital_registrator[i];
-                }
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                {
-                  unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_DF1_PLUS;
-                  unsigned int type_source = index_in_ekran_list % 3;
-                  unsigned int index_of_df = index_in_ekran_list / 3;
-    
-                  if(type_source == 0)
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+i];
-                  }
-                  else if(type_source == 1)
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+i];
-                  }
-                  else
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+i];
-                  }
-                }
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                {
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*index_of_df + i];
+              }
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
+              {
                   unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_SET_DT1_PLUS;
                   unsigned int type_source = index_in_ekran_list % 2;
                   unsigned int type_of_action = (index_in_ekran_list / 2) & 0x1;
                   unsigned int index_of_dt = index_in_ekran_list / 4;
-    
-                  if (type_of_action == INDEX_ML_SET_DT)
-                  {
-                    if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT)
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+i];
-                    }
-                    else
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+i];
-                    }
-                  }
-                  else
-                  {
-                    if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT)
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+i];
-                    }
-                    else
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+i];
-                    }
-                  }                    
-                }
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                {
-                  for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1)+i];
-                }
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                {
-                  for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1)+i];
-                }
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                {
-                  for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1)+i];
-                }
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                {
-                  for (unsigned int i = 0; i < N_BIG; i++ ) temp_state[i] = current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1)+i];
-                }
 
+                uint32_t *p_rang;
+                switch (type_of_action) 
+                {
+                case INDEX_ML_SET_DT:
+                  {
+                    switch (type_source)
+                    {
+                    case INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT:
+                      {
+                        p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_set_dt_source_plus :  edition_settings.ranguvannja_set_dt_source_plus;
+                        break;
+                      }
+                    case INDEX_ML_LIST_TYPE_SOURCE_MINUS_DT:
+                      {
+                        p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_set_dt_source_minus :  edition_settings.ranguvannja_set_dt_source_minus;
+                        break;
+                      }
+                    default:
+                      {
+                         total_error_sw_fixed(149);
+                      }
+                    }
+                    break;
+                  }
+                case INDEX_ML_RESET_DT:
+                  {
+                    switch (type_source)
+                    {
+                    case INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT:
+                      {
+                        p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_reset_dt_source_plus :  edition_settings.ranguvannja_reset_dt_source_plus;
+                        break;
+                      }
+                    case INDEX_ML_LIST_TYPE_SOURCE_MINUS_DT:
+                      {
+                        p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_reset_dt_source_minus :  edition_settings.ranguvannja_reset_dt_source_minus;
+                        break;
+                      }
+                    default:
+                      {
+                         total_error_sw_fixed(150);
+                      }
+                    }
+                    break;
+                  }
+                default:
+                  {
+                    total_error_sw_fixed(148);
+                  }
+                }
+                
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*index_of_dt + i];
+              }
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_and :  edition_settings.ranguvannja_d_and;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + i];
+              }
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_or :  edition_settings.ranguvannja_d_or;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + i];
+              }
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_xor :  edition_settings.ranguvannja_d_xor;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + i];
+              }
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
+              {
+                uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_not :  edition_settings.ranguvannja_d_not;
+                for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + i];
+              }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+              {
+                int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG];
+                if ((prev_ekran >= EKRAN_OUT_LAN1) && (prev_ekran <= EKRAN_OUT_LAN4))
+                {
+                  int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                  prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                  if (
+                      (n_out_in >= 0) &&
+                      (prev_ekran == EKRAN_LIST_OUT_LAN)
+                     )   
+                  {
+                    int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                    if((n_LN < N_OUT_LAN) && (n_out_in < N_OUT_LAN_IN))
+                    {
+                      if (current_ekran.edition == 0)
+                      {
+                        uint16_t *p_rang = current_settings.ranguvannja_Out_LAN[n_LN][n_out_in];
+
+                        for (size_t i = 0; i < N_BIG; i++) temp_state[i] = 0;
+                        for (size_t i = 0; i < MAX_FUNCTIONS_IN_OUT_LAN; i++) 
+                        {
+                          uint16_t val = p_rang[i];
+                          if (val > 0)_SET_BIT(temp_state, (p_rang[i] - 1));
+                          else break;
+                        }
+                      }
+                      else
+                      {
+                        for (size_t i = 0; i < N_BIG; i++) temp_state[i] = edit_rang_Out_LAN[i];
+                      }
+                    }
+                    else total_error_sw_fixed(153);
+                  }
+                  else total_error_sw_fixed(152);
+                }
+                else total_error_sw_fixed(151);
+              }
+#endif
+                
+              if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG) current_ekran.index_position = 0;
+              if(current_ekran.edition == 0)
+              {
                 if (
                     (temp_state[0] == 0) &&
                     (temp_state[1] == 0) &&
@@ -16839,7 +20450,8 @@ void main_manu_function(void)
                     (temp_state[4] == 0) &&
                     (temp_state[5] == 0) &&
                     (temp_state[6] == 0) &&
-                    (temp_state[7] == 0) 
+                    (temp_state[7] == 0) &&
+                    (temp_state[8] == 0) 
                    ) current_ekran.index_position = 0;
                 else
                 {
@@ -16848,7 +20460,7 @@ void main_manu_function(void)
                   while ((temp_state[current_ekran.index_position >> 5] & (1<<(current_ekran.index_position  & 0x1f))) ==0)
                   {
                     current_ekran.index_position++;
-                    if(current_ekran.index_position >= max_row_ranguvannja) current_ekran.index_position = 0;
+                    if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG) current_ekran.index_position = 0;
                   }
                 }
               }
@@ -16891,6 +20503,7 @@ void main_manu_function(void)
                                                                      NUMBER_ZOP_SIGNAL_FOR_RANG,
                                                                      NUMBER_UMIN_SIGNAL_FOR_RANG,
                                                                      NUMBER_UMAX_SIGNAL_FOR_RANG,
+                                                                     NUMBER_UP_SIGNAL_FOR_RANG,
                                                                      NUMBER_VMP_SIGNAL_FOR_RANG,
                                                                      NUMBER_EL_SIGNAL_FOR_RANG
                                                                     );
@@ -16898,7 +20511,9 @@ void main_manu_function(void)
                   //Перевіряємо, чи ми не  на індексі функцій із списку загальних, яку треба викинути для даного типу ранжування
                   if (
                       ( current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR ) ||   
-                      ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)   
+                      ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR) ||
+                      ( current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB             ) ||   
+                      ( current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB              )   
                      )   
                   {
                     unsigned int index_deleted_function;
@@ -16907,6 +20522,10 @@ void main_manu_function(void)
                       index_deleted_function = RANG_WORK_A_REJESTRATOR;
                     else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
                       index_deleted_function = RANG_WORK_D_REJESTRATOR;
+                    else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                      index_deleted_function = RANG_WORK_BO;
+                    else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                      index_deleted_function = RANG_WORK_BV;
                     
                     if(index_deleted_function == current_ekran.index_position)
                     {
@@ -17071,66 +20690,67 @@ void main_manu_function(void)
                       current_ekran.index_position++;
                     }
                   }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                  {
-                    unsigned int current_number_output = current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1;
-                      
-                    for (unsigned int i = 0; i < 2; i++)
-                    {
-                      unsigned int index_deleted_function;
-                      unsigned int maska_func[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
-                      unsigned int need_filtration = 0;
-                      //Визначаємо індекс функції, яку потенційно можливо треба буде фільтрувати із сприску
-                      //Першою перевіряємо функцію з меншим номером, щоб за одну операцію циклу  можна було переміститися на функцію, яку можна ранжувати
-                      if (i == 0)
-                      {
-                        index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BO : RANG_WORK_BV;
-                      }
-                      else
-                      {
-                        index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BV : RANG_WORK_BO;
-                      }
-        
-                      //Формуємо маску  для цієї функції
-                      _SET_BIT(maska_func, index_deleted_function);
-        
-                      unsigned int index = 0;
-                      while ((need_filtration == 0) && (index < NUMBER_OUTPUTS))
-                      {
-                        //Пропускаємо текучий номер виходу, бо на ньому дана функція має відображатися під час редагування
-                        if (index != current_number_output)
-                        {
-                          if (
-                              ((current_settings.ranguvannja_outputs[N_BIG*index    ] & maska_func[0]) != 0) ||
-                              ((current_settings.ranguvannja_outputs[N_BIG*index + 1] & maska_func[1]) != 0) ||
-                              ((current_settings.ranguvannja_outputs[N_BIG*index + 2] & maska_func[2]) != 0) ||
-                              ((current_settings.ranguvannja_outputs[N_BIG*index + 3] & maska_func[3]) != 0) ||
-                              ((current_settings.ranguvannja_outputs[N_BIG*index + 4] & maska_func[4]) != 0) ||
-                              ((current_settings.ranguvannja_outputs[N_BIG*index + 5] & maska_func[5]) != 0) ||
-                              ((current_settings.ranguvannja_outputs[N_BIG*index + 6] & maska_func[6]) != 0) ||
-                              ((current_settings.ranguvannja_outputs[N_BIG*index + 7] & maska_func[7]) != 0)
-                             )
-                          {
-                            need_filtration = 1;
-                          }
-                        }
-                        index++;
-                      }
-                       
-                      //У випадку, якщо ввстановлено є ситуація, коли треба фільтрувати функції
-                      if (need_filtration != 0)
-                      {
-                        if(index_deleted_function == current_ekran.index_position)
-                        {
-                          found_new_index = 0;
-                          current_ekran.index_position++;
-                        }
-                      }
-                    }
-                  }
+//                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+//                  {
+//                    unsigned int current_number_output = current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1;
+//                      
+//                    for (unsigned int i = 0; i < 2; i++)
+//                    {
+//                      unsigned int index_deleted_function;
+//                      unsigned int maska_func[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+//                      unsigned int need_filtration = 0;
+//                      //Визначаємо індекс функції, яку потенційно можливо треба буде фільтрувати із сприску
+//                      //Першою перевіряємо функцію з меншим номером, щоб за одну операцію циклу  можна було переміститися на функцію, яку можна ранжувати
+//                      if (i == 0)
+//                      {
+//                        index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BO : RANG_WORK_BV;
+//                      }
+//                      else
+//                      {
+//                        index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BV : RANG_WORK_BO;
+//                      }
+//        
+//                      //Формуємо маску  для цієї функції
+//                      _SET_BIT(maska_func, index_deleted_function);
+//        
+//                      unsigned int index = 0;
+//                      while ((need_filtration == 0) && (index < NUMBER_OUTPUTS))
+//                      {
+//                        //Пропускаємо текучий номер виходу, бо на ньому дана функція має відображатися під час редагування
+//                        if (index != current_number_output)
+//                        {
+//                          if (
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index    ] & maska_func[0]) != 0) ||
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index + 1] & maska_func[1]) != 0) ||
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index + 2] & maska_func[2]) != 0) ||
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index + 3] & maska_func[3]) != 0) ||
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index + 4] & maska_func[4]) != 0) ||
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index + 5] & maska_func[5]) != 0) ||
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index + 6] & maska_func[6]) != 0) ||
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index + 7] & maska_func[7]) != 0) ||
+//                              ((current_settings.ranguvannja_outputs[N_BIG*index + 8] & maska_func[8]) != 0)
+//                             )
+//                          {
+//                            need_filtration = 1;
+//                          }
+//                        }
+//                        index++;
+//                      }
+//                       
+//                      //У випадку, якщо ввстановлено є ситуація, коли треба фільтрувати функції
+//                      if (need_filtration != 0)
+//                      {
+//                        if(index_deleted_function == current_ekran.index_position)
+//                        {
+//                          found_new_index = 0;
+//                          current_ekran.index_position++;
+//                        }
+//                      }
+//                    }
+//                  }
 
                   //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
-                  if(current_ekran.index_position >= max_row_ranguvannja)
+                  if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG)
                   {
                     found_new_index = 0;
                     current_ekran.index_position = 0;
@@ -17139,26 +20759,34 @@ void main_manu_function(void)
               }
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
               //Формуємо екран відображення зранжованих функцій
-              if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OUTPUT);
-              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_LED);
+              if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OUTPUT, temp_state);
+              else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_LED, temp_state);
               else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_A_REG);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_A_REG, temp_state);
               else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_REG);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_REG, temp_state);
+              else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OFF_CB, temp_state);
+              else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_ON_CB, temp_state);
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DF);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DF, temp_state);
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DT);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DT, temp_state);
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_AND);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_AND, temp_state);
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_OR);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_OR, temp_state);
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_XOR);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_XOR, temp_state);
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_NOT);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_NOT, temp_state);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state);
+#endif
             }
             
             //Очищаємо біт обновлення екрану
@@ -17172,19 +20800,118 @@ void main_manu_function(void)
               if(current_ekran.edition == 0)
               {
                 //Копіюємо ранжування у структуру для редагування
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_10))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 {
-                  edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)] =
-                    current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)];
-                  edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)+1] =
-                    current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)+1];
+                  for (unsigned int i = 0; i < N_SMALL; i++)
+                  {
+                    edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + i] =
+                      current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + i];
+                  }
                 }
                 else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                 {
-                  edition_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1] =
-                    current_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1];
+                  for (unsigned int i = 0; i < N_SMALL; i++)
+                  {
+                    edition_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i] =
+                      current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i];
+                  }
                 }
-                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL];
+                  if ((prev_ekran >= EKRAN_IN_GOOSE1) && (prev_ekran <= EKRAN_IN_MMS4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        ((prev_ekran >= EKRAN_LIST_IN_GOOSE) || (prev_ekran <= EKRAN_LIST_IN_MMS))
+                       )   
+                    {
+                      int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                      if (
+                          (n_LN >= 0) &&
+                          (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
+                         )   
+                      {
+                        int type_LN = position_in_current_level_menu[prev_ekran];
+                        
+                        if(
+                           (type_LN >= 0)
+                           &&
+                           (
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (n_LN < N_IN_GOOSE) && (n_out_in < N_IN_GOOSE_MMS_OUT)) ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS  ) && (n_LN < N_IN_MMS  ) && (n_out_in < N_IN_GOOSE_MMS_OUT))
+                           ) 
+                          ) 
+                        {
+                          uint32_t *p_rang, *p_rang_edit;
+                          switch (type_LN)
+                          {
+                          case 0:
+                            {
+                              p_rang      = current_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                              p_rang_edit = edition_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                              break;
+                            }
+                          case 1:
+                            {
+                              p_rang      = current_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                              p_rang_edit = edition_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                              break;
+                            }
+                          }
+                          
+                          for (unsigned int i = 0; i < N_SMALL; i++)  p_rang_edit[i] = p_rang[i];
+                        }
+                        else total_error_sw_fixed(134);
+                      }
+                      else total_error_sw_fixed(133);
+                      
+                    }
+                    else total_error_sw_fixed(132);
+                  }
+                  else total_error_sw_fixed(131);
+                }
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG];
+                if ((prev_ekran >= EKRAN_OUT_LAN1) && (prev_ekran <= EKRAN_OUT_LAN4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        (prev_ekran == EKRAN_LIST_OUT_LAN)
+                       )   
+                    {
+                      int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      if ((n_LN < N_OUT_LAN) && (n_out_in < N_OUT_LAN_IN))
+                      {
+                        for (size_t i = 0; i < N_BIG; i++) edit_rang_Out_LAN[i] = 0;
+
+                        uint16_t *p_rang = current_settings.ranguvannja_Out_LAN[n_LN][n_out_in];
+                        for (size_t i = 0; i < MAX_FUNCTIONS_IN_OUT_LAN; i++) 
+                        {
+                          uint16_t val = p_rang[i];
+                          if (val > 0)_SET_BIT(edit_rang_Out_LAN, (p_rang[i] - 1));
+                          else break;
+                        }
+                      }
+                      else total_error_sw_fixed(172);
+                    }
+                    else total_error_sw_fixed(171);
+                  }
+                  else total_error_sw_fixed(170);
+                }
+#endif
+                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
                 {
                   for (unsigned int i = 0; i < N_BIG; i++)
                   {
@@ -17192,7 +20919,7 @@ void main_manu_function(void)
                       current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + i];
                   }
                 }
-                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
+                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
                 {
                   for (unsigned int i = 0; i < N_BIG; i++)
                   {
@@ -17212,6 +20939,20 @@ void main_manu_function(void)
                   for (unsigned int i = 0; i < N_BIG; i++)
                   {
                     edition_settings.ranguvannja_digital_registrator[i] = current_settings.ranguvannja_digital_registrator[i];
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                {
+                  for (unsigned int i = 0; i < N_BIG; i++)
+                  {
+                    edition_settings.ranguvannja_off_cb[i] = current_settings.ranguvannja_off_cb[i];
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                {
+                  for (unsigned int i = 0; i < N_BIG; i++)
+                  {
+                    edition_settings.ranguvannja_on_cb[i] = current_settings.ranguvannja_on_cb[i];
                   }
                 }
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
@@ -17337,23 +21078,146 @@ void main_manu_function(void)
               else if (current_ekran.edition == 1)
               {
                 //Перевіряємо чи якісь зміни відбулися
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_10))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 {
                   if (
                       (edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ] == current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ]) &&
-                      (edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1] == current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1])
+                      (edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1] == current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1]) &&
+                      (edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 2] == current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 2])
                      )   
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
                 }
                 else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
                 {
-                  if (edition_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1] == 
-                      current_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1])
+                  if (
+                      (edition_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)    ] == current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)    ]) &&
+                      (edition_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + 1] == current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + 1]) &&
+                      (edition_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + 2] == current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + 2])
+                     )   
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
                 }
-                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL];
+                  if ((prev_ekran >= EKRAN_IN_GOOSE1) && (prev_ekran <= EKRAN_IN_MMS4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        ((prev_ekran >= EKRAN_LIST_IN_GOOSE) || (prev_ekran <= EKRAN_LIST_IN_MMS))
+                       )   
+                    {
+                      int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                      if (
+                          (n_LN >= 0) &&
+                          (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
+                         )   
+                      {
+                        int type_LN = position_in_current_level_menu[prev_ekran];
+                        
+                        if(
+                           (type_LN >= 0)
+                           &&
+                           (
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (n_LN < N_IN_GOOSE) && (n_out_in < N_IN_GOOSE_MMS_OUT)) ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS  ) && (n_LN < N_IN_MMS  ) && (n_out_in < N_IN_GOOSE_MMS_OUT))
+                           ) 
+                          ) 
+                        {
+                          uint32_t *p_rang, *p_rang_edit;
+                          switch (type_LN)
+                          {
+                          case 0:
+                            {
+                              p_rang      = current_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                              p_rang_edit = edition_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                              break;
+                            }
+                          case 1:
+                            {
+                              p_rang      = current_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                              p_rang_edit = edition_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                              break;
+                            }
+                          }
+                          
+                          if (
+                              (p_rang_edit[0] == p_rang[0]) &&
+                              (p_rang_edit[1] == p_rang[1]) &&
+                              (p_rang_edit[2] == p_rang[2])
+                             )   
+                          {
+                            current_ekran.edition = 0;
+                          }
+                          else current_ekran.edition = 2;
+                        }
+                        else total_error_sw_fixed(138);
+                      }
+                      else total_error_sw_fixed(137);
+                    }
+                    else total_error_sw_fixed(136);
+                  }
+                  else total_error_sw_fixed(135);
+                }
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG];
+                  if ((prev_ekran >= EKRAN_OUT_LAN1) && (prev_ekran <= EKRAN_OUT_LAN4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        (prev_ekran == EKRAN_LIST_OUT_LAN)
+                       )   
+                    {
+                      int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      if ((n_LN < N_OUT_LAN) && (n_out_in < N_OUT_LAN_IN))
+                      {
+                        unsigned int temp_state[N_BIG];
+                        for (size_t i = 0; i < N_BIG; i++) temp_state[i] = 0;
+                        
+                        uint16_t *p_rang = current_settings.ranguvannja_Out_LAN[n_LN][n_out_in];
+                        for (size_t i = 0; i < MAX_FUNCTIONS_IN_OUT_LAN; i++) 
+                        {
+                          uint16_t val = p_rang[i];
+                          if (val > 0)_SET_BIT(temp_state, (p_rang[i] - 1));
+                          else break;
+                        }
+                        
+                        if (
+                            (edit_rang_Out_LAN[0] == temp_state[0]) &&
+                            (edit_rang_Out_LAN[1] == temp_state[1]) &&
+                            (edit_rang_Out_LAN[2] == temp_state[2]) &&
+                            (edit_rang_Out_LAN[3] == temp_state[3]) &&
+                            (edit_rang_Out_LAN[4] == temp_state[4]) &&
+                            (edit_rang_Out_LAN[5] == temp_state[5]) &&
+                            (edit_rang_Out_LAN[6] == temp_state[6]) &&
+                            (edit_rang_Out_LAN[7] == temp_state[7]) &&
+                            (edit_rang_Out_LAN[8] == temp_state[8])
+                           )   
+                        {
+                          current_ekran.edition = 0;
+                        }
+                        else current_ekran.edition = 2;
+                      }
+                      else total_error_sw_fixed(175);
+                    }
+                    else total_error_sw_fixed(174);
+                  }
+                  else total_error_sw_fixed(173);
+                }
+#endif
+                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
                 {
                   if (
                       (edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1)    ] == current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1)    ]) &&
@@ -17363,12 +21227,13 @@ void main_manu_function(void)
                       (edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 4] == current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 4]) &&
                       (edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 5] == current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 5]) &&
                       (edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 6] == current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 6]) &&
-                      (edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 7] == current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 7])
+                      (edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 7] == current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 7]) &&
+                      (edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 8] == current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + 8])
                      )
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
                 }
-                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
+                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
                 {
                   if (
                       (edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1)    ] == current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1)    ]) &&
@@ -17378,7 +21243,8 @@ void main_manu_function(void)
                       (edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 4] == current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 4]) &&
                       (edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 5] == current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 5]) &&
                       (edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 6] == current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 6]) &&
-                      (edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 7] == current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 7])
+                      (edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 7] == current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 7]) &&
+                      (edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 8] == current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + 8])
                      )
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
@@ -17393,7 +21259,8 @@ void main_manu_function(void)
                       (edition_settings.ranguvannja_analog_registrator[4] == current_settings.ranguvannja_analog_registrator[4]) &&
                       (edition_settings.ranguvannja_analog_registrator[5] == current_settings.ranguvannja_analog_registrator[5]) &&
                       (edition_settings.ranguvannja_analog_registrator[6] == current_settings.ranguvannja_analog_registrator[6]) &&
-                      (edition_settings.ranguvannja_analog_registrator[7] == current_settings.ranguvannja_analog_registrator[7])
+                      (edition_settings.ranguvannja_analog_registrator[7] == current_settings.ranguvannja_analog_registrator[7]) &&
+                      (edition_settings.ranguvannja_analog_registrator[8] == current_settings.ranguvannja_analog_registrator[8])
                      )
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
@@ -17408,7 +21275,40 @@ void main_manu_function(void)
                       (edition_settings.ranguvannja_digital_registrator[4] == current_settings.ranguvannja_digital_registrator[4]) &&
                       (edition_settings.ranguvannja_digital_registrator[5] == current_settings.ranguvannja_digital_registrator[5]) &&
                       (edition_settings.ranguvannja_digital_registrator[6] == current_settings.ranguvannja_digital_registrator[6]) &&
-                      (edition_settings.ranguvannja_digital_registrator[7] == current_settings.ranguvannja_digital_registrator[7])
+                      (edition_settings.ranguvannja_digital_registrator[7] == current_settings.ranguvannja_digital_registrator[7]) &&
+                      (edition_settings.ranguvannja_digital_registrator[8] == current_settings.ranguvannja_digital_registrator[8])
+                     )
+                    current_ekran.edition = 0;
+                  else current_ekran.edition = 2;
+                }
+                else if(current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                {
+                  if (
+                      (edition_settings.ranguvannja_off_cb[0] == current_settings.ranguvannja_off_cb[0]) &&
+                      (edition_settings.ranguvannja_off_cb[1] == current_settings.ranguvannja_off_cb[1]) &&
+                      (edition_settings.ranguvannja_off_cb[2] == current_settings.ranguvannja_off_cb[2]) &&
+                      (edition_settings.ranguvannja_off_cb[3] == current_settings.ranguvannja_off_cb[3]) &&
+                      (edition_settings.ranguvannja_off_cb[4] == current_settings.ranguvannja_off_cb[4]) &&
+                      (edition_settings.ranguvannja_off_cb[5] == current_settings.ranguvannja_off_cb[5]) &&
+                      (edition_settings.ranguvannja_off_cb[6] == current_settings.ranguvannja_off_cb[6]) &&
+                      (edition_settings.ranguvannja_off_cb[7] == current_settings.ranguvannja_off_cb[7]) &&
+                      (edition_settings.ranguvannja_off_cb[8] == current_settings.ranguvannja_off_cb[8])
+                     )
+                    current_ekran.edition = 0;
+                  else current_ekran.edition = 2;
+                }
+                else if(current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                {
+                  if (
+                      (edition_settings.ranguvannja_on_cb[0] == current_settings.ranguvannja_on_cb[0]) &&
+                      (edition_settings.ranguvannja_on_cb[1] == current_settings.ranguvannja_on_cb[1]) &&
+                      (edition_settings.ranguvannja_on_cb[2] == current_settings.ranguvannja_on_cb[2]) &&
+                      (edition_settings.ranguvannja_on_cb[3] == current_settings.ranguvannja_on_cb[3]) &&
+                      (edition_settings.ranguvannja_on_cb[4] == current_settings.ranguvannja_on_cb[4]) &&
+                      (edition_settings.ranguvannja_on_cb[5] == current_settings.ranguvannja_on_cb[5]) &&
+                      (edition_settings.ranguvannja_on_cb[6] == current_settings.ranguvannja_on_cb[6]) &&
+                      (edition_settings.ranguvannja_on_cb[7] == current_settings.ranguvannja_on_cb[7]) &&
+                      (edition_settings.ranguvannja_on_cb[8] == current_settings.ranguvannja_on_cb[8])
                      )
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
@@ -17429,7 +21329,8 @@ void main_manu_function(void)
                         (edition_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+4] == current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+4]) &&
                         (edition_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+5] == current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+5]) &&
                         (edition_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+6] == current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+6]) &&
-                        (edition_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+7] == current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+7])
+                        (edition_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+7] == current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+7]) &&
+                        (edition_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+8] == current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df+8])
                        )
                       current_ekran.edition = 0;
                     else current_ekran.edition = 2;
@@ -17444,7 +21345,8 @@ void main_manu_function(void)
                         (edition_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+4] == current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+4]) &&
                         (edition_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+5] == current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+5]) &&
                         (edition_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+6] == current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+6]) &&
-                        (edition_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+7] == current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+7])
+                        (edition_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+7] == current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+7]) &&
+                        (edition_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+8] == current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df+8])
                        )
                       current_ekran.edition = 0;
                     else current_ekran.edition = 2;
@@ -17459,7 +21361,8 @@ void main_manu_function(void)
                         (edition_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+4] == current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+4]) &&
                         (edition_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+5] == current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+5]) &&
                         (edition_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+6] == current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+6]) &&
-                        (edition_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+7] == current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+7])
+                        (edition_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+7] == current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+7]) &&
+                        (edition_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+8] == current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df+8])
                        )
                       current_ekran.edition = 0;
                     else current_ekran.edition = 2;
@@ -17484,7 +21387,8 @@ void main_manu_function(void)
                           (edition_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+4] == current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+4]) &&
                           (edition_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+5] == current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+5]) &&
                           (edition_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+6] == current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+6]) &&
-                          (edition_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+7] == current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+7])
+                          (edition_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+7] == current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+7]) &&
+                          (edition_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+8] == current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt+8])
                         )
                         current_ekran.edition = 0;
                       else current_ekran.edition = 2;
@@ -17499,7 +21403,8 @@ void main_manu_function(void)
                           (edition_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+4] == current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+4]) &&
                           (edition_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+5] == current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+5]) &&
                           (edition_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+6] == current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+6]) &&
-                          (edition_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+7] == current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+7])
+                          (edition_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+7] == current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+7]) &&
+                          (edition_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+8] == current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt+8])
                         )
                         current_ekran.edition = 0;
                       else current_ekran.edition = 2;
@@ -17517,7 +21422,8 @@ void main_manu_function(void)
                           (edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+4] == current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+4]) &&
                           (edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+5] == current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+5]) &&
                           (edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+6] == current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+6]) &&
-                          (edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+7] == current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+7])
+                          (edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+7] == current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+7]) &&
+                          (edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+8] == current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt+8])
                         )
                         current_ekran.edition = 0;
                       else current_ekran.edition = 2;
@@ -17532,7 +21438,8 @@ void main_manu_function(void)
                           (edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+4] == current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+4]) &&
                           (edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+5] == current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+5]) &&
                           (edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+6] == current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+6]) &&
-                          (edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+7] == current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+7])
+                          (edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+7] == current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+7]) &&
+                          (edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+8] == current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt+8])
                         )
                         current_ekran.edition = 0;
                       else current_ekran.edition = 2;
@@ -17549,7 +21456,8 @@ void main_manu_function(void)
                       (edition_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 4] == current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 4]) &&
                       (edition_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 5] == current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 5]) &&
                       (edition_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 6] == current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 6]) &&
-                      (edition_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 7] == current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 7])
+                      (edition_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 7] == current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 7]) &&
+                      (edition_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 8] == current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + 8])
                      )
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
@@ -17564,7 +21472,8 @@ void main_manu_function(void)
                       (edition_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 4] == current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 4]) &&
                       (edition_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 5] == current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 5]) &&
                       (edition_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 6] == current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 6]) &&
-                      (edition_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 7] == current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 7])
+                      (edition_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 7] == current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 7]) &&
+                      (edition_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 8] == current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + 8])
                      )
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
@@ -17579,7 +21488,8 @@ void main_manu_function(void)
                       (edition_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 4] == current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 4]) &&
                       (edition_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 5] == current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 5]) &&
                       (edition_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 6] == current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 6]) &&
-                      (edition_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 7] == current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 7])
+                      (edition_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 7] == current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 7]) &&
+                      (edition_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 8] == current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + 8])
                      )
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
@@ -17594,7 +21504,8 @@ void main_manu_function(void)
                       (edition_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 4] == current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 4]) &&
                       (edition_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 5] == current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 5]) &&
                       (edition_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 6] == current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 6]) &&
-                      (edition_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 7] == current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 7])
+                      (edition_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 7] == current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 7]) &&
+                      (edition_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 8] == current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + 8])
                      )
                     current_ekran.edition = 0;
                   else current_ekran.edition = 2;
@@ -17608,22 +21519,22 @@ void main_manu_function(void)
                 //Попередньо виставляємо повідомлення, що дані не достовірні
                 current_ekran.edition = 3;
                 //Обновляємо значення
-                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_10))
+                if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
                 {
                   unsigned int* point = edition_settings.ranguvannja_inputs;
                   if (count_number_set_bit(
                                            (point + N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)),
-                                           NUMBER_TOTAL_SIGNAL_FOR_RANG_INPUT
+                                           NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL
                                           ) <= MAX_FUNCTIONS_IN_INPUT)
                   {
                     //Помічаємо, що поле структури зараз буде змінене
                     changed_settings = CHANGED_ETAP_EXECUTION;
 
-                    current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)] = 
-                    edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)];
-
-                    current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)+1] = 
-                    edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)+1];
+                    for (unsigned int i = 0; i < N_SMALL; i++)
+                    {
+                      current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + i] = 
+                      edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + i];
+                    }
 
                     //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                     fix_change_settings(1, 1);
@@ -17635,22 +21546,150 @@ void main_manu_function(void)
                 {
                   unsigned int* point = edition_settings.ranguvannja_buttons;
                   if (count_number_set_bit(
-                                           (point + (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)),
-                                           NUMBER_TOTAL_SIGNAL_FOR_RANG_BUTTON
+                                           (point + N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)),
+                                           NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL
                                           ) <= MAX_FUNCTIONS_IN_DB)
                   {
                     //Помічаємо, що поле структури зараз буде змінене
                     changed_settings = CHANGED_ETAP_EXECUTION;
 
-                    current_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1] = 
-                    edition_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1];
+                    for (unsigned int i = 0; i < N_SMALL; i++)
+                    {
+                      current_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i] = 
+                      edition_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i];
+                    }
                     //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
                     fix_change_settings(1, 1);
                     //Виходимо з режиму редагування
                     current_ekran.edition = 0;
                   }
                 }
-                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL];
+                  if ((prev_ekran >= EKRAN_IN_GOOSE1) && (prev_ekran <= EKRAN_IN_MMS4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        ((prev_ekran >= EKRAN_LIST_IN_GOOSE) || (prev_ekran <= EKRAN_LIST_IN_MMS))
+                       )   
+                    {
+                      int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                      if (
+                          (n_LN >= 0) &&
+                          (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
+                         )   
+                      {
+                        int type_LN = position_in_current_level_menu[prev_ekran];
+                        
+                        if(
+                           (type_LN >= 0)
+                           &&
+                           (
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (n_LN < N_IN_GOOSE) && (n_out_in < N_IN_GOOSE_MMS_OUT)) ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS  ) && (n_LN < N_IN_MMS  ) && (n_out_in < N_IN_GOOSE_MMS_OUT))
+                           ) 
+                          ) 
+                        {
+                          uint32_t *p_rang, *p_rang_edit;
+                          uint32_t max_functions;
+                          switch (type_LN)
+                          {
+                          case 0:
+                            {
+                              max_functions = MAX_FUNCTIONS_IN_IN_GOOSE;
+                              p_rang      = current_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                              p_rang_edit = edition_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                              break;
+                            }
+                          case 1:
+                            {
+                              max_functions = MAX_FUNCTIONS_IN_IN_MMS;
+                              p_rang      = current_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                              p_rang_edit = edition_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                              break;
+                            }
+                          }
+                          
+                          if (count_number_set_bit(p_rang_edit, NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL) <= max_functions)
+                          {
+                            //Помічаємо, що поле структури зараз буде змінене
+                            changed_settings = CHANGED_ETAP_EXECUTION;
+
+                            for (unsigned int i = 0; i < N_SMALL; i++) p_rang[i] = p_rang_edit[i];
+
+                            //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                            fix_change_settings(1, 1);
+                            //Виходимо з режиму редагування
+                            current_ekran.edition = 0;
+                          }
+                        }
+                        else total_error_sw_fixed(142);
+                      }
+                      else total_error_sw_fixed(141);
+                      
+                    }
+                    else total_error_sw_fixed(140);
+                  }
+                  else total_error_sw_fixed(139);                  
+                }
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG];
+                  if ((prev_ekran >= EKRAN_OUT_LAN1) && (prev_ekran <= EKRAN_OUT_LAN4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        (prev_ekran == EKRAN_LIST_OUT_LAN)
+                       )   
+                    {
+                      int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+
+                      if ((n_LN < N_OUT_LAN) && (n_out_in < N_OUT_LAN_IN))
+                      {
+                        if (count_number_set_bit(edit_rang_Out_LAN, NUMBER_TOTAL_SIGNAL_FOR_RANG) <= MAX_FUNCTIONS_IN_OUT_LAN)
+                        {
+                          //Помічаємо, що поле структури зараз буде змінене
+                          changed_settings = CHANGED_ETAP_EXECUTION;
+
+                          uint16_t *p_rang = current_settings.ranguvannja_Out_LAN[n_LN][n_out_in];
+                          for (size_t i = 0; i < MAX_FUNCTIONS_IN_OUT_LAN; i++) p_rang[i] = 0;
+                          
+                          unsigned int n_signals = 0;
+                          for (size_t i = 0; i < NUMBER_TOTAL_SIGNAL_FOR_RANG; i++)
+                          {
+                            if (_CHECK_SET_BIT(edit_rang_Out_LAN, i)) 
+                            {
+                              p_rang[n_signals++] = i + 1;
+                              if (n_signals > MAX_FUNCTIONS_IN_OUT_LAN) total_error_sw_fixed(179);
+                            }
+                          }
+
+                          //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                          fix_change_settings(1, 1);
+                          //Виходимо з режиму редагування
+                          current_ekran.edition = 0;
+                        }
+                      }
+                      else total_error_sw_fixed(178);
+                    }
+                    else total_error_sw_fixed(177);
+                  }
+                  else total_error_sw_fixed(176);                  
+                }
+#endif
+                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
                 {
                   unsigned int* point = edition_settings.ranguvannja_outputs;
                   if (count_number_set_bit(
@@ -17673,7 +21712,7 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
-                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
+                else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
                 {
                   unsigned int* point = edition_settings.ranguvannja_leds;
                   if (count_number_set_bit(
@@ -17732,6 +21771,50 @@ void main_manu_function(void)
                     for (unsigned int i = 0; i < N_BIG; i++)
                     {
                       current_settings.ranguvannja_digital_registrator[i] = edition_settings.ranguvannja_digital_registrator[i];
+                    }
+
+                    //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                    fix_change_settings(1, 1);
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
+                else if( current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                {
+                  unsigned int* point = edition_settings.ranguvannja_off_cb;
+                  if (count_number_set_bit(
+                                           point,
+                                           NUMBER_TOTAL_SIGNAL_FOR_RANG
+                                          ) <= MAX_FUNCTIONS_IN_OFF_CB)
+                  {
+                    //Помічаємо, що поле структури зараз буде змінене
+                    changed_settings = CHANGED_ETAP_EXECUTION;
+
+                    for (unsigned int i = 0; i < N_BIG; i++)
+                    {
+                      current_settings.ranguvannja_off_cb[i] = edition_settings.ranguvannja_off_cb[i];
+                    }
+
+                    //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                    fix_change_settings(1, 1);
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
+                }
+                else if( current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                {
+                  unsigned int* point = edition_settings.ranguvannja_on_cb;
+                  if (count_number_set_bit(
+                                           point,
+                                           NUMBER_TOTAL_SIGNAL_FOR_RANG
+                                          ) <= MAX_FUNCTIONS_IN_ON_CB)
+                  {
+                    //Помічаємо, що поле структури зараз буде змінене
+                    changed_settings = CHANGED_ETAP_EXECUTION;
+
+                    for (unsigned int i = 0; i < N_BIG; i++)
+                    {
+                      current_settings.ranguvannja_on_cb[i] = edition_settings.ranguvannja_on_cb[i];
                     }
 
                     //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
@@ -18002,27 +22085,108 @@ void main_manu_function(void)
             else if (new_state_keyboard == (1<<BIT_KEY_UP))
             {
               //Натиснута кнопка UP
-              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_10))
+              if(
+                 ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) 
+                 ||
+                 ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST)) 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                 ||
+                 (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)  
+#endif
+                )   
               {
+                unsigned int temp_state[N_SMALL];
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                int type_LN = -1;
+                int n_LN = -1;
+#endif
+                
+                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_buttons :  edition_settings.ranguvannja_buttons;
+                  for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_inputs :  edition_settings.ranguvannja_inputs;
+                  for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + i];
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL];
+                  if ((prev_ekran >= EKRAN_IN_GOOSE1) && (prev_ekran <= EKRAN_IN_MMS4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        ((prev_ekran >= EKRAN_LIST_IN_GOOSE) && (prev_ekran <= EKRAN_LIST_OUT_LAN))
+                       )   
+                    {
+                      n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                      if (
+                          (n_LN >= 0) &&
+                          (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
+                         )   
+                      {
+                        type_LN = position_in_current_level_menu[prev_ekran];
+                        
+                        if(
+                           (type_LN >= 0)
+                           &&
+                           (
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (n_LN < N_IN_GOOSE) && (n_out_in < N_IN_GOOSE_MMS_OUT)) ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS  ) && (n_LN < N_IN_MMS  ) && (n_out_in < N_IN_GOOSE_MMS_OUT))
+                           ) 
+                          ) 
+                        {
+                          uint32_t *p_rang;
+                          switch (type_LN)
+                          {
+                          case 0:
+                            {
+                              p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_In_GOOSE[n_LN][n_out_in] : edition_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                              break;
+                            }
+                          case 1:
+                            {
+                              p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_In_MMS[n_LN][n_out_in] : edition_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                              break;
+                            }
+                          }
+                          
+                          for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[i];
+                        }
+                        else total_error_sw_fixed(126);
+                      }
+                      else total_error_sw_fixed(125);
+                    }
+                    else total_error_sw_fixed(124);
+                  }
+                  else total_error_sw_fixed(123);
+                }
+#endif
+
                 if(current_ekran.edition == 0)
                 {
-                  unsigned int temp_state[N_SMALL];
-                  temp_state[0] = current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ];
-                  temp_state[1] = current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1];
-
                   if (
                       (temp_state[0] == 0) &&
-                      (temp_state[1] == 0)
+                      (temp_state[1] == 0) &&
+                      (temp_state[2] == 0)
                      ) current_ekran.index_position = 0;
                   else
                   {
-                    if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_RANGUVANNJA_INPUT - 1;
+                    if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - 1;
                     // (x>>5) аналогічне операції x / 32 - ціла частина від ділення на 32
                     // (x & 0x1f) аналогічне операції x % 32 - остача від ділення на 32
                     while ((temp_state[current_ekran.index_position >> 5] & (1<<(current_ekran.index_position  & 0x1f))) == 0)
                     {
                       current_ekran.index_position--;
-                      if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_RANGUVANNJA_INPUT - 1;
+                      if(current_ekran.index_position < 0) current_ekran.index_position = NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - 1;
                     }
                   }
                 }
@@ -18036,8 +22200,8 @@ void main_manu_function(void)
                   };
 //                  EL_FILTER_STRUCT el_filter[NUMBER_DEFINED_ELEMENTS] =
 //                  {
-//                    {1, RANG_INPUT_DF1_IN , RANG_INPUT_DF8_IN   , 1, current_settings.number_defined_df },
-//                    {1, RANG_INPUT_DT1_SET, RANG_INPUT_DT4_RESET, 2, current_settings.number_defined_dt },
+//                    {1, RANG_SMALL_DF1_IN , RANG_SMALL_DF8_IN   , 1, current_settings.number_defined_df },
+//                    {1, RANG_SMALL_DT1_SET, RANG_SMALL_DT4_RESET, 2, current_settings.number_defined_dt },
 //                    {0, 0                 , 0                   , 1, current_settings.number_defined_and},
 //                    {0, 0                 , 0                   , 1, current_settings.number_defined_or },
 //                    {0, 0                 , 0                   , 1, current_settings.number_defined_xor},
@@ -18045,7 +22209,7 @@ void main_manu_function(void)
 //                  };
                 
                   //Переміщаємося на наступну функцію
-                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_RANGUVANNJA_INPUT - 1;
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - 1;
                   //Перевіряємо, чи даний індекс функції присутній у даній конфігурації 
                   while (found_new_index == 0)
                   {
@@ -18053,272 +22217,291 @@ void main_manu_function(void)
                                                                        add_filter,
                                                                        /*el_filter,*/
                                                                        0,
-                                                                       NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_APV_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_UROV_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_VMP_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_EL_SIGNAL_FOR_RANG_INPUT
+                                                                       NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_APV_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UROV_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UP_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_VMP_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_EL_SIGNAL_FOR_RANG_SMALL
                                                                       );
+
+                    //Перевіряємо режим рооботи функціональної кнопки (якщо іде редагування ФК)
+                    if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+                    {
+                      uint32_t mode = (current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+                      if (_CHECK_SET_BIT(buttons_mode[mode], current_ekran.index_position) == 0)
+                      {
+                        found_new_index = 0;
+                        current_ekran.index_position--;
+                      }
+                    }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                    {
+                      if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS))
+                      {
+                        if (
+                            (_CHECK_SET_BIT(rang_iec61850_blocks[type_LN], current_ekran.index_position) == 0)
+                            ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (current_ekran.index_position == (RANG_SMALL_BLOCK_IN_GOOSE1 + n_LN)))
+                            ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS) && (current_ekran.index_position == (RANG_SMALL_BLOCK_IN_MMS1 + n_LN)))
+                           )   
+                        {
+                          found_new_index = 0;
+                          current_ekran.index_position--;
+                        }
+                      }
+                      else total_error_sw_fixed(182);
+                    }
+#endif
+                    
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
                     if(current_ekran.index_position < 0)
                     {
                       found_new_index = 0;
-                      current_ekran.index_position = MAX_ROW_RANGUVANNJA_INPUT - 1;
+                      current_ekran.index_position = NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - 1;
                     }
                   }
                 }
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
                 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_input(current_ekran.current_level);
-              }
-              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
-              {
-                if(current_ekran.edition == 0)
-                {
-                  unsigned int temp_state = current_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1];
-                  if (temp_state == 0) current_ekran.index_position = 0;
-                  else
-                  {
-                    if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_RANGUVANNJA_BUTTON - 1;
-                    while ((temp_state & (1<<current_ekran.index_position)) ==0)
-                    {
-                      current_ekran.index_position--;
-                      if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_RANGUVANNJA_BUTTON - 1;
-                    }
-                  }
-                }
-                else
-                {
-                  //Редагування
-                  unsigned int found_new_index = 0;
-                  int add_filter[0 + 1] = 
-                  {
-                    -1 /*признак завершення масиву*/
-                  };
-//                  EL_FILTER_STRUCT el_filter[NUMBER_DEFINED_ELEMENTS] =
-//                  {
-//                    {1, RANG_BUTTON_DF1_IN , RANG_BUTTON_DF8_IN   , 1, current_settings.number_defined_df },
-//                    {1, RANG_BUTTON_DT1_SET, RANG_BUTTON_DT4_RESET, 2, current_settings.number_defined_dt },
-//                    {0, 0                  , 0                    , 1, current_settings.number_defined_and},
-//                    {0, 0                  , 0                    , 1, current_settings.number_defined_or },
-//                    {0, 0                  , 0                    , 1, current_settings.number_defined_xor},
-//                    {0, 0                  , 0                    , 1, current_settings.number_defined_not}
-//                  };
-                
-                  //Переміщаємося на наступну функцію
-                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_RANGUVANNJA_BUTTON - 1;
-                  //Перевіряємо, чи даний індекс функції присутній у даній конфігурації 
-                  while (found_new_index == 0)
-                  {
-                    check_current_index_is_presented_in_configuration(&found_new_index,
-                                                                       add_filter,
-                                                                       /*el_filter,*/
-                                                                       0,
-                                                                       NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_APV_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_EL_SIGNAL_FOR_RANG_BUTTON
-                                                                      );
-                    //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
-                    if(current_ekran.index_position < 0)
-                    {
-                      found_new_index = 0;
-                      current_ekran.index_position = MAX_ROW_RANGUVANNJA_BUTTON - 1;
-                    }
-                  }
-                }
-                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
-                
-                //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_button(current_ekran.current_level);
+                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN, n_LN
+#endif
+                                                                                                                        );
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN, n_LN
+#endif
+                                                                                                                        );
+                                                
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state, type_LN, n_LN);
+#endif
               }
               else if(
-                      ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10          )) ||
-                      ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1   ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8              )) ||
+                      ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST        )) ||
+                      ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1   ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17             )) ||
                       ( current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR                                                                 ) ||
                       ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR                                                                ) ||
+                      ( current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB                                                                             ) ||
+                      ( current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB                                                                              ) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK            )) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS)) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8         )) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1       ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8          )) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8         )) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16        ))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    ||
+                    (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)  
+#endif
                      )
               {
-                int max_row_ranguvannja;
-                
-                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_OUTPUT;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_LED;
+                unsigned int temp_state[N_BIG];
+              
+                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_outputs :  edition_settings.ranguvannja_outputs;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_leds :  edition_settings.ranguvannja_leds;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + i];
+                }
                 else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_ANALOG_REGISTRATOR;
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_analog_registrator :  edition_settings.ranguvannja_analog_registrator;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+                }
                 else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DIGITAL_REGISTRATOR;
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_digital_registrator :  edition_settings.ranguvannja_digital_registrator;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+                }
+                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_off_cb :  edition_settings.ranguvannja_off_cb;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+                }
+                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_on_cb :  edition_settings.ranguvannja_on_cb;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+                }
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DF;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DT;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_AND;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_OR;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_XOR;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_NOT;
+                {
+                  unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_DF1_PLUS;
+                  unsigned int type_source = index_in_ekran_list % 3;
+                  unsigned int index_of_df = index_in_ekran_list / 3;
 
+                  uint32_t *p_rang;
+                  switch (type_source) 
+                  {
+                  case 0:
+                    {
+                      p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_plus :  edition_settings.ranguvannja_df_source_plus;
+                      break;
+                    }
+                  case 1:
+                    {
+                      p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_minus :  edition_settings.ranguvannja_df_source_minus;
+                      break;
+                    }
+                  case 2:
+                    {
+                      p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_blk :  edition_settings.ranguvannja_df_source_blk;
+                      break;
+                    }
+                  default:
+                    {
+                      total_error_sw_fixed(147);
+                    }
+                  }
+                
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*index_of_df + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
+                {
+                  unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_SET_DT1_PLUS;
+                  unsigned int type_source = index_in_ekran_list % 2;
+                  unsigned int type_of_action = (index_in_ekran_list / 2) & 0x1;
+                  unsigned int index_of_dt = index_in_ekran_list / 4;
+
+                  uint32_t *p_rang;
+                  switch (type_of_action) 
+                  {
+                  case INDEX_ML_SET_DT:
+                    {
+                      switch (type_source)
+                      {
+                      case INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT:
+                        {
+                          p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_set_dt_source_plus :  edition_settings.ranguvannja_set_dt_source_plus;
+                          break;
+                        }
+                      case INDEX_ML_LIST_TYPE_SOURCE_MINUS_DT:
+                        {
+                          p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_set_dt_source_minus :  edition_settings.ranguvannja_set_dt_source_minus;
+                          break;
+                        }
+                      default:
+                        {
+                           total_error_sw_fixed(160);
+                        }
+                      }
+                      break;
+                    }
+                  case INDEX_ML_RESET_DT:
+                    {
+                      switch (type_source)
+                      {
+                      case INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT:
+                        {
+                          p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_reset_dt_source_plus :  edition_settings.ranguvannja_reset_dt_source_plus;
+                          break;
+                        }
+                      case INDEX_ML_LIST_TYPE_SOURCE_MINUS_DT:
+                        {
+                          p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_reset_dt_source_minus :  edition_settings.ranguvannja_reset_dt_source_minus;
+                          break;
+                        }
+                      default:
+                        {
+                           total_error_sw_fixed(162);
+                        }
+                      }
+                      break;
+                    }
+                  default:
+                    {
+                      total_error_sw_fixed(161);
+                    }
+                  }
+                
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*index_of_dt + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_and :  edition_settings.ranguvannja_d_and;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_or :  edition_settings.ranguvannja_d_or;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_xor :  edition_settings.ranguvannja_d_xor;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_not :  edition_settings.ranguvannja_d_not;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + i];
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG];
+                  if ((prev_ekran >= EKRAN_OUT_LAN1) && (prev_ekran <= EKRAN_OUT_LAN4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        (prev_ekran == EKRAN_LIST_OUT_LAN)
+                       )   
+                    {
+                      int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      if((n_LN < N_OUT_LAN) && (n_out_in < N_OUT_LAN_IN))
+                      {
+                        if (current_ekran.edition == 0)
+                        {
+                          uint16_t *p_rang = current_settings.ranguvannja_Out_LAN[n_LN][n_out_in];
+
+                          for (size_t i = 0; i < N_BIG; i++) temp_state[i] = 0;
+                          for (size_t i = 0; i < MAX_FUNCTIONS_IN_OUT_LAN; i++) 
+                          {
+                            uint16_t val = p_rang[i];
+                            if (val > 0)_SET_BIT(temp_state, (p_rang[i] - 1));
+                            else break;
+                          }
+                        }
+                        else
+                        {
+                          for (size_t i = 0; i < N_BIG; i++) temp_state[i] = edit_rang_Out_LAN[i];
+                        }
+                      }
+                      else total_error_sw_fixed(165);
+                    }
+                    else total_error_sw_fixed(164);
+                  }
+                  else total_error_sw_fixed(163);
+                }
+#endif
+                
                 if(current_ekran.edition == 0)
                 {
-                  unsigned int temp_state[N_BIG];
-                  
-                  if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + i];
-                    }
-                  }
-                  else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_analog_registrator[i];
-                    }
-                  }
-                  else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_digital_registrator[i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                  {
-                    unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_DF1_PLUS;
-                    unsigned int type_source = index_in_ekran_list % 3;
-                    unsigned int index_of_df = index_in_ekran_list / 3;
-    
-                    if(type_source == 0)
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++)
-                      {
-                        temp_state[i] = current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df + i];
-                      }
-                    }
-                    else if(type_source == 1)
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++)
-                      {
-                        temp_state[i] = current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df + i];
-                      }
-                    }
-                    else
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++)
-                      {
-                        temp_state[i] = current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df + i];
-                      }
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                  {
-                    unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_SET_DT1_PLUS;
-                    unsigned int type_source = index_in_ekran_list % 2;
-                    unsigned int type_of_action = (index_in_ekran_list / 2) & 0x1;
-                    unsigned int index_of_dt = index_in_ekran_list / 4;
-    
-                    if (type_of_action == INDEX_ML_SET_DT)
-                    {
-                      if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT)
-                      {
-                        for (unsigned int i = 0; i < N_BIG; i++)
-                        {
-                          temp_state[i] = current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt + i];
-                        }
-                      }
-                      else
-                      {
-                        for (unsigned int i = 0; i < N_BIG; i++)
-                        {
-                          temp_state[i] = current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt + i];
-                        }
-                      }
-                    }
-                    else
-                    {
-                      if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT)
-                      {
-                        for (unsigned int i = 0; i < N_BIG; i++)
-                        {
-                          temp_state[i] = current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt + i];
-                        }
-                      }
-                      else
-                      {
-                        for (unsigned int i = 0; i < N_BIG; i++)
-                        {
-                          temp_state[i] = current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt + i];
-                        }
-                      }
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + i];
-                    }
-                  }
-                  
                   if (
                       (temp_state[0] == 0) && 
                       (temp_state[1] == 0) &&
@@ -18327,17 +22510,18 @@ void main_manu_function(void)
                       (temp_state[4] == 0) &&
                       (temp_state[5] == 0) &&
                       (temp_state[6] == 0) &&
-                      (temp_state[7] == 0)
+                      (temp_state[7] == 0) &&
+                      (temp_state[8] == 0)
                      ) current_ekran.index_position = 0;
                   else
                   {
-                    if(--current_ekran.index_position < 0) current_ekran.index_position = max_row_ranguvannja - 1;
+                    if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_TOTAL_SIGNAL_FOR_RANG - 1;
                     // (x>>5) аналогічне операції x / 32 - ціла частина від ділення на 32
                     // (x & 0x1f) аналогічне операції x % 32 - остача від ділення на 32
                     while ((temp_state[current_ekran.index_position >> 5] & (1<<(current_ekran.index_position  & 0x1f))) == 0)
                     {
                       current_ekran.index_position--;
-                      if(current_ekran.index_position < 0) current_ekran.index_position = max_row_ranguvannja - 1;
+                      if(current_ekran.index_position < 0) current_ekran.index_position = NUMBER_TOTAL_SIGNAL_FOR_RANG - 1;
                     }
                   }
                 }
@@ -18363,7 +22547,7 @@ void main_manu_function(void)
 //                  };
                   
                   //Переміщаємося на наступну функцію
-                  if(--current_ekran.index_position < 0) current_ekran.index_position = max_row_ranguvannja - 1;
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_TOTAL_SIGNAL_FOR_RANG - 1;
                   //Перевіряємо, чи даний індекс функції присутній у даній конфігурації 
                   while (found_new_index == 0)
                   {
@@ -18383,13 +22567,16 @@ void main_manu_function(void)
                                                                        NUMBER_ZOP_SIGNAL_FOR_RANG,
                                                                        NUMBER_UMIN_SIGNAL_FOR_RANG,
                                                                        NUMBER_UMAX_SIGNAL_FOR_RANG,
+                                                                       NUMBER_UP_SIGNAL_FOR_RANG,
                                                                        NUMBER_VMP_SIGNAL_FOR_RANG,
                                                                        NUMBER_EL_SIGNAL_FOR_RANG
                                                                       );
                     //Перевіряємо, чи ми не  на індексі функцій із списку загальних, яку треба викинути для даного типу ранжування
                     if (
                         ( current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR ) || 
-                        ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)  
+                        ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR) ||
+                        ( current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB             ) || 
+                        ( current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB              )  
                        )   
                     {
                       unsigned int index_deleted_function;
@@ -18398,6 +22585,10 @@ void main_manu_function(void)
                         index_deleted_function = RANG_WORK_A_REJESTRATOR;
                       else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
                         index_deleted_function = RANG_WORK_D_REJESTRATOR;
+                      else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                        index_deleted_function = RANG_WORK_BO;
+                      else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                        index_deleted_function = RANG_WORK_BV;
                     
                       if(index_deleted_function == current_ekran.index_position)
                       {
@@ -18562,95 +22753,104 @@ void main_manu_function(void)
                         current_ekran.index_position--;
                       }
                     }
-                    else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                    {
-                      unsigned int current_number_output = current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1;
-                      
-                      for (unsigned int i = 0; i < 2; i++)
-                      {
-                        unsigned int index_deleted_function;
-                        unsigned int maska_func[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
-                        unsigned int need_filtration = 0;
-                        //Визначаємо індекс функції, яку потенційно можливо треба буде фільтрувати із сприску
-                        //Першою перевіряємо функцію з більшим номером, щоб за одну операцію циклу можна було переміститися на функцію, яку можна ранжувати
-                        if (i == 0)
-                        {
-                          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BV : RANG_WORK_BO;
-                        }
-                        else
-                        {
-                          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BO : RANG_WORK_BV;
-                        }
-        
-                        //Формуємо маску  для цієї функції
-                        _SET_BIT(maska_func, index_deleted_function);
-        
-                        unsigned int index = 0;
-                        while ((need_filtration == 0) && (index < NUMBER_OUTPUTS))
-                        {
-                          //Пропускаємо текучий номер виходу, бо на ньому дана функція має відображатися під час редагування
-                          if (index != current_number_output)
-                          {
-                            if (
-                                ((current_settings.ranguvannja_outputs[N_BIG*index    ] & maska_func[0]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 1] & maska_func[1]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 2] & maska_func[2]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 3] & maska_func[3]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 4] & maska_func[4]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 5] & maska_func[5]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 6] & maska_func[6]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 7] & maska_func[7]) != 0)
-                               )
-                            {
-                              need_filtration = 1;
-                            }
-                          }
-                          index++;
-                        }
-                        
-                        //У випадку, якщо ввстановлено є ситуація, коли треба фільтрувати функції
-                        if (need_filtration != 0)
-                        {
-                          if(index_deleted_function == current_ekran.index_position)
-                          {
-                            found_new_index = 0;
-                            current_ekran.index_position--;
-                          }
-                        }
-                      }
-                    }
+//                    else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+//                    {
+//                      unsigned int current_number_output = current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1;
+//                      
+//                      for (unsigned int i = 0; i < 2; i++)
+//                      {
+//                        unsigned int index_deleted_function;
+//                        unsigned int maska_func[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+//                        unsigned int need_filtration = 0;
+//                        //Визначаємо індекс функції, яку потенційно можливо треба буде фільтрувати із сприску
+//                        //Першою перевіряємо функцію з більшим номером, щоб за одну операцію циклу можна було переміститися на функцію, яку можна ранжувати
+//                        if (i == 0)
+//                        {
+//                          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BV : RANG_WORK_BO;
+//                        }
+//                        else
+//                        {
+//                          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BO : RANG_WORK_BV;
+//                        }
+//        
+//                        //Формуємо маску  для цієї функції
+//                        _SET_BIT(maska_func, index_deleted_function);
+//        
+//                        unsigned int index = 0;
+//                        while ((need_filtration == 0) && (index < NUMBER_OUTPUTS))
+//                        {
+//                          //Пропускаємо текучий номер виходу, бо на ньому дана функція має відображатися під час редагування
+//                          if (index != current_number_output)
+//                          {
+//                            if (
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index    ] & maska_func[0]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 1] & maska_func[1]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 2] & maska_func[2]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 3] & maska_func[3]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 4] & maska_func[4]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 5] & maska_func[5]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 6] & maska_func[6]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 7] & maska_func[7]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 8] & maska_func[8]) != 0)
+//                               )
+//                            {
+//                              need_filtration = 1;
+//                            }
+//                          }
+//                          index++;
+//                        }
+//                        
+//                        //У випадку, якщо ввстановлено є ситуація, коли треба фільтрувати функції
+//                        if (need_filtration != 0)
+//                        {
+//                          if(index_deleted_function == current_ekran.index_position)
+//                          {
+//                            found_new_index = 0;
+//                            current_ekran.index_position--;
+//                          }
+//                        }
+//                      }
+//                    }
                     
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
                     if(current_ekran.index_position < 0)
                     {
                       found_new_index = 0;
-                      current_ekran.index_position = max_row_ranguvannja - 1;
+                      current_ekran.index_position = NUMBER_TOTAL_SIGNAL_FOR_RANG - 1;
                     }
                   }
                 }
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
                 
                 //Формуємо екран відображення зранжованих функцій
-                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OUTPUT);
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_LED);
+                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OUTPUT, temp_state);
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_LED, temp_state);
                 else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_A_REG);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_A_REG, temp_state);
                 else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_REG);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_REG, temp_state);
+                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OFF_CB, temp_state);
+                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_ON_CB, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DF);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DF, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DT);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DT, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_AND);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_AND, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_OR);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_OR, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_XOR);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_XOR, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_NOT);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_NOT, temp_state);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state);
+#endif
               }
               
               //Очистити сигналізацію, що натиснута кнопка 
@@ -18659,27 +22859,108 @@ void main_manu_function(void)
             else if (new_state_keyboard == (1<<BIT_KEY_DOWN))
             {
               //Натиснута кнопка DOWN
-              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_10))
+              if(
+                 ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6)) 
+                 ||
+                 ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1 ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST)) 
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                 ||
+                 (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)  
+#endif
+                )   
               {
+                unsigned int temp_state[N_SMALL];
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                int type_LN = -1;
+                int n_LN = -1;
+#endif
+                
+                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_buttons :  edition_settings.ranguvannja_buttons;
+                  for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_inputs :  edition_settings.ranguvannja_inputs;
+                  for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + i];
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL];
+                  if ((prev_ekran >= EKRAN_IN_GOOSE1) && (prev_ekran <= EKRAN_IN_MMS4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        ((prev_ekran >= EKRAN_LIST_IN_GOOSE) || (prev_ekran <= EKRAN_LIST_IN_MMS))
+                       )   
+                    {
+                      n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                      if (
+                          (n_LN >= 0) &&
+                          (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
+                         )   
+                      {
+                        type_LN = position_in_current_level_menu[prev_ekran];
+                        
+                        if(
+                           (type_LN >= 0)
+                           &&
+                           (
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (n_LN < N_IN_GOOSE) && (n_out_in < N_IN_GOOSE_MMS_OUT)) ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS  ) && (n_LN < N_IN_MMS  ) && (n_out_in < N_IN_GOOSE_MMS_OUT))
+                           ) 
+                          ) 
+                        {
+                          uint32_t *p_rang;
+                          switch (type_LN)
+                          {
+                          case 0:
+                            {
+                              p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_In_GOOSE[n_LN][n_out_in] : edition_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                              break;
+                            }
+                          case 1:
+                            {
+                              p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_In_MMS[n_LN][n_out_in] : edition_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                              break;
+                            }
+                          }
+                          
+                          for (size_t i = 0; i < N_SMALL; i++) temp_state[i] = p_rang[i];
+                        }
+                        else total_error_sw_fixed(130);
+                      }
+                      else total_error_sw_fixed(129);
+                    }
+                    else total_error_sw_fixed(128);
+                  }
+                  else total_error_sw_fixed(127);
+                }
+#endif
+
                 if(current_ekran.edition == 0)
                 {
-                  unsigned int temp_state[N_SMALL];
-                  temp_state[0] = current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)    ];
-                  temp_state[1] = current_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + 1];
-
                   if (
                       (temp_state[0] == 0) &&
-                      (temp_state[1] == 0)
+                      (temp_state[1] == 0) &&
+                      (temp_state[2] == 0)
                      ) current_ekran.index_position = 0;
                   else
                   {
-                    if(++current_ekran.index_position >= MAX_ROW_RANGUVANNJA_INPUT) current_ekran.index_position = 0;
+                    if(++current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL) current_ekran.index_position = 0;
                     // (x>>5) аналогічне операції x / 32 - ціла частина від ділення на 32
                     // (x & 0x1f) аналогічне операції x % 32 - остача від ділення на 32
                     while ((temp_state[current_ekran.index_position >> 5] & (1<<(current_ekran.index_position  & 0x1f))) ==0)
                     {
                       current_ekran.index_position++;
-                      if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_INPUT) current_ekran.index_position = 0;
+                      if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL) current_ekran.index_position = 0;
                     }
                   }
                 }
@@ -18693,8 +22974,8 @@ void main_manu_function(void)
                   };
 //                  EL_FILTER_STRUCT el_filter[NUMBER_DEFINED_ELEMENTS] =
 //                  {
-//                    {1, RANG_INPUT_DF1_IN , RANG_INPUT_DF8_IN   , 1, current_settings.number_defined_df },
-//                    {1, RANG_INPUT_DT1_SET, RANG_INPUT_DT4_RESET, 2, current_settings.number_defined_dt },
+//                    {1, RANG_SMALL_DF1_IN , RANG_SMALL_DF8_IN   , 1, current_settings.number_defined_df },
+//                    {1, RANG_SMALL_DT1_SET, RANG_SMALL_DT4_RESET, 2, current_settings.number_defined_dt },
 //                    {0, 0                 , 0                   , 1, current_settings.number_defined_and},
 //                    {0, 0                 , 0                   , 1, current_settings.number_defined_or },
 //                    {0, 0                 , 0                   , 1, current_settings.number_defined_xor},
@@ -18702,7 +22983,7 @@ void main_manu_function(void)
 //                  };
                   
                   //Переміщаємося на наступну функцію
-                  if(++current_ekran.index_position >= MAX_ROW_RANGUVANNJA_INPUT) current_ekran.index_position = 0;
+                  if(++current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL) current_ekran.index_position = 0;
                   //Перевіряємо, чи даний індекс функції присутній у даній конфігурації 
                   while (found_new_index == 0)
                   {
@@ -18710,272 +22991,291 @@ void main_manu_function(void)
                                                                        add_filter,
                                                                        /*el_filter,*/
                                                                        1,
-                                                                       NUMBER_GENERAL_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_MTZ_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_MTZ04_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_ZDZ_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_ZZ_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_TZNP_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_APV_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_UROV_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_ZOP_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_UMIN_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_UMAX_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_VMP_SIGNAL_FOR_RANG_INPUT,
-                                                                       NUMBER_EL_SIGNAL_FOR_RANG_INPUT
+                                                                       NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_APV_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UROV_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_UP_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_VMP_SIGNAL_FOR_RANG_SMALL,
+                                                                       NUMBER_EL_SIGNAL_FOR_RANG_SMALL
                                                                       );
-                      //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
-                      if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_INPUT)
+
+                    //Перевіряємо режим рооботи функціональної кнопки (якщо іде редагування ФК)
+                    if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+                    {
+                      uint32_t mode = (current_settings.buttons_mode >> (current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1;
+                      if (_CHECK_SET_BIT(buttons_mode[mode], current_ekran.index_position) == 0)
                       {
                         found_new_index = 0;
-                        current_ekran.index_position = 0;
+                        current_ekran.index_position++;
                       }
-                  }
-                }
-                position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
-                
-                //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_input(current_ekran.current_level);
-              }
-              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
-              {
-                if(current_ekran.edition == 0)
-                {
-                  unsigned int temp_state = current_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1];
-                  if (temp_state == 0) current_ekran.index_position = 0;
-                  else
-                  {
-                    if(++current_ekran.index_position >= MAX_ROW_RANGUVANNJA_BUTTON) current_ekran.index_position = 0;
-                    while ((temp_state & (1<<current_ekran.index_position)) ==0)
+                    }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                    else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
                     {
-                      current_ekran.index_position++;
-                      if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_BUTTON) current_ekran.index_position = 0;
+                      if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS))
+                      {
+                        if (
+                            (_CHECK_SET_BIT(rang_iec61850_blocks[type_LN], current_ekran.index_position) == 0)
+                            ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (current_ekran.index_position == (RANG_SMALL_BLOCK_IN_GOOSE1 + n_LN)))
+                            ||
+                            ((type_LN == INDEX_TYPE_IEC61850_IN_MMS) && (current_ekran.index_position == (RANG_SMALL_BLOCK_IN_MMS1 + n_LN)))
+                           )   
+                        {
+                          found_new_index = 0;
+                          current_ekran.index_position++;
+                        }
+                      }
+                      else total_error_sw_fixed(183);
+                    }
+#endif
+                    
+                    //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
+                    if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)
+                    {
+                      found_new_index = 0;
+                      current_ekran.index_position = 0;
                     }
                   }
                 }
-                else
-                {
-                  //Редагування
-                  unsigned int found_new_index = 0;
-                  int add_filter[0 + 1] = 
-                  {
-                    -1 /*признак завершення масиву*/
-                  };
-//                  EL_FILTER_STRUCT el_filter[NUMBER_DEFINED_ELEMENTS] =
-//                  {
-//                    {1, RANG_BUTTON_DF1_IN , RANG_BUTTON_DF8_IN   , 1, current_settings.number_defined_df },
-//                    {1, RANG_BUTTON_DT1_SET, RANG_BUTTON_DT4_RESET, 2, current_settings.number_defined_dt },
-//                    {0, 0                  , 0                    , 1, current_settings.number_defined_and},
-//                    {0, 0                  , 0                    , 1, current_settings.number_defined_or },
-//                    {0, 0                  , 0                    , 1, current_settings.number_defined_xor},
-//                    {0, 0                  , 0                    , 1, current_settings.number_defined_not}
-//                  };
-                
-                  //Переміщаємося на наступну функцію
-                  if(++current_ekran.index_position >= MAX_ROW_RANGUVANNJA_BUTTON) current_ekran.index_position = 0;
-                  //Перевіряємо, чи даний індекс функції присутній у даній конфігурації 
-                  while (found_new_index == 0)
-                  {
-                    check_current_index_is_presented_in_configuration(&found_new_index,
-                                                                       add_filter,
-                                                                       /*el_filter,*/
-                                                                       1,
-                                                                       NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_APV_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON,
-                                                                       NUMBER_EL_SIGNAL_FOR_RANG_BUTTON
-                                                                      );
-                      //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
-                      if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_BUTTON)
-                      {
-                        found_new_index = 0;
-                        current_ekran.index_position = 0;
-                      }
-                  }
-                }
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
                 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_button(current_ekran.current_level);
+                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN, n_LN
+#endif
+                                                                                                                        );
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, temp_state
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , type_LN, n_LN
+#endif
+                                                                                                                        );
+                                                
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+                  make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state, type_LN, n_LN);
+#endif
               }
               else if(
-                      ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10          )) ||
-                      ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1   ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8              )) ||
+                      ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST        )) ||
+                      ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1   ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17             )) ||
                       ( current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR                                                                 ) ||
                       ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR                                                                ) ||
+                      ( current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB                                                                             ) ||
+                      ( current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB                                                                              ) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK            )) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS)) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8         )) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1       ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8          )) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8         )) ||
                       ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1      ) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16        ))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                      ||
+                      (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)  
+#endif
                      )
               {
-                int max_row_ranguvannja;
+                unsigned int temp_state[N_BIG];
                 
-                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_OUTPUT;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_LED;
+                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_outputs :  edition_settings.ranguvannja_outputs;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_leds :  edition_settings.ranguvannja_leds;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + i];
+                }
                 else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_ANALOG_REGISTRATOR;
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_analog_registrator :  edition_settings.ranguvannja_analog_registrator;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+                }
                 else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DIGITAL_REGISTRATOR;
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_digital_registrator :  edition_settings.ranguvannja_digital_registrator;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+                }
+                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_off_cb :  edition_settings.ranguvannja_off_cb;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+                }
+                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_on_cb :  edition_settings.ranguvannja_on_cb;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[i];
+                }
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DF;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_DT;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_AND;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_OR;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_XOR;
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                  max_row_ranguvannja = MAX_ROW_RANGUVANNJA_D_NOT;
+                {
+                  unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_DF1_PLUS;
+                  unsigned int type_source = index_in_ekran_list % 3;
+                  unsigned int index_of_df = index_in_ekran_list / 3;
 
+                  uint32_t *p_rang;
+                  switch (type_source) 
+                  {
+                  case 0:
+                    {
+                      p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_plus :  edition_settings.ranguvannja_df_source_plus;
+                      break;
+                    }
+                  case 1:
+                    {
+                      p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_minus :  edition_settings.ranguvannja_df_source_minus;
+                      break;
+                    }
+                  case 2:
+                    {
+                      p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_df_source_blk :  edition_settings.ranguvannja_df_source_blk;
+                      break;
+                    }
+                  default:
+                    {
+                      total_error_sw_fixed(147);
+                    }
+                  }
+                
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*index_of_df + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
+                {
+                  unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_SET_DT1_PLUS;
+                  unsigned int type_source = index_in_ekran_list % 2;
+                  unsigned int type_of_action = (index_in_ekran_list / 2) & 0x1;
+                  unsigned int index_of_dt = index_in_ekran_list / 4;
+
+                  uint32_t *p_rang;
+                  switch (type_of_action) 
+                  {
+                  case INDEX_ML_SET_DT:
+                    {
+                      switch (type_source)
+                      {
+                      case INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT:
+                        {
+                          p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_set_dt_source_plus :  edition_settings.ranguvannja_set_dt_source_plus;
+                          break;
+                        }
+                      case INDEX_ML_LIST_TYPE_SOURCE_MINUS_DT:
+                        {
+                          p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_set_dt_source_minus :  edition_settings.ranguvannja_set_dt_source_minus;
+                          break;
+                        }
+                      default:
+                        {
+                           total_error_sw_fixed(154);
+                        }
+                      }
+                      break;
+                    }
+                  case INDEX_ML_RESET_DT:
+                    {
+                      switch (type_source)
+                      {
+                      case INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT:
+                        {
+                          p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_reset_dt_source_plus :  edition_settings.ranguvannja_reset_dt_source_plus;
+                          break;
+                        }
+                      case INDEX_ML_LIST_TYPE_SOURCE_MINUS_DT:
+                        {
+                          p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_reset_dt_source_minus :  edition_settings.ranguvannja_reset_dt_source_minus;
+                          break;
+                        }
+                      default:
+                        {
+                           total_error_sw_fixed(156);
+                        }
+                      }
+                      break;
+                    }
+                  default:
+                    {
+                      total_error_sw_fixed(155);
+                    }
+                  }
+                
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*index_of_dt + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_and :  edition_settings.ranguvannja_d_and;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_or :  edition_settings.ranguvannja_d_or;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_xor :  edition_settings.ranguvannja_d_xor;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + i];
+                }
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
+                {
+                  uint32_t *p_rang = (current_ekran.edition == 0) ? current_settings.ranguvannja_d_not :  edition_settings.ranguvannja_d_not;
+                  for (size_t i = 0; i < N_BIG; i++) temp_state[i] = p_rang[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + i];
+                }
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+                {
+                  int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG];
+                  if ((prev_ekran >= EKRAN_OUT_LAN1) && (prev_ekran <= EKRAN_OUT_LAN4))
+                  {
+                    int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_out_in >= 0) &&
+                        (prev_ekran == EKRAN_LIST_OUT_LAN)
+                       )   
+                    {
+                      int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                      if((n_LN < N_OUT_LAN) && (n_out_in < N_OUT_LAN_IN))
+                      {
+                        if (current_ekran.edition == 0)
+                        {
+                          uint16_t *p_rang = current_settings.ranguvannja_Out_LAN[n_LN][n_out_in];
+
+                          for (size_t i = 0; i < N_BIG; i++) temp_state[i] = 0;
+                          for (size_t i = 0; i < MAX_FUNCTIONS_IN_OUT_LAN; i++) 
+                          {
+                            uint16_t val = p_rang[i];
+                            if (val > 0)_SET_BIT(temp_state, (p_rang[i] - 1));
+                            else break;
+                          }
+                        }
+                        else
+                        {
+                          for (size_t i = 0; i < N_BIG; i++) temp_state[i] = edit_rang_Out_LAN[i];
+                        }
+                      }
+                      else total_error_sw_fixed(159);
+                    }
+                    else total_error_sw_fixed(158);
+                  }
+                  else total_error_sw_fixed(157);
+                }
+#endif
+                
                 if(current_ekran.edition == 0)
                 {
-                  unsigned int temp_state[N_BIG];
-                  
-                  if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + i];
-                    }
-                  }
-                  else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_analog_registrator[i];
-                    }
-                  }
-                  else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_digital_registrator[i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                  {
-                    unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_DF1_PLUS;
-                    unsigned int type_source = index_in_ekran_list % 3;
-                    unsigned int index_of_df = index_in_ekran_list / 3;
-    
-                    if(type_source == 0)
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++)
-                      {
-                        temp_state[i] = current_settings.ranguvannja_df_source_plus[N_BIG*index_of_df + i];
-                      }
-                    }
-                    else if(type_source == 1)
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++)
-                      {
-                        temp_state[i] = current_settings.ranguvannja_df_source_minus[N_BIG*index_of_df + i];
-                      }
-                    }
-                    else
-                    {
-                      for (unsigned int i = 0; i < N_BIG; i++)
-                      {
-                        temp_state[i] = current_settings.ranguvannja_df_source_blk[N_BIG*index_of_df + i];
-                      }
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                  {
-                    unsigned int index_in_ekran_list = current_ekran.current_level - EKRAN_RANGUVANNJA_SET_DT1_PLUS;
-                    unsigned int type_source = index_in_ekran_list % 2;
-                    unsigned int type_of_action = (index_in_ekran_list / 2) & 0x1;
-                    unsigned int index_of_dt = index_in_ekran_list / 4;
-    
-                    if (type_of_action == INDEX_ML_SET_DT)
-                    {
-                      if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT)
-                      {
-                        for (unsigned int i = 0; i < N_BIG; i++)
-                        {
-                          temp_state[i] = current_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt + i];
-                        }
-                      }
-                      else
-                      {
-                        for (unsigned int i = 0; i < N_BIG; i++)
-                        {
-                          temp_state[i] = current_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt + i];
-                        }
-                      }
-                    }
-                    else
-                    {
-                      if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT)
-                      {
-                        for (unsigned int i = 0; i < N_BIG; i++)
-                        {
-                          temp_state[i] = current_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt + i];
-                        }
-                      }
-                      else
-                      {
-                        for (unsigned int i = 0; i < N_BIG; i++)
-                        {
-                          temp_state[i] = current_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt + i];
-                        }
-                      }
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + i];
-                    }
-                  }
-                  else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                  {
-                    for (unsigned int i = 0; i < N_BIG; i++)
-                    {
-                      temp_state[i] = current_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + i];
-                    }
-                  }
-
                   if (
                       (temp_state[0] == 0) &&
                       (temp_state[1] == 0) &&
@@ -18984,17 +23284,18 @@ void main_manu_function(void)
                       (temp_state[4] == 0) &&
                       (temp_state[5] == 0) &&
                       (temp_state[6] == 0) &&
-                      (temp_state[7] == 0)
+                      (temp_state[7] == 0) &&
+                      (temp_state[8] == 0)
                      ) current_ekran.index_position = 0;
                   else
                   {
-                    if(++current_ekran.index_position >= max_row_ranguvannja) current_ekran.index_position = 0;
+                    if(++current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG) current_ekran.index_position = 0;
                     // (x>>5) аналогічне операції x / 32 - ціла частина від ділення на 32
                     // (x & 0x1f) аналогічне операції x % 32 - остача від ділення на 32
                     while ((temp_state[current_ekran.index_position >> 5] & (1<<(current_ekran.index_position  & 0x1f))) ==0)
                     {
                       current_ekran.index_position++;
-                      if(current_ekran.index_position >= max_row_ranguvannja) current_ekran.index_position = 0;
+                      if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG) current_ekran.index_position = 0;
                     }
                   }
                 }
@@ -19020,7 +23321,7 @@ void main_manu_function(void)
 //                  };
                   
                   //Переміщаємося на наступну функцію
-                  if(++current_ekran.index_position >= max_row_ranguvannja) current_ekran.index_position = 0;
+                  if(++current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG) current_ekran.index_position = 0;
                   //Перевіряємо, чи даний індекс функції присутній у даній конфігурації 
                   while (found_new_index == 0)
                   {
@@ -19040,6 +23341,7 @@ void main_manu_function(void)
                                                                        NUMBER_ZOP_SIGNAL_FOR_RANG,
                                                                        NUMBER_UMIN_SIGNAL_FOR_RANG,
                                                                        NUMBER_UMAX_SIGNAL_FOR_RANG,
+                                                                       NUMBER_UP_SIGNAL_FOR_RANG,
                                                                        NUMBER_VMP_SIGNAL_FOR_RANG,
                                                                        NUMBER_EL_SIGNAL_FOR_RANG
                                                                       );
@@ -19047,7 +23349,9 @@ void main_manu_function(void)
                     //Перевіряємо, чи ми не  на індексі функцій із списку загальних, яку треба викинути для даного типу ранжування
                     if (
                         ( current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR ) || 
-                        ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)  
+                        ( current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR) ||
+                        ( current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB             ) || 
+                        ( current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB              )  
                        )   
                     {
                       unsigned int index_deleted_function;
@@ -19056,6 +23360,10 @@ void main_manu_function(void)
                         index_deleted_function = RANG_WORK_A_REJESTRATOR;
                       else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
                         index_deleted_function = RANG_WORK_D_REJESTRATOR;
+                      else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                        index_deleted_function = RANG_WORK_BO;
+                      else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                        index_deleted_function = RANG_WORK_BV;
                     
                       if(index_deleted_function == current_ekran.index_position)
                       {
@@ -19220,66 +23528,67 @@ void main_manu_function(void)
                         current_ekran.index_position++;
                       }
                     }
-                    else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                    {
-                      unsigned int current_number_output = current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1;
-                      
-                      for (unsigned int i = 0; i < 2; i++)
-                      {
-                        unsigned int index_deleted_function;
-                        unsigned int maska_func[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0};
-                        unsigned int need_filtration = 0;
-                        //Визначаємо індекс функції, яку потенційно можливо треба буде фільтрувати із сприску
-                        //Першою перевіряємо функцію з меншим номером, щоб за одну операцію циклу  можна було переміститися на функцію, яку можна ранжувати
-                        if (i == 0)
-                        {
-                          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BO : RANG_WORK_BV;
-                        }
-                        else
-                        {
-                          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BV : RANG_WORK_BO;
-                        }
-        
-                        //Формуємо маску  для цієї функції
-                        _SET_BIT(maska_func, index_deleted_function);
-        
-                        unsigned int index = 0;
-                        while ((need_filtration == 0) && (index < NUMBER_OUTPUTS))
-                        {
-                          //Пропускаємо текучий номер виходу, бо на ньому дана функція має відображатися під час редагування
-                          if (index != current_number_output)
-                          {
-                            if (
-                                ((current_settings.ranguvannja_outputs[N_BIG*index    ] & maska_func[0]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 1] & maska_func[1]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 2] & maska_func[2]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 3] & maska_func[3]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 4] & maska_func[4]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 5] & maska_func[5]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 6] & maska_func[6]) != 0) ||
-                                ((current_settings.ranguvannja_outputs[N_BIG*index + 7] & maska_func[7]) != 0)
-                               )
-                            {
-                              need_filtration = 1;
-                            }
-                          }
-                          index++;
-                        }
-                        
-                        //У випадку, якщо ввстановлено є ситуація, коли треба фільтрувати функції
-                        if (need_filtration != 0)
-                        {
-                          if(index_deleted_function == current_ekran.index_position)
-                          {
-                            found_new_index = 0;
-                            current_ekran.index_position++;
-                          }
-                        }
-                      }
-                    }
+//                    else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+//                    {
+//                      unsigned int current_number_output = current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1;
+//                      
+//                      for (unsigned int i = 0; i < 2; i++)
+//                      {
+//                        unsigned int index_deleted_function;
+//                        unsigned int maska_func[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+//                        unsigned int need_filtration = 0;
+//                        //Визначаємо індекс функції, яку потенційно можливо треба буде фільтрувати із сприску
+//                        //Першою перевіряємо функцію з меншим номером, щоб за одну операцію циклу  можна було переміститися на функцію, яку можна ранжувати
+//                        if (i == 0)
+//                        {
+//                          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BO : RANG_WORK_BV;
+//                        }
+//                        else
+//                        {
+//                          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BV : RANG_WORK_BO;
+//                        }
+//        
+//                        //Формуємо маску  для цієї функції
+//                        _SET_BIT(maska_func, index_deleted_function);
+//        
+//                        unsigned int index = 0;
+//                        while ((need_filtration == 0) && (index < NUMBER_OUTPUTS))
+//                        {
+//                          //Пропускаємо текучий номер виходу, бо на ньому дана функція має відображатися під час редагування
+//                          if (index != current_number_output)
+//                          {
+//                            if (
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index    ] & maska_func[0]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 1] & maska_func[1]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 2] & maska_func[2]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 3] & maska_func[3]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 4] & maska_func[4]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 5] & maska_func[5]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 6] & maska_func[6]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 7] & maska_func[7]) != 0) ||
+//                                ((current_settings.ranguvannja_outputs[N_BIG*index + 8] & maska_func[8]) != 0)
+//                               )
+//                            {
+//                              need_filtration = 1;
+//                            }
+//                          }
+//                          index++;
+//                        }
+//                        
+//                        //У випадку, якщо ввстановлено є ситуація, коли треба фільтрувати функції
+//                        if (need_filtration != 0)
+//                        {
+//                          if(index_deleted_function == current_ekran.index_position)
+//                          {
+//                            found_new_index = 0;
+//                            current_ekran.index_position++;
+//                          }
+//                        }
+//                      }
+//                    }
 
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
-                    if(current_ekran.index_position >= max_row_ranguvannja)
+                    if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG)
                     {
                       found_new_index = 0;
                       current_ekran.index_position = 0;
@@ -19289,26 +23598,34 @@ void main_manu_function(void)
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
                 
                 //Формуємо екран відображення зранжованих функцій
-                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OUTPUT);
-                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_LED);
+                if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OUTPUT, temp_state);
+                else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_LED, temp_state);
                 else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_A_REG);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_A_REG, temp_state);
                 else if (current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_REG);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_REG, temp_state);
+                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OFF_CB, temp_state);
+                else if (current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_ON_CB, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DF);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DF, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DT);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DT, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_AND);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_AND, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_OR);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_OR, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_XOR);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_XOR, temp_state);
                 else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
-                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_NOT);
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_NOT, temp_state);
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
+                  make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, temp_state);
+#endif
               }
 
               //Очистити сигналізацію, що натиснута кнопка 
@@ -19318,49 +23635,140 @@ void main_manu_function(void)
             {
               //Натиснута кнопка RIGHT або LEFT
               //Міняємо на протилежний відповідний біт для вибраної функції
-              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_10))
+              if((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
               {
                 unsigned int offset, shift;
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1) + offset] ^=
-                  (1 << shift);
+                uint32_t *p_rang = &edition_settings.ranguvannja_buttons[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1)];
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_input(current_ekran.current_level);
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_BUTTON, p_rang
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , -1, -1
+#endif
+                                                                                                                        );
+                                              
               }
-              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_BUTTON_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_BUTTON_6))
-              {
-                edition_settings.ranguvannja_buttons[current_ekran.current_level - EKRAN_RANGUVANNJA_BUTTON_1] ^=
-                  (1<<current_ekran.index_position);
-
-                //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_button(current_ekran.current_level);
-              }
-              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_10))
+              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_INPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_INPUT_LAST))
               {
                 unsigned int offset, shift;
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1) + offset] ^=
-                  (1 << shift);
+                uint32_t *p_rang = &edition_settings.ranguvannja_inputs[N_SMALL*(current_ekran.current_level - EKRAN_RANGUVANNJA_INPUT_1)];
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OUTPUT);
+                make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_INPUT, p_rang
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                                                                                            , -1, -1
+#endif
+                                                                                                                        );
+                                              
               }
-              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_8))
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+              else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG_SMALL)
+              {
+                int prev_ekran = previous_level_in_current_level_menu[EKRAN_LN_FOR_IEC61850_RANG_SMALL];
+                if ((prev_ekran >= EKRAN_IN_GOOSE1) && (prev_ekran <= EKRAN_IN_MMS4))
+                {
+                  int n_out_in = position_in_current_level_menu[prev_ekran];
+                    
+                  prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                  if (
+                      (n_out_in >= 0) &&
+                      ((prev_ekran >= EKRAN_LIST_IN_GOOSE) || (prev_ekran <= EKRAN_LIST_IN_MMS))
+                     )   
+                  {
+                    int n_LN = position_in_current_level_menu[prev_ekran];
+                     
+                    prev_ekran =  previous_level_in_current_level_menu[prev_ekran];
+                    if (
+                        (n_LN >= 0) &&
+                        (prev_ekran == EKRAN_LIST_TYPE_IEC61850_NODES)  
+                       )   
+                    {
+                      int type_LN = position_in_current_level_menu[prev_ekran];
+                        
+                      if(
+                         (type_LN >= 0)
+                         &&
+                         (
+                          ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (n_LN < N_IN_GOOSE) && (n_out_in < N_IN_GOOSE_MMS_OUT)) ||
+                          ((type_LN == INDEX_TYPE_IEC61850_IN_MMS  ) && (n_LN < N_IN_MMS  ) && (n_out_in < N_IN_GOOSE_MMS_OUT))
+                         ) 
+                        ) 
+                      {
+                        uint32_t *p_rang_edit;
+                        switch (type_LN)
+                        {
+                        case 0:
+                          {
+                            p_rang_edit = edition_settings.ranguvannja_In_GOOSE[n_LN][n_out_in];
+                            break;
+                          }
+                        case 1:
+                          {
+                            p_rang_edit = edition_settings.ranguvannja_In_MMS[n_LN][n_out_in];
+                            break;
+                          }
+                        }
+                          
+                        unsigned int offset, shift;
+                        offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
+                        shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
+
+                        *(p_rang_edit + offset) ^= (1 << shift);
+
+                        //Формуємо екран відображення зранжованих функцій
+                        make_ekran_set_function_in_bi(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, p_rang_edit, type_LN, n_LN);
+                      }
+                      else total_error_sw_fixed(146);
+                    }
+                    else total_error_sw_fixed(145);
+                  }
+                  else total_error_sw_fixed(144);
+                }
+                else total_error_sw_fixed(143);                
+                
+              }
+              else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)
               {
                 unsigned int offset, shift;
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1) + offset] ^=
-                  (1 << shift);
+                edit_rang_Out_LAN[offset] ^= (1 << shift);
+
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_IEC61850_RANG, edit_rang_Out_LAN);
+              }
+#endif
+              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_OUTPUT_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_OUTPUT_LAST))
+              {
+                unsigned int offset, shift;
+                offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
+                shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
+
+                uint32_t *p_rang = &edition_settings.ranguvannja_outputs[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_OUTPUT_1)];
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_LED);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OUTPUT, p_rang);
+              }
+              else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_LED_1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_LED_17))
+              {
+                unsigned int offset, shift;
+                offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
+                shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
+
+                uint32_t *p_rang = &edition_settings.ranguvannja_leds[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_LED_1)];
+                *(p_rang + offset) ^= (1 << shift);
+
+                //Формуємо екран відображення зранжованих функцій
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_LED, p_rang);
               }
               else if(current_ekran.current_level == EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR)
               {
@@ -19368,10 +23776,11 @@ void main_manu_function(void)
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_analog_registrator[offset] ^= (1 << shift);
+                uint32_t *p_rang = edition_settings.ranguvannja_analog_registrator;
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_A_REG);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_A_REG, p_rang);
               }
               else if(current_ekran.current_level == EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR)
               {
@@ -19379,10 +23788,35 @@ void main_manu_function(void)
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_digital_registrator[offset] ^= (1 << shift);
+                uint32_t *p_rang = edition_settings.ranguvannja_digital_registrator;
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_REG);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_REG, p_rang);
+              }
+              else if(current_ekran.current_level == EKRAN_RANGUVANNJA_OFF_CB)
+              {
+                unsigned int offset, shift;
+                offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
+                shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
+
+                uint32_t *p_rang = edition_settings.ranguvannja_off_cb;
+                *(p_rang + offset) ^= (1 << shift);
+
+                //Формуємо екран відображення зранжованих функцій
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_OFF_CB, p_rang);
+              }
+              else if(current_ekran.current_level == EKRAN_RANGUVANNJA_ON_CB)
+              {
+                unsigned int offset, shift;
+                offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
+                shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
+
+                uint32_t *p_rang = edition_settings.ranguvannja_on_cb;
+                *(p_rang + offset) ^= (1 << shift);
+
+                //Формуємо екран відображення зранжованих функцій
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_ON_CB, p_rang);
               }
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_DF1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_DF8_BLK ))
               {
@@ -19394,15 +23828,20 @@ void main_manu_function(void)
                 unsigned int type_source = index_in_ekran_list % 3;
                 unsigned int index_of_df = index_in_ekran_list / 3;
     
+                uint32_t *p_rang;
                 if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DF)
-                  edition_settings.ranguvannja_df_source_plus[N_BIG*index_of_df + offset] ^= (1 << shift);
+                  p_rang = &edition_settings.ranguvannja_df_source_plus[N_BIG*index_of_df];
                 else if(type_source == INDEX_ML_LIST_TYPE_SOURCE_MINUS_DF)
-                  edition_settings.ranguvannja_df_source_minus[N_BIG*index_of_df + offset] ^= (1 << shift);
+                  p_rang = &edition_settings.ranguvannja_df_source_minus[N_BIG*index_of_df];
+                else if(type_source == INDEX_ML_LIST_TYPE_SOURCE_BLK_DF)
+                  p_rang = &edition_settings.ranguvannja_df_source_blk[N_BIG*index_of_df];
                 else
-                  edition_settings.ranguvannja_df_source_blk[N_BIG*index_of_df + offset] ^= (1 << shift);
+                  total_error_sw_fixed(166);
+
+                *(p_rang + offset) ^= (1 << shift);
                 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DF);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DF, p_rang);
               }
               else if ((current_ekran.current_level >= EKRAN_RANGUVANNJA_SET_DT1_PLUS) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_RESET_DT4_MINUS))
               {
@@ -19415,23 +23854,32 @@ void main_manu_function(void)
                 unsigned int type_of_action = (index_in_ekran_list / 2) & 0x1;
                 unsigned int index_of_dt = index_in_ekran_list / 4;
     
+                uint32_t *p_rang;
                 if (type_of_action == INDEX_ML_SET_DT)
                 {
                   if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT)
-                    edition_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt + offset] ^= (1 << shift);
+                    p_rang = &edition_settings.ranguvannja_set_dt_source_plus[N_BIG*index_of_dt];
+                  else if(type_source == INDEX_ML_LIST_TYPE_SOURCE_MINUS_DT)
+                    p_rang = &edition_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt];
                   else
-                    edition_settings.ranguvannja_set_dt_source_minus[N_BIG*index_of_dt + offset] ^= (1 << shift);
+                    total_error_sw_fixed(168);
                 }
-                else
+                else if (type_of_action == INDEX_ML_RESET_DT)
                 {
                   if(type_source == INDEX_ML_LIST_TYPE_SOURCE_PLUS_DT)
-                    edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt + offset] ^= (1 << shift);
+                    p_rang = &edition_settings.ranguvannja_reset_dt_source_plus[N_BIG*index_of_dt];
+                  else if(type_source == INDEX_ML_LIST_TYPE_SOURCE_MINUS_DT)
+                    p_rang = &edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt];
                   else
-                    edition_settings.ranguvannja_reset_dt_source_minus[N_BIG*index_of_dt + offset] ^= (1 << shift);
+                    total_error_sw_fixed(169);
                 }
+                else
+                  total_error_sw_fixed(167);
+
+                *(p_rang + offset) ^= (1 << shift);
                 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DT);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_DT, p_rang);
               }
               else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_AND1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_AND8))
               {
@@ -19439,11 +23887,11 @@ void main_manu_function(void)
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1) + offset] ^=
-                  (1 << shift);
+                uint32_t *p_rang = &edition_settings.ranguvannja_d_and[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_AND1)];
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_AND);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_AND, p_rang);
               }
               else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_OR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_OR8))
               {
@@ -19451,11 +23899,11 @@ void main_manu_function(void)
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1) + offset] ^=
-                  (1 << shift);
+                uint32_t *p_rang = &edition_settings.ranguvannja_d_or[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_OR1)];
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_OR);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_OR, p_rang);
               }
               else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_XOR1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_XOR8))
               {
@@ -19463,11 +23911,11 @@ void main_manu_function(void)
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1) + offset] ^=
-                  (1 << shift);
+                uint32_t *p_rang = &edition_settings.ranguvannja_d_xor[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_XOR1)];
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_XOR);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_XOR, p_rang);
               }
               else if((current_ekran.current_level >= EKRAN_RANGUVANNJA_D_NOT1) && (current_ekran.current_level <= EKRAN_RANGUVANNJA_D_NOT16))
               {
@@ -19475,11 +23923,11 @@ void main_manu_function(void)
                 offset =  current_ekran.index_position >> 5;        //Це є, фактично, ділення на 32
                 shift  = (current_ekran.index_position & (32 - 1)); //Це є, фактично, визначення остачі від ділення на 32
 
-                edition_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1) + offset] ^=
-                  (1 << shift);
+                uint32_t *p_rang = &edition_settings.ranguvannja_d_not[N_BIG*(current_ekran.current_level - EKRAN_RANGUVANNJA_D_NOT1)];
+                *(p_rang + offset) ^= (1 << shift);
 
                 //Формуємо екран відображення зранжованих функцій
-                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_NOT);
+                make_ekran_set_function_in_output_led_df_dt_reg(current_ekran.current_level, INDEX_VIEWING_D_NOT, p_rang);
               }
 
               //Очистити сигналізацію, що натиснута кнопка 
@@ -19513,7 +23961,10 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= ((int)MAX_ROW_FOR_VIDKLUCHENNJA)) current_ekran.index_position = 0;
               
-              if (info_vidkluchennja_vymykacha == 0)
+              if (
+                  (info_vidkluchennja_vymykacha[0] == 0) &&
+                  (info_vidkluchennja_vymykacha[1] == 0)
+                 )   
               {
                 //Подаємо команду на вихід з віна повідомдень про відключення від захистів
                 new_state_keyboard |= (1<<BIT_KEY_ENTER);
@@ -19523,7 +23974,7 @@ void main_manu_function(void)
                 //Переходимо на наступну інформацію про спрацювання захистів
                 current_ekran.index_position++;
               
-                while (_GET_OUTPUT_STATE(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
+                while (_CHECK_SET_BIT(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
                 {
                   current_ekran.index_position++;
                   if(current_ekran.index_position >= ((int)MAX_ROW_FOR_VIDKLUCHENNJA)) current_ekran.index_position = 0;
@@ -19542,7 +23993,8 @@ void main_manu_function(void)
             if (new_state_keyboard == (1<<BIT_KEY_ENTER))
             {
               //Очищаємо інформацію про спрацювання захистів
-              info_vidkluchennja_vymykacha = 0;
+              info_vidkluchennja_vymykacha[0] = 0;
+              info_vidkluchennja_vymykacha[1] = 0;
               
               //Переходимо у попереднє меню
               current_ekran = current_ekran_reserv;
@@ -19566,7 +24018,10 @@ void main_manu_function(void)
               //Натиснута кнопка UP
               if(current_ekran.current_level == EKRAN_VIDKLUCHENNJA)
               {
-                if (info_vidkluchennja_vymykacha == 0)
+                if (
+                    (info_vidkluchennja_vymykacha[0] == 0) &&
+                    (info_vidkluchennja_vymykacha[1] == 0)
+                   )   
                 {
                   //Подаємо команду на вихід з віна повідомдень про відключення від захистів
                   new_state_keyboard |= (1<<BIT_KEY_ENTER);
@@ -19574,7 +24029,7 @@ void main_manu_function(void)
                 else
                 {
                   if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_VIDKLUCHENNJA - 1;
-                  while (_GET_OUTPUT_STATE(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
+                  while (_CHECK_SET_BIT(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
                   {
                     current_ekran.index_position--;
                     if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_VIDKLUCHENNJA - 1;
@@ -19594,7 +24049,10 @@ void main_manu_function(void)
               //Натиснута кнопка DOWN
               if(current_ekran.current_level == EKRAN_VIDKLUCHENNJA)
               {
-                if (info_vidkluchennja_vymykacha == 0)
+                if (
+                    (info_vidkluchennja_vymykacha[0] == 0) &&
+                    (info_vidkluchennja_vymykacha[1] == 0)
+                   )   
                 {
                   //Подаємо команду на вихід з віна повідомдень про відключення від захистів
                   new_state_keyboard |= (1<<BIT_KEY_ENTER);
@@ -19602,7 +24060,7 @@ void main_manu_function(void)
                 else
                 {
                   if(++current_ekran.index_position >= ((int)MAX_ROW_FOR_VIDKLUCHENNJA)) current_ekran.index_position = 0;
-                  while (_GET_OUTPUT_STATE(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
+                  while (_CHECK_SET_BIT(info_vidkluchennja_vymykacha, current_ekran.index_position) == 0)
                   {
                     current_ekran.index_position++;
                     if(current_ekran.index_position >= ((int)MAX_ROW_FOR_VIDKLUCHENNJA)) current_ekran.index_position = 0;
@@ -19770,7 +24228,7 @@ void make_ekran_ask_rewrite(void)
   //Копіюємо  рядки у робочий екран
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+    for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = (i < 2) ? name_string[index_language][i][j] : ' ';
   }
   
   //Обновити повністю весь екран
@@ -19801,7 +24259,7 @@ void make_ekran_about_activation_command(unsigned int index, unsigned char infor
     }
     else
     {
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][j];
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = (i == 1) ? name_string[index_language][j] : ' ';
     }
   }
   
@@ -19838,7 +24296,7 @@ void make_ekran_about_error(const unsigned char information[][MAX_COL_LCD])
     }
     else
     {
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][j];
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = (i == 1) ? name_string[index_language][j] : ' ';
     }
   }
   

@@ -8,7 +8,7 @@
 #define EKRAN_CONTROL_APV           (EKRAN_CONTROL_TZNP  + 1)
 
 #define MAX_ROW_FOR_TIMEOUT_APV         9
-#define MAX_ROW_FOR_CONTROL_APV         8
+#define MAX_ROW_FOR_CONTROL_APV         10
 
 #define INDEX_ML_TMOAPV1                0
 #define INDEX_ML_TMOAPV2                1
@@ -36,16 +36,22 @@
 #define CTR_APV_STARTED_FROM_MTZ3               (1 << INDEX_ML_CTRAPV_STARTED_FROM_MTZ3)   
 #define INDEX_ML_CTRAPV_STARTED_FROM_MTZ4       7
 #define CTR_APV_STARTED_FROM_MTZ4               (1 << INDEX_ML_CTRAPV_STARTED_FROM_MTZ4)   
+#define INDEX_ML_CTRAPV_BLK_CTRL_VV             8
+#define CTR_APV_CTRAPV_BLK_CTRL_VV              (1 << INDEX_ML_CTRAPV_BLK_CTRL_VV)   
+#define INDEX_ML_CTRAPV_BLK_CTRL_PRVV2          9
+#define CTR_APV_CTRAPV_BLK_CTRL_PRVV2           (1 << INDEX_ML_CTRAPV_BLK_CTRL_PRVV2)   
 
-#define CTR_APV_MASKA                    (                              \
-                                          CTR_APV_STAGE_1           |   \
-                                          CTR_APV_STAGE_2           |   \
-                                          CTR_APV_STAGE_3           |   \
-                                          CTR_APV_STAGE_4           |   \
-                                          CTR_APV_STARTED_FROM_MTZ1 |   \
-                                          CTR_APV_STARTED_FROM_MTZ2 |   \
-                                          CTR_APV_STARTED_FROM_MTZ3 |   \
-                                          CTR_APV_STARTED_FROM_MTZ4     \
+#define CTR_APV_MASKA                    (                                  \
+                                          CTR_APV_STAGE_1               |   \
+                                          CTR_APV_STAGE_2               |   \
+                                          CTR_APV_STAGE_3               |   \
+                                          CTR_APV_STAGE_4               |   \
+                                          CTR_APV_STARTED_FROM_MTZ1     |   \
+                                          CTR_APV_STARTED_FROM_MTZ2     |   \
+                                          CTR_APV_STARTED_FROM_MTZ3     |   \
+                                          CTR_APV_STARTED_FROM_MTZ4     |   \
+                                          CTR_APV_CTRAPV_BLK_CTRL_VV    |   \
+                                          CTR_APV_CTRAPV_BLK_CTRL_PRVV2     \
                                          )
 
 #define COL_TMO_APV_1_BEGIN             4

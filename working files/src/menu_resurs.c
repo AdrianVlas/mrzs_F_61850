@@ -35,12 +35,13 @@ void make_ekran_resurs()
   unsigned int col_begin, col_end;
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_EKRAN_RESURS<<1))//Множення на два константи MAX_ROW_FOR_EKRAN_RESURS потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_EKRAN_RESURS)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
@@ -50,7 +51,7 @@ void make_ekran_resurs()
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
         
         unsigned int value;
-        if ((index_of_ekran>>1) == INDEX_ML_RESURS_CURRENT)
+        if (index_of_ekran_tmp == INDEX_ML_RESURS_CURRENT)
           value = resurs_vymykacha;
         else
           value = resurs_vidkljuchennja;
@@ -93,7 +94,7 @@ void make_ekran_resurs()
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
           if ((j >= col_begin) &&  (j <= col_end ))
-            calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+            calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, true);
         }
         
         if (value_tmp == 0xffffffff)

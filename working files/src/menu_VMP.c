@@ -44,9 +44,10 @@ void make_ekran_setpoint_VMP(int forward_backward)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (max_rows<<1))//Множення на два константи max_rows потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < max_rows)
     {
-      unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
@@ -58,7 +59,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
           row_to_show = INDEX_ML_LINES;
           
           vaga = 1; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-          if (current_ekran.edition == 0) value = current_settings.lines[forward_backward]; //у змінну value поміщаємо значення уставки
+          if (view == true) value = current_settings.lines[forward_backward]; //у змінну value поміщаємо значення уставки
           else value = edition_settings.lines[forward_backward];
         }
         else
@@ -74,7 +75,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
             name_string[index_language][row_to_show][position_dovgyna_row[index_language]] = 0x30 + (dilanka + 1);
             
             vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-            if (current_ekran.edition == 0) value = current_settings.dovgyna[forward_backward][dilanka]; //у змінну value поміщаємо значення уставки
+            if (view == true) value = current_settings.dovgyna[forward_backward][dilanka]; //у змінну value поміщаємо значення уставки
             else value = edition_settings.dovgyna[forward_backward][dilanka];
           }
           else 
@@ -83,7 +84,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
             name_string[index_language][row_to_show][position_opir_row[index_language]] = 0x30 + (dilanka + 1);
             
             vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
-            if (current_ekran.edition == 0) value = current_settings.opir[forward_backward][dilanka]; //у змінну value поміщаємо значення уставки
+            if (view == true) value = current_settings.opir[forward_backward][dilanka]; //у змінну value поміщаємо значення уставки
             else value = edition_settings.opir[forward_backward][dilanka];
           }
         }
@@ -100,7 +101,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
           {
             if ((j < COL_SETPOINT_LINES_BEGIN) ||  (j > COL_SETPOINT_LINES_END ))working_ekran[i][j] = ' ';
             else
-              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+              calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
           }
           else
           {
@@ -121,7 +122,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
                 working_ekran[i][j] = km[index_language][j - (COL_SETPOINT_DOVGYNA_END + 2)]; 
               }
               else
-                calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_DOVGYNA_COMMA, 0);
+                calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_DOVGYNA_COMMA, view, 0);
             }
             else
             {
@@ -139,7 +140,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
                 working_ekran[i][j] = ohm[index_language][j - (COL_SETPOINT_OPIR_END + 2)]; 
               }
               else
-                calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_OPIR_COMMA, 0);
+                calc_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, j, COL_SETPOINT_OPIR_COMMA, view, 0);
             }
           }
         }
@@ -224,16 +225,16 @@ void make_ekran_control_VMP()
   
   //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (MAX_ROW_FOR_CONTROL_VMP<<1))//Множення на два константи MAX_ROW_FOR_CONTROL_VMP потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    if (index_of_ekran_tmp < MAX_ROW_FOR_CONTROL_VMP)
     {
       if ((i & 0x1) == 0)
       {
         //У непарному номері рядку виводимо заголовок
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
       }
       else
       {
@@ -253,7 +254,7 @@ void make_ekran_control_VMP()
          {4, 4}
         };
         
-        unsigned int index_ctr = (index_of_ekran>>1);
+        unsigned int index_ctr = index_of_ekran_tmp;
 
         unsigned int temp_data;
           
@@ -261,7 +262,7 @@ void make_ekran_control_VMP()
         else temp_data = edition_settings.control_vmp;
           
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
-        current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+        if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
       }
     }
     else

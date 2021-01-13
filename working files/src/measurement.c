@@ -51,13 +51,13 @@ void control_reading_ADCs(void)
     command_word_adc |= READ_DATA_VAL;
   }
 
-  if (adc_TEST_VAL_read != 0) 
-  {
-    adc_TEST_VAL_read = false;
-    status_adc_read_work |= TEST_VAL_READ;
-      
-    command_word_adc |= READ_TEST_VAL;
-  }
+//  if (adc_TEST_VAL_read != 0) 
+//  {
+//    adc_TEST_VAL_read = false;
+//    status_adc_read_work |= TEST_VAL_READ;
+//      
+//    command_word_adc |= READ_TEST_VAL;
+//  }
   
   unsigned int command_word_adc_diff = command_word_adc ^ command_word_adc_work;
   if (command_word_adc_diff != 0)
@@ -173,97 +173,6 @@ void control_reading_ADCs(void)
   }
 }
 /*****************************************************/
-
-/*************************************************************************
-Опрацьовуємо інтеграільні величини
- *************************************************************************/
-void operate_test_ADCs(void)
-{
-  /*******************************************************
-  Вираховування середнього значення контрольних точок
-  *******************************************************/
-  unsigned int temp;
-
-  //GND для АЦП1
-  unsigned int gnd_tmp = 0;
-  for (unsigned int i = 0; i < NUMBER_GND_ADC1; i++)
-  {
-    temp = output_adc[index_GND_ADC1[i]].value;
-    gnd_adc1_averange_sum[i] += temp;
-    gnd_adc1_averange_sum[i] -= gnd_adc1_moment_value[i][index_array_of_one_value];
-    gnd_adc1_moment_value[i][index_array_of_one_value] = temp;
-    gnd_tmp += gnd_adc1_averange[i] = gnd_adc1_averange_sum[i] >> VAGA_NUMBER_POINT;
-    if (temp > 0xA1) _SET_BIT(set_diagnostyka, ERROR_GND_ADC1_TEST_COARSE_BIT);
-    else _SET_BIT(clear_diagnostyka, ERROR_GND_ADC1_TEST_COARSE_BIT);
-  }
-  gnd_adc1 = gnd_tmp / NUMBER_GND_ADC1;
-  
-  //GND для АЦП2
-  gnd_tmp = 0;
-  for (unsigned int i = 0; i < NUMBER_GND_ADC2; i++)
-  {
-    temp = output_adc[index_GND_ADC2[i]].value;
-    gnd_adc2_averange_sum[i] += temp;
-    gnd_adc2_averange_sum[i] -= gnd_adc2_moment_value[i][index_array_of_one_value];
-    gnd_adc2_moment_value[i][index_array_of_one_value] = temp;
-    gnd_tmp += gnd_adc2_averange[i] = gnd_adc2_averange_sum[i] >> VAGA_NUMBER_POINT;
-    if (temp > 0xA1) _SET_BIT(set_diagnostyka, ERROR_GND_ADC2_TEST_COARSE_BIT);
-    else _SET_BIT(clear_diagnostyka, ERROR_GND_ADC2_TEST_COARSE_BIT);
-  }
-  gnd_adc2 = gnd_tmp / NUMBER_GND_ADC2;
-  
-  //VREF для АЦП1
-  temp = output_adc[C_VREF_ADC1].value;
-  vref_adc1_averange_sum += temp;
-  vref_adc1_averange_sum -= vref_adc1_moment_value[index_array_of_one_value];
-  vref_adc1_moment_value[index_array_of_one_value] = temp;
-  vref_adc1 = vref_adc1_averange_sum >> VAGA_NUMBER_POINT;
-  if ((temp < 0x614) || (temp > 0x9EB)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC1_TEST_COARSE_BIT);
-  else _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC1_TEST_COARSE_BIT);
-  
-  //VREF для АЦП2
-  unsigned int vref_tmp = 0;
-  for (unsigned int i = 0; i < NUMBER_VREF_ADC2; i++)
-  {
-    temp = output_adc[index_VREF_ADC2[i]].value;
-    vref_adc2_averange_sum[i] += temp;
-    vref_adc2_averange_sum[i] -= vref_adc2_moment_value[i][index_array_of_one_value];
-    vref_adc2_moment_value[i][index_array_of_one_value] = temp;
-    vref_tmp += vref_adc2_averange[i] = vref_adc2_averange_sum[i] >> VAGA_NUMBER_POINT;
-    if ((temp < 0x614) || (temp > 0x9EB)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
-    else _SET_BIT(clear_diagnostyka, ERROR_VREF_ADC2_TEST_COARSE_BIT);
-  }
-  vref_adc2 = vref_tmp / NUMBER_VREF_ADC2;
-
-  //VDD для АЦП1
-  temp = output_adc[C_VDD_ADC1].value; 
-  vdd_adc1_averange_sum += temp;
-  vdd_adc1_averange_sum -= vdd_adc1_moment_value[index_array_of_one_value];
-  vdd_adc1_moment_value[index_array_of_one_value] = temp;
-  vdd_adc1 = vdd_adc1_averange_sum >> VAGA_NUMBER_POINT;
-  if ((temp <0x6F2) || (temp > 0xD48)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
-  else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC1_TEST_COARSE_BIT);
-
-  //VDD для АЦП2
-  temp = output_adc[C_VDD_ADC2].value; 
-  vdd_adc2_averange_sum += temp;
-  vdd_adc2_averange_sum -= vdd_adc2_moment_value[index_array_of_one_value];
-  vdd_adc2_moment_value[index_array_of_one_value] = temp;
-  vdd_adc2 = vdd_adc2_averange_sum >> VAGA_NUMBER_POINT;
-  if ((temp <0x6F2) || (temp > 0xD48)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
-  else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC2_TEST_COARSE_BIT);
-
-  //Всі масиви одної величини ми вже опрацювали  
-  if((++index_array_of_one_value) == NUMBER_POINT)
-    index_array_of_one_value = 0;
-  else if (index_array_of_one_value > NUMBER_POINT)
-  {
-    //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
-    total_error_sw_fixed(21);
-  }
-  /*******************************************************/
-}
-/*************************************************************************/
 
 /*************************************************************************
 Опрацьовуємо дані для перетворення Фур'є
@@ -555,11 +464,21 @@ void SPI_ADC_IRQHandler(void)
     unsigned int shift = ((GPIO_SELECT_ADC->ODR & GPIO_SELECTPin_ADC) == 0) ? 0 : NUMBER_CANALs_ADC;
     unsigned int number_canal = shift + ((read_value >> 12) & 0xf);
     
-    if(channel_answer != number_canal) _SET_BIT(set_diagnostyka, ERROR_SPI_ADC_BIT);
-    else _SET_BIT(clear_diagnostyka, ERROR_SPI_ADC_BIT);
-
     output_adc[number_canal].tick = tick_output_adc_p;
-    output_adc[number_canal].value = read_value & 0xfff;
+    
+    static uint32_t error_spi_adc;
+    if(channel_answer != number_canal) 
+    {
+      if (error_spi_adc < 3 ) error_spi_adc++;
+      if (error_spi_adc >= 3 )_SET_BIT(set_diagnostyka, ERROR_SPI_ADC_BIT);
+    }
+    else 
+    {
+      error_spi_adc = 0;
+      
+      _SET_BIT(clear_diagnostyka, ERROR_SPI_ADC_BIT);
+      output_adc[number_canal].value = read_value & 0xfff;
+    }
   }
   tick_output_adc_p = tick_output_adc_tmp;
   /***/
@@ -609,8 +528,8 @@ void SPI_ADC_IRQHandler(void)
     int _y1, _y2;
     long long _y;
       
-    unsigned int gnd_adc  = gnd_adc1; 
-    unsigned int vref_adc = vref_adc1; 
+//    unsigned int gnd_adc  = gnd_adc1; 
+//    unsigned int vref_adc/* = vref_adc1*/; 
 
     uint32_t _x = previous_tick_DATA_VAL;
     /*****/
@@ -620,29 +539,62 @@ void SPI_ADC_IRQHandler(void)
     {
       _x1 = ADCs_data_raw[I_3I0].tick;
       _y1 = ADCs_data_raw[I_3I0].value;
+      
+      static uint32_t index_array_of_one_value_3I0;
+      
+      uint32_t val_C_3I0_16 = output_adc[C_3I0_16].value;
+      vref_adc_averange_sum[I_3I0] += val_C_3I0_16;
+      
+      if((++index_array_of_one_value_3I0) == NUMBER_POINT)
+      {
+        index_array_of_one_value_3I0 = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_3I0] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_3I0] = 0;
+
+        //Робимо тепер усереднення за секунду
+        static uint32_t index_array_of_one_value_3I0_1s;
         
-      _y2 = output_adc[C_3I0_1].value - gnd_adc - vref_adc;
-      if (abs(_y2) > 87)
-      {
-        _x2 = output_adc[C_3I0_1].tick;
-        _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA - 2*4);
+        vref_adc_averange_sum_1s[I_3I0] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_3I0] -= vref_adc_moment_value_1s[I_3I0][index_array_of_one_value_3I0_1s];
+        vref_adc_moment_value_1s[I_3I0][index_array_of_one_value_3I0_1s] = vref_adc_period;
+        vref_adc[I_3I0] = vref_adc_averange_sum_1s[I_3I0] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_3I0_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_3I0_1s = 0;
+        else if (index_array_of_one_value_3I0_1s > MAIN_FREQUENCY)
+        {
+          //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+          total_error_sw_fixed(104);
+        }
       }
-      else
+      else if (index_array_of_one_value_3I0 > NUMBER_POINT)
       {
-        _y2 = output_adc[C_3I0_16].value - gnd_adc - vref_adc;
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(21);
+      }
+        
+//      _y2 = output_adc[C_3I0_1].value - gnd_adc - vref_adc;
+//      if (abs(_y2) > 87)
+//      {
+//        _x2 = output_adc[C_3I0_1].tick;
+//        _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA - 2*4);
+//      }
+//      else
+//      {
+        _y2 = val_C_3I0_16 - /*gnd_adc - */ vref_adc[I_3I0];
         if (abs(_y2) > 87)
         {
           _x2 = output_adc[C_3I0_16].tick;
-          _y2 = (int)((-_y2)*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA - 4);
+          _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA - 4);
         }
         else
         {
-          _y2 = output_adc[C_3I0_256].value - gnd_adc - vref_adc;
+          _y2 = output_adc[C_3I0_256].value - /*gnd_adc - */ vref_adc[I_3I0];
 
           _x2 = output_adc[C_3I0_256].tick;
-          _y2 = (int)(_y2*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA);
+          _y2 = (int)((-_y2)*ustuvannja_meas[I_3I0])>>(USTUVANNJA_VAGA);
         }
-      }
+//      }
       
       if (_x2 > _x1) _DX = _x2 - _x1;
       else
@@ -673,7 +625,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ia].tick;
       _y1 = ADCs_data_raw[I_Ia].value;
         
-      _y2 = output_adc[C_Ia_1].value - gnd_adc - vref_adc;
+      static uint32_t index_array_of_one_value_Ia;
+      
+      uint32_t val_C_Ia_1 = output_adc[C_Ia_1].value;
+      vref_adc_averange_sum[I_Ia] += val_C_Ia_1;
+      
+      if((++index_array_of_one_value_Ia) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ia = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ia] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ia] = 0;
+
+        //Робимо тепер усереднення за секунду
+        static uint32_t index_array_of_one_value_Ia_1s;
+        
+        vref_adc_averange_sum_1s[I_Ia] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ia] -= vref_adc_moment_value_1s[I_Ia][index_array_of_one_value_Ia_1s];
+        vref_adc_moment_value_1s[I_Ia][index_array_of_one_value_Ia_1s] = vref_adc_period;
+        vref_adc[I_Ia] = vref_adc_averange_sum_1s[I_Ia] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ia_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ia_1s = 0;
+        else if (index_array_of_one_value_Ia_1s > MAIN_FREQUENCY)
+        {
+          //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+          total_error_sw_fixed(106);
+        }
+      }
+      else if (index_array_of_one_value_Ia > NUMBER_POINT)
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(105);
+      }
+
+      _y2 = val_C_Ia_1 - /*gnd_adc - */ vref_adc[I_Ia];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ia_1].tick;
@@ -681,7 +666,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ia_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ia_16].value - /*gnd_adc - */ vref_adc[I_Ia];
 
         _x2 = output_adc[C_Ia_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ia])>>(USTUVANNJA_VAGA);
@@ -716,7 +701,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ib_I04].tick;
       _y1 = ADCs_data_raw[I_Ib_I04].value;
         
-      _y2 = output_adc[C_Ib_1].value - gnd_adc - vref_adc;
+      static uint32_t index_array_of_one_value_Ib_I04;
+      
+      uint32_t val_C_Ib_I04_1 = output_adc[C_Ib_1].value;
+      vref_adc_averange_sum[I_Ib_I04] += val_C_Ib_I04_1;
+      
+      if((++index_array_of_one_value_Ib_I04) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ib_I04 = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ib_I04] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ib_I04] = 0;
+
+        //Робимо тепер усереднення за секунду
+        static uint32_t index_array_of_one_value_Ib_I04_1s;
+        
+        vref_adc_averange_sum_1s[I_Ib_I04] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ib_I04] -= vref_adc_moment_value_1s[I_Ib_I04][index_array_of_one_value_Ib_I04_1s];
+        vref_adc_moment_value_1s[I_Ib_I04][index_array_of_one_value_Ib_I04_1s] = vref_adc_period;
+        vref_adc[I_Ib_I04] = vref_adc_averange_sum_1s[I_Ib_I04] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ib_I04_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ib_I04_1s = 0;
+        else if (index_array_of_one_value_Ib_I04_1s > MAIN_FREQUENCY)
+        {
+          //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+          total_error_sw_fixed(108);
+        }
+      }
+      else if (index_array_of_one_value_Ib_I04 > NUMBER_POINT)
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(107);
+      }
+
+      _y2 = val_C_Ib_I04_1 - /*gnd_adc - */ vref_adc[I_Ib_I04];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ib_1].tick;
@@ -724,7 +742,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ib_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ib_16].value - /*gnd_adc - */ vref_adc[I_Ib_I04];
 
         _x2 = output_adc[C_Ib_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ib_I04])>>(USTUVANNJA_VAGA);
@@ -759,7 +777,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ic].tick;
       _y1 = ADCs_data_raw[I_Ic].value;
         
-      _y2 = output_adc[C_Ic_1].value - gnd_adc - vref_adc;
+      static uint32_t index_array_of_one_value_Ic;
+      
+      uint32_t val_C_Ic_1 = output_adc[C_Ic_1].value;
+      vref_adc_averange_sum[I_Ic] += val_C_Ic_1;
+      
+      if((++index_array_of_one_value_Ic) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ic = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ic] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ic] = 0;
+
+        //Робимо тепер усереднення за секунду
+        static uint32_t index_array_of_one_value_Ic_1s;
+        
+        vref_adc_averange_sum_1s[I_Ic] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ic] -= vref_adc_moment_value_1s[I_Ic][index_array_of_one_value_Ic_1s];
+        vref_adc_moment_value_1s[I_Ic][index_array_of_one_value_Ic_1s] = vref_adc_period;
+        vref_adc[I_Ic] = vref_adc_averange_sum_1s[I_Ic] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ic_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ic_1s = 0;
+        else if (index_array_of_one_value_Ic_1s > MAIN_FREQUENCY)
+        {
+          //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+          total_error_sw_fixed(110);
+        }
+      }
+      else if (index_array_of_one_value_Ic > NUMBER_POINT)
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(109);
+      }
+
+      _y2 = val_C_Ic_1 - /*gnd_adc - */ vref_adc[I_Ic];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ic_1].tick;
@@ -767,7 +818,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ic_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ic_16].value - /*gnd_adc - */ vref_adc[I_Ic];
 
         _x2 = output_adc[C_Ic_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ic])>>(USTUVANNJA_VAGA);
@@ -794,8 +845,8 @@ void SPI_ADC_IRQHandler(void)
     }
     /*****/
     
-    gnd_adc  = gnd_adc2; 
-    vref_adc = vref_adc2; 
+//    gnd_adc  = gnd_adc2; 
+//    vref_adc = vref_adc2; 
 
     /*****/
     //Формуємо значення 3U0
@@ -805,7 +856,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_3U0].tick;
       _y1 = ADCs_data_raw[I_3U0].value;
         
-      _y2 = output_adc[C_3U0_1].value - gnd_adc - vref_adc;
+      static uint32_t index_array_of_one_value_3U0;
+      
+      uint32_t val_C_3U0_1 = output_adc[C_3U0_1].value;
+      vref_adc_averange_sum[I_3U0] += val_C_3U0_1;
+      
+      if((++index_array_of_one_value_3U0) == NUMBER_POINT)
+      {
+        index_array_of_one_value_3U0 = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_3U0] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_3U0] = 0;
+
+        //Робимо тепер усереднення за секунду
+        static uint32_t index_array_of_one_value_3U0_1s;
+        
+        vref_adc_averange_sum_1s[I_3U0] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_3U0] -= vref_adc_moment_value_1s[I_3U0][index_array_of_one_value_3U0_1s];
+        vref_adc_moment_value_1s[I_3U0][index_array_of_one_value_3U0_1s] = vref_adc_period;
+        vref_adc[I_3U0] = vref_adc_averange_sum_1s[I_3U0] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_3U0_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_3U0_1s = 0;
+        else if (index_array_of_one_value_3U0_1s > MAIN_FREQUENCY)
+        {
+          //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+          total_error_sw_fixed(112);
+        }
+      }
+      else if (index_array_of_one_value_3U0 > NUMBER_POINT)
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(111);
+      }
+
+      _y2 = val_C_3U0_1 - /*gnd_adc - */ vref_adc[I_3U0];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_3U0_1].tick;
@@ -813,7 +897,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_3U0_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_3U0_16].value - /*gnd_adc - */ vref_adc[I_3U0];
 
         _x2 = output_adc[C_3U0_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_3U0])>>(USTUVANNJA_VAGA);
@@ -868,7 +952,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ua].tick;
       _y1 = ADCs_data_raw[I_Ua].value;
         
-      _y2 = output_adc[C_Ua_1].value - gnd_adc - vref_adc;
+      static uint32_t index_array_of_one_value_Ua;
+      
+      uint32_t val_C_Ua_1 = output_adc[C_Ua_1].value;
+      vref_adc_averange_sum[I_Ua] += val_C_Ua_1;
+      
+      if((++index_array_of_one_value_Ua) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ua = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ua] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ua] = 0;
+
+        //Робимо тепер усереднення за секунду
+        static uint32_t index_array_of_one_value_Ua_1s;
+        
+        vref_adc_averange_sum_1s[I_Ua] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ua] -= vref_adc_moment_value_1s[I_Ua][index_array_of_one_value_Ua_1s];
+        vref_adc_moment_value_1s[I_Ua][index_array_of_one_value_Ua_1s] = vref_adc_period;
+        vref_adc[I_Ua] = vref_adc_averange_sum_1s[I_Ua] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ua_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ua_1s = 0;
+        else if (index_array_of_one_value_Ua_1s > MAIN_FREQUENCY)
+        {
+          //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+          total_error_sw_fixed(114);
+        }
+      }
+      else if (index_array_of_one_value_Ua > NUMBER_POINT)
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(113);
+      }
+
+      _y2 = val_C_Ua_1 - /*gnd_adc - */ vref_adc[I_Ua];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ua_1].tick;
@@ -876,7 +993,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ua_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ua_16].value - /*gnd_adc - */ vref_adc[I_Ua];
 
         _x2 = output_adc[C_Ua_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ua])>>(USTUVANNJA_VAGA);
@@ -931,7 +1048,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Ub].tick;
       _y1 = ADCs_data_raw[I_Ub].value;
         
-      _y2 = output_adc[C_Ub_1].value - gnd_adc - vref_adc;
+      static uint32_t index_array_of_one_value_Ub;
+      
+      uint32_t val_C_Ub_1 = output_adc[C_Ub_1].value;
+      vref_adc_averange_sum[I_Ub] += val_C_Ub_1;
+      
+      if((++index_array_of_one_value_Ub) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Ub = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Ub] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Ub] = 0;
+
+        //Робимо тепер усереднення за секунду
+        static uint32_t index_array_of_one_value_Ub_1s;
+        
+        vref_adc_averange_sum_1s[I_Ub] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Ub] -= vref_adc_moment_value_1s[I_Ub][index_array_of_one_value_Ub_1s];
+        vref_adc_moment_value_1s[I_Ub][index_array_of_one_value_Ub_1s] = vref_adc_period;
+        vref_adc[I_Ub] = vref_adc_averange_sum_1s[I_Ub] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Ub_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Ub_1s = 0;
+        else if (index_array_of_one_value_Ub_1s > MAIN_FREQUENCY)
+        {
+          //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+          total_error_sw_fixed(116);
+        }
+      }
+      else if (index_array_of_one_value_Ub > NUMBER_POINT)
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(115);
+      }
+
+      _y2 = val_C_Ub_1 - /*gnd_adc - */ vref_adc[I_Ub];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Ub_1].tick;
@@ -939,7 +1089,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Ub_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Ub_16].value - /*gnd_adc - */ vref_adc[I_Ub];
 
         _x2 = output_adc[C_Ub_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Ub])>>(USTUVANNJA_VAGA);
@@ -994,7 +1144,40 @@ void SPI_ADC_IRQHandler(void)
       _x1 = ADCs_data_raw[I_Uc].tick;
       _y1 = ADCs_data_raw[I_Uc].value;
         
-      _y2 = output_adc[C_Uc_1].value - gnd_adc - vref_adc;
+      static uint32_t index_array_of_one_value_Uc;
+      
+      uint32_t val_C_Uc_1 = output_adc[C_Uc_1].value;
+      vref_adc_averange_sum[I_Uc] += val_C_Uc_1;
+      
+      if((++index_array_of_one_value_Uc) == NUMBER_POINT)
+      {
+        index_array_of_one_value_Uc = 0;
+        uint32_t vref_adc_period = vref_adc_averange_sum[I_Uc] >> VAGA_NUMBER_POINT;
+        vref_adc_averange_sum[I_Uc] = 0;
+
+        //Робимо тепер усереднення за секунду
+        static uint32_t index_array_of_one_value_Uc_1s;
+        
+        vref_adc_averange_sum_1s[I_Uc] += vref_adc_period;
+        vref_adc_averange_sum_1s[I_Uc] -= vref_adc_moment_value_1s[I_Uc][index_array_of_one_value_Uc_1s];
+        vref_adc_moment_value_1s[I_Uc][index_array_of_one_value_Uc_1s] = vref_adc_period;
+        vref_adc[I_Uc] = vref_adc_averange_sum_1s[I_Uc] / MAIN_FREQUENCY;
+        
+        if((++index_array_of_one_value_Uc_1s) == MAIN_FREQUENCY)
+          index_array_of_one_value_Uc_1s = 0;
+        else if (index_array_of_one_value_Uc_1s > MAIN_FREQUENCY)
+        {
+          //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+          total_error_sw_fixed(118);
+        }
+      }
+      else if (index_array_of_one_value_Uc > NUMBER_POINT)
+      {
+        //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
+        total_error_sw_fixed(117);
+      }
+
+      _y2 = val_C_Uc_1 - /*gnd_adc - */ vref_adc[I_Uc];
       if (abs(_y2) > 87)
       {
         _x2 = output_adc[C_Uc_1].tick;
@@ -1002,7 +1185,7 @@ void SPI_ADC_IRQHandler(void)
       }
       else
       {
-        _y2 = output_adc[C_Uc_16].value - gnd_adc - vref_adc;
+        _y2 = output_adc[C_Uc_16].value - /*gnd_adc - */ vref_adc[I_Uc];
 
         _x2 = output_adc[C_Uc_16].tick;
         _y2 = (int)((-_y2)*ustuvannja_meas[I_Uc])>>(USTUVANNJA_VAGA);
@@ -1150,17 +1333,14 @@ void SPI_ADC_IRQHandler(void)
         {
           int data_tmp = data_for_oscylograph[tail_data_for_oscylograph_tmp].data[i];
           
-          //Цифровий осцилограф
-          current_data[index_array_of_current_data_value++] = data_tmp;
           
           if((prescaler_ar & MASKA_BIT_FOR_PRESCALER) == 0)
           {
             //Масив миттєвих аналогових виборок для аналогового реєстратора
-            array_ar[index_array_ar_current++] = data_tmp;
+//            array_ar[index_array_ar_current++] = data_tmp;
+            AR_WRITE(index_array_ar_current, data_tmp);
           }
         }
-        //Індекс цифрового осцилографа
-        if (index_array_of_current_data_value >= (NUMBER_ANALOG_CANALES*NUMBER_POINT*NUMBER_PERIOD_TRANSMIT)) index_array_of_current_data_value = 0;/*Умова мал аб бути ==, але щоб перестахуватися на невизначену помилку я поставив >=*/
 
         //Масив дискретних сигналів для аналогового реєстратора
         unsigned int *label_to_active_functions_source = data_for_oscylograph[tail_data_for_oscylograph_tmp].active_functions;
@@ -1173,7 +1353,11 @@ void SPI_ADC_IRQHandler(void)
           for (unsigned int i = 0; i < N_BIG; i++)  active_functions_trg[i] |= *(label_to_active_functions_source + i);
 
           unsigned short int *label_to_active_functions_trg = (unsigned short int*)active_functions_trg;
-          for(unsigned int i = 0; i < number_word_digital_part_ar; i++) array_ar[index_array_ar_current++] = *(label_to_active_functions_trg + i);
+          for(unsigned int i = 0; i < number_word_digital_part_ar; i++) 
+          {
+//            array_ar[index_array_ar_current++] = *(label_to_active_functions_trg + i);
+            AR_WRITE(index_array_ar_current, *(label_to_active_functions_trg + i));
+          }
           //Індекс масиву об'єднаних виборок для аналогового реєстратора
           if (index_array_ar_current >= SIZE_BUFFER_FOR_AR) index_array_ar_current = 0;/*Умова мала б бути ==, але щоб перестахуватися на невизначену помилку я поставив >=*/
           
@@ -1193,14 +1377,17 @@ void SPI_ADC_IRQHandler(void)
         if (++tail_data_for_oscylograph >= MAX_INDEX_DATA_FOR_OSCYLOGRAPH) tail_data_for_oscylograph = 0;
       }
     }
-    /**************************************************/
-    //При необхідності повідомляємо про вихід з формування миттєвих значень
-    /**************************************************/
-    if (wait_of_receiving_current_data  == true) wait_of_receiving_current_data  = false;
-    /**************************************************/
+//    /**************************************************/
+//    //При необхідності повідомляємо про вихід з формування миттєвих значень
+//    /**************************************************/
+//    if (wait_of_receiving_current_data  == true) wait_of_receiving_current_data  = false;
+//    /**************************************************/
 
     //Управління аналоговим реємстратором
-    if ((state_ar_record == STATE_AR_START) || (state_ar_record == STATE_AR_SAVE_SRAM_AND_SAVE_FLASH))
+    if (
+        ((state_ar_record == STATE_AR_START) && (number_postfault_slices != 0)) || 
+        (state_ar_record == STATE_AR_SAVE_SRAM_AND_SAVE_FLASH)
+       )
     {
       static unsigned int uncopied_postfault_time_sapmles;
 
@@ -1328,18 +1515,29 @@ void SPI_ADC_IRQHandler(void)
     }
     /*******************************************************/
     
-    if ((status_adc_read_work & TEST_VAL_READ) != 0)
+//    if ((status_adc_read_work & TEST_VAL_READ) != 0)
     {
-      //Треба опрацювати інтегральні величини
-      operate_test_ADCs();
-    
-      status_adc_read_work &= (unsigned int)(~TEST_VAL_READ);
+      //Виділяємо мінімальне і максимальне значення опори по всіх каналах
+      uint32_t min_vref_adc = vref_adc[0];
+      uint32_t max_vref_adc = min_vref_adc;
+  
+      for (size_t i = 1; i < NUMBER_ANALOG_CANALES; i++)
+      {
+        if (min_vref_adc > vref_adc[i]) min_vref_adc = vref_adc[i];
+        if (max_vref_adc < vref_adc[i]) max_vref_adc = vref_adc[i];
+      }
 
-      /**************************************************/
-      //Виставляємо повідомлення про завершення тестових величин
-      /**************************************************/
-      control_word_of_watchdog |= WATCHDOG_MEASURE_STOP_TEST_VAL;
-      /**************************************************/
+      //Перевіряємо допустимість діапазону
+      if ((min_vref_adc < 0x709) || (max_vref_adc > 0x8f5)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC_TEST_BIT);
+      else _SET_BIT(clear_diagnostyka,ERROR_VREF_ADC_TEST_BIT);
+    
+//      status_adc_read_work &= (unsigned int)(~TEST_VAL_READ);
+
+//      /**************************************************/
+//      //Виставляємо повідомлення про завершення тестових величин
+//      /**************************************************/
+//      control_word_of_watchdog |= WATCHDOG_MEASURE_STOP_TEST_VAL;
+//      /**************************************************/
       
       /**************************************************/
       //Якщо зараз стоїть блокування то його знімаємо
@@ -1378,8 +1576,8 @@ void SPI_ADC_IRQHandler(void)
     таймеру ( chip select виставлений у 1)
     */
     if (
-        (adc_DATA_VAL_read == false) &&
-        (adc_TEST_VAL_read == false)
+        (adc_DATA_VAL_read == false) /*&&
+        (adc_TEST_VAL_read == false)*/
        )
     {
       semaphore_adc_irq  = false;
@@ -1433,7 +1631,7 @@ void calc_angle(void)
 {
   //Копіюємо вимірювання
   semaphore_measure_values_low1 = 1;
-  for (unsigned int i = 0; i < (NUMBER_ANALOG_CANALES + 9); i++ ) 
+  for (unsigned int i = 0; i < _NUMBER_IM; i++ ) 
   {
     measurement_low[i] = measurement_middle[i];
   }
@@ -1450,6 +1648,9 @@ void calc_angle(void)
   //Знімаємо семафор заборони обновлення значень з системи захистів
   semaphore_measure_values_low = 0;
   
+  state_calc_phi_angle = true;
+  bank_for_calc_phi_angle = (bank_for_calc_phi_angle ^ 0x1) & 0x1;
+
   //Визначаємо, який вектор беремо за осному
   __full_ort_index index_base;
   if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0) index_base = FULL_ORT_Ua;
@@ -1458,7 +1659,7 @@ void calc_angle(void)
     index_base = FULL_ORT_Uab;
     
     //У цьому випадку кути між фазними напругами невизначкені
-    phi_angle[FULL_ORT_Uc] = phi_angle[FULL_ORT_Ub] = phi_angle[FULL_ORT_Ua] = -1;
+    phi_angle[bank_for_calc_phi_angle][FULL_ORT_Uc] = phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ub] = phi_angle[bank_for_calc_phi_angle][FULL_ORT_Ua] = -1;
   }
 
   /***
@@ -1516,7 +1717,7 @@ void calc_angle(void)
       }
     }
   
-    if (measurement_low[index_m] >= PORIG_CHUTLYVOSTI_VOLTAGE)
+    if (measurement_low[index_m] >= PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE)
     {
       base_index_for_angle_tmp = index;
       break; //Вихід із циклу while
@@ -1540,7 +1741,7 @@ void calc_angle(void)
       {
         if (index_tmp == index)
         {
-          phi_angle[index_tmp] = 0;
+          phi_angle[bank_for_calc_phi_angle][index_tmp] = 0;
           continue;
         }
         else
@@ -1551,43 +1752,43 @@ void calc_angle(void)
           {
           case FULL_ORT_Ua:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UA;
               break;
             }
           case FULL_ORT_Ub:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UB;
               break;
             }
           case FULL_ORT_Uc:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UC;
               break;
             }
           case FULL_ORT_Uab:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UAB;
               break;
             }
           case FULL_ORT_Ubc:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UBC;
               break;
             }
           case FULL_ORT_Uca:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_UCA;
               break;
             }
           case FULL_ORT_3U0:
             {
-              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE;
+              porig_chutlyvosti = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
               index_m = IM_3U0;
               break;
             }
@@ -1683,19 +1884,19 @@ void calc_angle(void)
               if (angle_int >= 3600) angle_int -= 3600;
               else if (angle_int < 0) angle_int += 3600;
       
-              phi_angle[index_tmp] = angle_int;
+              phi_angle[bank_for_calc_phi_angle][index_tmp] = angle_int;
       
             }
             else
             {
-              phi_angle[index_tmp] = -1;
+              phi_angle[bank_for_calc_phi_angle][index_tmp] = -1;
             }
 
           }
           else
           {
             //Модуль досліджуваного вектора менше порогу - кут невизначений
-            phi_angle[index_tmp] = -1;
+            phi_angle[bank_for_calc_phi_angle][index_tmp] = -1;
           }
         }
       }
@@ -1703,7 +1904,7 @@ void calc_angle(void)
     else
     {
       //Амплітуда базового вектору вимірювання по незрозумілій для мене причини рівна 0 (я думаю, що сюди програма не мала б ніколи заходити). Це перестарховка.
-      for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp < FULL_ORT_MAX; index_tmp++) phi_angle[index_tmp] = -1;
+      for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp < FULL_ORT_MAX; index_tmp++) phi_angle[bank_for_calc_phi_angle][index_tmp] = -1;
     }
 
 #undef SIN_BASE
@@ -1713,8 +1914,10 @@ void calc_angle(void)
   else
   {
     //Не зафіксовано вектора вимірювання, відносно якого можна розраховувати кути
-    for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp < FULL_ORT_MAX; index_tmp++) phi_angle[index_tmp] = -1;
+    for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp < FULL_ORT_MAX; index_tmp++) phi_angle[bank_for_calc_phi_angle][index_tmp] = -1;
   }
+
+  state_calc_phi_angle = false;
 }
 
 /*****************************************************/
@@ -1739,17 +1942,24 @@ void calc_power_and_energy(void)
     if ((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET)
     {
       //Запускаємо запис у EEPROM
-      _SET_BIT(control_i2c_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
+      _SET_BIT(control_spi1_taskes, TASK_START_WRITE_ENERGY_EEPROM_BIT);
     }
     else number_minutes = PERIOD_SAVE_ENERGY_IN_MINUTES; /*якщо живлення відновиться, щоб зразу була подана команда на запис*/
 
     //Помічаємо, що відбулася очистка лічильників енергій
-    information_about_clean_energy |= ((1 << USB_RECUEST)|(1 << RS485_RECUEST));
+    information_about_clean_energy |= (
+                                         (1 << USB_RECUEST)
+                                       | (1 << RS485_RECUEST)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+                                       | (1 << LAN_RECUEST)
+#endif
+                                      );
   }
   
+  state_calc_energy = true;
   for (__index_energy i = INDEX_EA_PLUS; i < MAX_NUMBER_INDEXES_ENERGY; i++)
   {
-    if (clean_energy_tmp != 0) energy[i] = 0;
+    if (clean_energy_tmp != 0) energy[0][i] = 0;
     
     int power_data;
     switch (i)
@@ -1794,26 +2004,31 @@ void calc_power_and_energy(void)
     if (power_data >= (PORIG_POWER_ENERGY*MAIN_FREQUENCY)) /*бо у power_data є сума миттєвих потужностей за 1с, які розраховувалися кожні 20мс*/
     {
       double power_quantum = ((double)power_data)/(((double)MAIN_FREQUENCY)*DIV_kWh);
-      double erergy_tmp = energy[i] + power_quantum;
+      double erergy_tmp = energy[0][i] + power_quantum;
       if (erergy_tmp > 999999.999) erergy_tmp = erergy_tmp - 999999.999;
-      energy[i] = erergy_tmp;
+      energy[0][i] = erergy_tmp;
     }
   }
+  state_calc_energy = false;
+  for (__index_energy i = INDEX_EA_PLUS; i < MAX_NUMBER_INDEXES_ENERGY; i++) energy[1][i] = energy[0][i];
   
   float P_float = ((float)P_tmp)/((float)MAIN_FREQUENCY);
   float Q_float = ((float)Q_tmp)/((float)MAIN_FREQUENCY);
-  P = (int)P_float;
-  Q = (int)Q_float;
+  
+  state_calc_power = true;
+  bank_for_calc_power = (bank_for_calc_power ^ 0x1) & 0x1;
+  P[bank_for_calc_power] = (int)P_float;
+  Q[bank_for_calc_power] = (int)Q_float;
   
   //Повна потужність
-  if ( (P != 0) || (Q != 0))
+  if ( (P[bank_for_calc_power] != 0) || (Q[bank_for_calc_power] != 0))
   {
     float in_square_root, S_float;
     in_square_root = P_float*P_float + Q_float*Q_float;
     
     if (arm_sqrt_f32(in_square_root, &S_float) == ARM_MATH_SUCCESS)
     {
-      S = (unsigned int)S_float;
+      S[bank_for_calc_power] = (unsigned int)S_float;
     }
     else
     {
@@ -1821,13 +2036,14 @@ void calc_power_and_energy(void)
       total_error_sw_fixed(53);
     }
     
-    cos_phi_x1000 = (int)(1000.0f*P_float/S_float);
+    cos_phi_x1000[bank_for_calc_power] = (int)(1000.0f*P_float/S_float);
   }
   else
   {
-    S = 0;
-    cos_phi_x1000 = 0;
+    S[bank_for_calc_power] = 0;
+    cos_phi_x1000[bank_for_calc_power] = 0;
   }
+  state_calc_power = false;
   
 }
 /*****************************************************/

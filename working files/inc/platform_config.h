@@ -33,8 +33,6 @@
   /********************************************/
   //Клавіатура
   /********************************************/
-#ifdef KEYBOARD_VER_1
-
 #define KEYBOARD                        GPIOC  
 #define KEYBOARD_SW_1_PIN               GPIO_Pin_11
 #define KEYBOARD_SW_2_PIN               GPIO_Pin_8
@@ -54,29 +52,9 @@
 #define KEYBOARD_SW_C_PIN                       GPIO_Pin_15
 #define RCC_AHB1Periph_GPIO_KEYBOARD_SW_C       RCC_AHB1Periph_GPIOG
 
-#else
-
-#define KEYBOARD                        GPIOC  
-#define KEYBOARD_SW_1_PIN               GPIO_Pin_7
-#define KEYBOARD_SW_2_PIN               GPIO_Pin_8
-#define KEYBOARD_SW_3_PIN               GPIO_Pin_9
-#define KEYBOARD_SW_4_PIN               GPIO_Pin_6
-#define RCC_AHB1Periph_GPIO_KEYBOARD    RCC_AHB1Periph_GPIOC
-
-#define KEYBOARD_SW_A                           GPIOC
-#define KEYBOARD_SW_A_PIN                       GPIO_Pin_10
-#define RCC_AHB1Periph_GPIO_KEYBOARD_SW_A       RCC_AHB1Periph_GPIOC
-
-#define KEYBOARD_SW_B                           GPIOC
-#define KEYBOARD_SW_B_PIN                       GPIO_Pin_11
-#define RCC_AHB1Periph_GPIO_KEYBOARD_SW_B       RCC_AHB1Periph_GPIOC
-
-#define KEYBOARD_SW_C                           GPIOC
-#define KEYBOARD_SW_C_PIN                       GPIO_Pin_12
-#define RCC_AHB1Periph_GPIO_KEYBOARD_SW_C       RCC_AHB1Periph_GPIOC
-
-
-#endif
+#define KEYBOARD_SW_D                           GPIOG
+#define KEYBOARD_SW_D_PIN                       GPIO_Pin_11
+#define RCC_AHB1Periph_GPIO_KEYBOARD_SW_D       RCC_AHB1Periph_GPIOG
 
   /********************************************/
 
@@ -180,48 +158,51 @@
   /********************************************/
   /* SPI для DATAFLASH*/
   /********************************************/
-#define GPIO_SPI_DF                 GPIOA
-#define RCC_AHB1Periph_GPIO_SPI_DF  RCC_AHB1Periph_GPIOA
-#define SPI_DF_IRQHandler           SPI1_IRQHandler
-#define SPI_DF_IRQn                 SPI1_IRQn
-#define GPIO_NSSPin_DF              GPIO_Pin_4
-#define GPIO_SCKPin_DF              GPIO_Pin_5
-#define GPIO_SCKPin_DFSource        GPIO_PinSource5
-#define GPIO_MISOPin_DF             GPIO_Pin_6
-#define GPIO_MISOPin_DFSource       GPIO_PinSource6
-#define GPIO_MOSIPin_DF             GPIO_Pin_7
-#define GPIO_MOSIPin_DFSource       GPIO_PinSource7
+#define GPIO_SPI_EDF                 GPIOA
+#define RCC_AHB1Periph_GPIO_SPI_EDF  RCC_AHB1Periph_GPIOA
+#define SPI_EDF_IRQHandler           SPI1_IRQHandler
+#define SPI_EDF_IRQn                 SPI1_IRQn
+#define GPIO_NSSPin_EDF              GPIO_Pin_4
+#define GPIO_SCKPin_EDF              GPIO_Pin_5
+#define GPIO_SCKPin_EDFSource        GPIO_PinSource5
+#define GPIO_MISOPin_EDF             GPIO_Pin_6
+#define GPIO_MISOPin_EDFSource       GPIO_PinSource6
+#define GPIO_MOSIPin_EDF             GPIO_Pin_7
+#define GPIO_MOSIPin_EDFSource       GPIO_PinSource7
 
-#define GPIO_SPI_DF_TOGGLE          GPIOG
-#define RCC_AHB1Periph_GPIO_SPI_DF_TOGGLE  RCC_AHB1Periph_GPIOG
-#define GPIO_SPI_DF_TOGGLE_Pin      GPIO_Pin_13
+#define GPIO_SPI_EDF_A0              GPIOG
+#define RCC_AHB1Periph_GPIO_SPI_EDF_A0  RCC_AHB1Periph_GPIOG
+#define GPIO_SPI_EDF_A0_Pin          GPIO_Pin_13
+#define GPIO_SPI_EDF_A1              GPIOG
+#define RCC_AHB1Periph_GPIO_SPI_EDF_A1  RCC_AHB1Periph_GPIOG
+#define GPIO_SPI_EDF_A1_Pin          GPIO_Pin_14
 
 
-#define SPI_DF                      SPI1
-#define RCC_APB2Periph_SPI_DF       RCC_APB2Periph_SPI1
-#define SPI_DF_DR_Address           ((uint32_t)0x4001300C)
+#define SPI_EDF                      SPI1
+#define RCC_APB2Periph_SPI_EDF       RCC_APB2Periph_SPI1
+#define SPI_EDF_DR_Address           ((uint32_t)0x4001300C)
 
-#define GPIO_AF_SPI_DF              GPIO_AF_SPI1
+#define GPIO_AF_SPI_EDF              GPIO_AF_SPI1
 
-#define DMA_StreamSPI_DF_Tx_IRQn         DMA2_Stream3_IRQn
-#define DMA_StreamSPI_DF_Tx_IRQHandler   DMA2_Stream3_IRQHandler
-#define DMA_ChannelSPI_DF_Tx             DMA_Channel_3
-#define DMA_StreamSPI_DF_Tx              DMA2_Stream3
-#define DMA_FLAG_TCSPI_DF_Tx             DMA_FLAG_TCIF3
-#define DMA_FLAG_HTSPI_DF_Tx             DMA_FLAG_HTIF3
-#define DMA_FLAG_TEISPI_DF_Tx            DMA_FLAG_TEIF3
-#define DMA_FLAG_DMEISPI_DF_Tx           DMA_FLAG_DMEIF3
-#define DMA_FLAG_FEISPI_DF_Tx            DMA_FLAG_FEIF3
+#define DMA_StreamSPI_EDF_Tx_IRQn         DMA2_Stream3_IRQn
+#define DMA_StreamSPI_EDF_Tx_IRQHandler   DMA2_Stream3_IRQHandler
+#define DMA_ChannelSPI_EDF_Tx             DMA_Channel_3
+#define DMA_StreamSPI_EDF_Tx              DMA2_Stream3
+#define DMA_FLAG_TCSPI_EDF_Tx             DMA_FLAG_TCIF3
+#define DMA_FLAG_HTSPI_EDF_Tx             DMA_FLAG_HTIF3
+#define DMA_FLAG_TEISPI_EDF_Tx            DMA_FLAG_TEIF3
+#define DMA_FLAG_DMEISPI_EDF_Tx           DMA_FLAG_DMEIF3
+#define DMA_FLAG_FEISPI_EDF_Tx            DMA_FLAG_FEIF3
 
-#define DMA_StreamSPI_DF_Rx_IRQn         DMA2_Stream0_IRQn
-#define DMA_StreamSPI_DF_Rx_IRQHandler   DMA2_Stream0_IRQHandler
-#define DMA_ChannelSPI_DF_Rx             DMA_Channel_3
-#define DMA_StreamSPI_DF_Rx              DMA2_Stream0
-#define DMA_FLAG_TCSPI_DF_Rx             DMA_FLAG_TCIF0
-#define DMA_FLAG_HTSPI_DF_Rx             DMA_FLAG_HTIF0
-#define DMA_FLAG_TEISPI_DF_Rx            DMA_FLAG_TEIF0
-#define DMA_FLAG_DMEISPI_DF_Rx           DMA_FLAG_DMEIF0
-#define DMA_FLAG_FEISPI_DF_Rx            DMA_FLAG_FEIF0
+#define DMA_StreamSPI_EDF_Rx_IRQn         DMA2_Stream0_IRQn
+#define DMA_StreamSPI_EDF_Rx_IRQHandler   DMA2_Stream0_IRQHandler
+#define DMA_ChannelSPI_EDF_Rx             DMA_Channel_3
+#define DMA_StreamSPI_EDF_Rx              DMA2_Stream0
+#define DMA_FLAG_TCSPI_EDF_Rx             DMA_FLAG_TCIF0
+#define DMA_FLAG_HTSPI_EDF_Rx             DMA_FLAG_HTIF0
+#define DMA_FLAG_TEISPI_EDF_Rx            DMA_FLAG_TEIF0
+#define DMA_FLAG_DMEISPI_EDF_Rx           DMA_FLAG_DMEIF0
+#define DMA_FLAG_FEISPI_EDF_Rx            DMA_FLAG_FEIF0
   /********************************************/
 
   /********************************************/
@@ -276,6 +257,96 @@
 #define RCC_AHB1Periph_GPIO_EXTERNAL_WATCHDOG   RCC_AHB1Periph_GPIOC
 
   /********************************************/
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  /********************************************/
+  /*CANAL1 для міжпроцесорного зв'язкуц*/
+  /********************************************/
+#define GPIO_CANAL1_MO                    GPIOA
+#define RCC_AHB1Periph_GPIO_CANAL1_MO     RCC_AHB1Periph_GPIOA
+
+#define GPIO_TxPin_CANAL1_MO             GPIO_Pin_9
+#define GPIO_TxPin_CANAL1_MOSource       GPIO_PinSource9
+#define GPIO_RxPin_CANAL1_MO             GPIO_Pin_10
+#define GPIO_RxPin_CANAL1_MOSource       GPIO_PinSource10
+
+#define CANAL1_MO                        USART1
+#define RCC_CANAL1_MO                    RCC_APB2Periph_USART1
+#define CANAL1_MO_DR_Base                ((uint32_t)0x40011004)
+
+#define GPIO_AF_CANAL1_MO                GPIO_AF_USART1
+
+//#define CANAL1_MO_IRQn                   USART1_IRQn
+//#define CANAL1_MO_IRQHandler             USART1_IRQHandler
+
+//#define DMA_StreamCANAL1_MO_Tx_IRQn       DMA2_Stream7_IRQn
+//#define DMA_StreamCANAL1_MO_Tx_IRQHandler DMA2_Stream7_IRQHandler
+#define DMA_ChannelCANAL1_MO_Tx           DMA_Channel_4
+#define DMA_StreamCANAL1_MO_Tx            DMA2_Stream7
+#define DMA_FLAG_TCCANAL1_MO_Tx           DMA_FLAG_TCIF7
+#define DMA_FLAG_HTCANAL1_MO_Tx           DMA_FLAG_HTIF7
+#define DMA_FLAG_TEICANAL1_MO_Tx          DMA_FLAG_TEIF7
+#define DMA_FLAG_DMEICANAL1_MO_Tx         DMA_FLAG_DMEIF7
+#define DMA_FLAG_FEICANAL1_MO_Tx          DMA_FLAG_FEIF7
+
+#define DMA_ChannelCANAL1_MO_Rx           DMA_Channel_4
+#define DMA_StreamCANAL1_MO_Rx            DMA2_Stream2
+#define DMA_FLAG_TCCANAL1_MO_Rx           DMA_FLAG_TCIF2
+#define DMA_FLAG_HTCANAL1_MO_Rx           DMA_FLAG_HTIF2
+#define DMA_FLAG_TEICANAL1_MO_Rx          DMA_FLAG_TEIF2
+#define DMA_FLAG_DMEICANAL1_MO_Rx         DMA_FLAG_DMEIF2
+#define DMA_FLAG_FEICANAL1_MO_Rx          DMA_FLAG_FEIF2
+
+#define GPIO_CANAL1_MO_Out1               GPIOB
+#define GPIO_PIN_CANAL1_MO_Out1           GPIO_Pin_1
+#define RCC_AHB1Periph_GPIO_CANAL1_MO_Out1 RCC_AHB1Periph_GPIOB
+
+  /********************************************/
+
+#define GPIO_KP_SOFT_RESET                GPIOB
+#define GPIO_PIN_KP_SOFT_RESET            GPIO_Pin_0
+#define RCC_AHB1Periph_KP_SOFT_RESET      RCC_AHB1Periph_GPIOB
+
+/********************************************/
+  /*CANAL2 для міжпроцесорного зв'язкуц*/
+  /********************************************/
+#define GPIO_CANAL2_MO                    GPIOC
+#define RCC_AHB1Periph_GPIO_CANAL2_MO     RCC_AHB1Periph_GPIOC
+
+#define GPIO_TxPin_CANAL2_MO             GPIO_Pin_6
+#define GPIO_TxPin_CANAL2_MOSource       GPIO_PinSource6
+#define GPIO_RxPin_CANAL2_MO             GPIO_Pin_7
+#define GPIO_RxPin_CANAL2_MOSource       GPIO_PinSource7
+
+#define CANAL2_MO                        USART6
+#define RCC_CANAL2_MO                    RCC_APB2Periph_USART6
+#define CANAL2_MO_DR_Base                ((uint32_t)0x40011404)
+
+#define GPIO_AF_CANAL2_MO                GPIO_AF_USART6
+
+//#define CANAL2_MO_IRQn                   USART6_IRQn
+//#define CANAL2_MO_IRQHandler             USART6_IRQHandler
+
+//#define DMA_StreamCANAL2_MO_Tx_IRQn       DMA2_Stream6_IRQn
+//#define DMA_StreamCANAL2_MO_Tx_IRQHandler DMA2_Stream6_IRQHandler
+#define DMA_ChannelCANAL2_MO_Tx           DMA_Channel_5
+#define DMA_StreamCANAL2_MO_Tx            DMA2_Stream6
+#define DMA_FLAG_TCCANAL2_MO_Tx           DMA_FLAG_TCIF6
+#define DMA_FLAG_HTCANAL2_MO_Tx           DMA_FLAG_HTIF6
+#define DMA_FLAG_TEICANAL2_MO_Tx          DMA_FLAG_TEIF6
+#define DMA_FLAG_DMEICANAL2_MO_Tx         DMA_FLAG_DMEIF6
+#define DMA_FLAG_FEICANAL2_MO_Tx          DMA_FLAG_FEIF6
+
+#define DMA_ChannelCANAL2_MO_Rx           DMA_Channel_5
+#define DMA_StreamCANAL2_MO_Rx            DMA2_Stream1
+#define DMA_FLAG_TCCANAL2_MO_Rx           DMA_FLAG_TCIF1
+#define DMA_FLAG_HTCANAL2_MO_Rx           DMA_FLAG_HTIF1
+#define DMA_FLAG_TEICANAL2_MO_Rx          DMA_FLAG_TEIF1
+#define DMA_FLAG_DMEICANAL2_MO_Rx         DMA_FLAG_DMEIF1
+#define DMA_FLAG_FEICANAL2_MO_Rx          DMA_FLAG_FEIF1
+  /********************************************/
+#endif
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 

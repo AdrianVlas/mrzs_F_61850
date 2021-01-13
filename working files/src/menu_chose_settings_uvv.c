@@ -12,28 +12,32 @@ void make_ekran_chose_settings_uvv(void)
       " Вид входа      ",
       " Тип вх.сигнала ",
       " Вид выхода     ",
-      " Вид индикатора "
+      " Вид индикатора ",
+      " Режим Ф-кнопки "
     },
     {
       " Допуск д.входу ",
       " Вид входу      ",
       " Тип вх.сигналу ",
       " Вид виходу     ",
-      " Вид індикатора "
+      " Вид індикатора ",
+      " Режим Ф-кнопки "
     },
     {
       " BIN Tolerance  ",
       " Type of Input  ",
       " In.Signal Type ",
       " Type of Output ",
-      " Type of LED    "
+      " Type of LED    ",
+      "   F-Key Mode   "
     },
     {
       " Допуск д.входа ",
       " Вид входа      ",
       " Тип вх.сигнала ",
       " Вид выхода     ",
-      " Вид индикатора "
+      " Вид индикатора ",
+      " Режим Ф-кнопки "
     }
   };
   int index_language = index_language_in_array(current_settings.language);
@@ -75,12 +79,12 @@ void make_ekran_dopusk_dv()
 {
   const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
-    "     Двx.       ",
-    "     Двx.       ",
-    "      DI        ",
-    "     Двx.       "
+    "    Двx.        ",
+    "    Двx.        ",
+    "     DI.        ",
+    "    Двx.        "
   };
-  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {9, 9, 8, 9};
+  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {8, 8, 8, 8};
   const unsigned char ms[MAX_NAMBER_LANGUAGE][2] = {"мс", "мс", "ms", "мс"};
 
   int index_language = index_language_in_array(current_settings.language);
@@ -95,38 +99,46 @@ void make_ekran_dopusk_dv()
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (NUMBER_INPUTS<<1))//Множення на два константи NUMBER_INPUTS потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    unsigned int view = ((current_ekran.edition == 0) || (position_temp != index_of_ekran_tmp));
+    if (index_of_ekran_tmp < NUMBER_INPUTS)
     {
       if ((i & 0x1) == 0)
       {
-        unsigned int number = (index_of_ekran >> 1) + 1;
-        unsigned int tmp_1 = (number / 10), tmp_2 = number - tmp_1*10;
+        unsigned int number = index_of_ekran_tmp + 1;
+        int tmp_1 = -1, tmp_2 = -1;
+
+        for (size_t j = 0; j < N_INPUT_BOARDS; j++)
+        {
+          if (number <= input_boards[j][0])
+          {
+            tmp_1 = input_boards[j][1];
+            tmp_2 = (j == 0) ? number : number - input_boards[j - 1][0];
+          
+            break;
+          }
+        }
         
         //У непарному номері рядку виводимо заголовок
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((j < first_index_number_1) || (j > (first_index_number_1 + 1)))
+          if ((j < first_index_number_1) || (j > (first_index_number_1 + 2)))
             working_ekran[i][j] = name_string[index_language][j];
-          else if (j == first_index_number_1)
+          else if (j == (first_index_number_1 + 0))
           {
-            if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x30;
+            if (tmp_1 < 0) working_ekran[i][j] = '?';
+            else if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x40;
           }
+          else if (j == (first_index_number_1 + 1)) working_ekran[i][j] = '.';
           else     
           {
-            if (tmp_1 > 0 )
-            {
-              working_ekran[i][j] = tmp_2 + 0x30;
-            }
-            else
-            {
-              working_ekran[i][j - 1] = tmp_2 + 0x30;
-              working_ekran[i][j] = ' ';
-            }
+            if (tmp_2 < 0) working_ekran[i][j] = '?';
+            else working_ekran[i][j] = tmp_2 + 0x30;
           }
         }
         vaga = 10; //максимальний ваговий коефіцієнт для величини допуску дискретного входу
-        if (current_ekran.edition == 0) value = current_settings.dopusk_dv[index_of_ekran >> 1]; //у змінну value поміщаємо значення допуску дискретного входу
-        else value = edition_settings.dopusk_dv[index_of_ekran >> 1];
+        if (view == true) value = current_settings.dopusk_dv[index_of_ekran_tmp]; //у змінну value поміщаємо значення допуску дискретного входу
+        else value = edition_settings.dopusk_dv[index_of_ekran_tmp];
         first_symbol = 0; //помічаємо, що ще ніодин значущий символ не виведений
       }
       else
@@ -143,7 +155,7 @@ void make_ekran_dopusk_dv()
           else if ((j >= (COL_DOPUSK_DV_END + 2)) && (j <= (COL_DOPUSK_DV_END + 3))) 
             working_ekran[i][j] = ms[index_language][j - (COL_DOPUSK_DV_END + 2)];
           else
-            calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol);
+            calc_int_symbol_and_put_into_working_ekran((working_ekran[i] + j), &value, &vaga, &first_symbol, view);
         }
       }
     }
@@ -186,12 +198,12 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
 {
   const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
-    "     Двx.       ",
-    "     Двx.       ",
-    "      DI        ",
-    "     Двx.       "
+    "    Двx.        ",
+    "    Двx.        ",
+    "     DI.        ",
+    "    Двx.        "
   };
-  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {9, 9, 8, 9};
+  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {8, 8, 8, 8};
   int index_language = index_language_in_array(current_settings.language);
   unsigned int first_index_number_1 = first_index_number[index_language];
   
@@ -209,28 +221,34 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
       if ((i & 0x1) == 0)
       {
         unsigned int number = (index_of_ekran >> 1) + 1;
-        unsigned int tmp_1 = (number / 10), tmp_2 = number - tmp_1*10;
+        int tmp_1 = -1, tmp_2 = -1;
+        
+        for (size_t j = 0; j < N_INPUT_BOARDS; j++)
+        {
+          if (number <= input_boards[j][0])
+          {
+            tmp_1 = input_boards[j][1];
+            tmp_2 = (j == 0) ? number : number - input_boards[j - 1][0];
+          
+            break;
+          }
+        }
         
         //У непарному номері рядку виводимо заголовок
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((j < first_index_number_1) || (j > (first_index_number_1 + 1)))
+          if ((j < first_index_number_1) || (j > (first_index_number_1 + 2)))
             working_ekran[i][j] = name_string[index_language][j];
-          else if (j == first_index_number_1)
+          else if (j == (first_index_number_1 + 0))
           {
-            if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x30;
+            if (tmp_1 < 0) working_ekran[i][j] = '?';
+            else if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x40;
           }
+          else if (j == (first_index_number_1 + 1)) working_ekran[i][j] = '.';
           else     
           {
-            if (tmp_1 > 0 )
-            {
-              working_ekran[i][j] = tmp_2 + 0x30;
-            }
-            else
-            {
-              working_ekran[i][j - 1] = tmp_2 + 0x30;
-              working_ekran[i][j] = ' ';
-            }
+            if (tmp_2 < 0) working_ekran[i][j] = '?';
+            else working_ekran[i][j] = tmp_2 + 0x30;
           }
         }
       }
@@ -261,7 +279,7 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
           else temp_data = edition_settings.type_of_input;
           
           for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
-          current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+          if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
         }
         else
         {
@@ -284,7 +302,7 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
           else temp_data = edition_settings.type_of_input_signal;
         
           for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
-          current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+          if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
         }
       }
     }
@@ -335,12 +353,12 @@ void make_ekran_type_output_uvv(void)
 {
   const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
-    "     Двых.      ",
-    "     Двих.      ",
-    "      DO        ",
-    "     Двых.      "
+    "    Двых.       ",
+    "    Двих.       ",
+    "     DO.        ",
+    "    Двых.       "
   };
-  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {10, 10, 8, 10};
+  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {9, 9, 8, 9};
   int index_language = index_language_in_array(current_settings.language);
   unsigned int first_index_number_1 = first_index_number[index_language];
   
@@ -357,28 +375,34 @@ void make_ekran_type_output_uvv(void)
       if ((i & 0x1) == 0)
       {
         unsigned int number = (index_of_ekran >> 1) + 1;
-        unsigned int tmp_1 = (number / 10), tmp_2 = number - tmp_1*10;
+        int tmp_1 = -1, tmp_2 = -1;
+
+        for (size_t j = 0; j < N_OUTPUT_BOARDS; j++)
+        {
+          if (number <= output_boards[j][0])
+          {
+            tmp_1 = output_boards[j][1];
+            tmp_2 = (j == 0) ? number : number - output_boards[j - 1][0];
+          
+            break;
+          }
+        }
         
         //У непарному номері рядку виводимо заголовок
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((j < first_index_number_1) || (j > (first_index_number_1 + 1)))
+          if ((j < first_index_number_1) || (j > (first_index_number_1 + 2)))
             working_ekran[i][j] = name_string[index_language][j];
-          else if (j == first_index_number_1)
+          else if (j == (first_index_number_1 + 0))
           {
-            if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x30;
+            if (tmp_1 < 0) working_ekran[i][j] = '?';
+            else if (tmp_1 > 0 ) working_ekran[i][j] = tmp_1 + 0x40;
           }
+          else if (j == (first_index_number_1 + 1)) working_ekran[i][j] = '.';
           else     
           {
-            if (tmp_1 > 0 )
-            {
-              working_ekran[i][j] = tmp_2 + 0x30;
-            }
-            else
-            {
-              working_ekran[i][j - 1] = tmp_2 + 0x30;
-              working_ekran[i][j] = ' ';
-            }
+            if (tmp_2 < 0) working_ekran[i][j] = '?';
+            else working_ekran[i][j] = tmp_2 + 0x30;
           }
         }
       }
@@ -419,7 +443,7 @@ void make_ekran_type_output_uvv(void)
         if (value == true) value += ((*p_temp_data_modif & maska) != 0); //тільки у випадку, коли вихід сигнальний
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][value][j];
-        current_ekran.position_cursor_x = cursor_x[index_language][value];
+        if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][value];
       }
     }
     else
@@ -519,7 +543,90 @@ void make_ekran_type_led_uvv(void)
         else temp_data = edition_settings.type_of_led;
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
-        current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+        if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+      }
+    }
+    else
+      for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+
+    index_of_ekran++;
+  }
+
+  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
+  current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+  //Курсор видимий
+  current_ekran.cursor_on = 1;
+  //Курсор не мигає
+  if(current_ekran.edition == 0)current_ekran.cursor_blinking_on = 0;
+  else current_ekran.cursor_blinking_on = 1;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+/*****************************************************/
+
+/*****************************************************/
+//Формуємо екран відображення режиму ФК
+/*****************************************************/
+void make_ekran_type_button_uvv(void)
+{
+  const unsigned char name_string[MAX_COL_LCD] = "       F        ";
+  const unsigned int first_index_number = 8;
+  
+  int index_language = index_language_in_array(current_settings.language);
+  
+  unsigned int position_temp = current_ekran.index_position;
+  unsigned int index_of_ekran;
+  
+  //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+  index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+  
+  for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+  {
+    if (index_of_ekran < (NUMBER_DEFINED_BUTTONS << 1))//Множення на два константи NUMBER_BUTTON потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    {
+      if ((i & 0x1) == 0)
+      {
+        //У непарному номері рядку виводимо заголовок
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+        {
+          if (j != first_index_number) working_ekran[i][j] = name_string[j];
+          else working_ekran[i][j] = ((index_of_ekran >> 1) + 1) + 0x30;
+        }
+      }
+      else
+      {
+        //У парному номері рядку виводимо значення 
+        unsigned int index_ctr = (index_of_ekran>>1);
+
+        const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        {
+          {"     КНОПКА     ", "      КЛЮЧ      "},
+          {"     КНОПКА     ", "      КЛЮЧ      "},
+          {"     КНОПКА     ", "      КЛЮЧ      "},
+          {"     КНОПКА     ", "      КЛЮЧ      "}
+        };
+        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+        {
+          {4, 5},
+          {4, 5},
+          {4, 5},
+          {4, 5}
+        };
+
+        uint32_t *p_temp_data;
+        if(current_ekran.edition == 0) 
+        {
+          p_temp_data = &current_settings.buttons_mode;
+        }
+        else
+        {
+          p_temp_data = &edition_settings.buttons_mode;
+        }
+
+        int value = (*p_temp_data >> index_ctr) & 0x1;
+        
+        for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][value][j];
+        if (position_temp == index_ctr) current_ekran.position_cursor_x = cursor_x[index_language][value];
       }
     }
     else
