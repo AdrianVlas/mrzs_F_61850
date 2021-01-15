@@ -17,7 +17,7 @@ void make_ekran_resurs()
     },
     {
       "  CB Resource   ",
-      " Off CB Number  "
+      " Open CB Oper N "
     },
     {
       "  Ресурс выкл.  ",

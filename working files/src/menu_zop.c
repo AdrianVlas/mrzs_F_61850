@@ -14,7 +14,7 @@ void make_ekran_setpoint_zop(unsigned int group)
       "Уставка ЗЗП(КОФ)"
     },
     {
-      "  NPSP Pickup   "
+      "  NSOCP StVal   "
     },
     {
       "Уставка ЗОП(КОФ)"
@@ -112,7 +112,7 @@ void make_ekran_timeout_zop(unsigned int group)
       "   T ЗЗП(КОФ)   "
     },
     {
-      "   NPSP Delay   "
+      "  NSOCP Op Del  "
     },
     {
       "   T ЗОП(КОФ)   "
@@ -205,7 +205,7 @@ void make_ekran_control_zop()
       " Захист ЗЗП(КОФ)"
     },
     {
-      " NPSP Protection"
+      "     NSOCP      "
     },
     {
       " Защита ЗОП(КОФ)"

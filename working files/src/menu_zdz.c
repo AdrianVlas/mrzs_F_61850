@@ -14,7 +14,7 @@ void make_ekran_timeout_zdz(unsigned int group)
       "     T ЗДЗ      "
     },
     {
-      "     T ЗДЗ      "
+      "    AFD Del     "
     },
     {
       "     T ЗДЗ      "
@@ -145,7 +145,7 @@ void make_ekran_control_zdz()
       " Пуск від ЗНмін2"
     },
     {
-      "      ЗДЗ       ",
+      "      AFD       ",
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
@@ -153,18 +153,18 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
-      "      ОВД1      ",
-      "      ОВД2      ",
-      "      ОВД3      ",
-      "  Порог чувст.  ",
+      "   SENSSARC1    ",
+      "   SENSSARC2    ",
+      "   SENSSARC3    ",
+      "  sensitivity   ",
 #endif
-      "   Выбор ЗДЗ    ",
-      " Start from OCP1",
-      " Start from OCP2",
-      " Start from OCP3",
-      " Start from OCP4",
-      " Пуск от ЗНмин1 ",
-      " Пуск от ЗНмин2 "
+      "  AFD settings  ",
+      "    via OCP1    ",
+      "    via OCP2    ",
+      "    via OCP3    ",
+      "    via OCP4    ",
+      "    via UVP1    ",
+      "    via UVP2    "
     },
     {
       "      ЗДЗ       ",
@@ -195,14 +195,14 @@ void make_ekran_control_zdz()
     {"     Откл.      ", "      Вкл.      "},
     {"     Вимк.      ", "     Ввімк.     "},
     {"      Off       ", "       On       "},
-    {"     Сљнд.      ", "     Косу.      "}
+    {"     Откл.      ", "      Вкл.      "}
   };
   const unsigned int cursor_x_1[MAX_NAMBER_LANGUAGE][2] = 
   {
    {4, 5},
    {4, 4},
    {5, 6},
-   {4, 4}
+   {4, 5}
   };
   const unsigned char information_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER][MAX_COL_LCD] = 
   {

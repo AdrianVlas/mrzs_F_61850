@@ -14,7 +14,7 @@ void make_ekran_setpoint_urov(unsigned int group)
       "  ”ставка ѕ–¬¬  "
     },
     {
-      "  CBFP Pickup   "
+      "   CBF StVal    "
     },
     {
       "  ”ставка ”–ќ¬  "
@@ -110,8 +110,8 @@ void make_ekran_timeout_urov(unsigned int group)
       " 2 —туп≥нь ѕ–¬¬ "
     },
     {
-      "  CBFP Stage 1  ",
-      "  CBFP Stage 2  "
+      "   CBF IntTr    ",
+      "   CBF ExtTr    "
     },
     {
       " 1 —тупень ”–ќ¬ ",
@@ -254,7 +254,7 @@ void make_ekran_control_urov()
       " ѕуск от «Ќмакс2",
       "  ѕуск от ј„–1  ",
       "  ѕуск от ј„–2  ",
-      "  ѕуск от ”«х   "
+      "  ѕуск от ”«x   "
     },
     {
       "      ѕ–¬¬      ",
@@ -281,28 +281,28 @@ void make_ekran_control_urov()
       "  ѕуск в≥д ”«x  "
     },
     {
-      "      CBFP      ",
-      " Start from OCP1",
-      " Start from OCP2",
-      " Start from OCP3",
-      " Start from OCP4",
-      "Start f.OCP0.4 1",
-      "Start f.OCP0.4 2",
-      "  ѕуск от «ƒ«   ",
-      " Start from 3I0 ",
-      " Start from 3U0 ",
-      "  ѕуск от Ќ««   ",
-      " ѕуск от “«Ќѕ1  ",
-      " ѕуск от “«Ќѕ2  ",
-      " ѕуск от “«Ќѕ3  ",
-      " Start from NPSP",
-      "Start from Umin1",
-      "Start from Umin2",
-      "Start from Umax1",
-      "Start from Umax2",
-      "  ѕуск от ј„–1  ",
-      "  ѕуск от ј„–2  ",
-      "  ѕуск от ”«х   "
+      "      CBP       ",
+      "    via OCP1    ",
+      "    via OCP2    ",
+      "    via OCP3    ",
+      "    via OCP4    ",
+      "   via LVOCP1   ",
+      "   via LVOCP2   ",
+      "    via AFD     ",
+      "  via EFP 3I0   ",
+      "  via EFP U01   ",
+      "   via SDEFP    ",
+      "   via DEFP1    ",
+      "   via DEFP2    ",
+      "   via DEFP3    ",
+      "   via NSOCP    ",
+      "    via UVP1    ",
+      "    via UVP2    ",
+      "    via OVP1    ",
+      "    via OVP2    ",
+      "    via LFC1    ",
+      "    via LFC2    ",
+      "   MFPx Start   "
     },
     {
       "      ”–ќ¬      ",
@@ -326,7 +326,7 @@ void make_ekran_control_urov()
       " ѕуск от «Ќмакс2",
       "  ѕуск от ј„–1  ",
       "  ѕуск от ј„–2  ",
-      "  ѕуск от ”«х   "
+      "  ѕуск от ”«x   "
     }
   };
   const uint32_t index_number_UP_prvv[MAX_NAMBER_LANGUAGE] = {12, 13, 12, 12};

@@ -18,9 +18,9 @@ void make_ekran_list_registrators(void)
       " Архів діагност."
     },
     {
-      " Analog recorder",
-      "Digital recorder",
-      " Diagn.Archive  "
+      " Dst recorder   ",
+      " Binary recorder",
+      " Diag recorder  "
     },
     {
       " Аналог.рег-р   ",
@@ -258,16 +258,16 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
       },
       {
         " Time label     ",
-        " Digit.S.Changes",
-        "M.at Max.Ph Cur ",
-        "M.at Max.Ph 0.4 ",
-        "M.at 3I0 Max.   ",
-        " Изм.при 3U0-max",
-        " Изм.при U-min  ",
-        " Изм.при U-max  ",
-        " M.at Max.I2 Cur",
-        " Изм.при f-min  ",
-        " Изм.при f-ЧАПВ "
+        " Bin S Changes  ",
+        " M at Max Cur   ",
+        " M at Max LV Cur",
+        "M at Max 3I0 Cur",
+        "M at Max 3U0 Vol",
+        " M at Min Vol   ",
+        " M at Max Vol   ",
+        " M at Max I2 Cur",
+        " M at Min f     ",
+        " M.at f -FAR    "
       },
       {
         " Уакыт белгісі  ",
@@ -644,7 +644,7 @@ void make_ekran_title_analog_value_records_digital_registrator(void)
       {
         "мс.",
         "мс.",
-        "ms.",
+        "ms ",
         "мс."
       };
       if ((number_finded_this_type_of_current == (index_of_ekran + k + 1)) && (index_cell_into_array < FIRST_INDEX_FIRST_DATA_DR))
@@ -895,7 +895,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
       {
         //Місце пошкодження
 #define SIZE_NAME_FIELD         2
-        const unsigned char name_field[MAX_NAMBER_LANGUAGE][SIZE_NAME_FIELD] = {"МП", "МП", "FP", "МП"};
+        const unsigned char name_field[MAX_NAMBER_LANGUAGE][SIZE_NAME_FIELD] = {"МП", "МП", "FD", "МП"};
         for (unsigned int j = 0; j < SIZE_NAME_FIELD; j++)
         {
           name_string[i][1 + j] = name_field[index_language][j];
@@ -1336,14 +1336,14 @@ void make_ekran_changing_signals_digital_registrator(void)
                 {
                   "мс.",
                   "мс.",
-                  "ms.",
+                  "ms ",
                   "мс."
                 };
                 const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
                 {
                   {"Пасс.", "Акт. "},
                   {"Пас. ", "Акт. "},
-                  {"Pass.", "Act. "},
+                  {"Pass ", "Act  "},
                   {"Пасс.", "Акт. "}
                 };
                 unsigned int time_of_slice = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + 0] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + 1]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + 2]<<16);
@@ -1733,7 +1733,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
                 {
                   {"Пасс.", "Акт. "},
                   {"Пас. ", "Акт. "},
-                  {"Pass.", "Act. "},
+                  {"Pass ", "Act  "},
                   {"Пасс.", "Акт. "}
                 };
 

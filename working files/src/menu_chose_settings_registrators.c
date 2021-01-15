@@ -16,8 +16,8 @@ void make_ekran_chose_registrators(void)
       " Аналог.реєстр. "
     },
     {
-      "Digital recorder",
-      " Analog recorder"
+      " Binary recorder",
+      "Disturb recorder"
     },
     {
       " Дискр. рег-р   ",
@@ -72,8 +72,8 @@ void make_ekran_settings_analog_registrators(void)
       " Витримки       "
     },
     {
-      " Sources        ",
-      " Delay          "
+      " Inputs         ",
+      " Operate delay  "
     },
     {
       " Источники      ",

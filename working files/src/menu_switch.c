@@ -16,8 +16,8 @@ void make_ekran_choose_CBOn_CBOff(void)
       " БВвімк.        "
     },
     {
-      " Off CB         ",
-      " On CB          "
+      " Open CB Unit   ",
+      " Close CB Unit  "
     },
     {
       " БО             ",
@@ -82,13 +82,13 @@ void make_ekran_setpoint_switch()
       "Поч.знач.к.вимк."
     },
     {
-      "     I ном.     ",
-      " Р.к.ст.(I ном.)",
-      "    Iот.ном.    ",
-      "Р.к.ст.(Iот.ном)",
-      "Нач.знач.ресурса",
-      "Критичный ресурс",
-      "Нач.знач.к.откл."
+      "      CB Ir     ",
+      "   CB Res Ir    ",
+      "    CB Op Ir    ",
+      " CB Res Open Ir ",
+      " CB Res Balance ",
+      "  CB Crit Res   ",
+      "CB Comut balance"
     },
     {
       "     I ном.     ",
@@ -327,9 +327,9 @@ void make_ekran_timeout_switch()
       "  T Приводу ВВ  "
     },
     {
-      "      On T      ",
-      "     Off T      ",
-      "ON Blc.Lengthen.",
+      "    Close T     ",
+      "     Open T     ",
+      " Cl CB Blk Len  ",
       "CB Actuator Time"
     },
     {
@@ -506,7 +506,7 @@ void make_ekran_control_switch()
     },
     {
       "   CB Control   ",
-      "   Ресурс ВВ    "
+      "  CB Resource   "
     },
     {
       "  Контроль ВВ   ",

@@ -32,11 +32,11 @@ void make_ekran_info()
 #endif
     },
     {
-      "   VER.of F/W   ",
+      "  Firmware ver  ",
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-      " VER.of F/W(CB) ",
+      "Firmware ver(CU)",
 #endif
-      "   VER.of MM    ",
+      "  Mem Card ver  ",
       " Serial number  "
 #if (MODYFIKACIA_VERSII_PZ >= 10)
                         ,

@@ -55,19 +55,19 @@ void make_ekran_chose_settings(void)
 #if (MODYFIKACIA_VERSII_PZ >= 10)
       " IEC 61850      ",
 #endif
-      " Inputs         ",
-      " Outputs        ",
+      " Binary Inputs  ",
+      " Binary Outputs ",
       " LED            ",
       " Circuit-Breaker",
-      " Transformers   ",
-      " BIOS           ",
+      " Meas trans     ",
+      " Devices IOs    ",
       " Communication  ",
       " Date and Time  ",
       " Recorders      ",
-      " Extended logic ",
-      " F-Keys         ",
-      " Pick-up Set    ",
-      " Addit.Settings ",
+      " UD-logic       ",
+      " UD-Keys        ",
+      "SetPoints Groups",
+      " Addit Settings ",
       " Passwords      "
     },
     {

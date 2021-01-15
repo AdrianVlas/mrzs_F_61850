@@ -18,9 +18,9 @@ void make_ekran_setpoint_VMP(int forward_backward)
       "   П.опір д.X   "
     },
     {
-      "  Кол.участков  ",
-      "   Длина уч.X   ",
-      " П.сопрот.уч.X  "
+      " Sections Number",
+      "  Sec LengthX   ",
+      "Sec ResistivityX"
     },
     {
       "  Кол.участков  ",
@@ -212,7 +212,7 @@ void make_ekran_control_VMP()
       "      ВМП       "
     },
     {
-      "      ОМП       "
+      "       FL       "
     },
     {
       "      ОМП       "

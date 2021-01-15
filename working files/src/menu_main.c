@@ -60,27 +60,27 @@ void make_ekran_main(void)
     {
      " Clock          ",
      " Measurement    ",
-     " Ò.ó÷.ýë.ýíåðã. ",
+     " Energy calc    ",
      " Inputs-Outputs ",
-     " Resource count.",
+     " CB res count   ",
      " Recorders      ",
      " Language       ",
      " Settings       ",
      " Diagnostic     ",
      " Configuration  ",
      " OCP            ",
-     " OCP 0.4kV      ",
-     " ÇÄÇ            ",
+     " LVOCP          ",
+     " AFD            ",
      "                ",
-     " ÒÇÍÏ           ",
+     " DEFP           ",
      " AR             ",
-     " UFLS-FAR       ",
-     " CBFP           ",
-     " NPSP           ",
-     " Umin           ",
-     " Umax           ",
-     " UP             ",
-     " ÎÌÏ            "
+     " LFC/FAR        ",
+     " CBF            ",
+     " NSOCP          ",
+     " UVP            ",
+     " OVP            ",
+     " MFP            ",
+     " FL             "
     },
     {
      " Ñàfàò          ",
@@ -112,7 +112,7 @@ void make_ekran_main(void)
   {
     {" ÍÇÇ            ", " ÇÇ             "},
     {" ÍÇÇ            ", " ÇÇ             "},
-    {" ÍÇÇ            ", " SGFP           "},
+    {" SDEFP          ", " SEFP           "},
     {" ÍÇÇ            ", " ÇÇ             "}
   };
 

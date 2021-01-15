@@ -22,11 +22,11 @@ void make_ekran_setpoint_achr_chapv(unsigned int group)
       "  Fנמב.×ÀÏÂ2    "
     },
     {
-      "    Uףסע. UF    ",
-      "   Fנאב.À×Ð1    ",
-      "  Fנאב.×ÀÏÂ1    ",
-      "   Fנאב.À×Ð2    ",
-      "  Fנאב.×ÀÏÂ2    "
+      "    LFC UEna    ",
+      "   LFC1 StVal   ",
+      "   FAR1 StVal   ",
+      "   LFC2 StVal   ",
+      "   FAR2 StVal   "
     },
     {
       "    Uףסע. UF    ",
@@ -241,10 +241,10 @@ void make_ekran_timeout_achr_chapv(unsigned int group)
       " Âטענטלךא ×ÀÏÂ2 "
     },
     {
-      " Âûהונזךא À×Ð1  ",
-      " Âûהונזךא ×ÀÏÂ1 ",
-      " Âûהונזךא À×Ð2  ",
-      " Âûהונזךא ×ÀÏÂ2 "
+      "  LFC1 Op Del   ",
+      "  FAR1 Op Del   ",
+      "  LFC2 Op Del   ",
+      "  FAR2 Op Del   "
     },
     {
       " Âûהונזךא À×Ð1  ",
@@ -428,10 +428,10 @@ void make_ekran_control_achr_chapv()
       "     ×ÀÏÂ2      "
     },
     {
-      "   ×ÀÏÂ מע ÄÂ   ",
-      "     UFLS1      ",
+      " FAR via BI Op  ",
+      "      LFC1      ",
       "      FAR1      ",
-      "     UFLS2      ",
+      "      LFC2      ",
       "      FAR2      "
     },
     {

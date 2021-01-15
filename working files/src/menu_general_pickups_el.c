@@ -26,7 +26,7 @@ void make_ekran_general_pickups_el()
       "   Κ³λόκ.Β-ΝΕ   "*/
     },
     {
-      " Max.NR of iter."/*,
+      "  MaxIterNumb   "/*,
       " NR of UD Func. ",
       " NR of UD F.-F. ",
       "  NR of UD AND  ",

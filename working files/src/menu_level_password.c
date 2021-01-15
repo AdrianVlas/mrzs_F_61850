@@ -101,13 +101,13 @@ void make_ekran_chose_passwords(void)
     {
       {" Смена пароля 1 ", " Уст.пароля 1   "},
       {" Зміна паролю 1 ", " Вст.паролю 1   "},
-      {" Pass.1 Change  ", " Password 1 Set "},
+      {" Pass 1 Change  ", " Password 1 Set "},
       {" Смена пароля 1 ", " Уст.пароля 1   "}
     },
     {
       {" Смена пароля 2 ", " Уст.пароля 2   "},
       {" Зміна паролю 2 ", " Вст.паролю 2   "},
-      {" Pass.2 Change  ", " Password 2 Set "},
+      {" Pass 2 Change  ", " Password 2 Set "},
       {" Смена пароля 2 ", " Уст.пароля 2   "}
     },
   };

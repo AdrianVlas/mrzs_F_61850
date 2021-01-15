@@ -30,15 +30,15 @@ void make_ekran_timeout_apv(unsigned int group)
       " Áë.ÀÏÂ â³ä ÂÂ  "
     },
     {
-      "   AR Shot 1    ",
-      "   AR Shot 2    ",
-      "   AR Shot 3    ",
-      "   AR Shot 4    ",
-      "  AR1 Blocking  ",
-      "  AR2 Blocking  ",
-      "  AR3 Blocking  ",
-      "  AR4 Blocking  ",
-      "AR Block from CB"
+      "   AR Cycle 1   ",
+      "   AR Cycle 2   ",
+      "   AR Cycle 3   ",
+      "   AR Cycle 4   ",
+      "  AR Cyc 1 Blk  ",
+      "  AR Cyc 2 Blk  ",
+      "  AR Cyc 3 Blk  ",
+      "  AR Cyc 4 Blk  ",
+      "   AR CB Blk    "
     },
     {
       "   1 Öèêë ÀÏÂ   ",
@@ -356,12 +356,12 @@ void make_ekran_control_apv()
       "      AR2       ",
       "      AR3       ",
       "      AR4       ",
-      " Start from OCP1",
-      " Start from OCP2",
-      " Start from OCP3",
-      " Start from OCP4",
-      "Ê.ïîë.ÂÂ äëÿ ÀÏÂ",
-      " Áë.ÀÏÂ îò ÓÐÎÂ2"
+      "    via OCP1    ",
+      "    via OCP2    ",
+      "    via OCP3    ",
+      "    via OCP4    ",
+      " AR CB State Ctr",
+      " AR Blk via CBF "
     },
     {
       "      ÀÏÂ       ",

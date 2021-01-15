@@ -24,12 +24,12 @@ void make_ekran_chose_settings_uvv(void)
       " пЕФХЛ т-ЙМНОЙХ "
     },
     {
-      " BIN Tolerance  ",
-      " Type of Input  ",
-      " In.Signal Type ",
-      " Type of Output ",
-      " Type of LED    ",
-      "   F-Key Mode   "
+      " BI Tolerance   ",
+      " Input Type     ",
+      " BI signal type ",
+      " BO Type        ",
+      " LED Type       ",
+      " UD-Key Mode    "
     },
     {
       " дНОСЯЙ Д.БУНДЮ ",
@@ -81,7 +81,7 @@ void make_ekran_dopusk_dv()
   {
     "    дБx.        ",
     "    дБx.        ",
-    "     DI.        ",
+    "     BI.        ",
     "    дБx.        "
   };
   const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {8, 8, 8, 8};
@@ -200,7 +200,7 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
   {
     "    дБx.        ",
     "    дБx.        ",
-    "     DI.        ",
+    "     BI.        ",
     "    дБx.        "
   };
   const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {8, 8, 8, 8};
@@ -264,7 +264,7 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
           {
             {"     опълни     ", "   хмбепямши    "},
             {"     опълхи     ", "   ╡мбепямхи    "},
-            {"     DIRECT     ", "    INVERSE     "},
+            {"     Direct     ", "    Inverse     "},
             {"     опълни     ", "   хмбепямши    "}
           };
           const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
@@ -287,7 +287,7 @@ void make_ekran_type_input_uvv(unsigned int type_input_or_signal)
           {
             {"   онярнъммши   ", "   оепелеммши   "},
             {"   оняр╡имхи    ", "    гл╡ммхи     "},
-            {"     DIRECT     ", "   ALTERNATE    "},
+            {"     Direct     ", "   Alternate    "},
             {"   онярнъммши   ", "   оепелеммши   "}
           };
           const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
@@ -355,7 +355,7 @@ void make_ekran_type_output_uvv(void)
   {
     "    дБШУ.       ",
     "    дБХУ.       ",
-    "     DO.        ",
+    "     BO.        ",
     "    дБШУ.       "
   };
   const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {9, 9, 8, 9};
@@ -415,14 +415,14 @@ void make_ekran_type_output_uvv(void)
         {
           {"   йнлюмдмши    ", "   яхцмюкэмши   ", " яхцмюкэмши хло ", "  ньхайю дюмшу  "},
           {"   йнлюмдмхи    ", "   яхцмюкэмхи   ", " яхцмюкэмхи ╡ло ", "  онлхкйю дюмху "},
-          {"    COMMAND     ", "     SIGNAL     ", "   SIGNAL IMP   ", "   DATA ERROR   "},
+          {"     Follow     ", "    Latched     ", "  Latched-Imp   ", "   Data Error   "},
           {"   йнлюмдмши    ", "   яхцмюкэмши   ", " яхцмюкэмши хло ", "  ньхайю дюмшу  "}
         };
         const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][4] = 
         {
           {2, 2, 0, 1},
           {2, 2, 0, 1},
-          {3, 4, 2, 2},
+          {4, 3, 1, 2},
           {2, 2, 0, 1}
         };
 
@@ -528,7 +528,7 @@ void make_ekran_type_led_uvv(void)
         {
           {"   мнплюкэмши   ", "   рпхццепмши   "},
           {"   мнплюкэмхи   ", "   рпх╔епмхи    "},
-          {"     NORMAL     ", "    TRIGGER     "},
+          {"     Follow     ", "    Latched     "},
           {"   мнплюкэмши   ", "   рпхццепмши   "}
         };
         const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
@@ -602,14 +602,14 @@ void make_ekran_type_button_uvv(void)
         {
           {"     ймнойю     ", "      йкчв      "},
           {"     ймнойю     ", "      йкчв      "},
-          {"     ймнойю     ", "      йкчв      "},
+          {"      KEY       ", "     SWITCH     "},
           {"     ймнойю     ", "      йкчв      "}
         };
         const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
         {
           {4, 5},
           {4, 5},
-          {4, 5},
+          {5, 4},
           {4, 5}
         };
 

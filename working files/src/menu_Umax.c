@@ -18,9 +18,9 @@ void make_ekran_setpoint_Umax(unsigned int group)
       "   КП ЗНмакс    "
     },
     {
-      " Уставка Umax1  ",
-      " Уставка Umax2  ",
-      "    КП Umax     "
+      "   OVP1 StVal   ",
+      "   OVP2 StVal   ",
+      "     RR OVP     "
     },
     {
       " Уставка ЗНмакс1",
@@ -167,8 +167,8 @@ void make_ekran_timeout_Umax(unsigned int group)
       "Витримка ЗНмакс2"
     },
     {
-      " Выдержка Umax1 ",
-      " Выдержка Umax2 "
+      "  OVP1 Op Del   ",
+      "  OVP2 Op Del   "
     },
     {
       "Выдержка ЗНмакс1",
@@ -301,10 +301,10 @@ void make_ekran_control_Umax()
       "   ПО ЗНмакс2   "
     },
     {
-      "     Umax1      ",
-      "    ПО Umax1    ",
-      "     Umax2      ",
-      "    ПО Umax2    "
+      "    OVP1 Op     ",
+      "   OVP1 Start   ",
+      "    OVP2 Op     ",
+      "   OVP2 Start   "
     },
     {
       "    ЗНмакс1     ",
@@ -345,7 +345,7 @@ void make_ekran_control_Umax()
           {
             {"      ИЛИ       ", "       И        "},
             {"      АБО       ", "       І        "},
-            {"       OR       ", "      AND       "},
+            {"       Or       ", "      And       "},
             {"      ИЛИ       ", "       И        "}
           },
           {
@@ -357,7 +357,7 @@ void make_ekran_control_Umax()
           {
             {"      ИЛИ       ", "       И        "},
             {"      АБО       ", "       І        "},
-            {"       OR       ", "      AND       "},
+            {"       Or       ", "      And       "},
             {"      ИЛИ       ", "       И        "}
           },
         };

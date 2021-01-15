@@ -43,19 +43,19 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
     },
     {
      "OCP       ",
-     "OCP 0.4kV ",
-     "ÇÄÇ       ",
+     "LVOCP     ",
+     "AFD       ",
      "          ",
-     "ÒÇÍÏ      ",
+     "DEFP      ",
      "AR        ",
-     "UFLS-FAR  ",
-     "CBFP      ",
+     "LFC/FAR   ",
+     "CBF       ",
      "NPSP      ",
-     "Umin      ",
-     "Umax      ",
-     "UP        ",
-     "ÎÌÏ       ",
-     "Ext.logic "
+     "UVP       ",
+     "OVP       ",
+     "MFP       ",
+     "FL        ",
+     "UD-logic  "
     },
     {
      "ÌÒK       ",
@@ -78,7 +78,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
   {
     {"ÍÇÇ       ", "ÇÇ        "},
     {"ÍÇÇ       ", "ÇÇ        "},
-    {"ÍÇÇ       ", "SGFP      "},
+    {"SDEFP     ", "SEFP      "},
     {"ÍÇÇ       ", "ÇÇ        "}
   };
 
