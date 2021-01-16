@@ -65,8 +65,8 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 #endif
     },
     {
-      " BI.            ",
-      " BO.            ",
+      " BI             ",
+      " BO             ",
       " LED            ",
       " UD-Function    ",
       " F              ",

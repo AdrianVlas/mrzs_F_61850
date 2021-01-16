@@ -156,7 +156,7 @@ void make_ekran_control_zdz()
       "   SENSSARC1    ",
       "   SENSSARC2    ",
       "   SENSSARC3    ",
-      "  sensitivity   ",
+      "  Sensitivity   ",
 #endif
       "  AFD settings  ",
       "    via OCP1    ",
@@ -195,14 +195,14 @@ void make_ekran_control_zdz()
     {"     Откл.      ", "      Вкл.      "},
     {"     Вимк.      ", "     Ввімк.     "},
     {"      Off       ", "       On       "},
-    {"     Откл.      ", "      Вкл.      "}
+    {"     Сљнд.      ", "     Косу.      "}
   };
   const unsigned int cursor_x_1[MAX_NAMBER_LANGUAGE][2] = 
   {
    {4, 5},
    {4, 4},
    {5, 6},
-   {4, 5}
+   {4, 4}
   };
   const unsigned char information_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER][MAX_COL_LCD] = 
   {
