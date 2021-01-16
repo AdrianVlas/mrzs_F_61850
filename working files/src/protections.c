@@ -6391,7 +6391,7 @@ inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsi
         //Зафіксовано, що всі функції, які можуть утримувати реєстратор активним зараз скинуті
           
         //Перевіряємо, чи всі таймери, які працють у логіці схеми виключені
-        unsigned int global_timers_work = 0, i = INDEX_TIMER_DF_PAUSE_START;
+        unsigned int global_timers_work = 0, i = INDEX_TIMER_VIDKL_VV;
         while ((i < NEXT_TIMER) && (global_timers_work == 0))
         {
           if (global_timers[i] >= 0) 

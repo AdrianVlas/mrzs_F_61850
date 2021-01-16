@@ -84,6 +84,8 @@ void make_ekran_level_password(unsigned int password, unsigned int view)
     for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string_tmp[i][j];
   }
   
+  number_seconds = 0; //Скидаю, щоб не пішла команда на реініціалізацію індикатора, коли іде введення паролю, бо це трохи збиває з пантелику, коли індикатор неочікувано очистив те що вже набрано було
+  
   //Відображення курору по вертикалі
   current_ekran.position_cursor_y = 1;
   //Обновити повністю весь екран
