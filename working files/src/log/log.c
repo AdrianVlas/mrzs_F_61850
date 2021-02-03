@@ -160,8 +160,8 @@ long GetNumberChangingInLogElem( long lIdx){
     //if (i < 0)                               ariphmetic make in lowfunc
     //    i += AMOUNT_CMD_PLUS_TIME_RECORD;
     lIdx++;//Next elem on menu older
-	if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
-		lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
+    if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
+        lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
     GetCmdPlusTimeLogElem(array_old ,lIdx);
     
      for (unsigned int j = 0; j < N_BIG; j++)
