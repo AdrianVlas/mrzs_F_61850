@@ -181,6 +181,8 @@ extern void make_ekran_analog_value_records_digital_registrator(void);
 extern void make_ekran_changing_signals_digital_registrator(void);
 extern void make_ekran_list_titles_for_record_of_pr_err_registrator(void);
 extern void make_ekran_changing_diagnostics_pr_err_registrator(void);
+extern void make_ekran_list_titles_for_record_of_state_cmd_registrator(void);
+extern void make_ekran_changing_signals_statistica_registrator(void);
 extern void make_ekran_setting_language(void);
 extern void make_ekran_resurs(void);
 extern void make_ekran_energy(unsigned int);
@@ -259,6 +261,7 @@ extern void routine_for_queue_dr(void);
 extern void digital_registrator(unsigned int*);
 extern void analog_registrator(unsigned int*);
 //extern void diagnostyca_adc_execution(void);
+extern long GetNumberChangingInLogElem( long lIdx);
 
 extern void Usb_routines(void);
 extern void USART_RS485_Configure(void);
