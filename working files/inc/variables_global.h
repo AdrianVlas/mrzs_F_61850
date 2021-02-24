@@ -950,7 +950,7 @@ __info_vymk info_vidkluchennja_vymykachatime[VYMKNENNJA_VID_MAX_NUMBER];
 
 unsigned int  watchdog_l2;
 unsigned int control_word_of_watchdog/* = 0*/;
-//unsigned int test_watchdogs/* = 0*/;
+unsigned int test_watchdogs/* = 0*/;
 
 /**************************************************************
  * Змінна використовується в функції вибору групи уставок:

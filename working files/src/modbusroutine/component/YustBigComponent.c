@@ -3,7 +3,7 @@
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 61948
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 63001
+#define END_ADR_REGISTER 63472
 
 int privateYustBigGetReg2(int adrReg);
 
@@ -15,6 +15,7 @@ int setYustBigModbusBit(int, int);//получить содержимое бита
 void preYustBigReadAction(void);//action до чтения
 void preYustBigWriteAction(void);//action до записи
 int postYustBigWriteAction(void);//action после записи
+int passwordImunitetRegYUSTBigComponent(int adrReg);
 
 COMPONENT_OBJ *yustbigcomponent;
 
@@ -182,6 +183,10 @@ int postYustBigWriteAction(void) {
     case 1053://63001
       upravlMinEnrg = tempWriteArray[offsetTempWriteArray+i];//флаг min Enrg
       break;
+#define  IMUNITET_REG472 63472
+    case (IMUNITET_REG472 - BEGIN_ADR_REGISTER):
+      test_watchdogs = (unsigned short)tempWriteArray[offsetTempWriteArray+i];//CMD_TEST_EXTERNAL_WATCHDOG;
+      return 0;
     }//switch
   }//for
 
@@ -256,4 +261,11 @@ int privateYustBigGetReg2(int adrReg)
   return controlPerimetr(adrReg, BEGIN_ADR_REGISTER, END_ADR_REGISTER);
 }//privateGetReg2(int adrReg)
 
+int passwordImunitetRegYUSTBigComponent(int adrReg)
+{
+  //имунитетные к паролю адреса регистров 0 - есть имунитет
+  if(privateYustBigGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
+  if(adrReg < IMUNITET_REG472) return 0;//есть имунитет
+  return MARKER_OUTPERIMETR;
+}//passwordImunitetRegYUSTBigComponent(int adrReg)
 

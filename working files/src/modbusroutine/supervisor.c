@@ -837,6 +837,7 @@ void superClearActiveActualData(void)
 #endif
 }//superClearActiveActualData()
 
+int passwordImunitetRegYUSTBigComponent(int adrReg);
 int passwordImunitetRegPKVBigComponent(int adrReg);
 int passwordImunitetRegREGBigComponent(int adrReg);
 int passwordImunitetBitACMDSmallComponent(int adrBit);
@@ -848,10 +849,10 @@ int passwordImunitetBit(int adrBit)
 
 int passwordImunitetReg(int adrReg)
 {
-//  UNUSED(adrReg);
   if(passwordImunitetRegPKVBigComponent(adrReg)==MARKER_OUTPERIMETR &&
-      passwordImunitetRegREGBigComponent(adrReg)==MARKER_OUTPERIMETR) return 1;//имунитета нет
-  return 0;//имунитет есть
+     passwordImunitetRegREGBigComponent(adrReg)==MARKER_OUTPERIMETR &&
+     passwordImunitetRegYUSTBigComponent(adrReg)==MARKER_OUTPERIMETR) return 1;//имунитета нет  
+     return 0;//имунитет есть 
 }//passwordImunitetReg(int adrReg)
 
 
