@@ -806,12 +806,10 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
         case 18://Единицы измерения offsetRegister
         {
           //Одиниці вимірювання - 2 ASCII символів
-          const char label_meas[2][2] = {"mA","mV"};
-          unsigned int index;
-          if (subObj <= I_Ic)index = 0;
-          else index = 1;
-
-          return label_meas[index][0] | (label_meas[index][1]<<8);
+          unsigned int amp  = ('A'|(' '<<8));
+          unsigned int volt = ('V'|(' '<<8));
+          if (subObj <= I_Ic) return amp;
+          return volt;
         }//case 18
         case 19://Коэффициент канала offsetRegister
         {
