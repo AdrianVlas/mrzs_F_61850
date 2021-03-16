@@ -91,6 +91,25 @@ int setMMSBigModbusRegister(int adrReg, int dataReg)
    case 50563://- Сброс реле
    case 50599://- С.блк.Гот.до ТУ
 
+   case 50432://OF
+   case 50433://OF
+   case 50434://OF
+   case 50435://OF
+   case 50436://OF
+   case 50437://OF
+   case 50438://OF
+   case 50439://OF
+ 
+   case 50464://DTR
+   case 50465://DTR
+   case 50466://DTR
+   case 50467://DTR
+ 
+   case 50468://DTR
+   case 50469://DTR
+   case 50470://DTR
+   case 50471://DTR
+
       return 0; //прошла валидация
   }//switch
 
