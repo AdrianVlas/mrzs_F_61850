@@ -1039,7 +1039,7 @@ void main_manu_function(void)
                   orig.tm_yday = 0;
                   orig.tm_isdst = (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) ? tm_isdst : 0;
                   //Робота з Watchdog
-                  watchdog_routine();
+                  watchdog_routine(UNITED_BITS_WATCHDOG);
                   time_dat_save_l = mktime (&orig);
                   if (current_settings.dst & MASKA_FOR_BIT(N_BIT_TZ_DST))
                   {
@@ -1048,7 +1048,7 @@ void main_manu_function(void)
                     {
                       orig.tm_isdst = p_tmp->tm_isdst;
                       //Робота з Watchdog
-                      watchdog_routine();
+                      watchdog_routine(UNITED_BITS_WATCHDOG);
                       time_dat_save_l = mktime (&orig);
                     }
                   }

@@ -11,15 +11,15 @@ void start_transmint_data_via_RS_485(unsigned int count)
 
   //¬ираховуЇмо час, прот€гом €кого п≥дготовлювалас€ в≥дпов≥дь
   if (
-      (current_time_tim4 > time_last_receive_byte) ||
+      (current_time_tim4 > time_last_receive_byte_RS485) ||
       (
-       (current_time_tim4 == time_last_receive_byte) &&
+       (current_time_tim4 == time_last_receive_byte_RS485) &&
        (mark_current_tick_RS_485 != 0)  
       ) 
      )   
-    delta_time = current_time_tim4 - time_last_receive_byte;
+    delta_time = current_time_tim4 - time_last_receive_byte_RS485;
   else 
-    delta_time = current_time_tim4 + 0xffff - time_last_receive_byte;
+    delta_time = current_time_tim4 + 0xffff - time_last_receive_byte_RS485;
 
   if (max_reaction_time_rs_485 < delta_time) max_reaction_time_rs_485 = delta_time;
   

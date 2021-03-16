@@ -1,4 +1,4 @@
-possible calls Usb_routines : VCP_DataTx;
+possible calls Usb_routines_irq : VCP_DataTx;
 possible calls USBD_Init : USBD_USR_Init;
 //possible calls DCD_SessionRequest_ISR : USBD_DevConnected;
 //possible calls USBD_DevConnected : USBD_USR_DeviceConnected;

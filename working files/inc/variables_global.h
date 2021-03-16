@@ -668,23 +668,180 @@ __SETTINGS current_settings, edition_settings, current_settings_interfaces;
 SRAM1 __SETTINGS current_settings, edition_settings, current_settings_interfaces;
 #endif
 
-
-unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
-unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
-int * type_mtz_arr[NUMBER_LEVEL_MTZ];
-unsigned int mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH];
+int * const type_mtz_arr[NUMBER_LEVEL_MTZ] = 
+{
+  &current_settings_prt.type_mtz1,
+  &current_settings_prt.type_mtz2,
+  &current_settings_prt.type_mtz3,
+  &current_settings_prt.type_mtz4,
+};
+const unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH] = 
+{
+  {
+    RANG_BLOCK_MTZ1, 
+    0,
+    RANG_SECTOR_VPERED_MTZN1,
+    RANG_SECTOR_NAZAD_MTZN1,
+    RANG_PO_MTZ1,
+    RANG_PO_MTZN1_VPERED,
+    RANG_PO_MTZN1_NAZAD,
+    RANG_PO_U_MTZPN1,
+    RANG_PO_MTZPN1,
+    RANG_MTZ1
+  },
+  {
+    RANG_BLOCK_MTZ2, 
+    RANG_BLOCK_USK_MTZ2,
+    RANG_SECTOR_VPERED_MTZN2,
+    RANG_SECTOR_NAZAD_MTZN2,
+    RANG_PO_MTZ2,
+    RANG_PO_MTZN2_VPERED,
+    RANG_PO_MTZN2_NAZAD,
+    RANG_PO_U_MTZPN2,
+    RANG_PO_MTZPN2,
+    RANG_MTZ2
+  },
+  {
+    RANG_BLOCK_MTZ3, 
+    0,
+    RANG_SECTOR_VPERED_MTZN3,
+    RANG_SECTOR_NAZAD_MTZN3,
+    RANG_PO_MTZ3,
+    RANG_PO_MTZN3_VPERED,
+    RANG_PO_MTZN3_NAZAD,
+    RANG_PO_U_MTZPN3,
+    RANG_PO_MTZPN3,
+    RANG_MTZ3
+  },
+  {
+    RANG_BLOCK_MTZ4, 
+    0,
+    RANG_SECTOR_VPERED_MTZN4,
+    RANG_SECTOR_NAZAD_MTZN4,
+    RANG_PO_MTZ4,
+    RANG_PO_MTZN4_VPERED,
+    RANG_PO_MTZN4_NAZAD,
+    RANG_PO_U_MTZPN4,
+    RANG_PO_MTZPN4,
+    RANG_MTZ4
+  }
+};
+const unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST] = 
+{
+  {
+    INDEX_TIMER_MTZ1,
+    INDEX_TIMER_MTZ1_N_VPERED,
+    INDEX_TIMER_MTZ1_N_NAZAD,
+    INDEX_TIMER_MTZ1_PO_NAPRUZI
+  },
+  {
+    INDEX_TIMER_MTZ2,
+    INDEX_TIMER_MTZ2_N_VPERED,
+    INDEX_TIMER_MTZ2_N_NAZAD,
+    INDEX_TIMER_MTZ2_PO_NAPRUZI
+  },
+  {
+    INDEX_TIMER_MTZ3,
+    INDEX_TIMER_MTZ3_N_VPERED,
+    INDEX_TIMER_MTZ3_N_NAZAD,
+    INDEX_TIMER_MTZ3_PO_NAPRUZI
+  },
+  {
+    INDEX_TIMER_MTZ4,
+    INDEX_TIMER_MTZ4_N_VPERED,
+    INDEX_TIMER_MTZ4_N_NAZAD,
+    INDEX_TIMER_MTZ4_PO_NAPRUZI
+  },
+};
+const unsigned int mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH] = 
+{
+  {
+    CTR_MTZ_1,
+    CTR_MTZ_1_VPERED,
+    CTR_MTZ_1_NAZAD
+  },
+  {
+    CTR_MTZ_2,
+    CTR_MTZ_2_VPERED,
+    CTR_MTZ_2_NAZAD
+  },
+  {
+    CTR_MTZ_3,
+    CTR_MTZ_3_VPERED,
+    CTR_MTZ_3_NAZAD
+  },
+  {
+    CTR_MTZ_4,
+    CTR_MTZ_4_VPERED,
+    CTR_MTZ_4_NAZAD
+  }
+};
 unsigned int const i_nom_const = I_NOM * KOEF_1_2_I;
 unsigned int const u_f_nom_const = U_F_NOM * KOEF_0_2_U;
 unsigned int const u_linear_nom_const = U_LINEAR_NOM * KOEF_0_2_U;
-unsigned int * setpoint_mtz[NUMBER_LEVEL_MTZ];
-unsigned int * setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ];
-unsigned int * setpoint_mtz_n_nazad[NUMBER_LEVEL_MTZ];
-unsigned int * setpoint_mtz_U[NUMBER_LEVEL_MTZ];
-unsigned int * setpoint_mtz_po_napruzi[NUMBER_LEVEL_MTZ];
-int * timeout_mtz[NUMBER_LEVEL_MTZ];
-int * timeout_mtz_n_vpered[NUMBER_LEVEL_MTZ];
-int * timeout_mtz_n_nazad[NUMBER_LEVEL_MTZ];
-int * timeout_mtz_po_napruzi[NUMBER_LEVEL_MTZ];
+unsigned int * const setpoint_mtz[NUMBER_LEVEL_MTZ] = 
+{
+  current_settings_prt.setpoint_mtz_1,
+  current_settings_prt.setpoint_mtz_2,
+  current_settings_prt.setpoint_mtz_3,
+  current_settings_prt.setpoint_mtz_4
+};
+unsigned int * const setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ] = 
+{
+  current_settings_prt.setpoint_mtz_1_n_vpered,
+  current_settings_prt.setpoint_mtz_2_n_vpered,
+  current_settings_prt.setpoint_mtz_3_n_vpered,
+  current_settings_prt.setpoint_mtz_4_n_vpered
+};
+unsigned int * const setpoint_mtz_n_nazad[NUMBER_LEVEL_MTZ] = 
+{
+  current_settings_prt.setpoint_mtz_1_n_nazad,
+  current_settings_prt.setpoint_mtz_2_n_nazad,
+  current_settings_prt.setpoint_mtz_3_n_nazad,
+  current_settings_prt.setpoint_mtz_4_n_nazad
+};
+unsigned int * const setpoint_mtz_U[NUMBER_LEVEL_MTZ] = 
+{
+  current_settings_prt.setpoint_mtz_1_U,
+  current_settings_prt.setpoint_mtz_2_U,
+  current_settings_prt.setpoint_mtz_3_U,
+  current_settings_prt.setpoint_mtz_4_U
+};
+unsigned int * const setpoint_mtz_po_napruzi[NUMBER_LEVEL_MTZ] = 
+{
+  current_settings_prt.setpoint_mtz_1_po_napruzi,
+  current_settings_prt.setpoint_mtz_2_po_napruzi,
+  current_settings_prt.setpoint_mtz_3_po_napruzi,
+  current_settings_prt.setpoint_mtz_4_po_napruzi
+};
+int * const timeout_mtz[NUMBER_LEVEL_MTZ] =
+{
+  current_settings_prt.timeout_mtz_1,
+  current_settings_prt.timeout_mtz_2,
+  current_settings_prt.timeout_mtz_3,
+  current_settings_prt.timeout_mtz_4
+};
+int * const timeout_mtz_n_vpered[NUMBER_LEVEL_MTZ] = 
+{
+  current_settings_prt.timeout_mtz_1_n_vpered,
+  current_settings_prt.timeout_mtz_2_n_vpered,
+  current_settings_prt.timeout_mtz_3_n_vpered,
+  current_settings_prt.timeout_mtz_4_n_vpered
+};
+int * const timeout_mtz_n_nazad[NUMBER_LEVEL_MTZ] = 
+{
+  current_settings_prt.timeout_mtz_1_n_nazad,
+  current_settings_prt.timeout_mtz_2_n_nazad,
+  current_settings_prt.timeout_mtz_3_n_nazad,
+  current_settings_prt.timeout_mtz_4_n_nazad
+};
+int * const timeout_mtz_po_napruzi[NUMBER_LEVEL_MTZ] = 
+{
+  current_settings_prt.timeout_mtz_1_po_napruzi,
+  current_settings_prt.timeout_mtz_2_po_napruzi,
+  current_settings_prt.timeout_mtz_3_po_napruzi,
+  current_settings_prt.timeout_mtz_4_po_napruzi
+};
 _Bool previous_state_mtz_po_incn = 0;
 _Bool previous_state_mtz_po_uncn = 0;
 unsigned int p_global_trigger_state_mtz2/* = 0*/;
@@ -879,32 +1036,38 @@ SRAM1 unsigned char RxBuffer_RS485[BUFFER_RS485];
 SRAM1 int TxBuffer_RS485_count/* = 0*/;
 SRAM1 int RxBuffer_RS485_count/* = 0*/;
 SRAM1 int RxBuffer_RS485_count_previous/* = 0*/;
-SRAM1 unsigned int time_last_receive_byte;
+SRAM1 unsigned int time_last_receive_byte_RS485;
 SRAM1 unsigned int max_reaction_time_rs_485/* = 0*/;
 SRAM1 unsigned int make_reconfiguration_RS_485/* = 0*/;
 SRAM1 unsigned int number_bits_rs_485_waiting/* = 0*/;
 SRAM1 unsigned int mark_current_tick_RS_485/* = 0*/;
 SRAM1 unsigned int timeout_idle_RS485;
 
-//USB
-uint8_t  USART_Rx_Buffer[USART_RX_DATA_SIZE]; 
-uint32_t USART_Rx_ptr_in/* = 0*/;
-uint32_t USART_Rx_ptr_out/* = 0*/;
-uint32_t USART_Rx_length/*  = 0*/;
+//Для UDP
+int count_out /*= 0*/;
+int count_out_previous /*= 0*/;
+uint16_t previous_count_tim4_USB;
+u8 buffer_USB_in[BUFFER_USB_IN];
+int from_USB_ptr_in;
+int from_USB_ptr_in_irq;
+int from_USB_ptr_out_irq;
+unsigned char usb_received[BUFFER_USB];
+u8 buffer_USB_out[BUFFER_USB_OUT];
+int to_USB_ptr_in_irq;
+int to_USB_ptr_out;
+unsigned char usb_transmiting[BUFFER_USB];
+int usb_received_count /*= 0*/;
+int usb_transmiting_count /*= 0*/;
+unsigned char data_usb_transmiting /*= false*/;
+unsigned char data_usb_transmiting_irq;
+unsigned int timeout_idle_USB;
+
+//uint32_t USB_Tx_begin;
+//uint32_t USB_Tx_end;
+//uint8_t USB_Tx_last_buffer[256];
+//uint32_t USB_Tx_count;
 
 extern uint8_t  USB_Tx_State;
-
-//Для UDP
-u32 count_out/* = 0*/;
-u32 count_out_previous/* = 0*/;
-uint16_t previous_count_tim4_USB;
-u8 buffer_out[BUFFER_USB];
-unsigned char usb_received[BUFFER_USB];
-unsigned char usb_transmiting[BUFFER_USB];
-int usb_received_count/* = 0*/;
-int usb_transmiting_count/* = 0*/;
-unsigned char data_usb_transmiting/* = false*/;
-unsigned int timeout_idle_USB;
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
 //MODBUS-TCP
@@ -934,7 +1097,6 @@ int last_number_time_sample_for_LAN;// -1 - заголовок запису ан.р.; 0 - перший ч
 //MODBUS-RTU
 SRAM1 unsigned int password_set_USB, password_set_RS485;
 SRAM1 unsigned int password_changed;
-SRAM1 unsigned int password_ustuvannja/* = 0*/;
 unsigned int information_about_restart_counter/* = 0*/;
 unsigned int restart_timeout_interface/* = 0*/;
 unsigned int timeout_idle_new_settings;

@@ -5,10 +5,12 @@
 #include "functions_global.h"
 #include "variables_global_m.h"
 
+unsigned int before_full_start;
+
 /*******************************************************************************/
-//Робота з Wotchdog
+//Робота з Watchdog
 /*******************************************************************************/
-inline void watchdog_routine(void)
+inline void watchdog_routine(unsigned int maska)
 {
   time_1_watchdog_input = time_2_watchdog_input;
   time_2_watchdog_input = TIM4->CNT;
@@ -18,11 +20,11 @@ inline void watchdog_routine(void)
   time_delta_watchdog_input = delta_time* 10;
   
   //Робота з watchdogs з контролем всіх інших систем
-  if((control_word_of_watchdog & UNITED_BITS_WATCHDOG) == UNITED_BITS_WATCHDOG)
+  if((control_word_of_watchdog & maska) == maska)
   {
     //Змінюємо стан біту зовнішнього Watchdog на протилежний
-//    if (test_watchdogs != CMD_TEST_EXTERNAL_WATCHDOG)
-//    {
+    if (test_watchdogs != CMD_TEST_EXTERNAL_WATCHDOG)
+    {
       GPIO_WriteBit(
                     GPIO_EXTERNAL_WATCHDOG,
                     GPIO_PIN_EXTERNAL_WATCHDOG,
@@ -34,24 +36,24 @@ inline void watchdog_routine(void)
       if (time_2_watchdog_output >= time_1_watchdog_output) delta_time = time_2_watchdog_output - time_1_watchdog_output;
       else delta_time = time_2_watchdog_output + 0xffff - time_1_watchdog_output;
       time_delta_watchdog_output = delta_time* 10;
-//    }
+    }
 
     control_word_of_watchdog =  0;
   }
 #ifdef DEBUG_TEST
-  else
-  {
-    unsigned int time_1_watchdog_output_tmp = time_2_watchdog_output;
-    unsigned int time_2_watchdog_output_tmp = TIM4->CNT;
-    if (time_2_watchdog_output_tmp >= time_1_watchdog_output_tmp) delta_time = time_2_watchdog_output_tmp - time_1_watchdog_output_tmp;
-    else delta_time = time_2_watchdog_output_tmp + 0xffff - time_1_watchdog_output_tmp;
-    unsigned int time_delta_watchdog_output_tmp = delta_time* 10;
-    
-    if (time_delta_watchdog_output_tmp > 100000)
-    {
-      while(time_delta_watchdog_output_tmp != 0);
-    }
-  }
+//  else
+//  {
+//    unsigned int time_1_watchdog_output_tmp = time_2_watchdog_output;
+//    unsigned int time_2_watchdog_output_tmp = TIM4->CNT;
+//    if (time_2_watchdog_output_tmp >= time_1_watchdog_output_tmp) delta_time = time_2_watchdog_output_tmp - time_1_watchdog_output_tmp;
+//    else delta_time = time_2_watchdog_output_tmp + 0xffff - time_1_watchdog_output_tmp;
+//    unsigned int time_delta_watchdog_output_tmp = delta_time* 10;
+//    
+//    if (time_delta_watchdog_output_tmp > 100000)
+//    {
+//      while(time_delta_watchdog_output_tmp != 0);
+//    }
+//  }
 #endif
 
   if (restart_timing_watchdog == 0)
@@ -61,6 +63,8 @@ inline void watchdog_routine(void)
 
     if (time_delta_watchdog_output < time_delta_watchdog_output_min) time_delta_watchdog_output_min = time_delta_watchdog_output;
     if (time_delta_watchdog_output > time_delta_watchdog_output_max) time_delta_watchdog_output_max = time_delta_watchdog_output;
+    
+//    while (time_delta_watchdog_output > 100000);
   }
   else
   {
@@ -80,8 +84,10 @@ inline void watchdog_routine(void)
 /*************************************************************************
 Періодичні низькопріоритетні задачі
 *************************************************************************/
-inline void periodical_operations(void)
+void periodical_operations(void/*unsigned int full_actions*/)
 {
+  watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
+
   //Обмін через SPI_1
   if (  
       (control_spi1_taskes[0] != 0) || 
@@ -104,8 +110,9 @@ inline void periodical_operations(void)
      )
     main_routines_for_i2c();
 
+
   //Обробка дій системи меню
-  if (reinit_LCD)
+  if ((reinit_LCD)/* && (full_actions == true)*/)
   {
     reinit_LCD = false;
     lcd_init();
@@ -116,7 +123,7 @@ inline void periodical_operations(void)
   view_whole_ekran();
     
   //Робота з Watchdog
-  watchdog_routine();
+  watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
 
   //Робота з таймером очікування нових змін налаштувань
   if ((timeout_idle_new_settings >= current_settings.timeout_idle_new_settings) && (restart_timeout_idle_new_settings == 0))
@@ -152,7 +159,7 @@ inline void periodical_operations(void)
     //Це є умовою, що дані стоять у черзі  на обробку
       
     //Робота з Watchdog
-    watchdog_routine();
+    watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
 
     //Обробляємо запит
     inputPacketParserRS485();
@@ -207,13 +214,13 @@ inline void periodical_operations(void)
   Canal1 = false;
   /*******************/
 #endif
-  
+
   if (watchdog_l2) 
   {
     //Теоретично цього ніколи не мало б бути
     total_error_sw_fixed(88);
   }
-  
+
   /*******************/
   //Контроль достовірності важливих даних
   /*******************/
@@ -245,152 +252,155 @@ inline void periodical_operations(void)
     //Скидаємо активну задачу розрахунку кутів
     periodical_tasks_CALCULATION_ANGLE = false;
   }
-  else if (periodical_tasks_TEST_SETTINGS != 0)
+  else /*if (full_actions == true)*/
   {
-    //Стоїть у черзі активна задача самоконтролю таблиці настройок
-    if ((state_spi1_task & STATE_SETTINGS_EEPROM_GOOD) != 0)
+    if (periodical_tasks_TEST_SETTINGS != 0)
     {
-      //Перевірку здійснюємо тільки тоді, коли таблиця настройок була успішно прочитана
-      if (
-          (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT) == 0) &&
-          (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_SETTINGS_EEPROM_BIT    ) == 0) &&
-          (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_SETTINGS_EEPROM_BIT ) == 0) &&
-          (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_SETTINGS_EEPROM_BIT    ) == 0) &&
-          (changed_settings == CHANGED_ETAP_NONE)  
-         ) 
+      //Стоїть у черзі активна задача самоконтролю таблиці настройок
+      if ((state_spi1_task & STATE_SETTINGS_EEPROM_GOOD) != 0)
       {
-        //На даний моммент не іде читання-запис таблиці настройок, тому можна здійснити контроль достовірності
-        control_settings();
+        //Перевірку здійснюємо тільки тоді, коли таблиця настройок була успішно прочитана
+        if (
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_SETTINGS_EEPROM_BIT) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_SETTINGS_EEPROM_BIT    ) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_SETTINGS_EEPROM_BIT ) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_SETTINGS_EEPROM_BIT    ) == 0) &&
+            (changed_settings == CHANGED_ETAP_NONE)  
+           ) 
+        {
+          //На даний моммент не іде читання-запис таблиці настройок, тому можна здійснити контроль достовірності
+          control_settings();
 
-        //Скидаємо активну задачу самоконтролю таблиці настройок
+          //Скидаємо активну задачу самоконтролю таблиці настройок
+          periodical_tasks_TEST_SETTINGS = false;
+        }
+      }
+      else
+      {
+        //Скидаємо активну задачу самоконтролю таблиці настройок, бо не було її успішне зчитування
         periodical_tasks_TEST_SETTINGS = false;
       }
     }
-    else
+    else if (periodical_tasks_TEST_USTUVANNJA != 0)
     {
-      //Скидаємо активну задачу самоконтролю таблиці настройок, бо не було її успішне зчитування
-      periodical_tasks_TEST_SETTINGS = false;
-    }
-  }
-  else if (periodical_tasks_TEST_USTUVANNJA != 0)
-  {
-    //Стоїть у черзі активна задача самоконтролю юстування (і щоб не ускладнювати задачу і серійного номеру пристрою)
-    if ((state_spi1_task & STATE_USTUVANNJA_EEPROM_GOOD) != 0)
-    {
-      //Перевірку здійснюємо тільки тоді, коли юстування було успішно прочитане
-      if (
-          (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT) == 0) &&
-          (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_USTUVANNJA_EEPROM_BIT    ) == 0) &&
-          (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_USTUVANNJA_EEPROM_BIT ) == 0) &&
-          (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_USTUVANNJA_EEPROM_BIT    ) == 0) &&
-          (changed_ustuvannja == CHANGED_ETAP_NONE)  
-         ) 
+      //Стоїть у черзі активна задача самоконтролю юстування (і щоб не ускладнювати задачу і серійного номеру пристрою)
+      if ((state_spi1_task & STATE_USTUVANNJA_EEPROM_GOOD) != 0)
       {
-        //На даний моммент не іде читання-запис юстування, тому можна здійснити контроль достовірності
-        control_ustuvannja();
+        //Перевірку здійснюємо тільки тоді, коли юстування було успішно прочитане
+        if (
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_WRITE_USTUVANNJA_EEPROM_BIT) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_USTUVANNJA_EEPROM_BIT    ) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_USTUVANNJA_EEPROM_BIT ) == 0) &&
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_USTUVANNJA_EEPROM_BIT    ) == 0) &&
+            (changed_ustuvannja == CHANGED_ETAP_NONE)  
+           ) 
+        {
+          //На даний моммент не іде читання-запис юстування, тому можна здійснити контроль достовірності
+          control_ustuvannja();
 
-        //Скидаємо активну задачу самоконтролю юстування
+          //Скидаємо активну задачу самоконтролю юстування
+          periodical_tasks_TEST_USTUVANNJA = false;
+        }
+      }
+      else
+      {
+        //Скидаємо активну задачу самоконтролю таблиці настройок, бо не було її успішне зчитування
         periodical_tasks_TEST_USTUVANNJA = false;
       }
     }
-    else
+    else if (periodical_tasks_TEST_TRG_FUNC_LOCK != 0)
     {
-      //Скидаємо активну задачу самоконтролю таблиці настройок, бо не було її успішне зчитування
-      periodical_tasks_TEST_USTUVANNJA = false;
+      //Стоїть у черзі активна задача самоконтролю по резервній копії для триґерної інформації
+      //Виконуємо її
+      control_trg_func();
+      
+      //Скидаємо активну задачу самоконтролю по резервній копії для триґерної інформації
+      periodical_tasks_TEST_TRG_FUNC_LOCK = false;
     }
-  }
-  else if (periodical_tasks_TEST_TRG_FUNC_LOCK != 0)
-  {
-    //Стоїть у черзі активна задача самоконтролю по резервній копії для триґерної інформації
-    //Виконуємо її
-    control_trg_func();
-      
-    //Скидаємо активну задачу самоконтролю по резервній копії для триґерної інформації
-    periodical_tasks_TEST_TRG_FUNC_LOCK = false;
-  }
-  else if (periodical_tasks_TEST_INFO_REJESTRATOR_AR_LOCK != 0)
-  {
-    //Стоїть у черзі активна задача самоконтролю по резервній копії для аналогового реєстратора
-    //Виконуємо її
-    unsigned int result;
-    result = control_info_rejestrator(&info_rejestrator_ar_ctrl, crc_info_rejestrator_ar_ctrl);
-      
-    if (result == 1)
+    else if (periodical_tasks_TEST_INFO_REJESTRATOR_AR_LOCK != 0)
     {
-      //Контроль достовірності реєстратора пройшов успішно
+      //Стоїть у черзі активна задача самоконтролю по резервній копії для аналогового реєстратора
+      //Виконуємо її
+      unsigned int result;
+      result = control_info_rejestrator(&info_rejestrator_ar_ctrl, crc_info_rejestrator_ar_ctrl);
+      
+      if (result == 1)
+      {
+        //Контроль достовірності реєстратора пройшов успішно
     
-      //Скидаємо повідомлення у слові діагностики
-      _SET_BIT(clear_diagnostyka, ERROR_INFO_REJESTRATOR_AR_CONTROL_BIT);
+        //Скидаємо повідомлення у слові діагностики
+        _SET_BIT(clear_diagnostyka, ERROR_INFO_REJESTRATOR_AR_CONTROL_BIT);
+      }
+      else
+      {
+        //Контроль достовірності реєстратора не пройшов
+
+        //Виствляємо повідомлення у слові діагностики
+        _SET_BIT(set_diagnostyka, ERROR_INFO_REJESTRATOR_AR_CONTROL_BIT);
+      }
+
+      //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
+      periodical_tasks_TEST_INFO_REJESTRATOR_AR_LOCK = false;
     }
-    else
+    else if (periodical_tasks_TEST_INFO_REJESTRATOR_DR_LOCK != 0)
     {
-      //Контроль достовірності реєстратора не пройшов
-
-      //Виствляємо повідомлення у слові діагностики
-      _SET_BIT(set_diagnostyka, ERROR_INFO_REJESTRATOR_AR_CONTROL_BIT);
-    }
-
-    //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
-    periodical_tasks_TEST_INFO_REJESTRATOR_AR_LOCK = false;
-  }
-  else if (periodical_tasks_TEST_INFO_REJESTRATOR_DR_LOCK != 0)
-  {
-    //Стоїть у черзі активна задача самоконтролю по резервній копії для дискретного реєстратора
-    //Виконуємо її
-    unsigned int result;
-    result = control_info_rejestrator(&info_rejestrator_dr_ctrl, crc_info_rejestrator_dr_ctrl);
+      //Стоїть у черзі активна задача самоконтролю по резервній копії для дискретного реєстратора
+      //Виконуємо її
+      unsigned int result;
+      result = control_info_rejestrator(&info_rejestrator_dr_ctrl, crc_info_rejestrator_dr_ctrl);
       
-    if (result == 1)
-    {
-      //Контроль достовірності реєстратора пройшов успішно
+      if (result == 1)
+      {
+        //Контроль достовірності реєстратора пройшов успішно
     
-      //Скидаємо повідомлення у слові діагностики
-      _SET_BIT(clear_diagnostyka, ERROR_INFO_REJESTRATOR_DR_CONTROL_BIT);
+        //Скидаємо повідомлення у слові діагностики
+        _SET_BIT(clear_diagnostyka, ERROR_INFO_REJESTRATOR_DR_CONTROL_BIT);
+      }
+      else
+      {
+        //Контроль достовірності реєстратора не пройшов
+
+        //Виствляємо повідомлення у слові діагностики
+        _SET_BIT(set_diagnostyka, ERROR_INFO_REJESTRATOR_DR_CONTROL_BIT);
+      }
+
+      //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
+      periodical_tasks_TEST_INFO_REJESTRATOR_DR_LOCK = false;
     }
-    else
+    else if (periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR_LOCK != 0)
     {
-      //Контроль достовірності реєстратора не пройшов
-
-      //Виствляємо повідомлення у слові діагностики
-      _SET_BIT(set_diagnostyka, ERROR_INFO_REJESTRATOR_DR_CONTROL_BIT);
-    }
-
-    //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
-    periodical_tasks_TEST_INFO_REJESTRATOR_DR_LOCK = false;
-  }
-  else if (periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR_LOCK != 0)
-  {
-    //Стоїть у черзі активна задача самоконтролю по резервній копії для реєстратора програмних подій
-    //Виконуємо її
-    unsigned int result;
-    result = control_info_rejestrator(&info_rejestrator_pr_err_ctrl, crc_info_rejestrator_pr_err_ctrl);
+      //Стоїть у черзі активна задача самоконтролю по резервній копії для реєстратора програмних подій
+      //Виконуємо її
+      unsigned int result;
+      result = control_info_rejestrator(&info_rejestrator_pr_err_ctrl, crc_info_rejestrator_pr_err_ctrl);
       
-    if (result == 1)
-    {
-      //Контроль достовірності реєстратора пройшов успішно
+      if (result == 1)
+      {
+        //Контроль достовірності реєстратора пройшов успішно
     
-      //Скидаємо повідомлення у слові діагностики
-      _SET_BIT(clear_diagnostyka, ERROR_INFO_REJESTRATOR_PR_ERR_CONTROL_BIT);
+        //Скидаємо повідомлення у слові діагностики
+        _SET_BIT(clear_diagnostyka, ERROR_INFO_REJESTRATOR_PR_ERR_CONTROL_BIT);
+      }
+      else
+      {
+        //Контроль достовірності реєстратора не пройшов
+
+        //Виствляємо повідомлення у слові діагностики
+        _SET_BIT(set_diagnostyka, ERROR_INFO_REJESTRATOR_PR_ERR_CONTROL_BIT);
+      }
+
+      //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
+      periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR_LOCK = false;
     }
-    else
+    else if (periodical_tasks_TEST_RESURS_LOCK != 0)
     {
-      //Контроль достовірності реєстратора не пройшов
+      //Стоїть у черзі активна задача самоконтролю по резервній копії для ресурсу лічильника
+      //Виконуємо її
+      control_resurs();
 
-      //Виствляємо повідомлення у слові діагностики
-      _SET_BIT(set_diagnostyka, ERROR_INFO_REJESTRATOR_PR_ERR_CONTROL_BIT);
+      //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
+      periodical_tasks_TEST_RESURS_LOCK = false;
     }
-
-    //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
-    periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR_LOCK = false;
-  }
-  else if (periodical_tasks_TEST_RESURS_LOCK != 0)
-  {
-    //Стоїть у черзі активна задача самоконтролю по резервній копії для ресурсу лічильника
-    //Виконуємо її
-    control_resurs();
-
-    //Скидаємо активну задачу самоконтролю по резервній копії для аналогового реєстратора
-    periodical_tasks_TEST_RESURS_LOCK = false;
   }
 
   /*******************/
@@ -398,7 +408,9 @@ inline void periodical_operations(void)
   //Підрахунок вільного ресуру процесор-програма
   if(resurs_temp < 0xfffffffe) resurs_temp++;
 
-  watchdog_routine();
+  //Робота з Watchdog
+  watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
+
 }
 /*************************************************************************/
 
@@ -472,6 +484,36 @@ int main(void)
     // Дозволяєм роботу таймера системи захистів
     TIM_Cmd(TIM2, ENABLE);
 
+
+//    TEST_OUTPUT->BSRRH = TEST_OUTPUT_PIN;
+
+    //Робота з watchdogs
+    watchdog_routine(WATCHDOG_KYYBOARD);
+
+    /**********************/
+    //Конфігуруємо I2C
+    /**********************/
+    Configure_I2C(I2C);
+    /**********************/
+
+    //Робота з watchdogs
+    watchdog_routine(WATCHDOG_KYYBOARD);
+
+    //Виставляємо признак, що требаа прочитати всі регістри RTC, а потім, при потребі відкоректувати його поля
+    //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
+    _SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT);
+    _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
+    //Обмін через I2C
+    while (
+           (control_i2c_taskes[0]     != 0) || 
+           (driver_i2c.state_execution > 0)
+          )
+      main_routines_for_i2c();
+    
+    //Робота з watchdogs
+    watchdog_routine(WATCHDOG_KYYBOARD);
+
+
     //Ініціалізація LCD
     lcd_init();
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
@@ -528,16 +570,7 @@ int main(void)
          )
     {
       //Робота з watchdogs
-      if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-      {
-        //Змінюємо стан біту зовнішнього Watchdog на протилежний
-        GPIO_WriteBit(
-                      GPIO_EXTERNAL_WATCHDOG,
-                      GPIO_PIN_EXTERNAL_WATCHDOG,
-                      (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                     );
-        control_word_of_watchdog =  0;
-      }
+      watchdog_routine(WATCHDOG_KYYBOARD);
 
       main_routines_for_spi1();
     }
@@ -547,24 +580,60 @@ int main(void)
     TIM_Cmd(TIM5, ENABLE);
     //Дозволяєм роботу таймера системи захистів
     TIM_Cmd(TIM2, ENABLE);
+
+
+    //Робота з watchdogs
+    watchdog_routine(WATCHDOG_KYYBOARD);
+
+    /**********************/
+    //Конфігуруємо I2C
+    /**********************/
+    Configure_I2C(I2C);
+    /**********************/
+
+    //Робота з watchdogs
+    watchdog_routine(WATCHDOG_KYYBOARD);
+    
+    //Виставляємо признак, що требаа прочитати всі регістри RTC, а потім, при потребі відкоректувати його поля
+    //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
+    _SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT);
+    _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
+    
+    //Обмін через I2C
+    while (
+           (control_i2c_taskes[0]     != 0) || 
+           (driver_i2c.state_execution > 0)
+          )
+      main_routines_for_i2c();
+
+    //Робота з watchdogs
+    watchdog_routine(WATCHDOG_KYYBOARD);
+
   }
   changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
 
   /**********************/
-  //Ініціалізація компонет Ігоря для Modbus + USB
+  //Завершальна частина запуску логіки приладу
   /**********************/
   //Робота з watchdogs
-  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-  {
-    //Змінюємо стан біту зовнішнього Watchdog на протилежний
-    GPIO_WriteBit(
-                  GPIO_EXTERNAL_WATCHDOG,
-                  GPIO_PIN_EXTERNAL_WATCHDOG,
-                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                 );
-    control_word_of_watchdog =  0;
-  }
+  watchdog_routine(WATCHDOG_KYYBOARD);
+
+  //Перевірка параметрування мікросхем DataFlash
+  start_checking_dataflash();
+
+  //Запускаємо генерацію переривань кожну кожну 1 мс від каналу 2 таймеру 4 для виконання періодичних низькопріоритетних задач
+  start_tim4_canal2_for_interrupt_1mc();
   
+
+  {
+      watchdog_routine(UNITED_BITS_WATCHDOG_SHORT);
+
+  }
+  /**********************/
+  
+  /**********************/
+  //Ініціалізація компонет Ігоря для Modbus + USB
+  /**********************/
   watchdog_l2 = true;
   global_component_installation();  
   
@@ -580,40 +649,24 @@ int main(void)
   watchdog_l2 = false;
   
   //Робота з watchdogs
-  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-  {
-    //Змінюємо стан біту зовнішнього Watchdog на протилежний
-    GPIO_WriteBit(
-                  GPIO_EXTERNAL_WATCHDOG,
-                  GPIO_PIN_EXTERNAL_WATCHDOG,
-                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                 );
-    control_word_of_watchdog =  0;
-  }
+  watchdog_routine(WATCHDOG_KYYBOARD);
   /**********************/
     
+  timeout_idle_new_settings = current_settings.timeout_idle_new_settings;
   //Визначаємо, чи стоїть дозвіл запису через інтерфейси з паролем
-  if (current_settings.password_interface_USB   == 0) password_set_USB   = 0;
-  else password_set_USB   = 1;
-  timeout_idle_USB = current_settings.timeout_deactivation_password_interface_USB;
-  
   if (current_settings.password_interface_RS485 == 0) password_set_RS485 = 0;
   else password_set_RS485 = 1;
   timeout_idle_RS485 = current_settings.timeout_deactivation_password_interface_RS485;
   
+  if (current_settings.password_interface_USB   == 0) password_set_USB   = 0;
+  else password_set_USB   = 1;
+  timeout_idle_USB = current_settings.timeout_deactivation_password_interface_USB;
+
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   if (current_settings.password_interface_LAN == 0) password_set_LAN = 0;
   else password_set_LAN = 1;
   timeout_idle_LAN = current_settings.timeout_deactivation_password_interface_LAN;
 #endif
-
-  timeout_idle_new_settings = current_settings.timeout_idle_new_settings;
-  
-  //Перевірка параметрування мікросхем DataFlash
-  start_checking_dataflash();
-  
-  //Запускаємо генерацію переривань кожну кожну 1 мс від каналу 2 таймеру 4 для виконання періодичних низькопріоритетних задач
-  start_tim4_canal2_for_interrupt_1mc();
   
   //Підраховуємо величину затримки у бітах, яка допускається між байтами у RS-485 згідно з визначеними настройками
   calculate_namber_bit_waiting_for_rs_485();
@@ -629,38 +682,17 @@ int main(void)
   new_state_keyboard |= (1<<BIT_REWRITE);
   
   //Робота з watchdogs
-  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-  {
-    //Змінюємо стан біту зовнішнього Watchdog на протилежний
-    GPIO_WriteBit(
-                  GPIO_EXTERNAL_WATCHDOG,
-                  GPIO_PIN_EXTERNAL_WATCHDOG,
-                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                 );
-    control_word_of_watchdog =  0;
-  }
+  watchdog_routine(WATCHDOG_KYYBOARD);
   restart_resurs_count = 0xff;/*Ненульове значення перезапускає лічильники*/
 
-  /**********************/
-  //Конфігуруємо I2C
-  /**********************/
-//  low_speed_i2c = 0xff;
-  Configure_I2C(I2C);
-  /**********************/
-
-  //Виставляємо признак, що требаа прочитати всі регістри RTC, а потім, при потребі відкоректувати його поля
-  //При цьому виставляємо біт блокування негайного запуску операції, щоб засинхронізуватися з роботою вимірювальної системи
-  _SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT);
-  _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
-  
-  
   time_2_watchdog_input = time_2_watchdog_output = TIM4->CNT;
   restart_timing_watchdog = 0xff;
   
-
   /* Періодичні задачі */
   while (1)
   {
+    //Немає активних операцій по Аналоговому реєстратору
+    before_full_start = false;
     if (periodical_tasks_TEST_FLASH_MEMORY != 0)
     {
       /************************************************************/
@@ -671,7 +703,8 @@ int main(void)
       for (unsigned int i = ((unsigned int)&__checksum_end -(unsigned int)&__checksum_begin +1); i > 0; i--)
       {
         sum += *point++;
-        periodical_operations();
+        periodical_operations(/*true*/);
+        watchdog_routine(UNITED_BITS_WATCHDOG);
       }
       if (sum != (unsigned short)__checksum) _SET_BIT(set_diagnostyka, ERROR_INTERNAL_FLASH_BIT);
       else _SET_BIT(clear_diagnostyka, ERROR_INTERNAL_FLASH_BIT);
@@ -679,7 +712,11 @@ int main(void)
 
       periodical_tasks_TEST_FLASH_MEMORY = false;
     }
-    else periodical_operations();
+    else 
+    {
+    	periodical_operations(/*true*/);
+	    watchdog_routine(UNITED_BITS_WATCHDOG);
+    }
   }
 }
 /*******************************************************************************/

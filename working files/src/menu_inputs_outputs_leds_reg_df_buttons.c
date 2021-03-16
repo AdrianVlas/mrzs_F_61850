@@ -1166,7 +1166,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
           offset++;
           
           //Робота з Watchdog
-          watchdog_routine();
+          watchdog_routine(UNITED_BITS_WATCHDOG);
         }
         else i++;
       }
@@ -1759,7 +1759,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
       }
           
       //Робота з Watchdog
-      watchdog_routine();
+      watchdog_routine(UNITED_BITS_WATCHDOG);
     }
     /*************************************************************/
 

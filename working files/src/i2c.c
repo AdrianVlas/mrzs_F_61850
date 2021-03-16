@@ -605,7 +605,7 @@ void main_routines_for_i2c(void)
         time_dat_tmp1 = time_dat_copy;
         copying_time_dat = 0;
         
-        watchdog_routine();
+        watchdog_routine(UNITED_BITS_WATCHDOG);
       }
       while (time_dat_tmp1 < time_dat_tmp);
       
@@ -738,7 +738,6 @@ void main_routines_for_i2c(void)
       reg_RTC[5] = read_write_i2c_buffer[6] & 0x1f;
       reg_RTC[6] = read_write_i2c_buffer[7] & 0xff;
       copy_register8_RTC = read_write_i2c_buffer[8];
-      calibration = copy_register8_RTC & 0x3f;
 
       struct tm orig;
       unsigned int tmp_reg = reg_RTC[1];
@@ -768,7 +767,7 @@ void main_routines_for_i2c(void)
       _ForceReloadDstRules();
 #endif
       //Робота з Watchdog
-      watchdog_routine();
+      watchdog_routine(UNITED_BITS_WATCHDOG);
       time_t time_dat_tmp = mktime (&orig);
       lt_or_utc = false;
 #if (__VER__ >= 8000000)
@@ -783,6 +782,7 @@ void main_routines_for_i2c(void)
         state_i2c_task &= (unsigned int)(~STATE_FIRST_READING_RTC);
       }
 
+      unsigned int realDateTime_tmp = true;
       if(
          (_CHECK_SET_BIT(    diagnostyka, EVENT_START_SYSTEM_BIT       ) != 0) ||
          (_CHECK_SET_BIT(set_diagnostyka, EVENT_START_SYSTEM_BIT       ) != 0) ||
@@ -798,6 +798,7 @@ void main_routines_for_i2c(void)
         if((read_write_i2c_buffer[0xC] & (1<< 6)) != 0)
         {
           //Зчитано час, коли пропало живлення з RTC внаслідок виключення пристрою
+          realDateTime_tmp = false;
           fixed_power_down_into_RTC = 1; //Виставляємо повідомлення про те, що було зафіксовано пропадання живлення на годиннику RTC до того, як програма стартувала спочатку
 
           if ((head_fifo_buffer_pr_err_records > 1) && (tail_fifo_buffer_pr_err_records == 0))
@@ -851,11 +852,6 @@ void main_routines_for_i2c(void)
           {
             local_point_for_time = (tail_fifo_buffer_pr_err_records + 1)*SIZE_ONE_RECORD_PR_ERR + 1; //Індекс першого числа часу у другому записі, який чекає на запис у DataFlash
           }
-
-          copying_time_to_RTC = 2;
-          time_dat_RTC = time_dat_tmp;
-          time_ms_RTC = time_ms_tmp;
-          copying_time_to_RTC = 1;
 
           //Встановлюємо часові мітки для тих подій, які мали місце до зчитування першої реальної часової мітки
           /*
@@ -911,16 +907,26 @@ void main_routines_for_i2c(void)
           temporary_block_writing_records_pr_err_into_DataFlash = 0;
         }
       }
-      else
-      {
-        copying_time_to_RTC = 2;
-        time_dat_RTC = time_dat_tmp;
-        time_ms_RTC = time_ms_tmp;
-        copying_time_to_RTC = 1;
-      }
 
       //Скидаємо повідомлення про читання системного часу
       _CLEAR_BIT(control_i2c_taskes, TASK_READING_RTC_BIT);
+      
+      if (realDateTime_tmp)
+      {
+        //Обновлюємо час
+//        TEST_OUTPUT->BSRRL = TEST_OUTPUT_PIN;
+        copying_time_to_RTC = 2;
+        time_dat_RTC = time_dat_tmp;
+        time_ms_RTC = time_ms_tmp;
+        calibration = copy_register8_RTC & 0x3f;
+        
+        copying_time_to_RTC = 1;
+      }
+      else
+      {
+        _SET_BIT(control_i2c_taskes, TASK_START_READ_RTC_BIT);
+        _SET_BIT(control_i2c_taskes, TASK_BLK_OPERATION_BIT);
+      }
     }
     else if (_CHECK_SET_BIT(control_i2c_taskes, TASK_WRITING_RTC_BIT) !=0)
     {

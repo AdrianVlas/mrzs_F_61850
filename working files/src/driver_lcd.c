@@ -174,16 +174,7 @@ void lcd_init(void)
   while (delta < 1501) //(1500 + 1)* 0,01(мс) = 15,01(мс)
   {
     //Робота з watchdogs
-    if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-    {
-      //Змінюємо стан біту зовнішнього Watchdog на протилежний
-      GPIO_WriteBit(
-                    GPIO_EXTERNAL_WATCHDOG,
-                    GPIO_PIN_EXTERNAL_WATCHDOG,
-                    (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                   );
-      control_word_of_watchdog =  0;
-    }
+    watchdog_routine(WATCHDOG_KYYBOARD);
     
     new_count_tim4 = ((uint16_t)TIM4->CNT);
     if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
@@ -202,16 +193,7 @@ void lcd_init(void)
   while (delta < 411) //(410 + 1)* 0,01(мс) = 4,11(мс)
   {
     //Робота з watchdogs
-    if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-    {
-      //Змінюємо стан біту зовнішнього Watchdog на протилежний
-      GPIO_WriteBit(
-                    GPIO_EXTERNAL_WATCHDOG,
-                    GPIO_PIN_EXTERNAL_WATCHDOG,
-                    (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                   );
-      control_word_of_watchdog =  0;
-    }
+    watchdog_routine(WATCHDOG_KYYBOARD);
     new_count_tim4 = ((uint16_t)TIM4->CNT);
     if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
     else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
@@ -229,16 +211,7 @@ void lcd_init(void)
   while (delta < 11) //(10 + 1)* 10(мкс) = 110(мкс)
   {
     //Робота з watchdogs
-    if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-    {
-      //Змінюємо стан біту зовнішнього Watchdog на протилежний
-      GPIO_WriteBit(
-                    GPIO_EXTERNAL_WATCHDOG,
-                    GPIO_PIN_EXTERNAL_WATCHDOG,
-                    (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                   );
-      control_word_of_watchdog =  0;
-    }
+    watchdog_routine(WATCHDOG_KYYBOARD);
     new_count_tim4 = ((uint16_t)TIM4->CNT);
     if (new_count_tim4 >= current_count_tim4) delta = new_count_tim4 - current_count_tim4;
     else delta = (0x10000 - current_count_tim4) + new_count_tim4; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
@@ -251,16 +224,7 @@ void lcd_init(void)
   _DELAY_ABOUT_10NS();
 
   //Робота з watchdogs
-  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-  {
-    //Змінюємо стан біту зовнішнього Watchdog на протилежний
-    GPIO_WriteBit(
-                  GPIO_EXTERNAL_WATCHDOG,
-                  GPIO_PIN_EXTERNAL_WATCHDOG,
-                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                 );
-    control_word_of_watchdog =  0;
-  }
+  watchdog_routine(WATCHDOG_KYYBOARD);
 
   //Встановлюємо 2 рядки і розмір шрифту 5*7 і таблицю символів з кириличними символами
   unsigned int error_LCD = write_command_to_lcd(0x3A);
@@ -287,16 +251,7 @@ void lcd_init(void)
   }
   
   //Робота з watchdogs
-  if ((control_word_of_watchdog & WATCHDOG_KYYBOARD) == WATCHDOG_KYYBOARD)
-  {
-    //Змінюємо стан біту зовнішнього Watchdog на протилежний
-    GPIO_WriteBit(
-                  GPIO_EXTERNAL_WATCHDOG,
-                  GPIO_PIN_EXTERNAL_WATCHDOG,
-                  (BitAction)(1 - GPIO_ReadOutputDataBit(GPIO_EXTERNAL_WATCHDOG, GPIO_PIN_EXTERNAL_WATCHDOG))
-                 );
-    control_word_of_watchdog =  0;
-  }
+  watchdog_routine(WATCHDOG_KYYBOARD);
 }
 /*****************************************************/
 

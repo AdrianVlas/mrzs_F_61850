@@ -486,32 +486,38 @@ extern unsigned char RxBuffer_RS485[BUFFER_RS485];
 extern int TxBuffer_RS485_count;
 extern int RxBuffer_RS485_count;
 extern int RxBuffer_RS485_count_previous;
-extern unsigned int time_last_receive_byte;
+extern unsigned int time_last_receive_byte_RS485;
 extern unsigned int max_reaction_time_rs_485;
 extern unsigned int make_reconfiguration_RS_485;
 extern unsigned int number_bits_rs_485_waiting;
 extern unsigned int mark_current_tick_RS_485;
 extern unsigned int timeout_idle_RS485;
 
-//USB
-extern uint8_t  USART_Rx_Buffer[USART_RX_DATA_SIZE]; 
-extern uint32_t USART_Rx_ptr_in;
-extern uint32_t USART_Rx_ptr_out;
-extern uint32_t USART_Rx_length;
-
-extern uint8_t  USB_Tx_State;
-
 //Äëÿ UDP
-extern u32 count_out;
-extern u32 count_out_previous;
+extern int count_out;
+extern int count_out_previous;
 extern uint16_t previous_count_tim4_USB;
-extern u8 buffer_out[BUFFER_USB];
+extern u8 buffer_USB_in[BUFFER_USB_IN];
+extern int from_USB_ptr_in;
+extern int from_USB_ptr_in_irq;
+extern int from_USB_ptr_out_irq;
 extern unsigned char usb_received[BUFFER_USB];
+extern u8 buffer_USB_out[BUFFER_USB_OUT];
+extern int to_USB_ptr_in_irq;
+extern int to_USB_ptr_out;
 extern unsigned char usb_transmiting[BUFFER_USB];
 extern int usb_received_count;
 extern int usb_transmiting_count;
 extern unsigned char data_usb_transmiting;
+extern unsigned char data_usb_transmiting_irq;
 extern unsigned int timeout_idle_USB;
+
+//extern uint32_t USB_Tx_begin;
+//extern uint32_t USB_Tx_end;
+//extern uint8_t USB_Tx_last_buffer[256];
+//extern uint32_t USB_Tx_count;
+
+extern uint8_t  USB_Tx_State;
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
 //MODBUS-TCP
@@ -541,7 +547,6 @@ extern int last_number_time_sample_for_LAN;
 //MODBUS-RTU
 extern unsigned int password_set_USB, password_set_RS485;
 extern unsigned int password_changed;
-extern unsigned int password_ustuvannja;
 extern unsigned int information_about_restart_counter;
 extern unsigned int restart_timeout_interface;
 extern unsigned int timeout_idle_new_settings;

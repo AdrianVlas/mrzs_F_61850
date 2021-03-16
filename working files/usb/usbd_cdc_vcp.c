@@ -209,15 +209,19 @@ CDC_IF_Prop_TypeDef VCP_fops =
 /*static*/ uint16_t VCP_DataTx (uint8_t* Buf, uint32_t Len)
 {
   uint32_t APP_Rx_ptr_in_tmp = APP_Rx_ptr_in;
+
+//  USB_Tx_begin = APP_Rx_ptr_in_tmp;
+//  USB_Tx_count = 0;
+  
   for (uint32_t i = 0; i < Len; i++)
   {
     if (linecoding.datatype == 7)
     {
-      APP_Rx_Buffer[APP_Rx_ptr_in_tmp] = *(Buf + i) & 0x7F;
+      /*USB_Tx_last_buffer[USB_Tx_count++] = */APP_Rx_Buffer[APP_Rx_ptr_in_tmp] = *(Buf++) & 0x7F;
     }
     else if (linecoding.datatype == 8)
     {
-      APP_Rx_Buffer[APP_Rx_ptr_in_tmp] = *(Buf + i);
+      /*USB_Tx_last_buffer[USB_Tx_count++] = */APP_Rx_Buffer[APP_Rx_ptr_in_tmp] = *(Buf++);
     }
   
     APP_Rx_ptr_in_tmp++;
@@ -225,9 +229,12 @@ CDC_IF_Prop_TypeDef VCP_fops =
     /* To avoid buffer overflow */
     if(APP_Rx_ptr_in_tmp >=/*==*/ APP_RX_DATA_SIZE)
     {
-      APP_Rx_ptr_in_tmp = 0;
+      if(APP_Rx_ptr_in_tmp == APP_RX_DATA_SIZE) APP_Rx_ptr_in_tmp = 0;
+      else total_error_sw_fixed(102);
     }
   }
+    
+//  USB_Tx_end = APP_Rx_ptr_in_tmp;
   APP_Rx_ptr_in = APP_Rx_ptr_in_tmp;
   
   return USBD_OK;
@@ -250,21 +257,14 @@ CDC_IF_Prop_TypeDef VCP_fops =
   */
 /*static*/ uint16_t VCP_DataRx (uint8_t* Buf, uint32_t Len)
 {
-  if ((count_out + Len) <= BUFFER_USB)
+  for (uint32_t i = 0; i < Len; ++i)
   {
-    uint32_t i;
-    u8 *target_point = buffer_out + count_out;
-  
-    for (i = 0; i < Len; i++) 
+    buffer_USB_in[from_USB_ptr_out_irq++] = *(Buf++);
+    if (from_USB_ptr_out_irq >= BUFFER_USB_IN)
     {
-      *(target_point + i) = *(Buf + i);
+      if (from_USB_ptr_out_irq == BUFFER_USB_IN) from_USB_ptr_out_irq = 0;
+      else total_error_sw_fixed(100);
     }
-    count_out += Len;
-  }
-  else
-  {
-    count_out = 0;
-    count_out_previous = 0;
   }
  
   return USBD_OK;

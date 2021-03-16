@@ -15,7 +15,7 @@ extern void Configure_I2C(I2C_TypeDef*);
 extern void FSMC_SRAM_Init(void);
 
 extern int main(void);
-extern void periodical_operations(void);
+extern void periodical_operations(void/*unsigned int*/);
 extern void global_vareiables_installation(void);
 extern void start_settings_peripherals(void);
 extern void start_tim4_canal2_for_interrupt_1mc(void);
@@ -260,6 +260,7 @@ extern void digital_registrator(unsigned int*);
 extern void analog_registrator(unsigned int*);
 //extern void diagnostyca_adc_execution(void);
 
+extern void Usb_routines_irq(void);
 extern void Usb_routines(void);
 extern void USART_RS485_Configure(void);
 extern void restart_monitoring_RS485(void);
@@ -321,7 +322,7 @@ extern void control_resurs(void);
 
 extern void test_external_SRAM(void);
 
-extern void watchdog_routine(void);
+extern void watchdog_routine(unsigned int);
 extern void total_error_sw_fixed(unsigned int);
 
 extern void NMI_Handler(void);

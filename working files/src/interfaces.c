@@ -1,28 +1,86 @@
 #include "header.h"
 
 /***********************************************************************************/
+//Програма періодичного сканування USB у перериванні
+/***********************************************************************************/
+void Usb_routines_irq(void)
+{
+  static int32_t time_local;
+  ++time_local;
+  static int32_t time_receive;
+  
+  /***
+  Прийом з USB
+  ***/
+  int ptr_out = from_USB_ptr_out_irq;
+  if ((ptr_out != from_USB_ptr_in_irq) && (count_out_previous >= 0))
+  {
+    int diff = ptr_out - from_USB_ptr_in_irq;
+    if (diff < 0) diff += BUFFER_USB_IN;
+    count_out += diff;
+    from_USB_ptr_in_irq = ptr_out;
+    if (count_out > BUFFER_USB)
+    {
+      count_out = 2*BUFFER_USB;//Це означає, що на цей пакет не треба відповідати
+      from_USB_ptr_in = ptr_out;
+    }
+    
+    time_receive = time_local;
+  }
+  /***/
+
+  /***
+  Ппередача в USB
+  ***/
+  if ((USB_Tx_State != 1) && (data_usb_transmiting_irq == true))
+  { 
+    uint32_t usb_transmiting_count_tmp = 0;
+    static u8 buffer_USB_tmp[BUFFER_USB];  
+  
+    while (to_USB_ptr_in_irq != to_USB_ptr_out)
+    {
+      buffer_USB_tmp[usb_transmiting_count_tmp++] = buffer_USB_out[to_USB_ptr_in_irq++];
+    
+      if (to_USB_ptr_in_irq >= BUFFER_USB_OUT)
+      {
+        if (to_USB_ptr_in_irq == BUFFER_USB_OUT) to_USB_ptr_in_irq = 0;
+        else total_error_sw_fixed(105);
+      }
+    
+      if (usb_transmiting_count_tmp >= BUFFER_USB)
+      {
+        if (usb_transmiting_count_tmp == BUFFER_USB) break;
+        else total_error_sw_fixed(106);
+      }
+    }
+    if (to_USB_ptr_in_irq == to_USB_ptr_out)  data_usb_transmiting_irq = false;
+  
+    if (usb_transmiting_count_tmp != 0)
+    {
+      if (from_USB_ptr_in_irq == from_USB_ptr_out_irq)
+      {
+        int32_t delta = time_local - time_receive;
+        if (delta < 0) delta += (1u << 31);
+        if (delta < MAX_TIMEOUT_PACKET_USB)
+        {
+          APP_FOPS.pIf_DataTx(buffer_USB_tmp, usb_transmiting_count_tmp);
+        }
+      }
+    }
+  }
+  /***/
+}  
+/***********************************************************************************/
+
+/***********************************************************************************/
 //Програма періодичного сканування USB і організації обміну даними
 /***********************************************************************************/
 void Usb_routines(void)
 {
-  if (USB_OTG_dev.dev.device_status != USB_OTG_CONFIGURED)
-  {
-    data_usb_transmiting = false;
-    return;
-  }
-  
-  if (data_usb_transmiting == true)
-  {
-    if(USB_Tx_State != 1)
-    {
-      int usb_transmiting_count_tmp = usb_transmiting_count;
-      usb_transmiting_count = 0;
-      data_usb_transmiting = false;
-      
-      APP_FOPS.pIf_DataTx(usb_transmiting, usb_transmiting_count_tmp);
-    }
-  }
-  else if (count_out != 0)
+  /***
+  Прийом з USB
+  ***/
+  if (count_out != 0)
   {
     //Фіксуємо значення таймеру TIM4 у якго період тактування 10 мкс
     uint16_t current_count_tim4_USB = ((uint16_t)TIM4->CNT);
@@ -43,32 +101,57 @@ void Usb_routines(void)
       else delta_USB = (0x10000 - previous_count_tim4_USB) + current_count_tim4_USB; //0x10000 - це повний період таймера, бо ми настроїли його тактуватиу інтервалі [0; 65535]
     }
     
-    if (delta_USB > 188) /*1 - відповідає 10 мкс, бо TIM4 настроєний з тактуванням 10 мкс. 188 віщдповідає тоді 1880 мкс. 1880 мк це час 1,5 символа на швидкості 9600 у форматі 1-start + 8-data + pare + 2-stop*/
+    if (
+        (delta_USB > 188) /*1 - відповідає 10 мкс, бо TIM4 настроєний з тактуванням 10 мкс. 188 віщдповідає тоді 1880 мкс. 1880 мк це час 1,5 символа на швидкості 9600 у форматі 1-start + 8-data + pare + 2-stop*/
+        &&
+        (data_usb_transmiting_irq == false)  
+       )   
     {
       //Копіюємо кількість прийнятої інформації
       usb_received_count = count_out;
-      //Повідомляємо драйверу USB - що можна починати прийом з початку
+      count_out_previous = -1; //це від'ємне число каже перериванню, що зараз count_out буже скидатися
       count_out = 0;
       count_out_previous = 0; 
       
-      //Перевіряємо чи ми можемо такий великий масив опрацьовувати
-      if (
-          (usb_received_count > 0) && /*Теоретично ця умова мала б завжди виконуватися*/
-          (usb_received_count <= BUFFER_USB)
-         )   
+      //Копіюємо отримані дані у робочий масив
+      if (usb_received_count <= BUFFER_USB)
       {
-        //Копіюємо отримані дані у робочий масив
-        for (int i = 0; i < usb_received_count; i++) usb_received[i] = buffer_out[i];
+        for (int i = 0; i < usb_received_count; i++) 
+        {
+          usb_received[i] = buffer_USB_in[from_USB_ptr_in++];
+          if (from_USB_ptr_in >= BUFFER_USB_IN)
+          {
+            if (from_USB_ptr_in == BUFFER_USB_IN) from_USB_ptr_in = 0;
+            else total_error_sw_fixed(101);
+          }
+        }
         //Орацювання даних по протоколу MODBUS-RTU прийнятих з USB
-          inputPacketParserUSB();
-      }
-      else
-      {
-        //Цей пакет не можливо орпацювати - тому просто починаємо очікувати новий пакет
-        usb_received_count = 0;
+        inputPacketParserUSB();
       }
     }
   }
+  /***/
+  
+  /***
+  Передача в USB
+  ***/
+  if (data_usb_transmiting == true)
+  {
+    for (int i = 0; i < usb_transmiting_count; ++i)
+    {
+      buffer_USB_out[to_USB_ptr_out++] = usb_transmiting[i];
+      if (to_USB_ptr_out >= BUFFER_USB_OUT)
+      {
+        if (to_USB_ptr_out == BUFFER_USB_OUT) to_USB_ptr_out = 0;
+        else total_error_sw_fixed(104);
+      }
+    }
+
+    usb_transmiting_count = 0;
+    data_usb_transmiting = false;
+    data_usb_transmiting_irq = true;
+  }
+  /***/
 }  
 /***********************************************************************************/
 

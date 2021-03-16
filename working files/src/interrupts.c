@@ -593,7 +593,7 @@ void TIM4_IRQHandler(void)
             {
               //Інакше прийнятий пакет буде стояти в очікуванні на подальшу обробку - якщо не виконувати більше тут ніяких дій (не перезапускати моніторинг)
 
-              if (global_requect == 0) time_last_receive_byte = TIM4->CNT;
+              if (global_requect == 0) time_last_receive_byte_RS485 = TIM4->CNT;
 
               //Встановлюємо мітку, що на останньому перериванні відбулася фіксація прийняття цілого фрейму
               mark_current_tick_RS_485 = 0xff;
@@ -924,7 +924,7 @@ void TIM4_IRQHandler(void)
       //Запусаємо раз у секунду самоконтроль важливих змінних
       periodical_tasks_TEST_SETTINGS            = periodical_tasks_TEST_USTUVANNJA          = periodical_tasks_TEST_TRG_FUNC                = 
       periodical_tasks_TEST_INFO_REJESTRATOR_AR = periodical_tasks_TEST_INFO_REJESTRATOR_DR = periodical_tasks_TEST_INFO_REJESTRATOR_PR_ERR = 
-      periodical_tasks_TEST_RESURS              = periodical_tasks_TEST_FLASH_MEMORY        = periodical_tasks_CALCULATION_ANGLE            =  true;
+      periodical_tasks_TEST_RESURS              = periodical_tasks_TEST_FLASH_MEMORY        = periodical_tasks_CALCULATION_ANGLE            = true;
       
       number_inputs_for_fix_one_second = 0;
       
@@ -1013,11 +1013,13 @@ void TIM4_IRQHandler(void)
     }
     /***********************************************************/
 
+
     /***********************************************************/
     //Виставляємо повідомлення про те, що канал 1 TIM4, що відповідає за періодичні функції клавіатури працює
     /***********************************************************/
     if (watchdog_l2)
     {
+      time_2_watchdog_output = time_2_watchdog_input = TIM4->CNT;
       GPIO_WriteBit(
                     GPIO_EXTERNAL_WATCHDOG,
                     GPIO_PIN_EXTERNAL_WATCHDOG,
@@ -1094,6 +1096,12 @@ void TIM4_IRQHandler(void)
     /***********************************************************************************************/
     TIM4->SR = (uint16_t)((~(uint32_t)TIM_IT_CC2) & 0xffff);
     uint16_t current_tick = TIM4->CCR2;
+    
+    /***********************************************************/
+    //Робота з USB на стиороні переривання
+    /***********************************************************/
+    Usb_routines_irq();
+    /***********************************************************/
     
     /***********************************************************/
     //Перевіряємо необхідність очистки реєстратора програмних подій
@@ -1197,7 +1205,7 @@ void TIM4_IRQHandler(void)
               number_chip_dataflsh_exchange = (number_chip_dataflsh_exchange + 1) & (NUMBER_DATAFLASH_CHIP - 1);
             }
 
-            //Робимо запит на нову мікросхему DataFlash, якщо э такий
+            //Робимо запит на нову мікросхему DataFlash, якщо є такий
             main_function_for_dataflash_req(number_chip_dataflsh_exchange);
           }
         }
@@ -1372,19 +1380,19 @@ void TIM4_IRQHandler(void)
     
     /*Vidladka*/
 #ifdef DEBUG_TEST
-    static unsigned int t_1, t_2, delta_tmp;
-    t_1 = TIM4->CCR2;
-    t_2 = TIM4->CNT;
-    if (t_1 >= t_2) delta_tmp = t_1 - t_2;
-    else delta_tmp = t_1 + 0xffff - t_2;
-    
-    if (
-        (delta_tmp > TIM4_CCR2_VAL) &&
-        (TIM_GetITStatus(TIM4, TIM_IT_CC2) == RESET)  
-       )   
-    {
-      while(delta_tmp > 0);
-    }
+//    static unsigned int t_1, t_2, delta_tmp;
+//    t_1 = TIM4->CCR2;
+//    t_2 = TIM4->CNT;
+//    if (t_1 >= t_2) delta_tmp = t_1 - t_2;
+//    else delta_tmp = t_1 + 0xffff - t_2;
+//    
+//    if (
+//        (delta_tmp > TIM4_CCR2_VAL) &&
+//        (TIM_GetITStatus(TIM4, TIM_IT_CC2) == RESET)  
+//       )   
+//    {
+//      while(delta_tmp > 0);
+//    }
 #endif
     /***/
     /***********************************************************/

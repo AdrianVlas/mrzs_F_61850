@@ -31,6 +31,16 @@
    | WATCHDOG_DATAFLASH                                   \
    | WATCHDOG_RS485                                       \
 )     
+
+#define UNITED_BITS_WATCHDOG_SHORT (unsigned int)(\
+     WATCHDOG_MEASURE_START_DATA_VAL                      \
+   | WATCHDOG_MEASURE_STOP_DATA_VAL                       \
+   /*| WATCHDOG_MEASURE_START_TEST_VAL */                     \
+   /*| WATCHDOG_MEASURE_STOP_TEST_VAL  */                     \
+   | WATCHDOG_PROTECTION                                  \
+   | WATCHDOG_KYYBOARD                                    \
+   | WATCHDOG_DATAFLASH                                   \
+)     
 /*****************************************/
 
 
