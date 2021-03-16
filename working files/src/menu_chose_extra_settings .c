@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_chose_extra_settings(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS][MAX_COL_LCD] = 
   {
     {
       "    Ib/I0.4     ",
@@ -57,7 +57,7 @@ void make_ekran_chose_extra_settings(void)
       else
       {
         //У парному номері рядку виводимо стан
-        const unsigned char information[MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
         {
           {
             {"       Ib       ", "      I0.4      "},
@@ -90,7 +90,7 @@ void make_ekran_chose_extra_settings(void)
             {"     Сљнд.      ", "     Косу.      "}
           }
         };
-        const unsigned int cursor_x[MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS][MAX_NAMBER_LANGUAGE][2] = 
+        static const unsigned int cursor_x[MAX_ROW_FOR_CHOSE_EXTRA_SETTINGS][MAX_NAMBER_LANGUAGE][2] = 
         {
           {
             {6, 5},

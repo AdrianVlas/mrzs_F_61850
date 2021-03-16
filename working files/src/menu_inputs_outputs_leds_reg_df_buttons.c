@@ -24,7 +24,7 @@
 /*****************************************************/
 void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 {
-  const unsigned char information[MAX_NAMBER_LANGUAGE][_MAX_ID_INPUT_OUPUT][MAX_COL_LCD] = 
+  static const unsigned char information[MAX_NAMBER_LANGUAGE][_MAX_ID_INPUT_OUPUT][MAX_COL_LCD] = 
   {
     {
       " Двх.           ",
@@ -104,7 +104,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     }
   };
 
-  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE][_MAX_ID_INPUT_OUPUT] = 
+  static const unsigned int first_index_number[MAX_NAMBER_LANGUAGE][_MAX_ID_INPUT_OUPUT] = 
   {
     {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -128,7 +128,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     }
   };
   
-  const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
+  static const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
   {
     MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA,
     MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA,
@@ -299,9 +299,9 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
 #else
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
 #endif
   {
     {
@@ -326,7 +326,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     }
   };
   
-  const uint32_t index_number_UP_small[MAX_NAMBER_LANGUAGE][1] = 
+  static const uint32_t index_number_UP_small[MAX_NAMBER_LANGUAGE][1] = 
   {
     {11}, 
     {11}, 
@@ -448,7 +448,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
   
   if ((current_settings.control_zz & CTR_ZZ1_TYPE) != 0)
   {
-    const unsigned char name_block_zz[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+    static const unsigned char name_block_zz[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
     {
       "    Блок.ЗЗ     ",
       "    Блок.ЗЗ     ",
@@ -578,7 +578,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     unsigned int position_temp = current_ekran.index_position;
     unsigned int index_of_ekran;
     unsigned int i, offset = 0;
-    int min_max_number[TOTAL_NUMBER_PROTECTION][2] =
+    static const int min_max_number[TOTAL_NUMBER_PROTECTION][2] =
     {
       {
        (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL),
@@ -891,7 +891,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
        else
        {
          //У парному номері рядку виводимо стан функції
-         const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+         static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
            {"      ОТКЛ      ", "      ВКЛ       "},
            {"      ВИМК      ", "     ВВІМК      "},
@@ -909,7 +909,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
      index_of_ekran++;
     }
     
-    const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+    static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
     {
       {5, 5},
       {5, 4},
@@ -941,9 +941,9 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #else
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #endif
   {
     {
@@ -1084,7 +1084,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
   
   if ((current_settings.control_zz & CTR_ZZ1_TYPE) != 0)
   {
-    const unsigned char name_block_zz[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+    static const unsigned char name_block_zz[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
     {
       "    Блок.ЗЗ     ",
       "    Блок.ЗЗ     ",
@@ -1221,7 +1221,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     unsigned int position_temp = current_ekran.index_position;
     unsigned int index_of_ekran;
     unsigned int i, offset = 0;
-    int min_max_number[TOTAL_NUMBER_PROTECTION][2] =
+    static const int min_max_number[TOTAL_NUMBER_PROTECTION][2] =
     {
       {
        (NUMBER_GENERAL_SIGNAL_FOR_RANG),
@@ -1778,7 +1778,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
        else
        {
          //У парному номері рядку виводимо стан функції
-         const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+         static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
            {"      ОТКЛ      ", "      ВКЛ       "},
            {"      ВИМК      ", "     ВВІМК      "},
@@ -1796,7 +1796,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
      index_of_ekran++;
     }
     
-    const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+    static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
     {
       {5, 5},
       {5, 4},

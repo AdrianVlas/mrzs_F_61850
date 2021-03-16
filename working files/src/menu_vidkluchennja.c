@@ -103,7 +103,7 @@ void make_ekran_vidkluchenja(void)
     working_ekran[VIDKL_ROW_T_][VIDKL_COL_HST3] = 0x30;
   }
   
-  const unsigned char information_1[MAX_NAMBER_LANGUAGE][VYMKNENNJA_VID_MAX_NUMBER - NUMBER_UP + 1][7] = 
+  static const unsigned char information_1[MAX_NAMBER_LANGUAGE][VYMKNENNJA_VID_MAX_NUMBER - NUMBER_UP + 1][7] = 
   {
     {"   лрг1", "   лрг2", "   лрг3", "   лрг4", "лрг04 1", "лрг04 2", "   гдг", "    3I0", "    3U0", "    мгг", "  ргмо1", "  ргмо2", "  ргмо3", " ювп НР", "   ювп1", "   ювп2", "  спнб1", "  спнб2", "    гно", " гмЛХМ1", " гмЛХМ2", "гмЛЮЙc1", "гмЛЮЙc2", "    сгx", "    нбг", " дПСЦХЕ"},
     {"   лCг1", "   лCг2", "   лCг3", "   лCг4", "лCг04 1", "лCг04 2", "   гдг", "    3I0", "    3U0", "    мгг", "  ягмо1", "  ягмо2", "  ягмо3", " ювп Б.", "   ювп1", "   ювп2", "  опбб1", "  опбб2", "    гго", " гмЛЁМ1", " гмЛЁМ2", "гмЛЮЙc1", "гмЛЮЙc2", "    сгx", "    бгг", "   ╡МЬЁ"},
@@ -131,7 +131,7 @@ void make_ekran_vidkluchenja(void)
   }
     
   
-  const unsigned char information_2[MAX_NAMBER_LANGUAGE][VYMKNENNJA_VID_MAX_NUMBER - NUMBER_UP + 1][3] = 
+  static const unsigned char information_2[MAX_NAMBER_LANGUAGE][VYMKNENNJA_VID_MAX_NUMBER - NUMBER_UP + 1][3] = 
   {
     {"   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", " дб", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   "},
     {"   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", " дб", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   "},

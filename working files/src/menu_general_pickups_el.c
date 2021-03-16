@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_general_pickups_el()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_GENERAL_PICKUPS_EL][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_GENERAL_PICKUPS_EL][MAX_COL_LCD] = 
   {
     {
       "Макс.кол.итерац."/*,

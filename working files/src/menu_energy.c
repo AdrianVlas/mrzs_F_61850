@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_energy(unsigned int pervynna_vtorynna)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_EKRAN_ENERGY][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_EKRAN_ENERGY][MAX_COL_LCD] = 
   {
     {
       "   Ea+ (êÂò*÷)  ",
@@ -40,7 +40,7 @@ void make_ekran_energy(unsigned int pervynna_vtorynna)
       "  Er4 (êÂÀð*÷)  "
     }
   };
-  const unsigned int energy_k_M[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_EKRAN_ENERGY] = 
+  static const unsigned int energy_k_M[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_EKRAN_ENERGY] = 
   {
     {8, 8, 7, 7, 7, 7},
     {7, 7, 6, 6, 6, 6},

@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_setting_language()
 {
-  const unsigned char name_string[MAX_ROW_FOR_VIEW_SETTING_LANGUAGE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_ROW_FOR_VIEW_SETTING_LANGUAGE][MAX_COL_LCD] = 
   {
     "    Language    "
   };

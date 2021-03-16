@@ -71,7 +71,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
           if (row_to_show  == INDEX_ML_DOVGYNA) 
           {
 
-            const unsigned int position_dovgyna_row[MAX_NAMBER_LANGUAGE] = {12, 12, 12, 12};
+            static const unsigned int position_dovgyna_row[MAX_NAMBER_LANGUAGE] = {12, 12, 12, 12};
             name_string[index_language][row_to_show][position_dovgyna_row[index_language]] = 0x30 + (dilanka + 1);
             
             vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
@@ -80,7 +80,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
           }
           else 
           {
-            const unsigned int position_opir_row[MAX_NAMBER_LANGUAGE] = {13, 12, 13, 13};
+            static const unsigned int position_opir_row[MAX_NAMBER_LANGUAGE] = {13, 12, 13, 13};
             name_string[index_language][row_to_show][position_opir_row[index_language]] = 0x30 + (dilanka + 1);
             
             vaga = 10000; //максимальний ваговий коефіцієнт для вилілення старшого розряду
@@ -117,7 +117,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
               else if (j == COL_SETPOINT_DOVGYNA_COMMA )working_ekran[i][j] = ',';
               else if ((j >= (COL_SETPOINT_DOVGYNA_END + 2)) && (j <= (COL_SETPOINT_DOVGYNA_END + 3))) 
               {
-                const unsigned char km[MAX_NAMBER_LANGUAGE][2] = {"км", "км", "km", "км"};
+                static const unsigned char km[MAX_NAMBER_LANGUAGE][2] = {"км", "км", "km", "км"};
 
                 working_ekran[i][j] = km[index_language][j - (COL_SETPOINT_DOVGYNA_END + 2)]; 
               }
@@ -135,7 +135,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
               else if (j == COL_SETPOINT_OPIR_COMMA )working_ekran[i][j] = ',';
               else if ((j >= (COL_SETPOINT_OPIR_END + 2)) && (j <= (COL_SETPOINT_OPIR_END + 6))) 
               {
-                const unsigned char ohm[MAX_NAMBER_LANGUAGE][5] = {"Ом/км", "Ом/км", "Ї/km ", "Ом/км"};
+                static const unsigned char ohm[MAX_NAMBER_LANGUAGE][5] = {"Ом/км", "Ом/км", "Ї/km ", "Ом/км"};
 
                 working_ekran[i][j] = ohm[index_language][j - (COL_SETPOINT_OPIR_END + 2)]; 
               }
@@ -203,7 +203,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
 /*****************************************************/
 void make_ekran_control_VMP()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_VMP][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_VMP][MAX_COL_LCD] = 
   {
     {
       "      ОМП       "
@@ -239,14 +239,14 @@ void make_ekran_control_VMP()
       else
       {
         //У парному номері рядку виводимо значення уставки
-        const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
         {
           {"     Откл.      ", "      Вкл.      "},
           {"     Вимк.      ", "     Ввімк.     "},
           {"      Off       ", "       On       "},
           {"     Сљнд.      ", "     Косу.      "}
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
         {
          {4, 5},
          {4, 4},

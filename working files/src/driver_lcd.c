@@ -561,7 +561,7 @@ int index_language_in_array(int language)
         )
        )
     {
-      const unsigned char matrix[13][8] = {
+      static const unsigned char matrix[13][8] = {
                                            {0x0A, 0x00, 0x0E, 0x04, 0x04, 0x04, 0x0E, 0x00}, // ¯
                                            {0x00, 0x0A, 0x00, 0x0C, 0x04, 0x04, 0x0E, 0x00}, // ¿
                                            {0x01, 0x1F, 0x10, 0x10, 0x10, 0x10, 0x10, 0x00}, // ¥

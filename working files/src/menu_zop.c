@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_setpoint_zop(unsigned int group)
 {
- const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_ZOP][MAX_COL_LCD] = 
+ static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_ZOP][MAX_COL_LCD] = 
   {
     {
       "Уставка ЗОП(КОФ)"
@@ -20,7 +20,7 @@ void make_ekran_setpoint_zop(unsigned int group)
       "Уставка ЗОП(КОФ)"
     }
   };
-  const unsigned char symbols[MAX_NAMBER_LANGUAGE][3] = {"ед.", "од.", "u  ", "ед."};
+  static const unsigned char symbols[MAX_NAMBER_LANGUAGE][3] = {"ед.", "од.", "u  ", "ед."};
   int index_language = index_language_in_array(current_settings.language);
   
   unsigned int position_temp = current_ekran.index_position;
@@ -103,7 +103,7 @@ void make_ekran_setpoint_zop(unsigned int group)
 /*****************************************************/
 void make_ekran_timeout_zop(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ZOP][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ZOP][MAX_COL_LCD] = 
   {
     {
       "   T ЗОП(КОФ)   "
@@ -196,7 +196,7 @@ void make_ekran_timeout_zop(unsigned int group)
 /*****************************************************/
 void make_ekran_control_zop()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_ZOP][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_ZOP][MAX_COL_LCD] = 
   {
     {
       " Защита ЗОП(КОФ)"
@@ -232,14 +232,14 @@ void make_ekran_control_zop()
       else
       {
         //У парному номері рядку виводимо значення уставки
-        const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
         {
           {"     Откл.      ", "      Вкл.      "},
           {"     Вимк.      ", "     Ввімк.     "},
           {"      Off       ", "       On       "},
           {"     Сљнд.      ", "     Косу.      "}
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
         {
          {4, 5},
          {4, 4},

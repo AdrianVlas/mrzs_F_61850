@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_list_registrators(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_LIST_REGISTRATORS][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_LIST_REGISTRATORS][MAX_COL_LCD] = 
   {
     {
       " Аналог.рег-р   ",
@@ -89,7 +89,7 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
   if(number_records == 0)
   {
     //Немає записів
-    const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         "      Нет       ",
@@ -128,7 +128,7 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
       " Жазба          "
     };
 
-    const unsigned int index_of_number[MAX_NAMBER_LANGUAGE]=  {8, 7, 8, 7};
+    static const unsigned int index_of_number[MAX_NAMBER_LANGUAGE]=  {8, 7, 8, 7};
     unsigned int index_first_symbol_in_number = index_of_number[index_language];
     unsigned int index_last_symbol_in_number = index_first_symbol_in_number + 4 - 1;
     
@@ -171,7 +171,7 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
   else
   {
     //Зафіксована помилкова ситуація
-    const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         "     Ошибка     ",
@@ -228,7 +228,7 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
   if ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU) == 0)
   {
     //Процес зчитування даних з DataFlash вже закінчився
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR][MAX_COL_LCD] = 
     {
       {
         " Метка времени  ",
@@ -312,7 +312,7 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
   else
   {
     //Процес зчитування даних з DataFlash ще не закінчився
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Процесс чтения ",
@@ -480,7 +480,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
   else if ((type_of_registrator == 2) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU) != 0))
   {
     //Процес зчитування даних з DataFlash ще не закінчився
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Процесс чтения ",
@@ -519,7 +519,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
   else
   {
     //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Недостоверные  ",
@@ -594,7 +594,7 @@ void make_ekran_title_analog_value_records_digital_registrator(void)
   index_cell_into_array_for_min_max_measurement_dr = -1; //Помічаємо, що ми покищо не знайшли індекс комірки, який відповідає першому блоку, який визначений курсором
   if(number_info_records == 0)
   {
-    const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         "      Нет       ",
@@ -640,7 +640,7 @@ void make_ekran_title_analog_value_records_digital_registrator(void)
       }
       
       unsigned char information[MAX_COL_LCD] = "                ";
-      const unsigned char ms[MAX_NAMBER_LANGUAGE][3] = 
+      static const unsigned char ms[MAX_NAMBER_LANGUAGE][3] = 
       {
         "мс.",
         "мс.",
@@ -683,7 +683,7 @@ void make_ekran_title_analog_value_records_digital_registrator(void)
       else
       {
         //теоретично ми сюди б не мали ніколи заходити, але якщо ми сюди зайшли, то виводимо сигналізацію про помилку на екран
-        const unsigned char error_meas[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+        static const unsigned char error_meas[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
         {
           " Ошибка         ",
           " Помилка        ",
@@ -703,7 +703,7 @@ void make_ekran_title_analog_value_records_digital_registrator(void)
   else
   {
     //Зафіксована помилкова ситуація
-    const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         "     Ошибка     ",
@@ -833,11 +833,11 @@ void make_ekran_analog_value_records_digital_registrator(void)
       else if (i < 25)
       {
        //Опори
-        const unsigned int index_of_start_position_array[MAX_NAMBER_LANGUAGE] = {4, 4, 5, 4};
+        static const unsigned int index_of_start_position_array[MAX_NAMBER_LANGUAGE] = {4, 4, 5, 4};
 
 #define SIZE_R_DIMENSION    2
-        const unsigned int size_dimension_array[MAX_NAMBER_LANGUAGE] = {SIZE_R_DIMENSION, SIZE_R_DIMENSION, SIZE_R_DIMENSION - 1, SIZE_R_DIMENSION};
-        const unsigned char resistance_dimension[MAX_NAMBER_LANGUAGE][SIZE_R_DIMENSION] = {"Ом", "Ом", "Ї ", "Ом"}; /*Ї тут іде як замінник великої букви Омега для англійської розкладки*/
+        static const unsigned int size_dimension_array[MAX_NAMBER_LANGUAGE] = {SIZE_R_DIMENSION, SIZE_R_DIMENSION, SIZE_R_DIMENSION - 1, SIZE_R_DIMENSION};
+        static const unsigned char resistance_dimension[MAX_NAMBER_LANGUAGE][SIZE_R_DIMENSION] = {"Ом", "Ом", "Ї ", "Ом"}; /*Ї тут іде як замінник великої букви Омега для англійської розкладки*/
   
         unsigned int start_position = index_of_start_position_array[index_language];
         unsigned int size_dimension = size_dimension_array[index_language];
@@ -879,7 +879,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
         else
         {
 #define SIZE_UNDEF      9
-          const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
+          static const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
           {
             "Неопред. ",
             "Невизнач.",
@@ -895,7 +895,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
       {
         //Місце пошкодження
 #define SIZE_NAME_FIELD         2
-        const unsigned char name_field[MAX_NAMBER_LANGUAGE][SIZE_NAME_FIELD] = {"МП", "МП", "FD", "МП"};
+        static const unsigned char name_field[MAX_NAMBER_LANGUAGE][SIZE_NAME_FIELD] = {"МП", "МП", "FD", "МП"};
         for (unsigned int j = 0; j < SIZE_NAME_FIELD; j++)
         {
           name_string[i][1 + j] = name_field[index_language][j];
@@ -905,7 +905,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
 #define INDEX_LESS_EQUAL_MORE   4
 #define SIZE_L_DIMENSION        2
 
-        const unsigned char km[MAX_NAMBER_LANGUAGE][SIZE_L_DIMENSION] = {"км", "км", "km", "км"};
+        static const unsigned char km[MAX_NAMBER_LANGUAGE][SIZE_L_DIMENSION] = {"км", "км", "km", "км"};
   
         for (unsigned int j = 0; j < SIZE_L_DIMENSION; j++)
         {
@@ -953,7 +953,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
           name_string[i][INDEX_LESS_EQUAL_MORE] = '=';
           
 #define SIZE_UNDEF      9
-          const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
+          static const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
           {
             "Неопред. ",
             "Невизнач.",
@@ -1070,7 +1070,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
   else
   {
     //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Недостоверные  ",
@@ -1127,9 +1127,9 @@ void make_ekran_changing_signals_digital_registrator(void)
   {
     //Пеший байт сходиться із міткою початку запису - вважаємо, що у буфері достовірні дані
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][ NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][ NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #else
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #endif
     {
       {NAME_RANG_RU},
@@ -1332,14 +1332,14 @@ void make_ekran_changing_signals_digital_registrator(void)
                 //У другому рядку відображаємо час зміни і яке значення прийняв зараз сигнал
                 unsigned char second_row[MAX_COL_LCD] = "                ";
                 unsigned char sring_of_time[8] = "        ";
-                const unsigned char ms[MAX_NAMBER_LANGUAGE][3] = 
+                static const unsigned char ms[MAX_NAMBER_LANGUAGE][3] = 
                 {
                   "мс.",
                   "мс.",
                   "ms ",
                   "мс."
                 };
-                const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
+                static const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
                 {
                   {"Пасс.", "Акт. "},
                   {"Пас. ", "Акт. "},
@@ -1436,7 +1436,7 @@ void make_ekran_changing_signals_digital_registrator(void)
   else
   {
     //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Недостоверные  ",
@@ -1494,7 +1494,7 @@ void make_ekran_list_titles_for_record_of_pr_err_registrator(void)
   if ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU) == 0)
   {
     //Процес зчитування даних з DataFlash вже закінчився
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR][MAX_COL_LCD] = 
     {
       {
         " Метка времени  ",
@@ -1542,7 +1542,7 @@ void make_ekran_list_titles_for_record_of_pr_err_registrator(void)
   else
   {
     //Процес зчитування даних з DataFlash вже закінчився
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Процесс чтения ",
@@ -1600,7 +1600,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
   if (buffer_for_manu_read_record[0] == LABEL_START_RECORD_PR_ERR)
   {
     //Пеший байт сходиться із міткою початку запису - вважаємо, що у буфері достовірні дані
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_DIAGNOSTYKA][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_DIAGNOSTYKA][MAX_COL_LCD] = 
     {
       {
         NAME_DIAGN_RU
@@ -1729,7 +1729,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
                 //У другому рядку відображаємо яке значення прийняла зараз дана діагностика
                 unsigned char second_row[MAX_COL_LCD] = "                ";
 
-                const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
+                static const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
                 {
                   {"Пасс.", "Акт. "},
                   {"Пас. ", "Акт. "},
@@ -1804,7 +1804,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
   else
   {
     //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Недостоверные  ",

@@ -7,7 +7,7 @@
 /*****************************************************/
 void make_ekran_type_IEC61850_nodes(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TYPE_IEC61850_NODES][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TYPE_IEC61850_NODES][MAX_COL_LCD] = 
   {
     {
       " ¬х.GOOSE блок  ",
@@ -76,26 +76,26 @@ void make_ekran_type_IEC61850_nodes(void)
 /*****************************************************/
 void make_ekran_list_in_out_for_iec61850(unsigned int out_in, size_t total_number)
 {
-  const uint8_t name_string_out[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+  static const uint8_t name_string_out[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
       " ¬ых.           ",
       " ¬их.           ",
       " Out.           ",
       " ¬ых.           "
   };
-  const unsigned int first_index_number_out[MAX_NAMBER_LANGUAGE] = {5, 5, 5, 5};
+  static const unsigned int first_index_number_out[MAX_NAMBER_LANGUAGE] = {5, 5, 5, 5};
 
-  const uint8_t name_string_in[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+  static const uint8_t name_string_in[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
       " ¬х.            ",
       " ¬х.            ",
       " In.            ",
       " ¬х.            "
   };
-  const unsigned int first_index_number_in[MAX_NAMBER_LANGUAGE] = {4, 4, 4, 4};
+  static const unsigned int first_index_number_in[MAX_NAMBER_LANGUAGE] = {4, 4, 4, 4};
   
-  const uint8_t (* const name_string[2])[MAX_COL_LCD] = {name_string_out, name_string_in};
-  const unsigned int (* const first_index_number[2])  = {first_index_number_out, first_index_number_in};
+  static const uint8_t (* const name_string[2])[MAX_COL_LCD] = {name_string_out, name_string_in};
+  static const unsigned int (* const first_index_number[2])  = {first_index_number_out, first_index_number_in};
     
   int index_language = index_language_in_array(current_settings.language);
   unsigned int first_index_number_1 = first_index_number[out_in][index_language];

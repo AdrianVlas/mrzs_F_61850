@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_timeout_zdz(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ZDZ][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ZDZ][MAX_COL_LCD] = 
   {
     {
       "     T ЗДЗ      "
@@ -98,7 +98,7 @@ void make_ekran_timeout_zdz(unsigned int group)
 /*****************************************************/
 void make_ekran_control_zdz()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_ZDZ][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_ZDZ][MAX_COL_LCD] = 
   {
     {
       "      ЗДЗ       ",
@@ -190,28 +190,28 @@ void make_ekran_control_zdz()
     }
   };
   
-  const unsigned char information_1[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+  static const unsigned char information_1[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
   {
     {"     Откл.      ", "      Вкл.      "},
     {"     Вимк.      ", "     Ввімк.     "},
     {"      Off       ", "       On       "},
     {"     Сљнд.      ", "     Косу.      "}
   };
-  const unsigned int cursor_x_1[MAX_NAMBER_LANGUAGE][2] = 
+  static const unsigned int cursor_x_1[MAX_NAMBER_LANGUAGE][2] = 
   {
    {4, 5},
    {4, 4},
    {5, 6},
    {4, 4}
   };
-  const unsigned char information_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER][MAX_COL_LCD] = 
+  static const unsigned char information_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER][MAX_COL_LCD] = 
   {
     {"  Без контроля  ", "       I        ", "       U        ", "    I или U     ", "     I и U      ", "      3I0       "},
     {"  Без контролю  ", "       I        ", "       U        ", "    I або U     ", "     I і U      ", "      3I0       "},
     {" Without control", "       I        ", "       U        ", "    I or U      ", "    I and U     ", "      3I0       "},
     {"  Без контроля  ", "       I        ", "       U        ", "    I или U     ", "     I и U      ", "      3I0       "}
   };
-  const unsigned int cursor_x_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER] = 
+  static const unsigned int cursor_x_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER] = 
   {
     {1, 6, 6, 3, 4, 5},
     {1, 6, 6, 3, 4, 5},
@@ -226,7 +226,7 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
-  const uint8_t information_3[ZDZ_CTRL_PORIG_N][MAX_COL_LCD] = 
+  static const uint8_t information_3[ZDZ_CTRL_PORIG_N][MAX_COL_LCD] = 
   {
     "       1        ",
     "       2        ",
@@ -241,7 +241,7 @@ void make_ekran_control_zdz()
     "       11       ",
     "       12       "
   };
-  const uint32_t cursor_x_3[ZDZ_CTRL_PORIG_N] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
+  static const uint32_t cursor_x_3[ZDZ_CTRL_PORIG_N] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
 #endif
   
   int index_language = index_language_in_array(current_settings.language);

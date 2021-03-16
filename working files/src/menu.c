@@ -353,7 +353,7 @@ void main_manu_function(void)
               }
               else if (current_ekran.edition == 3)
               {
-                const unsigned char information_about_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+                static const unsigned char information_about_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
                 {
                   " Неопред.ошибка ",
                   " Невизн.помилка ",
@@ -1079,7 +1079,7 @@ void main_manu_function(void)
               if(current_ekran.edition == 2) make_ekran_ask_rewrite();
               else if(current_ekran.edition == 3) 
               {
-                const unsigned char information_about_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+                static const unsigned char information_about_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
                 {
                   " Неверные данные",
                   "  Невірні дані  ",
@@ -1712,7 +1712,7 @@ void main_manu_function(void)
             }
             else if(current_ekran.current_level == EKRAN_MEASURMENT_CURRENT)
             {
-              const unsigned int index_array[MAX_ROW_FOR_MEASURMENT_CURRENT] = 
+              static const unsigned int index_array[MAX_ROW_FOR_MEASURMENT_CURRENT] = 
               {
                 IM_3I0_i,
                 IM_3I0,
@@ -4112,7 +4112,7 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_MEASURMENT_CURRENT)
               {
-                const unsigned int index_array[MAX_ROW_FOR_MEASURMENT_CURRENT] = 
+                static const unsigned int index_array[MAX_ROW_FOR_MEASURMENT_CURRENT] = 
                 {
                   IM_3I0_i,
                   IM_3I0,
@@ -4912,7 +4912,7 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_MEASURMENT_CURRENT)
               {
-                const unsigned int index_array[MAX_ROW_FOR_MEASURMENT_CURRENT] = 
+                static const unsigned int index_array[MAX_ROW_FOR_MEASURMENT_CURRENT] = 
                 {
                   IM_3I0_i,
                   IM_3I0,
@@ -12589,14 +12589,14 @@ void main_manu_function(void)
               if(current_ekran.edition == 2) make_ekran_ask_rewrite();
               else if(current_ekran.edition == 3)
               {
-                const unsigned char information_about_error1[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+                static const unsigned char information_about_error1[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
                 {
                   " Вых.за диапазон",
                   " Вих.за діапазон",
                   "  Out of Limits ",
                   "Вых.за диапазон "
                 };
-                const unsigned char information_about_error2[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+                static const unsigned char information_about_error2[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
                 {
                   " Опер.вр.недост.",
                   "Опер.тимч.недост",
@@ -12604,7 +12604,7 @@ void main_manu_function(void)
                   " Опер.вр.недост."
                 };
 
-                const unsigned char (*point_to_information_about_error)[MAX_COL_LCD] = information_about_error1;
+                static const unsigned char (*point_to_information_about_error)[MAX_COL_LCD] = information_about_error1;
                 if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
                   if (state_ar_record != STATE_AR_NO_RECORD)
@@ -22049,7 +22049,7 @@ void main_manu_function(void)
               if(current_ekran.edition == 2) make_ekran_ask_rewrite();
               else if(current_ekran.edition == 3)
               {
-                const unsigned char information_about_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+                static const unsigned char information_about_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
                 {
                   "Прев.макс.кол.ф.",
                   "Переб.макс.кіл.ф",
@@ -24198,7 +24198,7 @@ void inc_or_dec_value(unsigned int *label_value, unsigned int inc_dec)
 /*****************************************************/
 void make_ekran_ask_rewrite(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
   {
     {
      "Ввести изменения",
@@ -24241,7 +24241,7 @@ void make_ekran_ask_rewrite(void)
 /*****************************************************/
 void make_ekran_about_activation_command(unsigned int index, unsigned char information[][MAX_NAMBER_LANGUAGE][MAX_COL_LCD])
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
     "Да-ENTER Нет-ESC",
     "Так-ENTER Ні-ESC",
@@ -24273,7 +24273,7 @@ void make_ekran_about_activation_command(unsigned int index, unsigned char infor
 /*****************************************************/
 void make_ekran_about_error(const unsigned char information[][MAX_COL_LCD])
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
     " Выход Enter/Esc",
     " Вихід Enter/Esc",

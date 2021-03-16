@@ -13,7 +13,7 @@ void make_ekran_time(void)
     "      X XX      "
   };
   
-  const unsigned char calibrating[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+  static const unsigned char calibrating[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
     "   Калибровка   ",
     "  Калібрування  ",

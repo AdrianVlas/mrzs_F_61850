@@ -39,9 +39,9 @@ int superReader20(int offsetRegister, int fileNumber, int recordNumber, int reco
 
 //Ідентитифікатор каналу - 16 ASCII символів
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
+static const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
 #else
-const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
+static const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
 #endif
 {
   {NAME_RANG_RU},
@@ -677,7 +677,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
         "                ",
         "3U0             "
       };
-      const char idetyficator_current[2][16] =
+      static const char idetyficator_current[2][16] =
       {
         "Ib              ",
         "I 0.4kV         "
@@ -689,7 +689,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
       if (phase_line == 0)
         {
-          const char idetyficator_phase[3][16] =
+          static const char idetyficator_phase[3][16] =
           {
             "Ua              ",
             "Ub              ",
@@ -703,7 +703,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
         }
       else
         {
-          const char idetyficator_line[3][16] =
+          static const char idetyficator_line[3][16] =
           {
             "Uab             ",
             "Ubc             ",
@@ -752,7 +752,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
           };
 
           {
-            const char phase_c[2][2] =
+            static const char phase_c[2][2] =
             {
               "B ",
               "04"
@@ -762,7 +762,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
           if (phase_line == 0)
             {
-              const char phase_p[3][2] =
+              static const char phase_p[3][2] =
               {
                 "A ",
                 "B ",
@@ -776,7 +776,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
             }
           else
             {
-              const char pase_l[3][2] =
+              static const char pase_l[3][2] =
               {
                 "AB",
                 "BC",

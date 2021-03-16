@@ -7,7 +7,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
 {
 #define MAX_COL_LCD_PART1 10
 
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_EKRAN_CONFIGURATION][MAX_COL_LCD_PART1] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_EKRAN_CONFIGURATION][MAX_COL_LCD_PART1] = 
   {
     {
      "ÌÒÇ       ",
@@ -74,7 +74,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "Ðàñø.ëîã. "
     }
   };
-  const unsigned char name_nzz[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD_PART1] = 
+  static const unsigned char name_nzz[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD_PART1] = 
   {
     {"ÍÇÇ       ", "ÇÇ        "},
     {"ÍÇÇ       ", "ÇÇ        "},
@@ -82,14 +82,14 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
     {"ÍÇÇ       ", "ÇÇ        "}
   };
 
-  const unsigned char information_on[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
+  static const unsigned char information_on[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
   {
     "Âêë.  ",
     "Ââ³ìê.",
     "On    ",
     "Êîñó. "
   };
-  const unsigned char information_off[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
+  static const unsigned char information_off[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
   {
     "Îòêë. ",
     "Âèìê. ",

@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_chose_communication_parameters(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_COMMUNICATION_PARAMETERS][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_COMMUNICATION_PARAMETERS][MAX_COL_LCD] = 
   {
     {
       " Имя ячейки     ",
@@ -121,7 +121,7 @@ void make_ekran_name_of_cell(void)
 /*****************************************************/
 void make_ekran_address()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_ADDRESS][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_ADDRESS][MAX_COL_LCD] = 
   {
     "     Адрес      ",
     "     Адреса     ",
@@ -204,7 +204,7 @@ void make_ekran_address()
 /*****************************************************/
 void make_ekran_chose_setting_rs485(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTING_RS485][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTING_RS485][MAX_COL_LCD] = 
   {
     {
       " Физический ур. ",
@@ -262,7 +262,7 @@ void make_ekran_chose_setting_rs485(void)
 /*****************************************************/
 void make_ekran_phy_layer_rs485(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_PHY_LAYER_RS485][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_PHY_LAYER_RS485][MAX_COL_LCD] = 
   {
     {
       " Скорость обмена",
@@ -328,7 +328,7 @@ void make_ekran_phy_layer_rs485(void)
 /*****************************************************/
 void make_ekran_protocols_rs485(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_PROTOCOLS_RS485][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_PROTOCOLS_RS485][MAX_COL_LCD] = 
   {
     " Адрес Modbus   ",
     " Адреса Modbus  ",
@@ -374,7 +374,7 @@ void make_ekran_protocols_rs485(void)
 /*****************************************************/
 void make_ekran_speed_interface()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_SPEED_INTERFACE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_SPEED_INTERFACE][MAX_COL_LCD] = 
   {
     " Скорость обмена",
     " Швидкість обм. ",
@@ -403,7 +403,7 @@ void make_ekran_speed_interface()
       else
       {
         //У парному номері рядку виводимо значення уставки
-        const unsigned char information[MAX_NUMBER_SPEEDS_INTERFACE][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_NUMBER_SPEEDS_INTERFACE][MAX_COL_LCD] = 
         {
           "      9600      ",
           "     14400      ",
@@ -413,7 +413,7 @@ void make_ekran_speed_interface()
           "     57600      ",
           "     115200     "
         };
-        const unsigned int cursor_x[MAX_NUMBER_SPEEDS_INTERFACE] = {5, 4, 4, 4, 4, 4, 4};
+        static const unsigned int cursor_x[MAX_NUMBER_SPEEDS_INTERFACE] = {5, 4, 4, 4, 4, 4, 4};
 
         unsigned int temp_data;
           
@@ -427,14 +427,14 @@ void make_ekran_speed_interface()
         }
         else
         {
-          const unsigned char information_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+          static const unsigned char information_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
           {
             "     Ошибка     ",
             "    Помилка     ",
             "     Error      ",
             "     Ошибка     "
           };
-          const unsigned int cursor_x_error[MAX_NAMBER_LANGUAGE] = {4, 3, 4, 4};
+          static const unsigned int cursor_x_error[MAX_NAMBER_LANGUAGE] = {4, 3, 4, 4};
 
           for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information_error[index_language][j];
           current_ekran.position_cursor_x = cursor_x_error[index_language];
@@ -468,7 +468,7 @@ void make_ekran_speed_interface()
 /*****************************************************/
 void make_ekran_pare_interface()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_PARE_INTERFACE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_PARE_INTERFACE][MAX_COL_LCD] = 
   {
     " Контр.четности ",
     " Контр.парності ",
@@ -496,14 +496,14 @@ void make_ekran_pare_interface()
       }
       else
       {
-        const unsigned char information[MAX_NAMBER_LANGUAGE][MAX_NUMBER_PARE_INTERFACE + 1][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_NAMBER_LANGUAGE][MAX_NUMBER_PARE_INTERFACE + 1][MAX_COL_LCD] = 
         {
           {"      Нет       ", "     Нечет.     ", "      Чет.      ", "     Ошибка     "},
           {"      Нема      ", "    Непарн.     ", "      Парн.     ", "    Помилка     "},
           {"      None      ", "      Odd       ", "      Even      ", "     Error      "},
           {"      Нет       ", "     Нечет.     ", "      Чет.      ", "     Ошибка     "}
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][MAX_NUMBER_PARE_INTERFACE + 1] = 
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][MAX_NUMBER_PARE_INTERFACE + 1] = 
         {
           {5, 4, 5, 4},
           {5, 3, 5, 3},
@@ -555,7 +555,7 @@ void make_ekran_pare_interface()
 /*****************************************************/
 void make_ekran_stopbits_interface()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_STOP_BITS_INTERFACE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_STOP_BITS_INTERFACE][MAX_COL_LCD] = 
   {
     " Колич.стоп-бит ",
     "Кільк.стоп-біт  ",
@@ -583,14 +583,14 @@ void make_ekran_stopbits_interface()
       }
       else
       {
-        const unsigned char information[MAX_NAMBER_LANGUAGE][MAX_NUMBER_STOP_BITS_INTERFACE + 1][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_NAMBER_LANGUAGE][MAX_NUMBER_STOP_BITS_INTERFACE + 1][MAX_COL_LCD] = 
         {
           {"      Один      ", "      Два       ", "     Ошибка     "},
           {"      Один      ", "      Два       ", "    Помилка     "},
           {"      One       ", "      Two       ", "     Error      "},
           {"      Один      ", "      Два       ", "     Ошибка     "}
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][MAX_NUMBER_STOP_BITS_INTERFACE + 1] = 
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][MAX_NUMBER_STOP_BITS_INTERFACE + 1] = 
         {
           {5, 5, 4},
           {5, 5, 3},
@@ -642,14 +642,14 @@ void make_ekran_stopbits_interface()
 /*****************************************************/
 void make_ekran_timeout_interface()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_TIMEOUT_INTERFACE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_TIMEOUT_INTERFACE][MAX_COL_LCD] = 
   {
     "  Конец приёма  ",
     "Кінець приймання",
     "End of Reception",
     "  Конец приёма  "
   };
-  const unsigned char symbols[MAX_NAMBER_LANGUAGE][5] = {"симв.", "симв.", "symb ", "симв."};
+  static const unsigned char symbols[MAX_NAMBER_LANGUAGE][5] = {"симв.", "симв.", "symb ", "симв."};
   int index_language = index_language_in_array(current_settings.language);
   
   unsigned int position_temp = current_ekran.index_position;
@@ -736,7 +736,7 @@ void make_ekran_timeout_interface()
 /*****************************************************/
 void make_ekran_chose_setting_Ethernet(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTING_ETHERNET][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTING_ETHERNET][MAX_COL_LCD] = 
   {
     {
       " Сетевой ур.    "/*,
@@ -795,7 +795,7 @@ void make_ekran_chose_setting_Ethernet(void)
 /*****************************************************/
 void make_ekran_settings_network_layer_Ethernet()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETTING_NETWORK_LAYER_ETHERNET][MAX_COL_LCD] = 
   {
     {
       "      IPv4      ",
@@ -841,7 +841,7 @@ void make_ekran_settings_network_layer_Ethernet()
       else
       {
         //У парному номері рядку виводимо значення
-        const uint8_t string[] = "0123456789";
+        static const uint8_t string[] = "0123456789";
         __SETTINGS *point_1 = (view == true) ? &current_settings : &edition_settings;
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';

@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_timeout_apv(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_APV][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_APV][MAX_COL_LCD] = 
   {
     {
       "   1 Цикл АПВ   ",
@@ -325,7 +325,7 @@ void make_ekran_timeout_apv(unsigned int group)
 /*****************************************************/
 void make_ekran_control_apv()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_APV][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_APV][MAX_COL_LCD] = 
   {
     {
       "      АПВ       ",
@@ -469,14 +469,14 @@ void make_ekran_control_apv()
       else
       {
         //У парному номері рядку виводимо значення уставки
-         const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+         static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
            {"     Откл.      ", "      Вкл.      "},
            {"     Вимк.      ", "     Ввімк.     "},
            {"      Off       ", "       On       "},
            {"     Сљнд.      ", "     Косу.      "}
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
         {
           {4, 5},
           {4, 4},

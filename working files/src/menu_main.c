@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_main(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_EKRAN_MAIN][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_EKRAN_MAIN][MAX_COL_LCD] = 
   {
     {
      " ×àñû           ",
@@ -108,7 +108,7 @@ void make_ekran_main(void)
      " ÎÌÏ            "
     }
   };
-  const unsigned char name_nzz[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+  static const unsigned char name_nzz[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
   {
     {" ÍÇÇ            ", " ÇÇ             "},
     {" ÍÇÇ            ", " ÇÇ             "},

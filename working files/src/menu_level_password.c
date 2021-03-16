@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_level_password(unsigned int password, unsigned int view)
 {
-  const unsigned char name_string_1[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+  static const unsigned char name_string_1[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
     " Введите пароль:",
     " Введіть пароль:",
@@ -13,7 +13,7 @@ void make_ekran_level_password(unsigned int password, unsigned int view)
     " Введите пароль:"
   };
 
-  const unsigned char name_string_2[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+  static const unsigned char name_string_2[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
     "  Новый пароль: ",
     "  Новий пароль: ",
@@ -98,7 +98,7 @@ void make_ekran_level_password(unsigned int password, unsigned int view)
 /*****************************************************/
 void make_ekran_chose_passwords(void)
 {
-  const unsigned char password_item[MAX_ROW_FOR_CHOOSE_PASSWORDS][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+  static const unsigned char password_item[MAX_ROW_FOR_CHOOSE_PASSWORDS][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
   {
     {
       {" Смена пароля 1 ", " Уст.пароля 1   "},

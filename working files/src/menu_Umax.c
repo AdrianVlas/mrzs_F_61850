@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_setpoint_Umax(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_UMAX][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_UMAX][MAX_COL_LCD] = 
   {
     {
       " Уставка ЗНмакс1",
@@ -156,7 +156,7 @@ void make_ekran_setpoint_Umax(unsigned int group)
 /*****************************************************/
 void make_ekran_timeout_Umax(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_UMAX][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_UMAX][MAX_COL_LCD] = 
   {
     {
       "Выдержка ЗНмакс1",
@@ -286,7 +286,7 @@ void make_ekran_timeout_Umax(unsigned int group)
 /*****************************************************/
 void make_ekran_control_Umax()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_UMAX][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_UMAX][MAX_COL_LCD] = 
   {
     {
       "    ЗНмакс1     ",
@@ -334,7 +334,7 @@ void make_ekran_control_Umax()
       else
       {
         //У парному номері рядку виводимо значення уставки
-        const unsigned char information[MAX_ROW_FOR_CONTROL_UMAX][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_ROW_FOR_CONTROL_UMAX][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
         {
           {
             {"     Откл.      ", "      Вкл.      "},
@@ -362,7 +362,7 @@ void make_ekran_control_Umax()
           },
         };
 
-        const unsigned int cursor_x[MAX_ROW_FOR_CONTROL_UMAX][MAX_NAMBER_LANGUAGE][2] = 
+        static const unsigned int cursor_x[MAX_ROW_FOR_CONTROL_UMAX][MAX_NAMBER_LANGUAGE][2] = 
         {
           {
             {4, 5},

@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_grupa_ustavok()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_GRUPA_USTAVOK][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_VIEW_GRUPA_USTAVOK][MAX_COL_LCD] = 
   {
     " Группа уставок ",
     " Група уставок  ",
@@ -40,8 +40,8 @@ void make_ekran_grupa_ustavok()
           "     Set _      ",
           "    Группа _    "
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE] = { 3,  3, 4,  3};
-        const unsigned int number_x[MAX_NAMBER_LANGUAGE] = {11, 10, 9, 11};
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE] = { 3,  3, 4,  3};
+        static const unsigned int number_x[MAX_NAMBER_LANGUAGE] = {11, 10, 9, 11};
 
         unsigned int temp_data;
           
@@ -60,14 +60,14 @@ void make_ekran_grupa_ustavok()
         }
         else
         {
-          const unsigned char information_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+          static const unsigned char information_error[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
           {
             "     Ошибка     ",
             "    Помилка     ",
             "     Error      ",
             "     Ошибка     "
           };
-          const unsigned int cursor_x_error[MAX_NAMBER_LANGUAGE] = {4, 3, 4, 4};
+          static const unsigned int cursor_x_error[MAX_NAMBER_LANGUAGE] = {4, 3, 4, 4};
 
           for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information_error[index_language][j];
           current_ekran.position_cursor_x = cursor_x_error[index_language];

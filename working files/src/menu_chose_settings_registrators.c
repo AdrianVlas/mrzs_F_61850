@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_chose_registrators(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_LIST_OF_REGISTRATORS][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_LIST_OF_REGISTRATORS][MAX_COL_LCD] = 
   {
     {
       " Дискр. рег-р   ",
@@ -61,7 +61,7 @@ void make_ekran_chose_registrators(void)
 /*****************************************************/
 void make_ekran_settings_analog_registrators(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETTINGS_OF_ANALOG_REGISTRATOR][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETTINGS_OF_ANALOG_REGISTRATOR][MAX_COL_LCD] = 
   {
     {
       " Источники      ",
@@ -118,7 +118,7 @@ void make_ekran_settings_analog_registrators(void)
 /*****************************************************/
 void make_ekran_timeout_analog_registrator(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ANALOG_REGISTRATOR][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ANALOG_REGISTRATOR][MAX_COL_LCD] = 
   {
     {
       "  T предавар.   ",

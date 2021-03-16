@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_chose_settings_any_protection(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_ANY_PROTECTION][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_ANY_PROTECTION][MAX_COL_LCD] = 
   {
     {
       " Уставки        ",
@@ -67,7 +67,7 @@ void make_ekran_chose_settings_any_protection(void)
 /*****************************************************/
 void make_ekran_chose_settings_protection_with_groups(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TWO_GROUP][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TWO_GROUP][MAX_COL_LCD] = 
   {
     {
       " Группа 1       ",
@@ -137,7 +137,7 @@ void make_ekran_chose_settings_protection_with_groups(void)
 /*****************************************************/
 void make_ekran_chose_setpoint_and_timeout(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETPOINTS_TIMEOUTS][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETPOINTS_TIMEOUTS][MAX_COL_LCD] = 
   {
     {
      " Уставки        ",
@@ -195,7 +195,7 @@ void make_ekran_chose_setpoint_and_timeout(void)
 /*****************************************************/
 void make_ekran_chose_timeout(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TIMEOUT][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TIMEOUT][MAX_COL_LCD] = 
   {
     {
      " Выдержки       "
@@ -249,7 +249,7 @@ void make_ekran_chose_timeout(void)
 /*****************************************************/
 void make_ekran_chose_control(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_CONTROL][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_CONTROL][MAX_COL_LCD] = 
   {
     {
       " Управление     "
@@ -302,7 +302,7 @@ void make_ekran_chose_control(void)
 /*****************************************************/
 void make_ekran_chose_timeout_control(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TIMEOUT_CONTROL][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TIMEOUT_CONTROL][MAX_COL_LCD] = 
   {
     {
       " Выдержки       ",
@@ -359,7 +359,7 @@ void make_ekran_chose_timeout_control(void)
 /*****************************************************/
 void make_ekran_chose_settings_vmp(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_VMP][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_VMP][MAX_COL_LCD] = 
   {
     {
      " Прямой         ",
@@ -421,7 +421,7 @@ void make_ekran_chose_settings_vmp(void)
 /*****************************************************/
 void make_ekran_chose_settings_switcher(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_SWITCHER][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_SETTINGS_SWITCHER][MAX_COL_LCD] = 
   {
     {
       " Уставки        ",

@@ -8,7 +8,7 @@ void make_ekran_diagnostyka(unsigned int volatile diagnostyka_tmp[])
 #define NUMBER_ROW_FOR_NO_ERRORS 2
   
   unsigned int position_temp = current_ekran.index_position;
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NO_ERRORS + MAX_ROW_FOR_DIAGNOSTYKA][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NO_ERRORS + MAX_ROW_FOR_DIAGNOSTYKA][MAX_COL_LCD] = 
   {
     {
       "      Нет       ",

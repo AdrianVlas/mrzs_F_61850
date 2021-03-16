@@ -236,7 +236,7 @@ void convert_and_insert_char_for_frequency(int temp_meas_1000, unsigned char *na
   int index_language = index_language_in_array(current_settings.language);
   if ((temp_value >= (MIN_FREQUENCY*1000)) && (temp_value <= ((MAX_FREQUENCY + 1)*1000)))
   {
-    const unsigned char Hz[MAX_NAMBER_LANGUAGE][2] = {"Гц", "Гц", "Hz", "Гц"};
+    static const unsigned char Hz[MAX_NAMBER_LANGUAGE][2] = {"Гц", "Гц", "Hz", "Гц"};
     for (unsigned int i = 0; i < 2; i++)  
     {
        *(name_string + FIRST_POSITION_OF_NUMBER + 7 + i) = Hz[index_language][i];
@@ -303,7 +303,7 @@ void convert_and_insert_char_for_frequency(int temp_meas_1000, unsigned char *na
   }
   else if (temp_meas_1000 < 0)
   {
-    const unsigned char undefined[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - FIRST_POSITION_OF_NUMBER] =
+    static const unsigned char undefined[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - FIRST_POSITION_OF_NUMBER] =
     {
       "Неопред.   ",
       "Невизнач.  ",
@@ -327,7 +327,7 @@ void convert_and_insert_char_for_frequency(int temp_meas_1000, unsigned char *na
 /*****************************************************/
 void make_ekran_measurement(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_MEASURMENT][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_MEASURMENT][MAX_COL_LCD] = 
   {
     {
      " Токи           ",
@@ -399,7 +399,7 @@ void make_ekran_measurement(void)
 /*****************************************************/
 void make_ekran_measurement_voltage_type(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_MEASURMENT_VOLTAGE_TYPE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_MEASURMENT_VOLTAGE_TYPE][MAX_COL_LCD] = 
   {
     {
      " Фазные         ",
@@ -628,7 +628,7 @@ void make_ekran_voltage_phase(unsigned int pervynna_vtorynna)
 
   if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
   {
-    const unsigned char name_phase[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE - 1][MAX_COL_LCD] = 
+    static const unsigned char name_phase[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE - 1][MAX_COL_LCD] = 
     {
       " Ua  =          ",
       " Ub  =          ",
@@ -636,7 +636,7 @@ void make_ekran_voltage_phase(unsigned int pervynna_vtorynna)
       " U2  =          ",
       " U1  =          "
     };
-    const unsigned int index_array_phase[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE - 1] = 
+    static const unsigned int index_array_phase[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE - 1] = 
     {
       IM_UA,
       IM_UB,
@@ -652,7 +652,7 @@ void make_ekran_voltage_phase(unsigned int pervynna_vtorynna)
     }
   }
   
-  const unsigned char name_3U0[MAX_COL_LCD] = " 3U0 =          ";
+  static const unsigned char name_3U0[MAX_COL_LCD] = " 3U0 =          ";
     
   for (unsigned int j = 0; j < MAX_COL_LCD; j++) name_string[row][j] = name_3U0[j];
   index_array[row++] = IM_3U0;
@@ -870,7 +870,7 @@ void make_ekran_angle(void)
   if (base_index_for_angle < 0)
   {
     //Неможливо визначити кути
-    const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         "  Невозможно    ",
@@ -920,14 +920,14 @@ void make_ekran_angle(void)
       "I0.4 -          "
     };
 #define SIZE_UNDEF      6
-    const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
+    static const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
     {
       "Неопр.",
       "Нев.  ",
       "Undef.",
       "Неопр."  
     };
-    const unsigned char number_chars_for_undef[MAX_NAMBER_LANGUAGE] = {SIZE_UNDEF, 4, SIZE_UNDEF, SIZE_UNDEF};
+    static const unsigned char number_chars_for_undef[MAX_NAMBER_LANGUAGE] = {SIZE_UNDEF, 4, SIZE_UNDEF, SIZE_UNDEF};
 #undef SIZE_UNDEF
     
     int number_charts_for_undef_tmp = number_chars_for_undef[index_language];
@@ -1172,10 +1172,10 @@ void make_ekran_power(unsigned int pervynna_vtorynna)
     " S =            ",
     " cos(phi)=      "
   };
-  const unsigned int index_of_start_position[MAX_ROW_FOR_MEASURMENT_POWER] = {5, 5, 5, 11};
+  static const unsigned int index_of_start_position[MAX_ROW_FOR_MEASURMENT_POWER] = {5, 5, 5, 11};
 
 #define SIZE_POWER_DIMENSION    3
-  const unsigned char power_dimension[MAX_ROW_FOR_MEASURMENT_POWER - 1][MAX_NAMBER_LANGUAGE][SIZE_POWER_DIMENSION] = 
+  static const unsigned char power_dimension[MAX_ROW_FOR_MEASURMENT_POWER - 1][MAX_NAMBER_LANGUAGE][SIZE_POWER_DIMENSION] = 
   {
     {"Вт ", "Вт ", "W  ", "Вт "},
     {"ВАр", "ВАр", "VAr", "ВАр"},
@@ -1273,7 +1273,7 @@ void make_ekran_power(unsigned int pervynna_vtorynna)
         else
         {
 #define SIZE_UNDEF      6
-          const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
+          static const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
           {
             "Неопр.",
             "Нев.  ",
@@ -1334,12 +1334,12 @@ void make_ekran_resistance(unsigned int pervynna_vtorynna)
     " Rca            ",
     " Xca            "
   };
-  const unsigned int index_of_start_position_array[MAX_NAMBER_LANGUAGE] = {4, 4, 5, 4};
+  static const unsigned int index_of_start_position_array[MAX_NAMBER_LANGUAGE] = {4, 4, 5, 4};
 
 #define SIZE_R_DIMENSION    2
-  const unsigned int size_dimension_array[MAX_NAMBER_LANGUAGE] = {SIZE_R_DIMENSION, SIZE_R_DIMENSION, SIZE_R_DIMENSION - 1, SIZE_R_DIMENSION};
+  static const unsigned int size_dimension_array[MAX_NAMBER_LANGUAGE] = {SIZE_R_DIMENSION, SIZE_R_DIMENSION, SIZE_R_DIMENSION - 1, SIZE_R_DIMENSION};
 
-  const unsigned char resistance_dimension[MAX_NAMBER_LANGUAGE][SIZE_R_DIMENSION] = {"Ом", "Ом", "Ї ", "Ом"}; /*Ї тут іде як замінник великої букви Омега для англійської розкладки*/
+  static const unsigned char resistance_dimension[MAX_NAMBER_LANGUAGE][SIZE_R_DIMENSION] = {"Ом", "Ом", "Ї ", "Ом"}; /*Ї тут іде як замінник великої букви Омега для англійської розкладки*/
   
   int index_language = index_language_in_array(current_settings.language);
   unsigned int start_position = index_of_start_position_array[index_language];
@@ -1409,7 +1409,7 @@ void make_ekran_resistance(unsigned int pervynna_vtorynna)
       else
       {
 #define SIZE_UNDEF      9
-        const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
+        static const unsigned char undefined[MAX_NAMBER_LANGUAGE][SIZE_UNDEF] =
         {
           "Неопред. ",
           "Невизнач.",

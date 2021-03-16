@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_chose_data_time_settings(void)
 {
-  const uint8_t name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS][MAX_COL_LCD] = 
+  static const uint8_t name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CHOSE_DATA_TIME_SETTINGS][MAX_COL_LCD] = 
   {
     {
       " Часовой пояс   ",
@@ -111,7 +111,7 @@ void make_ekran_chose_data_time_settings(void)
 /*****************************************************/
 void make_ekran_timezone_dst(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEZONE_SETTINGS][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEZONE_SETTINGS][MAX_COL_LCD] = 
   {
     {
       "  Часовой пояс  ",
@@ -173,7 +173,7 @@ void make_ekran_timezone_dst(void)
             else if (j == 10) working_ekran[i][j] = (time_zone >= 10) ? ((time_zone % 10) + 0x30) : ' ';
             else 
             {
-              const unsigned char information[MAX_COL_LCD] = "     UTC___     ";
+              static const unsigned char information[MAX_COL_LCD] = "     UTC___     ";
         
               working_ekran[i][j] = information[j];
             }
@@ -212,7 +212,7 @@ void make_ekran_timezone_dst(void)
 /*****************************************************/
 void make_ekran_dst_rule(unsigned int rule)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_DST_RULE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_DST_RULE][MAX_COL_LCD] = 
   {
     {
       "     Месяц      ",
@@ -259,7 +259,7 @@ void make_ekran_dst_rule(unsigned int rule)
       else
       {
         //У парному номері рядку виводимо стан
-        unsigned char const monthes[MAX_NAMBER_LANGUAGE][12][MAX_COL_LCD] =
+        static unsigned char const monthes[MAX_NAMBER_LANGUAGE][12][MAX_COL_LCD] =
         {
           {
             "     Январь     ",
@@ -319,7 +319,7 @@ void make_ekran_dst_rule(unsigned int rule)
           }
         };
 
-        unsigned char const day_of_week[MAX_NAMBER_LANGUAGE][7][MAX_COL_LCD] =
+        static unsigned char const day_of_week[MAX_NAMBER_LANGUAGE][7][MAX_COL_LCD] =
         {
           {
             "   Воскресенье  ",
@@ -359,7 +359,7 @@ void make_ekran_dst_rule(unsigned int rule)
           }
         };
         
-        unsigned char const week_rule[MAX_NAMBER_LANGUAGE][5][MAX_COL_LCD] = 
+        static unsigned char const week_rule[MAX_NAMBER_LANGUAGE][5][MAX_COL_LCD] = 
         {
           {
             "     Первый     ",
@@ -550,13 +550,14 @@ void make_ekran_dst_rule(unsigned int rule)
 }
 /*****************************************************/
 
+
 #if (MODYFIKACIA_VERSII_PZ >= 10)
 /*****************************************************/
 //Формуємо екран відображення налаштувань мережевого рівня Ethernet
 /*****************************************************/
 void make_ekran_settings_synchro()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SYNCHRO][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SYNCHRO][MAX_COL_LCD] = 
   {
     {
       "   IP Сервера   ",
@@ -602,7 +603,7 @@ void make_ekran_settings_synchro()
       else
       {
         //У парному номері рядку виводимо значення
-        const uint8_t string[] = "0123456789";
+        static const uint8_t string[] = "0123456789";
         __SETTINGS *point_1 = (view == true) ? &current_settings : &edition_settings;
         
         for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
@@ -683,7 +684,7 @@ void make_ekran_settings_synchro()
             }
           }
 
-          uint8_t const symbols[MAX_NAMBER_LANGUAGE][4+1] = {"мин.", "хв. ", "min.", "мин."};
+          static uint8_t const symbols[MAX_NAMBER_LANGUAGE][4+1] = {"мин.", "хв. ", "min.", "мин."};
           uint8_t const *ptr_tmp= symbols[index_language];
           
           j = COL_PEDIOD_END + 2;

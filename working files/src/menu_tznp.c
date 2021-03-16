@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_setpoint_tznp(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_TZNP][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_TZNP][MAX_COL_LCD] = 
   {
     {
       "3I0 ТЗНП1 Прямой",
@@ -470,7 +470,7 @@ void make_ekran_setpoint_tznp(unsigned int group)
 /*****************************************************/
 void make_ekran_timeout_tznp(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_TZNP][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_TZNP][MAX_COL_LCD] = 
   {
     {
       "  ТЗНП1 Прямой  ",
@@ -705,7 +705,7 @@ void make_ekran_timeout_tznp(unsigned int group)
 /*****************************************************/
 void make_ekran_control_tznp()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_TZNP][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_TZNP][MAX_COL_LCD] = 
   {
     {
       "     ТЗНП1      ",
@@ -774,14 +774,14 @@ void make_ekran_control_tznp()
       else
       {
         //У парному номері рядку виводимо значення уставки
-        const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
         {
           {"     Откл.      ", "      Вкл.      "},
           {"     Вимк.      ", "     Ввімк.     "},
           {"      Off       ", "       On       "},
           {"     Сљнд.      ", "     Косу.      "}
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
         {
          {4, 5},
          {4, 4},

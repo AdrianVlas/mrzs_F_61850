@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_setpoint_zz(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_ZZ][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_ZZ][MAX_COL_LCD] = 
   {
     {
       "  Уставка 3I0   ",
@@ -135,7 +135,7 @@ void make_ekran_setpoint_zz(unsigned int group)
 /*****************************************************/
 void make_ekran_timeout_zz(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ZZ][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ZZ][MAX_COL_LCD] = 
   {
     {
       "  Выдержка 3I0  ",
@@ -300,7 +300,7 @@ void make_ekran_timeout_zz(unsigned int group)
 /*****************************************************/
 void make_ekran_control_zz()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_ZZ][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_ZZ][MAX_COL_LCD] = 
   {
     {
       " Защита ЗЗ/3I0  ",
@@ -333,7 +333,7 @@ void make_ekran_control_zz()
   };
   unsigned char name_string_tmp[MAX_ROW_FOR_CONTROL_ZZ][MAX_COL_LCD];
 
-  const unsigned char information[MAX_ROW_FOR_CONTROL_ZZ][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+  static const unsigned char information[MAX_ROW_FOR_CONTROL_ZZ][MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
   {
     {
       {"     Откл.      ", "      Вкл.      "},
@@ -368,7 +368,7 @@ void make_ekran_control_zz()
   };
   unsigned char information_tmp[MAX_ROW_FOR_CONTROL_ZZ][2][MAX_COL_LCD];
 
-  const unsigned int cursor_x[MAX_ROW_FOR_CONTROL_ZZ][MAX_NAMBER_LANGUAGE][2] = 
+  static const unsigned int cursor_x[MAX_ROW_FOR_CONTROL_ZZ][MAX_NAMBER_LANGUAGE][2] = 
   {
     {
       {4, 5},

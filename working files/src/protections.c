@@ -133,12 +133,12 @@ inline unsigned int sqrt_32(unsigned int y)
 inline void velychyna_zvorotnoi_poslidovnosti(int ortogonal_local_calc[], const __index_I_U i_u)
 {
   enum _n_phase {_A = 0, _B, _C, _A_B_C};
-  const enum _full_ort_index a_b_c[_NUMBER_FOR_I_U][_A_B_C] = 
+  static const enum _full_ort_index a_b_c[_NUMBER_FOR_I_U][_A_B_C] = 
   {
     {FULL_ORT_Ia, FULL_ORT_Ib, FULL_ORT_Ic},
     {FULL_ORT_Ua, FULL_ORT_Ub, FULL_ORT_Uc}
   };
-  const uint32_t const_val[_NUMBER_FOR_I_U][4] = 
+  static const uint32_t const_val[_NUMBER_FOR_I_U][4] = 
   {
     {IM_I2, IM_I1, MNOGNYK_I_DIJUCHE, (VAGA_DILENNJA_I_DIJUCHE + 4)},
     {IM_U2, IM_U1, MNOGNYK_U_DIJUCHE, (VAGA_DILENNJA_U_DIJUCHE + 4)}
@@ -777,9 +777,9 @@ inline void directional_tznp(int ortogonal_local_calc[], unsigned int number_gro
 /*****************************************************/
 inline void calc_resistance(int ortogonal_local_calc[], int resistance_output[]) 
 {
-  const unsigned int index_line_voltage[3]  = {FULL_ORT_Uab, FULL_ORT_Ubc, FULL_ORT_Uca};
-  const unsigned int index_begin_current[3] = {FULL_ORT_Ia , FULL_ORT_Ib , FULL_ORT_Ic };
-  const unsigned int index_end_current[3]   = {FULL_ORT_Ib , FULL_ORT_Ic , FULL_ORT_Ia };
+  static const unsigned int index_line_voltage[3]  = {FULL_ORT_Uab, FULL_ORT_Ubc, FULL_ORT_Uca};
+  static const unsigned int index_begin_current[3] = {FULL_ORT_Ia , FULL_ORT_Ib , FULL_ORT_Ic };
+  static const unsigned int index_end_current[3]   = {FULL_ORT_Ib , FULL_ORT_Ic , FULL_ORT_Ia };
   
   for (unsigned int i = 0; i < 3; i++)
   {
@@ -1043,7 +1043,7 @@ inline void calc_measurement(unsigned int number_group_stp)
   /***
   Довертаємо кути і копіюємо ортогональні для низькопріоритетних задач
   ***/
-  const unsigned int *array_point_to_index_converter[4] = {index_converter_Ib_p, index_converter_I04_p, index_converter_Ib_l, index_converter_I04_l};
+  static const unsigned int *array_point_to_index_converter[4] = {index_converter_Ib_p, index_converter_I04_p, index_converter_Ib_l, index_converter_I04_l};
   const unsigned int *point_to_index_converter = array_point_to_index_converter[current_settings_prt.control_extra_settings_1 & (CTR_EXTRA_SETTINGS_1_CTRL_IB_I04 | CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE)];
 
   unsigned int copy_to_low_tasks = (semaphore_measure_values_low == 0) ? true : false;
@@ -9707,7 +9707,7 @@ do{
   copying_active_functions = 1; //Помічаємо, що зараз обновляємо значення активних функцій
   
   //Скижаємо ті сигнали, які відповідають за входи, кнопки і активацію з інтерфейсу
-  const unsigned int maska_input_signals[N_BIG] = 
+  static const unsigned int maska_input_signals[N_BIG] = 
   {
     MASKA_FOR_INPUT_SIGNALS_0, 
     MASKA_FOR_INPUT_SIGNALS_1, 
@@ -10544,7 +10544,7 @@ do{
     /**************************/
     //Сигнал "Несправность Аварийная"
     /**************************/
-    const unsigned int maska_avar_error[N_DIAGN] = {MASKA_AVAR_ERROR_0, MASKA_AVAR_ERROR_1, MASKA_AVAR_ERROR_2, MASKA_AVAR_ERROR_3};
+    static const unsigned int maska_avar_error[N_DIAGN] = {MASKA_AVAR_ERROR_0, MASKA_AVAR_ERROR_1, MASKA_AVAR_ERROR_2, MASKA_AVAR_ERROR_3};
 
     not_null = false;
     for (size_t i = 0; i < N_DIAGN; i++) 
@@ -10600,7 +10600,7 @@ do{
     else
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_mtz_signals[N_BIG] = 
+      static const unsigned int maska_mtz_signals[N_BIG] = 
       {
         MASKA_MTZ_SIGNALS_0,
         MASKA_MTZ_SIGNALS_1,
@@ -10650,7 +10650,7 @@ do{
     else
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_mtz04_signals[N_BIG] = 
+      static const unsigned int maska_mtz04_signals[N_BIG] = 
       {
         MASKA_MTZ04_SIGNALS_0, 
         MASKA_MTZ04_SIGNALS_1, 
@@ -10681,7 +10681,7 @@ do{
     else
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_nzz_signals[N_BIG] = 
+      static const unsigned int maska_nzz_signals[N_BIG] = 
       {
         MASKA_NZZ_SIGNALS_0, 
         MASKA_NZZ_SIGNALS_1, 
@@ -10711,7 +10711,7 @@ do{
     else
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_tznp_signals[N_BIG] = 
+      static const unsigned int maska_tznp_signals[N_BIG] = 
       {
         MASKA_TZNP_SIGNALS_0, 
         MASKA_TZNP_SIGNALS_1, 
@@ -10744,7 +10744,7 @@ do{
     else
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_zop_signals[N_BIG] = 
+      static const unsigned int maska_zop_signals[N_BIG] = 
       {
         MASKA_ZOP_SIGNALS_0, 
         MASKA_ZOP_SIGNALS_1, 
@@ -10778,7 +10778,7 @@ do{
     else 
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_umin_signals[N_BIG] = 
+      static const unsigned int maska_umin_signals[N_BIG] = 
       {
         MASKA_UMIN_SIGNALS_0, 
         MASKA_UMIN_SIGNALS_1, 
@@ -10813,7 +10813,7 @@ do{
     else 
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_umax_signals[N_BIG] = 
+      static const unsigned int maska_umax_signals[N_BIG] = 
       {
         MASKA_UMAX_SIGNALS_0, 
         MASKA_UMAX_SIGNALS_1, 
@@ -10842,7 +10842,7 @@ do{
     else 
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_achr_chapv_signals[N_BIG] = 
+      static const unsigned int maska_achr_chapv_signals[N_BIG] = 
       {
         MASKA_ACHR_CHAPV_SIGNALS_0, 
         MASKA_ACHR_CHAPV_SIGNALS_1, 
@@ -10905,7 +10905,7 @@ do{
 #endif
       
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_zdz_signals[N_BIG] = 
+      static const unsigned int maska_zdz_signals[N_BIG] = 
       {
         MASKA_ZDZ_SIGNALS_0, 
         MASKA_ZDZ_SIGNALS_1, 
@@ -10933,7 +10933,7 @@ do{
     else
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_urov_signals[N_BIG] = 
+      static const unsigned int maska_urov_signals[N_BIG] = 
       {
         MASKA_UROV_SIGNALS_0, 
         MASKA_UROV_SIGNALS_1, 
@@ -10962,7 +10962,7 @@ do{
     else
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_apv_signals[N_BIG] = 
+      static const unsigned int maska_apv_signals[N_BIG] = 
       {
         MASKA_APV_SIGNALS_0, 
         MASKA_APV_SIGNALS_1, 
@@ -11002,7 +11002,7 @@ do{
     else 
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_up_signals[N_BIG] = 
+      static const unsigned int maska_up_signals[N_BIG] = 
       {
         MASKA_UP_SIGNALS_0, 
         MASKA_UP_SIGNALS_1, 
@@ -11099,7 +11099,7 @@ do{
     else
     {
       //Очищуємо сигнали, які не можуть бути у даній конфігурації
-      const unsigned int maska_el_signals[N_BIG] = 
+      static const unsigned int maska_el_signals[N_BIG] = 
       {
         MASKA_EL_SIGNALS_0, 
         MASKA_EL_SIGNALS_1, 
@@ -11263,7 +11263,7 @@ do{
   /**************************/
   //Робота з функціями, які мають записуватися у енергонезалежну пам'ять
   /**************************/
-  const unsigned int maska_trg_func_array[N_BIG] = {
+  static const unsigned int maska_trg_func_array[N_BIG] = {
                                                     MASKA_TRIGGER_SIGNALES_0,
                                                     MASKA_TRIGGER_SIGNALES_1,
                                                     MASKA_TRIGGER_SIGNALES_2,

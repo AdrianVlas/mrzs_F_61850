@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_set_reset_trigger(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_LIST_SET_RESET_DT][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_LIST_SET_RESET_DT][MAX_COL_LCD] = 
   {
     {
       " Установка...   ",
@@ -68,7 +68,7 @@ void make_ekran_set_reset_trigger(void)
 /*****************************************************/
 void make_ekran_list_type_source_dt(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_LIST_TYPE_SOURCE_DT][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_LIST_TYPE_SOURCE_DT][MAX_COL_LCD] = 
   {
     {
       " Источники прям.",

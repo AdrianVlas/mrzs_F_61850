@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_setpoint_mtz04(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_MTZ04][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_MTZ04][MAX_COL_LCD] = 
   {
     {
       "  МТЗ 0.4кВ 1   ",
@@ -135,7 +135,7 @@ void make_ekran_setpoint_mtz04(unsigned int group)
 /*****************************************************/
 void make_ekran_timeout_mtz04(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_MTZ04][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_MTZ04][MAX_COL_LCD] = 
   {
     {
       "  МТЗ 0.4кВ 1   ",
@@ -317,7 +317,7 @@ void make_ekran_timeout_mtz04(unsigned int group)
 /*****************************************************/
 void make_ekran_control_mtz04()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_MTZ04][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_MTZ04][MAX_COL_LCD] = 
   {
     {
       "  МТЗ 0.4кВ 1   ",
@@ -380,14 +380,14 @@ void make_ekran_control_mtz04()
         {
           int value = point->type_mtz04_2;
 
-          const unsigned char information[MAX_NAMBER_LANGUAGE][6][MAX_COL_LCD] = 
+          static const unsigned char information[MAX_NAMBER_LANGUAGE][6][MAX_COL_LCD] = 
           {
             {"    Простая     ", "     Ошибка     ", "     Ошибка     ", " Завис.(Тип A)  ", " Завис.(Тип B)  ", " Завис.(Тип C)  "},
             {"     Проста     ", "    Помилка     ", "    Помилка     ", " Залежна (Тип A)", " Залежна (Тип B)", " Залежна (Тип C)"},
             {"    Non Dir     ", "     Error      ", "     Error      ", "  Dep (Type A)  ", "  Dep (Type B)  ", "  Dep (Type C)  "},
             {"    Простая     ", "     Ошибка     ", "     Ошибка     ", " Завис.(Тип A)  ", " Завис.(Тип B)  ", " Завис.(Тип C)  "}
           };
-          const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][6] = 
+          static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][6] = 
           {
             {3, 4, 4, 0, 0, 0},
             {4, 3, 3, 0, 0, 0},
@@ -400,14 +400,14 @@ void make_ekran_control_mtz04()
         }
         else
         {
-          const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+          static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
           {
             {"     Откл.      ", "      Вкл.      "},
             {"     Вимк.      ", "     Ввімк.     "},
             {"      Off       ", "       On       "},
             {"     Сљнд.      ", "     Косу.      "}
           };
-          const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+          static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
           {
            {4, 5},
            {4, 4},

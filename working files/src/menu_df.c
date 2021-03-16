@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_chose_settings_df(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_SETTINGS_DF][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_SETTINGS_DF][MAX_COL_LCD] = 
   {
     {
       " Источники      ",
@@ -67,14 +67,14 @@ void make_ekran_chose_settings_df(void)
 /*****************************************************/
 void make_ekran_type_df(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
   {
     "  О-функция     ",
     "  В-функція     ",
     " UD-Function    ",
     "  О-функция     "
   };
-  const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {12, 12, 13, 12};
+  static const unsigned int first_index_number[MAX_NAMBER_LANGUAGE] = {12, 12, 13, 12};
   int index_language = index_language_in_array(current_settings.language);
   unsigned int first_index_number_1 = first_index_number[index_language];
   
@@ -123,14 +123,14 @@ void make_ekran_type_df(void)
         unsigned int index_ctr = index_of_ekran_tmp;
         unsigned int temp_data;
 
-        const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
         {
           {"     ПРЯМАЯ     ", "    ОБРАТНАЯ    "},
           {"     ПРЯМА      ", "    ЗВОРОТНА    "},
           {"    Forward     ", "    Reverse     "},
           {"     ПРЯМАЯ     ", "    ОБРАТНАЯ    "}
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
         {
           {4, 3},
           {4, 3},
@@ -168,7 +168,7 @@ void make_ekran_type_df(void)
 /*****************************************************/
 void make_ekran_timeout_df(unsigned int number_df)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_TIMEOUT_DF][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_TIMEOUT_DF][MAX_COL_LCD] = 
   {
     {
       "  Таймер паузы  ",
@@ -299,7 +299,7 @@ void make_ekran_timeout_df(unsigned int number_df)
 /*****************************************************/
 void make_ekran_list_type_source_df(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_LIST_TYPE_SOURCE_DF][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_LIST_TYPE_SOURCE_DF][MAX_COL_LCD] = 
   {
     {
       " Источники прям.",

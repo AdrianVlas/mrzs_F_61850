@@ -149,8 +149,8 @@ char const * __getzone()
       else
       {
         //Південна півкуля
-        char const dst_rul_begin[] = "010100-0:";
-        char const *ptr_tmp = dst_rul_begin;
+        static char const dst_rul_begin[] = "010100-0:";
+        static char const *ptr_tmp = dst_rul_begin;
         for (; *ptr_tmp != '\0'; ) p_getzone_string[i++] = *ptr_tmp++;
         
         rule[0] = dst_off_rule;

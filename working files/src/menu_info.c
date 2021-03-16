@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_info()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_INFO][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_INFO][MAX_COL_LCD] = 
   {
     {
       "   Версия ПО    ",
@@ -169,7 +169,7 @@ void make_ekran_info()
         else if ((index_of_ekran_tmp) == INDEX_ML_INFO_MAC_ADDRESS)
         {
           uint16_t MAC_address_tmp[3] = {0x0080, 0xE100, serial_number_dev};
-          const uint8_t string[] = "0123456789ABCDEF";
+          static const uint8_t string[] = "0123456789ABCDEF";
           
           value_str[5] = value_str[10] = ':';
           uint32_t index = 4;

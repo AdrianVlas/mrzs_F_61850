@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_list_inputs_outputs(void)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_LIST_INPUTS_OUTPUTS][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_LIST_INPUTS_OUTPUTS][MAX_COL_LCD] = 
   {
     {
       " Сост.входов    ",
@@ -72,7 +72,7 @@ void make_ekran_state_inputs_or_outputs(unsigned int input_output)
 {
 #define MAX_COL_LCD_PART1 10
 
-  const unsigned char title_input_output[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD_PART1] = 
+  static const unsigned char title_input_output[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD_PART1] = 
   {
     {
       " Двх.     ",
@@ -92,7 +92,7 @@ void make_ekran_state_inputs_or_outputs(unsigned int input_output)
     }
   };
   
-  const unsigned int index_of_number_di_do[MAX_NAMBER_LANGUAGE][2] = 
+  static const unsigned int index_of_number_di_do[MAX_NAMBER_LANGUAGE][2] = 
   {
     {5, 6},
     {5, 6},
@@ -100,28 +100,28 @@ void make_ekran_state_inputs_or_outputs(unsigned int input_output)
     {4, 6}
   };
     
-  const unsigned char information_active[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
+  static const unsigned char information_active[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
   {
     "Акт.  ",
     "Акт.  ",
     "Act.  ",
     "Акт.  "
   };
-  const unsigned char information_pasive[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
+  static const unsigned char information_pasive[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
   {
     "Паcс. ",
     "Пас.  ",
     "Pass. ",
     "Пасс. "
   };
-  const unsigned char information_close[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1]  = 
+  static const unsigned char information_close[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1]  = 
   {
     "Замк. ",
     "Замкн.",
     "Closed",
     "Замк. "
   };
-  const unsigned char information_open[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1]   = 
+  static const unsigned char information_open[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1]   = 
   {
     "Разомк",
     "Розімк",

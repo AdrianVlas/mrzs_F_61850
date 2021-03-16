@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_setpoint_achr_chapv(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_ACHR_CHAPV][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_SETPOINT_ACHR_CHAPV][MAX_COL_LCD] = 
   {
     {
       "    Uуст. UF    ",
@@ -36,7 +36,7 @@ void make_ekran_setpoint_achr_chapv(unsigned int group)
       "  Fраб.ЧАПВ2    "
     }
   };
-  const unsigned char hz[MAX_NAMBER_LANGUAGE][2] = {"Гц", "Гц", "Hz", "Гц"};
+  static const unsigned char hz[MAX_NAMBER_LANGUAGE][2] = {"Гц", "Гц", "Hz", "Гц"};
 
   int index_language = index_language_in_array(current_settings.language);
   
@@ -226,7 +226,7 @@ void make_ekran_setpoint_achr_chapv(unsigned int group)
 /*****************************************************/
 void make_ekran_timeout_achr_chapv(unsigned int group)
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ACHR_CHAPV][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TIMEOUT_ACHR_CHAPV][MAX_COL_LCD] = 
   {
     {
       " Выдержка АЧР1  ",
@@ -411,7 +411,7 @@ void make_ekran_timeout_achr_chapv(unsigned int group)
 /*****************************************************/
 void make_ekran_control_achr_chapv()
 {
-  const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_ACHR_CHAPV][MAX_COL_LCD] = 
+  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_CONTROL_ACHR_CHAPV][MAX_COL_LCD] = 
   {
     {
       "   ЧАПВ от ДВ   ",
@@ -464,14 +464,14 @@ void make_ekran_control_achr_chapv()
       else
       {
         //У парному номері рядку виводимо значення уставки
-        const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
         {
           {"     Откл.      ", "      Вкл.      "},
           {"     Вимк.      ", "     Ввімк.     "},
           {"      Off       ", "       On       "},
           {"     Сљнд.      ", "     Косу.      "}
         };
-        const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
+        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
         {
           {4, 5},
           {4, 4},
