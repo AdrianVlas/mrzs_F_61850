@@ -284,19 +284,53 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
       }
     };
 
-    unsigned int position_temp = current_ekran.index_position;
-    unsigned int index_of_ekran;
+    unsigned int position = current_ekran.index_position;
+    unsigned int position_temp = position;
+    unsigned int shift[MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR];
+    for (unsigned int *pShift = shift; pShift < (shift + MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR); ++pShift) *pShift = 0;
+
+    {
+      unsigned int *pShift = shift + INDEX_ML_TITLE_DR_CHANGES_SIGNALS + 1;
+      unsigned int val_shift = 0;
+      for (size_t i = (INDEX_ML_TITLE_DR_CHANGES_SIGNALS + 1); i < MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR; ++i)
+      {
+        if (
+            ((i == INDEX_ML_TITLE_DR_MAX_PHASE     ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_PHASE_DR     ] == 0)) ||
+            ((i == INDEX_ML_TITLE_DR_MAX_PHASE04   ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_PHASE04_DR   ] == 0)) ||
+            ((i == INDEX_ML_TITLE_DR_MAX_3I0       ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_3I0_DR       ] == 0)) ||
+            ((i == INDEX_ML_TITLE_DR_MAX_3U0       ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_3U0_DR       ] == 0)) ||
+            ((i == INDEX_ML_TITLE_DR_MIN_U         ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MIN_U_DR         ] == 0)) ||
+            ((i == INDEX_ML_TITLE_DR_MAX_U         ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_U_DR         ] == 0)) ||
+            ((i == INDEX_ML_TITLE_DR_MAX_ZOP       ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_ZOP_DR       ] == 0)) ||
+            ((i == INDEX_ML_TITLE_DR_MIN_F1        ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MIN_F_ACHR_DR    ] == 0)) ||
+            ((i == INDEX_ML_TITLE_DR_MIN_F2        ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_F_CHAPV_DR       ] == 0))
+           )
+        {
+          if (i < position)
+          {
+            --position_temp;
+          }
+          *pShift = ++val_shift;
+        }
+        else
+        {
+          *(pShift++) = val_shift;
+        }
+      }
+      while (pShift < (shift + MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR)) *(pShift++) = val_shift;
+    }
   
-    index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+    unsigned int index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
   
     //Копіюємо  рядки у робочий екран
-    for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+    for (size_t i = 0; i < MAX_ROW_LCD; ++i)
     {
+      unsigned int const real_index = index_of_ekran + shift[index_of_ekran];
       //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
-      if (index_of_ekran < MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR)
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][index_of_ekran][j];
+      if (real_index < MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR)
+        for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = name_string[index_language][real_index][j];
       else
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+        for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = ' ';
 
       index_of_ekran++;
     }
@@ -312,7 +346,7 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
   else
   {
     //Процес зчитування даних з DataFlash ще не закінчився
-    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static unsigned char const name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Процесс чтения ",
@@ -333,13 +367,13 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
     };
 
     //Копіюємо  рядки у робочий екран
-    for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+    for (size_t i = 0; i < MAX_ROW_LCD; ++i)
     {
       //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
       if (i < 2)
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+        for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = name_string[index_language][i][j];
       else
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+        for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = ' ';
     }
 
     //Курсор не видимий

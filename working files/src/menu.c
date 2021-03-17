@@ -2391,6 +2391,24 @@ void main_manu_function(void)
             else if (current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR) current_ekran.index_position = 0;
+              while (
+                     ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU) == 0) &&
+                     (current_ekran.index_position > INDEX_ML_TITLE_DR_CHANGES_SIGNALS) &&
+                     (
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_PHASE     ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_PHASE_DR     ] == 0)) ||
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_PHASE04   ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_PHASE04_DR   ] == 0)) ||
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_3I0       ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_3I0_DR       ] == 0)) ||
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_3U0       ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_3U0_DR       ] == 0)) ||
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_U         ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MIN_U_DR         ] == 0)) ||
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_U         ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_U_DR         ] == 0)) ||
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_ZOP       ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_ZOP_DR       ] == 0)) ||
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_F1        ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MIN_F_ACHR_DR    ] == 0)) ||
+                      ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_F2        ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_F_CHAPV_DR       ] == 0))
+                     ) 
+                    )   
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR) current_ekran.index_position = 0;
+              }
               position_in_current_level_menu[EKRAN_TITLES_DIGITAL_REGISTRATOR] = current_ekran.index_position;
               //Формуємо екран відображення заголовків груп для дискретного реєстратора
               make_ekran_list_titles_for_record_of_digital_registrator();
@@ -4799,7 +4817,25 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR)
               {
-                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR - 1;
+                do
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR - 1;
+                }
+                while (
+                       ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU) == 0) &&
+                       (current_ekran.index_position > INDEX_ML_TITLE_DR_CHANGES_SIGNALS) &&
+                       (
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_PHASE  ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_PHASE_DR  ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_PHASE04) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_PHASE04_DR] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_3I0    ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_3I0_DR    ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_3U0    ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_3U0_DR    ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_U      ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MIN_U_DR      ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_U      ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_U_DR      ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_ZOP    ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_ZOP_DR    ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_F1     ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MIN_F_ACHR_DR ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_F2     ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_F_CHAPV_DR    ] == 0))
+                       ) 
+                      );
                 position_in_current_level_menu[EKRAN_TITLES_DIGITAL_REGISTRATOR] = current_ekran.index_position;
                 //Формуємо екран відображення заголовків груп для дискретного реєстратора
                 make_ekran_list_titles_for_record_of_digital_registrator();
@@ -5594,7 +5630,25 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR)
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR) current_ekran.index_position = 0;
+                do
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR) current_ekran.index_position = 0;
+                }
+                while (
+                       ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU) == 0) &&
+                       (current_ekran.index_position > INDEX_ML_TITLE_DR_CHANGES_SIGNALS) &&
+                       (
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_PHASE  ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_PHASE_DR  ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_PHASE04) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_PHASE04_DR] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_3I0    ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_3I0_DR    ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_3U0    ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_3U0_DR    ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_U      ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MIN_U_DR      ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_U      ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_U_DR      ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MAX_ZOP    ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MAX_ZOP_DR    ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_F1     ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_MIN_F_ACHR_DR ] == 0)) ||
+                        ((current_ekran.index_position == INDEX_ML_TITLE_DR_MIN_F2     ) && (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_F_CHAPV_DR    ] == 0))
+                       ) 
+                      );
                 position_in_current_level_menu[EKRAN_TITLES_DIGITAL_REGISTRATOR] = current_ekran.index_position;
                 //Формуємо екран відображення заголовків груп для дискретного реєстратора
                 make_ekran_list_titles_for_record_of_digital_registrator();
