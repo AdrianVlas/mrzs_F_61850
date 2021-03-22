@@ -10506,7 +10506,7 @@ void main_manu_function(void)
                 }
                 else if(current_ekran.current_level == EKRAN_CONTROL_TZNP)
                 {
-                  if ((edition_settings.control_mtz  & ((unsigned int)(~CTR_TZNP_MASKA))) == 0)
+                  if ((edition_settings.control_tznp  & ((unsigned int)(~CTR_TZNP_MASKA))) == 0)
                   {
                     if (edition_settings.control_tznp != current_settings.control_tznp)
                     {
