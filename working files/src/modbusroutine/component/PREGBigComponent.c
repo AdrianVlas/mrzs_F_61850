@@ -301,7 +301,7 @@ int getPREGBigModbusRegister(int adrReg)
 
         if (
           ((unsigned int)dataReg < info_rejestrator_pr_err.number_records) &&
-          (dataReg < MAX_NUMBER_RECORDS_INTO_PR_ERR        ) //’оч теоретично ц€ умова маЇ перекриватис€ завжди першою умовою
+          ((unsigned int)dataReg < MAX_NUMBER_RECORDS_INTO_PR_ERR        ) //’оч теоретично ц€ умова маЇ перекриватис€ завжди першою умовою
         ) return 0;
       }//case 1
       break;

@@ -2606,9 +2606,23 @@ void main_routines_for_spi1(void)
                 можливе виконання команди, яку ми виставили перед зміною даних, яку 
                 ми зараз гарантовано зробимо (до виходу з цієї функції)
                 */
+                
+                unsigned int number_records = info_rejestrator_pr_err.number_records;
+                if (number_records < MAX_NUMBER_RECORDS_INTO_PR_ERR)
+                {
+                  unsigned int cut_record = (info_rejestrator_pr_err.next_address & (SIZE_PAGE_DATAFLASH_1 - 1))  >> VAGA_SIZE_ONE_RECORD_PR_ERR;
+                  number_records = (number_records > cut_record) ? (number_records - cut_record) : 0;
+                }
+                else
+                {
+                  number_records -= 1u << (VAGA_SIZE_PAGE_DATAFLASH_1 - VAGA_SIZE_ONE_RECORD_PR_ERR);
+                }
+                
                 _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT);
 
+                info_rejestrator_pr_err.next_address &= ~(SIZE_PAGE_DATAFLASH_1 - 1);
                 info_rejestrator_pr_err.saving_execution = 0;
+                info_rejestrator_pr_err.number_records = number_records;
                 
                 
               }   

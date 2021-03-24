@@ -8,7 +8,7 @@
 #define INDEX_EEPROM                3
 
 #define VAGA_SIZE_PAGE_DATAFLASH_1      8 //ц€ константа потр≥бна т≥льки дл€ того, щоб можна було легко множити на 256 ≥ д≥лити на 256
-#define SIZE_PAGE_DATAFLASH_1           (1 << VAGA_SIZE_PAGE_DATAFLASH_1) //256 байт
+#define SIZE_PAGE_DATAFLASH_1           (1u << VAGA_SIZE_PAGE_DATAFLASH_1) //256 байт
 #define NUMBER_PAGES_INTO_DATAFLASH_1   512
 
 #define VAGA_SIZE_PAGE_DATAFLASH_2      9 //ц€ константа потр≥бна т≥льки дл€ того, щоб можна було легко множити на 512 ≥ д≥лити на 512
