@@ -1767,8 +1767,8 @@ NUMBER_ODYNYCI_VYMIRJUVANNJA
 /*****************************************/
 #define VERSIA_PZ                                             14
 #define MODYFIKACIA_VERSII_PZ                                 0
-#define ZBIRKA_VERSII_PZ                                      3
-#define ZBIRKA_PIDVERSII_PZ                                   3
+#define ZBIRKA_VERSII_PZ                                      4
+#define ZBIRKA_PIDVERSII_PZ                                   0
 /*****************************************/
 
 /*****************************************/
