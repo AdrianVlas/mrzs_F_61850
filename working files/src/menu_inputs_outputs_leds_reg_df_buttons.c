@@ -1378,7 +1378,8 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
             //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-            unsigned int maska[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+            unsigned int maska[N_BIG];
+            for (size_t m = 0; m < N_BIG; ++m) maska[i] = 0;
             unsigned int j1;
             for (j1 = 0; j1 < (min_max_number[i][0] - offset); j1++) _SET_BIT(maska, j1);
           
