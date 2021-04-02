@@ -74,7 +74,7 @@ int getREGBigModbusRegister(int adrReg)
         return (number_record_of_ar_for_LAN) &0xFFFF;
 #endif  
       //Теоретично сюди ніколи не мала б програма зайти
-      else total_error_sw_fixed(212);
+      else total_error_sw_fixed();
     case 36://Очистить аналоговый регистратор
       return MARKER_ERRORPERIMETR;
 
@@ -91,7 +91,7 @@ int getREGBigModbusRegister(int adrReg)
         return (number_record_of_dr_for_LAN) &0xFFFF;
 #endif  
       //Теоретично сюди ніколи не мала б програма зайти
-      else total_error_sw_fixed(213);
+      else total_error_sw_fixed();
     case 336://Очистить дискретный регистратор
       return MARKER_ERRORPERIMETR;
     }//switch
@@ -243,8 +243,8 @@ int postREGBigWriteAction(void)
           break;
         case 35://Текущий аналоговый регистратор
         {
-          unsigned int *point_to_number_record_of_ar;
-          int *point_to_first_number_time_sample, *point_to_last_number_time_sample;
+          unsigned int *point_to_number_record_of_ar = NULL;
+          int *point_to_first_number_time_sample= NULL, *point_to_last_number_time_sample = NULL;
 
           if (pointInterface == USB_RECUEST)
             {
@@ -269,7 +269,7 @@ int postREGBigWriteAction(void)
           else
             {
               //Теоретично цього ніколи не мало б бути
-              total_error_sw_fixed(187);
+              total_error_sw_fixed();
             }
 
           //Встановлюємо номер запису аналогового реєстратора для читання
@@ -301,7 +301,7 @@ int postREGBigWriteAction(void)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(198);
+            total_error_sw_fixed();
           }
 
         }
@@ -372,7 +372,7 @@ int postREGBigWriteAction(void)
             else
             {
               //Теоретично цього ніколи не мало б бути
-              total_error_sw_fixed(201);
+              total_error_sw_fixed();
             }
 
           break;

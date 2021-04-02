@@ -64,7 +64,7 @@ void make_ekran_info()
   
   //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-  int first_char_row1, last_chat_row1;
+  int first_char_row1 = 0, last_chat_row1 = MAX_COL_LCD - 1;
   
   for (unsigned int i = 0; i< MAX_ROW_LCD; i++)
   {

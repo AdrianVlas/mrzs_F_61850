@@ -230,7 +230,7 @@ CDC_IF_Prop_TypeDef VCP_fops =
     if(APP_Rx_ptr_in_tmp >=/*==*/ APP_RX_DATA_SIZE)
     {
       if(APP_Rx_ptr_in_tmp == APP_RX_DATA_SIZE) APP_Rx_ptr_in_tmp = 0;
-      else total_error_sw_fixed(102);
+      else total_error_sw_fixed();
     }
   }
     
@@ -263,7 +263,7 @@ CDC_IF_Prop_TypeDef VCP_fops =
     if (from_USB_ptr_out_irq >= BUFFER_USB_IN)
     {
       if (from_USB_ptr_out_irq == BUFFER_USB_IN) from_USB_ptr_out_irq = 0;
-      else total_error_sw_fixed(100);
+      else total_error_sw_fixed();
     }
   }
  

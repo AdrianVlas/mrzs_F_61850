@@ -502,7 +502,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
   if(recordNumber>max_number_time_sample) return MARKER_ERRORPERIMETR;//уйти если превышение
 
 
-  int *point_to_first_number_time_sample, *point_to_last_number_time_sample;
+  int *point_to_first_number_time_sample = NULL, *point_to_last_number_time_sample = NULL;
 
   if (pointInterface == USB_RECUEST)
     {
@@ -524,7 +524,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
   else
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(191);
+    total_error_sw_fixed();
   }
 
   //Перевіряємо чи зчитано заголовок аналогового реєстратора
@@ -559,7 +559,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
       else
       {
         //Теоретично цього ніколи не мало б бути
-        total_error_sw_fixed(199);
+        total_error_sw_fixed();
       }
 
       //Очікуємо поки завершиться зчитуквання даних для аналогового реєстратора
@@ -615,7 +615,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
       return recordNumber >> 16;
     }//switch
 
-  unsigned char *point_to_buffer;
+  unsigned char *point_to_buffer = NULL;
   if (pointInterface == USB_RECUEST)
     point_to_buffer = buffer_for_USB_read_record_ar;
   else if (pointInterface == RS485_RECUEST)
@@ -627,7 +627,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
   else
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(194);
+    total_error_sw_fixed();
   }
 
   return (*(point_to_buffer + index_time_sample +2*(offsetRegister-3))) + ((*(point_to_buffer +
@@ -650,7 +650,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
     {
       if(recordLen>27) return MARKER_ERRORPERIMETR;
       int subObj = recordNumber-2;//индекс канала
-      __HEADER_AR *header_ar_tmp;
+      __HEADER_AR *header_ar_tmp = NULL;
 
       if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
         header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
@@ -663,7 +663,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
       else
       {
         //Теоретично цього ніколи не мало б бути
-        total_error_sw_fixed(195);
+        total_error_sw_fixed();
       }
 
       char idetyficator[NUMBER_ANALOG_CANALES][16] =
@@ -683,8 +683,8 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
         "I 0.4kV         "
       };
 
-      unsigned int phase_line = header_ar_tmp->control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE;
-      unsigned int Ib_I04 = header_ar_tmp->control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04;
+      unsigned int phase_line = header_ar_tmp->control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE);
+      unsigned int Ib_I04 = header_ar_tmp->control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04);
       for (unsigned int k = 0; k < 16; k++) idetyficator[2][k] = idetyficator_current[Ib_I04 != 0][k];
 
       if (phase_line == 0)
@@ -918,7 +918,7 @@ int configDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen
 int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, int registrator)
 {
   //Якщо ми сюди дійшли, то вважаємо що заголовок аналогового реєстратора вже зчитаний
-  __HEADER_AR *header_ar_tmp;
+  __HEADER_AR *header_ar_tmp = NULL;
 
   if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
     header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
@@ -931,7 +931,7 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
   else
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(196);
+    total_error_sw_fixed();
   }
   
   switch(recordNumber)
@@ -971,7 +971,7 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
       else
         {
           //if(registrator==DISKRET_REGISTRATOR)
-          unsigned char *point_to_buffer;
+          unsigned char *point_to_buffer = NULL;
           if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
             point_to_buffer = buffer_for_USB_read_record_dr;
           else if (pointInterface==RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_dr;
@@ -981,7 +981,7 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(204);
+            total_error_sw_fixed();
           }
   
           if (offsetRegister < 8)
@@ -1199,8 +1199,8 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
 
 int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int registrator)
 {
-  __HEADER_AR *header_ar_tmp;
-  unsigned char *point_to_buffer;
+  __HEADER_AR *header_ar_tmp = NULL;
+  unsigned char *point_to_buffer = NULL;
   if (pointInterface == USB_RECUEST) //метка интерфейса 0-USB 1-RS485
     point_to_buffer = buffer_for_USB_read_record_dr;
   else if (pointInterface == RS485_RECUEST)
@@ -1212,7 +1212,7 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
   else
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(205);
+    total_error_sw_fixed();
   }
 
   int max_number_time_sample = (current_settings.prefault_number_periods + current_settings.postfault_number_periods) << VAGA_NUMBER_POINT_AR;
@@ -1234,7 +1234,7 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
   else
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(197);
+    total_error_sw_fixed();
   }
 
   switch(subObj)
@@ -1349,8 +1349,8 @@ m1:
             {
               //if(registrator==DISKRET_REGISTRATOR)
               //Конвертуємо формат BCD у int
-              time_t time_dat_tmp;
-              int32_t time_ms_tmp;
+              time_t time_dat_tmp = 0;
+              int32_t time_ms_tmp = 0;
 
               for (unsigned int i = 0; i < sizeof(time_t); i++) *((unsigned char *)(&time_dat_tmp) + i) = point_to_buffer[FIRST_INDEX_DATA_TIME_DR + i];
               for (unsigned int i = 0; i < sizeof(int32_t); i++) *((unsigned char *)(&time_ms_tmp) + i) = point_to_buffer[FIRST_INDEX_DATA_TIME_DR + sizeof(time_t) + i];
@@ -1420,7 +1420,7 @@ m1:
 int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
 {
 //данные Diskret регистратора
-  unsigned char *point_to_buffer;
+  unsigned char *point_to_buffer = NULL;
   if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
     point_to_buffer = buffer_for_USB_read_record_dr;
   else if (pointInterface==RS485_RECUEST)
@@ -1432,7 +1432,7 @@ int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
   else
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(206);
+    total_error_sw_fixed();
   }
 
   unsigned int max_number_two_bytes = (NUMBER_TOTAL_SIGNAL_FOR_RANG >> 4);
@@ -1443,7 +1443,7 @@ int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
   if(recordNumber>(*(point_to_buffer + FIRST_INDEX_NUMBER_ITEMS_DR))) return MARKER_ERRORPERIMETR;//уйти если превышение
 
-  unsigned int offset = FIRST_INDEX_FIRST_DATA_DR + (recordNumber + 1)*38; //бо найперший запис містить попереднє значення (до фіксації запуску роботи дискретного реєстратора)
+  unsigned int offset = FIRST_INDEX_FIRST_DATA_DR + (recordNumber + 1)*SD_DR; //бо найперший запис містить попереднє значення (до фіксації запуску роботи дискретного реєстратора)
 
   switch(offsetRegister)
     {

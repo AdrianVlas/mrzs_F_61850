@@ -45,7 +45,7 @@ void start_exchange_via_spi(int index_chip, unsigned int number_bytes_transfer)
   default:
     {
       //Відбцлася невизначена помилка, тому треба піти на перезавантаження
-      total_error_sw_fixed(6);
+      total_error_sw_fixed();
       break;
     }
   }
@@ -90,7 +90,7 @@ void dataflash_status_read(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(7);
+    total_error_sw_fixed();
   }
   
 }
@@ -113,7 +113,7 @@ void dataflash_set_pagesize_256(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(8);
+    total_error_sw_fixed();
   }
   
 }
@@ -136,7 +136,7 @@ void dataflash_erase(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(9);
+    total_error_sw_fixed();
   }
   
 }
@@ -147,7 +147,7 @@ void dataflash_erase(int index_chip)
 /*****************************************************/
 void dataflash_mamory_page_program_through_buffer(int index_chip)
 {
-  unsigned int size_page;
+  unsigned int size_page = 0;
   driver_spi_df[index_chip].code_operation = CODE_OPERATION_WRITE_PAGE_THROUGH_BUFFER;
   TxBuffer_SPI_EDF[0] = 0x82;
   
@@ -175,7 +175,7 @@ void dataflash_mamory_page_program_through_buffer(int index_chip)
     else
     {
       //Відбулася невизначена помилка, тому треба піти на перезавантаження
-      total_error_sw_fixed(10);
+      total_error_sw_fixed();
     }
   }
   else if (index_chip == INDEX_DATAFLASH_2)
@@ -208,7 +208,7 @@ void dataflash_mamory_page_program_through_buffer(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(11);
+    total_error_sw_fixed();
   }
   
   //Запускаємо процес запису
@@ -245,8 +245,8 @@ void dataflash_mamory_read(int index_chip)
       )
     {
       //Читання даних дискретного реєстратора
-      unsigned int part_reading;
-      unsigned int number_record;
+      unsigned int part_reading = 0;
+      unsigned int number_record = 0;
       if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU)
       {
         part_reading = part_reading_dr_from_dataflash_for_menu;
@@ -272,7 +272,7 @@ void dataflash_mamory_read(int index_chip)
       else
       {
         //Теоретично цього ніколи не мало б бути
-        total_error_sw_fixed(200);
+        total_error_sw_fixed();
       }
 
       //Формуємо буфер для передавання у мікросхему DataFlash
@@ -296,7 +296,7 @@ void dataflash_mamory_read(int index_chip)
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(12);
+        total_error_sw_fixed();
       }
     }
     else if (
@@ -312,7 +312,7 @@ void dataflash_mamory_read(int index_chip)
             )   
     {
       //Читання даних реєстратора програмних помилок
-      unsigned int number_record;
+      unsigned int number_record = 0;
       if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU)
       {
         number_record = number_record_of_pr_err_into_menu;
@@ -334,7 +334,7 @@ void dataflash_mamory_read(int index_chip)
       else
       {
         //Теоретично цього ніколи не мало б бути
-        total_error_sw_fixed(209);
+        total_error_sw_fixed();
       }
       
       //Визначаємо початкову адресу запису, яку треба зчитати
@@ -355,7 +355,7 @@ void dataflash_mamory_read(int index_chip)
     else
     {
       //Відбулася невизначена помилка, тому треба піти на перезавантаження
-      total_error_sw_fixed(13);
+      total_error_sw_fixed();
     }
   }
   else if (index_chip == INDEX_DATAFLASH_2)
@@ -385,8 +385,8 @@ void dataflash_mamory_read(int index_chip)
       }
       else 
       {
-        unsigned int number_record_of_ar;
-        int first_number_time_sample, last_number_time_sample;
+        unsigned int number_record_of_ar = 0;
+        int first_number_time_sample = 0, last_number_time_sample = 0;
         
         if (what_we_are_reading_from_dataflash_2 == READING_AR_FOR_USB)
         {
@@ -411,7 +411,7 @@ void dataflash_mamory_read(int index_chip)
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(186);
+          total_error_sw_fixed();
         }
         
         //Визначаємо першу адресу вибраного запису
@@ -455,19 +455,19 @@ void dataflash_mamory_read(int index_chip)
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(31);
+        total_error_sw_fixed();
       }
     }
     else
     {
       //Відбулася невизначена помилка, тому треба піти на перезавантаження
-      total_error_sw_fixed(32);
+      total_error_sw_fixed();
     }
   }
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(14);
+    total_error_sw_fixed();
   }
 }
 /*****************************************************/
@@ -502,7 +502,7 @@ void dataflash_mamory_page_into_buffer(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(15);
+    total_error_sw_fixed();
   }
 
   //Запускаємо процес запису
@@ -590,7 +590,7 @@ void dataflash_mamory_write_buffer(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(16);
+    total_error_sw_fixed();
   }
 }
 /*****************************************************/
@@ -627,7 +627,7 @@ void dataflash_mamory_buffer_into_memory(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(17);
+    total_error_sw_fixed();
   }
 
   //Запускаємо процес запису
@@ -657,7 +657,7 @@ inline void analize_received_data_dataflash(int index_chip)
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(26);
+        total_error_sw_fixed();
       }
       break;
     }
@@ -671,7 +671,7 @@ inline void analize_received_data_dataflash(int index_chip)
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(18);
+        total_error_sw_fixed();
       }
 
       //Зараз іде стирання, яке займає певний проміжок часу, тому помічаємо, що мікросхема є зайнятою і регістром статусу визначаємо, коли ця операція повністю закінчиться
@@ -740,7 +740,7 @@ inline void analize_received_data_dataflash(int index_chip)
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(27);
+        total_error_sw_fixed();
       }
        
       //Зараз іде процес запису, який займає певний проміжок часу, тому помічаємо, що мікросхема є зайнятою і регістром статусу визначаємо, коли ця операція повністю закінчиться
@@ -753,14 +753,14 @@ inline void analize_received_data_dataflash(int index_chip)
   case CODE_OPERATION_READ_HIGH_FREQ:
     {
       //Копіюємо прочитані дані у буфер
-      unsigned char *point_buffer;
-      unsigned int number_byte_copy_into_target_buffer;
+      unsigned char *point_buffer = NULL;
+      unsigned int number_byte_copy_into_target_buffer = 0;
       unsigned int size_page;
 
       if (index_chip == INDEX_DATAFLASH_1)
       {
         size_page = SIZE_PAGE_DATAFLASH_1;
-        unsigned int *point_part_reading;
+        unsigned int *point_part_reading = NULL;
 
         if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_MENU)
         {
@@ -813,7 +813,7 @@ inline void analize_received_data_dataflash(int index_chip)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(192);
+            total_error_sw_fixed();
           }
           
           number_byte_copy_into_target_buffer = SIZE_ONE_RECORD_PR_ERR;
@@ -821,7 +821,7 @@ inline void analize_received_data_dataflash(int index_chip)
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(202);
+          total_error_sw_fixed();
         }
         
         if (
@@ -851,7 +851,7 @@ inline void analize_received_data_dataflash(int index_chip)
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(46);
+          total_error_sw_fixed();
         }
 
         if (
@@ -897,7 +897,7 @@ inline void analize_received_data_dataflash(int index_chip)
             else
             {
               //Теоретично цього ніколи не мало б бути
-              total_error_sw_fixed(207);
+              total_error_sw_fixed();
             }
           
             *point_part_reading = 0;
@@ -938,7 +938,7 @@ inline void analize_received_data_dataflash(int index_chip)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(188);
+            total_error_sw_fixed();
           }
         }
       }
@@ -971,7 +971,7 @@ inline void analize_received_data_dataflash(int index_chip)
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(190);
+          total_error_sw_fixed();
         }
         
         if (
@@ -992,7 +992,7 @@ inline void analize_received_data_dataflash(int index_chip)
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(47);
+          total_error_sw_fixed();
         }
 
         //Знімаємо з черги запуск зчитування запису аналогового реєстратора
@@ -1017,13 +1017,13 @@ inline void analize_received_data_dataflash(int index_chip)
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(210);
+          total_error_sw_fixed();
         }
       }
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(33);
+        total_error_sw_fixed();
       }
           
        
@@ -1034,13 +1034,13 @@ inline void analize_received_data_dataflash(int index_chip)
   case CODE_OPERATION_READ_PAGE_INTO_BUFFER:
     {
       //Завершилося подача команди зчитування пам'яті програм у буфер мікросхеми DataFlash
-      unsigned int *label_to_etap_writing;
+      unsigned int *label_to_etap_writing = NULL;
       if (index_chip == INDEX_DATAFLASH_1) label_to_etap_writing = &etap_writing_pr_err_into_dataflash;
       else if (index_chip == INDEX_DATAFLASH_2) label_to_etap_writing = &etap_writing_part_page_ar_into_dataflash;
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(28);
+        total_error_sw_fixed();
       }
       
       //Переводимо режим запису відповідного реєстратора у запис нових значень
@@ -1059,13 +1059,13 @@ inline void analize_received_data_dataflash(int index_chip)
   case CODE_OPERATION_WRITE_BUFFER:
     {
       //Завершилося передача даних у буфер мікросхеми DataFlash
-      unsigned int *label_to_etap_writing;
+      unsigned int *label_to_etap_writing = NULL;
       if (index_chip == INDEX_DATAFLASH_1) label_to_etap_writing = &etap_writing_pr_err_into_dataflash;
       else if (index_chip == INDEX_DATAFLASH_2) label_to_etap_writing = &etap_writing_part_page_ar_into_dataflash;
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(29);
+        total_error_sw_fixed();
       }
       
       //Переводимо режим запису у запершення модифікації фуферу DataFlah
@@ -1145,7 +1145,7 @@ inline void analize_received_data_dataflash(int index_chip)
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(30);
+        total_error_sw_fixed();
       }
        
       //Зараз іде процес запису, який займає певний проміжок часу, тому помічаємо, що мікросхема є зайнятою і регістром статусу визначаємо, коли ця операція повністю закінчиться
@@ -1184,7 +1184,7 @@ void main_function_for_dataflash_resp(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(19);
+    total_error_sw_fixed();
   }
 }
 /*****************************************************/
@@ -1387,7 +1387,7 @@ void main_function_for_dataflash_req(int index_chip)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(24);
+    total_error_sw_fixed();
   }
 }
 /*****************************************************/

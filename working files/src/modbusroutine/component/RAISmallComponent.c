@@ -118,7 +118,7 @@ int getRAISmallModbusRegister(int adrReg)
 
   //Можна читати дані
   int number_block, offset;
-  unsigned char *point_to_buffer;
+  unsigned char *point_to_buffer = NULL;
   number_block = (adrReg - MM_ADDRESS_FIRST_MEASUREMENTS_DR) / MMEASUREMENTS_DR_WIDTH;
   offset = (adrReg - MM_ADDRESS_FIRST_MEASUREMENTS_DR) - number_block*MMEASUREMENTS_DR_WIDTH;
   if (pointInterface == USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_dr;
@@ -129,7 +129,7 @@ int getRAISmallModbusRegister(int adrReg)
   else
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(203);
+    total_error_sw_fixed();
   }
 
   if (!(
@@ -159,7 +159,7 @@ int getRAISmallModbusRegister(int adrReg)
   }
   case MDR_OFFSET_MEASUREMENT_IB_1:
   {
-    if ((control_extra_settings_1_tmp & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+    if ((control_extra_settings_1_tmp & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
     {
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 4)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
@@ -212,7 +212,7 @@ int getRAISmallModbusRegister(int adrReg)
   }
   case MDR_OFFSET_MEASUREMENT_I04_1:
   {
-    if ((control_extra_settings_1_tmp & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)
+    if ((control_extra_settings_1_tmp & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) != 0)
     {
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 8)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
@@ -244,7 +244,7 @@ int getRAISmallModbusRegister(int adrReg)
   }
   case MDR_OFFSET_MEASUREMENT_UA_1:
   {
-    if ((control_extra_settings_1_tmp & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
+    if ((control_extra_settings_1_tmp & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) == 0)
     {
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 9)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
@@ -255,7 +255,7 @@ int getRAISmallModbusRegister(int adrReg)
   }
   case MDR_OFFSET_MEASUREMENT_UB_1:
   {
-    if ((control_extra_settings_1_tmp & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
+    if ((control_extra_settings_1_tmp & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) == 0)
     {
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 10)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));
@@ -266,7 +266,7 @@ int getRAISmallModbusRegister(int adrReg)
   }
   case MDR_OFFSET_MEASUREMENT_UC_1:
   {
-    if ((control_extra_settings_1_tmp & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
+    if ((control_extra_settings_1_tmp & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) == 0)
     {
       index = FIRST_INDEX_FIRST_BLOCK_DR + (number_block*SIZE_ARRAY_FIX_MAX_MEASUREMENTS + 11)*sizeof(unsigned int);
       value = *((unsigned int *)(point_to_buffer + index));

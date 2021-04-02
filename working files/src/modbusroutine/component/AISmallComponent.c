@@ -298,7 +298,7 @@ int getAISmallModbusRegister(int adrReg)
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(72);
+          total_error_sw_fixed();
           return 0;
         }
 #endif

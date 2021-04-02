@@ -321,7 +321,7 @@ void control_resurs(void);
 void test_external_SRAM(void);
 
 void watchdog_routine(unsigned int);
-void total_error_sw_fixed(unsigned int);
+void total_error_sw_fixed(void);
 
 void setpoints_selecting(unsigned int*, unsigned int);
 

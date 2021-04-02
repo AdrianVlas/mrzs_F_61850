@@ -110,7 +110,7 @@ void control_reading_ADCs(void)
       default:
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(50);
+          total_error_sw_fixed();
         } 
       }
     }
@@ -194,7 +194,7 @@ void Fourier(void)
   else if (index_array_of_one_value_fourier > NUMBER_POINT)
   {
     //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-    total_error_sw_fixed(58);
+    total_error_sw_fixed();
   }
 
   for (unsigned int i = 0; i < NUMBER_ANALOG_CANALES; i++)
@@ -236,7 +236,7 @@ void Fourier(void)
 void fapch(void)
 {
   unsigned int bank_measurement_high_tmp = bank_measurement_high;
-  unsigned int canal_phase_line = current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE;
+  unsigned int canal_phase_line = current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE);
   int index_1 = -1;
   unsigned int maska_canaliv_fapch_tmp = 0;
 
@@ -564,13 +564,13 @@ void SPI_ADC_IRQHandler(void)
         else if (index_array_of_one_value_3I0_1s > MAIN_FREQUENCY)
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(104);
+          total_error_sw_fixed();
         }
       }
       else if (index_array_of_one_value_3I0 > NUMBER_POINT)
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(21);
+        total_error_sw_fixed();
       }
         
 //      _y2 = output_adc[C_3I0_1].value - gnd_adc - vref_adc;
@@ -649,13 +649,13 @@ void SPI_ADC_IRQHandler(void)
         else if (index_array_of_one_value_Ia_1s > MAIN_FREQUENCY)
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(106);
+          total_error_sw_fixed();
         }
       }
       else if (index_array_of_one_value_Ia > NUMBER_POINT)
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(105);
+        total_error_sw_fixed();
       }
 
       _y2 = val_C_Ia_1 - /*gnd_adc - */ vref_adc[I_Ia];
@@ -725,13 +725,13 @@ void SPI_ADC_IRQHandler(void)
         else if (index_array_of_one_value_Ib_I04_1s > MAIN_FREQUENCY)
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(108);
+          total_error_sw_fixed();
         }
       }
       else if (index_array_of_one_value_Ib_I04 > NUMBER_POINT)
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(107);
+        total_error_sw_fixed();
       }
 
       _y2 = val_C_Ib_I04_1 - /*gnd_adc - */ vref_adc[I_Ib_I04];
@@ -801,13 +801,13 @@ void SPI_ADC_IRQHandler(void)
         else if (index_array_of_one_value_Ic_1s > MAIN_FREQUENCY)
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(110);
+          total_error_sw_fixed();
         }
       }
       else if (index_array_of_one_value_Ic > NUMBER_POINT)
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(109);
+        total_error_sw_fixed();
       }
 
       _y2 = val_C_Ic_1 - /*gnd_adc - */ vref_adc[I_Ic];
@@ -880,13 +880,13 @@ void SPI_ADC_IRQHandler(void)
         else if (index_array_of_one_value_3U0_1s > MAIN_FREQUENCY)
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(112);
+          total_error_sw_fixed();
         }
       }
       else if (index_array_of_one_value_3U0 > NUMBER_POINT)
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(111);
+        total_error_sw_fixed();
       }
 
       _y2 = val_C_3U0_1 - /*gnd_adc - */ vref_adc[I_3U0];
@@ -976,13 +976,13 @@ void SPI_ADC_IRQHandler(void)
         else if (index_array_of_one_value_Ua_1s > MAIN_FREQUENCY)
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(114);
+          total_error_sw_fixed();
         }
       }
       else if (index_array_of_one_value_Ua > NUMBER_POINT)
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(113);
+        total_error_sw_fixed();
       }
 
       _y2 = val_C_Ua_1 - /*gnd_adc - */ vref_adc[I_Ua];
@@ -1072,13 +1072,13 @@ void SPI_ADC_IRQHandler(void)
         else if (index_array_of_one_value_Ub_1s > MAIN_FREQUENCY)
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(116);
+          total_error_sw_fixed();
         }
       }
       else if (index_array_of_one_value_Ub > NUMBER_POINT)
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(115);
+        total_error_sw_fixed();
       }
 
       _y2 = val_C_Ub_1 - /*gnd_adc - */ vref_adc[I_Ub];
@@ -1168,13 +1168,13 @@ void SPI_ADC_IRQHandler(void)
         else if (index_array_of_one_value_Uc_1s > MAIN_FREQUENCY)
         {
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(118);
+          total_error_sw_fixed();
         }
       }
       else if (index_array_of_one_value_Uc > NUMBER_POINT)
       {
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(117);
+        total_error_sw_fixed();
       }
 
       _y2 = val_C_Uc_1 - /*gnd_adc - */ vref_adc[I_Uc];
@@ -1653,7 +1653,7 @@ void calc_angle(void)
 
   //¬изначаЇмо, €кий вектор беремо за осному
   __full_ort_index index_base;
-  if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0) index_base = FULL_ORT_Ua;
+  if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) == 0) index_base = FULL_ORT_Ua;
   else 
   {
     index_base = FULL_ORT_Uab;
@@ -1672,7 +1672,7 @@ void calc_angle(void)
   __full_ort_index index = index_base;
   while( index <= index_last)
   {
-    unsigned int index_m;
+    unsigned int index_m = 0;
     switch (index)
     {
     case FULL_ORT_Ua:
@@ -1713,7 +1713,7 @@ void calc_angle(void)
     default:
       {
         //“еоретично цього н≥коли не мало б бути
-        total_error_sw_fixed(61);
+        total_error_sw_fixed();
       }
     }
   
@@ -1746,8 +1746,8 @@ void calc_angle(void)
         }
         else
         {
-          unsigned int porig_chutlyvosti;
-          unsigned int index_m;
+          unsigned int porig_chutlyvosti = 0;
+          unsigned int index_m = 0;
           switch (index_tmp)
           {
           case FULL_ORT_Ua:
@@ -1831,7 +1831,7 @@ void calc_angle(void)
           default:
             {
               //“еоретично цього н≥коли не мало б бути
-              total_error_sw_fixed(62);
+              total_error_sw_fixed();
             }
           }
       
@@ -1961,7 +1961,7 @@ void calc_power_and_energy(void)
   {
     if (clean_energy_tmp != 0) energy[0][i] = 0;
     
-    int power_data;
+    int power_data = 0;
     switch (i)
     {
     case INDEX_EA_PLUS:
@@ -1997,7 +1997,7 @@ void calc_power_and_energy(void)
     default:
       {
         //“еоретично цього н≥коли не мало б бути
-        total_error_sw_fixed(65);
+        total_error_sw_fixed();
       }
     }
     
@@ -2033,7 +2033,7 @@ void calc_power_and_energy(void)
     else
     {
       //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-      total_error_sw_fixed(53);
+      total_error_sw_fixed();
     }
     
     cos_phi_x1000[bank_for_calc_power] = (int)(1000.0f*P_float/S_float);
@@ -2379,7 +2379,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
 {
   for (unsigned int mtz = 0; mtz < 4; mtz++)
   {
-    int a_cos_fi, a_sin_fi;
+    int a_cos_fi = 0, a_sin_fi = 0;
     switch (mtz)
     {
     case 0:
@@ -2413,7 +2413,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
     default:
       {
         //“еоретично цього н≥коли не мало б бути
-        total_error_sw_fixed(54);
+        total_error_sw_fixed();
       }
     }
     a_sin_fi = -a_sin_fi; //« розд≥лу: "Ќеймов≥рно, але факт", тобто що € не можу по€снити
@@ -2427,8 +2427,8 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
   
     for (unsigned int i = 0; i < 3; i++)
     {
-      unsigned int index_I, index_U;
-      unsigned int index_I_ort, index_U_ort;
+      unsigned int index_I =  0, index_U = 0;
+      unsigned int index_I_ort = 0, index_U_ort = 0;
       switch (i)
       {
       case 0:
@@ -2464,7 +2464,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
       default:
         {
           //“еоретично цього н≥коли не мало б бути
-          total_error_sw_fixed(60);
+          total_error_sw_fixed();
         }
       }
 
@@ -2627,7 +2627,7 @@ inline void directional_tznp(int ortogonal_local_calc[], unsigned int number_gro
 {
   for (unsigned int tznp = 0; tznp < 3; tznp++)
   {
-    int a_cos_fi, a_sin_fi;
+    int a_cos_fi = 0, a_sin_fi = 0;
     switch (tznp)
     {
     case 0:
@@ -2654,7 +2654,7 @@ inline void directional_tznp(int ortogonal_local_calc[], unsigned int number_gro
     default:
       {
         //“еоретично цього н≥коли не мало б бути
-        total_error_sw_fixed(81);
+        total_error_sw_fixed();
       }
     }
     a_sin_fi = -a_sin_fi; //« розд≥лу: "Ќеймов≥рно, але факт", тобто що € не можу по€снити
@@ -2977,7 +2977,7 @@ inline void calc_power(int ortogonal_local_calc[])
     if (lichylnyk_1s_po_20ms > MAIN_FREQUENCY)
     {
       //“еоретично цього н≥коли не мало б бути
-      total_error_sw_fixed(64);
+      total_error_sw_fixed();
     }
 
     //ѕереключаЇмо банк дл€ збереженн€ нових даних s обнулюЇмо значенн€ у новому банку
@@ -3013,7 +3013,7 @@ void calc_measurement(unsigned int number_group_stp)
 {
   int ortogonal_local[2*NUMBER_ANALOG_CANALES];
   unsigned long long sum_sqr_data_3I0_local;
-  float value_3I0_i_float, value_3I0_f_float;
+  float value_3I0_i_float, value_3I0_f_float = 0.0f;
 
   //¬иставл€Їмо семафор заборони обновленн€ значень з вим≥рювальноњ системи
 //  semaphore_measure_values = 1;
@@ -3092,7 +3092,7 @@ void calc_measurement(unsigned int number_group_stp)
   ƒовертаЇмо кути ≥ коп≥юЇмо ортогональн≥ дл€ низькопр≥оритетних задач
   ***/
   static const unsigned int *array_point_to_index_converter[4] = {index_converter_Ib_p, index_converter_I04_p, index_converter_Ib_l, index_converter_I04_l};
-  const unsigned int *point_to_index_converter = array_point_to_index_converter[current_settings_prt.control_extra_settings_1 & (CTR_EXTRA_SETTINGS_1_CTRL_IB_I04 | CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE)];
+  const unsigned int *point_to_index_converter = array_point_to_index_converter[current_settings_prt.control_extra_settings_1 & (MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04) | MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE))];
 
   unsigned int copy_to_low_tasks = (semaphore_measure_values_low == 0) ? true : false;
   for (unsigned int i = 0; i < NUMBER_ANALOG_CANALES; i++)
@@ -3201,7 +3201,7 @@ void calc_measurement(unsigned int number_group_stp)
     }
     else if ((i >= I_Ia) && (i <= I_Ic))
     {
-      unsigned int index_m, index_ort;
+      unsigned int index_m = 0, index_ort = 0;
       switch (i)
       {
       case I_Ia:
@@ -3212,7 +3212,7 @@ void calc_measurement(unsigned int number_group_stp)
         }
       case I_Ib_I04:
         {
-          if ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+          if ((current_settings_prt.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
           {
             index_m = IM_IB;
             index_ort = FULL_ORT_Ib;
@@ -3233,7 +3233,7 @@ void calc_measurement(unsigned int number_group_stp)
       default:
         {
           //“еоретично цього н≥коли не мало б бути
-          total_error_sw_fixed(66);
+          total_error_sw_fixed();
         }
       }
       
@@ -3241,7 +3241,7 @@ void calc_measurement(unsigned int number_group_stp)
     }
     else
     {
-      unsigned int index_m, index_ort;
+      unsigned int index_m = 0, index_ort = 0;
       switch (i)
       {
       case I_Ua:
@@ -3249,7 +3249,7 @@ void calc_measurement(unsigned int number_group_stp)
       case I_Uc:
         {
           unsigned int delta_index = (i - I_Ua);
-          if ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
+          if ((current_settings_prt.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) == 0)
           {
             index_m = IM_UA + delta_index;
             index_ort = FULL_ORT_Ua + delta_index;
@@ -3270,7 +3270,7 @@ void calc_measurement(unsigned int number_group_stp)
       default:
         {
           //“еоретично цього н≥коли не мало б бути
-          total_error_sw_fixed(67);
+          total_error_sw_fixed();
         }
       }
       
@@ -3294,7 +3294,7 @@ void calc_measurement(unsigned int number_group_stp)
     else
     {
       //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-      total_error_sw_fixed(59);
+      total_error_sw_fixed();
     }
   }
   else
@@ -3306,7 +3306,7 @@ void calc_measurement(unsigned int number_group_stp)
   ***/
   int _x, _y;
 
-  if ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+  if ((current_settings_prt.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
   {   
     //3I0(розрахункове), стрму I0.4 немаЇ
     
@@ -3358,7 +3358,7 @@ void calc_measurement(unsigned int number_group_stp)
     measurement[IM_IB] = ( MNOGNYK_I_DIJUCHE*(sqrt_64((unsigned long long)((long long)_x*(long long)_x) + (unsigned long long)((long long)_y*(long long)_y))) ) >> (VAGA_DILENNJA_I_DIJUCHE + 4);
   }
     
-  if ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
+  if ((current_settings_prt.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) == 0)
   {
     //Ubc
     _x = ortogonal_calc[2*FULL_ORT_Ubc + 0] = ortogonal_calc[2*FULL_ORT_Ub    ] - ortogonal_calc[2*FULL_ORT_Uc    ];
@@ -3444,7 +3444,7 @@ void calc_measurement(unsigned int number_group_stp)
   /***/
 
   if (
-      ((current_settings_prt.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0) &&
+      ((current_settings_prt.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0) &&
       ((current_settings_prt.configuration & (1<<TZNP_BIT_CONFIGURATION)) != 0)
      )   
   {

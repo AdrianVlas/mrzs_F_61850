@@ -45,7 +45,7 @@ void main_routines_for_spi1(void)
     
     if(_CHECK_SET_BIT(control_spi1_taskes, TASK_EEPROM_WRITE_PREPARATION_BIT) !=0)
     {
-      unsigned int number;
+      unsigned int number = 0;
       
       //‘ормуЇмо буфер дл€ передач≥ у  EEPROM (б≥т запису + початкова адреса - ≥нформац≥йн≥ байти)
       if ((etap_eeprom_write_enable < 0) || ((etap_eeprom_write_enable > 1))) etap_eeprom_write_enable = 0;
@@ -631,7 +631,6 @@ void main_routines_for_spi1(void)
       TxBuffer_SPI_EDF[3 + sizeof(__SETTINGS)    ] = (unsigned char)((~(unsigned int)crc_eeprom_settings) & 0xff); /*  ≥нвертована контрольна сума*/
       TxBuffer_SPI_EDF[3 + sizeof(__SETTINGS) + 1] = (unsigned char)(                crc_eeprom_settings  & 0xff); /*не≥нвертована контрольна сума*/
       
-      
       //¬иставл€Їмо перший блок настройок запису у EEPROM
       number_block_settings_write_to_eeprom = 0;
     }
@@ -1067,7 +1066,7 @@ void main_routines_for_spi1(void)
       {
         //“еоретично програма сюди б не мала н≥коли зайти
         //¬≥дбцлас€ невизначена помилка, тому треба п≥ти на перезавантаженн€
-        total_error_sw_fixed(78);
+        total_error_sw_fixed();
       }
     }
     else if (
@@ -1133,7 +1132,7 @@ void main_routines_for_spi1(void)
       {
         //—юди програма не мала б теоретично н≥коли заходити
         //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-        total_error_sw_fixed(74);
+        total_error_sw_fixed();
       }
 
       //¬иставл€Їмо б≥т встановленн€ дозволу на запис
@@ -1148,7 +1147,7 @@ void main_routines_for_spi1(void)
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_AR_EEPROM_BIT    ) !=0) ||  
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_DR_EEPROM_BIT    ) !=0) ||  
             (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_INFO_REJESTRATOR_PR_ERR_EEPROM_BIT) !=0) ||  
-            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT                 ) !=0)
+            (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT                 ) !=0) 
            )  
     {
       //ѕрочитано рес≥стр статусу
@@ -1214,7 +1213,7 @@ void main_routines_for_spi1(void)
         {
           //—юди програма не мала б теоретично н≥коли заходити
           //якщо сюди д≥йшла програма, значить в≥дбулас€ недопустива помилка, тому треба зациклити програму, щоб вона п≥шла на перезагрузку
-          total_error_sw_fixed(76);
+          total_error_sw_fixed();
         }
       }
       else
@@ -1345,7 +1344,7 @@ void main_routines_for_spi1(void)
       //јнал≥зуЇмо прочитан≥ дан≥
       //—початку анал≥зуЇмо, чи про€итаний блок Ї пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      __SETTINGS current_settings_tmp;
+      static __SETTINGS current_settings_tmp;
       
       while ((empty_block != 0) && ( i < (sizeof(__SETTINGS) + 2)))
       {
@@ -1522,7 +1521,7 @@ void main_routines_for_spi1(void)
       //јнал≥зуЇмо прочитан≥ дан≥
       //—початку анал≥зуЇмо, чи про€итаний блок Ї пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      unsigned int adjustment_id_tmp, ustuvannja_tmp[NUMBER_ANALOG_CANALES], serial_number_dev_tmp;
+      unsigned int adjustment_id_tmp = 0, ustuvannja_tmp[NUMBER_ANALOG_CANALES], serial_number_dev_tmp = 0;
       int phi_ustuvannja_tmp[NUMBER_ANALOG_CANALES];
       float phi_ustuvannja_sin_cos_tmp[2*NUMBER_ANALOG_CANALES];
 
@@ -1726,7 +1725,7 @@ void main_routines_for_spi1(void)
       //јнал≥зуЇмо прочитан≥ дан≥
       //—початку анал≥зуЇмо, чи про€итаний блок Ї пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      unsigned int state_trigger_leds_tmp, state_signal_outputs_tmp;
+      unsigned int state_trigger_leds_tmp = 0, state_signal_outputs_tmp = 0;
       
       while ((empty_block != 0) && ( i < (2*(3 + 3))))
       {
@@ -1852,7 +1851,7 @@ void main_routines_for_spi1(void)
         //¬иводимо ≥нформац≥ю по виходах на п≥ни процесора
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = state_outputs_raw;
         TIM_PRT_write_tick = TIM2->CNT;
-        //¬иставл€Їмо п≥н CON-OUTPUTS-1, щоб можна було управл€ти виходами
+//        //¬иставл€Їмо п≥н CON-OUTPUTS-1, щоб можна було управл€ти виходами
 //        GPIO_SetBits(CON_OUTPUTS, CON_1_OUTPUTS_PIN);
 //        //«н≥маЇмо п≥н CON-OUTPUTS-2, щоб можна було управл€ти виходамии
 //        GPIO_ResetBits(CON_OUTPUTS, CON_2_OUTPUTS_PIN);
@@ -1899,7 +1898,7 @@ void main_routines_for_spi1(void)
       //јнал≥зуЇмо прочитан≥ дан≥
       //—початку анал≥зуЇмо, чи про€итаний блок Ї пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      unsigned int fix_active_buttons_tmp, trigger_active_functions_tmp[N_BIG];
+      unsigned int fix_active_buttons_tmp = 0, trigger_active_functions_tmp[N_BIG];
 
       while ((empty_block != 0) && ( i < (sizeof(fix_active_buttons_tmp) + sizeof(trigger_active_functions_tmp) + 1)))
       {
@@ -2027,7 +2026,7 @@ void main_routines_for_spi1(void)
       //јнал≥зуЇмо прочитан≥ дан≥
       //—початку анал≥зуЇмо, чи про€итаний блок Ї пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      __INFO_REJESTRATOR info_rejestrator_ar_tmp;
+      static __INFO_REJESTRATOR info_rejestrator_ar_tmp;
       
       while ((empty_block != 0) && ( i < (sizeof(__INFO_REJESTRATOR) + 1)))
       {
@@ -2278,7 +2277,7 @@ void main_routines_for_spi1(void)
       //јнал≥зуЇмо прочитан≥ дан≥
       //—початку анал≥зуЇмо, чи про€итаний блок Ї пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      __INFO_REJESTRATOR info_rejestrator_dr_tmp;
+      static __INFO_REJESTRATOR info_rejestrator_dr_tmp;
       
       while ((empty_block != 0) && ( i < (sizeof(__INFO_REJESTRATOR) + 1)))
       {
@@ -2528,7 +2527,7 @@ void main_routines_for_spi1(void)
       //јнал≥зуЇмо прочитан≥ дан≥
       //—початку анал≥зуЇмо, чи про€итаний блок Ї пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      __INFO_REJESTRATOR info_rejestrator_pr_err_tmp;
+      static __INFO_REJESTRATOR info_rejestrator_pr_err_tmp;
       
       while ((empty_block != 0) && ( i < (sizeof(__INFO_REJESTRATOR) + 1)))
       {
@@ -2792,7 +2791,7 @@ void main_routines_for_spi1(void)
       //јнал≥зуЇмо прочитан≥ дан≥
       //—початку анал≥зуЇмо, чи про€итаний блок Ї пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      unsigned int resurs_vymykacha_tmp, resurs_vidkljuchennja_tmp;
+      unsigned int resurs_vymykacha_tmp = 0, resurs_vidkljuchennja_tmp = 0;
 
       while ((empty_block != 0) && ( i < (sizeof(resurs_vymykacha) + sizeof(resurs_vidkljuchennja) + 1)))
       {
@@ -2853,9 +2852,9 @@ void main_routines_for_spi1(void)
             unsigned int difference = 0;
             while ((target < 2) && (difference == 0))
             {
-              unsigned char *point_to_read;
-              unsigned char *point_to_write;
-              unsigned int size_of_target;
+              unsigned char *point_to_read = NULL;
+              unsigned char *point_to_write = NULL;
+              unsigned int size_of_target = 0;
               
               switch (target)
               {
@@ -2876,7 +2875,7 @@ void main_routines_for_spi1(void)
               default:
                   {
                     //“еоретично цього н≥коли не мало б бути
-                    total_error_sw_fixed(49);
+                    total_error_sw_fixed();
                   }
                   
               }

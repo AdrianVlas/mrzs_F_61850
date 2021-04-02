@@ -393,7 +393,7 @@ void make_ekran_dst_rule(unsigned int rule)
         unsigned char templ_hour_str[MAX_COL_LCD] = "                ";
         
         unsigned char *ptr_target = working_ekran[i];
-        unsigned char const *ptr_source;
+        unsigned char const *ptr_source = NULL;
         if (index_of_ekran_tmp == INDEX_ML_DST_MM) ptr_source = monthes[index_language][((rule >> POS_MM) & ((1 << SHIFT_MM) - 1)) - 1];
         else if (index_of_ekran_tmp == INDEX_ML_DST_DOW) ptr_source = day_of_week[index_language][(rule >> POS_DOW) & ((1 << SHIFT_DOW) - 1)];
         else if (index_of_ekran_tmp == INDEX_ML_DST_WR) ptr_source = week_rule[index_language][((rule >> POS_WR) & ((1 << SHIFT_WR) - 1)) - 1];
@@ -407,7 +407,7 @@ void make_ekran_dst_rule(unsigned int rule)
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(215);
+          total_error_sw_fixed();
         }
 
         for (size_t j = 0; j < MAX_COL_LCD; ++j) *ptr_target++ = *ptr_source++;
@@ -428,7 +428,7 @@ void make_ekran_dst_rule(unsigned int rule)
             if ((dr < _N1) || (dr > _NL))
             {
               //Теоретично цього ніколи не мало б бути
-              total_error_sw_fixed(217);
+              total_error_sw_fixed();
             }
             
             unsigned char *ptr_tmp = working_ekran[i];
@@ -515,7 +515,7 @@ void make_ekran_dst_rule(unsigned int rule)
             else
             {
               //Теоретично цього ніколи не мало б бути
-              total_error_sw_fixed(216);
+              total_error_sw_fixed();
             }
           }
         }

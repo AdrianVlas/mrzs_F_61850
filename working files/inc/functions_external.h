@@ -323,7 +323,7 @@ extern void control_resurs(void);
 extern void test_external_SRAM(void);
 
 extern void watchdog_routine(unsigned int);
-extern void total_error_sw_fixed(unsigned int);
+extern void total_error_sw_fixed(void);
 
 extern void NMI_Handler(void);
 extern void HardFault_Handler(void);

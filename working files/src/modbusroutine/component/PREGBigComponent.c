@@ -60,7 +60,7 @@ int getPREGBigModbusRegister(int adrReg)
       if(pointInterface==LAN_RECUEST) return (number_record_of_pr_err_into_LAN) &0xFFFF;
 #endif  
       //Теоретично сюди ніколи не мала б програма зайти
-      total_error_sw_fixed(211);
+      total_error_sw_fixed();
     case 2://Количество событий
       return (info_rejestrator_pr_err.number_records) &0xFFFF;
     case 3://Окно отображения страницы
@@ -148,14 +148,14 @@ int getPREGBigModbusRegister(int adrReg)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(214);
+            total_error_sw_fixed();
           }
           return MARKER_ERRORPERIMETR;
         }//if
       
       else
         {
-          unsigned char *point_to_buffer;
+          unsigned char *point_to_buffer = NULL;
           if (pointInterface==USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_pr_err;
           else if (pointInterface==RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_pr_err;
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -164,7 +164,7 @@ int getPREGBigModbusRegister(int adrReg)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(193);
+            total_error_sw_fixed();
           }
 
           if ( (*(point_to_buffer + 0)) != LABEL_START_RECORD_PR_ERR)
@@ -174,8 +174,8 @@ int getPREGBigModbusRegister(int adrReg)
             }
           else
             {
-              time_t time_dat_tmp;
-              int32_t time_ms_tmp;
+              time_t time_dat_tmp = 0;
+              int32_t time_ms_tmp = 0;
               for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&time_dat_tmp) + i) =  point_to_buffer[1 + i];
               for(size_t i = 0; i < sizeof(int32_t); i++) *((unsigned char*)(&time_ms_tmp) + i) = point_to_buffer[1 + sizeof(time_t) + i];
               time_ms_tmp *= 1000; //перевід у мкс
@@ -383,7 +383,7 @@ int getPREGBigModbusRegister(int adrReg)
             else
               {
                 //Теоретично цього ніколи не мало б бути
-                total_error_sw_fixed(189);
+                total_error_sw_fixed();
               }
           }//case 1
           break;

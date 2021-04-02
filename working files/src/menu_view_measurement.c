@@ -499,12 +499,12 @@ void make_ekran_current(unsigned int pervynna_vtorynna)
     if (
 //        (
 //         (index_array[i] == IM_3I0_r) &&
-//         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+//         ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
 //        )
 //        ||
         (
          (index_array[i] == IM_IB) &&
-         ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)
+         ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) != 0)
         )
        )   
     {
@@ -514,7 +514,7 @@ void make_ekran_current(unsigned int pervynna_vtorynna)
 
     if (
         (index_array[i] == IM_IB) &&
-        ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)
+        ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) != 0)
        )   
     {
       name_string[i][5] = '.';
@@ -529,7 +529,7 @@ void make_ekran_current(unsigned int pervynna_vtorynna)
   /******************************************/
   {
     int delete_index;
-    if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+    if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
       delete_index = IM_I04;
     else
       delete_index = IM_3I0_r;
@@ -626,7 +626,7 @@ void make_ekran_voltage_phase(unsigned int pervynna_vtorynna)
   unsigned int index_array[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE] = {255, 255, 255, 255, 255, 255};
   unsigned int row = 0;
 
-  if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) == 0)
+  if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) == 0)
   {
     static const unsigned char name_phase[MAX_ROW_FOR_MEASURMENT_VOLTAGE_PHASE - 1][MAX_COL_LCD] = 
     {
@@ -935,7 +935,7 @@ void make_ekran_angle(void)
     /*************
     Завершуємо формування назв кутів
     *************/
-//    if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+//    if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
 //    {
 //      if (index_language == INDEX_LANGUAGE_EN) name_string[FULL_ORT_3I0_r][3] = 'c';
 //      else name_string[FULL_ORT_3I0_r][3] = 'р';
@@ -958,7 +958,7 @@ void make_ekran_angle(void)
     /******************************************/
     //Виключаємо поля, які не треба відображати
     /******************************************/
-    if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+    if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) != 0)
     {
       for (__full_ort_index index_tmp = FULL_ORT_Ua; index_tmp <= FULL_ORT_Uc; index_tmp++)
       {
@@ -982,7 +982,7 @@ void make_ekran_angle(void)
 
     {
       int delete_index;
-      if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+      if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
         delete_index = FULL_ORT_I04;
       else
         delete_index = FULL_ORT_3I0_r;
@@ -1205,7 +1205,7 @@ void make_ekran_power(unsigned int pervynna_vtorynna)
       unsigned int start_position = index_of_start_position[index_of_ekran];
       /********************************/
       //Вводимо вимірювальні значення  
-      int temp_value;
+      int temp_value = 0;
       switch (index_of_ekran)
       {
       case INDEX_ML_P:
@@ -1231,7 +1231,7 @@ void make_ekran_power(unsigned int pervynna_vtorynna)
       default:
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(63);
+          total_error_sw_fixed();
         }
       }
       

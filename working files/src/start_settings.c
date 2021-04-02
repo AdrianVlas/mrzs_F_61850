@@ -1155,7 +1155,7 @@ void start_settings_peripherals(void)
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
   }
   /**********************/
-  
+
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   /**********************/
   //Ініціалізація CANAL1_MO і CANAL2_MO: 6.75Мбіт/с, контроль парності, один стоп біт
@@ -1826,7 +1826,7 @@ void error_reading_with_eeprom()
     //Робота з watchdogs
    watchdog_routine(WATCHDOG_KYYBOARD);
     
-    unsigned int index_info, index_action, information_type;
+    unsigned int index_info = 0, index_action = 0, information_type = 0;
     if((state_spi1_task & STATE_SETTINGS_EEPROM_EMPTY) != 0)
     {
       index_info = 0;
@@ -1850,6 +1850,11 @@ void error_reading_with_eeprom()
       index_info = 3;
       index_action = 1;
       information_type = 2;
+    }
+    else
+    {
+      //Теоретично цього ніколи не мало б бути
+      total_error_sw_fixed();
     }
 
     //Копіюємо  рядки у робочий екран

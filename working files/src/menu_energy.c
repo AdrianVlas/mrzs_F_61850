@@ -55,7 +55,7 @@ void make_ekran_energy(unsigned int pervynna_vtorynna)
   //Множення на два величини position_temp потрібне для того, бо наодн позицію ми використовуємо два рядки (назва + значення)
   index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
 
-  unsigned int col_begin, col_end, col_comma;
+  unsigned int col_begin = 0, col_end = MAX_COL_LCD - 1, col_comma = 0;
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
     unsigned int index_of_ekran_tmp = index_of_ekran >> 1;

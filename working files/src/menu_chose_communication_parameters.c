@@ -850,9 +850,11 @@ void make_ekran_settings_network_layer_Ethernet()
             (index_of_ekran_tmp == INDEX_ML_NL_GATEWAY)
            )   
         {
-          uint16_t *point_2;
+          uint16_t *point_2 = NULL;
           if (index_of_ekran_tmp == INDEX_ML_NL_IPV4) point_2 = point_1->IP4;
           else if (index_of_ekran_tmp == INDEX_ML_NL_GATEWAY) point_2 = point_1->gateway;
+          else total_error_sw_fixed();
+          
           uint16_t array[4] = {point_2[0], point_2[1], point_2[2], point_2[3]};
           
           working_ekran[i][4] = working_ekran[i][8] = working_ekran[i][12] = '.';

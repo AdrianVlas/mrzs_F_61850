@@ -65,7 +65,7 @@ void HardFault_Handler(void)
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {
-    total_error_sw_fixed(1);
+    total_error_sw_fixed();
   }
 }
 
@@ -79,7 +79,7 @@ void MemManage_Handler(void)
   /* Go to infinite loop when Memory Manage exception occurs */
   while (1)
   {
-    total_error_sw_fixed(2);
+    total_error_sw_fixed();
   }
 }
 
@@ -93,7 +93,7 @@ void BusFault_Handler(void)
   /* Go to infinite loop when Bus Fault exception occurs */
   while (1)
   {
-    total_error_sw_fixed(3);
+    total_error_sw_fixed();
   }
 }
 
@@ -107,7 +107,7 @@ void UsageFault_Handler(void)
   /* Go to infinite loop when Usage Fault exception occurs */
   while (1)
   {
-    total_error_sw_fixed(4);
+    total_error_sw_fixed();
   }
 }
 

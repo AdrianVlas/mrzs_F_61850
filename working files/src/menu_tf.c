@@ -275,7 +275,7 @@ void make_ekran_list_source_tf(void)
     {
       "    Блок.ЗЗ     ",
       "    Блок.ЗЗ     ",
-      "    Блок.ЗЗ     ",
+      "    SEFP Blk    ",
       "    Блок.ЗЗ     "
     };
     for (unsigned int index_1 = 0; index_1 < MAX_COL_LCD; index_1++)

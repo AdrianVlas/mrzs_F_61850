@@ -107,12 +107,12 @@ void start_receive_data_via_CANAL1_MO(void)
                 if (index_tmp > 0)
                 {
                   for(size_t i = 0; i < sizeof(time_t); i++)  *((uint8_t *)(&time_dat_save_h) + i) = Canal1_MO_Received[index_tmp++];
-                  int32_t time_ms_tmp;
+                  int32_t time_ms_tmp = 0;
                   for(size_t i = 0; i < sizeof(int32_t); i++)  *((uint8_t *)(&time_ms_tmp) + i) = Canal1_MO_Received[index_tmp++];
                   time_ms_save_h = time_ms_tmp / 1000;
                   save_time_dat_h = 3;
                 }
-                else total_error_sw_fixed(84);
+                else total_error_sw_fixed();
               }
               
               /***
@@ -160,15 +160,15 @@ void start_receive_data_via_CANAL1_MO(void)
                             {
                               *((uint8_t*)(&Input_ctrl_In_MMS_block) + shift_tmp) = Canal1_MO_Received[index++];
                             }
-                            else total_error_sw_fixed(85);
+                            else total_error_sw_fixed();
                           }
                         }
                       }
                     }
                   }
-                  else total_error_sw_fixed(220);
+                  else total_error_sw_fixed();
                 }
-                else total_error_sw_fixed(89);
+                else total_error_sw_fixed();
               }
 
               if(
@@ -398,7 +398,7 @@ void start_transmint_data_via_CANAL1_MO(void)
     confirm_diagnostyka_mo = 0; //Очищаємо підтверджену діагностику каналу обміну епо Куналу 1
   }
 
-  if ((index + 2) >= BUFFER_CANAL1_MO) total_error_sw_fixed(22);
+  if ((index + 2) >= BUFFER_CANAL1_MO) total_error_sw_fixed();
   
   Canal1_MO_Transmit[index++] = sum;
   Canal1_MO_Transmit[index++] = STOP_BYTE_MO;

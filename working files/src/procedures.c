@@ -331,7 +331,10 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     //Вводимо нову конфігурацю у цільову структуру
     target_label->configuration = new_configuration;
     
-    unsigned int maska[N_SMALL] = {0, 0, 0}, maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    unsigned int maska[N_SMALL]; 
+    for(size_t i = 0; i < N_SMALL; ++i) maska[i] = 0;
+    unsigned int maska_1[N_BIG];
+    for(size_t i = 0; i < N_BIG; ++i) maska_1[i] = 0;
   
     //Перевіряємо, чи МТЗ зараз знято з конфігурації
     if ((target_label->configuration & (1<<MTZ_BIT_CONFIGURATION)) == 0)
@@ -391,28 +394,22 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за МТЗ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i + m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за МТЗ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+      	for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];  
       }
-      
+
 #if (MODYFIKACIA_VERSII_PZ >= 10)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];  
         }
       }
       
@@ -421,9 +418,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -560,17 +555,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування кнопок, які відповідають за МТЗ 0.4кВ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за МТЗ 0.4кВ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -579,9 +570,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -590,9 +579,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -726,17 +713,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗДЗ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗДЗ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -745,9 +728,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -756,9 +737,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -908,17 +887,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗЗ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗЗ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -927,9 +902,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -938,9 +911,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1084,17 +1055,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за ТЗНП
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за ТЗНП
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -1103,9 +1070,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1114,9 +1079,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1253,17 +1216,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за АПВ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за АПВ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -1272,9 +1231,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1283,9 +1240,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1432,17 +1387,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за АЧР-ЧАПВ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за АЧР-ЧАПВ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -1451,9 +1402,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1462,9 +1411,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1608,17 +1555,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за УРОВ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за УРОВ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -1627,9 +1570,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1638,9 +1579,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1786,17 +1725,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗОП(КОФ)
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за ЗОП(КОФ)
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -1805,9 +1740,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1816,9 +1749,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -1985,17 +1916,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за Umin
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за Umin
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -2004,9 +1931,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -2015,9 +1940,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -2173,17 +2096,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за Umax
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за Umax
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -2192,9 +2111,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -2203,9 +2120,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -2361,17 +2276,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за УЗ
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
 
       //Знімаємо всі функції для ранжування входів, які відповідають за УЗ
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -2380,9 +2291,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -2391,9 +2300,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -2552,17 +2459,13 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       //Знімаємо всі функції для ранжування входів, які відповідають за Розширеної логіки
       for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
       {
-        target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_buttons[N_SMALL*i+m] &= ~maska[m];
       }
     
       //Знімаємо всі функції для ранжування входів, які відповідають за Розширеної логіки
       for (int i = 0; i < NUMBER_INPUTS; i++)
       {
-        target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-        target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-        target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
+        for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
 #if (MODYFIKACIA_VERSII_PZ >= 10)
@@ -2571,9 +2474,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_GOOSE[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -2582,9 +2483,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       {
         for (size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++)
         {
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i  ] &= ~maska[0];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+1] &= ~maska[1];
-          target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+2] &= ~maska[2];
+          for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_In_MMS[i][j][N_SMALL*i+m] &= ~maska[m];
         }
       }
       
@@ -2728,7 +2627,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 unsigned int action_after_changing_extra_settings(unsigned int new_value, __SETTINGS *target_label)
 {
   unsigned int error = 0;
-  if ((target_label->control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+  if ((target_label->control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) != 0)
   {
     if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL) error |= (unsigned int)(1 << 31);
   }
@@ -2736,7 +2635,7 @@ unsigned int action_after_changing_extra_settings(unsigned int new_value, __SETT
   if (error == 0)
   {
     unsigned int new_configuration = target_label->configuration;
-    if ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+    if ((new_value & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
     {
       //Підготовляємо вивід з конфігурації МТЗ 0.4кВ
       new_configuration &= (unsigned int)(~(1 << MTZ04_BIT_CONFIGURATION));
@@ -2757,15 +2656,15 @@ unsigned int action_after_changing_extra_settings(unsigned int new_value, __SETT
       for (size_t i = 0; i < NUMBER_UP; i++) 
       {
         if (
-            ((target_label->ctrl_UP_input[i] == UP_CTRL_I04  ) && ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)) ||
-            ((target_label->ctrl_UP_input[i] == UP_CTRL_3I0_r) && ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) != 0)) ||
+            ((target_label->ctrl_UP_input[i] == UP_CTRL_I04  ) && ((new_value & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)) ||
+            ((target_label->ctrl_UP_input[i] == UP_CTRL_3I0_r) && ((new_value & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) != 0)) ||
             (
              (  
               (target_label->ctrl_UP_input[i] == UP_CTRL_U1) ||
               (target_label->ctrl_UP_input[i] == UP_CTRL_U2)
              )
              &&
-             ((new_value & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)  
+             ((new_value & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) != 0)  
             ) 
            )   
         {
@@ -2798,21 +2697,6 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
     _SET_BIT(maska_1, RANG_NZZ);
     _SET_BIT(maska_1, RANG_SECTOR_NZZ);
     
-//    //Знімаємо всі функції для ранжування входів, які відповідають за наявність каналу 3U0
-//    for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-//    {
-//      target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-//      target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-//      target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
-//    }
-    //Знімаємо всі функції для ранжування входів, які відповідають за наявність каналу 3U0
-//    for (int i = 0; i < NUMBER_INPUTS; i++)
-//    {
-//      target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-//      target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-//      target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
-//    }
-
 #if (MODYFIKACIA_VERSII_PZ >= 10)
       //Знімаємо всі функції для ранжування входів Вихідного Мережевого Блоку
       for (size_t i = 0; i < N_OUT_LAN; i++)
@@ -2976,7 +2860,7 @@ void action_during_changing_button_mode(__SETTINGS *current_label, __SETTINGS *e
 *****************************************************/
 void def_pickup_timeout_UP(__SETTINGS *current_label, uint32_t _n_UP, uint32_t group)
 {
-  uint32_t min;
+  uint32_t min = 0;
   switch (current_label->ctrl_UP_input[_n_UP])
   {
   case UP_CTRL_Ia_Ib_Ic:
@@ -3018,7 +2902,7 @@ void def_pickup_timeout_UP(__SETTINGS *current_label, uint32_t _n_UP, uint32_t g
   default:
     {
       //Теоретично цього ніколи не мало б бути
-      total_error_sw_fixed(99);
+      total_error_sw_fixed();
     }
   }
   
@@ -3083,169 +2967,6 @@ void action_after_changing_ctrl_UP(__SETTINGS *current_label, uint32_t value)
   }
 }
 /*****************************************************/
-
-///*****************************************************/
-////Функція обновлення змінних при зміні кількості елементів розширеної логіки
-///*****************************************************/
-//void action_after_changing_number_el(__SETTINGS *target_label, unsigned int element)
-//{
-//  unsigned int maska[N_SMALL] = {0, 0, 0}, maska_1[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0}, maska_2 = 0;
-//
-//  //Формуємо маски тільки тих сигналів розширеної логіки, які виведені з конфігурації у кількісному значенні
-//  unsigned int array_defined_logic[NUMBER_DEFINED_ELEMENTS][2] =
-//  {
-//    {target_label->number_defined_df , NUMBER_DEFINED_FUNCTIONS},
-//    {target_label->number_defined_dt , NUMBER_DEFINED_TRIGGERS },
-//    {target_label->number_defined_and, NUMBER_DEFINED_AND      },
-//    {target_label->number_defined_or , NUMBER_DEFINED_OR       },
-//    {target_label->number_defined_xor, NUMBER_DEFINED_XOR      },
-//    {target_label->number_defined_not, NUMBER_DEFINED_NOT      }
-//  };
-//  const unsigned int input_signals[NUMBER_DEFINED_ELEMENTS]  = {1, 2, 0, 0, 0, 0};
-//  const unsigned int others_signals[NUMBER_DEFINED_ELEMENTS] = {2, 3, 1, 1, 1, 1};
-//  const unsigned int button_signals[NUMBER_DEFINED_ELEMENTS] = {1, 2, 0, 0, 0, 0};
-//  
-//  unsigned int input_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + 
-//                             NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        +
-//                             NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      +
-//                             NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        +
-//                             NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         +
-//                             NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       +
-//                             NUMBER_APV_SIGNAL_FOR_RANG_SMALL        +
-//                             NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL +
-//                             NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       +
-//                             NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        +
-//                             NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       +
-//                             NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       +
-//                             NUMBER_UP_SIGNAL_FOR_RANG_SMALL         +
-//                             NUMBER_VMP_SIGNAL_FOR_RANG_SMALL;
-//      
-//  unsigned int others_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG    + 
-//                              NUMBER_MTZ_SIGNAL_FOR_RANG        +
-//                              NUMBER_MTZ04_SIGNAL_FOR_RANG      +
-//                              NUMBER_ZDZ_SIGNAL_FOR_RANG        +
-//                              NUMBER_ZZ_SIGNAL_FOR_RANG         +
-//                              NUMBER_TZNP_SIGNAL_FOR_RANG       +
-//                              NUMBER_APV_SIGNAL_FOR_RANG        +
-//                              NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG +
-//                              NUMBER_UROV_SIGNAL_FOR_RANG       +
-//                              NUMBER_ZOP_SIGNAL_FOR_RANG        +
-//                              NUMBER_UMIN_SIGNAL_FOR_RANG       +
-//                              NUMBER_UMAX_SIGNAL_FOR_RANG       +
-//                              NUMBER_UP_SIGNAL_FOR_RANG         +
-//                              NUMBER_VMP_SIGNAL_FOR_RANG;
-//      
-//  unsigned int button_shift = NUMBER_GENERAL_SIGNAL_FOR_RANG_BUTTON    + 
-//                              NUMBER_MTZ_SIGNAL_FOR_RANG_BUTTON        +
-//                              NUMBER_MTZ04_SIGNAL_FOR_RANG_BUTTON      +
-//                              NUMBER_ZDZ_SIGNAL_FOR_RANG_BUTTON        +
-//                              NUMBER_ZZ_SIGNAL_FOR_RANG_BUTTON         +
-//                              NUMBER_TZNP_SIGNAL_FOR_RANG_BUTTON       +
-//                              NUMBER_APV_SIGNAL_FOR_RANG_BUTTON        +
-//                              NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_BUTTON +
-//                              NUMBER_UROV_SIGNAL_FOR_RANG_BUTTON       +
-//                              NUMBER_ZOP_SIGNAL_FOR_RANG_BUTTON        +
-//                              NUMBER_UMIN_SIGNAL_FOR_RANG_BUTTON       +
-//                              NUMBER_UMAX_SIGNAL_FOR_RANG_BUTTON       +
-//                              NUMBER_UP_SIGNAL_FOR_RANG_BUTTON         +
-//                              NUMBER_VMP_SIGNAL_FOR_RANG_BUTTON;
-//      
-//  for (unsigned int index = 0; index < element; index++)
-//  {
-//    input_shift  += input_signals[index]*array_defined_logic[index][1];
-//    others_shift += others_signals[index]*array_defined_logic[index][1];
-//    button_shift += button_signals[index]*array_defined_logic[index][1];
-//  }
-//  
-//  //Формуємо маски функцій елемента Розширеної логіки
-//  for (unsigned int i = 0; i < input_signals[element]*(array_defined_logic[element][1] - array_defined_logic[element][0]); i++)
-//    _SET_BIT(maska, (input_shift + input_signals[element]*array_defined_logic[element][0] + i));
-//    
-//  for (unsigned int i = 0; i < others_signals[element]*(array_defined_logic[element][1] - array_defined_logic[element][0]); i++)
-//    _SET_BIT(maska_1, (others_shift + others_signals[element]*array_defined_logic[element][0] + i));
-//    
-//  for (unsigned int i = 0; i < button_signals[element]*(array_defined_logic[element][1] - array_defined_logic[element][0]); i++)
-//    maska_2 |= 1 << (button_shift + button_signals[element]*array_defined_logic[element][0] + i);
-//    
-//  //Знімаємо всі функції для ранжування входів, які відповідають за Розширену логіку
-//  for (int i = 0; i < NUMBER_DEFINED_BUTTONS; i++)
-//  {
-//    target_label->ranguvannja_buttons[N_SMALL*i  ] &= ~maska[0];
-//    target_label->ranguvannja_buttons[N_SMALL*i+1] &= ~maska[1];
-//    target_label->ranguvannja_buttons[N_SMALL*i+2] &= ~maska[2];
-//  }
-//  //Знімаємо всі функції для ранжування входів, які відповідають за Розширену логіку
-//  for (int i = 0; i < NUMBER_INPUTS; i++)
-//  {
-//    target_label->ranguvannja_inputs[N_SMALL*i  ] &= ~maska[0];
-//    target_label->ranguvannja_inputs[N_SMALL*i+1] &= ~maska[1];
-//    target_label->ranguvannja_inputs[N_SMALL*i+2] &= ~maska[2];
-//  }
-//  //Знімаємо всі функції для ранжування виходів
-//  for (int i = 0; i < NUMBER_OUTPUTS; i++)
-//  {
-//    for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_outputs[N_BIG*i+j] &= ~maska_1[j];
-//  }
-//  //Знімаємо всі функції для ранжування світоіндикаторів
-//  for (int i = 0; i < NUMBER_LEDS; i++)
-//  {
-//    for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_leds[N_BIG*i+j] &= ~maska_1[j];
-//  }
-//  //Знімаємо всі функції для ранжування аналогового і дискретного реєстраторів
-//  for (unsigned int j = 0; j < N_BIG; j++ ) 
-//  {
-//    target_label->ranguvannja_analog_registrator[j]  &= ~maska_1[j];
-//    target_label->ranguvannja_digital_registrator[j] &= ~maska_1[j];
-//    target_label->ranguvannja_off_cb[j] &= ~maska_1[j];
-//    target_label->ranguvannja_on_cb[j]  &= ~maska_1[j];
-//  }
-//  //Очищємо всі функції для ранжування оприділювальних функцій
-//  for (int i = 0; i < NUMBER_DEFINED_FUNCTIONS; i++)
-//  {
-//    for (unsigned int j = 0; j < N_BIG; j++ ) 
-//    {
-//      target_label->ranguvannja_df_source_plus[N_BIG*i+j]  &= ~maska_1[j];
-//      target_label->ranguvannja_df_source_minus[N_BIG*i+j] &= ~maska_1[j];
-//      target_label->ranguvannja_df_source_blk[N_BIG*i+j]   &= ~maska_1[j];
-//    }
-//  }
-//  //Очищємо всі функції для ранжування оприділювальних триґерів
-//  for (int i = 0; i < NUMBER_DEFINED_TRIGGERS; i++)
-//  {
-//    for (unsigned int j = 0; j < N_BIG; j++ ) 
-//    {
-//      target_label->ranguvannja_set_dt_source_plus[N_BIG*i+j]    &= ~maska_1[j];
-//      target_label->ranguvannja_set_dt_source_minus[N_BIG*i+j]   &= ~maska_1[j];
-//      target_label->ranguvannja_reset_dt_source_plus[N_BIG*i+j]  &= ~maska_1[j];
-//      target_label->ranguvannja_reset_dt_source_minus[N_BIG*i+j] &= ~maska_1[j];
-//    }
-//  }
-//  
-//  //Очищємо всі функції для ранжування визначуваних "І"
-//  for(unsigned int i = 0; i < NUMBER_DEFINED_AND; i++)
-//  {
-//    for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_and[N_BIG*i+j] &= ~maska_1[j];
-//  }
-//  
-//  //Очищємо всі функції для ранжування визначуваних "АБО"
-//  for(unsigned int i = 0; i < NUMBER_DEFINED_OR; i++)
-//  {
-//    for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_or[N_BIG*i+j] &= ~maska_1[j];
-//  }
-//  
-//  //Очищємо всі функції для ранжування визначуваних "Викл.АБО"
-//  for(unsigned int i = 0; i < NUMBER_DEFINED_XOR; i++)
-//  {
-//    for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_xor[N_BIG*i+j] &= ~maska_1[j];
-//  }
-//  
-//  //Очищємо всі функції для ранжування визначуваних "НЕ"
-//  for(unsigned int i = 0; i < NUMBER_DEFINED_NOT; i++)
-//  {
-//    for (unsigned int j = 0; j < N_BIG; j++ ) target_label->ranguvannja_d_not[N_BIG*i+j] &= ~maska_1[j];
-//  }
-//}
-///*****************************************************/
 
 /*****************************************************/
 //Функція, яка визначає кількість біт затримки, який допускається між байтами у RS-485 згідно з визначеними настройками
@@ -3383,20 +3104,20 @@ unsigned int set_new_settings_from_interface(unsigned int source)
   
   if ((type_of_settings_changed & (1 << DEFAULT_SETTINGS_SET_BIT)) != 0)
   {
-    current_settings.time_setpoints = current_settings.time_ranguvannja = time_dat_tmp;
-    current_settings.source_setpoints = current_settings.source_ranguvannja = 0;
+    current_settings_interfaces.time_setpoints = current_settings_interfaces.time_ranguvannja = time_dat_tmp;
+    current_settings_interfaces.source_setpoints = current_settings_interfaces.source_ranguvannja = 0;
   }
   
   if ((type_of_settings_changed & (1 << SETTINGS_DATA_CHANGED_BIT)) != 0)
   {
-    current_settings.time_setpoints = time_dat_tmp;
-    current_settings.source_setpoints = source;
+    current_settings_interfaces.time_setpoints = time_dat_tmp;
+    current_settings_interfaces.source_setpoints = source;
   }
   
   if ((type_of_settings_changed & (1 << RANGUVANNJA_DATA_CHANGED_BIT)) != 0)
   {
-    current_settings.time_ranguvannja = time_dat_tmp;
-    current_settings.source_ranguvannja = source;
+    current_settings_interfaces.time_ranguvannja = time_dat_tmp;
+    current_settings_interfaces.source_ranguvannja = source;
   }
   
   unsigned int reconfiguration_RS_485 = 0, reconfiguration_RS_485_with_reset_usart = 0;
@@ -3621,7 +3342,7 @@ unsigned int set_new_settings_from_interface(unsigned int source)
       else
       {
         //Якщо сюди дійшла програма, значить відбулася недопустива помилка, тому треба зациклити програму, щоб вона пішла на перезагрузку
-        total_error_sw_fixed(41);
+        total_error_sw_fixed();
       }
     }
 
@@ -3900,7 +3621,7 @@ void changing_diagnostyka_state(void)
 
         buffer_pr_err_records[index_into_buffer_pr_err + 13] = number_changes & 0xff;
       
-        for (size_t i = 0; i < N_DIAGN_BYTES; i ++)
+        for (size_t i = 0; i < N_DIAGN_BYTES; i++)
         {
           unsigned int n_word = i >> 2;
           unsigned int shift = 8*(i & 0x3);

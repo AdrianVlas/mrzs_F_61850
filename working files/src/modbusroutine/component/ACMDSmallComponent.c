@@ -1330,7 +1330,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(208);
+            total_error_sw_fixed();
           }
         }//if(cmdSwitch==0)
       }

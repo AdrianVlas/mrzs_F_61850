@@ -218,7 +218,7 @@ void periodical_operations(void/*unsigned int full_actions*/)
   if (watchdog_l2) 
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(88);
+    total_error_sw_fixed();
   }
 
   /*******************/
@@ -724,9 +724,8 @@ int main(void)
 /*******************************************************************************/
 //Глобальна помилка програмного забеспечення
 /*******************************************************************************/
-void total_error_sw_fixed(unsigned int number)
+void total_error_sw_fixed(void)
 {
-  total_error = number;
   while (1);
 }
 /*******************************************************************************/

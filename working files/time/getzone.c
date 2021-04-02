@@ -199,7 +199,7 @@ char const * __getzone()
         else
         {
           //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed(223);
+          total_error_sw_fixed();
         }
 
         val = (rule_tmp >> POS_DOW) & ((1 << SHIFT_DOW) - 1);

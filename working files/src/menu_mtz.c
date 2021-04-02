@@ -1491,11 +1491,12 @@ void make_ekran_control_mtz()
             (index_ctr == INDEX_ML_CTRMTZ_4_TYPE)  
            )   
         {
-          int value;
+          int value = 0;
           if (index_ctr == INDEX_ML_CTRMTZ_1_TYPE) value = point->type_mtz1;
           else if (index_ctr == INDEX_ML_CTRMTZ_2_TYPE) value = point->type_mtz2;
           else if (index_ctr == INDEX_ML_CTRMTZ_3_TYPE) value = point->type_mtz3;
           else if (index_ctr == INDEX_ML_CTRMTZ_4_TYPE) value = point->type_mtz4;
+          else total_error_sw_fixed();
 
           static const unsigned char information[MAX_NAMBER_LANGUAGE][8][MAX_COL_LCD] = 
           {
