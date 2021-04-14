@@ -33,6 +33,7 @@ int  uprFuncValid000(int inOffset, int validData);
 int isValidCONFCondition(unsigned int confMaska);
 int isValidEXTRACondition(unsigned int extraMaska);
 int isValidZZTYPECondition(unsigned int extraMaska);
+int specialСheckUPRBigWriteAction(int offset);
 
 void loadUPRBigActualDataBit(int beginOffset, int endOffset);
 
@@ -432,7 +433,8 @@ int uprFunc000(int actControl, int inOffset, uint32_t *uprMaska, int validData, 
           if(action_after_changing_extra_settings(edition_settings.control_extra_settings_1, &edition_settings)) isValid = 0;
         }//if(actControl)
       break;
-    case 228:
+#define MARKER228 228
+    case MARKER228:
       (*uprMaska)   = INDEX_ML_CTR_TRANSFORMATOR_PHASE_LINE;
       (*editControl) = &edition_settings.control_transformator;
       break;
@@ -966,10 +968,48 @@ int postUPRBigWriteAction(void)
             }//for
         }//for
     }//else
+
+//ОСОБАЯ ПРОВЕРКА
+
+  if(beginAdr>=BEGIN_ADR_BIT)
+    {
+      //работа с битами
+      for(int i=0; i<countAdr; i++)
+        {
+          int offsetBit = i+beginAdr-BEGIN_ADR_BIT;
+          if(specialСheckUPRBigWriteAction(offsetBit)) return ERROR_VALID3;//ошибка валидации
+        }//for
+    }//if(beginAdr>=BEGIN_ADR_BIT)
+  else
+    {
+      //работа с регистрами
+      for(int i=0; i<countAdr; i++)
+        {
+          int offsetReg = i+beginAdr-BEGIN_ADR_REGISTER;
+          for(int bit=0; bit<16; bit++)
+            {
+              if(specialСheckUPRBigWriteAction(offsetReg*16+bit)) return ERROR_VALID3;//ошибка валидации
+            }//for
+        }//for
+    }//else
+
   if(flag) upravlSetting = 1;//флаг Setting
 
   return 0;
 }//
+
+int specialСheckUPRBigWriteAction(int offset)
+{
+ if(offset==MARKER228)
+ {
+   if((edition_settings.control_transformator & (1<<INDEX_ML_CTR_TRANSFORMATOR_PHASE_LINE)==0)) //0-фазные
+   {
+       if((edition_settings.control_extra_settings_1 & (1<<INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)!=0)) //1-линейные
+         return 1;//ошибка
+   }//if
+ }//if(offset==MARKER228)
+  return 0;//нет ошибки
+}//specialСheckUPRBigWriteAction
 
 int isValidCONFCondition(unsigned int confMaska)
 {
