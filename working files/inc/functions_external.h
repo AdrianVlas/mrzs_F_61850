@@ -11,11 +11,16 @@ extern uint32_t USBD_OTG_EP1OUT_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 
 extern CDC_IF_Prop_TypeDef  APP_FOPS;
 
+extern void MX_FATFS_Init(void);
+
 extern void Configure_I2C(I2C_TypeDef*);
 extern void FSMC_SRAM_Init(void);
 
 extern int main(void);
-extern void periodical_operations(void/*unsigned int*/);
+extern void ar_routine_with_fatfs(unsigned int);
+extern unsigned int ar_free_space(int*, int*);
+extern void periodical_operations(unsigned int);
+extern void periodical_operations_communication(unsigned int);
 extern void global_vareiables_installation(void);
 extern void start_settings_peripherals(void);
 extern void start_tim4_canal2_for_interrupt_1mc(void);
@@ -156,6 +161,7 @@ extern void make_ekran_dst_rule(uint32_t);
 extern void make_ekran_chose_registrators(void);
 extern void make_ekran_settings_analog_registrators(void);
 extern void make_ekran_timeout_analog_registrator(void);
+extern void make_ekran_control_ar(void);
 extern void make_ekran_extended_logic(void);
 extern void make_ekran_general_pickups_el(void);
 extern void make_ekran_chose_settings_df(void);
@@ -309,15 +315,11 @@ extern void dataflash_mamory_write_buffer(int);
 extern void dataflash_mamory_buffer_into_memory(int);
 extern void analize_received_data_dataflash(int);
 
-extern void actions_after_changing_tiomouts_ar(void);
-extern void calc_size_and_max_number_records_ar(unsigned int, unsigned int);
-extern unsigned int making_buffer_for_save_ar_record(unsigned int*);
-extern void fix_undefined_error_ar(unsigned int*);
-
 extern void control_settings(void);
 extern void control_ustuvannja(void);
 extern void control_trg_func(void);
 extern unsigned int control_info_rejestrator(__INFO_REJESTRATOR*, unsigned char);
+extern unsigned int control_info_ar_rejestrator(__INFO_AR_REJESTRATOR*, unsigned char);
 extern void control_resurs(void);
 
 extern void test_external_SRAM(void);

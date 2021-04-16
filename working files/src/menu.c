@@ -995,7 +995,6 @@ void main_manu_function(void)
                   }
                   i++;
                 }
-
                 if (found_changes == 0)
                 {
                   if (calibration != calibration_edit) found_changes = 1;
@@ -2369,7 +2368,13 @@ void main_manu_function(void)
   
               if (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS)
               {
-                number_records = info_rejestrator_ar.number_records;
+                unsigned int first_number = (info_rejestrator_ar.first_number < 0) ? 0 : (info_rejestrator_ar.first_number + 1);
+                unsigned int last_number  = (info_rejestrator_ar.last_number  < 0) ? 0 : (info_rejestrator_ar.last_number + 1);
+                
+                if (first_number == 0) number_records = 0;
+                else if (first_number >= last_number) number_records = first_number - last_number + 1;
+                else number_records = NUMBER_FATFS_NAME - last_number + first_number + 1;
+                
                 type_registrator = INDEX_ML_ANALOG_REGISTRATOR_INFO;
               }
               else if (current_ekran.current_level == EKRAN_LIST_DIGITAL_REGISTRATOR_RECORDS)
@@ -3654,6 +3659,12 @@ void main_manu_function(void)
                   //Переходимо на меню відображення витримок для аналогового реєстратора
                   current_ekran.current_level = EKRAN_TIMEOUT_ANALOG_REGISTRATOR;
                 }
+                else if(current_ekran.index_position == INDEX_ML_CONTROL_ANALOG_REGISTRATOR)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення управління для аналогового реєстратора
+                  current_ekran.current_level = EKRAN_CONTROL_AR;
+                }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
@@ -3943,24 +3954,35 @@ void main_manu_function(void)
               }
               else if (
                        (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS) &&
-                       (info_rejestrator_ar.number_records > 0) &&
                        ((clean_rejestrators & CLEAN_AR) == 0)
                       )
               {
-                //Натисну кнопка Enter у вікні вибору запису аналогового реєстратора і реально є записи для відображення
+                unsigned int first_number = (info_rejestrator_ar.first_number < 0) ? 0 : (info_rejestrator_ar.first_number + 1);
+                unsigned int last_number  = (info_rejestrator_ar.last_number  < 0) ? 0 : (info_rejestrator_ar.last_number + 1);
                 
-                //Запам'ятовуємо, який номер запису дискретного реєстратори ми намагаємося продивитися
-                number_record_of_ar_for_menu = current_ekran.index_position;
+                int number_records;
+                if (first_number == 0) number_records = 0;
+                else if (first_number >= last_number) number_records = first_number - last_number + 1;
+                else number_records = NUMBER_FATFS_NAME - last_number + first_number + 1;
                 
-                //Подаємо команду зчитати дані у бувер пам'яті
-                control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU;
+                if (
+                    (number_records > 0) && 
+                    (current_ekran.index_position < number_records)
+                   )
+                {
+                  //Натисну кнопка Enter у вікні вибору запису аналогового реєстратора і реально є записи для відображення
                 
-                //Виставляємо повідомлення, що поки дані не будуть зчитані, то екран треба перерисовувати кожну секунду
-                rewrite_ekran_once_more = 1;
-                //Виставляємо новий екран, який треба відобразити на РКІ
-                current_ekran.current_level = EKRAN_DATA_LADEL_AR;
-                current_ekran.index_position = 0; //При відкриванні цих вікон з старших розділів меню завжди треба попадати на найновіший запис
-                current_ekran.edition = 0;
+                  //Запам'ятовуємо, який номер запису дискретного реєстратори ми намагаємося продивитися
+                  number_record_of_ar_for_menu = current_ekran.index_position;
+                  _SET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU);
+                    
+                  //Виставляємо повідомлення, що поки дані не будуть зчитані, то екран треба перерисовувати кожну секунду
+                  rewrite_ekran_once_more = 1;
+                  //Виставляємо новий екран, який треба відобразити на РКІ
+                  current_ekran.current_level = EKRAN_DATA_LADEL_AR;
+                  current_ekran.index_position = 0; //При відкриванні цих вікон з старших розділів меню завжди треба попадати на найновіший запис
+                  current_ekran.edition = 0;
+                }
               }
               else if (
                        (current_ekran.current_level == EKRAN_LIST_DIGITAL_REGISTRATOR_RECORDS) && 
@@ -4791,7 +4813,13 @@ void main_manu_function(void)
   
                 if (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS)
                 {
-                  number_records = info_rejestrator_ar.number_records;
+                  unsigned int first_number = (info_rejestrator_ar.first_number < 0) ? 0 : (info_rejestrator_ar.first_number + 1);
+                  unsigned int last_number  = (info_rejestrator_ar.last_number  < 0) ? 0 : (info_rejestrator_ar.last_number + 1);
+                
+                  if (first_number == 0) number_records = 0;
+                  else if (first_number >= last_number) number_records = first_number - last_number + 1;
+                  else number_records = NUMBER_FATFS_NAME - last_number + first_number + 1;
+
                   type_registrator = INDEX_ML_ANALOG_REGISTRATOR_INFO;
                 }
                 else if (current_ekran.current_level == EKRAN_LIST_DIGITAL_REGISTRATOR_RECORDS)
@@ -5610,7 +5638,13 @@ void main_manu_function(void)
   
                 if (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS)
                 {
-                  number_records = info_rejestrator_ar.number_records;
+                  unsigned int first_number = (info_rejestrator_ar.first_number < 0) ? 0 : (info_rejestrator_ar.first_number + 1);
+                  unsigned int last_number  = (info_rejestrator_ar.last_number  < 0) ? 0 : (info_rejestrator_ar.last_number + 1);
+                
+                  if (first_number == 0) number_records = 0;
+                  else if (first_number >= last_number) number_records = first_number - last_number + 1;
+                  else number_records = NUMBER_FATFS_NAME - last_number + first_number + 1;
+                
                   type_registrator = INDEX_ML_ANALOG_REGISTRATOR_INFO;
                 }
                 else if (current_ekran.current_level == EKRAN_LIST_DIGITAL_REGISTRATOR_RECORDS)
@@ -5891,6 +5925,7 @@ void main_manu_function(void)
     case EKRAN_TIMEOUT_DF7:
     case EKRAN_TIMEOUT_DF8:
     case EKRAN_TIMEOUT_ANALOG_REGISTRATOR:
+    case EKRAN_CONTROL_AR:
     case EKRAN_VIEW_SETTING_LANGUAGE:
     case EKRAN_CHOSE_EXTRA_SETTINGS:
     case EKRAN_VIEW_GRUPA_USTAVOK:
@@ -6156,7 +6191,7 @@ void main_manu_function(void)
                      &&
                      ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
                     )
-                   )
+                  )
               {
                 current_ekran.index_position++;
                 if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_APV) current_ekran.index_position = 0;
@@ -6678,6 +6713,13 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_TIMEOUT_ANALOG_REGISTRATOR] = current_ekran.index_position;
               //Формуємо екран витримок аналогового реєстратора
               make_ekran_timeout_analog_registrator();
+            }
+            else if(current_ekran.current_level == EKRAN_CONTROL_AR)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_AR) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_CONTROL_AR] = current_ekran.index_position;
+              //Формуємо екран управління аналогового реєстратора
+              make_ekran_control_ar();
             }
             else if(current_ekran.current_level == EKRAN_VIEW_SETTING_LANGUAGE)
             {
@@ -7869,6 +7911,10 @@ void main_manu_function(void)
                 {
                   edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] = current_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1];
                 }
+                else if(current_ekran.current_level == EKRAN_CONTROL_AR)
+                {
+                  edition_settings.control_ar = current_settings.control_ar;
+                }
                 else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
                   if (current_ekran.index_position == INDEX_ML_TMOPREFAULT)
@@ -8921,6 +8967,10 @@ void main_manu_function(void)
                   {
                     if (edition_settings.postfault_number_periods != current_settings.postfault_number_periods) found_changes = 1;
                   }
+                }
+                else if(current_ekran.current_level == EKRAN_CONTROL_AR)
+                {
+                  if (edition_settings.control_ar != current_settings.control_ar) found_changes = 1;
                 }
                 else if(current_ekran.current_level == EKRAN_VIEW_SETTING_LANGUAGE)
                 {
@@ -12522,63 +12572,59 @@ void main_manu_function(void)
                 }
                 else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
-                  /*Встановлюємо симафор - суть якого полягає у тому, що якщо процес запису нової 
-                  аварії не йде - то на час його установлення новий запис починати не можна, якщо ж вже іде ноий запис,
-                  то він має продовжуватися і, навпаки, блокувати роботу аналогового реєстратора не можна*/
-                  semaphore_read_state_ar_record = 1;
-                  
-                  if (state_ar_record == STATE_AR_NO_RECORD)
+                  if (current_ekran.index_position == INDEX_ML_TMOPREFAULT)
                   {
-                    /*На даний момент не йде запис текучого аналогового аварійного процесу,
-                    тому для зміни часових настройок тимчасово встановлюємо стан роботи
-                    аналогового реєстратора у заблокований режим*/
-                    state_ar_record = STATE_AR_TEMPORARY_BLOCK; 
-                    
-                    if (current_ekran.index_position == INDEX_ML_TMOPREFAULT)
+                    if (check_data_setpoint((edition_settings.prefault_number_periods*20), TIMEOUT_PREFAULT_MIN, TIMEOUT_PREFAULT_MAX) == 1)
                     {
-                      if (check_data_setpoint((edition_settings.prefault_number_periods*20), TIMEOUT_PREFAULT_MIN, TIMEOUT_PREFAULT_MAX) == 1)
+                      if (edition_settings.prefault_number_periods != current_settings.prefault_number_periods)
                       {
-                        if (edition_settings.prefault_number_periods != current_settings.prefault_number_periods)
-                        {
-                          //Помічаємо, що поле структури зараз буде змінене
-                          changed_settings = CHANGED_ETAP_EXECUTION;
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
                         
-                          current_settings.prefault_number_periods = edition_settings.prefault_number_periods;
-                          //Виконуємо дії по зміні часових витримок аналогового реєстратора
-                          actions_after_changing_tiomouts_ar();
-                          //Формуємо запис у таблиці настройок про зміну  і ініціюємо запис у EEPROM нових настройок
-                          fix_change_settings(0, 1);
-                        }
-                        //Виходимо з режиму редагування
-                        current_ekran.edition = 0;
+                        current_settings.prefault_number_periods = edition_settings.prefault_number_periods;
+
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
                       }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
                     }
-                    else
-                    {
-                      if (check_data_setpoint((edition_settings.postfault_number_periods*20), TIMEOUT_POSTFAULT_MIN, TIMEOUT_POSTFAULT_MAX) == 1)
-                      {
-                        if (edition_settings.postfault_number_periods != current_settings.postfault_number_periods)
-                        {
-                          //Помічаємо, що поле структури зараз буде змінене
-                          changed_settings = CHANGED_ETAP_EXECUTION;
-                        
-                          current_settings.postfault_number_periods = edition_settings.postfault_number_periods;
-                          //Виконуємо дії по зміні часових витримок аналогового реєстратора
-                          actions_after_changing_tiomouts_ar();
-                          //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
-                          fix_change_settings(0, 1);
-                        }
-                        //Виходимо з режиму редагування
-                        current_ekran.edition = 0;
-                      }
-                    }
-                    
-                    //Розблоковуємо роботу аналогового реєстратора
-                    state_ar_record = STATE_AR_NO_RECORD;
                   }
-                  
-                  //Знімаємо семафор
-                  semaphore_read_state_ar_record = 0;
+                  else
+                  {
+                    if (check_data_setpoint((edition_settings.postfault_number_periods*20), TIMEOUT_POSTFAULT_MIN, TIMEOUT_POSTFAULT_MAX) == 1)
+                    {
+                      if (edition_settings.postfault_number_periods != current_settings.postfault_number_periods)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                        current_settings.postfault_number_periods = edition_settings.postfault_number_periods;
+
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+                }
+                else if(current_ekran.current_level == EKRAN_CONTROL_AR)
+                {
+                  if ((edition_settings.control_ar & ((unsigned int)(~CTR_AR_MASKA))) == 0)
+                  {
+                    if (edition_settings.control_ar != current_settings.control_ar)
+                    {
+                      //Помічаємо, що поле структури зараз буде змінене
+                      changed_settings = CHANGED_ETAP_EXECUTION;
+
+                      current_settings.control_ar = edition_settings.control_ar;
+                      //Формуємо запис у таблиці настройок про зміну і ініціюємо запис у EEPROM нових настройок
+                      fix_change_settings(0, 1);
+                    }
+                    //Виходимо з режиму редагування
+                    current_ekran.edition = 0;
+                  }
                 }
                 else if(current_ekran.current_level == EKRAN_VIEW_SETTING_LANGUAGE)
                 {
@@ -12651,20 +12697,8 @@ void main_manu_function(void)
                   "  Out of Limits ",
                   "Вых.за диапазон "
                 };
-                static const unsigned char information_about_error2[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
-                {
-                  " Опер.вр.недост.",
-                  "Опер.тимч.недост",
-                  " Op.unavailable ",
-                  " Опер.вр.недост."
-                };
 
                 static const unsigned char (*point_to_information_about_error)[MAX_COL_LCD] = information_about_error1;
-                if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
-                {
-                  if (state_ar_record != STATE_AR_NO_RECORD)
-                    point_to_information_about_error = information_about_error2;
-                }
                 make_ekran_about_error(point_to_information_about_error);
               }
               else
@@ -13182,7 +13216,7 @@ void main_manu_function(void)
                        &&
                        ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
                       )
-                     )
+                    )
                 {
                   current_ekran.index_position--;
                   if(current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CONTROL_APV - 1;
@@ -14182,6 +14216,13 @@ void main_manu_function(void)
                 //Формуємо екран витримок аналогового реєстратора
                 make_ekran_timeout_analog_registrator();
               }
+              else if(current_ekran.current_level == EKRAN_CONTROL_AR)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_CONTROL_AR - 1;
+                position_in_current_level_menu[EKRAN_CONTROL_AR] = current_ekran.index_position;
+                //Формуємо екран відображення
+                make_ekran_control_ar();
+              }
               else if(current_ekran.current_level == EKRAN_VIEW_SETTING_LANGUAGE)
               {
                 if(current_ekran.edition == 0)
@@ -14714,7 +14755,7 @@ void main_manu_function(void)
                        &&
                        ((current_settings.configuration & (1<<UROV_BIT_CONFIGURATION)) == 0)
                       )
-                     )
+                    )
                 {
                   current_ekran.index_position++;
                   if(current_ekran.index_position >= MAX_ROW_FOR_CONTROL_APV) current_ekran.index_position = 0;
@@ -15713,6 +15754,13 @@ void main_manu_function(void)
                 }
                 //Формуємо екран витримок аналогового реєстратора
                 make_ekran_timeout_analog_registrator();
+              }
+              else if(current_ekran.current_level == EKRAN_CONTROL_AR)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_CONTROL_AR) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_CONTROL_AR] = current_ekran.index_position;
+                //Формуємо екран відображення
+                make_ekran_control_ar();
               }
               else if(current_ekran.current_level == EKRAN_VIEW_SETTING_LANGUAGE)
               {
@@ -17713,6 +17761,16 @@ void main_manu_function(void)
                 //Формуємо екран витримок аналогового реєстратора
                 make_ekran_timeout_analog_registrator();
               }
+              else if(current_ekran.current_level == EKRAN_CONTROL_AR)
+              {
+                unsigned int value = (1 << current_ekran.index_position);
+          
+                //Міняємо на протилежний відповідний біт для вибраної позиції
+                edition_settings.control_ar ^= value;
+
+                //Формуємо екран відображення
+                make_ekran_control_ar();
+              }
               else if(current_ekran.current_level == EKRAN_CHOSE_EXTRA_SETTINGS)
               {
                 //Виділяємо, який біт треба міняти
@@ -19687,6 +19745,16 @@ void main_manu_function(void)
                 //Формуємо екран витримок аналогового реєстратора
                 make_ekran_timeout_analog_registrator();
               }
+              else if(current_ekran.current_level == EKRAN_CONTROL_AR)
+              {
+                unsigned int value = (1 << current_ekran.index_position);
+          
+                //Міняємо на протилежний відповідний біт для вибраної позиції
+                edition_settings.control_ar ^= value;
+
+                //Формуємо екран відображення
+                make_ekran_control_ar();
+              }
               else if(current_ekran.current_level == EKRAN_CHOSE_EXTRA_SETTINGS)
               {
                 //Виділяємо, який біт треба міняти
@@ -20267,7 +20335,6 @@ void main_manu_function(void)
                       else total_error_sw_fixed();
                     }
 #endif                    
-                    
                     
                     //Перевіряємо, чи ми не вийшли за допустиму кількість функцій
                     if(current_ekran.index_position >= NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)

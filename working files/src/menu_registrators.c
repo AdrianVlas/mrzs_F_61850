@@ -80,7 +80,15 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
   unsigned int index_of_ekran;
   unsigned int number_records;
   
-  if (type_registrator == INDEX_ML_ANALOG_REGISTRATOR_INFO) number_records = info_rejestrator_ar.number_records;
+  if (type_registrator == INDEX_ML_ANALOG_REGISTRATOR_INFO) 
+  {
+    unsigned int first_number = (info_rejestrator_ar.first_number < 0) ? 0 : (info_rejestrator_ar.first_number + 1);
+    unsigned int last_number  = (info_rejestrator_ar.last_number  < 0) ? 0 : (info_rejestrator_ar.last_number + 1);
+                
+    if (first_number == 0) number_records = 0;
+    else if (first_number >= last_number) number_records = first_number - last_number + 1;
+    else number_records = NUMBER_FATFS_NAME - last_number + first_number + 1;
+  }
   else if (type_registrator == INDEX_ML_DIGITAL_REGISTRATOR_INFO) number_records = info_rejestrator_dr.number_records;
   else number_records = info_rejestrator_pr_err.number_records;
   
@@ -409,7 +417,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
   if (
       ((type_of_registrator == 0) && (buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] == LABEL_START_RECORD_DR    )) ||
       ((type_of_registrator == 1) && (buffer_for_manu_read_record[0] == LABEL_START_RECORD_PR_ERR)) ||
-      ((type_of_registrator == 2) && (buffer_for_manu_read_record[0] == LABEL_START_RECORD_AR) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU) == 0))
+      ((type_of_registrator == 2) && !_GET_OUTPUT_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU) && (buffer_for_manu_read_record[0] == LABEL_START_RECORD_AR))
      )
   {
     //Пеший байт сходиться із міткою початку запису - вважаємо, що у буфері достовірні дані
@@ -511,7 +519,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
     //Відображення курору по вертикалі
     current_ekran.position_cursor_y = position_temp & (MAX_ROW_LCD - 1);
   }
-  else if ((type_of_registrator == 2) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU) != 0))
+  else if ((type_of_registrator == 2) && _GET_OUTPUT_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU))
   {
     //Процес зчитування даних з DataFlash ще не закінчився
     static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 

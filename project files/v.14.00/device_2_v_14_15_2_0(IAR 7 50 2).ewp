@@ -327,6 +327,7 @@
           <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
           <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
           <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+          <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
           <state>$PROJ_DIR$\..\..\SystemView\Config</state>
           <state>$PROJ_DIR$\..\..\SystemView\OS</state>
           <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -1228,6 +1229,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -1492,6 +1494,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -1756,6 +1759,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -2021,6 +2025,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -2287,6 +2292,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -2584,6 +2590,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -2873,6 +2880,7 @@
                     <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                     <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                     <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+					<state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                     <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                     <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                     <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -3162,6 +3170,7 @@
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                  <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                   <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                   <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                   <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -3429,6 +3438,7 @@
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                  <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                   <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                   <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                   <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -3721,6 +3731,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -3985,6 +3996,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -4247,6 +4259,7 @@
                 <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
                 <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
+                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                 <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                 <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                 <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -5125,6 +5138,7 @@
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                  <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                   <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                   <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                   <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -5431,6 +5445,7 @@
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                  <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                   <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                   <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                   <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -5696,6 +5711,7 @@
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                  <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                   <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                   <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                   <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -5960,6 +5976,7 @@
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                  <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                   <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                   <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                   <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
@@ -6224,6 +6241,7 @@
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
                   <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                  <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
                   <state>$PROJ_DIR$\..\..\SystemView\Config</state>
                   <state>$PROJ_DIR$\..\..\SystemView\OS</state>
                   <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>

@@ -520,7 +520,7 @@ void SPI_ADC_IRQHandler(void)
       command_word |= (1 << I_3I0)|
                       (1 << I_Ia) | (1 << I_Ib_I04) | (1 << I_Ic) |
                       (1 << I_Ua) | (1 << I_Ub    ) | (1 << I_Uc) |
-                       (1 << I_3U0);
+                      (1 << I_3U0);
         
     }
       
@@ -1320,9 +1320,10 @@ void SPI_ADC_IRQHandler(void)
     /********************************************************
     Формуємо масив миттєвих значень і виконуємо операції для аналогового реєстратора
     ********************************************************/
-    unsigned int number_postfault_slices = 0;
     if (head_data_for_oscylograph_tmp != tail_data_for_oscylograph)
     {
+      unsigned int working_ar = false; /*по замовчуванню ставимо, що Аналоговий реєстратор не працює*/
+      unsigned int index_array_ar_current_before = index_array_ar_current;
       while (
              (head_data_for_oscylograph_tmp != tail_data_for_oscylograph) &&
              (data_for_oscylograph[tail_data_for_oscylograph].DATA_fix != 0)
@@ -1353,22 +1354,84 @@ void SPI_ADC_IRQHandler(void)
           for (unsigned int i = 0; i < N_BIG; i++)  active_functions_trg[i] |= *(label_to_active_functions_source + i);
 
           unsigned short int *label_to_active_functions_trg = (unsigned short int*)active_functions_trg;
-          for(unsigned int i = 0; i < number_word_digital_part_ar; i++) 
+          for(unsigned int i = 0; i < NUMBER_WORD_DIGITAL_PART_AR; i++) 
           {
-//            array_ar[index_array_ar_current++] = *(label_to_active_functions_trg + i);
             AR_WRITE(index_array_ar_current, *(label_to_active_functions_trg + i));
           }
           //Індекс масиву об'єднаних виборок для аналогового реєстратора
           if (index_array_ar_current >= SIZE_BUFFER_FOR_AR) index_array_ar_current = 0;/*Умова мала б бути ==, але щоб перестахуватися на невизначену помилку я поставив >=*/
-          
-          //Інкрементуємо кількість зрізів доданих у даному перериванні до післяаварійного масиву об'єднаних виборок для аналогового реєстратора
+
+          unsigned int state_ar_record_m_tmp = data_for_oscylograph[tail_data_for_oscylograph_tmp].state_ar_record;
           if (
-              (data_for_oscylograph[tail_data_for_oscylograph_tmp].state_ar_record == STATE_AR_START) ||
-              (data_for_oscylograph[tail_data_for_oscylograph_tmp].state_ar_record == STATE_AR_SAVE_SRAM_AND_SAVE_FLASH)
+              (state_ar_record_m_tmp == STATE_AR_NONE_M) &&
+              (
+               (state_ar_record_fatfs == STATE_AR_NONE_FATFS) ||
+               (state_ar_record_fatfs == STATE_AR_STOP_WRITE_FATFS) ||
+               (state_ar_record_fatfs == STATE_AR_MEMORY_FULL_FATFS) ||
+               (state_ar_record_fatfs == STATE_AR_BLOCK_FATFS)
+              )/*умова, що на даний момент часу не ішов запис даних у енергонезалежну пам'ять*/
              )
           {
-            number_postfault_slices++;
+            working_ar = false;
+            //Випадок, коли Аналоговий реєстратор не працює
+//            index_array_ar_tail = index_array_ar_heat = index_array_ar_current;
+            index_array_ar_tail = index_array_tail_min = index_array_ar_heat = index_array_ar_current;
+            tail_to_heat = current_to_tail = false;
           }
+          else
+          {
+            working_ar = true;
+            
+            if (state_ar_record_m_tmp == STATE_AR_WORK_M)
+            {
+              /*
+              Вже новий зріз післяаварійного масиву доданий у масив
+              */
+              if (
+                  (prev_state_ar_record_m == STATE_AR_NONE_M) &&
+                  (state_ar_record_fatfs == STATE_AR_WAIT_TO_WRITE_FATFS)
+                 )   
+              {
+                //Умова, що треба включити доаварійний масив для запису
+              
+                int difference;
+                /*
+                оскільки 1 післяаварійних зрізів доданио у масив,
+                то для визначення першої мітки післяаварійного масиву від index_array_ar_current
+                відняти кількість миттєвих значень у одному зрізі
+                */
+                /*
+                Встановлюємо мітку першого миттєвого значееня післяаваріного масиву і 
+                тимчасово помісчаємо її у змінну "вигрузки" для того, щоб дальша програма 
+                мала "універсальний", тобто прстіший, вигляд
+                */
+                difference = index_array_ar_current - (NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR);
+                if (difference >= 0) index_array_ar_tail = difference;
+                else index_array_ar_tail = difference + SIZE_BUFFER_FOR_AR;
+
+                //Встановлюємо мітку "вигрузки"
+//                difference = index_array_ar_tail - (current_settings_prt.prefault_number_periods << VAGA_NUMBER_POINT_AR)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR);
+
+               //Встановлюємо мітку "вигрузки" в умовах холодного або близького КЗ з пропаданням оперативного живлення
+                difference = index_array_ar_tail - (AR_TAIL_MIN_NUMBER_PERIOD << VAGA_NUMBER_POINT_AR)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR);
+                if (difference >= 0) index_array_tail_min = difference;
+                else index_array_tail_min = difference + SIZE_BUFFER_FOR_AR;
+
+                //Встановлюємо мітку "вигрузки"
+                difference = index_array_ar_tail - (header_ar.prefault_number_periods << VAGA_NUMBER_POINT_AR)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR);
+
+
+                if (difference >= 0) index_array_ar_tail = difference;
+                else index_array_ar_tail = difference + SIZE_BUFFER_FOR_AR;
+              }
+
+              index_array_ar_heat = index_array_ar_current;
+              tail_to_heat = false;
+            }
+          }
+          
+          prev_state_ar_record_m = state_ar_record_m_tmp;
+        
         }
         prescaler_ar++;
     
@@ -1376,142 +1439,54 @@ void SPI_ADC_IRQHandler(void)
 
         if (++tail_data_for_oscylograph >= MAX_INDEX_DATA_FOR_OSCYLOGRAPH) tail_data_for_oscylograph = 0;
       }
-    }
-//    /**************************************************/
-//    //При необхідності повідомляємо про вихід з формування миттєвих значень
-//    /**************************************************/
-//    if (wait_of_receiving_current_data  == true) wait_of_receiving_current_data  = false;
-//    /**************************************************/
 
-    //Управління аналоговим реємстратором
-    if (
-        ((state_ar_record == STATE_AR_START) && (number_postfault_slices != 0)) || 
-        (state_ar_record == STATE_AR_SAVE_SRAM_AND_SAVE_FLASH)
-       )
-    {
-      static unsigned int uncopied_postfault_time_sapmles;
-
-      /*
-      Вже новий зріз післяаварійного масиву у функції доданий у масив
-      */
-        
-      if (state_ar_record == STATE_AR_START)
+      /***
+      Визначаємо, чи не відбулося переповнення      
+      working_ar - значення у цьому місці відповідає останньому часовому зрізу, який доданий у буфер
+      ***/
+      
+      if (working_ar != false)
       {
-        int difference;
-        /*
-        оскільки number_postfault_slices післяаварійних зрізів доданио у масив,
-        то для визначення першої мітки післяаварійного масиву від index_array_ar_current
-        відняти кількість миттєвих значень у одному зрізі
-        */
-        /*
-        Встановлюємо мітку першого миттєвого значееня післяаваріного масиву і 
-        тимчасово помісчаємо її у змінну "вигрузки" для того, щоб дальша програма 
-        мала "універсальний", тобто прстіший, вигляд
-        */
-        difference = index_array_ar_current - number_postfault_slices*(NUMBER_ANALOG_CANALES + number_word_digital_part_ar);
-        if (difference >= 0) index_array_ar_heat = difference;
-        else index_array_ar_heat = difference + SIZE_BUFFER_FOR_AR;
-
-        //Встановлюємо мітку "вигрузки"
-        difference = index_array_ar_heat - (current_settings_prt.prefault_number_periods << VAGA_NUMBER_POINT_AR)*(NUMBER_ANALOG_CANALES + number_word_digital_part_ar);
-        if (difference >= 0) index_array_ar_tail = difference;
-        else index_array_ar_tail = difference + SIZE_BUFFER_FOR_AR;
+        /***
+        Початок відділку беремо від index_array_ar_current_before;
+        ***/
+        
+        int end_tmp = index_array_ar_current - index_array_ar_current_before;
+        if (end_tmp < 0) end_tmp += SIZE_BUFFER_FOR_AR;
+        
+        int tail_tmp = index_array_ar_tail - index_array_ar_current_before;
+        if (
+            (tail_tmp < 0)
+            ||
+            (
+             (tail_tmp == 0) &&
+             (current_to_tail == false)
+            ) 
+           )
+        {
+          tail_tmp += SIZE_BUFFER_FOR_AR;
+        }
+        
+        if (tail_tmp <= end_tmp)
+        {
+          current_to_tail = true;
           
-        //Визначаємо скільки треба зрізів записати для післяаварійного масиву
-        /*
-        !!!Я вибрав саме кількість зрізів а не кількість миттєвих значень, щоб числа
-        були меншими і можна було для контролю не рухатися з кроком у кількість каналів,
-        а змінюючи цю велицину на одиницю!!!
-        */
-        uncopied_postfault_time_sapmles = (current_settings_prt.postfault_number_periods << VAGA_NUMBER_POINT_AR);
-
-        /*
-        Щоб не було ситуації, що переривання по таймеру ще не відмітило деякі часові
-        зрізи, що їх треба додати до післяаварійного масиву - то помічаємо ці часові зрізи, що вони вже 
-        мають бути включені у аналоговий реєстратор.
-        */
-        unsigned int tail_data_for_oscylograph_tmp = tail_data_for_oscylograph;
-        while (head_data_for_oscylograph_tmp != tail_data_for_oscylograph_tmp)
-        {
-           data_for_oscylograph[tail_data_for_oscylograph_tmp++].state_ar_record = state_ar_record;
-           if (tail_data_for_oscylograph_tmp >= MAX_INDEX_DATA_FOR_OSCYLOGRAPH) tail_data_for_oscylograph_tmp = 0;
-        }
-
-        //Переходимо у стан роботи аналогового реєстратора "загрузка і вигрузка"
-        state_ar_record = STATE_AR_SAVE_SRAM_AND_SAVE_FLASH;
-
-      }
+          if (tail_tmp < end_tmp)
+          {
+            //Помилкова ситуація, яка викликана переповненням 
+            _SET_BIT(set_diagnostyka, ERROR_AR_OVERLOAD_BUFFER_BIT);
         
-      /*
-      Встановлюємо мітку "загрузки" і діагностику переповнення буферу з таких 
-      міркувань, що наша програма побудована на принципі, що до цього часу у 
-      змінній index_array_ar_heat знаходиться значення мітки "загрузки" до додавання 
-      number_postfault_slices зрізів. 
-      При цьосму вже додано number_postfault_slices зрізів і змінна
-      index_array_ar_current відповідає з текучий стан "заповнення" буферу миттєвих 
-      значень для аналогового реєстратора.
-      */
-
-      /*
-      Спочатку здійснюємо контроль переповнення буферу (теопретично ця помилка ніколи б
-      не мала виникати, якщо я правильно вибрав розмір масиву з уразуваннями 
-      максимальними розмірами доаварійного і післяаварійного масивів і швидкостей
-      "загрузки" і "вигрузки")
-      */
-      int difference_before, difference_after;
-      unsigned int index_array_ar_tail_tmp = index_array_ar_tail;
-      difference_before = (index_array_ar_heat - index_array_ar_tail_tmp);
-      if (difference_before < 0) difference_before += SIZE_BUFFER_FOR_AR;
-      difference_after = (index_array_ar_current - index_array_ar_tail_tmp);
-      if (difference_after < 0) difference_after += SIZE_BUFFER_FOR_AR;
-      if ((difference_after - difference_before) != number_postfault_slices*(NUMBER_ANALOG_CANALES + number_word_digital_part_ar))
-      {
-        //Помилкова ситуація, яка викликана переповненням 
-        _SET_BIT(set_diagnostyka, ERROR_AR_OVERLOAD_BUFFER_BIT);
-      }
-      else
-      {
-        //Нема помилкової ситуації, яка викликана переповненням
-        _SET_BIT(clear_diagnostyka, ERROR_AR_OVERLOAD_BUFFER_BIT);
-      }
-
-      //Встановлюємо мітку "загрузки" і кількість зрізів, які ще треба добавити до післяаварійного масиву
-      if (uncopied_postfault_time_sapmles >= number_postfault_slices)
-      {
-        index_array_ar_heat = index_array_ar_current;
-        uncopied_postfault_time_sapmles -= number_postfault_slices;
-      }
-      else
-      {
-        int difference = index_array_ar_current - (number_postfault_slices - uncopied_postfault_time_sapmles);
-        if (difference >= 0) index_array_ar_heat = difference;
-        else index_array_ar_heat = difference + SIZE_BUFFER_FOR_AR;
-
-        uncopied_postfault_time_sapmles = 0;
-      }
-
-      if (uncopied_postfault_time_sapmles == 0)
-      {
-        /*
-        Всі післяаварійні зрізи вже запаисані і тому переводимо режим роботи 
-        аналогового реєстратора у режим тільки запису тих значень які ще не записані
-        */
-        state_ar_record = STATE_AR_ONLY_SAVE_FLASH;
-
-        /*
-        Щоб не було ситуації, що переривання по таймеру вже відмітило нові часові
-        зрізи, які треба додати до післяаварійного масиву, але ще вони не оброблені,
-        бо не було оцифровки АЦП - то помічаємо ці часові зрізи, що вони вже 
-        виходять за післяаварійний масив.
-        */
-        unsigned int tail_data_for_oscylograph_tmp = tail_data_for_oscylograph;
-        while (head_data_for_oscylograph_tmp != tail_data_for_oscylograph_tmp)
-        {
-           data_for_oscylograph[tail_data_for_oscylograph_tmp++].state_ar_record = state_ar_record;
-           if (tail_data_for_oscylograph_tmp >= MAX_INDEX_DATA_FOR_OSCYLOGRAPH) tail_data_for_oscylograph_tmp = 0;
+            state_ar_record_m = STATE_AR_BLOCK_M;
+          }
         }
-      }
+        else current_to_tail = false;
         
+        diff_index_heat_tail = tail_tmp - end_tmp;
+      }
+      else diff_index_heat_tail = -1;
+      
+      diff_index_heat_tail = index_array_ar_current - index_array_ar_tail;
+      if (diff_index_heat_tail < 0) diff_index_heat_tail += SIZE_BUFFER_FOR_AR;
     }
     /*******************************************************/
     
@@ -2049,31 +2024,6 @@ void calc_power_and_energy(void)
 /*****************************************************/
 
 /*****************************************************/
-//Діагностика АЦП
-/*****************************************************/
-//inline void diagnostyca_adc_execution(void)
-//{
-//  if (gnd_adc1 >0x51) _SET_BIT(set_diagnostyka, ERROR_GND_ADC1_TEST_BIT);
-//  else _SET_BIT(clear_diagnostyka, ERROR_GND_ADC1_TEST_BIT);
-//
-//  if (gnd_adc2 >0x51) _SET_BIT(set_diagnostyka, ERROR_GND_ADC2_TEST_BIT);
-//  else _SET_BIT(clear_diagnostyka, ERROR_GND_ADC2_TEST_BIT);
-//
-//  if ((vref_adc1 <0x709) || (vref_adc1 > 0x8f5)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC1_TEST_BIT);
-//  else _SET_BIT(clear_diagnostyka,ERROR_VREF_ADC1_TEST_BIT);
-//
-//  if ((vref_adc2 <0x709) || (vref_adc2 > 0x8f5)) _SET_BIT(set_diagnostyka, ERROR_VREF_ADC2_TEST_BIT);
-//  else _SET_BIT(clear_diagnostyka,ERROR_VREF_ADC2_TEST_BIT);
-//
-//  if ((vdd_adc1 <0x8F9) || (vdd_adc1 > 0xE13)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC1_TEST_BIT);
-//  else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC1_TEST_BIT);
-//
-//  if ((vdd_adc2 <0x8F9) || (vdd_adc2 > 0xE13)) _SET_BIT(set_diagnostyka, ERROR_VDD_ADC2_TEST_BIT);
-//  else _SET_BIT(clear_diagnostyka, ERROR_VDD_ADC2_TEST_BIT);
-//}
-/*****************************************************/
-
-/*****************************************************/
 //Пошук розрядності числа
 /*****************************************************/
 inline unsigned int norma_value(unsigned long long y)
@@ -2377,6 +2327,50 @@ inline void detector_kuta_nzz(int ortogonal_local_calc[])
 /*****************************************************/
 inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_group_stp) 
 {
+  for (unsigned int i = 0; i < 3; i++)
+  {
+    unsigned int index_I = 0, index_U = 0;
+    switch (i)
+    {
+    case 0:
+      {
+        index_I = IM_IA;
+        index_U = IM_UBC;
+
+        break;
+      }
+    case 1:
+      {
+        index_I = IM_IB;
+        index_U = IM_UCA;
+
+        break;
+      }
+    case 2:
+      {
+        index_I = IM_IC;
+        index_U = IM_UAB;
+
+        break;
+      }
+    default:
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed();
+      }
+    }
+
+    unsigned int porig_Uxy;
+    if (Uxy_bilshe_porogu[i] == 0) porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_U_SECTOR_BLK/100;
+    else porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
+    Uxy_bilshe_porogu[i] = (measurement[index_U] >= porig_Uxy);
+      
+    unsigned int porig_Ix;
+    if (Ix_bilshe_porogu[i] == 0) porig_Ix = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_I_SECTOR_BLK/100;
+    else porig_Ix = PORIG_CHUTLYVOSTI_CURRENT;
+    Ix_bilshe_porogu[i]  = (measurement[index_I] >= porig_Ix );
+  }
+      
   for (unsigned int mtz = 0; mtz < 4; mtz++)
   {
     int a_cos_fi = 0, a_sin_fi = 0;
@@ -2427,62 +2421,42 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
   
     for (unsigned int i = 0; i < 3; i++)
     {
-      unsigned int index_I =  0, index_U = 0;
-      unsigned int index_I_ort = 0, index_U_ort = 0;
-      switch (i)
-      {
-      case 0:
-        {
-          index_I = IM_IA;
-          index_U = IM_UBC;
-
-          index_I_ort = FULL_ORT_Ia;
-          index_U_ort = FULL_ORT_Ubc;
-
-          break;
-        }
-      case 1:
-        {
-          index_I = IM_IB;
-          index_U = IM_UCA;
-
-          index_I_ort = FULL_ORT_Ib;
-          index_U_ort = FULL_ORT_Uca;
-
-          break;
-        }
-      case 2:
-        {
-          index_I = IM_IC;
-          index_U = IM_UAB;
-
-          index_I_ort = FULL_ORT_Ic;
-          index_U_ort = FULL_ORT_Uab;
-
-          break;
-        }
-      default:
-        {
-          //Теоретично цього ніколи не мало б бути
-          total_error_sw_fixed();
-        }
-      }
-
-      unsigned int porig_Uxy;
-      if (Uxy_bilshe_porogu[i] == 0) porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE*KOEF_POVERNENNJA_U_SECTOR_BLK/100;
-      else porig_Uxy = PORIG_CHUTLYVOSTI_VOLTAGE_ANGLE;
-      unsigned int Uxy_bilshe_porogu_tmp = Uxy_bilshe_porogu[i] = (measurement[index_U] >= porig_Uxy);
-      
-      unsigned int porig_Ix;
-      if (Ix_bilshe_porogu[i] == 0) porig_Ix = PORIG_CHUTLYVOSTI_CURRENT*KOEF_POVERNENNJA_I_SECTOR_BLK/100;
-      else porig_Ix = PORIG_CHUTLYVOSTI_CURRENT;
-      unsigned int Ix_bilshe_porogu_tmp = Ix_bilshe_porogu[i]  = (measurement[index_I] >= porig_Ix );
-
       if (
-          (Uxy_bilshe_porogu_tmp != 0) &&
-          (Ix_bilshe_porogu_tmp  != 0)
+          (Uxy_bilshe_porogu[i] != 0) &&
+          (Ix_bilshe_porogu[i]  != 0)
          )
       {
+        unsigned int index_I_ort = 0, index_U_ort = 0;
+        switch (i)
+        {
+        case 0:
+          {
+            index_I_ort = FULL_ORT_Ia;
+            index_U_ort = FULL_ORT_Ubc;
+
+            break;
+          }
+        case 1:
+          {
+            index_I_ort = FULL_ORT_Ib;
+            index_U_ort = FULL_ORT_Uca;
+
+            break;
+          }
+        case 2:
+          {
+            index_I_ort = FULL_ORT_Ic;
+            index_U_ort = FULL_ORT_Uab;
+
+            break;
+          }
+        default:
+          {
+            //Теоретично цього ніколи не мало б бути
+            total_error_sw_fixed();
+          }
+        }
+
 #define SIN_I   ortogonal_local_calc[2*index_I_ort    ]
 #define COS_I   ortogonal_local_calc[2*index_I_ort + 1]
 #define SIN_U   ortogonal_local_calc[2*index_U_ort    ]
@@ -3440,7 +3414,19 @@ void calc_measurement(unsigned int number_group_stp)
   /***/
   //Фазочутливий елемент для МТЗ (всіх ступенів)
   /***/
-  directional_mtz(ortogonal_calc, number_group_stp);
+  if ((current_settings_prt.configuration & (1<<MTZ_BIT_CONFIGURATION)) != 0)
+  {
+    directional_mtz(ortogonal_calc, number_group_stp);
+  }
+  else
+  {
+    for (size_t i = 0; i < 3; i++)
+    {
+      Uxy_bilshe_porogu[i] = 0;
+      Ix_bilshe_porogu[i] = 0;
+      for (size_t msz = 0; msz < 4; msz++) sector_directional_mtz[msz][i] = 0;
+    }
+  }
   /***/
 
   if (
@@ -3449,10 +3435,16 @@ void calc_measurement(unsigned int number_group_stp)
      )   
   {
     /***/
-    //Фазочутливий елемент для ТЗНП (всіх ступенів)
+    //Фазочутливий елемент для СЗНП (всіх ступенів)
     /***/
     directional_tznp(ortogonal_calc, number_group_stp);
     /***/
+  }
+  else
+  {
+    TZNP_3U0_bilshe_porogu = 0;
+    TZNP_3I0_r_bilshe_porogu = 0;
+    for (size_t sznp = 0; sznp < 3; sznp++) sector_directional_tznp[sznp] = 0;
   }
   
   if ((current_settings_prt.configuration & (1<<ZZ_BIT_CONFIGURATION)) != 0)
@@ -3465,6 +3457,11 @@ void calc_measurement(unsigned int number_group_stp)
       detector_kuta_nzz(ortogonal_calc);
       /***/
     }
+  }
+  else
+  {
+    sector_i_minus_u_1 = 0;
+    sector_i_minus_u_2 = 0;
   }
   
   /***/

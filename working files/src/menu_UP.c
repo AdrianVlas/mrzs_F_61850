@@ -504,20 +504,6 @@ void make_ekran_control_UP()
     {11, 8, 13, 12}
   };
   
-  static const uint8_t information_1[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
-  {
-    {"     Îòêë.      ", "      Âêë.      "},
-    {"     Âèìê.      ", "     Ââ³ìê.     "},
-    {"      Off       ", "       On       "},
-    {"     Ñšíä.      ", "     Êîñó.      "}
-  };
-  static const uint32_t cursor_x_1[MAX_NAMBER_LANGUAGE][2] = 
-  {
-   {4, 5},
-   {4, 4},
-   {5, 6},
-   {4, 4}
-  };
   uint8_t information_2[_UP_CTRL_NUMBER][MAX_COL_LCD] = 
   {
     "    Ia/Ib/Ic    ",
@@ -635,8 +621,8 @@ void make_ekran_control_UP()
     case 29:
       {
         uint32_t index = (point->control_UP >> ((i / MAX_ROW_FOR_CONTROL_UP)*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) & 0x1;
-        ctrl_info[i].information = information_1[index_language][index];
-        ctrl_info[i].cursor_x = cursor_x_1[index_language][index];
+        ctrl_info[i].information = information_off_on[index_language][index];
+        ctrl_info[i].cursor_x = cursor_x_off_on[index_language][index];
         break;
       }
     case 2:

@@ -54,7 +54,7 @@ void global_vareiables_installation(void)
   
   for (unsigned int i = 0; i < MAX_INDEX_DATA_FOR_OSCYLOGRAPH; i++)
   {
-    data_for_oscylograph[i].state_ar_record = STATE_AR_NO_RECORD;
+    data_for_oscylograph[i].state_ar_record = STATE_AR_NONE_M;
   }
   
   sector_1[0] = (int) (AMPLITUDA_SECTOR*/*cos*/arm_cos_f32(/*(double)*/(PI*((float)(  0 + SECTOR1 - POPRAVKA_NZZ))/180.0f)));
@@ -97,7 +97,7 @@ void global_vareiables_installation(void)
   /**************************/
   //Ініціалізація глобальних таймерів
   /**************************/
-  for(unsigned int i = 0; i < MAX_NUMBER_GLOBAL_TIMERS; i++) global_timers[i] = -1;
+  for(int *p = global_timers; p != (global_timers + _MAX_NUMBER_GLOBAL_TIMERS); ++p) *p = -1;
   /**************************/
 
   /**************************/
@@ -1702,7 +1702,7 @@ void min_settings(__SETTINGS *target_label)
   target_label->TCurrent = KOEF_TT_MIN;
   target_label->TCurrent04 = KOEF_TT04_MIN;
   target_label->TVoltage = KOEF_TN_MIN;
-  target_label->control_transformator = CTR_TRANSFORMATOR_PHASE_LINE;
+  target_label->control_transformator = MASKA_FOR_BIT(INDEX_ML_CTR_TRANSFORMATOR_PHASE_LINE);
 
   for(unsigned int i=0; i< ((M_ADDRESS_LAST_USER_REGISTER_DATA - M_ADDRESS_FIRST_USER_REGISTER_DATA) + 1); i++) target_label->user_register[i] = 0;
 

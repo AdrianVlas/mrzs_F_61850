@@ -1440,6 +1440,60 @@
         </group>
     </group>
     <group>
+        <name>FatFs</name>
+        <group>
+            <name>inc</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\diskio.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\fatfs.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ff.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ff_gen_drv.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ffconf.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ffconf_template.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\integer.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\user_diskio.h</name>
+            </file>
+        </group>
+        <group>
+            <name>src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\diskio.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\fatfs.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\ff.c</name>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\ff_gen_drv.c</name>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\user_diskio.c</name>
+            </file>
+        </group>
+    </group>
+    <group>
         <name>Linker</name>
         <group>
             <name>without iec61850</name>
@@ -1780,169 +1834,169 @@
                 </file>
             </group>
             <group>
-                <name>menu</name>
-                <group>
-                    <name>a.00.c.d</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_menu_outputs.h</name>
-                    </file>
-                </group>
-                <group>
-                    <name>without iec61850</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_diagnostyka.h</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_inputs.h</name>
-                    </file>
-                </group>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_lcd_and_keyboard.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_achr_chapv.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_apv.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_buttons.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_communication_parameters.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_data_time_settings.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_extra_settings.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_grupa_ustavok.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings_protection.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings_registrators.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings_switcher.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings_uvv.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_configuration.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_d_and.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_d_not.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_d_or.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_d_xor.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_df.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_dt.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_extended_logic.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_general_pickups_el.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_info.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_leds.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_level_password.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_main.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_measurement.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_mtz.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_mtz04.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_point_time_settings.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_registrators.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_resurs.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_setting_language.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_state_inputs_outputs.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_switch.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_time.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_transfer_functions.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_transformator.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_tznp.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_Umax.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_Umin.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_UP.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_urov.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_vidkluchennja.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_VMP.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_zdz.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_zop.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\working files\inc\const_menu_zz.h</name>
-                </file>
-            </group>
-            <group>
                 <name>microcontriller</name>
+                <group>
+                    <name>menu</name>
+                    <group>
+                        <name>a.00.c.d</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\inc\a.00.c.d\const_menu_outputs.h</name>
+                        </file>
+                    </group>
+                    <group>
+                        <name>without iec61850</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_diagnostyka.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_inputs.h</name>
+                        </file>
+                    </group>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_lcd_and_keyboard.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_achr_chapv.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_apv.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_buttons.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_communication_parameters.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_data_time_settings.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_extra_settings.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_grupa_ustavok.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings_protection.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings_registrators.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings_switcher.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_chose_settings_uvv.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_configuration.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_d_and.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_d_not.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_d_or.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_d_xor.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_df.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_dt.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_extended_logic.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_general_pickups_el.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_info.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_leds.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_level_password.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_main.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_measurement.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_mtz.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_mtz04.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_point_time_settings.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_registrators.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_resurs.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_setting_language.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_state_inputs_outputs.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_switch.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_time.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_transfer_functions.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_transformator.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_tznp.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_Umax.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_Umin.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_UP.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_urov.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_vidkluchennja.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_VMP.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_zdz.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_zop.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\const_menu_zz.h</name>
+                    </file>
+                </group>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\hw_config.h</name>
                 </file>
@@ -2019,6 +2073,9 @@
                     <name>component</name>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ACMDSmallComponent.c</name>
+                        <configuration>
+                            <name>Flash-Debug</name>
+                        </configuration>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\AISmallComponent.c</name>
@@ -2125,6 +2182,9 @@
                 </group>
                 <group>
                     <name>modbusroutine</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_guest.c</name>
+                    </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
                     </file>
@@ -2301,7 +2361,13 @@
             <group>
                 <name>protection</name>
                 <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\ar_routines.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\working files\src\measurement.c</name>
+                    <configuration>
+                        <name>Flash-Debug</name>
+                    </configuration>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\protections.c</name>

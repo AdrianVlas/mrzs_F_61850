@@ -3,7 +3,7 @@
 
 #define UNUSED(x) (void)(x)
 
-#define MASKA_FOR_BIT(_n)      (1 << _n)
+#define MASKA_FOR_BIT(_n)      (1u << _n)
 
 #define _CHECK_SET_BIT(_array, _number_bit)                                     \
     (_array[_number_bit >> 5] & ( (unsigned int)( 1 << (_number_bit & 0x1f)) ) )                           
@@ -542,6 +542,61 @@
 }
 
 #define INT_TO_BCD(_data) ((((_data) / 10) << 4) | ((_data) % 10))
+
+#define COMPARE_NOT_ZERO_OR(_comp, _p_array, _arr_maska, _n)            \
+{                                                                       \
+  _comp = false;                                                        \
+  for (size_t _i = 0; ((_comp == false) && (_i < _n)); ++_i)            \
+  {                                                                     \
+    _comp |= ((_p_array[_i] & _arr_maska[_i]) != 0);                    \
+  }                                                                     \
+}
+
+#define COMPARE_OR(_comp, _p_array1, _p_array2, _n)                     \
+{                                                                       \
+  _comp = false;                                                        \
+  for (size_t _i = 0; ((_comp == false) && (_i < _n)); ++_i)            \
+  {                                                                     \
+    _comp |= (_p_array1[_i] != _p_array2[_i]);                          \
+  }                                                                     \
+}
+
+#define NOT_ZERO_OR(_comp, _p_array, _n)                                \
+{                                                                       \
+  _comp = false;                                                        \
+  for (size_t _i = 0; ((_comp == false) && (_i < _n)); ++_i)            \
+  {                                                                     \
+    _comp |= (_p_array[_i] != 0);                                       \
+  }                                                                     \
+}
+
+#define COMPARE_ZERO_AND(_comp, _p_array, _arr_maska, _n)               \
+{                                                                       \
+  comp = true;                                                          \
+  for (size_t _i = 0; ((_comp == true) && (_i < _n)); ++_i)          \
+  {                                                                     \
+    _comp &= ((_p_array[_i] & _arr_maska[_i]) == 0);                    \
+  }                                                                     \
+}
+
+#define ZERO_AND(_comp, _p_array, _n)                                   \
+{                                                                       \
+  comp = true;                                                          \
+  for (size_t _i = 0; ((_comp == true) && (_i < _n)); ++_i)               \
+  {                                                                     \
+    _comp &= (_p_array[_i] == 0);                                       \
+  }                                                                     \
+}
+
+#define COMPARE_AND(_comp, _p_array1, _p_array2, _n)                     \
+{                                                                       \
+  _comp = true;                                                        \
+  for (size_t _i = 0; ((_comp == false) && (_i < _n)); ++_i)            \
+  {                                                                     \
+    _comp &= (_p_array1[_i] == _p_array2[_i]);                          \
+  }                                                                     \
+}
+
 
 #endif 
 

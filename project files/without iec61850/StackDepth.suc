@@ -36,6 +36,12 @@ possible calls USBD_IsoOUTIncomplete : ;
 call graph root [Interrupt]: NMI_Handler, HardFault_Handler, MemManage_Handler, BusFault_Handler, UsageFault_Handler, SVC_Handler, DebugMon_Handler, PendSV_Handler, SysTick_Handler, TIM2_IRQHandler, TIM4_IRQHandler, TIM5_IRQHandler, I2C1_EV_IRQHandler, I2C1_ER_IRQHandler, DMA1_Stream7_IRQHandler, DMA1_Stream0_IRQHandler, SPI2_IRQHandler, DMA2_Stream0_IRQHandler, SPI1_IRQHandler, USART2_IRQHandler, DMA1_Stream6_IRQHandler, EXTI0_IRQHandler, OTG_FS_IRQHandler;
 call graph root [System]: SystemInit;
 
+possible calls disk_write : USER_write;
+possible calls disk_read : USER_read;
+possible calls disk_initialize : USER_initialize;
+possible calls disk_status : USER_status;
+possible calls disk_ioctl : USER_ioctl;
+
 exclude USBD_USR_DeviceConnected, USBD_USR_DeviceDisconnected;
 
 exclude _LocaleC_isupper;
@@ -50,7 +56,7 @@ preACMDSmallWriteAction,
                                      preMFTBigWriteAction,  preNOTBigWriteAction,    preORBigWriteAction,
                                      prePFBigWriteAction,
                                      prePKVBigWriteAction,  preQAISmallWriteAction,  preRAISmallWriteAction,
-                                     preREGBigWriteAction,  prePREGBigWriteAction,
+                                                            prePREGBigWriteAction,
                                      preRPRBigWriteAction,   preRPRSmallWriteAction,  preSDIBigWriteAction,
                                      preSDISmallWriteAction, preUPRBigWriteAction,    preUSTBigWriteAction,
                                      preVVBigWriteAction,
@@ -66,7 +72,7 @@ preACMDSmallReadAction,
                                      preMFTBigReadAction,  preNOTBigReadAction,    preORBigReadAction,
                                      prePFBigReadAction,
                                      prePKVBigReadAction,  preQAISmallReadAction,  preRAISmallReadAction,
-                                     preREGBigReadAction,  prePREGBigReadAction,
+                                                            prePREGBigReadAction,
                                      preRPRBigReadAction,   preRPRSmallReadAction,  preSDIBigReadAction,
                                      preSDISmallReadAction, preUPRBigReadAction,    preUSTBigReadAction,
                                      preVVBigReadAction,

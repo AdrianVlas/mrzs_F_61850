@@ -31,7 +31,7 @@ void main_routines_for_spi1(void)
   static float phi_ustuvannja_sin_cos_comp[2*NUMBER_ANALOG_CANALES];
   static unsigned int state_trigger_leds_comp, state_signal_outputs_comp;
   static unsigned int fix_active_buttons_comp, trigger_active_functions_comp[N_BIG];
-  static __INFO_REJESTRATOR info_rejestrator_ar_comp;
+  static __INFO_AR_REJESTRATOR info_rejestrator_ar_comp;
   static __INFO_REJESTRATOR info_rejestrator_dr_comp;
   static __INFO_REJESTRATOR info_rejestrator_pr_err_comp;
   static unsigned int resurs_vymykacha_comp, resurs_vidkljuchennja_comp;
@@ -821,7 +821,7 @@ void main_routines_for_spi1(void)
       unsigned char crc_eeprom_info_rejestrator_ar = 0, temp_value;
       unsigned char  *point_1 = (unsigned char*)(&info_rejestrator_ar); 
       unsigned char  *point_2 = (unsigned char*)(&info_rejestrator_ar_comp); 
-      for (unsigned int i = 0; i < sizeof(__INFO_REJESTRATOR); i++)
+      for (unsigned int i = 0; i < sizeof(__INFO_AR_REJESTRATOR); i++)
       {
         temp_value = *(point_1);
         *(point_2) = temp_value;
@@ -1401,12 +1401,11 @@ void main_routines_for_spi1(void)
               //Розраховуємо розмір одного запису і максимальну кількість записів у аналоговому реєстраторі для даних витримок
               /*
               Читання настройок є зациклене поки не буде зчитано успішно настройок, а це означає, що ця дія мусить виконатися перед тим
-              як ми подовжимо запускати інші модулі в роботу
+              як ми продовжимо запускати інші модулі в роботу
               */
-              calc_size_and_max_number_records_ar(current_settings.prefault_number_periods, current_settings.postfault_number_periods);
               //Онулюємо доаварійний масив перед стартом захистів
               {
-                uint32_t number_words_slice = NUMBER_ANALOG_CANALES + number_word_digital_part_ar;
+                uint32_t number_words_slice = NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR;
                 uint32_t total_size = (current_settings.prefault_number_periods << VAGA_NUMBER_POINT_AR)*number_words_slice;
                 int32_t difference = index_array_ar_heat - total_size;
                 uint32_t index = (difference >= 0) ? difference : (difference + SIZE_BUFFER_FOR_AR);
@@ -2026,9 +2025,9 @@ void main_routines_for_spi1(void)
       //Аналізуємо прочитані дані
       //Спочатку аналізуємо, чи прояитаний блок є пустим, чи вже попередньо записаним
       unsigned int empty_block = 1, i = 0; 
-      static __INFO_REJESTRATOR info_rejestrator_ar_tmp;
+      static __INFO_AR_REJESTRATOR info_rejestrator_ar_tmp;
       
-      while ((empty_block != 0) && ( i < (sizeof(__INFO_REJESTRATOR) + 1)))
+      while ((empty_block != 0) && ( i < (sizeof(__INFO_AR_REJESTRATOR) + 1)))
       {
         if (RxBuffer_SPI_EDF[3 + i] != 0xff) empty_block = 0;
         i++;
@@ -2044,14 +2043,14 @@ void main_routines_for_spi1(void)
         //Перевіряємо контрольну суму і переписуємо прочитані дані у структуру
         unsigned char crc_eeprom_info_rejestrator_ar = 0, temp_value;
         unsigned char  *point = (unsigned char*)(&info_rejestrator_ar_tmp); 
-        for (i =0; i < sizeof(__INFO_REJESTRATOR); i++)
+        for (i =0; i < sizeof(__INFO_AR_REJESTRATOR); i++)
         {
           temp_value = RxBuffer_SPI_EDF[3 + i];
           *(point) = temp_value;
           crc_eeprom_info_rejestrator_ar += temp_value;
           point++;
         }
-        if (RxBuffer_SPI_EDF[3 + sizeof(__INFO_REJESTRATOR)]  == ((unsigned char)((~(unsigned int)crc_eeprom_info_rejestrator_ar) & 0xff)))
+        if (RxBuffer_SPI_EDF[3 + sizeof(__INFO_AR_REJESTRATOR)]  == ((unsigned char)((~(unsigned int)crc_eeprom_info_rejestrator_ar) & 0xff)))
         {
           //Контролдьна сума сходиться
           
@@ -2070,74 +2069,6 @@ void main_routines_for_spi1(void)
             
             //Перекидаємо інформації по аналоговому реєстратору з тимчасової структури у робочу структуру
             info_rejestrator_ar = info_rejestrator_ar_tmp;
-
-            //Перевіряємо чи всі поляу у своїх допустимих межах
-            unsigned int max_number_records_ar_tmp = max_number_records_ar;
-            if(
-#if MIN_ADDRESS_AR_AREA != 0
-               (info_rejestrator_ar.next_address   >= MIN_ADDRESS_AR_AREA) &&
-#endif               
-               (info_rejestrator_ar.next_address   <= MAX_ADDRESS_AR_AREA) &&
-               (info_rejestrator_ar.number_records <= max_number_records_ar_tmp)  
-              )
-            {
-              //Всі величину мають допустимі значення
-
-              //Перевіряємо, чи у процесі запису останньої аварії не відбувся перезапуск/запуск приладу.
-              //Тоді останій запис може бути пошкодженим, якщо вже свя флешка є заповнена
-              //Тоді помічаємо, що у нашій флешці на один запис є менше
-              if (info_rejestrator_ar.saving_execution !=0 )
-              {
-                //Виставляємо повідомлення про цю подію
-                _SET_BIT(set_diagnostyka, ERROR_AR_LOSS_INFORMATION_BIT);
-
-                //Виставляємо команду запису цієї структури у EEPROM
-                /*
-                Команду виставляємо скоріше, а потім робимо зміни у полях, які треба змінити,
-                бо по вимозі проконтролювати достовірність даних інформації по аналоговому
-                реєстратору відбувається копіювання з системи захистів структури
-                info_rejestrator_ar у резервну мкопію. Це копіювання блокується у випадку 
-                "читання з"/"запису в" EEPROM цієї інформації. Тому виставлення спочатку команди
-                запису заблокує копіювання.
-                З другої сторони не можливо, щоб почався запис до модифікації, 
-                бо запис ініціюється функцією main_routines_for_spi1 - в якій ми зараз знаходимося.
-                Тобто спочатку треба з цієї функції вийти і при наступних входженнях у цю функцію
-                можливе виконання команди яку ми виставили перед зміною даних, яку 
-                ми зараз гарантовано зробимо (до виходу з цієї функції)
-                */
-                _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_AR_EEPROM_BIT);
-
-                info_rejestrator_ar.saving_execution = 0;
-                if (info_rejestrator_ar.number_records >= max_number_records_ar_tmp)
-                  info_rejestrator_ar.number_records = (max_number_records_ar - 1);
-              }
-            }
-            else
-            {
-              //Виствляємо повідомлення у слові діагностики
-              _SET_BIT(set_diagnostyka, ERROR_INFO_REJESTRATOR_AR_EEPROM_BIT);
-
-              //Виставляємо команду запису цієї структури у EEPROM
-              /*
-              Команду виставляємо скоріше, а потім робимо зміни у полях, які треба змінити,
-              бо по вимозі проконтролювати достовірність даних інформації по аналоговому
-              реєстратору відбувається копіювання з системи захистів структури
-              info_rejestrator_ar у резервну мкопію. Це копіювання блокується у випадку 
-              "читання з"/"запису в" EEPROM цієї інформації. Тому виставлення спочатку команди
-              запису заблокує копіювання.
-              З другої сторони не можливо, щоб почався запис до модифікації, 
-              бо запис ініціюється функцією main_routines_for_spi1 - в якій ми зараз знаходимося.
-              Тобто спочатку треба з цієї функції вийти і при наступних входженнях у цю функцію
-              можливе виконання команди яку ми виставили перед зміною даних, яку 
-              ми зараз гарантовано зробимо (до виходу з цієї функції)
-              */
-              _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_AR_EEPROM_BIT);
-
-              //Очищаємо структуру інформації по аналоговому реєстраторі
-              info_rejestrator_ar.next_address = MIN_ADDRESS_AR_AREA;
-              info_rejestrator_ar.saving_execution = 0;
-              info_rejestrator_ar.number_records = 0;
-            }
           }
           else
           {
@@ -2148,7 +2079,7 @@ void main_routines_for_spi1(void)
             unsigned int difference = 0;
 
             i = 0;
-            while ((difference == 0) && ( i < sizeof(__INFO_REJESTRATOR)))
+            while ((difference == 0) && ( i < sizeof(__INFO_AR_REJESTRATOR)))
             {
               if (*point_to_write != *point_to_read) difference = 0xff;
               else
@@ -2213,10 +2144,10 @@ void main_routines_for_spi1(void)
             */
             _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_AR_EEPROM_BIT);
           
-            //Очищаємо структуру інформації по дискретному реєстраторі
-            info_rejestrator_ar.next_address = MIN_ADDRESS_AR_AREA;
-            info_rejestrator_ar.saving_execution = 0;
-            info_rejestrator_ar.number_records = 0;
+            //Очищаємо структуру інформації по аналоговому реєстраторі
+            info_rejestrator_ar.first_number = -1;
+            info_rejestrator_ar.last_number = -1;
+            _SET_STATE(FATFS_command, FATFS_FORMAT);
           }
         }
       }
@@ -2261,9 +2192,9 @@ void main_routines_for_spi1(void)
           _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_AR_EEPROM_BIT);
 
           //Очищаємо структуру інформації по аналоговому реєстраторі
-          info_rejestrator_ar.next_address = MIN_ADDRESS_AR_AREA;
-          info_rejestrator_ar.saving_execution = 0;
-          info_rejestrator_ar.number_records = 0;
+          info_rejestrator_ar.first_number = -1;
+          info_rejestrator_ar.last_number = -1;
+          _SET_STATE(FATFS_command, FATFS_FORMAT);
         }
       }
 
@@ -2624,7 +2555,7 @@ void main_routines_for_spi1(void)
                 info_rejestrator_pr_err.number_records = number_records;
                 
                 
-              }   
+              }
             }
             else
             {

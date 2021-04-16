@@ -1440,6 +1440,60 @@
         </group>
     </group>
     <group>
+        <name>FatFs</name>
+        <group>
+            <name>inc</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\diskio.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\fatfs.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ff.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ff_gen_drv.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ffconf.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ffconf_template.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\integer.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\user_diskio.h</name>
+            </file>
+        </group>
+        <group>
+            <name>src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\diskio.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\fatfs.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\ff.c</name>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\ff_gen_drv.c</name>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\user_diskio.c</name>
+            </file>
+        </group>
+    </group>
+    <group>
         <name>Linker</name>
         <group>
             <name>with iec61850</name>
@@ -2147,6 +2201,9 @@
                 <group>
                     <name>modbusroutine</name>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_guest.c</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
                     </file>
                     <file>
@@ -2330,6 +2387,9 @@
             </group>
             <group>
                 <name>protection</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\ar_routines.c</name>
+                </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\measurement.c</name>
                 </file>

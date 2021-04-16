@@ -71,7 +71,7 @@ typedef struct
                                                       //0 - Нормальний
                                                       //1 - Тригерний
     
-  unsigned int number_iteration_el;                                             //Максимадбна кількість ітерацій для розширеної логіки
+  unsigned int number_iteration_el;                                             //Максимальна кількість ітерацій для розширеної логіки
 //  unsigned int number_defined_df;                                               //Кількість визначуваних функцій у конфігурації приладу
 //  unsigned int number_defined_dt;                                               //Кількість визначуваних тригерів у конфігурації приладу
 //  unsigned int number_defined_and;                                              //Кількість визначуваних "І" у конфігурації приладу
@@ -105,7 +105,7 @@ typedef struct
                                                                                 //0 - Звичайна кнопка
                                                                                 //1 - Двопозиційний ключ
   unsigned int ranguvannja_buttons[N_SMALL*NUMBER_DEFINED_BUTTONS];             //Ранжування опреділюваних кнопок
-  
+
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   uint32_t ranguvannja_In_GOOSE[N_IN_GOOSE][N_IN_GOOSE_MMS_OUT][N_SMALL];       //Ранжування виходів Вхідних GOOSE блоків
   uint32_t ranguvannja_In_MMS[N_IN_MMS][N_IN_GOOSE_MMS_OUT][N_SMALL];           //Ранжування виходів Вхідних MMS блоків
@@ -330,11 +330,12 @@ typedef struct
   unsigned int password_interface_USB;                          //Пароль для редагування з інтерфейсу USB
   unsigned int timeout_deactivation_password_interface_RS485;   //Час деактивації паролю для редагування з інтерфейсу RS485
   unsigned int password_interface_RS485;                        //Пароль для редагування з інтерфейсу RS485
+  
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   unsigned int timeout_deactivation_password_interface_LAN;   //Час деактивації паролю для редагування з інтерфейсу LAN
   unsigned int password_interface_LAN;                        //Пароль для редагування з інтерфейсу LAN
 #endif  
-  
+
   unsigned int timeout_idle_new_settings;
 
   //Вимикач
@@ -360,6 +361,7 @@ typedef struct
   //Аналоговий реєстратор
   unsigned int prefault_number_periods; //Час доаварійного масиву (кількість періодів промислової частоти)
   unsigned int postfault_number_periods;//Час післяарійного масиву (кількість періодів промислової частоти)
+  unsigned int control_ar;              //Поля для управління аналоговим реєстратором
 
   //Комунікація
   unsigned int name_of_cell[MAX_CHAR_IN_NAME_OF_CELL];//І'мя ячейки
@@ -385,7 +387,8 @@ typedef struct
   int language;                                         //мова меню  0= змінна мов не підтримується; 1=RU; 2=UA; 3=EN; 4=KZ; 5=др.
   
   unsigned int control_extra_settings_1;                //Поле для додаткових налаштувань
-  
+
+
   int32_t time_zone;                                    //Часова зона
   uint32_t dst;                                         //Перехід на літній час
   uint32_t dst_on_rule;                                 //Правило переходу на Літній час
@@ -464,6 +467,19 @@ typedef struct
 
 typedef struct
 {
+  int first_number;
+  int last_number;
+} __INFO_AR_REJESTRATOR;
+
+typedef struct _FIL_FATFS
+{
+  unsigned int opened;
+  FIL fil;
+  
+} __FIL_FATFS;
+
+typedef struct
+{
   unsigned int state_execution;     //стан виконуваної заразоперації
   
   unsigned int code_operation;      //Код виконуваної операції
@@ -480,7 +496,9 @@ typedef struct
   unsigned int TCurrent04;
   unsigned int TVoltage;
   unsigned int control_extra_settings_1;
+  unsigned int prefault_number_periods;
   unsigned char name_of_cell[MAX_CHAR_IN_NAME_OF_CELL];
+  unsigned int cur_active_sources[N_BIG];
 } __HEADER_AR;
 
 typedef enum __STATE_READING_ADCs {

@@ -64,8 +64,8 @@ ERROR_DIGITAL_OUTPUT_1_BIT,
 
 ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
 ERROR_AR_OVERLOAD_BUFFER_BIT,
+ERROR_AR_MEMORY_FULL_BIT,
 ERROR_AR_UNDEFINED_BIT,
-ERROR_AR_LOSS_INFORMATION_BIT,
 
 ERROR_DR_TEMPORARY_BUSY_BIT,
 ERROR_DR_UNDEFINED_BIT,
@@ -124,6 +124,7 @@ ERROR_BDVV6_FIX,
 ERROR_BDVV6_CTLR,
 ERROR_CB_FIX,
 
+ERROR_FATFS,
 EVENT_RESTART_CB_BIT
 };
 
@@ -291,8 +292,8 @@ EVENT_RESTART_CB_BIT
   " Ош.вых.реле ?.?",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
+  " П.aн.рег.исч.  ",   \
   "Неопр.ош.ан.рег.",   \
-  "Потеря д.ан.рег.",   \
   " Д.рег.вр.занят.",   \
   " Неопр.ош.д.рег.",   \
   " Потеря д.д.рег.",   \
@@ -340,8 +341,8 @@ EVENT_RESTART_CB_BIT
   " БДВВ6 от.      ",   \
   " БДВВ6 п.       ",   \
   " КП ф.          ",   \
+  " Ош.Ф.С.        ",   \
   " Рестарт КП     ",   \
-  " Ошибка 118     ",   \
   " Ошибка 119     "
 
 # define NAME_DIAGN_UA  \
@@ -413,8 +414,8 @@ EVENT_RESTART_CB_BIT
   " Пом.вих.реле?.?",   \
   "Ан.р.тимч.зайнят",   \
   " Переп.буф.aн.р.",   \
+  " П.aн.рег.вич.  ",   \
   "Невизн.пом.ан.р.",   \
-  "Втрата д.ан.р.  ",   \
   "Д.р.тимч.зайнят.",   \
   " Невизн.пом.д.р.",   \
   " Втрата д.д.р.  ",   \
@@ -462,8 +463,8 @@ EVENT_RESTART_CB_BIT
   " БДВВ6 від.     ",   \
   " БДВВ6 п.       ",   \
   " КП ф.          ",   \
+  " Пом.Ф.С.       ",   \
   " Рестарт КП     ",   \
-  " Помилка 118    ",   \
   " Помилка 119    "
 
 # define NAME_DIAGN_EN  \
@@ -535,8 +536,8 @@ EVENT_RESTART_CB_BIT
   " BO?.? Ctl Er   ",   \
   " Dst Rec Busy   ",   \
   " Dst Rec Buf Ovf",   \
+  "Dst Rec Mem Full",   \
   "UnDef Dst Rec Er",   \
-  "An.Rec.Data lost",   \
   " Bin Rec busy   ",   \
   "UnDef Bin Rec Er",   \
   "Bin Rec Dat Lost",   \
@@ -584,8 +585,8 @@ EVENT_RESTART_CB_BIT
   " BIOU06_Z abs   ",   \
   " BIOU06_Z ver   ",   \
   " CU:No resp Ch2 ",   \
+  " Error of FS    ",   \
   " CB Restart     ",   \
-  " Error 118      ",   \
   " Error 119      "
 
 # define NAME_DIAGN_KZ  \
@@ -657,8 +658,8 @@ EVENT_RESTART_CB_BIT
   " Ош.вых.реле ?.?",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
+  " П.aн.рег.исч.  ",   \
   "Неопр.ош.ан.рег.",   \
-  "Потеря д.ан.рег.",   \
   " Д.рег.вр.занят.",   \
   " Неопр.ош.д.рег.",   \
   " Потеря д.д.рег.",   \
@@ -706,8 +707,8 @@ EVENT_RESTART_CB_BIT
   " БДВВ6 ф.       ",   \
   " БДВВ6 к.       ",   \
   " КП ф.          ",   \
+  " Ош.Ф.С.        ",   \
   " Рестарт КП     ",   \
-  " Ошибка 118     ",   \
   " Ошибка 119     "
     
 #endif

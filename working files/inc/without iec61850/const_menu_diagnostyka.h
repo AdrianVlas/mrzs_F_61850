@@ -64,8 +64,8 @@ ERROR_DIGITAL_OUTPUT_1_BIT,
 
 ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
 ERROR_AR_OVERLOAD_BUFFER_BIT,
+ERROR_AR_MEMORY_FULL_BIT,
 ERROR_AR_UNDEFINED_BIT,
-ERROR_AR_LOSS_INFORMATION_BIT,
 
 ERROR_DR_TEMPORARY_BUSY_BIT,
 ERROR_DR_UNDEFINED_BIT,
@@ -105,7 +105,8 @@ ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
 ERROR_BDVV6_FIX,
 ERROR_BDVV6_CTLR,
-ERROR_CB_FIX
+
+ERROR_FATFS
 };
 
 #define MASKA_AVAR_ERROR_0        (unsigned int)(               \
@@ -237,8 +238,8 @@ ERROR_CB_FIX
   " Ош.вых.реле ?.?",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
+  " П.aн.рег.исч.  ",   \
   "Неопр.ош.ан.рег.",   \
-  "Потеря д.ан.рег.",   \
   " Д.рег.вр.занят.",   \
   " Неопр.ош.д.рег.",   \
   " Потеря д.д.рег.",   \
@@ -270,7 +271,7 @@ ERROR_CB_FIX
   " БДЗ п.         ",   \
   " БДВВ6 от.      ",   \
   " БДВВ6 п.       ",   \
-  " Ошибка 101     ",   \
+  " Ош.Ф.С.        ",   \
   " Ошибка 102     ",   \
   " Ошибка 103     "
 
@@ -343,8 +344,8 @@ ERROR_CB_FIX
   " Пом.вих.реле?.?",   \
   "Ан.р.тимч.зайнят",   \
   " Переп.буф.aн.р.",   \
+  " П.aн.рег.вич.  ",   \
   "Невизн.пом.ан.р.",   \
-  "Втрата д.ан.р.  ",   \
   "Д.р.тимч.зайнят.",   \
   " Невизн.пом.д.р.",   \
   " Втрата д.д.р.  ",   \
@@ -376,7 +377,7 @@ ERROR_CB_FIX
   " БДЗ п.         ",   \
   " БДВВ6 від.     ",   \
   " БДВВ6 п.       ",   \
-  " Помилка 101    ",   \
+  " Пом.Ф.С.       ",   \
   " Помилка 102    ",   \
   " Помилка 103    "
 
@@ -449,8 +450,8 @@ ERROR_CB_FIX
   " BO?.? Ctl Er   ",   \
   " Dst Rec Busy   ",   \
   " Dst Rec Buf Ovf",   \
+  "Dst Rec Mem Full",   \
   "UnDef Dst Rec Er",   \
-  "An.Rec.Data lost",   \
   " Bin Rec busy   ",   \
   "UnDef Bin Rec Er",   \
   "Bin Rec Dat Lost",   \
@@ -482,7 +483,7 @@ ERROR_CB_FIX
   " ASU ver        ",   \
   " BIOU06_Z abs   ",   \
   " BIOU06_Z ver   ",   \
-  " Error 101      ",   \
+  " Error of FS    ",   \
   " Error 102      ",   \
   " Error 103      "
 
@@ -555,8 +556,8 @@ ERROR_CB_FIX
   " Ош.вых.реле ?.?",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
+  " П.aн.рег.исч.  ",   \
   "Неопр.ош.ан.рег.",   \
-  "Потеря д.ан.рег.",   \
   " Д.рег.вр.занят.",   \
   " Неопр.ош.д.рег.",   \
   " Потеря д.д.рег.",   \
@@ -588,7 +589,7 @@ ERROR_CB_FIX
   " БДЗ к.         ",   \
   " БДВВ6 ф.       ",   \
   " БДВВ6 к.       ",   \
-  " Ошибка 101     ",   \
+  " Ош.Ф.С.        ",   \
   " Ошибка 102     ",   \
   " Ошибка 103     "
     
