@@ -44,13 +44,13 @@ void Usb_routines_irq(void)
       if (to_USB_ptr_in_irq >= BUFFER_USB_OUT)
       {
         if (to_USB_ptr_in_irq == BUFFER_USB_OUT) to_USB_ptr_in_irq = 0;
-        else total_error_sw_fixed(105);
+        else total_error_sw_fixed();
       }
     
       if (usb_transmiting_count_tmp >= BUFFER_USB)
       {
         if (usb_transmiting_count_tmp == BUFFER_USB) break;
-        else total_error_sw_fixed(106);
+        else total_error_sw_fixed();
       }
     }
     if (to_USB_ptr_in_irq == to_USB_ptr_out)  data_usb_transmiting_irq = false;
@@ -122,7 +122,7 @@ void Usb_routines(void)
           if (from_USB_ptr_in >= BUFFER_USB_IN)
           {
             if (from_USB_ptr_in == BUFFER_USB_IN) from_USB_ptr_in = 0;
-            else total_error_sw_fixed(101);
+            else total_error_sw_fixed();
           }
         }
         //Орацювання даних по протоколу MODBUS-RTU прийнятих з USB
@@ -143,7 +143,7 @@ void Usb_routines(void)
       if (to_USB_ptr_out >= BUFFER_USB_OUT)
       {
         if (to_USB_ptr_out == BUFFER_USB_OUT) to_USB_ptr_out = 0;
-        else total_error_sw_fixed(104);
+        else total_error_sw_fixed();
       }
     }
 

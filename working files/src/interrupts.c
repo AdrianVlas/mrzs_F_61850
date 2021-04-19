@@ -80,7 +80,7 @@ void I2C_EV_IRQHandler(void)
       I2C->CR2 &= (uint16_t)((~(uint32_t)I2C_IT_EVT) & 0xffff);
       
       //Помилки не зафіксовані
-      unsigned int number_transmit_with_i2c;
+      unsigned int number_transmit_with_i2c = 0;
       if(driver_i2c.action == 0)
       {
         //Підготовлюємо буфер для передачі в мікросхему для запису (адреса)
@@ -364,7 +364,7 @@ void TIM5_IRQHandler(void)
     TIM5->CCR1 = (capture_new = (current_tick + (delta = step_timer_adc_tmp = step_timer_adc)));
     
     unsigned int repeat;
-    unsigned int previous_tick;
+    unsigned int previous_tick = current_tick;
     do
     {
       repeat = 0;
@@ -399,7 +399,7 @@ void TIM5_IRQHandler(void)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(75);
+            total_error_sw_fixed();
           }
           TIM5->CCR1 = (capture_new = (TIM5->CNT +  delta));
           previous_tick = current_tick;
@@ -432,10 +432,69 @@ void TIM5_IRQHandler(void)
     {
       //Переповнення не зафіксоване
       _SET_BIT(clear_diagnostyka, ERROR_OSCYLOJRAPH_OVERFLOW);
+      
+      //Перевірка на те, чи не потрібно запустити роботу аналогового реєстртора на рівні "Вимірювання"
+      if (
+          (state_ar_record_fatfs == STATE_AR_WAIT_TO_STOP_WRITE_FATFS) &&  
+          (state_ar_record_m != STATE_AR_BLOCK_M) &&
+          (index_array_ar_tail != index_array_ar_heat)
+         )
+      {
+        state_ar_record_fatfs = STATE_AR_WRITE_FATFS;
+      }
+      
+      if (
+          (
+           (state_ar_record_m == STATE_AR_NONE_M) ||
+           (state_ar_record_m == STATE_AR_WORK_STOP_M)
+          ) 
+          &&
+          (_CHECK_SET_BIT (active_functions, RANG_WORK_A_REJESTRATOR) != 0)  
+         )   
+      {
+        state_ar_record_m = STATE_AR_WORK_M;
+        
+        if (state_ar_record_fatfs == STATE_AR_NONE_FATFS) state_ar_record_fatfs = STATE_AR_WAIT_TO_WRITE_FATFS;
+      }
+      else if (
+               (state_ar_record_m == STATE_AR_WORK_M) &&
+               (_CHECK_SET_BIT (active_functions, RANG_WORK_A_REJESTRATOR) == 0)  
+              )
+      {
+        state_ar_record_m = STATE_AR_WORK_STOP_M;
+      }
+      else if (
+               (state_ar_record_m == STATE_AR_WORK_STOP_M) &&
+               (
+                (state_ar_record_fatfs == STATE_AR_WAIT_TO_STOP_WRITE_FATFS) ||
+                (state_ar_record_fatfs == STATE_AR_MEMORY_FULL_FATFS) ||
+                (state_ar_record_fatfs == STATE_AR_BLOCK_FATFS)
+               )   
+              )
+      {
+        state_ar_record_m = STATE_AR_NONE_M;
+        if (state_ar_record_fatfs == STATE_AR_WAIT_TO_STOP_WRITE_FATFS) state_ar_record_fatfs = STATE_AR_STOP_WRITE_FATFS;
+        else if (state_ar_record_fatfs == STATE_AR_MEMORY_FULL_FATFS) state_ar_record_fatfs = STATE_AR_NONE_FATFS;
+      }
+      else if (
+               (state_ar_record_m == STATE_AR_BLOCK_M) &&
+               (
+                (state_ar_record_fatfs == STATE_AR_WAIT_TO_STOP_WRITE_FATFS) ||
+                (state_ar_record_fatfs == STATE_AR_MEMORY_FULL_FATFS) ||
+                (state_ar_record_fatfs == STATE_AR_BLOCK_FATFS)
+               )   
+              )
+      {
+        state_ar_record_m = STATE_AR_NONE_M;
+        if (state_ar_record_fatfs == STATE_AR_WAIT_TO_STOP_WRITE_FATFS) state_ar_record_fatfs = STATE_AR_STOP_WRITE_FATFS;
+        else if (state_ar_record_fatfs == STATE_AR_MEMORY_FULL_FATFS) state_ar_record_fatfs = STATE_AR_NONE_FATFS;
+
+        _SET_BIT(clear_diagnostyka, ERROR_AR_OVERLOAD_BUFFER_BIT);
+      }
     
       //Мітка часу
       data_for_oscylograph[head_data_for_oscylograph].time_stemp = current_tick;
-      data_for_oscylograph[head_data_for_oscylograph].state_ar_record = state_ar_record;
+      data_for_oscylograph[head_data_for_oscylograph].state_ar_record = state_ar_record_m;
 
       //Активні дискретні сигнали
       unsigned int *label_to_active_functions_target = data_for_oscylograph[head_data_for_oscylograph].active_functions;
@@ -468,7 +527,7 @@ void TIM5_IRQHandler(void)
     TIM5->CCR2 = (capture_new = (current_tick + (delta = TIM5_CCR1_2_VAL)));
     
     unsigned int repeat;
-    unsigned int previous_tick;
+    unsigned int previous_tick = current_tick;
     do
     {
       repeat = 0;
@@ -503,7 +562,7 @@ void TIM5_IRQHandler(void)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(77);
+            total_error_sw_fixed();
           }
           TIM5->CCR2 = (capture_new = (TIM5->CNT +  delta));
           previous_tick = current_tick;
@@ -628,7 +687,7 @@ void TIM4_IRQHandler(void)
     TIM4->CCR3 = (capture_new = (current_tick + (delta = step_tmp =(TIM4_CCR3_VAL*number_bits_rs_485_waiting))));
     
     unsigned int repeat;
-    unsigned int previous_tick;
+    unsigned int previous_tick = current_tick;
     do
     {
       repeat = 0;
@@ -657,7 +716,7 @@ void TIM4_IRQHandler(void)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(78);
+            total_error_sw_fixed();
           }
           TIM4->CCR3 = (capture_new = (TIM4->CNT +  delta));
           previous_tick = current_tick;
@@ -831,7 +890,7 @@ void TIM4_IRQHandler(void)
     if ((new_state_keyboard_for_db & ((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O))) != 0)
     {
       if (
-          ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_FB_ACTIVATION) == 0)
+          ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_FB_ACTIVATION)) == 0)
           ||  
           ((new_state_keyboard & (1<<BIT_KEY_ENTER)) != 0)
          )   
@@ -846,7 +905,7 @@ void TIM4_IRQHandler(void)
         new_state_keyboard_for_db &= (unsigned int)(~((1<<BIT_KEY_1)|(1<<BIT_KEY_2)|(1<<BIT_KEY_3)|(1<<BIT_KEY_4)|(1<<BIT_KEY_5)|(1<<BIT_KEY_6)|(1<<BIT_KEY_C)|(1<<BIT_KEY_I)|(1<<BIT_KEY_O)));
         /***************************/
 
-        if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_FB_ACTIVATION) != 0)
+        if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_FB_ACTIVATION)) != 0)
         {
           /**************************
           Кнопка ENTER вже відпацювала свою функцію активації кнопки, тому 
@@ -933,7 +992,8 @@ void TIM4_IRQHandler(void)
         number_seconds = 0;
         if((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET)
         {
-          reinit_LCD = true;
+          if (state_ar_record_fatfs != STATE_AR_WRITE_FATFS) reinit_LCD = true; /*реініціалізацію індикатора робимо, коли не іде запис Аналогового реєстратора*/
+          
           if (++number_minutes >= PERIOD_SAVE_ENERGY_IN_MINUTES)
           {
             number_minutes = 0;
@@ -1047,7 +1107,7 @@ void TIM4_IRQHandler(void)
     TIM4->CCR1 = (capture_new = (current_tick + (delta = TIM4_CCR1_VAL)));
     
     unsigned int repeat;
-    unsigned int previous_tick;
+    unsigned int previous_tick = current_tick;
     do
     {
       repeat = 0;
@@ -1076,7 +1136,7 @@ void TIM4_IRQHandler(void)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(79);
+            total_error_sw_fixed();
           }
           TIM4->CCR1 = (capture_new = (TIM4->CNT +  delta));
           previous_tick = current_tick;
@@ -1232,7 +1292,7 @@ void TIM4_IRQHandler(void)
             }
             else
             {
-              total_error_sw_fixed(39);
+              total_error_sw_fixed();
             }
           }
 
@@ -1275,7 +1335,7 @@ void TIM4_IRQHandler(void)
               else
               {
                 //Відбулася невизначена помилка, тому треба піти на перезавантаження
-                total_error_sw_fixed(40);
+                total_error_sw_fixed();
               }
             }
                 
@@ -1285,7 +1345,7 @@ void TIM4_IRQHandler(void)
       else
       {
         //Відбулася невизначена помилка, тому треба піти на перезавантаження
-        total_error_sw_fixed(38);
+        total_error_sw_fixed();
       }
     }
     /***********************************************************/
@@ -1339,7 +1399,7 @@ void TIM4_IRQHandler(void)
     TIM4->CCR2 = (capture_new = (current_tick + (delta = TIM4_CCR2_VAL)));
     
     unsigned int repeat;
-    unsigned int previous_tick;
+    unsigned int previous_tick = current_tick;
     do
     {
       repeat = 0;
@@ -1368,7 +1428,7 @@ void TIM4_IRQHandler(void)
           else
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(80);
+            total_error_sw_fixed();
           }
           TIM4->CCR2 = (capture_new = (TIM4->CNT +  delta));
           previous_tick = current_tick;
@@ -1536,7 +1596,7 @@ void SPI_EDF_IRQHandler(void)
     //Подія "CRC error" - ніколи не мала б виникати у нашоій програмі
 
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(34);
+    total_error_sw_fixed();
   }
 
   if (state_execution_spi1 >= 0) 
@@ -1575,7 +1635,7 @@ void SPI_EDF_IRQHandler(void)
           /*Відбулася невизначена помилка (бо не може бути, щоб ішда якась операція, 
           але вона була поміена. що ніякої операції немає), тому треба піти на перезавантаження
           */
-          total_error_sw_fixed(37);
+          total_error_sw_fixed();
         }
           
         //Робимо резервну копію кількості байт для передавання і буфер передавання
@@ -1588,7 +1648,7 @@ void SPI_EDF_IRQHandler(void)
         else
         {
           //Відбулася невизначена помилка, тому треба піти на перезавантаження
-          total_error_sw_fixed(36);
+          total_error_sw_fixed();
         }
         
         //Запам'ятовуємо, яка виконувалася операція
@@ -1602,7 +1662,7 @@ void SPI_EDF_IRQHandler(void)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(35);
+    total_error_sw_fixed();
   }
   
   /*Виставляємо повідомлення про помилку обміну через SPI_EDF*/
@@ -1659,7 +1719,7 @@ void DMA_StreamSPI_EDF_Rx_IRQHandler(void)
   else
   {
     //Відбулася невизначена помилка, тому треба піти на перезавантаження
-    total_error_sw_fixed(20);
+    total_error_sw_fixed();
   }
       
   //Обмін відбувся вдало - скидаємо повідомлення про попередньо можливу помилку обміну через SPI_EDF
@@ -1792,7 +1852,7 @@ void EXITI_POWER_IRQHandler(void)
 
       //Виставляємо повідомлення про цю подію
       _SET_BIT(clear_diagnostyka, EVENT_DROP_POWER_BIT);
-      reinit_LCD = true;
+      if (state_ar_record_fatfs != STATE_AR_WRITE_FATFS) reinit_LCD = true; /*реініціалізацію індикатора робимо, коли не іде запис Аналогового реєстратора*/
     }
     else
     {

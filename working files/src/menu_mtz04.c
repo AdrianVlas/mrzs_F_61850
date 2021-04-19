@@ -400,21 +400,6 @@ void make_ekran_control_mtz04()
         }
         else
         {
-          static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
-          {
-            {"     Îòêë.      ", "      Âêë.      "},
-            {"     Âèìê.      ", "     Ââ³ìê.     "},
-            {"      Off       ", "       On       "},
-            {"     Ñšíä.      ", "     Êîñó.      "}
-          };
-          static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
-          {
-           {4, 5},
-           {4, 4},
-           {5, 6},
-           {4, 4}
-          };
-        
           unsigned int temp_data = point->control_mtz04;
           unsigned int n_bit = 0;
           
@@ -424,8 +409,8 @@ void make_ekran_control_mtz04()
           else if (index_ctr == INDEX_ML_CTRMTZ04_2_PRYSKORENNJA) n_bit = N_BIT_CTRMTZ04_2_PRYSKORENNJA;
           else if (index_ctr == INDEX_ML_CTRMTZ04_2_PRYSKORENA  ) n_bit = N_BIT_CTRMTZ04_2_PRYSKORENA;
           
-          for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> n_bit) & 0x1][j];
-          if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> n_bit) & 0x1];
+          for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information_off_on[index_language][(temp_data >> n_bit) & 0x1][j];
+          if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x_off_on[index_language][(temp_data >> n_bit) & 0x1];
         }
       }
     }

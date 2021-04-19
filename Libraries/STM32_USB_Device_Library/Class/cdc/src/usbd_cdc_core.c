@@ -732,7 +732,7 @@ static void Handle_USBAsynchXfer (void *pdev)
     if (APP_Rx_ptr_out >=/*==*/ APP_RX_DATA_SIZE)
     {
       if (APP_Rx_ptr_out == APP_RX_DATA_SIZE) APP_Rx_ptr_out = 0;
-      else total_error_sw_fixed(103);
+      else total_error_sw_fixed();
     }
     
     if(APP_Rx_ptr_out == APP_Rx_ptr_in) 

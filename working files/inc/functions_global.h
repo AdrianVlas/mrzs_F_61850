@@ -11,11 +11,16 @@
    
 __ALIGN_BEGIN USB_OTG_CORE_HANDLE    USB_OTG_dev __ALIGN_END ;
 
+void MX_FATFS_Init(void);
+
 void Configure_I2C(I2C_TypeDef*);
 void FSMC_SRAM_Init(void);
 
 int main(void);
-void periodical_operations(void/*unsigned int*/);
+void ar_routine_with_fatfs(unsigned int);
+unsigned int ar_free_space(int*, int*);
+void periodical_operations(unsigned int);
+void periodical_operations_communication(unsigned int);
 void global_vareiables_installation(void);
 void start_settings_peripherals(void);
 void start_tim4_canal2_for_interrupt_1mc(void);
@@ -156,6 +161,7 @@ void make_ekran_dst_rule(uint32_t);
 void make_ekran_chose_registrators(void);
 void make_ekran_settings_analog_registrators(void);
 void make_ekran_timeout_analog_registrator(void);
+void make_ekran_control_ar(void);
 void make_ekran_extended_logic(void);
 void make_ekran_general_pickups_el(void);
 void make_ekran_chose_settings_df(void);
@@ -307,21 +313,17 @@ void dataflash_mamory_write_buffer(int);
 void dataflash_mamory_buffer_into_memory(int);
 void analize_received_data_dataflash(int);
 
-void actions_after_changing_tiomouts_ar(void);
-void calc_size_and_max_number_records_ar(unsigned int, unsigned int);
-unsigned int making_buffer_for_save_ar_record(unsigned int*);
-void fix_undefined_error_ar(unsigned int*);
-
 void control_settings(void);
 void control_ustuvannja(void);
 void control_trg_func(void);
 unsigned int control_info_rejestrator(__INFO_REJESTRATOR*, unsigned char);
+unsigned int control_info_ar_rejestrator(__INFO_AR_REJESTRATOR*, unsigned char);
 void control_resurs(void);
 
 void test_external_SRAM(void);
 
 void watchdog_routine(unsigned int);
-void total_error_sw_fixed(unsigned int);
+void total_error_sw_fixed(void);
 
 void setpoints_selecting(unsigned int*, unsigned int);
 

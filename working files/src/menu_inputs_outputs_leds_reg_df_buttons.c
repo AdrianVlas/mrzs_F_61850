@@ -466,11 +466,12 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
   if(current_ekran.edition == 0)
   {
     //Випадок, коли ми продивляємося зранжовані функції на вході
-    if (
-        (state_viewing_input[0] == 0) &&
-        (state_viewing_input[1] == 0) &&
-        (state_viewing_input[2] == 0)
-       )
+    unsigned int comp = true;
+    for (size_t i = 0; ((comp == true) && (i < N_SMALL)); ++i)
+    {
+      comp &= (state_viewing_input[i] == 0);
+    }
+    if (comp)
     {
       //Це означає, що на даний вхід нічого не відранжовано
       
@@ -649,15 +650,16 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       /*************************************************************/
       //У випадку, якщо відображення здійснюється вікна функціональних кнопок, Вх.GOOSE блоіків, або  Вх.MMS блоіків
       /*************************************************************/
-      const uint32_t *p_array;
+      const uint32_t *p_array = NULL;
       if (type_ekran == INDEX_VIEWING_BUTTON) p_array = buttons_mode[(current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1];
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-      else 
+      else if (type_ekran == INDEX_VIEWING_IEC61850_RANG)
       {
         if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS)) p_array = rang_iec61850_blocks[type_LN];
-        else total_error_sw_fixed(184);
+        else total_error_sw_fixed();
       }
 #endif
+      else total_error_sw_fixed();
 
       for (unsigned int index_deleted_function = 0; index_deleted_function < NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL; index_deleted_function++)
       {
@@ -676,7 +678,8 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
           /*************************************************************/
 
           //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-          unsigned int maska[N_SMALL] = {0, 0, 0};
+          unsigned int maska[N_SMALL];
+          for (size_t j = 0; j < N_SMALL; ++j ) maska[j] = 0;
           for (unsigned int j = 0; j < (index_deleted_function - offset); j++) _SET_BIT(maska, j);
           
           /***/
@@ -747,19 +750,21 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
             /*
             Випадок коли деякі сигнали треба відфільтрувати
             */
-            const uint32_t *p_array;
+            const uint32_t *p_array = NULL;
             if (type_ekran == INDEX_VIEWING_BUTTON) p_array = buttons_mode[(current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1];
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-            else 
+            else if (type_ekran == INDEX_VIEWING_IEC61850_RANG)
             {
               if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS)) p_array = rang_iec61850_blocks[type_LN];
-              else total_error_sw_fixed(185);
+              else total_error_sw_fixed();
             }
 #endif
+            else total_error_sw_fixed();
 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
             //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-            unsigned int maska[N_SMALL] = {0, 0, 0};
+            unsigned int maska[N_SMALL];
+            for (size_t j1 = 0; j1 < N_SMALL; ++j1 ) maska[j1] = 0;
             unsigned int j1;
             for (j1 = 0; j1 < (min_max_number[i][0] - offset); j1++) _SET_BIT(maska, j1);
           
@@ -825,7 +830,8 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       {
         //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
         //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-        unsigned int maska[N_SMALL] = {0, 0, 0};
+        unsigned int maska[N_SMALL];
+        for (size_t j = 0; j < N_SMALL; ++j ) maska[j] = 0;
         for (unsigned int j = 0; j < (min_max_number[i][0] - offset); j++) _SET_BIT(maska, j);
           
         //Відкидаємо назви функцій із списку, які є зайвими
@@ -1088,7 +1094,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     {
       "    Блок.ЗЗ     ",
       "    Блок.ЗЗ     ",
-      "    Блок.ЗЗ     ",
+      "    SEFP Blk    ",
       "    Блок.ЗЗ     "
     };
     for (unsigned int index_1 = 0; index_1 < MAX_COL_LCD; index_1++)
@@ -1100,17 +1106,9 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
   if(current_ekran.edition == 0)
   {
     //Випадок, коли ми продивляємося зранжовані функції на вході
-    if (
-        (state_viewing_input[0] == 0) && 
-        (state_viewing_input[1] == 0) &&
-        (state_viewing_input[2] == 0) &&
-        (state_viewing_input[3] == 0) &&
-        (state_viewing_input[4] == 0) &&
-        (state_viewing_input[5] == 0) &&
-        (state_viewing_input[6] == 0) &&
-        (state_viewing_input[7] == 0) &&
-        (state_viewing_input[8] == 0)
-       )
+    int flag=1;
+    for(int m=0; m<N_BIG; m++) if(state_viewing_input[m] != 0) {flag=0; break;}
+    if (flag)
     {
       //Це означає, що на даний вхід нічого не відранжовано
       
@@ -1307,7 +1305,8 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
       /*************************************************************/
 
       //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-      unsigned int maska[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+      unsigned int maska[N_BIG];
+      for(int m=0; m<N_BIG; m++) maska[m]=0;
       for (unsigned int j = 0; j < (index_deleted_function - offset); j++) _SET_BIT(maska, j);
           
       /***/
@@ -1348,115 +1347,12 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
       }
       if (current_ekran.index_position >= ((int)index_deleted_function)) position_temp--;
       offset++;
+      //Робота з Watchdog
+      watchdog_routine(UNITED_BITS_WATCHDOG);
       /*************************************************************/
 
       /*************************************************************/
     }
-//    else if(type_ekran == INDEX_VIEWING_OUTPUT)
-//    {
-//      /*************************************************************/
-//      //У випадку, якщо відображення здійснюється вікна виходів, то відкидаємо ті функції, які не можуть бути зранжовані на дискретний вихід
-//      /*
-//      А це:
-//            "Робота БО" - якщо вона вже є зранжованою на інші виходи (не той що зараз ранжується, щоб мати можливість його зняти)
-//            "Робота БВ" - якщо вона вже є зранжованою на інші виходи (не той що зараз ранжується, щоб мати можливість його зняти)
-//      */
-//      
-//      unsigned int current_number_output = number_ekran - EKRAN_RANGUVANNJA_OUTPUT_1;
-//
-//      for (i = 0; i < 2; i++)
-//      {
-//        unsigned int index_deleted_function;
-//        unsigned int maska_func[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-//        unsigned int need_filtration = 0;
-//        //Визначаємо індекс функції, яку потенційно можливо треба буде фільтрувати із сприску
-//        //Першою фільтруємо функцію з меншим номером
-//        if (i == 0)
-//        {
-//          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BO : RANG_WORK_BV;
-//        }
-//        else
-//        {
-//          index_deleted_function = (RANG_WORK_BV > RANG_WORK_BO) ? RANG_WORK_BV : RANG_WORK_BO;
-//        }
-//        
-//        //Формуємо маску  для цієї функції
-//        _SET_BIT(maska_func, index_deleted_function);
-//        
-//        unsigned int index = 0;
-//        while ((need_filtration == 0) && (index < NUMBER_OUTPUTS))
-//        {
-//          //Пропускаємо текучий номер виходу, бо на ньому дана функція має відображатися під час редагування
-//          if (index != current_number_output)
-//          {
-//            if (
-//                ((current_settings.ranguvannja_outputs[N_BIG*index    ] & maska_func[0]) != 0) ||
-//                ((current_settings.ranguvannja_outputs[N_BIG*index + 1] & maska_func[1]) != 0) ||
-//                ((current_settings.ranguvannja_outputs[N_BIG*index + 2] & maska_func[2]) != 0) ||
-//                ((current_settings.ranguvannja_outputs[N_BIG*index + 3] & maska_func[3]) != 0) ||
-//                ((current_settings.ranguvannja_outputs[N_BIG*index + 4] & maska_func[4]) != 0) ||
-//                ((current_settings.ranguvannja_outputs[N_BIG*index + 5] & maska_func[5]) != 0) ||
-//                ((current_settings.ranguvannja_outputs[N_BIG*index + 6] & maska_func[6]) != 0) ||
-//                ((current_settings.ranguvannja_outputs[N_BIG*index + 7] & maska_func[7]) != 0) ||
-//                ((current_settings.ranguvannja_outputs[N_BIG*index + 8] & maska_func[8]) != 0)
-//               )
-//            {
-//              need_filtration = 1;
-//            }
-//          }
-//          index++;
-//        }
-//        
-//        //У випадку, якщо ввстановлено що дану функцію треба відфільтрувати, то відктдпємо її
-//        if (need_filtration != 0)
-//        {
-//          //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-//          unsigned int maska[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-//          for (unsigned int j = 0; j < (index_deleted_function - offset); j++) _SET_BIT(maska, j);
-//          
-//          /***/
-//          //Зміщуємо біти стану реанжування функцій разом із їх назвами
-//          /***/
-//          unsigned int new_temp_data_1[N_BIG], new_temp_data_2[N_BIG];
-//
-//          for (unsigned int k = 0; k < N_BIG; k++)
-//          {
-//            new_temp_data_1[k] = state_viewing_input[k] & maska[k];
-//
-//            new_temp_data_2[k] = state_viewing_input[k] & (~maska[k]);
-//          }
-//
-//          for (unsigned int k = 0; k < (N_BIG - 1); k++)
-//          {
-//            new_temp_data_2[k] = ( (new_temp_data_2[k] >> 1) | ((new_temp_data_2[k + 1] & 0x1) << 31) ) & (~maska[k]);
-//          }
-//          new_temp_data_2[N_BIG - 1] =  (new_temp_data_2[N_BIG - 1] >> 1) & (~maska[N_BIG - 1]);
-//                
-//          for (unsigned int k = 0; k < N_BIG; k++)
-//          {
-//            state_viewing_input[k] = new_temp_data_1[k] | new_temp_data_2[k];
-//          }
-//          /***/
-//          for (unsigned int j = (index_deleted_function - offset); j < (max_row_ranguvannja - offset); j++)
-//          {
-//            if ((j + 1) < (max_row_ranguvannja - offset))
-//            {
-//              for (unsigned int k = 0; k<MAX_COL_LCD; k++)
-//                name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION + 1][k];
-//            }
-//            else 
-//            {
-//              for (unsigned int k = 0; k<MAX_COL_LCD; k++)
-//                name_string_tmp[j + NUMBER_ROW_FOR_NOTHING_INFORMATION][k] = ' ';
-//            }
-//          }
-//          if (current_ekran.index_position >= ((int)index_deleted_function)) position_temp--;
-//          offset++;
-//          /*************************************************************/
-//        }
-//      }
-//      /*************************************************************/
-//    }
 
     //Функції загального призначення пропускаємо (вони знаходяться у початку списку), тому починаємо з першого записту
     int index_in_list = NUMBER_GENERAL_SIGNAL_FOR_RANG;
@@ -1482,7 +1378,8 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
             //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-            unsigned int maska[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+            unsigned int maska[N_BIG];
+            for (size_t m = 0; m < N_BIG; ++m) maska[i] = 0;
             unsigned int j1;
             for (j1 = 0; j1 < (min_max_number[i][0] - offset); j1++) _SET_BIT(maska, j1);
           
@@ -1552,7 +1449,8 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
             //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-            unsigned int maska[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+            unsigned int maska[N_BIG];
+            for(int m=0; m<N_BIG; m++) maska[m]=0;
             unsigned int j1;
             for (j1 = 0; j1 < (min_max_number[i][0] - offset); j1++) _SET_BIT(maska, j1);
           
@@ -1691,6 +1589,8 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
                 if (current_ekran.index_position >= index_in_list) position_temp--;
           
                 offset++;
+                //Робота з Watchdog
+                watchdog_routine(UNITED_BITS_WATCHDOG);
               }
               else
               {
@@ -1709,7 +1609,8 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
       {
         //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
         //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
-        unsigned int maska[N_BIG] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        unsigned int maska[N_BIG];
+        for(int m=0; m<N_BIG; m++) maska[m]=0;
         for (unsigned int j = 0; j < (min_max_number[i][0] - offset); j++) _SET_BIT(maska, j);
           
         //Відкидаємо назви функцій із списку, які є зайвими
@@ -1755,6 +1656,8 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
           
           offset++;
           index_in_list++;
+          //Робота з Watchdog
+          watchdog_routine(UNITED_BITS_WATCHDOG);
         }
       }
           

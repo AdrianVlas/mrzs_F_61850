@@ -32,23 +32,27 @@
 #define SIZE_DR_AREA                          (NUMBER_PAGES_INTO_DR<<VAGA_SIZE_PAGE_DATAFLASH_1)
 #define MAX_ADDRESS_DR_AREA                   (MIN_ADDRESS_DR_AREA + SIZE_DR_AREA - 1)
 
+#define NUMBER_BYTES_SAMPLE_DR                ( ( NUMBER_TOTAL_SIGNAL_FOR_RANG / 8 ) + ( ( NUMBER_TOTAL_SIGNAL_FOR_RANG % 8 ) != 0))
+#define SD_DR                                 (3 + NUMBER_BYTES_SAMPLE_DR + 2)  
+
 #define FIRST_INDEX_START_START_RECORD_DR     0
 #define FIRST_INDEX_DATA_TIME_DR              1
 #define FIRST_INDEX_EXTRA_SETTINGS_DR         13
 #define FIRST_INDEX_NAME_OF_CELL_DR           17
-#define FIRST_INDEX_NUMBER_ITEMS_DR           49
-#define FIRST_INDEX_NUMBER_CHANGES_DR         50
-#define FIRST_INDEX_NUMBER_MAX_PHASE_DR       52
-#define FIRST_INDEX_NUMBER_MAX_PHASE04_DR     53
-#define FIRST_INDEX_NUMBER_MAX_3I0_DR         54
-#define FIRST_INDEX_NUMBER_MAX_3U0_DR         55
-#define FIRST_INDEX_NUMBER_MIN_U_DR           56
-#define FIRST_INDEX_NUMBER_MAX_U_DR           57
-#define FIRST_INDEX_NUMBER_MAX_ZOP_DR         58
-#define FIRST_INDEX_NUMBER_MIN_F_ACHR_DR      59
-#define FIRST_INDEX_NUMBER_F_CHAPV_DR         60
-#define FIRST_INDEX_FIRST_BLOCK_DR            61
-#define FIRST_INDEX_FIRST_DATA_DR             1181
+#define FIRST_INDEX_SOURCE_DR                 49
+#define FIRST_INDEX_NUMBER_ITEMS_DR           (49 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_CHANGES_DR         (50 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_MAX_PHASE_DR       (52 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_MAX_PHASE04_DR     (53 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_MAX_3I0_DR         (54 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_MAX_3U0_DR         (55 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_MIN_U_DR           (56 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_MAX_U_DR           (57 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_MAX_ZOP_DR         (58 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_MIN_F_ACHR_DR      (59 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_NUMBER_F_CHAPV_DR         (60 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_FIRST_BLOCK_DR            (61 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_FIRST_DATA_DR             (1181 + NUMBER_BYTES_SAMPLE_DR)
 
 #define VAGA_SIZE_ONE_RECORD_PR_ERR           6
 #define SIZE_ONE_RECORD_PR_ERR                (1<<VAGA_SIZE_ONE_RECORD_PR_ERR)
@@ -111,22 +115,12 @@
 #define  SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2                16
 
 /*Біти 16-31 відносять до мікросхеми DataFlash аналогового реєстратора*/
-#define TASK_ERASE_DATAFLASH_2_BIT                                          (0 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
-#define TASK_ERASE_DATAFLASH_2                                              (1<<TASK_ERASE_DATAFLASH_2_BIT)
-#define TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR_BIT   (1 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
-#define TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR       (1<<TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR_BIT)
-#define TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR_BIT        (2 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
-#define TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR            (1<<TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_AR_BIT)
-#define TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU_BIT                          (3 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
-#define TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU                              (1<<TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU_BIT)
-#define TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB_BIT                           (5 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
-#define TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB                               (1<<TASK_MAMORY_READ_DATAFLASH_FOR_AR_USB_BIT)
-#define TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485_BIT                         (6 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
-#define TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485                             (1<<TASK_MAMORY_READ_DATAFLASH_FOR_AR_RS485_BIT)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
-#define TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN_BIT                           (7 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
-#define TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN                               (1<<TASK_MAMORY_READ_DATAFLASH_FOR_AR_LAN_BIT)
-#endif
+#define TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS_BIT   (0 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
+#define TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS       (1<<TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS_BIT)
+#define TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS_BIT        (1 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
+#define TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS            (1<<TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS_BIT)
+#define TASK_MAMORY_READ_DATAFLASH_FOR_FS_BIT                               (2 + SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2)
+#define TASK_MAMORY_READ_DATAFLASH_FOR_FS                                   (1<<TASK_MAMORY_READ_DATAFLASH_FOR_FS_BIT)
 
 #define WIGHT_OF_DR_WAITING                       2
 
@@ -143,15 +137,18 @@
 
 #define LABEL_START_RECORD_DR           0xA5
 
-#define IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE          1
-#define IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE04        2
-#define IDENTIFIER_BIT_ARRAY_MAX_CURRENT_3I0            3
-#define IDENTIFIER_BIT_ARRAY_MAX_VOLTAGE_3U0            4
-#define IDENTIFIER_BIT_ARRAY_MIN_VOLTAGE                5
-#define IDENTIFIER_BIT_ARRAY_MAX_VOLTAGE                6
-#define IDENTIFIER_BIT_ARRAY_MAX_CURRENT_ZOP            7
-#define IDENTIFIER_BIT_ARRAY_MIN_FREQUENCY_ACHR         8
-#define IDENTIFIER_BIT_ARRAY_FREQUENCY_CHAPV            9
+enum _identifier_bit_arrays
+{
+  IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE  = 1,
+  IDENTIFIER_BIT_ARRAY_MAX_CURRENT_PHASE04,
+  IDENTIFIER_BIT_ARRAY_MAX_CURRENT_3I0,
+  IDENTIFIER_BIT_ARRAY_MAX_VOLTAGE_3U0,
+  IDENTIFIER_BIT_ARRAY_MIN_VOLTAGE,
+  IDENTIFIER_BIT_ARRAY_MAX_VOLTAGE,
+  IDENTIFIER_BIT_ARRAY_MAX_CURRENT_ZOP,
+  IDENTIFIER_BIT_ARRAY_MIN_FREQUENCY_ACHR,
+  IDENTIFIER_BIT_ARRAY_FREQUENCY_CHAPV
+};
 
 #define READING_DR_FOR_MENU             1
 #define READING_DR_FOR_USB              2
@@ -159,17 +156,9 @@
 #define READING_PR_ERR_FOR_MENU         4
 #define READING_PR_ERR_FOR_USB          5
 #define READING_PR_ERR_FOR_RS485        6
-#if (MODYFIKACIA_VERSII_PZ >= 10)
 #define READING_DR_FOR_LAN              7
 #define READING_PR_ERR_FOR_LAN          8
-#endif
 
-#define READING_AR_FOR_MENU             1
-#define READING_AR_FOR_USB              2
-#define READING_AR_FOR_RS485            3
-#if (MODYFIKACIA_VERSII_PZ >= 10)
-#define READING_AR_FOR_LAN              4
-#endif
 
 #define LABEL_START_RECORD_PR_ERR       0x5A
 
@@ -183,152 +172,77 @@
 
 #define LABEL_START_RECORD_AR           0xAB
 
-#define STATE_AR_TEMPORARY_BLOCK                  -1//На даний момент певні внутрішні операції блокують роботу аналогового реєстратрора
-#define STATE_AR_NO_RECORD                        0 //На даний момент ніяких дій з аналоговим реєстратором не виконується
-#define STATE_AR_START                            1 //Запуск нового запису аналогового реєстратора
-#define STATE_AR_SAVE_SRAM_AND_SAVE_FLASH         2 //Стан роботи аналогового реєстратора "загрузка і вигрузка"
-#define STATE_AR_ONLY_SAVE_FLASH                  3 //Стан роботи аналогового реєстратора "тільки вигрузка", бо "загрузка" вже закінчилася
+#define NUMBER_WORD_DIGITAL_PART_AR ( ( NUMBER_TOTAL_SIGNAL_FOR_RANG / (8*sizeof(short int)) ) + ( ( NUMBER_TOTAL_SIGNAL_FOR_RANG % (8*sizeof(short int))) != 0))
+
+#define AR_TAIL_MIN_NUMBER_PERIOD       1
+#define POWER_DOWN_TIME      70
+#define POWEER_IS_FROM_IA_IC       3850
+#define POWEER_ISNOT_FROM_IA_IC    3500
+
+enum _state_ar_m
+{
+  STATE_AR_NONE_M = 0,
+  STATE_AR_WORK_M,
+  STATE_AR_WORK_STOP_M,
+  STATE_AR_BLOCK_M
+};
+
+enum _state_ar_prt
+{
+  STATE_AR_NONE_PRT = 0,
+  STATE_AR_AVAR_PRT,
+  STATE_AR_POSTAVAR_PRT,
+  STATE_AR_BLOCK_PRT
+};
+
+enum _state_ar_fatfs
+{
+  STATE_AR_NONE_FATFS = 0,
+  STATE_AR_WAIT_TO_WRITE_FATFS,
+  STATE_AR_WRITE_FATFS,
+  STATE_AR_WAIT_TO_STOP_WRITE_FATFS,
+  STATE_AR_STOP_WRITE_FATFS,
+
+  STATE_AR_MEMORY_FULL_FATFS,
+  STATE_AR_BLOCK_FATFS
+};
+
+enum _level_ar_writing
+{
+  LEVEL_AR_WRITING_SEL_NUMBER = 0,
+  LEVEL_AR_WRITING_OPEN_FILE,
+  LEVEL_AR_WRITING_HEADER,
+  LEVEL_AR_REWRITING_DATE_TIME,
+  LEVEL_AR_WRITING_DATA
+};
+
+enum _fix_date_time_avar
+{
+  AVAR_DATE_TIME_NONE = 0,
+  AVAT_DATE_TIMR_FIX_LEVEL1,
+  AVAT_DATE_TIMR_FIX_LEVEL2
+};
+
+enum _command_fatfs
+{
+  FATFS_FORMAT = 0,
+  
+  FATFS_READ_DATA_FOR_MENU,
+  
+  FATFS_MAX_NUMBER
+};
+
+#define MAX_TIME_FULL_AR_RECORD         40000 /*120000*/
 
 /*
-Виходимо з того, що максимально можливий аналоговий масив може бути 5с(доаварійний
-масив) + 25с(післяаварійний масив) = 30с
-Тоді повний об'єм буде
-30(с)х50(періодів)х16(виборок на період)х(8(канали) + 18(двобайтні слова дискретних сигналів))
-х2(байти на число) = 1248000(байти)
-Ще має бути 1(байт мітки початку запису )+7(байти мітки часу)+4(байти коеф.тр.Т0)+
-4(байти коеф.тр.ТТ)+4(байти коеф.тр.ТТ 0.4кВ)+4(байти коеф.тр.ТН)+4(байти дод.налаштувань)+32(байти імені комірки) = 60 байти
-
-!!!Розмір заголовку аналоговог ореєстратора обов'язково має бути числом кратиним 2, 
-щоб не вийшло так, що коли ми формуємо буфер для запису у DataFlash (розмір буферу 
-256 байт), то не виходить записати одну миттєву виборку (розмір 2-а байт): тоді б 
-виникла ситуація, що один байт треба писати одною трансакцією, а інший байт - 
-вже другою трансакцією. Ця ситуація дуже б ускладнила роботу з аналоговим реєстратором. 
-Тому краще такої ситуації уникнути саме тимоб оскільки і розмір буферу/сторінки 
-мікросхеми dataFlash є кратним 2, розмір миттєвої виборки є кратним 2, то і розмір 
-заголовку аналогового реєстратора має бути кратним 2.!!!
-60 є кратним 2 - отже все нормально!
-
-Тобто розмір максимального аналогового запису 1200000+60 = 1200060(байти)
-З урахуванням того, що розмір сторінки DF становить 512 байт, то максимальний
-аналоговий запис становить 1248060/512 = 2437,617188 сторінки. Значить буде вестися 
-запис у 2438 сторінки DF.
-
-Читання зовнішнбої SRAM становить 85(нс)  - це випливає з настройок FSMC. Тоді для копіювання 512 
-байт з зовнішньої SRAM у внутрішню SRAM становить 512(байт)х85(нс)=43,52(мкс)
-
-DF(DataFlsh) обмінюється з центральним мікроконтролером через SPI1, який настроєний
-на швидкість обміну 7.5МБіт/с і передає 8 біт інформації. Тобто швидкість обміну 
-становить 0,9375МБайти/с.
-
-З увахуванням швидкості обміну і ширин пакетів виходіть такі часи
-
-1)Запис 512 байт у DF операцією "Main Memory Page Program Through Buffer" < 25,551(мс)
-2)Читання сторінки у буфер операцією "Main Memory Page to Buffer Transfer" < 205(мкс)
-3)Модифікація до 512 байт у буфері DF операцією "Buffer Write" < 551(мкс)
-4)Запис буферу DF у DF операцією "Buffer to Main Memory Page Program with 
-Built-in Erase" < 25,001(мс)
-
-Для запису цілої сторінки треба виконати операції:
-зкопіювати 512 байт з зовнішньої SRAM у внутрішню SRAM < 43,52(мкс)
-Виконати операцю "Main Memory Page Program Through Buffer" < 25,551(мс)
-Періодично читати біт статусу, який перевіряєиться кожні 2мс (бо іде чергування
-DataFlash1/DataFlash2). Тому за 26 мс ця опеація має гарантовано виконатися.
-Для перестраховки приймемо значення 30 мс.
-
-Для модифікації до 512 байт на одній сторінці треба:
-скопіювати 512 байт з зовнішньої SRAM у внутрішню SRAM < 43,52(мкс)
-Виконати операцю "Main Memory Page to Buffer Transfer" < 205(мкс)
-
-Через 2(мс) запуститься операція перевірки біту статусу (див. пояснення вище) який 
-теоретично має бути у дозволеному стані бо 202(мкс) < 2 (мc)
-Ще черзе 2(мс (див. пояснення вище) можна запускати операцію модифікаціїмайт у буфері.
-Тобто затримка між операціями складе 4(мс)
-Тобто реально затримка буде не 202(мкс), а 4(мс)
-
-Виконати модифікацію байт у буфері DF < 551(мкс) 
-
-Через 2(мс) запустится операція перевірки біту статусу (див. пояснення вище) який 
-теоретично має бути у дозволеному стані бо 205(мкс) < 2 (мc)
-Це черзе 2(мс) (див. пояснення вище) можна запускати операцію запису у буфер.
-Тобто затримка між операціями складе 4(мс)
-Тобто реально затримка буде не 138(мкс), а 4(мс)
-
-Виконати операцю "Buffer to Main Memory Page Program with 
-Built-in Erase" < 25,001(мс)
-Періодично читати біт статусу, який перевіряєиться кожні 2мс (див. пояснення вище).
-Тому за 26 мс ця опеація має гарантовано виконатися.
-Сумарний час:
-43,52(мкс)+4(мс)+4(мс)+26(мс) = 35(мс)
-Для перестраховки приймемо значення 36 мс.
-
-Теоретично тільки перша і остання сторінки будуть записуватися довшою операцією
-(зі модифікацієб вмістимого буферу) а всі решта будуть зприсуватися простішою
-операцією, але щоб гарантовано не було переповнення - зробимо розрахунок, коли сторінки
-записуються з більшим часом - 36(мс)
-
-Тоді для запису 2438 сторінок треба буде
-2438(сторінки)х36(мс) = 87 768(мс)=87,768(с)
-
-Тобто процес запису максимального аналогового запису буде тривати 87,768(с)
-
-Швидкість "заповнення" миттєвими виборками і дискретними сигналами з вимірювальної системи:
-(8(канали) + 18(двобайтні слова дискретних сигналів))х2(байти на значення)/1,25(мс
-- інтервал між виборками при частоті 50Гц і 16 виборок на період) = 41,6 (байт/мс)
-Причому це значення є точним, бо ми не робили тут ніяких припущень чи заокуркглень
-
-Швидкісь "вигрузки" запису аналогового реєстратора у DF:
-2438(сторінки)х512(байт на сторінку)/87768(мс) = 14,(2) (байт/мс)
-Причому це значення не є точним, тому що ми тут робили заокруглення. Тобто, реально,
-швидкіть має бути ще вищою, бо заокруглення робилися у 
-сторону найгіршого випадку якого би взагалі не мало бути, зокрема, що всі сторінки 
-записються за 36(мс) - час операції запису через модифікацію вмістимого буферу(
-див. пояснення вище)).
-
-Наростання вмістимого буферу при "заповненні" по відношенню до "вигрузки
-буде виконуватися зі швидкістю: 40 - 14,(2) = 27,37777778(байт/мс)
-Це наростання буде здійснюватичся поки виконується "заповнення", тобто максимально
-можливий час 25(с)  -максимальний час післяаварійного масиву.
-25000(мс)*27.38(байт/мс) = 684500(байт) <= 684500(байт)
-684500(байт)/512(байт/стор.) = 1336,914063(сторінок) < 1337(сторінок)
-
-Крім того треба мати на увазі те, що у записі аналогового реєстратора є 60 байт
-інформації по запису (міктка початку запису, час, коефіцієнти трансформації, ім'я
-комірки). При умові рівності швидкостей "заповнення" і "вигрузки" ця різниця між міткою
-останнього "заповнення" і міткою останньої "вигрузки" мала б зберегтися. При умові, що
-швидкіть "вигрузки" буде більшою за швидкіть "заповнення" - то з часом "вигрузка"
-дожене "заповнення" і буде працювати по мірі появи даних.
-
-На основі вищевикладених роздумів я роблю висноок, що розмір масиву тимчасового 
-зберігання миттєвих значень мало б вистарчити у (розмір доаварійного масису + 
-(1337 + 1) сторінки DF). Ще одну сторінку до 1338 теоретично розрахованих я додав 
-для перестаховки.
-
-Тобто розмір має бути
-5(с - макс. доавар. мас.)х50(пром.частота)х16(кільк. вибор.за пер. для ан.р.)х(8(канали) + 18(двобайтні слова дискретних сигналів)) +1339*[512(байт)/2(байт на одне миттєве значення)](кількість миттєвих значень на сторінці)=
-= 104000 +1339х256 = 446784
-
-Число має бути кратним (кількості аналогових каналів + кількості двобайтних слів дискретних сигналів).
-Це треба для того, щоб не слідкувати при кожному записі чи ми не вийшли за масив, а 
-цей контроль здійснювати при записі всього зрізу
-Перший доданок гарантовано є кратним кількості (кількості аналогових каналів + 
-кількості двобайтних слів дискретних сигналів), бо він формується
-монжником, який називається "кількість ан.каналів + двобайтні слова дискретних сигналів"
-Тому треба слідквати за другим доданком
-1339(сторінок)х256(слів) = 342784 (слів)
-
-342784/(8 + 18)= 13184
-Якщо ділення не є ціле число, то треба провести корекцію, щоб Х/(8 + 18)
-давало ціле число, причому Х > 342784 - тобто беремо найслижче число X = 342784
-
-таким чином
-104000 + 342784 = 446784
-
-!!!Вищевикладена дає мені підставу ширину масиву встановити 446784 елементи (двохбайтені,
-так як кожна виборка складається із двох байт)!!!
-
+Я не використовую довгих імен, а тому формат у мене 8.3
+99 999 999 = 0х5F5 E0FF
+ому я роблю обмеження на 0xFF FFFF (це число 16 777 215)
 */
+#define NUMBER_FATFS_NAME       0x1000000       
+#define MASKA_FATFS_NAME        (NUMBER_FATFS_NAME - 1)
 
-#define SIZE_BUFFER_FOR_AR    (242892 - 10*26)/*446784*/
+#define SIZE_BUFFER_FOR_AR    ((9342 - 10)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR))
 
 #define CLEAN_AR_BIT          0
 #define CLEAN_AR              (1 << CLEAN_AR_BIT)

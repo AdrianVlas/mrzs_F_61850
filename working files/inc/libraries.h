@@ -6,6 +6,7 @@
 #include <math.h>
 #include <arm_math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
 

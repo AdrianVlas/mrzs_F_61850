@@ -175,7 +175,7 @@ void make_ekran_setpoint_UP(unsigned int group)
         default:
           {
             //Теоретично цього ніколи не мало б бути
-            total_error_sw_fixed(92);
+            total_error_sw_fixed();
             
             break;
           }
@@ -212,7 +212,7 @@ void make_ekran_setpoint_UP(unsigned int group)
     default:
       {
         //Теоретично цього ніколи не мало б бути
-        total_error_sw_fixed(91);
+        total_error_sw_fixed();
       }
     }
   }
@@ -504,20 +504,6 @@ void make_ekran_control_UP()
     {11, 8, 13, 12}
   };
   
-  static const uint8_t information_1[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
-  {
-    {"     Откл.      ", "      Вкл.      "},
-    {"     Вимк.      ", "     Ввімк.     "},
-    {"      Off       ", "       On       "},
-    {"     Сљнд.      ", "     Косу.      "}
-  };
-  static const uint32_t cursor_x_1[MAX_NAMBER_LANGUAGE][2] = 
-  {
-   {4, 5},
-   {4, 4},
-   {5, 6},
-   {4, 4}
-  };
   uint8_t information_2[_UP_CTRL_NUMBER][MAX_COL_LCD] = 
   {
     "    Ia/Ib/Ic    ",
@@ -609,7 +595,7 @@ void make_ekran_control_UP()
         case UP_CTRL_Ub:
         case UP_CTRL_Uc:
           {
-            uint32_t index_2 = ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0);
+            uint32_t index_2 = ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) != 0);
             ctrl_info[i].information = information_U[index - UP_CTRL_Ua_Ub_Uc][index_2];
             ctrl_info[i].cursor_x = cursor_x_U[index - UP_CTRL_Ua_Ub_Uc][index_2];
             
@@ -635,8 +621,8 @@ void make_ekran_control_UP()
     case 29:
       {
         uint32_t index = (point->control_UP >> ((i / MAX_ROW_FOR_CONTROL_UP)*(_CTR_UP_NEXT_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I) - _CTR_UP_PART_I) + CTR_UP_STATE_BIT - (_CTR_UP_PART_II - _CTR_UP_PART_I))) & 0x1;
-        ctrl_info[i].information = information_1[index_language][index];
-        ctrl_info[i].cursor_x = cursor_x_1[index_language][index];
+        ctrl_info[i].information = information_off_on[index_language][index];
+        ctrl_info[i].cursor_x = cursor_x_off_on[index_language][index];
         break;
       }
     case 2:
@@ -670,7 +656,7 @@ void make_ekran_control_UP()
     default:
       {
         //Теоретично цього ніколи не мало б бути
-        total_error_sw_fixed(90);
+        total_error_sw_fixed();
       }
     }
   }

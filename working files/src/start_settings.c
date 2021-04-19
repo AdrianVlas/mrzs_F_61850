@@ -54,7 +54,7 @@ void global_vareiables_installation(void)
   
   for (unsigned int i = 0; i < MAX_INDEX_DATA_FOR_OSCYLOGRAPH; i++)
   {
-    data_for_oscylograph[i].state_ar_record = STATE_AR_NO_RECORD;
+    data_for_oscylograph[i].state_ar_record = STATE_AR_NONE_M;
   }
   
   sector_1[0] = (int) (AMPLITUDA_SECTOR*/*cos*/arm_cos_f32(/*(double)*/(PI*((float)(  0 + SECTOR1 - POPRAVKA_NZZ))/180.0f)));
@@ -97,7 +97,7 @@ void global_vareiables_installation(void)
   /**************************/
   //Ініціалізація глобальних таймерів
   /**************************/
-  for(unsigned int i = 0; i < MAX_NUMBER_GLOBAL_TIMERS; i++) global_timers[i] = -1;
+  for(int *p = global_timers; p != (global_timers + _MAX_NUMBER_GLOBAL_TIMERS); ++p) *p = -1;
   /**************************/
 
   /**************************/
@@ -1155,7 +1155,7 @@ void start_settings_peripherals(void)
     changing_diagnostyka_state();//Підготовлюємо новий потенційно можливий запис для реєстратора програмних подій
   }
   /**********************/
-  
+
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   /**********************/
   //Ініціалізація CANAL1_MO і CANAL2_MO: 6.75Мбіт/с, контроль парності, один стоп біт
@@ -1702,7 +1702,7 @@ void min_settings(__SETTINGS *target_label)
   target_label->TCurrent = KOEF_TT_MIN;
   target_label->TCurrent04 = KOEF_TT04_MIN;
   target_label->TVoltage = KOEF_TN_MIN;
-  target_label->control_transformator = CTR_TRANSFORMATOR_PHASE_LINE;
+  target_label->control_transformator = MASKA_FOR_BIT(INDEX_ML_CTR_TRANSFORMATOR_PHASE_LINE);
 
   for(unsigned int i=0; i< ((M_ADDRESS_LAST_USER_REGISTER_DATA - M_ADDRESS_FIRST_USER_REGISTER_DATA) + 1); i++) target_label->user_register[i] = 0;
 
@@ -1826,7 +1826,7 @@ void error_reading_with_eeprom()
     //Робота з watchdogs
    watchdog_routine(WATCHDOG_KYYBOARD);
     
-    unsigned int index_info, index_action, information_type;
+    unsigned int index_info = 0, index_action = 0, information_type = 0;
     if((state_spi1_task & STATE_SETTINGS_EEPROM_EMPTY) != 0)
     {
       index_info = 0;
@@ -1850,6 +1850,11 @@ void error_reading_with_eeprom()
       index_info = 3;
       index_action = 1;
       information_type = 2;
+    }
+    else
+    {
+      //Теоретично цього ніколи не мало б бути
+      total_error_sw_fixed();
     }
 
     //Копіюємо  рядки у робочий екран

@@ -1491,11 +1491,12 @@ void make_ekran_control_mtz()
             (index_ctr == INDEX_ML_CTRMTZ_4_TYPE)  
            )   
         {
-          int value;
+          int value = 0;
           if (index_ctr == INDEX_ML_CTRMTZ_1_TYPE) value = point->type_mtz1;
           else if (index_ctr == INDEX_ML_CTRMTZ_2_TYPE) value = point->type_mtz2;
           else if (index_ctr == INDEX_ML_CTRMTZ_3_TYPE) value = point->type_mtz3;
           else if (index_ctr == INDEX_ML_CTRMTZ_4_TYPE) value = point->type_mtz4;
+          else total_error_sw_fixed();
 
           static const unsigned char information[MAX_NAMBER_LANGUAGE][8][MAX_COL_LCD] = 
           {
@@ -1517,21 +1518,6 @@ void make_ekran_control_mtz()
         }
         else
         {
-          static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
-          {
-            {"     Îòêë.      ", "      Âêë.      "},
-            {"     Âèìê.      ", "     Ââ³ìê.     "},
-            {"      Off       ", "       On       "},
-            {"     Ñšíä.      ", "     Êîñó.      "}
-          };
-          static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
-          {
-           {4, 5},
-           {4, 4},
-           {5, 6},
-           {4, 4}
-          };
-        
           unsigned int temp_data = point->control_mtz;
           unsigned int n_bit = 0;
           
@@ -1552,8 +1538,8 @@ void make_ekran_control_mtz()
           else if (index_ctr == INDEX_ML_CTRMTZ_4_NAZAD       ) n_bit = N_BIT_CTRMTZ_4_NAZAD;
           else if (index_ctr == INDEX_ML_CTRMTZ_NESPR_KIL_NAPR) n_bit = N_BIT_CTRMTZ_NESPR_KIL_NAPR;
           
-          for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> n_bit) & 0x1][j];
-          if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> n_bit) & 0x1];
+          for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information_off_on[index_language][(temp_data >> n_bit) & 0x1][j];
+          if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x_off_on[index_language][(temp_data >> n_bit) & 0x1];
         }
       }
     }

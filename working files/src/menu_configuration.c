@@ -144,7 +144,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
   /******************************************/
   {
     int delete_index;
-    if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+    if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
       delete_index = MTZ04_BIT_CONFIGURATION;
     else
       delete_index = TZNP_BIT_CONFIGURATION;

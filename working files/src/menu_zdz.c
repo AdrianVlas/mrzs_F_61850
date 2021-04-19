@@ -190,20 +190,6 @@ void make_ekran_control_zdz()
     }
   };
   
-  static const unsigned char information_1[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
-  {
-    {"     Откл.      ", "      Вкл.      "},
-    {"     Вимк.      ", "     Ввімк.     "},
-    {"      Off       ", "       On       "},
-    {"     Сљнд.      ", "     Косу.      "}
-  };
-  static const unsigned int cursor_x_1[MAX_NAMBER_LANGUAGE][2] = 
-  {
-   {4, 5},
-   {4, 4},
-   {5, 6},
-   {4, 4}
-  };
   static const unsigned char information_2[MAX_NAMBER_LANGUAGE][_ZDZ_CTRL_NUMBER][MAX_COL_LCD] = 
   {
     {"  Без контроля  ", "       I        ", "       U        ", "    I или U     ", "     I и U      ", "      3I0       "},
@@ -249,7 +235,7 @@ void make_ekran_control_zdz()
 
   __ctrl_info ctrl_info[MAX_ROW_FOR_CONTROL_ZDZ] =
   {
-    {information_1[index_language][(point->control_zdz >> CTR_ZDZ_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_STATE_BIT) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> CTR_ZDZ_STATE_BIT) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> CTR_ZDZ_STATE_BIT) & 0x1]},
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
@@ -257,18 +243,18 @@ void make_ekran_control_zdz()
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)      \
     )   
-    {information_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD1_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD1_STATE_BIT) & 0x1]},
-    {information_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD2_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD2_STATE_BIT) & 0x1]},
-    {information_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD3_STATE_BIT) & 0x1], cursor_x_1[index_language][(point->control_zdz >> CTR_ZDZ_OVD3_STATE_BIT) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> CTR_ZDZ_OVD1_STATE_BIT) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> CTR_ZDZ_OVD1_STATE_BIT) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> CTR_ZDZ_OVD2_STATE_BIT) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> CTR_ZDZ_OVD2_STATE_BIT) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> CTR_ZDZ_OVD3_STATE_BIT) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> CTR_ZDZ_OVD3_STATE_BIT) & 0x1]},
     {information_3[point->zdz_ovd_porig], cursor_x_3[point->zdz_ovd_porig]},
 #endif
     {information_2[index_language][point->ctrl_zdz_type], cursor_x_2[index_language][point->ctrl_zdz_type]},
-    {information_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
-    {information_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
-    {information_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
-    {information_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
-    {information_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
-    {information_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_1[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]}
+    {information_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ3_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_MTZ4_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_UMIN1_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]},
+    {information_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1], cursor_x_off_on[index_language][(point->control_zdz >> (CTR_ZDZ_STARTED_FROM_UMIN2_BIT - (_CTR_ZDZ_PART_III - _CTR_ZDZ_PART_II))) & 0x1]}
   };
   
   unsigned char name_string_tmp[MAX_ROW_FOR_CONTROL_ZDZ][MAX_COL_LCD];

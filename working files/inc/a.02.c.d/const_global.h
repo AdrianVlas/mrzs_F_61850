@@ -1,9 +1,6 @@
 #ifndef __CONST_GLOBAL__
 #define __CONST_GLOBAL__
 
-#define N_BIG   9
-#define N_SMALL 3
-
 #define MAX_NUMBER_LINES_VMP            8
 
 #define NUMBER_ANALOG_CANALES           8
@@ -34,7 +31,8 @@
 #define N_INPUT_BOARDS          1
 #define N_OUTPUT_BOARDS         2
 
-enum _configuration {
+enum _configuration 
+{
 MTZ_BIT_CONFIGURATION = 0,
 MTZ04_BIT_CONFIGURATION,
 ZDZ_BIT_CONFIGURATION,
@@ -56,8 +54,10 @@ TOTAL_NUMBER_PROTECTION
 /*****************************************/
 //Константи для ранжування дискретних входів
 /*****************************************/
-enum __rang_small {
-RANG_SMALL_BLOCK_VKL_VV = 0,
+enum __rang_small 
+{
+  _RANG_SMALL_GENERAL_BEGIN = 0,
+RANG_SMALL_BLOCK_VKL_VV = _RANG_SMALL_GENERAL_BEGIN,
 RANG_SMALL_RESET_LEDS,
 RANG_SMALL_RESET_RELES,
 RANG_SMALL_MISCEVE_DYSTANCIJNE,
@@ -73,46 +73,61 @@ RANG_SMALL_3_GRUPA_USTAVOK,
 RANG_SMALL_4_GRUPA_USTAVOK,
 RANG_SMALL_RESET_BLOCK_READY_TU_VID_ZAHYSTIV,
 
-RANG_SMALL_BLOCK_MTZ1,
+  _RANG_SMALL_MSZ_BEGIN,
+RANG_SMALL_BLOCK_MTZ1 = _RANG_SMALL_MSZ_BEGIN,
 RANG_SMALL_BLOCK_MTZ2,
 RANG_SMALL_BLOCK_USK_MTZ2,
 RANG_SMALL_BLOCK_MTZ3,
 RANG_SMALL_BLOCK_MTZ4,
 
-RANG_SMALL_BLOCK_MTZ04_1,
+  _RANG_SMALL_MSZ04_BEGIN,
+RANG_SMALL_BLOCK_MTZ04_1 = _RANG_SMALL_MSZ04_BEGIN,
 RANG_SMALL_BLOCK_MTZ04_2,
 RANG_SMALL_BLOCK_USK_MTZ04_2,
 
-RANG_SMALL_BLOCK_ZDZ,
+  _RANG_SMALL_ZDZ_BEGIN,
+RANG_SMALL_BLOCK_ZDZ = _RANG_SMALL_ZDZ_BEGIN,
 RANG_SMALL_PUSK_ZDZ_VID_DV,
 
-RANG_SMALL_BLOCK_NZZ,
+  _RANG_SMALL_SZZ_BEGIN,
+RANG_SMALL_BLOCK_NZZ = _RANG_SMALL_SZZ_BEGIN,
 
-RANG_SMALL_BLOCK_TZNP1,
+  _RANG_SMALL_SZNP_BEGIN,
+RANG_SMALL_BLOCK_TZNP1 = _RANG_SMALL_SZNP_BEGIN,
 RANG_SMALL_BLOCK_TZNP2,
 RANG_SMALL_BLOCK_TZNP3,
 
-RANG_SMALL_STAT_BLK_APV,
+  _RANG_SMALL_APV_BEGIN,
+RANG_SMALL_STAT_BLK_APV = _RANG_SMALL_APV_BEGIN,
 
-RANG_SMALL_ACHR_CHAPV_VID_DV,
+  _RANG_SMALL_ACHR_CHAPV_BEGIN,
+RANG_SMALL_ACHR_CHAPV_VID_DV = _RANG_SMALL_ACHR_CHAPV_BEGIN,
 RANG_SMALL_BLOCK_ACHR1,
 RANG_SMALL_BLOCK_ACHR2,
 
-RANG_SMALL_PUSK_UROV_VID_DV,
+  _RANG_SMALL_PRVV_BEGIN,
+RANG_SMALL_PUSK_UROV_VID_DV = _RANG_SMALL_PRVV_BEGIN,
 
-RANG_SMALL_BLOCK_ZOP,
+  _RANG_SMALL_ZZP_BEGIN,
+RANG_SMALL_BLOCK_ZOP = _RANG_SMALL_ZZP_BEGIN,
 
-RANG_SMALL_BLOCK_UMIN1,
+  _RANG_SMALL_UMIN_BEGIN,
+RANG_SMALL_BLOCK_UMIN1 = _RANG_SMALL_UMIN_BEGIN,
 RANG_SMALL_START_UMIN1,
 RANG_SMALL_BLOCK_UMIN2,
 RANG_SMALL_START_UMIN2,
 
-RANG_SMALL_BLOCK_UMAX1,
+  _RANG_SMALL_UMAX_BEGIN,
+RANG_SMALL_BLOCK_UMAX1 = _RANG_SMALL_UMAX_BEGIN,
 RANG_SMALL_BLOCK_UMAX2,
 
-RANG_SMALL_BLOCK_UP1,
+  _RANG_SMALL_UP_BEGIN,
+RANG_SMALL_BLOCK_UP1 = _RANG_SMALL_UP_BEGIN,
 
-RANG_SMALL_DF1_IN = (RANG_SMALL_BLOCK_UP1 + NUMBER_UP),
+  _RANG_SMALL_VMP_BEGIN = (RANG_SMALL_BLOCK_UP1 + NUMBER_UP),
+  
+  _RANG_SMALL_EL_BEGIN = _RANG_SMALL_VMP_BEGIN,
+RANG_SMALL_DF1_IN = _RANG_SMALL_EL_BEGIN,
 RANG_SMALL_DF2_IN,
 RANG_SMALL_DF3_IN,
 RANG_SMALL_DF4_IN,
@@ -128,48 +143,37 @@ RANG_SMALL_DT3_SET,
 RANG_SMALL_DT3_RESET,
 RANG_SMALL_DT4_SET,
 RANG_SMALL_DT4_RESET,
+
+NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL
 };
 
-#define NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL     15
-#define NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL         5
-#define NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL       3
-#define NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL         2
-#define NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL          1
-#define NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL        3
-#define NUMBER_APV_SIGNAL_FOR_RANG_SMALL         1
-#define NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  3
-#define NUMBER_UROV_SIGNAL_FOR_RANG_SMALL        1
-#define NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL         1
-#define NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL        4
-#define NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL        2
-#define NUMBER_UP_SIGNAL_FOR_RANG_SMALL          NUMBER_UP
-#define NUMBER_VMP_SIGNAL_FOR_RANG_SMALL         0
-#define NUMBER_EL_SIGNAL_FOR_RANG_SMALL          16
+#define N_SMALL ((NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL >> 5) + ((NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL & 0x1f) != 0))
 
-#define NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL       (                                          \
-                                                  NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL    + \
-                                                  NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL        + \
-                                                  NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL      + \
-                                                  NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL        + \
-                                                  NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL         + \
-                                                  NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL       + \
-                                                  NUMBER_APV_SIGNAL_FOR_RANG_SMALL        + \
-                                                  NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL + \
-                                                  NUMBER_UROV_SIGNAL_FOR_RANG_SMALL       + \
-                                                  NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL        + \
-                                                  NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL       + \
-                                                  NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL       + \
-                                                  NUMBER_UP_SIGNAL_FOR_RANG_SMALL         + \
-                                                  NUMBER_VMP_SIGNAL_FOR_RANG_SMALL        + \
-                                                  NUMBER_EL_SIGNAL_FOR_RANG_SMALL           \
-                                                 ) 
+#define NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL     (_RANG_SMALL_MSZ_BEGIN              - _RANG_SMALL_GENERAL_BEGIN   )
+#define NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL         (_RANG_SMALL_MSZ04_BEGIN            - _RANG_SMALL_MSZ_BEGIN       )
+#define NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL       (_RANG_SMALL_ZDZ_BEGIN              - _RANG_SMALL_MSZ04_BEGIN     )
+#define NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL         (_RANG_SMALL_SZZ_BEGIN              - _RANG_SMALL_ZDZ_BEGIN       )
+#define NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL          (_RANG_SMALL_SZNP_BEGIN             - _RANG_SMALL_SZZ_BEGIN       )
+#define NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL        (_RANG_SMALL_APV_BEGIN              - _RANG_SMALL_SZNP_BEGIN      )
+#define NUMBER_APV_SIGNAL_FOR_RANG_SMALL         (_RANG_SMALL_ACHR_CHAPV_BEGIN       - _RANG_SMALL_APV_BEGIN       )
+#define NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL  (_RANG_SMALL_PRVV_BEGIN             - _RANG_SMALL_ACHR_CHAPV_BEGIN)
+#define NUMBER_UROV_SIGNAL_FOR_RANG_SMALL        (_RANG_SMALL_ZZP_BEGIN              - _RANG_SMALL_PRVV_BEGIN      )
+#define NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL         (_RANG_SMALL_UMIN_BEGIN             - _RANG_SMALL_ZZP_BEGIN       )
+#define NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL        (_RANG_SMALL_UMAX_BEGIN             - _RANG_SMALL_UMIN_BEGIN      )
+#define NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL        (_RANG_SMALL_UP_BEGIN               - _RANG_SMALL_UMAX_BEGIN      )
+#define NUMBER_UP_SIGNAL_FOR_RANG_SMALL          (_RANG_SMALL_VMP_BEGIN              - _RANG_SMALL_UP_BEGIN        )
+#define NUMBER_VMP_SIGNAL_FOR_RANG_SMALL         (_RANG_SMALL_EL_BEGIN               - _RANG_SMALL_VMP_BEGIN       )
+#define NUMBER_EL_SIGNAL_FOR_RANG_SMALL          (NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL - _RANG_SMALL_EL_BEGIN        )
+
 /*****************************************/
 
 /*****************************************/
 //Константи для ранжування дискретних виходів-свтодіодів-О-функцій-реєстраторів
 /*****************************************/
-enum __rang_output_led_df_reg {
-RANG_BLOCK_VKL_VV = 0,
+enum __rang_output_led_df_reg 
+{
+  _RANG_GENERAL_BEGIN = 0,
+RANG_BLOCK_VKL_VV = _RANG_GENERAL_BEGIN,
 RANG_RESET_LEDS,
 RANG_RESET_RELES,
 RANG_MISCEVE_DYSTANCIJNE,
@@ -200,7 +204,8 @@ RANG_RESET_BLOCK_READY_TU_VID_ZAHYSTIV,
 RANG_READY_TU,
 RANG_SETTINGS_CHANGED,
 
-RANG_BLOCK_MTZ1,
+  _RANG_MSZ_BEGIN,
+RANG_BLOCK_MTZ1 = _RANG_MSZ_BEGIN,
 RANG_BLOCK_MTZ2,
 RANG_BLOCK_USK_MTZ2,
 RANG_BLOCK_MTZ3,
@@ -240,7 +245,8 @@ RANG_MTZ4,
 RANG_PO_BLOCK_U_MTZN,
 RANG_NCN_MTZ,
 
-RANG_BLOCK_MTZ04_1,
+  _RANG_MSZ04_BEGIN,
+RANG_BLOCK_MTZ04_1 = _RANG_MSZ04_BEGIN,
 RANG_BLOCK_MTZ04_2,
 RANG_BLOCK_USK_MTZ04_2,
 RANG_PO_MTZ04_1,
@@ -248,13 +254,15 @@ RANG_MTZ04_1,
 RANG_PO_MTZ04_2,
 RANG_MTZ04_2,
 
-RANG_BLOCK_ZDZ,
+  _RANG_ZDZ_BEGIN,
+RANG_BLOCK_ZDZ = _RANG_ZDZ_BEGIN,
 RANG_PUSK_ZDZ_VID_DV,
 RANG_LIGHT_ZDZ_FROM_DV,
 RANG_PO_ZDZ,
 RANG_ZDZ,
 
-RANG_BLOCK_NZZ,
+  _RANG_SZZ_BEGIN,
+RANG_BLOCK_NZZ = _RANG_SZZ_BEGIN,
 RANG_PO_NZZ,
 RANG_NZZ,
 RANG_PO_3I0,
@@ -263,7 +271,8 @@ RANG_PO_3U0,
 RANG_3U0,
 RANG_SECTOR_NZZ,
 
-RANG_BLOCK_TZNP1,
+  _RANG_SZNP_BEGIN,
+RANG_BLOCK_TZNP1 = _RANG_SZNP_BEGIN,
 RANG_SECTOR_TZNP1_VPERED,
 RANG_SECTOR_TZNP1_NAZAD,
 RANG_PO_3I0_TZNP1_VPERED,
@@ -294,14 +303,16 @@ RANG_PO_TZNP3_VPERED,
 RANG_PO_TZNP3_NAZAD,
 RANG_TZNP3,
 
-RANG_STAT_BLK_APV,
+  _RANG_APV_BEGIN,
+RANG_STAT_BLK_APV = _RANG_APV_BEGIN,
 RANG_APV1,
 RANG_APV2,
 RANG_APV3,
 RANG_APV4,
 RANG_APV_WORK,
 
-RANG_ACHR_CHAPV_VID_DV,
+  _RANG_ACHR_CHAPV_BEGIN,
+RANG_ACHR_CHAPV_VID_DV = _RANG_ACHR_CHAPV_BEGIN,
 RANG_BLOCK_ACHR1,
 RANG_BLOCK_ACHR2,
 RANG_RAZR_CHAPV,
@@ -313,16 +324,19 @@ RANG_PO_ACHR2,
 RANG_PO_CHAPV2,
 RANG_ACHR_CHAPV2,
 
-RANG_PUSK_UROV_VID_DV,
+  _RANG_PRVV_BEGIN,
+RANG_PUSK_UROV_VID_DV = _RANG_PRVV_BEGIN,
 RANG_PO_UROV,
 RANG_UROV1,
 RANG_UROV2,
 
-RANG_BLOCK_ZOP,
+  _RANG_ZZP_BEGIN,
+RANG_BLOCK_ZOP = _RANG_ZZP_BEGIN,
 RANG_PO_ZOP,
 RANG_ZOP,
 
-RANG_BLOCK_UMIN1,
+  _RANG_UMIN_BEGIN,
+RANG_BLOCK_UMIN1 = _RANG_UMIN_BEGIN,
 RANG_START_UMIN1,
 RANG_BLOCK_UMIN2,
 RANG_START_UMIN2,
@@ -335,18 +349,23 @@ RANG_PO_UBLK_UMIN2,
 RANG_PO_IBLK_UMIN2,
 RANG_UMIN2,
 
-RANG_BLOCK_UMAX1,
+  _RANG_UMAX_BEGIN,
+RANG_BLOCK_UMAX1 = _RANG_UMAX_BEGIN,
 RANG_PO_UMAX1,
 RANG_UMAX1,
 RANG_BLOCK_UMAX2,
 RANG_PO_UMAX2,
 RANG_UMAX2,
 
-RANG_BLOCK_UP1,
+  _RANG_UP_BEGIN,
+RANG_BLOCK_UP1 = _RANG_UP_BEGIN,
 RANG_PO_UP1,
 RANG_UP1,
 
-RANG_DF1_IN = (RANG_BLOCK_UP1 + 3*NUMBER_UP),
+  _RANG_VMP_BEGIN = (RANG_BLOCK_UP1 + 3*NUMBER_UP),
+
+  _RANG_EL_BEGIN = _RANG_VMP_BEGIN,
+RANG_DF1_IN = _RANG_EL_BEGIN,
 RANG_DF1_OUT,
 RANG_DF2_IN,
 RANG_DF2_OUT,
@@ -414,42 +433,28 @@ RANG_D_NOT13,
 RANG_D_NOT14,
 RANG_D_NOT15,
 RANG_D_NOT16,
-RANG_ERROR_CONF_EL
+RANG_ERROR_CONF_EL,
+
+NUMBER_TOTAL_SIGNAL_FOR_RANG
 };
 
-#define NUMBER_GENERAL_SIGNAL_FOR_RANG     30
-#define NUMBER_MTZ_SIGNAL_FOR_RANG         39
-#define NUMBER_MTZ04_SIGNAL_FOR_RANG       7
-#define NUMBER_ZDZ_SIGNAL_FOR_RANG         5
-#define NUMBER_ZZ_SIGNAL_FOR_RANG          8
-#define NUMBER_TZNP_SIGNAL_FOR_RANG        30
-#define NUMBER_APV_SIGNAL_FOR_RANG         6
-#define NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG  11
-#define NUMBER_UROV_SIGNAL_FOR_RANG        4
-#define NUMBER_ZOP_SIGNAL_FOR_RANG         3
-#define NUMBER_UMIN_SIGNAL_FOR_RANG        12
-#define NUMBER_UMAX_SIGNAL_FOR_RANG        6
-#define NUMBER_UP_SIGNAL_FOR_RANG          (3*NUMBER_UP)
-#define NUMBER_VMP_SIGNAL_FOR_RANG         0
-#define NUMBER_EL_SIGNAL_FOR_RANG          69
+#define N_BIG ((NUMBER_TOTAL_SIGNAL_FOR_RANG >> 5) + ((NUMBER_TOTAL_SIGNAL_FOR_RANG & 0x1f) != 0))
 
-#define NUMBER_TOTAL_SIGNAL_FOR_RANG       (                                    \
-                                            NUMBER_GENERAL_SIGNAL_FOR_RANG    + \
-                                            NUMBER_MTZ_SIGNAL_FOR_RANG        + \
-                                            NUMBER_MTZ04_SIGNAL_FOR_RANG      + \
-                                            NUMBER_ZDZ_SIGNAL_FOR_RANG        + \
-                                            NUMBER_ZZ_SIGNAL_FOR_RANG         + \
-                                            NUMBER_TZNP_SIGNAL_FOR_RANG       + \
-                                            NUMBER_APV_SIGNAL_FOR_RANG        + \
-                                            NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG + \
-                                            NUMBER_UROV_SIGNAL_FOR_RANG       + \
-                                            NUMBER_ZOP_SIGNAL_FOR_RANG        + \
-                                            NUMBER_UMIN_SIGNAL_FOR_RANG       + \
-                                            NUMBER_UMAX_SIGNAL_FOR_RANG       + \
-                                            NUMBER_UP_SIGNAL_FOR_RANG         + \
-                                            NUMBER_VMP_SIGNAL_FOR_RANG        + \
-                                            NUMBER_EL_SIGNAL_FOR_RANG           \
-                                           ) 
+#define NUMBER_GENERAL_SIGNAL_FOR_RANG     (_RANG_MSZ_BEGIN              - _RANG_GENERAL_BEGIN   )
+#define NUMBER_MTZ_SIGNAL_FOR_RANG         (_RANG_MSZ04_BEGIN            - _RANG_MSZ_BEGIN       )
+#define NUMBER_MTZ04_SIGNAL_FOR_RANG       (_RANG_ZDZ_BEGIN              - _RANG_MSZ04_BEGIN     )
+#define NUMBER_ZDZ_SIGNAL_FOR_RANG         (_RANG_SZZ_BEGIN              - _RANG_ZDZ_BEGIN       )
+#define NUMBER_ZZ_SIGNAL_FOR_RANG          (_RANG_SZNP_BEGIN             - _RANG_SZZ_BEGIN       )
+#define NUMBER_TZNP_SIGNAL_FOR_RANG        (_RANG_APV_BEGIN              - _RANG_SZNP_BEGIN      )
+#define NUMBER_APV_SIGNAL_FOR_RANG         (_RANG_ACHR_CHAPV_BEGIN       - _RANG_APV_BEGIN       )
+#define NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG  (_RANG_PRVV_BEGIN             - _RANG_ACHR_CHAPV_BEGIN)
+#define NUMBER_UROV_SIGNAL_FOR_RANG        (_RANG_ZZP_BEGIN              - _RANG_PRVV_BEGIN      )
+#define NUMBER_ZOP_SIGNAL_FOR_RANG         (_RANG_UMIN_BEGIN             - _RANG_ZZP_BEGIN       )
+#define NUMBER_UMIN_SIGNAL_FOR_RANG        (_RANG_UMAX_BEGIN             - _RANG_UMIN_BEGIN      )
+#define NUMBER_UMAX_SIGNAL_FOR_RANG        (_RANG_UP_BEGIN               - _RANG_UMAX_BEGIN      )
+#define NUMBER_UP_SIGNAL_FOR_RANG          (_RANG_VMP_BEGIN              - _RANG_UP_BEGIN        )
+#define NUMBER_VMP_SIGNAL_FOR_RANG         (_RANG_EL_BEGIN               - _RANG_VMP_BEGIN       )
+#define NUMBER_EL_SIGNAL_FOR_RANG          (NUMBER_TOTAL_SIGNAL_FOR_RANG - _RANG_EL_BEGIN        )
 
 /*****************************************/
 
@@ -672,7 +677,6 @@ enum __mtz_abc_direction_const {
 )
 
 #define MASKA_FOR_INPUT_SIGNALS_7                  0
-#define MASKA_FOR_INPUT_SIGNALS_8                  0
 /*****************************************/
 
 /*****************************************/
@@ -731,7 +735,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MTZ_SIGNALS_5                  0
 #define MASKA_MTZ_SIGNALS_6                  0
 #define MASKA_MTZ_SIGNALS_7                  0
-#define MASKA_MTZ_SIGNALS_8                  0
 /*****************************************/
      
 /*****************************************/
@@ -755,7 +758,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MTZ04_SIGNALS_5                0
 #define MASKA_MTZ04_SIGNALS_6                0
 #define MASKA_MTZ04_SIGNALS_7                0
-#define MASKA_MTZ04_SIGNALS_8                0
 /*****************************************/
      
 /*****************************************/
@@ -777,7 +779,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_ZDZ_SIGNALS_5                  0
 #define MASKA_ZDZ_SIGNALS_6                  0
 #define MASKA_ZDZ_SIGNALS_7                  0
-#define MASKA_ZDZ_SIGNALS_8                  0
 /*****************************************/
      
 /*****************************************/
@@ -802,7 +803,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_NZZ_SIGNALS_5                  0
 #define MASKA_NZZ_SIGNALS_6                  0
 #define MASKA_NZZ_SIGNALS_7                  0
-#define MASKA_NZZ_SIGNALS_8                  0
 /*****************************************/
      
 /*****************************************/
@@ -851,7 +851,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_TZNP_SIGNALS_5                 0
 #define MASKA_TZNP_SIGNALS_6                 0
 #define MASKA_TZNP_SIGNALS_7                 0
-#define MASKA_TZNP_SIGNALS_8                 0
 /*****************************************/
      
 /*****************************************/
@@ -874,7 +873,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_APV_SIGNALS_5                  0
 #define MASKA_APV_SIGNALS_6                  0
 #define MASKA_APV_SIGNALS_7                  0
-#define MASKA_APV_SIGNALS_8                  0
 /*****************************************/
 
 /*****************************************/
@@ -904,7 +902,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_ACHR_CHAPV_SIGNALS_5           0
 #define MASKA_ACHR_CHAPV_SIGNALS_6           0
 #define MASKA_ACHR_CHAPV_SIGNALS_7           0
-#define MASKA_ACHR_CHAPV_SIGNALS_8           0
 /*****************************************/
      
 /*****************************************/
@@ -925,7 +922,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_UROV_SIGNALS_5                 0
 #define MASKA_UROV_SIGNALS_6                 0
 #define MASKA_UROV_SIGNALS_7                 0
-#define MASKA_UROV_SIGNALS_8                 0
 /*****************************************/
 
 /*****************************************/
@@ -945,7 +941,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_ZOP_SIGNALS_5                  0
 #define MASKA_ZOP_SIGNALS_6                  0
 #define MASKA_ZOP_SIGNALS_7                  0
-#define MASKA_ZOP_SIGNALS_8                  0
 /*****************************************/
 
 /*****************************************/
@@ -974,7 +969,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_UMIN_SIGNALS_5                 0
 #define MASKA_UMIN_SIGNALS_6                 0
 #define MASKA_UMIN_SIGNALS_7                 0
-#define MASKA_UMIN_SIGNALS_8                 0
 /*****************************************/
 
 /*****************************************/
@@ -999,7 +993,6 @@ enum __mtz_abc_direction_const {
 
 #define MASKA_UMAX_SIGNALS_6                 0
 #define MASKA_UMAX_SIGNALS_7                 0
-#define MASKA_UMAX_SIGNALS_8                 0
 /*****************************************/
 
 /*****************************************/
@@ -1040,7 +1033,6 @@ enum __mtz_abc_direction_const {
 
 #define MASKA_UP_SIGNALS_6                 0
 #define MASKA_UP_SIGNALS_7                 0
-#define MASKA_UP_SIGNALS_8                 0
 /*****************************************/
 
 /*****************************************/
@@ -1129,8 +1121,6 @@ enum __mtz_abc_direction_const {
   | (1 << (RANG_D_NOT16 - 224))                               \
   | (1 << (RANG_ERROR_CONF_EL - 224))                         \
 )
-
-#define MASKA_EL_SIGNALS_8                  0
 /*****************************************/
 
 
@@ -1152,7 +1142,6 @@ enum __mtz_abc_direction_const {
 )     
 
 #define MASKA_TRIGGER_SIGNALES_7                  0
-#define MASKA_TRIGGER_SIGNALES_8                  0
 /*****************************************/
 
 /*****************************************/
@@ -1253,7 +1242,6 @@ enum __mtz_abc_direction_const {
 
 #define MASKA_SIGNALES_FOR_LOCK_GROUP_PICKUP_6  0
 #define MASKA_SIGNALES_FOR_LOCK_GROUP_PICKUP_7  0
-#define MASKA_SIGNALES_FOR_LOCK_GROUP_PICKUP_8  0
 /*****************************************/
 
 /*****************************************/
@@ -1276,7 +1264,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_INFO_SIGNALES_5                  0
 #define MASKA_INFO_SIGNALES_6                  0
 #define MASKA_INFO_SIGNALES_7                  0
-#define MASKA_INFO_SIGNALES_8                  0
 /*****************************************/
 
 /*****************************************/
@@ -1357,7 +1344,6 @@ enum __mtz_abc_direction_const {
 
 #define MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_6        0
 #define MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_7        0
-#define MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_8        0
 /*****************************************/
 
 /*****************************************/
@@ -1396,7 +1382,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MONITOTYNG_PHASE_SIGNALES_5        0
 #define MASKA_MONITOTYNG_PHASE_SIGNALES_6        0
 #define MASKA_MONITOTYNG_PHASE_SIGNALES_7        0
-#define MASKA_MONITOTYNG_PHASE_SIGNALES_8        0
 /*****************************************/
 
 /*****************************************/
@@ -1417,7 +1402,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MONITOTYNG_PHASE04_SIGNALES_5        0
 #define MASKA_MONITOTYNG_PHASE04_SIGNALES_6        0
 #define MASKA_MONITOTYNG_PHASE04_SIGNALES_7        0
-#define MASKA_MONITOTYNG_PHASE04_SIGNALES_8        0
 /*****************************************/
 
 /*****************************************/
@@ -1455,7 +1439,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MONITOTYNG_3I0_SIGNALES_5        0
 #define MASKA_MONITOTYNG_3I0_SIGNALES_6        0
 #define MASKA_MONITOTYNG_3I0_SIGNALES_7        0
-#define MASKA_MONITOTYNG_3I0_SIGNALES_8        0
 /*****************************************/
 
 /*****************************************/
@@ -1493,7 +1476,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MONITOTYNG_3U0_SIGNALES_5        0
 #define MASKA_MONITOTYNG_3U0_SIGNALES_6        0
 #define MASKA_MONITOTYNG_3U0_SIGNALES_7        0
-#define MASKA_MONITOTYNG_3U0_SIGNALES_8        0
 /*****************************************/
 
 /*****************************************/
@@ -1514,7 +1496,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MONITOTYNG_UMIN_SIGNALES_5        0
 #define MASKA_MONITOTYNG_UMIN_SIGNALES_6        0
 #define MASKA_MONITOTYNG_UMIN_SIGNALES_7        0
-#define MASKA_MONITOTYNG_UMIN_SIGNALES_8        0
 /*****************************************/
 
 /*****************************************/
@@ -1537,7 +1518,6 @@ enum __mtz_abc_direction_const {
 
 #define MASKA_MONITOTYNG_UMAX_SIGNALES_6        0
 #define MASKA_MONITOTYNG_UMAX_SIGNALES_7        0
-#define MASKA_MONITOTYNG_UMAX_SIGNALES_8        0
 /*****************************************/
 
 /*****************************************/
@@ -1556,7 +1536,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MONITOTYNG_ZOP_SIGNALES_5                  0
 #define MASKA_MONITOTYNG_ZOP_SIGNALES_6                  0
 #define MASKA_MONITOTYNG_ZOP_SIGNALES_7                  0
-#define MASKA_MONITOTYNG_ZOP_SIGNALES_8                  0
 /*****************************************/
 
 /*****************************************/
@@ -1577,7 +1556,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MONITOTYNG_F_MIN_ACHR_SIGNALES_5   0
 #define MASKA_MONITOTYNG_F_MIN_ACHR_SIGNALES_6   0
 #define MASKA_MONITOTYNG_F_MIN_ACHR_SIGNALES_7   0
-#define MASKA_MONITOTYNG_F_MIN_ACHR_SIGNALES_8   0
 /*****************************************/
 
 /*****************************************/
@@ -1612,7 +1590,6 @@ enum __mtz_abc_direction_const {
 #define MASKA_MONITOTYNG_PHASE_SIGNALES_KZ_5        0
 #define MASKA_MONITOTYNG_PHASE_SIGNALES_KZ_6        0
 #define MASKA_MONITOTYNG_PHASE_SIGNALES_KZ_7        0
-#define MASKA_MONITOTYNG_PHASE_SIGNALES_KZ_8        0
 /*****************************************/
 
 
@@ -1762,8 +1739,8 @@ NUMBER_ODYNYCI_VYMIRJUVANNJA
 /*****************************************/
 #define VERSIA_PZ                                             14
 #define MODYFIKACIA_VERSII_PZ                                 2
-#define ZBIRKA_VERSII_PZ                                      2
-#define ZBIRKA_PIDVERSII_PZ                                   4
+#define ZBIRKA_VERSII_PZ                                      3
+#define ZBIRKA_PIDVERSII_PZ                                   0
 /*****************************************/
 
 /*****************************************/

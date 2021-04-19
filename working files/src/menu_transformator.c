@@ -71,7 +71,7 @@ void make_ekran_chose_setpoint_control_transformator(void)
   int position_temp = current_ekran.index_position;
   int additional_current = 0;
 
-  if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_PHASE_LINE) != 0)
+  if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) != 0)
   {
     for (int current_index = 0; current_index < MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_SETPOINTS_CONTROL; current_index++ )
     {
@@ -175,7 +175,7 @@ void make_ekran_transformator()
   {
 
     if (
-        ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_IB_I04) == 0)
+        ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04)) == 0)
         &&
         (current_index == INDEX_ML_TT04)
        )   

@@ -497,7 +497,7 @@
 #define TIMEOUT_PREFAULT_MIN          100
 #define TIMEOUT_PREFAULT_MAX          5000
 
-#define TIMEOUT_POSTFAULT_MIN         1000
+#define TIMEOUT_POSTFAULT_MIN         100
 #define TIMEOUT_POSTFAULT_MAX         25000
 
 #define NUMBER_LINES_FORWARD_MIN      1

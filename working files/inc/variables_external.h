@@ -47,7 +47,7 @@ extern unsigned int changed_ustuvannja;
 extern unsigned char crc_ustuvannja;
 extern unsigned int ustuvannja_meas[NUMBER_ANALOG_CANALES], ustuvannja[NUMBER_ANALOG_CANALES], edit_ustuvannja[NUMBER_ANALOG_CANALES];
 extern int phi_ustuvannja_meas[NUMBER_ANALOG_CANALES], phi_ustuvannja[NUMBER_ANALOG_CANALES], phi_edit_ustuvannja[NUMBER_ANALOG_CANALES];
-extern float phi_ustuvannja_sin_cos_meas[2*NUMBER_ANALOG_CANALES], phi_ustuvannja_sin_cos[2*NUMBER_ANALOG_CANALES], phi_edit_ustuvannja_sin_cos[2*NUMBER_ANALOG_CANALES];
+extern float phi_ustuvannja_sin_cos_meas[2*NUMBER_ANALOG_CANALES], phi_ustuvannja_sin_cos[2*NUMBER_ANALOG_CANALES];
 
 extern const float sin_data_f[NUMBER_POINT];
 extern const float cos_data_f[NUMBER_POINT];
@@ -178,7 +178,7 @@ extern unsigned int clear_diagnostyka[N_DIAGN];
 
 extern uint32_t board_register;
 
-extern int global_timers[MAX_NUMBER_GLOBAL_TIMERS];
+extern int global_timers[_MAX_NUMBER_GLOBAL_TIMERS];
 extern unsigned int timer_prt_signal_output_mode_2;
 extern unsigned int output_timer_prt_signal_output_mode_2;
 extern unsigned int static_logic_df;
@@ -250,6 +250,8 @@ extern unsigned int periodical_tasks_CALC_ENERGY_DATA;
 
 extern const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODYNYCI_VYMIRJUVANNJA];
 
+extern unsigned int realDateTime;
+
 extern const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
 
 extern unsigned char calibration;
@@ -273,23 +275,25 @@ extern unsigned int save_time_dat_l, save_time_dat_h;
 
 extern unsigned int changed_settings; 
 extern unsigned char crc_settings;
-extern __SETTINGS current_settings_prt, current_settings, edition_settings, current_settings_interfaces;
-extern int * type_mtz_arr[NUMBER_LEVEL_MTZ];
-extern unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
-extern unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
-extern unsigned int mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH];
-extern unsigned int i_nom_const;
+extern __SETTINGS current_settings_prt, current_settings;
+extern __SETTINGS edition_settings, current_settings_interfaces;
+
+extern int * const type_mtz_arr[NUMBER_LEVEL_MTZ];
+extern unsigned int const mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
+extern unsigned int const mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
+extern unsigned int const mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH];
+extern unsigned int const i_nom_const;
 extern unsigned int const u_f_nom_const;
 extern unsigned int u_linear_nom_const;
-extern unsigned int * setpoint_mtz[NUMBER_LEVEL_MTZ];
-extern unsigned int * setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ];
-extern unsigned int * setpoint_mtz_n_nazad[NUMBER_LEVEL_MTZ];
-extern unsigned int * setpoint_mtz_U[NUMBER_LEVEL_MTZ];
-extern unsigned int * setpoint_mtz_po_napruzi[NUMBER_LEVEL_MTZ];
-extern int * timeout_mtz[NUMBER_LEVEL_MTZ];
-extern int * timeout_mtz_n_vpered[NUMBER_LEVEL_MTZ];
-extern int * timeout_mtz_n_nazad[NUMBER_LEVEL_MTZ];
-extern int * timeout_mtz_po_napruzi[NUMBER_LEVEL_MTZ];
+extern unsigned int * const setpoint_mtz[NUMBER_LEVEL_MTZ];
+extern unsigned int * const setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ];
+extern unsigned int * const setpoint_mtz_n_nazad[NUMBER_LEVEL_MTZ];
+extern unsigned int * const setpoint_mtz_U[NUMBER_LEVEL_MTZ];
+extern unsigned int * const setpoint_mtz_po_napruzi[NUMBER_LEVEL_MTZ];
+extern int * const timeout_mtz[NUMBER_LEVEL_MTZ];
+extern int * const timeout_mtz_n_vpered[NUMBER_LEVEL_MTZ];
+extern int * const timeout_mtz_n_nazad[NUMBER_LEVEL_MTZ];
+extern int * const timeout_mtz_po_napruzi[NUMBER_LEVEL_MTZ];
 extern _Bool previous_state_mtz_po_incn;
 extern _Bool previous_state_mtz_po_uncn;
 extern unsigned int p_global_trigger_state_mtz2;
@@ -357,40 +361,50 @@ extern unsigned char buffer_for_USB_read_record_pr_err[SIZE_ONE_RECORD_PR_ERR];
 extern unsigned char buffer_for_RS485_read_record_pr_err[SIZE_ONE_RECORD_PR_ERR];
 
 extern unsigned int what_we_are_reading_from_dataflash_1;
-extern unsigned int what_we_are_reading_from_dataflash_2;
+
+//FATFS
+extern uint32_t FATFS_command;
 
 //Аналоговий реєстратор
+extern unsigned int start_ar;
 extern unsigned char crc_info_rejestrator_ar;
-extern __INFO_REJESTRATOR info_rejestrator_ar;
+extern __INFO_AR_REJESTRATOR info_rejestrator_ar;
 extern unsigned char crc_info_rejestrator_ar_ctrl;
-extern __INFO_REJESTRATOR info_rejestrator_ar_ctrl;
-extern unsigned int size_one_ar_record;
-extern const unsigned int number_word_digital_part_ar;
-extern unsigned int max_number_records_ar;
-extern unsigned int semaphore_read_state_ar_record;
-extern unsigned int continue_previous_record_ar;
-extern int state_ar_record;
-extern unsigned int state_ar_record_prt;
+extern __INFO_AR_REJESTRATOR info_rejestrator_ar_ctrl;
+//extern const unsigned int number_word_digital_part_ar;
+extern unsigned int forbidden_new_record_ar_mode_0;
+extern unsigned int state_ar_record_m, state_ar_record_prt, state_ar_record_fatfs;
+extern unsigned int prev_state_ar_record_m;
 extern short int array_ar[SIZE_BUFFER_FOR_AR];
 extern short int word_SRAM1;
 extern unsigned int index_array_ar_current;
 extern unsigned int index_array_ar_heat;
 extern unsigned int index_array_ar_tail;
+extern unsigned char tail_to_heat, current_to_tail;
+extern int diff_index_heat_tail;
 extern unsigned int prescaler_ar;
 extern __HEADER_AR header_ar;
-extern unsigned char buffer_for_save_ar_record[SIZE_PAGE_DATAFLASH_2];
-extern unsigned int temporary_address_ar;
-extern volatile unsigned int count_to_save;
-extern unsigned int permit_copy_new_data;
-extern unsigned int copied_number_samples, total_number_samples;
-extern unsigned int etap_writing_part_page_ar_into_dataflash;
-extern unsigned int number_record_of_ar_for_menu;
-extern unsigned int number_record_of_ar_for_USB;
-extern unsigned int number_record_of_ar_for_RS485;
+extern unsigned char buffer_for_fs[SIZE_PAGE_DATAFLASH_2];
+extern unsigned int fs_temporary_address;
+extern volatile unsigned int fs_count_to_transfer;
+extern unsigned int etap_writing_part_page_fs_into_dataflash;
+extern int number_record_of_ar_for_menu;
+extern int number_record_of_ar_for_USB;
+extern char id_ar_record_for_USB[8 + 1 + 3 + 1];
+extern int max_number_time_sample_USB;
+extern int number_record_of_ar_for_RS485;
 extern int first_number_time_sample_for_USB;
 extern int last_number_time_sample_for_USB;
 extern int first_number_time_sample_for_RS485;
 extern int last_number_time_sample_for_RS485;
+extern char id_ar_record_for_RS485[8 + 1 + 3 + 1];
+extern int max_number_time_sample_RS485;
+
+extern int32_t timePowerDown;
+extern int32_t timePowerDown_total;
+extern unsigned int truncPrefault;
+extern unsigned int index_array_tail_min;
+extern enum _fix_date_time_avar arDateTimeState;
 
 //Дискретний реєстратор
 extern unsigned char crc_info_rejestrator_dr;
@@ -435,6 +449,8 @@ extern unsigned int type_view_max_values_dr;
 extern int index_cell_into_array_for_min_max_measurement_dr;
 extern unsigned int control_extra_settings_1_dr_for_manu;
 
+extern enum _fix_date_time_avar drDateTimeState;
+
 //Реєстратор програмних помилок
 extern unsigned char crc_info_rejestrator_pr_err;
 extern  __INFO_REJESTRATOR info_rejestrator_pr_err;
@@ -460,6 +476,9 @@ extern const unsigned char string_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD];
 extern const unsigned int cursor_x_string_off_on[MAX_NAMBER_LANGUAGE][2];
 
 extern int current_language;
+
+extern const uint8_t information_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD];
+extern const uint32_t cursor_x_off_on[MAX_NAMBER_LANGUAGE][2];
 
 //Лічильник ресурсу
 extern unsigned int koef_resurs_changed;
@@ -531,6 +550,7 @@ extern unsigned int password_set_LAN;
 
 extern unsigned int trigger_functions_LAN[N_BIG];
 
+extern char id_ar_record_for_LAN[8 + 1 + 3 + 1];
 extern unsigned char buffer_for_LAN_read_record_dr[SIZE_BUFFER_FOR_DR_RECORD];
 extern unsigned int number_record_of_dr_for_LAN;
 extern unsigned int part_reading_dr_from_dataflash_for_LAN;
@@ -538,8 +558,9 @@ extern unsigned int part_reading_dr_from_dataflash_for_LAN;
 extern unsigned char buffer_for_LAN_read_record_pr_err[SIZE_ONE_RECORD_PR_ERR];
 extern unsigned int number_record_of_pr_err_into_LAN;
 
+extern int max_number_time_sample_LAN;
 extern unsigned char buffer_for_LAN_read_record_ar[SIZE_PAGE_DATAFLASH_2];
-extern unsigned int number_record_of_ar_for_LAN;
+extern int number_record_of_ar_for_LAN;
 extern int first_number_time_sample_for_LAN;
 extern int last_number_time_sample_for_LAN;
 #endif
@@ -596,9 +617,6 @@ extern uint8_t Input_ctrl_In_MMS_block[N_IN_MMS];
 extern uint8_t Output_Out_LAN_block[N_OUT_LAN];
 #endif
 
-//Змінна глобальної помилки
-extern unsigned int total_error;
-
 extern unsigned short const __checksum;
 extern unsigned int __checksum_begin;
 extern unsigned int __checksum_end;
@@ -615,16 +633,6 @@ extern unsigned int __checksum_end;
 //extern unsigned int temp_value_for_debbuging_2;
 //extern unsigned int temp_value_for_debbuging_3;
 
-extern unsigned int temp_value_3I0_1;
-extern unsigned int temp_value_3I0_other;
-extern unsigned int temp_value_IA;
-extern unsigned int temp_value_IC;
-extern unsigned int temp_value_UA;
-extern unsigned int temp_value_UB;
-extern unsigned int temp_value_UC;
-extern unsigned int temp_value_3U0;
-extern unsigned int temp_value_I2;
-extern unsigned int temp_value_I1;
 
 #endif
 

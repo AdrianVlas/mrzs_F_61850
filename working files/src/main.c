@@ -1,5 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "constants.h"
+#include "fatfs.h"
 #include "libraries.h"
 #include "variables_global.h"
 #include "functions_global.h"
@@ -84,7 +85,7 @@ inline void watchdog_routine(unsigned int maska)
 /*************************************************************************
 Періодичні низькопріоритетні задачі
 *************************************************************************/
-void periodical_operations(void/*unsigned int full_actions*/)
+void periodical_operations(unsigned int full_actions)
 {
   watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
 
@@ -112,7 +113,7 @@ void periodical_operations(void/*unsigned int full_actions*/)
 
 
   //Обробка дій системи меню
-  if ((reinit_LCD)/* && (full_actions == true)*/)
+  if ((reinit_LCD) && (full_actions == true))
   {
     reinit_LCD = false;
     lcd_init();
@@ -125,79 +126,6 @@ void periodical_operations(void/*unsigned int full_actions*/)
   //Робота з Watchdog
   watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
 
-  //Робота з таймером очікування нових змін налаштувань
-  if ((timeout_idle_new_settings >= current_settings.timeout_idle_new_settings) && (restart_timeout_idle_new_settings == 0))
-  {
-    if (_CHECK_SET_BIT(active_functions, RANG_SETTINGS_CHANGED) != 0) 
-    {
-      current_settings_interfaces = current_settings;
-      type_of_settings_changed = 0;
-      _CLEAR_BIT(active_functions, RANG_SETTINGS_CHANGED);
-    }
-  }
-  
-  //Обмін по USB
-  if (current_settings.password_interface_USB)
-  {
-    unsigned int timeout = current_settings.timeout_deactivation_password_interface_USB;
-    if ((timeout != 0) && (timeout_idle_USB >= timeout) && ((restart_timeout_interface & (1 << USB_RECUEST)) == 0)) password_set_USB = 1;
-  }
-  Usb_routines();
-
-  //Обмін по RS-485
-  if (current_settings.password_interface_RS485)
-  {
-    unsigned int timeout = current_settings.timeout_deactivation_password_interface_RS485;
-    if ((timeout != 0) && (timeout_idle_RS485 >= timeout) && ((restart_timeout_interface & (1 << RS485_RECUEST)) == 0)) password_set_RS485 = 1;
-  }
-  if(
-     (RxBuffer_RS485_count != 0) &&
-     (make_reconfiguration_RS_485 == 0) &&
-     ((DMA_StreamRS485_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0)
-    )
-  {
-    //Це є умовою, що дані стоять у черзі  на обробку
-      
-    //Робота з Watchdog
-    watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
-
-    //Обробляємо запит
-    inputPacketParserRS485();
-    
-    //Виставляємо, що кількість прийнятих байт рівна 0
-    RxBuffer_RS485_count = 0;
-  }
-  else if (make_reconfiguration_RS_485 != 0)
-  {
-    //Стоїть умова переконфігурувати RS-485
-      
-    //Перевіряємо чи на даний моент не іде передача даних на верхній рівень
-    if (GPIO_ReadOutputDataBit(GPIO_485DE, GPIO_PIN_485DE) == Bit_RESET)
-    {
-
-      //Переконфігуровуємо USART для RS-485
-      USART_RS485_Configure();
-
-      //Відновлюємо моніторинг каналу RS-485
-      restart_monitoring_RS485();
-      
-      //Знімаємо індикацю про невикану переконфігупацію інтерфейсу RS-485
-      make_reconfiguration_RS_485 = 0;
-    }
-  }
-
-
-#if (MODYFIKACIA_VERSII_PZ >= 10)
-  //Обмін по LAN
-  if (current_settings.password_interface_LAN)
-  {
-    unsigned int timeout = current_settings.timeout_deactivation_password_interface_LAN;
-    if ((timeout != 0) && (timeout_idle_LAN >= timeout) && ((restart_timeout_interface & (1 << LAN_RECUEST)) == 0)) password_set_LAN = 1;
-  }
-  if (LAN_received_count > 0) inputPacketParserLAN();
-#endif
-
-  
 #if (MODYFIKACIA_VERSII_PZ >= 10)
   /*******************/
   //Управління Каналом 2 міжпроцесорного обміну між БАв і комунікаційною платою
@@ -218,7 +146,7 @@ void periodical_operations(void/*unsigned int full_actions*/)
   if (watchdog_l2) 
   {
     //Теоретично цього ніколи не мало б бути
-    total_error_sw_fixed(88);
+    total_error_sw_fixed();
   }
 
   /*******************/
@@ -252,7 +180,7 @@ void periodical_operations(void/*unsigned int full_actions*/)
     //Скидаємо активну задачу розрахунку кутів
     periodical_tasks_CALCULATION_ANGLE = false;
   }
-  else /*if (full_actions == true)*/
+  else if (full_actions == true)
   {
     if (periodical_tasks_TEST_SETTINGS != 0)
     {
@@ -322,7 +250,7 @@ void periodical_operations(void/*unsigned int full_actions*/)
       //Стоїть у черзі активна задача самоконтролю по резервній копії для аналогового реєстратора
       //Виконуємо її
       unsigned int result;
-      result = control_info_rejestrator(&info_rejestrator_ar_ctrl, crc_info_rejestrator_ar_ctrl);
+      result = control_info_ar_rejestrator(&info_rejestrator_ar_ctrl, crc_info_rejestrator_ar_ctrl);
       
       if (result == 1)
       {
@@ -410,7 +338,105 @@ void periodical_operations(void/*unsigned int full_actions*/)
 
   //Робота з Watchdog
   watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
+}
+/*************************************************************************/
 
+/*************************************************************************
+Періодичні низькопріоритетні задачі комунікації
+*************************************************************************/
+void periodical_operations_communication(unsigned int ar_working)
+{
+  //Робота з Watchdog
+  watchdog_routine(UNITED_BITS_WATCHDOG);
+  
+  //Робота з таймером очікування нових змін налаштувань
+  if ((timeout_idle_new_settings >= current_settings.timeout_idle_new_settings) && (restart_timeout_idle_new_settings == 0))
+  {
+    if (_CHECK_SET_BIT(active_functions, RANG_SETTINGS_CHANGED) != 0) 
+    {
+      current_settings_interfaces = current_settings;
+      type_of_settings_changed = 0;
+      _CLEAR_BIT(active_functions, RANG_SETTINGS_CHANGED);
+    }
+  }
+  
+  static unsigned int selection_interface;
+
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+  if ((ar_working == false) && (selection_interface == LAN_RECUEST))
+  {
+  //Обмін по LAN
+    if (current_settings.password_interface_LAN)
+    {
+      unsigned int timeout = current_settings.timeout_deactivation_password_interface_LAN;
+      if ((timeout != 0) && (timeout_idle_LAN >= timeout) && ((restart_timeout_interface & (1 << LAN_RECUEST)) == 0)) password_set_LAN = 1;
+    }
+    
+    if (LAN_received_count > 0) inputPacketParserLAN();
+  }
+#endif
+
+  if ((ar_working == false) && (selection_interface  == USB_RECUEST))
+  {
+    //Обмін по USB
+    if (current_settings.password_interface_USB)
+    {
+      unsigned int timeout = current_settings.timeout_deactivation_password_interface_USB;
+      if ((timeout != 0) && (timeout_idle_USB >= timeout) && ((restart_timeout_interface & (1 << USB_RECUEST)) == 0)) password_set_USB = 1;
+    }
+    Usb_routines();
+  }
+
+  if ((ar_working == false) && (selection_interface == RS485_RECUEST))
+  {
+    //Обмін по RS-485
+    if (current_settings.password_interface_RS485)
+    {
+      unsigned int timeout = current_settings.timeout_deactivation_password_interface_RS485;
+      if ((timeout != 0) && (timeout_idle_RS485 >= timeout) && ((restart_timeout_interface & (1 << RS485_RECUEST)) == 0)) password_set_RS485 = 1;
+    }
+    if(
+       (RxBuffer_RS485_count != 0) &&
+       (make_reconfiguration_RS_485 == 0) &&
+       ((DMA_StreamRS485_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0)
+      )
+    {
+      //Це є умовою, що дані стоять у черзі  на обробку
+      
+      //Робота з Watchdog
+      watchdog_routine(UNITED_BITS_WATCHDOG);
+
+      //Обробляємо запит
+      inputPacketParserRS485();
+    
+      //Виставляємо, що кількість прийнятих байт рівна 0
+      RxBuffer_RS485_count = 0;
+    }
+    else if (make_reconfiguration_RS_485 != 0)
+    {
+      //Стоїть умова переконфігурувати RS-485
+      
+      //Перевіряємо чи на даний моент не іде передача даних на верхній рівень
+      if (GPIO_ReadOutputDataBit(GPIO_485DE, GPIO_PIN_485DE) == Bit_RESET)
+      {
+
+        //Переконфігуровуємо USART для RS-485
+        USART_RS485_Configure();
+
+        //Відновлюємо моніторинг каналу RS-485
+        restart_monitoring_RS485();
+      
+        //Знімаємо індикацю про невикану переконфігупацію інтерфейсу RS-485
+        make_reconfiguration_RS_485 = 0;
+      }
+    }
+  }
+
+  //Робота з Watchdog
+  watchdog_routine(UNITED_BITS_WATCHDOG);
+       
+  selection_interface++;
+  selection_interface %= MAX_INTERFACES;
 }
 /*************************************************************************/
 
@@ -560,9 +586,9 @@ int main(void)
     */
     _SET_BIT(control_spi1_taskes, TASK_START_WRITE_INFO_REJESTRATOR_AR_EEPROM_BIT);
     
-    info_rejestrator_ar.next_address = MIN_ADDRESS_AR_AREA;
-    info_rejestrator_ar.saving_execution = 0;
-    info_rejestrator_ar.number_records = 0;
+    info_rejestrator_ar.first_number = -1;
+    info_rejestrator_ar.last_number = -1;
+    _SET_STATE(FATFS_command, FATFS_FORMAT);
     while(
           (control_spi1_taskes[0]     != 0) ||
           (control_spi1_taskes[1]     != 0) ||
@@ -624,10 +650,47 @@ int main(void)
   //Запускаємо генерацію переривань кожну кожну 1 мс від каналу 2 таймеру 4 для виконання періодичних низькопріоритетних задач
   start_tim4_canal2_for_interrupt_1mc();
   
-
+//  /***/
+//  {
+//    size_t col = 0;
+//    for(size_t i = 0; i < 0x10000; ++i)
+//    {
+//      _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD32_DD38) = ((1 << col) << LED_N_ROW) | ((uint32_t)(0) & ((1 << LED_N_ROW) - 1));
+//      if (++col >= LED_N_COL) col = 0;
+//      for (size_t j = 0; j < 100; ++j) watchdog_routine(WATCHDOG_KYYBOARD);
+//    }
+//  }
+//  /***/
+  //Ініціалізація FATFs
+  MX_FATFS_Init();
+  
+  if((POWER_CTRL->IDR & POWER_CTRL_PIN) == (uint32_t)Bit_RESET)
   {
+    unsigned int number_seconds_tmp = (number_seconds + 2) % 60;
+    while (
+           ((POWER_CTRL->IDR & POWER_CTRL_PIN) == (uint32_t)Bit_RESET) &&
+           (
+            (
+             (measurement[IM_IA] < POWEER_ISNOT_FROM_IA_IC) &&
+             (measurement[IM_IC] < POWEER_ISNOT_FROM_IA_IC)
+            )
+            ||  
+            (number_seconds != number_seconds_tmp)
+           )   
+          )
+    {
+      before_full_start = true;
+      ar_routine_with_fatfs(true);
       watchdog_routine(UNITED_BITS_WATCHDOG_SHORT);
-
+      if (
+          (measurement[IM_IA] < POWEER_ISNOT_FROM_IA_IC) &&
+          (measurement[IM_IC] < POWEER_ISNOT_FROM_IA_IC)
+         )
+      {
+        number_seconds_tmp = (number_seconds + 2) % 60;
+      }
+    }
+    before_full_start = false;
   }
   /**********************/
   
@@ -703,7 +766,7 @@ int main(void)
       for (unsigned int i = ((unsigned int)&__checksum_end -(unsigned int)&__checksum_begin +1); i > 0; i--)
       {
         sum += *point++;
-        periodical_operations(/*true*/);
+        ar_routine_with_fatfs(false);
         watchdog_routine(UNITED_BITS_WATCHDOG);
       }
       if (sum != (unsigned short)__checksum) _SET_BIT(set_diagnostyka, ERROR_INTERNAL_FLASH_BIT);
@@ -714,8 +777,8 @@ int main(void)
     }
     else 
     {
-    	periodical_operations(/*true*/);
-	    watchdog_routine(UNITED_BITS_WATCHDOG);
+      ar_routine_with_fatfs(false);
+      watchdog_routine(UNITED_BITS_WATCHDOG);
     }
   }
 }
@@ -724,9 +787,8 @@ int main(void)
 /*******************************************************************************/
 //Глобальна помилка програмного забеспечення
 /*******************************************************************************/
-void total_error_sw_fixed(unsigned int number)
+void total_error_sw_fixed(void)
 {
-  total_error = number;
   while (1);
 }
 /*******************************************************************************/

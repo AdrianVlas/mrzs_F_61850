@@ -774,21 +774,6 @@ void make_ekran_control_tznp()
       else
       {
         //У парному номері рядку виводимо значення уставки
-        static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
-        {
-          {"     Откл.      ", "      Вкл.      "},
-          {"     Вимк.      ", "     Ввімк.     "},
-          {"      Off       ", "       On       "},
-          {"     Сљнд.      ", "     Косу.      "}
-        };
-        static const unsigned int cursor_x[MAX_NAMBER_LANGUAGE][2] = 
-        {
-         {4, 5},
-         {4, 4},
-         {5, 6},
-         {4, 4}
-        };
-
         unsigned int index_ctr = index_of_ekran_tmp;
 
         unsigned int temp_data;
@@ -796,8 +781,8 @@ void make_ekran_control_tznp()
         if(current_ekran.edition == 0) temp_data = current_settings.control_tznp;
         else temp_data = edition_settings.control_tznp;
           
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information[index_language][(temp_data >> index_ctr) & 0x1][j];
-        if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x[index_language][(temp_data >> index_ctr) & 0x1];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = information_off_on[index_language][(temp_data >> index_ctr) & 0x1][j];
+        if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x_off_on[index_language][(temp_data >> index_ctr) & 0x1];
       }
     }
     else
