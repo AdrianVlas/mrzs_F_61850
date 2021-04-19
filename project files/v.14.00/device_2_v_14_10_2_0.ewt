@@ -2085,6 +2085,9 @@
                     <name>component</name>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ACMDSmallComponent.c</name>
+                        <configuration>
+                            <name>Flash-Debug</name>
+                        </configuration>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\AISmallComponent.c</name>
@@ -2392,13 +2395,13 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\measurement.c</name>
-                    <configuration>
-                        <name>Flash-Debug</name>
-                    </configuration>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\protections.c</name>
                 </file>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
             </group>
             <group>
                 <name>Serial Dataflash</name>

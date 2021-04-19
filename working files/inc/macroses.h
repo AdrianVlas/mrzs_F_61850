@@ -591,7 +591,7 @@
 #define COMPARE_AND(_comp, _p_array1, _p_array2, _n)                     \
 {                                                                       \
   _comp = true;                                                        \
-  for (size_t _i = 0; ((_comp == false) && (_i < _n)); ++_i)            \
+  for (size_t _i = 0; ((_comp == true) && (_i < _n)); ++_i)            \
   {                                                                     \
     _comp &= (_p_array1[_i] == _p_array2[_i]);                          \
   }                                                                     \
