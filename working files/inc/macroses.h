@@ -63,7 +63,8 @@
 
 #define _SET_STATE(_output, _output_bit) _output |= (1u << _output_bit)
 
-#define _GET_OUTPUT_STATE(_input, _input_bit) ((_input & ((unsigned int)(1 << _input_bit))) != 0)
+#define _GET_STATE(_input, _input_bit) ((_input >> (_input_bit)) & 0x1)
+
 
 #define _INVERTOR(                                         \
                   _input , _input_bit,                     \
@@ -447,8 +448,8 @@
         {                                                               \
           unsigned int _c, _C;                                          \
                                                                         \
-          _c =  _GET_OUTPUT_STATE(_input, _input_bit);                  \
-          _C =  _GET_OUTPUT_STATE(_INPUT, _INPUT_BIT);                  \
+          _c =  _GET_STATE(_input, _input_bit);                         \
+          _C =  _GET_STATE(_INPUT, _INPUT_BIT);                         \
                                                                         \
           if (_c ^ _C)                                                  \
           {                                                             \
@@ -478,8 +479,8 @@
       {                                                            \
         unsigned int _c, _C, _changing;                            \
                                                                    \
-        _c =  _GET_OUTPUT_STATE(_synchro, _synchro_bit);           \
-        _C =  _GET_OUTPUT_STATE(_SYNCHRO, _SYNCHRO_BIT);           \
+        _c =  _GET_STATE(_synchro, _synchro_bit);                  \
+        _C =  _GET_STATE(_SYNCHRO, _SYNCHRO_BIT);                  \
                                                                    \
         if (_changing = (_c ^ _C))                                 \
         {                                                          \
@@ -510,8 +511,8 @@
       {                                                                         \
         unsigned int _c, _C;                                                    \
                                                                                 \
-        _c =  _GET_OUTPUT_STATE(_input, _input_bit);                            \
-        _C =  _GET_OUTPUT_STATE(_INPUT, _INPUT_BIT);                            \
+        _c =  _GET_STATE(_input, _input_bit);                                   \
+        _C =  _GET_STATE(_INPUT, _INPUT_BIT);                                   \
                                                                                 \
         if (_c ^ _C)                                                            \
         {                                                                       \

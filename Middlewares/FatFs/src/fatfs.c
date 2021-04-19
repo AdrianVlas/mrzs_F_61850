@@ -58,7 +58,7 @@ void MX_FATFS_Init(void)
         if (res != FR_OK) _SET_BIT(set_diagnostyka, ERROR_FATFS);
         else
         {
-          if (_GET_OUTPUT_STATE(FATFS_command, FATFS_FORMAT)) _CLEAR_STATE(FATFS_command, FATFS_FORMAT);
+          if (_GET_STATE(FATFS_command, FATFS_FORMAT)) _CLEAR_STATE(FATFS_command, FATFS_FORMAT);
         }
         
         break;

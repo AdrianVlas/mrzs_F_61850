@@ -68,32 +68,32 @@ void start_receive_data_via_CANAL1_MO(void)
                 *(point++) = Canal1_MO_Received[index++];
               }
               
-              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_BASIC_SETTINGS)) 
+              if (_GET_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_BASIC_SETTINGS)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_BASIC_SETTINGS);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_BASIC_SETTINGS);
 
-              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK)) 
+              if (_GET_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK);
 
-              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER)) 
+              if (_GET_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER);
 
-              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_NEW_MODBUS_TCP_REQ)) 
+              if (_GET_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_NEW_MODBUS_TCP_REQ)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ);
               
-              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_TRANSACTION_PROGRESS)) 
+              if (_GET_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_TRANSACTION_PROGRESS)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC);
               
-              if (_GET_OUTPUT_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_REBOOT_REQ)) 
+              if (_GET_STATE(IEC_queue_mo, IEC_STATE_QUEUE_MO_REBOOT_REQ)) 
                 _SET_STATE(queue_mo_irq, STATE_QUEUE_MO_RESTART_KP);
               else 
                 _CLEAR_STATE(queue_mo_irq, STATE_QUEUE_MO_RESTART_KP);
@@ -182,14 +182,14 @@ void start_receive_data_via_CANAL1_MO(void)
                 {
                   *(point++) = Canal1_MO_Received[index++];
                 }
-                if (_GET_OUTPUT_STATE(confirm_diagnostyka_mo, ERROR_RECEIVING_CANAL_1)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVING_CANAL_1);
-                if (_GET_OUTPUT_STATE(confirm_diagnostyka_mo, ERROR_RECEIVED_PACKET_CANAL_1)) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVED_PACKET_CANAL_1);
-                if (_GET_OUTPUT_STATE(confirm_diagnostyka_mo, ERROR_REQUEST_CANAL_1)        ) _SET_BIT(set_diagnostyka, ERROR_IEC_REQUEST_CANAL_1);
-                if (_GET_OUTPUT_STATE(confirm_diagnostyka_mo, ERROR_NO_ANSWER_CANAL_1)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_NO_ANSWER_CANAL_1);
+                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVING_CANAL_1)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVING_CANAL_1);
+                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVED_PACKET_CANAL_1)) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVED_PACKET_CANAL_1);
+                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_REQUEST_CANAL_1)        ) _SET_BIT(set_diagnostyka, ERROR_IEC_REQUEST_CANAL_1);
+                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_NO_ANSWER_CANAL_1)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_NO_ANSWER_CANAL_1);
 
-                if (_GET_OUTPUT_STATE(confirm_diagnostyka_mo, ERROR_RECEIVING_CANAL_2)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVING_CANAL_2);
-                if (_GET_OUTPUT_STATE(confirm_diagnostyka_mo, ERROR_RECEIVED_PACKET_CANAL_2)) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVED_PACKET_CANAL_2);
-                if (_GET_OUTPUT_STATE(confirm_diagnostyka_mo, ERROR_REQUEST_CANAL_2)        ) _SET_BIT(set_diagnostyka, ERROR_IEC_REQUEST_CANAL_2);
+                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVING_CANAL_2)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVING_CANAL_2);
+                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVED_PACKET_CANAL_2)) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVED_PACKET_CANAL_2);
+                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_REQUEST_CANAL_2)        ) _SET_BIT(set_diagnostyka, ERROR_IEC_REQUEST_CANAL_2);
               }
               
               
@@ -445,7 +445,7 @@ void CANAL2_MO_routine()
 
   queue_mo |= (queue_mo_irq & STATE_QUEUE_MO_RESTART_KP);
   queue_mo &= (uint32_t)(~QUEUQ_MO_IRQ);
-  if (!_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP))
+  if (!_GET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP))
   {
     //Немає активної команди перезапустити КП
     queue_mo |= queue_mo_irq;
@@ -485,11 +485,11 @@ void CANAL2_MO_routine()
   else if (CANAL2_MO_state == CANAL2_MO_FREE)
   {
     //На даний момент не іде передавання даних по Каналу 2
-    if (!_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC))
+    if (!_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC))
     {
       if (Canal1 == true)
       {
-        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_BASIC_SETTINGS))
+        if (_GET_STATE(queue_mo, STATE_QUEUE_MO_ASK_BASIC_SETTINGS))
         {
                  Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
           sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
@@ -538,7 +538,7 @@ void CANAL2_MO_routine()
         
           _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
         } 
-        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK))
+        else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK))
         {
                  Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
           sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
@@ -576,7 +576,7 @@ void CANAL2_MO_routine()
         
           _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MAKING_MEMORY_BLOCK);
         }
-        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER))
+        else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_ASK_SENDING_SETTING_NETWORK_LAYER))
         {
                  Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
           sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
@@ -586,7 +586,7 @@ void CANAL2_MO_routine()
         
           _SET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER);
         }
-        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ))
+        else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_ASK_NEW_MODBUS_TCP_REQ))
         {
                  Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
           sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
@@ -596,7 +596,7 @@ void CANAL2_MO_routine()
         
           _SET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ);
         }
-        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP))
+        else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP))
         {
           _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP);
 
@@ -616,7 +616,7 @@ void CANAL2_MO_routine()
             _SET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
           }
         }
-        else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION))
+        else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION))
         {
           _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION);
 
@@ -715,19 +715,19 @@ void CANAL2_MO_routine()
               { 
                 if (
                     !(
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_BREAK_LAST_ACTION_IN_IEC       )) && (Canal2_MO_Received[3] == CONFIRM_BREAKING_LAST_ACTION  )       ) ||
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MAKING_MEMORY_BLOCK)) && (Canal2_MO_Received[3] == ANSWER_FOR_MAKING_NEW_BLOCKS  )       ) ||
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS     )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       ) ||
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER)) && (
+                      ((_GET_STATE(queue_mo, STATE_QUEUE_MO_BREAK_LAST_ACTION_IN_IEC       )) && (Canal2_MO_Received[3] == CONFIRM_BREAKING_LAST_ACTION  )       ) ||
+                      ((_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MAKING_MEMORY_BLOCK)) && (Canal2_MO_Received[3] == ANSWER_FOR_MAKING_NEW_BLOCKS  )       ) ||
+                      ((_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS     )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       ) ||
+                      ((_GET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER)) && (
                                                                                                          (Canal2_MO_Received[3] == SENDING_SETTINGS_NETWORK_LAYER) ||
                                                                                                          (Canal2_MO_Received[3] == ANY_CONFIRMATION              )
                                                                                                         )                                                               ) ||
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ  )) && (
+                      ((_GET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ  )) && (
                                                                                                          (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ) ||
                                                                                                          (Canal2_MO_Received[3] == ANY_CONFIRMATION      )
                                                                                                         )                                                               ) ||
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP    )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       ) ||
-                      ((_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION             )) && (Canal2_MO_Received[3] == SEND_FIRMWARE_VERSION         )       )
+                      ((_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP    )) && (Canal2_MO_Received[3] == ANY_CONFIRMATION              )       ) ||
+                      ((_GET_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION             )) && (Canal2_MO_Received[3] == SEND_FIRMWARE_VERSION         )       )
                      )   
                    )
                 {
@@ -769,7 +769,7 @@ void CANAL2_MO_routine()
       sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
       sum += Canal2_MO_Transmit[index_w++] = my_address_mo;
   
-      if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_BREAK_LAST_ACTION_IN_IEC)) 
+      if (_GET_STATE(queue_mo, STATE_QUEUE_MO_BREAK_LAST_ACTION_IN_IEC)) 
       {
         index_w = 0;
         _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_BREAK_LAST_ACTION_IN_IEC);
@@ -778,12 +778,12 @@ void CANAL2_MO_routine()
         Canal2 = true;
       }
       else if (
-               (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) ||
-               (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP))
+               (_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) ||
+               (_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP))
               )   
       {
         index_w = 0;
-        if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) 
+        if (_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS)) 
         {
           _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_BASIC_SETTINGS);
           _SET_STATE(queue_mo, STATE_QUEUE_MO_READ_FW_VERSION);
@@ -804,7 +804,7 @@ void CANAL2_MO_routine()
           CANAL2_MO_state = CANAL2_MO_ERROR;
         }
       }
-      else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MAKING_MEMORY_BLOCK)) 
+      else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MAKING_MEMORY_BLOCK)) 
       {
         index_w = 0;
         state_array_control_state = Canal2_MO_Received[4] | (Canal2_MO_Received[5] << 8);
@@ -823,7 +823,7 @@ void CANAL2_MO_routine()
           CANAL2_MO_state = CANAL2_MO_ERROR;
         }
       }
-      else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER)) 
+      else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_SETTING_NETWORK_LAYER)) 
       {
         if (Canal2_MO_Received[3] == SENDING_SETTINGS_NETWORK_LAYER)
         {
@@ -886,7 +886,7 @@ void CANAL2_MO_routine()
           }
         }
       }
-      else if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ)) 
+      else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_RECEIVING_NEW_MODBUS_TCP_REQ)) 
       {
         if (Canal2_MO_Received[3] == SENDING_MODBUS_TCP_REQ)
         {
@@ -923,7 +923,7 @@ void CANAL2_MO_routine()
           }
         }
       }
-      else if(_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION))
+      else if(_GET_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION))
       {
         index_w = 0;
         _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_READING_FW_VERSION);
@@ -937,7 +937,7 @@ void CANAL2_MO_routine()
     else if (CANAL2_MO_state == CANAL2_MO_ERROR)
     {
       CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
-      if (_GET_OUTPUT_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP)) 
+      if (_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP)) 
       {
         _CLEAR_STATE(queue_mo, STATE_QUEUE_MO_TRANSMITING_MODBUS_TCP_RESP);
         _SET_STATE(queue_mo, STATE_QUEUE_MO_SEND_MODBUS_TCP_RESP);

@@ -67,7 +67,7 @@ void ar_routine_with_fatfs(unsigned int before_full_start)
     if (FATFS_command != 0)
     {
       //Команди для файлової системи
-      if (_GET_OUTPUT_STATE(FATFS_command, FATFS_FORMAT))
+      if (_GET_STATE(FATFS_command, FATFS_FORMAT))
       {
         _CLEAR_STATE(FATFS_command, FATFS_FORMAT);
           
@@ -80,7 +80,7 @@ void ar_routine_with_fatfs(unsigned int before_full_start)
           _SET_BIT(clear_diagnostyka, ERROR_AR_UNDEFINED_BIT);
         }
       }
-      else if (_GET_OUTPUT_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU))
+      else if (_GET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU))
       {
         if (
             (state_ar_record_fatfs == STATE_AR_NONE_FATFS) ||
