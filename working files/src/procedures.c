@@ -2627,7 +2627,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
 unsigned int action_after_changing_extra_settings(unsigned int new_value, __SETTINGS *target_label)
 {
   unsigned int error = 0;
-  if ((target_label->control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) != 0)
+  if ((new_value & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) != 0)
   {
     if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO_CONTROL) error |= (unsigned int)(1 << 31);
   }
@@ -2670,6 +2670,11 @@ unsigned int action_after_changing_extra_settings(unsigned int new_value, __SETT
         {
           action_after_changing_input_UP(target_label, i, UP_CTRL_Ia_Ib_Ic);
         }
+      }
+      
+      if ((new_value & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) != 0)
+      {
+        target_label->control_transformator |= MASKA_FOR_BIT(INDEX_ML_CTR_TRANSFORMATOR_PHASE_LINE);
       }
     }
   }
