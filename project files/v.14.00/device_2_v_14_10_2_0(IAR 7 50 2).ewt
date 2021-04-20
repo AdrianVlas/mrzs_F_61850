@@ -1782,6 +1782,9 @@
               <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PREGBigComponent.c</name>
             </file>
             <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\QAISmallComponent.c</name>
+            </file>
+            <file>
               <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>
             </file>
             <file>
@@ -1834,10 +1837,10 @@
             </file>
           </group>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
+            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_guest.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\QAISmallComponent.c</name>
+            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\start_settings_m.c</name>
