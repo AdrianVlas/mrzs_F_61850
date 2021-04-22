@@ -105,6 +105,12 @@
 #define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB                           (1<<TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB_BIT)
 #define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485_BIT                     8
 #define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485                         (1<<TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485_BIT)
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+#define TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN_BIT                           9
+#define TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                               (1<<TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN_BIT)
+#define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN_BIT                       10
+#define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN                           (1<<TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN_BIT)
+#endif
 
 #define  SEPARATOR_BIT_TASKS_DATADLASH1_AND_TASKS_DATADLASH2                16
 
@@ -150,7 +156,10 @@ enum _identifier_bit_arrays
 #define READING_PR_ERR_FOR_MENU         4
 #define READING_PR_ERR_FOR_USB          5
 #define READING_PR_ERR_FOR_RS485        6
-
+#if (MODYFIKACIA_VERSII_PZ >= 10)
+#define READING_DR_FOR_LAN              7
+#define READING_PR_ERR_FOR_LAN          8
+#endif
 
 #define LABEL_START_RECORD_PR_ERR       0x5A
 
@@ -234,7 +243,22 @@ enum _command_fatfs
 #define NUMBER_FATFS_NAME       0x1000000       
 #define MASKA_FATFS_NAME        (NUMBER_FATFS_NAME - 1)
 
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 10) ||   \
+     (MODYFIKACIA_VERSII_PZ == 11) ||   \
+     (MODYFIKACIA_VERSII_PZ == 13) ||   \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )
+#define SIZE_BUFFER_FOR_AR    ((10780 - 1500)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR))
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 0) ||  \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4)     \
+      )   
+#define SIZE_BUFFER_FOR_AR    ((10780 - 500)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR))
+#else
 #define SIZE_BUFFER_FOR_AR    ((10780)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR))
+#endif
 
 #define CLEAN_AR_BIT          0
 #define CLEAN_AR              (1 << CLEAN_AR_BIT)

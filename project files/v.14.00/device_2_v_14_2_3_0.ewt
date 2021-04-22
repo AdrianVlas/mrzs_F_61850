@@ -1440,6 +1440,60 @@
         </group>
     </group>
     <group>
+        <name>FatFs</name>
+        <group>
+            <name>inc</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\diskio.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\fatfs.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ff.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ff_gen_drv.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ffconf.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\ffconf_template.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\integer.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\inc\user_diskio.h</name>
+            </file>
+        </group>
+        <group>
+            <name>src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\diskio.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\fatfs.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\ff.c</name>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\ff_gen_drv.c</name>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\user_diskio.c</name>
+            </file>
+        </group>
+    </group>
+    <group>
         <name>Linker</name>
         <group>
             <name>without iec61850</name>
@@ -1973,12 +2027,9 @@
             </group>
             <group>
                 <name>Serial Dataflash</name>
-                <group>
-                    <name>a.02.c.d</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.02.c.d\const_driver_serial_dataflash.h</name>
-                    </file>
-                </group>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\const_driver_serial_dataflash.h</name>
+                </file>
             </group>
         </group>
         <group>
@@ -2016,115 +2067,121 @@
             <group>
                 <name>interfaces</name>
                 <group>
+                    <name>component</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ACMDSmallComponent.c</name>
+                        <configuration>
+                            <name>Flash-Debug</name>
+                        </configuration>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\AISmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ANDBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTSmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DTRBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVSmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GCMDSmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\IUSmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\KEYBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MFTBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\NOTBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ORBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PFBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PKVBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PREGBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\QAISmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\REGBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRSmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDIBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDISmallComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\UPRBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\USTBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\VVBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\XORBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\YustBigComponent.c</name>
+                    </file>
+                </group>
+                <group>
+                    <name>inc</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentdef.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentenum.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\prototyps.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_external_m.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_global_m.h</name>
+                    </file>
+                </group>
+                <group>
                     <name>modbusroutine</name>
-                    <group>
-                        <name>component</name>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ACMDSmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\AISmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ANDBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTSmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DTRBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DVSmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GCMDSmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\IUSmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\KEYBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MFTBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\NOTBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ORBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PFBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PKVBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\PREGBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\QAISmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\REGBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RPRSmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDIBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\SDISmallComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\UPRBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\USTBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\VVBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\XORBigComponent.c</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\YustBigComponent.c</name>
-                        </file>
-                    </group>
-                    <group>
-                        <name>inc</name>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentdef.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\componentenum.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\prototyps.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_external_m.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc\variables_global_m.h</name>
-                        </file>
-                    </group>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_guest.c</name>
+                    </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
                     </file>
@@ -2301,11 +2358,17 @@
             <group>
                 <name>protection</name>
                 <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\ar_routines.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\working files\src\measurement.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\protections.c</name>
                 </file>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
             </group>
             <group>
                 <name>Serial Dataflash</name>

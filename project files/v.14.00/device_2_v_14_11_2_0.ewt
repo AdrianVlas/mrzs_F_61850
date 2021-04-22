@@ -2039,12 +2039,9 @@
             </group>
             <group>
                 <name>Serial Dataflash</name>
-                <group>
-                    <name>a.11.c.d</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.11.c.d\const_driver_serial_dataflash.h</name>
-                    </file>
-                </group>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\const_driver_serial_dataflash.h</name>
+                </file>
             </group>
         </group>
         <group>
@@ -2395,13 +2392,13 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\measurement.c</name>
-                    <configuration>
-                        <name>Flash-Debug</name>
-                    </configuration>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\protections.c</name>
                 </file>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
             </group>
             <group>
                 <name>Serial Dataflash</name>

@@ -2039,12 +2039,9 @@
             </group>
             <group>
                 <name>Serial Dataflash</name>
-                <group>
-                    <name>a.15.c.d</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.15.c.d\const_driver_serial_dataflash.h</name>
-                    </file>
-                </group>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\const_driver_serial_dataflash.h</name>
+                </file>
             </group>
         </group>
         <group>
@@ -2085,6 +2082,9 @@
                     <name>component</name>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\ACMDSmallComponent.c</name>
+                        <configuration>
+                            <name>Flash-Debug</name>
+                        </configuration>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\AISmallComponent.c</name>
@@ -2396,6 +2396,9 @@
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\protections.c</name>
                 </file>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
             </group>
             <group>
                 <name>Serial Dataflash</name>

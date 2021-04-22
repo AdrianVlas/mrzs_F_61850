@@ -5215,12 +5215,9 @@
       </group>
       <group>
         <name>Serial Dataflash</name>
-        <group>
-          <name>a.04.c.d</name>
-          <file>
-            <name>$PROJ_DIR$\..\..\working files\inc\a.04.c.d\const_driver_serial_dataflash.h</name>
-          </file>
-        </group>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\inc\const_driver_serial_dataflash.h</name>
+        </file>
       </group>
     </group>
     <group>
