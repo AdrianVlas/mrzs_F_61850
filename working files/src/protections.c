@@ -1317,7 +1317,8 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
-       (MODYFIKACIA_VERSII_PZ == 13)    \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
       )   
 
   static uint32_t test;
@@ -1432,7 +1433,8 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
-       (MODYFIKACIA_VERSII_PZ == 13)    \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
       ) 
 
   uint32_t zdz_ovd_diagnostyka_inv = (uint32_t)(~zdz_ovd_diagnostyka);
@@ -9012,7 +9014,8 @@ do{
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
-       (MODYFIKACIA_VERSII_PZ == 13)    \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
       )   
       //Вимикаємо можливий режим тестування оптоканалу
       _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (((current_settings_prt.zdz_ovd_porig + 1) & 0xf) << 8) | (0 << 12);
@@ -10059,6 +10062,7 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 5) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)||  \
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
     if ((board_register_tmp & 0x010) != 0x10) 

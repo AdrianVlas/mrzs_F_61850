@@ -17,6 +17,7 @@
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
+     (MODYFIKACIA_VERSII_PZ == 14)||    \
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )   
 

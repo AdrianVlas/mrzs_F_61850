@@ -202,7 +202,8 @@ typedef struct
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
-     (MODYFIKACIA_VERSII_PZ == 13)      \
+     (MODYFIKACIA_VERSII_PZ == 13)||    \
+     (MODYFIKACIA_VERSII_PZ == 14)      \
     )   
    int32_t zdz_ovd_porig;                                   //Поріг спрацювання ОВД
 #endif

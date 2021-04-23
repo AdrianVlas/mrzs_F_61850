@@ -20,9 +20,11 @@
 #define END_ADR_BIT 115
 #endif
 
-#if (                                \
-     (MODYFIKACIA_VERSII_PZ == 2) || \
-     (MODYFIKACIA_VERSII_PZ == 4)    \
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 2) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 12)||    \
+     (MODYFIKACIA_VERSII_PZ == 14)      \
     )   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 100

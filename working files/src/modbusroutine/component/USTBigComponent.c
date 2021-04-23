@@ -8,7 +8,8 @@
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
-       (MODYFIKACIA_VERSII_PZ == 13)    \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
       )   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 11900
@@ -779,7 +780,8 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
-       (MODYFIKACIA_VERSII_PZ == 13)    \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
       )   
   case 1600:
     (*multer) = 1;
@@ -930,7 +932,9 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
 #endif
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4)       \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 12)||    \
+     (MODYFIKACIA_VERSII_PZ == 14)      \
     )   
       if(inOffset>=1058 && inOffset<1066)
 #endif
@@ -1012,7 +1016,8 @@ int getUSTBigModbusRegister(int adrReg)
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
-       (MODYFIKACIA_VERSII_PZ == 13)    \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
       )   
   if(editValue == (uint32_t*)&edition_settings.zdz_ovd_porig) return (*editValue)+1;
 #endif
@@ -1369,7 +1374,8 @@ int postUSTBigWriteAction(void)
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
-       (MODYFIKACIA_VERSII_PZ == 13)    \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
       )   
     if(editValue == (uint32_t*)&edition_settings.zdz_ovd_porig)
     {

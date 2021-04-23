@@ -246,7 +246,9 @@ enum _command_fatfs
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 10) ||   \
      (MODYFIKACIA_VERSII_PZ == 11) ||   \
+     (MODYFIKACIA_VERSII_PZ == 12) ||   \
      (MODYFIKACIA_VERSII_PZ == 13) ||   \
+     (MODYFIKACIA_VERSII_PZ == 14) ||   \
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )
 #define SIZE_BUFFER_FOR_AR    ((10780 - 1500)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR))
