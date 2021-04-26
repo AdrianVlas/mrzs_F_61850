@@ -15,7 +15,7 @@ define symbol __ICFEDIT_region_RAM1_start__   = 0x60000000;
 define symbol __ICFEDIT_size_cstack__ = 0x9000;
 define symbol __ICFEDIT_size_heap__   = 0x0;
 
-define symbol __ICFEDIT_region_RAM1_size__    = 0x7FFFF;
+define symbol __ICFEDIT_region_RAM1_size__    = 0xFFFFF;
 
 /*-Exports-*/
 export symbol __ICFEDIT_region_RAM1_start__;

@@ -183,6 +183,8 @@ void make_ekran_list_titles_for_record_of_pr_err_registrator(void);
 void make_ekran_changing_diagnostics_pr_err_registrator(void);
 void make_ekran_list_titles_for_record_of_state_cmd_registrator(void);
 void make_ekran_changing_signals_statistica_registrator(void);
+void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registrator);
+
 
 void make_ekran_setting_language(void);
 void make_ekran_resurs(void);

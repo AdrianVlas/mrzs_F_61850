@@ -188,6 +188,8 @@ extern void make_ekran_resurs(void);
 extern void make_ekran_energy(unsigned int);
 extern void make_ekran_grupa_ustavok(void);
 extern void make_ekran_vidkluchenja(void);
+extern void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registrator);
+
 
 extern unsigned int action_after_changing_of_configuration(unsigned int, __SETTINGS *);
 extern unsigned int action_after_changing_extra_settings(unsigned int, __SETTINGS *);

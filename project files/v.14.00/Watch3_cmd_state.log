@@ -1,0 +1,226 @@
+Expression	Value	Location	Type	
+number_items_dr	0	0x200167D0	unsigned int	
+number_changes_into_dr_record	0	0x200167D4	unsigned int	
+drUniqVarsAddreses	Error (col 1): Unknown or ambiguous symbol. drUniqVarsAddreses			
+previous_active_functions	Error (col 1): Unknown or ambiguous symbol. previous_active_functions			
+pDbgViewCmd	active_functions (0x20015CD4)	0x20000008	CmdFunctionDepot *	
+w1	<union>	0x20015CD4	U32_cmd1_wrp	
+bool_val	<struct>	0x20015CD4	struct <Unnamed 38>	
+BLOCK_VKL_VV	0	0x20015CD4	unsigned int	
+RESET_LEDS	0	0x20015CD4	unsigned int	
+RESET_RELES	0	0x20015CD4	unsigned int	
+MISCEVE_DYSTANCIJNE	0	0x20015CD4	unsigned int	
+STATE_VV	0	0x20015CD4	unsigned int	
+OTKL_VID_ZOVN_ZAHYSTIV	0	0x20015CD4	unsigned int	
+VKL_VV	0	0x20015CD4	unsigned int	
+CTRL_VKL	0	0x20015CD4	unsigned int	
+OTKL_VV	0	0x20015CD4	unsigned int	
+CTRL_OTKL	0	0x20015CD4	unsigned int	
+PRYVID_VV	0	0x20015CD4	unsigned int	
+PEREVYSHCHENNJA_Inom_V	0	0x20015CD4	unsigned int	
+KRYTYCHNYJ_RESURS_VYMY	1	0x20015CD4	unsigned int	
+VYCHERPANYJ_RESURS_VYM	1	0x20015CD4	unsigned int	
+DEFECT	0	0x20015CD4	unsigned int	
+AVAR_DEFECT	0	0x20015CD4	unsigned int	
+WORK_A_REJESTRATOR	0	0x20015CD4	unsigned int	
+WORK_D_REJESTRATOR	0	0x20015CD4	unsigned int	
+VIDKL_VID_ZAKHYSTIV	0	0x20015CD4	unsigned int	
+WORK_BO	0	0x20015CD4	unsigned int	
+WORK_BV	0	0x20015CD4	unsigned int	
+l1_GRUPA_USTAVOK	1	0x20015CD4	unsigned int	
+l2_GRUPA_USTAVOK	0	0x20015CD4	unsigned int	
+l3_GRUPA_USTAVOK	0	0x20015CD4	unsigned int	
+l4_GRUPA_USTAVOK	0	0x20015CD4	unsigned int	
+INVERS_DV_GRUPA_USTAVO	1	0x20015CD4	unsigned int	
+BLK_GRUP_USTAVOK_VID_Z	0	0x20015CD4	unsigned int	
+RESET_BLOCK_READY_TU_V	0	0x20015CD4	unsigned int	
+READY_TU	1	0x20015CD4	unsigned int	
+SETTINGS_CHANGED	0	0x20015CD4	unsigned int	
+BLOCK_MTZ1	0	0x20015CD4	unsigned int	
+BLOCK_MTZ2	0	0x20015CD4	unsigned int	
+U32V	0x12203000	0x20015CD4	unsigned long	
+w2	<union>	0x20015CD8	U32_cmd2_wrp	
+bool_val	<struct>	0x20015CD8	struct <Unnamed 39>	
+BLOCK_USK_MTZ2	0	0x20015CD8	unsigned int	
+BLOCK_MTZ3	0	0x20015CD8	unsigned int	
+BLOCK_MTZ4	0	0x20015CD8	unsigned int	
+SECTOR_VPERED_MTZN1	0	0x20015CD8	unsigned int	
+SECTOR_NAZAD_MTZN1	0	0x20015CD8	unsigned int	
+PO_MTZ1	0	0x20015CD8	unsigned int	
+PO_MTZN1_VPERED	0	0x20015CD8	unsigned int	
+PO_MTZN1_NAZAD	0	0x20015CD8	unsigned int	
+PO_U_MTZPN1	1	0x20015CD8	unsigned int	
+PO_MTZPN1	0	0x20015CD8	unsigned int	
+MTZ1	0	0x20015CD8	unsigned int	
+SECTOR_VPERED_MTZN2	0	0x20015CD8	unsigned int	
+SECTOR_NAZAD_MTZN2	0	0x20015CD8	unsigned int	
+PO_MTZ2	0	0x20015CD8	unsigned int	
+PO_MTZN2_VPERED	0	0x20015CD8	unsigned int	
+PO_MTZN2_NAZAD	0	0x20015CD8	unsigned int	
+PO_U_MTZPN2	1	0x20015CD8	unsigned int	
+PO_MTZPN2	0	0x20015CD8	unsigned int	
+MTZ2	0	0x20015CD8	unsigned int	
+SECTOR_VPERED_MTZN3	0	0x20015CD8	unsigned int	
+SECTOR_NAZAD_MTZN3	0	0x20015CD8	unsigned int	
+PO_MTZ3	0	0x20015CD8	unsigned int	
+PO_MTZN3_VPERED	0	0x20015CD8	unsigned int	
+PO_MTZN3_NAZAD	0	0x20015CD8	unsigned int	
+PO_U_MTZPN3	1	0x20015CD8	unsigned int	
+PO_MTZPN3	0	0x20015CD8	unsigned int	
+MTZ3	0	0x20015CD8	unsigned int	
+SECTOR_VPERED_MTZN4	0	0x20015CD8	unsigned int	
+SECTOR_NAZAD_MTZN4	0	0x20015CD8	unsigned int	
+PO_MTZ4	0	0x20015CD8	unsigned int	
+PO_MTZN4_VPERED	0	0x20015CD8	unsigned int	
+PO_MTZN4_NAZAD	0	0x20015CD8	unsigned int	
+U32V	0x01010100	0x20015CD8	unsigned long	
+w3	<union>	0x20015CDC	U32_cmd3_wrp	
+bool_val	<struct>	0x20015CDC	struct <Unnamed 40>	
+PO_U_MTZPN4	1	0x20015CDC	unsigned int	
+PO_MTZPN4	0	0x20015CDC	unsigned int	
+MTZ4	0	0x20015CDC	unsigned int	
+PO_BLOCK_U_MTZN	1	0x20015CDC	unsigned int	
+NCN_MTZ	0	0x20015CDC	unsigned int	
+BLOCK_MTZ04_1	0	0x20015CDC	unsigned int	
+BLOCK_MTZ04_2	0	0x20015CDC	unsigned int	
+BLOCK_USK_MTZ	0	0x20015CDC	unsigned int	
+PO_MTZ04_1	0	0x20015CDC	unsigned int	
+MTZ04_1	0	0x20015CDC	unsigned int	
+PO_MTZ04_2	0	0x20015CDC	unsigned int	
+MTZ04_2	0	0x20015CDC	unsigned int	
+BLOCK_ZDZ	0	0x20015CDC	unsigned int	
+PUSK_ZDZ_VID_	0	0x20015CDC	unsigned int	
+LIGHT_ZDZ_FRO	0	0x20015CDC	unsigned int	
+PO_ZDZ	0	0x20015CDC	unsigned int	
+ZDZ	0	0x20015CDC	unsigned int	
+BLOCK_NZZ	0	0x20015CDC	unsigned int	
+PO_NZZ	0	0x20015CDC	unsigned int	
+NZZ	0	0x20015CDC	unsigned int	
+PO_3I0	0	0x20015CDC	unsigned int	
+l3I0	0	0x20015CDC	unsigned int	
+lPO_3U0	0	0x20015CDC	unsigned int	
+l3U0	0	0x20015CDC	unsigned int	
+SECTOR_NZZ	0	0x20015CDC	unsigned int	
+BLOCK_TZNP1	0	0x20015CDC	unsigned int	
+SECTOR_TZNP1_VPERED	0	0x20015CDC	unsigned int	
+SECTOR_TZNP1_NAZAD	0	0x20015CDC	unsigned int	
+PO_3I0_TZNP1_VPERED	0	0x20015CDC	unsigned int	
+PO_3I0_TZNP1_NAZAD	0	0x20015CDC	unsigned int	
+PO_3U0_TZNP1_VPERED	0	0x20015CDC	unsigned int	
+PO_3U0_TZNP1_NAZAD	0	0x20015CDC	unsigned int	
+U32V	9	0x20015CDC	unsigned long	
+w4	<union>	0x20015CE0	U32_cmd4_wrp	
+bool_val	<struct>	0x20015CE0	struct <Unnamed 41>	
+PO_TZNP1_VPERED	0	0x20015CE0	unsigned int	
+PO_TZNP1_NAZAD	0	0x20015CE0	unsigned int	
+TZNP1	0	0x20015CE0	unsigned int	
+BLOCK_TZNP2	0	0x20015CE0	unsigned int	
+SECTOR_TZNP2_VPERED	0	0x20015CE0	unsigned int	
+SECTOR_TZNP2_NAZAD	0	0x20015CE0	unsigned int	
+PO_3I0_TZNP2_VPERED	0	0x20015CE0	unsigned int	
+PO_3I0_TZNP2_NAZAD	0	0x20015CE0	unsigned int	
+PO_3U0_TZNP2_VPERED	0	0x20015CE0	unsigned int	
+PO_3U0_TZNP2_NAZAD	0	0x20015CE0	unsigned int	
+PO_TZNP2_VPERED	0	0x20015CE0	unsigned int	
+PO_TZNP2_NAZAD	0	0x20015CE0	unsigned int	
+TZNP2	0	0x20015CE0	unsigned int	
+BLOCK_TZNP3	0	0x20015CE0	unsigned int	
+SECTOR_TZNP3_VPERED	0	0x20015CE0	unsigned int	
+SECTOR_TZNP3_NAZAD	0	0x20015CE0	unsigned int	
+PO_3I0_TZNP3_VPERED	0	0x20015CE0	unsigned int	
+PO_3I0_TZNP3_NAZAD	0	0x20015CE0	unsigned int	
+PO_3U0_TZNP3_VPERED	0	0x20015CE0	unsigned int	
+PO_3U0_TZNP3_NAZAD	0	0x20015CE0	unsigned int	
+PO_TZNP3_VPERED	0	0x20015CE0	unsigned int	
+PO_TZNP3_NAZAD	0	0x20015CE0	unsigned int	
+TZNP3	0	0x20015CE0	unsigned int	
+STAT_BLK_APV	0	0x20015CE0	unsigned int	
+APV1	0	0x20015CE0	unsigned int	
+APV2	0	0x20015CE0	unsigned int	
+APV3	0	0x20015CE0	unsigned int	
+APV4	0	0x20015CE0	unsigned int	
+APV_WORK	0	0x20015CE0	unsigned int	
+ACHR_CHAPV_VID_DV	0	0x20015CE0	unsigned int	
+BLOCK_ACHR1	0	0x20015CE0	unsigned int	
+BLOCK_ACHR2	0	0x20015CE0	unsigned int	
+U32V	0	0x20015CE0	unsigned long	
+w5	<union>	0x20015CE4	U32_cmd5_wrp	
+bool_val	<struct>	0x20015CE4	struct <Unnamed 42>	
+U32V	0	0x20015CE4	unsigned long	
+w6	<union>	0x20015CE8	U32_cmd6_wrp	
+bool_val	<struct>	0x20015CE8	struct <Unnamed 43>	
+U32V	0	0x20015CE8	unsigned long	
+w7	<union>	0x20015CEC	U32_cmd7_wrp	
+bool_val	<struct>	0x20015CEC	struct <Unnamed 44>	
+DF4_OUT	0	0x20015CEC	unsigned int	
+DF5_IN	0	0x20015CEC	unsigned int	
+DF5_OUT	0	0x20015CEC	unsigned int	
+DF6_IN	0	0x20015CEC	unsigned int	
+DF6_OUT	0	0x20015CEC	unsigned int	
+DF7_IN	0	0x20015CEC	unsigned int	
+DF7_OUT	0	0x20015CEC	unsigned int	
+DF8_IN	0	0x20015CEC	unsigned int	
+DF8_OUT	0	0x20015CEC	unsigned int	
+DT1_SET	0	0x20015CEC	unsigned int	
+DT1_RESET	0	0x20015CEC	unsigned int	
+DT1_OUT	0	0x20015CEC	unsigned int	
+DT2_SET	0	0x20015CEC	unsigned int	
+DT2_RESET	0	0x20015CEC	unsigned int	
+DT2_OUT	0	0x20015CEC	unsigned int	
+DT3_SET	0	0x20015CEC	unsigned int	
+DT3_RESET	0	0x20015CEC	unsigned int	
+DT3_OUT	0	0x20015CEC	unsigned int	
+DT4_SET	0	0x20015CEC	unsigned int	
+DT4_RESET	0	0x20015CEC	unsigned int	
+DT4_OUT	0	0x20015CEC	unsigned int	
+D_AND1	1	0x20015CEC	unsigned int	
+D_AND2	1	0x20015CEC	unsigned int	
+D_AND3	1	0x20015CEC	unsigned int	
+D_AND4	1	0x20015CEC	unsigned int	
+D_AND5	1	0x20015CEC	unsigned int	
+D_AND6	1	0x20015CEC	unsigned int	
+D_AND7	1	0x20015CEC	unsigned int	
+D_AND8	1	0x20015CEC	unsigned int	
+D_OR1	0	0x20015CEC	unsigned int	
+D_OR2	0	0x20015CEC	unsigned int	
+D_OR3	0	0x20015CEC	unsigned int	
+U32V	0x1FE00000	0x20015CEC	unsigned long	
+w8	<union>	0x20015CF0	U32_cmd8_wrp	
+bool_val	<struct>	0x20015CF0	struct <Unnamed 45>	
+D_OR4	0	0x20015CF0	unsigned int	
+D_OR5	0	0x20015CF0	unsigned int	
+D_OR6	0	0x20015CF0	unsigned int	
+D_OR7	0	0x20015CF0	unsigned int	
+D_OR8	0	0x20015CF0	unsigned int	
+D_XOR1	0	0x20015CF0	unsigned int	
+D_XOR2	0	0x20015CF0	unsigned int	
+D_XOR3	0	0x20015CF0	unsigned int	
+D_XOR4	0	0x20015CF0	unsigned int	
+D_XOR5	0	0x20015CF0	unsigned int	
+D_XOR6	0	0x20015CF0	unsigned int	
+D_XOR7	0	0x20015CF0	unsigned int	
+D_XOR8	0	0x20015CF0	unsigned int	
+D_NOT1	1	0x20015CF0	unsigned int	
+D_NOT2	1	0x20015CF0	unsigned int	
+D_NOT3	1	0x20015CF0	unsigned int	
+D_NOT4	1	0x20015CF0	unsigned int	
+D_NOT5	1	0x20015CF0	unsigned int	
+D_NOT6	1	0x20015CF0	unsigned int	
+D_NOT7	1	0x20015CF0	unsigned int	
+D_NOT8	1	0x20015CF0	unsigned int	
+D_NOT9	1	0x20015CF0	unsigned int	
+D_NOT10	1	0x20015CF0	unsigned int	
+D_NOT11	1	0x20015CF0	unsigned int	
+D_NOT12	1	0x20015CF0	unsigned int	
+D_NOT13	1	0x20015CF0	unsigned int	
+D_NOT14	1	0x20015CF0	unsigned int	
+D_NOT15	1	0x20015CF0	unsigned int	
+D_NOT16	1	0x20015CF0	unsigned int	
+ERROR_CONF_EL	0	0x20015CF0	unsigned int	
+b30	0	0x20015CF0	unsigned int	
+b31	0	0x20015CF0	unsigned int	
+U32V	0x1FFFE000	0x20015CF0	unsigned long	
+w9	<union>	0x20015CF4	U32_cmd8_wrp	
+bool_val	<struct>	0x20015CF4	struct <Unnamed 45>	
+U32V	0x00000000	0x20015CF4	unsigned long	
+arViewCmd	Error (col 1): Unknown or ambiguous symbol. arViewCmd			

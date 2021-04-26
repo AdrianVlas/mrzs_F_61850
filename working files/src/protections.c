@@ -6360,6 +6360,7 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
 inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsigned int* ranguvannja_registrator)
 {
   unsigned int stop = 0;
+  long tm_o = 0;
 
   {
     if (
@@ -6375,7 +6376,7 @@ inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsi
       )
     {
       //Зафіксовано, що ні одне джерело активації реєстратора зараз не активне
-      
+#ifdef _OLD_CODE_DR_ACTIVE      
       if (
           ((carrent_active_functions[0] & MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_0) == 0) &&
           ((carrent_active_functions[1] & MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_1) == 0) &&
@@ -6420,7 +6421,21 @@ inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsi
           stop = 0xff;
         }
       }
+#endif
+        //if (global_timers[INDEX_TIMER_DR_WORK] == 0)
+        _TIMER_0_T(INDEX_TIMER_DR_WORK,current_settings_prt.timeout_prolongation_work_digital_registrator,0,0,tm_o,1);	
+        if ( tm_o == 0)
+        {
+          //Зафіксовано, що  таймер  неактивний
+        
+          //Помічаємо, що реєстратор може бути зупиненим
+          stop = 0xff;
+        }
     }
+    else{
+		tm_o = 1;
+		_TIMER_0_T(INDEX_TIMER_DR_WORK,current_settings_prt.timeout_prolongation_work_digital_registrator,1,0,tm_o,1);
+	}
   }
   
   return stop;
@@ -7629,6 +7644,8 @@ inline void routine_for_queue_dr(void)
 }
 /*****************************************************/
 
+long tstBrrFooSelector = 0;//змінна для тестів і перевірок
+
 /*****************************************************/
 //Функція обробки логіки дискретного реєстратора
 /*****************************************************/
@@ -7641,6 +7658,19 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
   static unsigned int time_from_start_record_dr;
   static unsigned int blocking_continue_monitoring_min_U;
   
+ DigRegUniqVarsAddreses  drUniqVarsAddreses = {
+	&number_items_dr,
+	&number_changes_into_dr_record,
+	&time_from_start_record_dr,
+	&blocking_continue_monitoring_min_U,
+	previous_active_functions,
+	carrent_active_functions
+};
+  
+  
+//  TestStateNameSpaceFooBrrr((DigRegUniqVarsAddreses*)&drUniqVarsAddreses);
+  //put_before_info_in_buf
+  CmdPlusTimeStampLogHundler(active_functions);
   //Цю перевірку виконуємо тільки у тому випадку, коли іде процес формування нового запису
   if(state_dr_record == STATE_DR_EXECUTING_RECORD)
   {
@@ -7984,7 +8014,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
          )
       {
         //Є умова запуску дискретного реєстратора
-        
+        //global_timers[INDEX_TIMER_DR_WORK] = 0;//_TIMER_0_T(INDEX_TIMER_DR_WORK,current_settings_prt.timeout_prolongation_work_digital_registrator,1,1,0,0);
         //Перевіряємо, чи при початку нового запису ми не втратимо попередню інформацію
         if(number_records_dr_waiting_for_saving_operation < WIGHT_OF_DR_WAITING)
         {
@@ -8174,7 +8204,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
           вимірювань при запуску ЧАПВ складається з двох зрізів у яких сигнал ЧАПВ
           здійснює перехід "Активний"->"Пасивний"
           */
-
+          number_changes_into_dr_record = 0;/*
           //Записуємо попередній cтан сигналів перед аварією
           //Мітка часу попереднього стану сигналів до моменту початку запису
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0xff;
@@ -8222,7 +8252,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
           number_items_dr = 1;
       
           //Вираховуємо кількість змін сигналів
-          number_changes_into_dr_record = 0;
+          //..number_changes_into_dr_record = 0;
           unsigned int number_changes_into_current_item;
           _NUMBER_CHANGES_INTO_UNSIGNED_INT_ARRAY(previous_active_functions, carrent_active_functions, N_BIG, number_changes_into_current_item);
           number_changes_into_dr_record += number_changes_into_current_item;
@@ -8269,8 +8299,9 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
           
           //Кількість змін сигналів у порівнянні із попереднім станом
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 36] = number_changes_into_current_item & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 37] = (number_changes_into_current_item >> 8) & 0xff;
-      
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 37] = (number_changes_into_current_item >> 8) & 0xff;*/
+          put_before_info_in_buf(&drUniqVarsAddreses);
+        //!@put_befor_info_in_buf @!
 //          //Решту масиву очищаємо, щоб у запис не пішла інформація із попередніх записів
 //          for(unsigned int i = FIRST_INDEX_FIRST_BLOCK_DR; i < FIRST_INDEX_FIRST_DATA_DR; i++)
 //            buffer_for_save_dr_record[i] = 0xff;
@@ -10540,7 +10571,7 @@ do{
               
   if (not_null)
   {
-    _SET_BIT(active_functions, RANG_DEFECT);
+//@    _SET_BIT(active_functions, RANG_DEFECT);
     /**************************/
     //Сигнал "Несправность Аварийная"
     /**************************/
@@ -10554,7 +10585,7 @@ do{
     }
     if (not_null)
     {
-      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+//@      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
 //       #warning "No Avar Error"
     }
     else

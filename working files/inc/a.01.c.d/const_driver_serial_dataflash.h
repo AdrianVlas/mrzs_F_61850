@@ -311,7 +311,7 @@ Built-in Erase" < 25,001(мс)
 
 */
 
-#define SIZE_BUFFER_FOR_AR    258720/*398592*/
+#define SIZE_BUFFER_FOR_AR    238720 //..258720/*398592*/
 
 #define CLEAN_AR_BIT          0
 #define CLEAN_AR              (1 << CLEAN_AR_BIT)
