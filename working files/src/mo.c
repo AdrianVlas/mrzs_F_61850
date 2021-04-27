@@ -206,7 +206,7 @@ void start_receive_data_via_CANAL1_MO(void)
         }
         else 
         {
-          if (++lock_error_received_packet >= 2)
+          if (++lock_error_received_packet >= 5)
           {
             _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_1);
             lock_error_received_packet &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
@@ -216,7 +216,7 @@ void start_receive_data_via_CANAL1_MO(void)
     }
     else 
     {
-      if (++lock_error_receiving >= 2)
+      if (++lock_error_receiving >= 5)
       {
         _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_1);
         lock_error_receiving &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
@@ -230,7 +230,7 @@ void start_receive_data_via_CANAL1_MO(void)
     {
       if (IEC_board_uncall == 0) 
       {
-        if (++lock_error_no_answer >= 2)
+        if (++lock_error_no_answer >= 5)
         {
           _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
           lock_error_no_answer &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
