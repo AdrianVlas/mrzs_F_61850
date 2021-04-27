@@ -187,11 +187,15 @@ extern void make_ekran_analog_value_records_digital_registrator(void);
 extern void make_ekran_changing_signals_digital_registrator(void);
 extern void make_ekran_list_titles_for_record_of_pr_err_registrator(void);
 extern void make_ekran_changing_diagnostics_pr_err_registrator(void);
+extern void make_ekran_list_titles_for_record_of_state_cmd_registrator(void);
+extern void make_ekran_changing_signals_statistica_registrator(void);
 extern void make_ekran_setting_language(void);
 extern void make_ekran_resurs(void);
 extern void make_ekran_energy(unsigned int);
 extern void make_ekran_grupa_ustavok(void);
 extern void make_ekran_vidkluchenja(void);
+extern void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registrator);
+
 
 extern unsigned int action_after_changing_of_configuration(unsigned int, __SETTINGS *);
 extern unsigned int action_after_changing_extra_settings(unsigned int, __SETTINGS *);
@@ -265,6 +269,7 @@ extern void routine_for_queue_dr(void);
 extern void digital_registrator(unsigned int*);
 extern void analog_registrator(unsigned int*);
 //extern void diagnostyca_adc_execution(void);
+extern long GetNumberChangingInLogElem( long lIdx);
 
 extern void Usb_routines_irq(void);
 extern void Usb_routines(void);

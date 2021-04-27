@@ -53,6 +53,8 @@ typedef struct
   unsigned int ranguvannja_analog_registrator[N_BIG];     //Ранжування аналогового реєстратора
   unsigned int ranguvannja_digital_registrator[N_BIG];    //Ранжування дискретного реєстратора
   
+  int timeout_prolongation_work_digital_registrator;        //Час продолвження роботи  дискретного реєстратора
+  
   //Блок ввімкнення-вимкнення вимикача
   unsigned int ranguvannja_off_cb[N_BIG];                 //Ранжування блоку вимкнення силового вимикача
   unsigned int ranguvannja_on_cb[N_BIG];                  //Ранжування блоку ввімкнення силового вимикача
@@ -352,6 +354,8 @@ typedef struct
   int timeout_swch_udl_blk_on;                  //Витримка T "удлинение сигнала блокировки включения"
   int timeout_pryvoda_VV;                       //Витримка T "Привіода ВВ"
   unsigned int control_switch;                  //Поле для управління вимикачем
+  
+  
   
   //Визначення місця пошкодження
   unsigned int lines[2];                        //Кількість ділянок
