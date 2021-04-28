@@ -10043,7 +10043,9 @@ void TIM2_IRQHandler(void)
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
-     (MODYFIKACIA_VERSII_PZ == 15)   \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
     )
       if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
       else if (board_register_diff & 0x04)
@@ -10063,7 +10065,11 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)||  \
-       (MODYFIKACIA_VERSII_PZ == 15)    \
+       (MODYFIKACIA_VERSII_PZ == 15)||  \
+       (MODYFIKACIA_VERSII_PZ == 23)||  \
+       (MODYFIKACIA_VERSII_PZ == 24)||  \
+       (MODYFIKACIA_VERSII_PZ == 33)||  \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
       )   
     if ((board_register_tmp & 0x010) != 0x10) 
       
@@ -10077,8 +10083,22 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
       _SET_BIT(set_diagnostyka, ERROR_BDVV6_FIX);
-#else
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
+      )
       _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 23) || \
+       (MODYFIKACIA_VERSII_PZ == 24) || \
+       (MODYFIKACIA_VERSII_PZ == 33) || \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
+      )
+      _SET_BIT(set_diagnostyka, ERROR_BDSH_FIX);
+#else
+ #error  "UDEFINED MODIFIKACIA"
 #endif
       else if (board_register_diff & 0x10)
       {
@@ -10092,8 +10112,22 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
         _SET_BIT(clear_diagnostyka, ERROR_BDVV6_FIX);
-#else
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
+      )
         _SET_BIT(clear_diagnostyka, ERROR_BDZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 23) || \
+       (MODYFIKACIA_VERSII_PZ == 24) || \
+       (MODYFIKACIA_VERSII_PZ == 33) || \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
+      )
+      _SET_BIT(clear_diagnostyka, ERROR_BDSH_FIX);
+#else
+ #error  "UDEFINED MODIFIKACIA"
 #endif
 
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
@@ -10108,8 +10142,22 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x12)  _SET_BIT(set_diagnostyka, ERROR_BDVV6_CTLR);
-#else
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
+      )
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 23)||  \
+       (MODYFIKACIA_VERSII_PZ == 24)||  \
+       (MODYFIKACIA_VERSII_PZ == 33)||  \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
+      )
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x23)  _SET_BIT(set_diagnostyka, ERROR_BDSH_CTLR);
+#else
+ #error  "UDEFINED MODIFIKACIA"
 #endif
 
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;

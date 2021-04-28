@@ -19,7 +19,9 @@
      (MODYFIKACIA_VERSII_PZ == 1) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 11)||    \
-     (MODYFIKACIA_VERSII_PZ == 13)      \
+     (MODYFIKACIA_VERSII_PZ == 13)||    \
+     (MODYFIKACIA_VERSII_PZ == 23)||    \
+     (MODYFIKACIA_VERSII_PZ == 33)      \
     )   
 //конечный регистр в карте памяти
 //16 шт
@@ -30,7 +32,9 @@
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 12)||    \
-     (MODYFIKACIA_VERSII_PZ == 14)      \
+     (MODYFIKACIA_VERSII_PZ == 14)||    \
+     (MODYFIKACIA_VERSII_PZ == 24)||    \
+     (MODYFIKACIA_VERSII_PZ == 34)      \
     )   
 //конечный регистр в карте памяти
 //8 шт

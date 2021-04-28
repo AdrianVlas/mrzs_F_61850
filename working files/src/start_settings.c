@@ -397,9 +397,10 @@ void start_settings_peripherals(void)
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0;
   uint32_t board_register_tmp = board_register = _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47);
 #if   (                                 \
-       (MODYFIKACIA_VERSII_PZ == 0) ||  \
-       (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 5)     \
+       (MODYFIKACIA_VERSII_PZ ==  0) || \
+       (MODYFIKACIA_VERSII_PZ ==  3) || \
+       (MODYFIKACIA_VERSII_PZ ==  5) || \
+       (MODYFIKACIA_VERSII_PZ == 23)    \
       )   
   if ((board_register_tmp & 0x17) != 0x17)
 #elif (                                 \
@@ -411,13 +412,15 @@ void start_settings_peripherals(void)
       )   
   if ((board_register_tmp & 0x03) != 0x03)
 #elif (                                 \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ ==  4) || \
+       (MODYFIKACIA_VERSII_PZ == 24)    \
       )   
   if ((board_register_tmp & 0x13) != 0x13)
 #elif (                                 \
        (MODYFIKACIA_VERSII_PZ == 10) || \
        (MODYFIKACIA_VERSII_PZ == 13) || \
-       (MODYFIKACIA_VERSII_PZ == 15)    \
+       (MODYFIKACIA_VERSII_PZ == 15) || \
+       (MODYFIKACIA_VERSII_PZ == 23)    \
       )   
   if ((board_register_tmp & 0x1F) != 0x1F)
 #elif (                                 \
@@ -429,7 +432,8 @@ void start_settings_peripherals(void)
       )   
   if ((board_register_tmp & 0x0B) != 0x0B)
 #elif (                                 \
-       (MODYFIKACIA_VERSII_PZ == 14)    \
+       (MODYFIKACIA_VERSII_PZ == 14) || \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
       )   
   if ((board_register_tmp & 0x1B) != 0x1B)
 #else
@@ -451,7 +455,9 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
-     (MODYFIKACIA_VERSII_PZ == 15)   \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
     )
     if ((board_register_tmp &  0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
 #endif
@@ -464,7 +470,11 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)||    \
-     (MODYFIKACIA_VERSII_PZ == 15)      \
+     (MODYFIKACIA_VERSII_PZ == 15)||    \
+     (MODYFIKACIA_VERSII_PZ == 23)||    \
+     (MODYFIKACIA_VERSII_PZ == 24)||    \
+     (MODYFIKACIA_VERSII_PZ == 33)||    \
+     (MODYFIKACIA_VERSII_PZ == 34)      \
     )   
     if ((board_register_tmp & 0x010) != 0x10) 
       
@@ -478,8 +488,22 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
       _SET_BIT(set_diagnostyka, ERROR_BDVV6_FIX);
-#else
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
+      )
       _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 23) || \
+       (MODYFIKACIA_VERSII_PZ == 24) || \
+       (MODYFIKACIA_VERSII_PZ == 33) || \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
+      )
+      _SET_BIT(set_diagnostyka, ERROR_BDSH_FIX);
+#else
+ #error  "UDEFINED MODIFIKACIA"
 #endif
       
 #endif
@@ -503,14 +527,17 @@ void start_settings_peripherals(void)
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)   \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
     )
   if ((board_register_tmp & 0x04) == 0x04)
   {
     _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x4;
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) >> 8) != 0x37)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_CTLR);
   }
+#endif
   
 #if (                                   \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
@@ -520,7 +547,11 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)||  \
-       (MODYFIKACIA_VERSII_PZ == 15)    \
+       (MODYFIKACIA_VERSII_PZ == 15)||  \
+       (MODYFIKACIA_VERSII_PZ == 23)||  \
+       (MODYFIKACIA_VERSII_PZ == 24)||  \
+       (MODYFIKACIA_VERSII_PZ == 33)||  \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
       )   
   if ((board_register_tmp & 0x10) == 0x10)
   {
@@ -535,12 +566,24 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x12)  _SET_BIT(set_diagnostyka, ERROR_BDVV6_CTLR);
-#else
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
+      )
     if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 23)||  \
+       (MODYFIKACIA_VERSII_PZ == 24)||  \
+       (MODYFIKACIA_VERSII_PZ == 33)||  \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
+      )
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x23)  _SET_BIT(set_diagnostyka, ERROR_BDSH_CTLR);
+#else
+ #error  "UDEFINED MODIFIKACIA"
 #endif
   }
-#endif
-  
 #endif
   
   //Вимикаємо вибір всіх плат для подальшого контролю

@@ -105,6 +105,8 @@ ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
 ERROR_BDVV6_FIX,
 ERROR_BDVV6_CTLR,
+ERROR_BDSH_FIX,
+ERROR_BDSH_CTLR,
 
 ERROR_FATFS
 };
@@ -167,6 +169,8 @@ ERROR_FATFS
   | (1 << (ERROR_BDZ_CTLR - 96))                                \
   | (1 << (ERROR_BDVV6_FIX - 96))                               \
   | (1 << (ERROR_BDVV6_CTLR - 96))                              \
+  | (1 << (ERROR_BDSH_FIX - 96))                                \
+  | (1 << (ERROR_BDSH_CTLR - 96))                               \
 )
 
 # define NAME_DIAGN_RU  \
@@ -271,9 +275,9 @@ ERROR_FATFS
   " ÁÄÇ ï.         ",   \
   " ÁÄÂÂ6 îò.      ",   \
   " ÁÄÂÂ6 ï.       ",   \
-  " Îø.Ô.Ñ.        ",   \
-  " Îøèáêà 102     ",   \
-  " Îøèáêà 103     "
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " Îø.Ô.Ñ.        "   \
 
 # define NAME_DIAGN_UA  \
   " Ïîì.I2C        ",   \
@@ -377,9 +381,9 @@ ERROR_FATFS
   " ÁÄÇ ï.         ",   \
   " ÁÄÂÂ6 â³ä.     ",   \
   " ÁÄÂÂ6 ï.       ",   \
-  " Ïîì.Ô.Ñ.       ",   \
-  " Ïîìèëêà 102    ",   \
-  " Ïîìèëêà 103    "
+  " ÁÄØ â³ä.       ",   \
+  " ÁÄØ ï.         ",   \
+  " Ïîì.Ô.Ñ.       "    \
 
 # define NAME_DIAGN_EN  \
   " I2C Er         ",   \
@@ -483,9 +487,9 @@ ERROR_FATFS
   " ASU ver        ",   \
   " BIOU06_Z abs   ",   \
   " BIOU06_Z ver   ",   \
-  " Error of FS    ",   \
-  " Error 102      ",   \
-  " Error 103      "
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " Error of FS    "    \
 
 # define NAME_DIAGN_KZ  \
   " Îø.I2C         ",   \
@@ -589,8 +593,8 @@ ERROR_FATFS
   " ÁÄÇ ê.         ",   \
   " ÁÄÂÂ6 ô.       ",   \
   " ÁÄÂÂ6 ê.       ",   \
-  " Îø.Ô.Ñ.        ",   \
-  " Îøèáêà 102     ",   \
-  " Îøèáêà 103     "
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " Îø.Ô.Ñ.        "    \
     
 #endif

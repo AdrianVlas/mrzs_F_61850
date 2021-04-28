@@ -11,7 +11,9 @@
      (MODYFIKACIA_VERSII_PZ == 3) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
-     (MODYFIKACIA_VERSII_PZ == 13)   \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
     )
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1355
@@ -21,7 +23,9 @@
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 12)||    \
-     (MODYFIKACIA_VERSII_PZ == 14)      \
+     (MODYFIKACIA_VERSII_PZ == 14)||    \
+     (MODYFIKACIA_VERSII_PZ == 24)||    \
+     (MODYFIKACIA_VERSII_PZ == 34)      \
     )   
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 1243
