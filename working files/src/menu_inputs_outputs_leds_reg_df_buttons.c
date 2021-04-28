@@ -38,7 +38,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
       " О-Искл.ИЛИ     ",
       " О-НЕ           ",
       " Пер.ф.         "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       ,
       " Вх.GOOSE Блок  ",
       " Вх.MMS Блок    ",
@@ -57,7 +57,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
       " В-Викл.АБО     ",
       " В-НЕ           ",
       " Пер.ф.         "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       , 
       " Вх.GOOSE Блок  ",
       " Вх.MMS Блок    ", 
@@ -76,7 +76,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
       " XOR            ",
       " NOT            ",
       " Transfer func  "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       ,
       " GSERECEIVxx    ",
       " MMSRECEIVxx    ",
@@ -95,7 +95,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
       " О-Искл.ИЛИ     ",
       " О-НЕ           ",
       " Пер.ф.         "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       ,
       " Вх.GOOSE Блок  ",
       " Вх.MMS Блок    ",
@@ -107,22 +107,22 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
   static const unsigned int first_index_number[MAX_NAMBER_LANGUAGE][_MAX_ID_INPUT_OUPUT] = 
   {
     {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       , 14, 12, 4 
 #endif
     },
     {5, 6, 3, 10, 2,  9, 4, 6, 11, 5, 7
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       , 14, 12, 4
 #endif
     },
     {4, 4, 4, 12, 2, 13, 7, 6,  7, 6, 6
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       , 13, 13, 4
 #endif
     },
     {5, 6, 3, 10, 2, 10, 4, 6, 11, 5, 7
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       , 14, 12, 4
 #endif
     }
@@ -142,7 +142,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     MAX_ROW_FOR_LIST_D_NOT,
     MAX_ROW_FOR_LIST_TF
       
-#if (MODYFIKACIA_VERSII_PZ >= 10)    
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)    
     ,
     N_IN_GOOSE,
     N_IN_MMS,
@@ -291,14 +291,14 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
 //Формуємо екран відображення зранжованих сигналів на вибраний вхід
 /*****************************************************/
 void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_ekran, uint32_t temp_state[]
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                                                                                                             , int type_LN, int n_LN
 #endif
                                                                                                                           )
 {
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
 #else
   static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL + (1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL)][MAX_COL_LCD] = 
@@ -342,7 +342,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     size_t index_row;
     if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL)) 
     {
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
       {
         index_row = index_1;
@@ -366,7 +366,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     else if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1)) 
     {
       index_row = index_1
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                   ;
@@ -374,7 +374,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     else if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG_SMALL))
     {
       index_row = NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif
                    + ((index_1 - (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_SMALL_BLOCK_UP1)) % 1);
@@ -382,7 +382,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     else
     {
       index_row = index_1 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                   + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                   + 1 - NUMBER_UP_SIGNAL_FOR_RANG_SMALL;
@@ -390,7 +390,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       
     for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
     {
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       if (
           (index_1 >= (NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
           (index_1 <  (NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL - (N_IN_MMS + N_OUT_LAN))) &&
@@ -641,7 +641,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     /*************************************************************/
     if(
        (type_ekran == INDEX_VIEWING_BUTTON)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
        ||
        (type_ekran == INDEX_VIEWING_IEC61850_RANG)
 #endif
@@ -652,7 +652,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       /*************************************************************/
       const uint32_t *p_array = NULL;
       if (type_ekran == INDEX_VIEWING_BUTTON) p_array = buttons_mode[(current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1];
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       else if (type_ekran == INDEX_VIEWING_IEC61850_RANG)
       {
         if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS)) p_array = rang_iec61850_blocks[type_LN];
@@ -665,7 +665,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
       {
         if (
             (_CHECK_SET_BIT(p_array, index_deleted_function) == 0) 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             ||
             ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) && (index_deleted_function == (RANG_SMALL_BLOCK_IN_GOOSE1 + n_LN)))
             ||
@@ -741,7 +741,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
         {
           if(
              (type_ekran == INDEX_VIEWING_BUTTON)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
              ||
              (type_ekran == INDEX_VIEWING_IEC61850_RANG)
 #endif
@@ -752,7 +752,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
             */
             const uint32_t *p_array = NULL;
             if (type_ekran == INDEX_VIEWING_BUTTON) p_array = buttons_mode[(current_settings.buttons_mode >> (number_ekran - EKRAN_RANGUVANNJA_BUTTON_1)) & 0x1];
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             else if (type_ekran == INDEX_VIEWING_IEC61850_RANG)
             {
               if ((type_LN == INDEX_TYPE_IEC61850_IN_GOOSE) || (type_LN == INDEX_TYPE_IEC61850_IN_MMS)) p_array = rang_iec61850_blocks[type_LN];
@@ -946,7 +946,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
 {
 #define NUMBER_ROW_FOR_NOTHING_INFORMATION 2
   
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #else
   static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
@@ -981,7 +981,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     size_t index_row;
     if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_GENERAL_SIGNAL_FOR_RANG)) 
     {
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
       {
         index_row = index_1;
@@ -1005,7 +1005,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     else if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_BLOCK_UP1)) 
     {
       index_row = index_1
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                   ;
@@ -1013,7 +1013,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     else if (index_1 < (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
     {
       index_row = NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_BLOCK_UP1
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif
                    + ((index_1 - (NUMBER_ROW_FOR_NOTHING_INFORMATION + RANG_BLOCK_UP1)) % 3);
@@ -1021,7 +1021,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     else
     {
       index_row = index_1 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                   + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                   + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
@@ -1029,7 +1029,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
       
     for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
     {
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       if (
           (index_1 >= (NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
           (index_1 <  (NUMBER_ROW_FOR_NOTHING_INFORMATION + NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&

@@ -97,7 +97,7 @@ int getRAISmallModbusRegister(int adrReg)
     ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB == 0xffff)) 
     ||
     ((pointInterface == RS485_RECUEST) && (number_record_of_dr_for_RS485 == 0xffff))
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     ||
     ((pointInterface == LAN_RECUEST) && (number_record_of_dr_for_LAN == 0xffff))
 #endif      
@@ -109,7 +109,7 @@ int getRAISmallModbusRegister(int adrReg)
       ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) 
       ||
       ((pointInterface == RS485_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       ||
       ((pointInterface == LAN_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
 #endif      
@@ -123,7 +123,7 @@ int getRAISmallModbusRegister(int adrReg)
   offset = (adrReg - MM_ADDRESS_FIRST_MEASUREMENTS_DR) - number_block*MMEASUREMENTS_DR_WIDTH;
   if (pointInterface == USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_dr;
   else if (pointInterface == RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_dr;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   else if (pointInterface == LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_dr;
 #endif  
   else

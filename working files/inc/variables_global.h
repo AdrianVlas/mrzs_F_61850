@@ -270,7 +270,7 @@ RANG_3_GRUPA_USTAVOK,
 RANG_4_GRUPA_USTAVOK,
 RANG_RESET_BLOCK_READY_TU_VID_ZAHYSTIV,
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 RANG_BLOCK_IN_GOOSE1 + 0,
 RANG_BLOCK_IN_GOOSE1 + 1,
 RANG_BLOCK_IN_GOOSE1 + 2,
@@ -536,7 +536,7 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
 #endif
 };
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 
 const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1] = 
 {
@@ -693,10 +693,10 @@ unsigned int changed_settings = CHANGED_ETAP_NONE;
 unsigned char crc_settings;
 __SETTINGS current_settings_prt;
 
-#if (MODYFIKACIA_VERSII_PZ < 10)
-__SETTINGS current_settings, edition_settings, current_settings_interfaces;
-#else
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 SRAM1 __SETTINGS current_settings, edition_settings, current_settings_interfaces;
+#else
+__SETTINGS current_settings, edition_settings, current_settings_interfaces;
 #endif
 
 int * const type_mtz_arr[NUMBER_LEVEL_MTZ] = 
@@ -1111,7 +1111,7 @@ unsigned int timeout_idle_USB;
 
 extern uint8_t  USB_Tx_State;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //MODBUS-TCP
 unsigned char LAN_received[BUFFER_LAN];
 int LAN_received_count;
@@ -1164,7 +1164,7 @@ unsigned int test_watchdogs/* = 0*/;
  **************************************************************/
 unsigned int gr_ustavok_tmp = 0xf;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //Міжпроцесорний обмін
 uint8_t Canal1_MO_Transmit[BUFFER_CANAL1_MO];
 uint8_t Canal1_MO_Received[BUFFER_CANAL1_MO];

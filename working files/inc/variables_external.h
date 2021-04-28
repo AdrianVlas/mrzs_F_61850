@@ -221,7 +221,7 @@ extern const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL];
 extern const uint32_t output_boards[N_OUTPUT_BOARDS][2];
 extern const uint32_t input_boards[N_INPUT_BOARDS][2];
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 
 extern const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1];
 extern const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1];
@@ -539,7 +539,7 @@ extern unsigned int timeout_idle_USB;
 
 extern uint8_t  USB_Tx_State;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //MODBUS-TCP
 extern unsigned char LAN_received[BUFFER_LAN];
 extern int LAN_received_count;
@@ -592,7 +592,7 @@ extern unsigned int test_watchdogs;
  **************************************************************/
 extern unsigned int gr_ustavok_tmp;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //Міжпроцесорний обмін
 extern uint8_t Canal1_MO_Transmit[BUFFER_CANAL1_MO];
 extern uint8_t Canal1_MO_Received[BUFFER_CANAL1_MO];

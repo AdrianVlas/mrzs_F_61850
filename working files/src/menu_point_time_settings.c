@@ -163,7 +163,7 @@ void make_ekran_time_settings(unsigned int kind)
     name_string[ROW_T_][MAX_COL_LCD - 2] = '8';
     name_string[ROW_T_][MAX_COL_LCD - 1] = '5';
   }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   else if(source_target == 4)
   {
     name_string[ROW_T_][MAX_COL_LCD - 7] = ' ';

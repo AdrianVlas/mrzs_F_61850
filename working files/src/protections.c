@@ -4716,7 +4716,7 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
     information_about_restart_counter |= (
                                             (1 << USB_RECUEST)
                                           | (1 << RS485_RECUEST)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                                           | (1 << LAN_RECUEST)
 #endif
                                          );
@@ -7378,7 +7378,7 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
 /*****************************************************/
 inline void main_protection(void)
 {
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /***
   Зафіксувати чи є активними сигнали блокування Вх.GOOSE блоків і Вх.MMS блоків
   ***/
@@ -7944,7 +7944,7 @@ do{
       information_about_restart_counter  &= (unsigned int)(~(1 << RS485_RECUEST));
       information_about_clean_energy     &= (unsigned int)(~(1 << RS485_RECUEST));
     }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     if ((reset_trigger_function_from_interface & (1 << LAN_RECUEST)) != 0)
     {
       for (unsigned int i = 0; i < N_BIG; i++) trigger_functions_LAN[i] = 0;
@@ -8043,7 +8043,7 @@ do{
     }
   }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /***
   Зафіксувати чи є активними виходи Вх.GOOSE блоків (з врахуванням, що вхід міг бути активований попердньо а зараз утримуєтьсґя у активному стані) і Вх.MMS блоків
   ***/
@@ -8182,7 +8182,7 @@ do{
       )
       ||  
       (active_inputs !=0)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
      /* якщо є активація виходів від Вх.GOOSE блоків і Вх.MMS блоків*/   
       || ((sLV.ch_amount_MmsSignal+sLV.ch_amount_GsSignal)>0)
 #endif
@@ -8193,7 +8193,7 @@ do{
     for(int m=0; m<N_SMALL; m++) temp_value_for_activated_function_button_interface[m]=0;
     for(int m=0; m<N_SMALL; m++) temp_value_for_activated_function[m]=0;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     /***
     Опрацювати логіку Вх.GOOSE блоків і Вх.MMS блоків і виставити сигнали, які ними активуються
     ***/
@@ -8354,7 +8354,7 @@ do{
       active_functions[(index_big + 1) >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, (index_small + 1)) != 0) << ((index_big + 1) & 0x1f);
     }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     {
       size_t word_n_small = RANG_SMALL_BLOCK_IN_GOOSE1 >> 5;
       unsigned int maska_small = (unsigned int)(1 << (RANG_SMALL_BLOCK_IN_GOOSE1 & 0x1f));
@@ -8670,7 +8670,7 @@ do{
   _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_SOFT_RESTART_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   _CLEAR_BIT(diagnostyka_tmp, EVENT_RESTART_CB_BIT);
 #endif
   unsigned int not_null = false;
@@ -9303,7 +9303,7 @@ do{
   digital_registrator(active_functions);
   /**************************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /***
   Опрацювати логіку Вихідного Мережевого Блоку
   ***/
@@ -9417,7 +9417,7 @@ do{
     unsigned int temp_data = active_functions[i];
     trigger_functions_USB[i]   |= temp_data;
     trigger_functions_RS485[i] |= temp_data;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     trigger_functions_LAN[i]   |= temp_data;
 #endif
   }
@@ -9859,7 +9859,7 @@ void TIM2_IRQHandler(void)
     }
     /*************************************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     /***********************************************************/
     //Прийом інформації з комунікаційної плати
     /***********************************************************/
@@ -9921,7 +9921,7 @@ void TIM2_IRQHandler(void)
                                      TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR | 
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                    |
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                  |
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                    |
 #endif  
                                      TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU
@@ -9944,7 +9944,7 @@ void TIM2_IRQHandler(void)
       number_record_of_dr_for_menu  = 0xffff;
       number_record_of_dr_for_USB   = 0xffff;
       number_record_of_dr_for_RS485 = 0xffff;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       number_record_of_dr_for_LAN = 0xffff;
 #endif  
 
@@ -10027,7 +10027,7 @@ void TIM2_IRQHandler(void)
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
       
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       if ((board_register_tmp & 0x08) !=  0x8) _SET_BIT(set_diagnostyka, ERROR_CB_FIX);
       else if (board_register_diff & 0x08)
       {
@@ -10120,7 +10120,7 @@ void TIM2_IRQHandler(void)
     //Функції захистів
     main_protection();
     
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     /***
     Очікування, щоб попередній пакет гарантовано завершив передаватися
     ***/
@@ -10406,7 +10406,7 @@ void setpoints_selecting(unsigned int *p_active_functions, unsigned int act_inp_
 }
 /*****************************************************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 void proc_Gs_blk_out(void* pv,unsigned long lCtrGsSrc,short* p_arrOrdNumsGsSignal ){
 
     // ----------------    -------------------------       

@@ -6,7 +6,7 @@
 //начальный bit в карте памяти
 #define BEGIN_ADR_BIT 50000
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 296
 //конечный bit в карте памяти
@@ -1191,7 +1191,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     }//switch
   }//if
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   if(inOffset>=608 && inOffset<624)
   {
     int ingoosOffset = inOffset-608;
@@ -1263,7 +1263,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
         case RS485_RECUEST:
          value = password_set_RS485;//Пароль установлен
         break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         case LAN_RECUEST:
          value = password_set_LAN;//Пароль установлен
         break;
@@ -1291,7 +1291,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
           goto m1;
         }//if
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         if(pointInterface==LAN_RECUEST)//метка интерфейса 0-USB 1-RS485
         if(cmdSwitch==1) //GCMD
         { 
@@ -1322,7 +1322,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
           {
              value = trigger_functions_RS485[value/32] & (1<<(value%32));
           }//else
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
           else if(pointInterface==LAN_RECUEST)
           {
              value = trigger_functions_LAN[value/32] & (1<<(value%32));
@@ -1878,7 +1878,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
       case RS485_RECUEST:
       reset_trigger_function_from_interface |= (1 << RS485_RECUEST);
       break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       case LAN_RECUEST:
       reset_trigger_function_from_interface |= (1 << LAN_RECUEST);
       break;
@@ -1903,7 +1903,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
         //Активація внесекних змін
         int typI = 2;
         if(pointInterface==RS485_RECUEST) typI = 3;//метка интерфейса 0-USB 1-RS485
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
 #endif
         if(set_new_settings_from_interface(typI))//2-USB

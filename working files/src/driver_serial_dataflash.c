@@ -235,7 +235,7 @@ void dataflash_mamory_read(int index_chip)
        (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) 
        ||
        (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
        ||
        (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
 #endif  
@@ -259,7 +259,7 @@ void dataflash_mamory_read(int index_chip)
         part_reading = part_reading_dr_from_dataflash_for_RS485;
         number_record = number_record_of_dr_for_RS485;
       }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
       {
         part_reading = part_reading_dr_from_dataflash_for_LAN;
@@ -302,7 +302,7 @@ void dataflash_mamory_read(int index_chip)
              (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
              ||
              (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
              ||
              (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
 #endif
@@ -322,7 +322,7 @@ void dataflash_mamory_read(int index_chip)
       {
         number_record = number_record_of_pr_err_into_RS485;
       }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
       {
         number_record = number_record_of_pr_err_into_LAN;
@@ -694,7 +694,7 @@ inline void analize_received_data_dataflash(int index_chip)
           number_byte_copy_into_target_buffer = size_page;
           point_part_reading = &part_reading_dr_from_dataflash_for_RS485;
         }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
         {
           point_buffer = (unsigned char *)(buffer_for_LAN_read_record_dr + part_reading_dr_from_dataflash_for_LAN*size_page);
@@ -708,7 +708,7 @@ inline void analize_received_data_dataflash(int index_chip)
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
                  ||
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                  ||
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
 #endif                   
@@ -720,7 +720,7 @@ inline void analize_received_data_dataflash(int index_chip)
             point_buffer = (unsigned char *)(buffer_for_USB_read_record_pr_err);
           else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
             point_buffer = (unsigned char *)(buffer_for_RS485_read_record_pr_err);
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
           else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
             point_buffer = (unsigned char *)(buffer_for_LAN_read_record_pr_err);
 #endif  
@@ -745,7 +745,7 @@ inline void analize_received_data_dataflash(int index_chip)
             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
             ||  
             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)  
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             ||  
             (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN    )
             ||  
@@ -769,7 +769,7 @@ inline void analize_received_data_dataflash(int index_chip)
             (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB  ) 
             ||  
             (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)  
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             ||  
             (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)  
 #endif
@@ -799,7 +799,7 @@ inline void analize_received_data_dataflash(int index_chip)
               control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB);
             else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485)
               control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485);
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             else if (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_LAN)
               control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN);
 #endif  
@@ -818,7 +818,7 @@ inline void analize_received_data_dataflash(int index_chip)
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
                  ||  
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)  
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                  ||  
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)  
 #endif
@@ -840,7 +840,7 @@ inline void analize_received_data_dataflash(int index_chip)
             control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB);
           else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_RS485)
             control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485);
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
           else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_LAN)
             control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN);
 #endif
@@ -1165,7 +1165,7 @@ void main_function_for_dataflash_req(int index_chip)
                    ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU ) !=0 ) ||
                    ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB  ) !=0 ) ||
                    ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485) !=0 )
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                    ||
                    ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN    ) !=0 )
                    ||
@@ -1188,7 +1188,7 @@ void main_function_for_dataflash_req(int index_chip)
               what_we_are_reading_from_dataflash_1 = READING_DR_FOR_MENU;
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU) !=0 )
               what_we_are_reading_from_dataflash_1 = READING_PR_ERR_FOR_MENU;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) !=0 )
               what_we_are_reading_from_dataflash_1 = READING_DR_FOR_LAN; //Читання для LAN завжди має більший пріоритет порівняно з читанням для RS-485 і меню
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN) !=0 )

@@ -439,7 +439,7 @@ void start_settings_peripherals(void)
     if ((board_register_tmp &  0x01) !=  0x1) _SET_BIT(set_diagnostyka, ERROR_BA_1_FIX);
     if ((board_register_tmp &  0x02) !=  0x2) _SET_BIT(set_diagnostyka, ERROR_BDVV5_1_FIX);
     
-#if (MODYFIKACIA_VERSII_PZ >= 10)   
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)   
     if ((board_register_tmp &  0x08) !=  0x8) _SET_BIT(set_diagnostyka, ERROR_CB_FIX);
 #endif
     
@@ -622,7 +622,7 @@ void start_settings_peripherals(void)
   /* Знімаємо пін 485DE */
   GPIO_ResetBits(GPIO_485DE, GPIO_PIN_485DE);
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /* Canal1_MO_Out1*/
   GPIO_InitStructure.GPIO_Pin = GPIO_PIN_CANAL1_MO_Out1;
   GPIO_Init(GPIO_CANAL1_MO_Out1, &GPIO_InitStructure);
@@ -692,7 +692,7 @@ void start_settings_peripherals(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_TxPin_RS485 | GPIO_RxPin_RS485;
   GPIO_Init(GPIO_USART_RS485, &GPIO_InitStructure);
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   //Перекидаємо піни PA9/Tx_CANAL1_MO, PA10/Rx_CANAL1_MO
   GPIO_PinAFConfig(GPIO_CANAL1_MO, GPIO_TxPin_CANAL1_MOSource, GPIO_AF_CANAL1_MO);
   GPIO_PinAFConfig(GPIO_CANAL1_MO, GPIO_RxPin_CANAL1_MOSource, GPIO_AF_CANAL1_MO);
@@ -816,7 +816,7 @@ void start_settings_peripherals(void)
   DMA_ClearFlag(DMA_StreamRS485_Tx, DMA_FLAG_TCRS485_Tx | DMA_FLAG_HTRS485_Tx | DMA_FLAG_TEIRS485_Tx | DMA_FLAG_DMEIRS485_Tx | DMA_FLAG_FEIRS485_Tx);
   /**********************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /* Прийом по CANAL1_MO*/
   DMA_DeInit(DMA_StreamCANAL1_MO_Rx);
   while (DMA_GetCmdStatus(DMA_StreamCANAL1_MO_Rx) != DISABLE);
@@ -1169,7 +1169,7 @@ void start_settings_peripherals(void)
   }
   /**********************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /**********************/
   //Ініціалізація CANAL1_MO і CANAL2_MO: 6.75Мбіт/с, контроль парності, один стоп біт
   /**********************/
@@ -1422,7 +1422,7 @@ void min_settings(__SETTINGS *target_label)
     for (size_t j = 0; j < N_SMALL; ++j) target_label->ranguvannja_buttons[N_SMALL*i + j] = 0x0;
   }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   for(size_t i = 0; i < N_IN_GOOSE; i++)
   {
     for(size_t j = 0; j < N_IN_GOOSE_MMS_OUT; j++) 
@@ -1705,7 +1705,7 @@ void min_settings(__SETTINGS *target_label)
   target_label->password_interface_USB = 0;
   target_label->timeout_deactivation_password_interface_RS485 = TIMEOUT_DEACTIVATION_PASSWORD_MIN;
   target_label->password_interface_RS485 = 0;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   target_label->timeout_deactivation_password_interface_LAN = TIMEOUT_DEACTIVATION_PASSWORD_MIN;
   target_label->password_interface_LAN = 0;
 #endif
@@ -1745,7 +1745,7 @@ void min_settings(__SETTINGS *target_label)
   target_label->dst_on_rule = (_Mar << POS_MM) | (_NL << POS_WR) | (_Sun << POS_DOW) | (3 << POS_HH);
   target_label->dst_off_rule = (_Oct << POS_MM) | (_NL << POS_WR) | (_Sun << POS_DOW) | (3 << POS_HH);
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   
   target_label->IP4[0] = 192;
   target_label->IP4[1] = 168;

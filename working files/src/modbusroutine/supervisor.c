@@ -21,7 +21,7 @@ int passwordImunitetReg(int adrReg);
 int passwordImunitetBit(int adrBit);
 
 unsigned char  *outputPacket;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 unsigned char  outputPacket_TCP[300];
 #endif
 unsigned char  outputPacket_USB[300];
@@ -684,7 +684,7 @@ int superWriterRegister(int adrReg, int dataReg)
    case RS485_RECUEST:
       if(passwordImunitetReg(adrReg) && password_set_RS485) return MARKER_ERRORPAROL;
    break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
    case LAN_RECUEST:
       if(passwordImunitetReg(adrReg) && password_set_LAN) return MARKER_ERRORPAROL;
    break;
@@ -732,7 +732,7 @@ int superWriterBit(int adrBit, int dataBit)
    case RS485_RECUEST:
       if(passwordImunitetBit(adrBit) && password_set_RS485) return MARKER_ERRORPAROL;
    break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
    case LAN_RECUEST:
       if(passwordImunitetBit(adrBit) && password_set_LAN) return MARKER_ERRORPAROL;
    break;
@@ -827,7 +827,7 @@ void superClearActiveActualData(void)
   uprbigcomponent->isActiveActualData = 0;
   vvbigcomponent->isActiveActualData = 0;
   xorbigcomponent->isActiveActualData = 0;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   extern COMPONENT_OBJ *goosbigcomponent;
   extern COMPONENT_OBJ *mmsbigcomponent;
   extern COMPONENT_OBJ *lanbigcomponent;

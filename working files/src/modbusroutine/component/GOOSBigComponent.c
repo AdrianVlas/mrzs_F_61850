@@ -1,5 +1,5 @@
 #include "header.h"
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 2636

@@ -105,7 +105,7 @@
 #define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB                           (1<<TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB_BIT)
 #define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485_BIT                     8
 #define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485                         (1<<TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485_BIT)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 #define TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN_BIT                           9
 #define TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                               (1<<TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN_BIT)
 #define TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN_BIT                       10
@@ -156,7 +156,7 @@ enum _identifier_bit_arrays
 #define READING_PR_ERR_FOR_MENU         4
 #define READING_PR_ERR_FOR_USB          5
 #define READING_PR_ERR_FOR_RS485        6
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 #define READING_DR_FOR_LAN              7
 #define READING_PR_ERR_FOR_LAN          8
 #endif

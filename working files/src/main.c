@@ -126,7 +126,7 @@ void periodical_operations(unsigned int full_actions)
   //Робота з Watchdog
   watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /*******************/
   //Управління Каналом 2 міжпроцесорного обміну між БАв і комунікаційною платою
   /*******************/
@@ -362,7 +362,7 @@ void periodical_operations_communication(unsigned int ar_working)
   
   static unsigned int selection_interface;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   if ((ar_working == false) && (selection_interface == LAN_RECUEST))
   {
   //Обмін по LAN
@@ -725,7 +725,7 @@ int main(void)
   else password_set_USB   = 1;
   timeout_idle_USB = current_settings.timeout_deactivation_password_interface_USB;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   if (current_settings.password_interface_LAN == 0) password_set_LAN = 0;
   else password_set_LAN = 1;
   timeout_idle_LAN = current_settings.timeout_deactivation_password_interface_LAN;

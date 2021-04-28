@@ -124,7 +124,7 @@ extern void make_ekran_chose_of_list_for_ranguvannja(__id_input_output);
 extern void make_ekran_transformator(void);
 extern void make_ekran_transformator_control(void);
 extern void make_ekran_set_function_in_bi(unsigned int, unsigned int, unsigned int * 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                                                                                , int, int
 #endif
 );
@@ -355,7 +355,7 @@ extern void setpoints_selecting(unsigned int*, unsigned int);
 
 extern int str_to_int_DATE_Mmm(void);
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 extern void make_ekran_type_IEC61850_nodes(void);
 extern void make_ekran_list_in_out_for_iec61850(unsigned int, size_t);
 extern void start_transmint_data_via_CANAL1_MO(void);

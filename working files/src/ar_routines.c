@@ -52,7 +52,7 @@ void ar_routine_with_fatfs(unsigned int before_full_start)
       id_ar_record_for_USB[0] = '\0';
       number_record_of_ar_for_RS485 = 0xffff;
       id_ar_record_for_RS485[0] = '\0';
-#if (MODYFIKACIA_VERSII_PZ >= 10)            
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)            
       number_record_of_ar_for_LAN = 0xffff;
       id_ar_record_for_LAN[0] = '\0';
 #endif

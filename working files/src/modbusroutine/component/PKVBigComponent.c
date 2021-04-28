@@ -35,7 +35,7 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
      case RS485_RECUEST:
       (*editValue) = &edition_settings.timeout_deactivation_password_interface_RS485;
      break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
      case LAN_RECUEST:
       (*editValue) = &edition_settings.timeout_deactivation_password_interface_LAN;
      break;
@@ -54,7 +54,7 @@ int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
      case RS485_RECUEST:
       (*editValue) = &edition_settings.password_interface_RS485;
      break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
      case LAN_RECUEST:
       (*editValue) = &edition_settings.password_interface_LAN;
      break;
@@ -172,7 +172,7 @@ int getPKVBigModbusRegister(int adrReg)
   case 6://Количество стоп-бит
     return (((unsigned short)*editValue)+1) &0xFFFF;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     case 16://IP адрес устройства
      return edition_settings.IP4[0]&0xff | (((edition_settings.IP4[1]&0xff)<<8)&0xFF00);
     case 17://IP адрес устройства
@@ -246,7 +246,7 @@ int getPKVBigModbusRegister(int adrReg)
   case 47://Час недели перехода на Зимнее время
     return (edition_settings.dst_off_rule>>POS_HH)&((int)(pow(2,SHIFT_HH)-1));
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   case 51://IP адрес сервера NTP 1
      return edition_settings.IP_time_server[0]&0xff | (((edition_settings.IP_time_server[1]&0xff)<<8)&0xFF00);
   case 52://IP адрес сервера NTP 1
@@ -362,7 +362,7 @@ int postPKVBigWriteAction(void)
        case RS485_RECUEST:
         passwordS = password_set_RS485;//Пароль установлен
        break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
        case LAN_RECUEST:
         passwordS = password_set_LAN;//Пароль установлен
        break;
@@ -384,7 +384,7 @@ int postPKVBigWriteAction(void)
            case RS485_RECUEST:
             password_set_RS485=0;//Пароль установлен
            break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
            case LAN_RECUEST:
             password_set_LAN=0;//Пароль установлен
            break;
@@ -409,7 +409,7 @@ int postPKVBigWriteAction(void)
            case RS485_RECUEST:
             password_set_RS485=1;//Пароль установлен
            break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
            case LAN_RECUEST:
             password_set_LAN=1;//Пароль установлен
            break;
@@ -427,7 +427,7 @@ int postPKVBigWriteAction(void)
       upravlSetting = 1;//флаг Setting
       break;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     case 16://IP адрес устройства
      edition_settings.IP4[0] = offsetWriteRegister & 0xff;
      edition_settings.IP4[1] = (offsetWriteRegister>>8) & 0xff;
@@ -584,7 +584,7 @@ int postPKVBigWriteAction(void)
      upravlSetting = 1;//флаг Setting
      break;
  
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
    case 51://IP адрес сервера NTP 1
      edition_settings.IP_time_server[0] = offsetWriteRegister & 0xff;
      edition_settings.IP_time_server[1] = (offsetWriteRegister>>8) & 0xff;

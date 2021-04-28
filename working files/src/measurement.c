@@ -1925,7 +1925,7 @@ void calc_power_and_energy(void)
     information_about_clean_energy |= (
                                          (1 << USB_RECUEST)
                                        | (1 << RS485_RECUEST)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                                        | (1 << LAN_RECUEST)
 #endif
                                       );

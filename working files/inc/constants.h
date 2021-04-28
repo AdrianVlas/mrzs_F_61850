@@ -29,13 +29,13 @@
 #include "const_menu_Umax.h"
 #include "const_menu_UP.h"
 
-#if (MODYFIKACIA_VERSII_PZ < 10)
-#include "without iec61850/const_menu_inputs.h"
-#include "without iec61850/const_menu_diagnostyka.h"
-#else
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 #include "with iec61850/const_menu_inputs.h"
 #include "with iec61850/const_menu_IEC61850.h"
 #include "with iec61850/const_menu_diagnostyka.h"
+#else
+#include "without iec61850/const_menu_inputs.h"
+#include "without iec61850/const_menu_diagnostyka.h"
 #endif
 
 #include "const_menu_outputs.h"
@@ -79,7 +79,7 @@
 
 #include "const_interfaces.h"
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 #include "const_MO.h"
 #include "diagnostyka_mo.h"
 #endif

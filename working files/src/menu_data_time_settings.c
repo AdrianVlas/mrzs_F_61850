@@ -11,7 +11,7 @@ void make_ekran_chose_data_time_settings(void)
       " Часовой пояс   ",
       " Нач.летнего вр.",
       " Кон.летнего вр."
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       " Синхронизация  "
 #endif
@@ -20,7 +20,7 @@ void make_ekran_chose_data_time_settings(void)
       " Часовий пояс   ",
       " Поч.літнього ч.",
       " Кін.літнього ч."
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       " Синхронізація  "
 #endif
@@ -29,7 +29,7 @@ void make_ekran_chose_data_time_settings(void)
       " Time zone      ",
       " DST on         ",
       " DST off        "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       " Synchronization"
 #endif
@@ -38,7 +38,7 @@ void make_ekran_chose_data_time_settings(void)
       " Часовой пояс   ",
       " Нач.летнего вр.",
       " Кон.летнего вр."
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       " Синхронизация  "
 #endif
@@ -551,7 +551,7 @@ void make_ekran_dst_rule(unsigned int rule)
 /*****************************************************/
 
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 /*****************************************************/
 //Формуємо екран відображення налаштувань мережевого рівня Ethernet
 /*****************************************************/

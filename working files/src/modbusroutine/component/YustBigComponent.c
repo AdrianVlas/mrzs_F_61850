@@ -200,7 +200,7 @@ int postYustBigWriteAction(void) {
     int typI = 2;
     if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
 #endif
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;//2-USB
@@ -214,7 +214,7 @@ int postYustBigWriteAction(void) {
     {   
       serial_number_dev = edit_serial_number_dev;
       
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Помічаємо, що треба перезапустити КП
       _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
 #endif
@@ -241,7 +241,7 @@ int postYustBigWriteAction(void) {
     int typI = 2;
     if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
 #endif
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;

@@ -9,48 +9,48 @@ void make_ekran_info()
   {
     {
       "   Версия ПО    ",
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       " Версия ПО(КП)  ",
 #endif
       "   Версия КП    ",
       " Серийный номер "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       "   MAC-адрес    "
 #endif
     },
     {
       "   Версія ПЗ    ",
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       " Версія ПЗ(КП)  ",
 #endif
       "   Версія КП    ",
       " Серійний номер "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       "   MAC-адреса   "
 #endif
     },
     {
       "  Firmware ver  ",
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       "Firmware ver(CU)",
 #endif
       "  Mem Card ver  ",
       " Serial number  "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       "  MAC address   "
 #endif
     },
     {
       "   Версия ПО    ",
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       " Версия ПО(КП)  ",
 #endif
       "   Версия КП    ",
       " Серийный номер "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       "   MAC-адрес    "
 #endif
@@ -82,7 +82,7 @@ void make_ekran_info()
         
         if (
             ((index_of_ekran_tmp) == INDEX_ML_INFO_FIRMWARE)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             || 
             ((index_of_ekran_tmp) == INDEX_ML_INFO_FIRMWARE_CB)
 #endif
@@ -91,7 +91,7 @@ void make_ekran_info()
           uint8_t const version[][4] = 
           {
             {VERSIA_PZ, MODYFIKACIA_VERSII_PZ, ZBIRKA_VERSII_PZ, ZBIRKA_PIDVERSII_PZ}
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             ,
             {fwKP[0], fwKP[1], fwKP[2], fwKP[3]}
 #endif
@@ -165,7 +165,7 @@ void make_ekran_info()
             value /= 10;
           }
         }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         else if ((index_of_ekran_tmp) == INDEX_ML_INFO_MAC_ADDRESS)
         {
           uint16_t MAC_address_tmp[3] = {0x0080, 0xE100, serial_number_dev};
@@ -204,7 +204,7 @@ void make_ekran_info()
   //Курсор по горизонталі відображається на першому символі у випадку, коли ми не в режимі редагування, інакше позиція буде визначена у функцї main_manu_function
   if (
       (current_ekran.index_position == INDEX_ML_INFO_FIRMWARE) ||
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       (current_ekran.index_position == INDEX_ML_INFO_FIRMWARE_CB) ||
 #endif
       (current_ekran.index_position == INDEX_ML_INFO_SERIAL_NUMBER)
@@ -261,7 +261,7 @@ void make_ekran_date_time_pz(void)
   uint8_t const dateTime[][6] = 
   {
     {YEAR_VER, MONTH_VER, DAY_VER, HOUR_VER, MINUTE_VER, SECOND_VER}
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     ,
     {fwDTKP[0], fwDTKP[1], fwDTKP[2], fwDTKP[3], fwDTKP[4], fwDTKP[5]}
 #endif
