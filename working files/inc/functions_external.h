@@ -271,6 +271,13 @@ extern void analog_registrator(unsigned int*);
 //extern void diagnostyca_adc_execution(void);
 extern long GetNumberChangingInLogElem( long lIdx);
 
+extern void CmdPlusTimeLogHundler(unsigned int *p_active_functions);
+extern void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx);
+extern void GetDateTimeLogElem(unsigned int *p_elem, long lIdx);
+extern void GetMsLogElem(unsigned int *p_elem, long lIdx);
+extern long GetNumberChangingInLogElem( long lIdx);
+extern void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
+
 extern void Usb_routines_irq(void);
 extern void Usb_routines(void);
 extern void USART_RS485_Configure(void);

@@ -5669,6 +5669,12 @@
                 </file>
             </group>
             <group>
+                <name>Log</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\log\log.c</name>
+                </file>
+            </group>
+            <group>
                 <name>menu</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\driver_lcd.c</name>

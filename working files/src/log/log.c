@@ -1,5 +1,7 @@
-#include "cmd_log.h"
+
+
 #include "header.h"
+#include "cmd_log.h"
 #include <string.h>
 //.7.4 Реєстратор програмних подій
 //.7.4.1 Реєстратор програмних подій повинен фіксувати та зберігати
