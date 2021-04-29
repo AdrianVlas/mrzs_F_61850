@@ -20,22 +20,22 @@ int outputFunc1PacketEncoder(int adrUnit, int adrReg, int cntReg);
 int passwordImunitetReg(int adrReg);
 int passwordImunitetBit(int adrBit);
 
-unsigned char  *outputPacket;
+SRAM1 unsigned char  *outputPacket;
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-unsigned char  outputPacket_TCP[300];
+SRAM1 unsigned char  outputPacket_TCP[300];
 #endif
-unsigned char  outputPacket_USB[300];
-unsigned char  outputPacket_RS485[300];
+SRAM1 unsigned char  outputPacket_USB[300];
+SRAM1 unsigned char  outputPacket_RS485[300];
 
-int sizeOutputPacket = 0;
-unsigned char *inputPacket;
-int *received_count;
-int globalcntBit  = 0;//к-во бит
-int globalcntReg  = 0;//к-во регистров
-int globalbeginAdrReg  = 0;//адрес нач регистра
-int globalbeginAdrBit  = 0;//адрес нач бит
-int upravlSetting=0;//флаг Setting
-int upravlSchematic=0;//флаг Shematic
+SRAM1 int sizeOutputPacket = 0;
+SRAM1 unsigned char *inputPacket;
+SRAM1 int *received_count;
+SRAM1 int globalcntBit  = 0;//к-во бит
+SRAM1 int globalcntReg  = 0;//к-во регистров
+SRAM1 int globalbeginAdrReg  = 0;//адрес нач регистра
+SRAM1 int globalbeginAdrBit  = 0;//адрес нач бит
+SRAM1 int upravlSetting=0;//флаг Setting
+SRAM1 int upravlSchematic=0;//флаг Shematic
 
 /**************************************/
 //разбор входного пакета

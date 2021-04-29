@@ -19,7 +19,7 @@ void prePFBigReadAction(void);//action до чтения
 void prePFBigWriteAction(void);//action до записи
 int  postPFBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *pfbigcomponent;
+SRAM1 COMPONENT_OBJ *pfbigcomponent;
 
 /**************************************/
 //подготовка компонента PF

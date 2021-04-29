@@ -20,7 +20,7 @@ void preSDIBigReadAction(void);//action до чтения
 void preSDIBigWriteAction(void);//action до записи
 int  postSDIBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *sdibigcomponent;
+SRAM1 COMPONENT_OBJ *sdibigcomponent;
 
 /**************************************/
 //подготовка компонента светоиндикаторов

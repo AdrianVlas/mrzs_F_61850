@@ -23,7 +23,7 @@ void preMMSBigReadAction(void);//action до чтения
 void preMMSBigWriteAction(void);//action до записи
 int  postMMSBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *mmsbigcomponent;
+SRAM1 COMPONENT_OBJ *mmsbigcomponent;
 
 /**************************************/
 //подготовка компонента MMS

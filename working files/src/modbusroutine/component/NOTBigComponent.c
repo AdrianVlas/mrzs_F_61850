@@ -19,7 +19,7 @@ void preNOTBigReadAction(void);//action до чтения
 void preNOTBigWriteAction(void);//action до записи
 int  postNOTBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *notbigcomponent;
+SRAM1 COMPONENT_OBJ *notbigcomponent;
 
 /**************************************/
 //подготовка компонента NOT

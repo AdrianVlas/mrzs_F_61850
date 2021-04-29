@@ -46,7 +46,7 @@ void preDOUTBigReadAction(void);//action до чтения
 void preDOUTBigWriteAction(void);//action до записи
 int  postDOUTBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *doutbigcomponent;
+SRAM1 COMPONENT_OBJ *doutbigcomponent;
 
 /**************************************/
 //подготовка компонента rele

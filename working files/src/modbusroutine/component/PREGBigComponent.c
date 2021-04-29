@@ -21,7 +21,7 @@ void prePREGBigReadAction(void);//action до чтения
 void prePREGBigWriteAction(void);//action до записи
 int  postPREGBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *pregbigcomponent;
+SRAM1 COMPONENT_OBJ *pregbigcomponent;
 
 /**************************************/
 //подготовка компонента REGistrator prog

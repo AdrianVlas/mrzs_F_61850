@@ -23,7 +23,7 @@ int  postDTRBigWriteAction(void);//action после записи
 int validDTRN_BIGACMD(unsigned short dataReg, int actControl);
 int validBazaN_BIGACMD(unsigned short dataReg, int actControl);
 
-COMPONENT_OBJ *dtrbigcomponent;
+SRAM1 COMPONENT_OBJ *dtrbigcomponent;
 
 /**************************************/
 //подготовка компонента триггер

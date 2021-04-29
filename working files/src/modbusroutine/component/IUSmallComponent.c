@@ -16,7 +16,7 @@ int postIUSmallWriteAction(void);//action после записи
 
 int privateIUGetReg2(int adrReg);
 
-COMPONENT_OBJ *iucomponent;
+SRAM1 COMPONENT_OBJ *iucomponent;
 
 /**************************************/
 //подготовка компонента идентификация устройства

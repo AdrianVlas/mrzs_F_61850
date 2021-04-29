@@ -18,7 +18,7 @@ void loadQAISmallActualData(void);
 
 int privateQAISmallGetReg2(int adrReg);
 
-COMPONENT_OBJ *qaismallcomponent;
+SRAM1 COMPONENT_OBJ *qaismallcomponent;
 
 /**************************************/
 //компонент Измерения по методу суммы квадратов

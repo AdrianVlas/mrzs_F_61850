@@ -19,7 +19,7 @@ void preORBigReadAction(void);//action до чтения
 void preORBigWriteAction(void);//action до записи
 int  postORBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *orbigcomponent;
+SRAM1 COMPONENT_OBJ *orbigcomponent;
 
 /**************************************/
 //подготовка компонента OR

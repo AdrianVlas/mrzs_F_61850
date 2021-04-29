@@ -19,7 +19,7 @@ int  postRPRBigWriteAction(void);//action после записи
 int getRPRSmallModbusBeginAdrRegister(void);
 int getRPRSmallModbusEndAdrRegister(void);
 
-COMPONENT_OBJ *rprbigcomponent;
+SRAM1 COMPONENT_OBJ *rprbigcomponent;
 
 /**************************************/
 //подготовка компонента ранжирование пользовательских регистров

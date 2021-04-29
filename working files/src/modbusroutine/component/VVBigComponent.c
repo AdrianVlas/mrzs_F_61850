@@ -19,7 +19,7 @@ void preVVBigReadAction(void);//action до чтения
 void preVVBigWriteAction(void);//action до записи
 int  postVVBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *vvbigcomponent;
+SRAM1 COMPONENT_OBJ *vvbigcomponent;
 
 /**************************************/
 //подготовка компонента VV

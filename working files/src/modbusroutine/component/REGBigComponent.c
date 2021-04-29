@@ -22,7 +22,7 @@ void preREGBigWriteAction(void);//action до записи
 int  postREGBigWriteAction(void);//action после записи
 int passwordImunitetRegREGBigComponent(int adrReg);
 
-COMPONENT_OBJ *regbigcomponent;
+SRAM1 COMPONENT_OBJ *regbigcomponent;
 
 /**************************************/
 //подготовка компонента REGistrator

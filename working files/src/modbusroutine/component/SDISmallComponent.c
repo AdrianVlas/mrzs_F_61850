@@ -25,7 +25,7 @@ void preSDISmallReadAction(void);//action до чтения
 void preSDISmallWriteAction(void);//action до записи
 int  postSDISmallWriteAction(void);//action после записи
 
-COMPONENT_OBJ *sdismallcomponent;
+SRAM1 COMPONENT_OBJ *sdismallcomponent;
 
 /**************************************/
 //подготовка компонента ДВ

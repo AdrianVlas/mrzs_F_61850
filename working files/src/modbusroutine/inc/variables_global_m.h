@@ -5,10 +5,10 @@
 #include "componentenum.h"
 #include "prototyps.h"
 
- COMPONENT_OBJ config_array[TOTAL_COMPONENT];
- short tempReadArray[130];
- short tempWriteArray[MAXIMUMTW];
- int   indexTW;//индекс буфера записи
- int   pointInterface=0;//метка интерфейса 0-USB 1-RS485
+SRAM1 COMPONENT_OBJ config_array[TOTAL_COMPONENT];
+SRAM1 short tempReadArray[130];
+SRAM1 short tempWriteArray[MAXIMUMTW];
+SRAM1 int   indexTW;//индекс буфера записи
+SRAM1 int   pointInterface=0;//метка интерфейса 0-USB 1-RS485
 
 #endif

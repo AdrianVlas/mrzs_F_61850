@@ -23,7 +23,7 @@ void preLANBigReadAction(void);//action до чтения
 void preLANBigWriteAction(void);//action до записи
 int  postLANBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *lanbigcomponent;
+SRAM1 COMPONENT_OBJ *lanbigcomponent;
 
 /**************************************/
 //подготовка компонента LAN

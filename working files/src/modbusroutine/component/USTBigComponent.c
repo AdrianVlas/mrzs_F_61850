@@ -33,7 +33,7 @@ int  postUSTBigWriteAction(void);//action после записи
 int  ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **editValue);
 int grupa_ustavok_control(int  offset, int *grupa_ustavok, int *adresGruppa);
 
-COMPONENT_OBJ *ustbigcomponent;
+SRAM1 COMPONENT_OBJ *ustbigcomponent;
 
 int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **editValue)
 {

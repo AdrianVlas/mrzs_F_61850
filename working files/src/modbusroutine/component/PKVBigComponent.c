@@ -19,7 +19,7 @@ int  postPKVBigWriteAction(void);//action после записи
 int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue);
 int passwordImunitetRegPKVBigComponent(int x);
 
-COMPONENT_OBJ *pkvbigcomponent;
+SRAM1 COMPONENT_OBJ *pkvbigcomponent;
 int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue)
 {
   int diapazon = 1;

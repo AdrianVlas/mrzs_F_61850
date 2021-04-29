@@ -56,7 +56,7 @@ void preDVSmallReadAction(void);//action до чтения
 void preDVSmallWriteAction(void);//action до записи
 int  postDVSmallWriteAction(void);//action после записи
 
-COMPONENT_OBJ *dvsmallcomponent;
+SRAM1 COMPONENT_OBJ *dvsmallcomponent;
 
 /**************************************/
 //подготовка компонента ДВ

@@ -49,7 +49,7 @@ void preDVBigReadAction(void);//action до чтения
 void preDVBigWriteAction(void);//action до записи
 int  postDVBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *dvbigcomponent;
+SRAM1 COMPONENT_OBJ *dvbigcomponent;
 
 /**************************************/
 //подготовка компонента ДВ

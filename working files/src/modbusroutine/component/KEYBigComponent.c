@@ -19,7 +19,7 @@ void preKEYBigReadAction(void);//action до чтения
 void preKEYBigWriteAction(void);//action до записи
 int  postKEYBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *keybigcomponent;
+SRAM1 COMPONENT_OBJ *keybigcomponent;
 
 /**************************************/
 //подготовка компонента KEY

@@ -17,9 +17,9 @@ void preYustBigWriteAction(void);//action до записи
 int postYustBigWriteAction(void);//action после записи
 int passwordImunitetRegYUSTBigComponent(int adrReg);
 
-COMPONENT_OBJ *yustbigcomponent;
+SRAM1 COMPONENT_OBJ *yustbigcomponent;
 
-  int upravlYust=-1;//флаг юстировки
+int upravlYust=-1;//флаг юстировки
 
 /**************************************/
 //подготовка компонента ёстировки

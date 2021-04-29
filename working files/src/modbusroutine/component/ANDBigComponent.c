@@ -19,7 +19,7 @@ void preANDBigReadAction(void);//action до чтения
 void preANDBigWriteAction(void);//action до записи
 int  postANDBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *andbigcomponent;
+SRAM1 COMPONENT_OBJ *andbigcomponent;
 
 /**************************************/
 //подготовка компонента AND

@@ -23,7 +23,7 @@ void preGOOSBigReadAction(void);//action до чтения
 void preGOOSBigWriteAction(void);//action до записи
 int  postGOOSBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *goosbigcomponent;
+SRAM1 COMPONENT_OBJ *goosbigcomponent;
 
 /**************************************/
 //подготовка компонента GOOS

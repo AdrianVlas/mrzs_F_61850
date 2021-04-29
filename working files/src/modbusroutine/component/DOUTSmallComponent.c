@@ -56,7 +56,7 @@ void preDOUTSmallReadAction(void);//action до чтения
 void preDOUTSmallWriteAction(void);//action до записи
 int  postDOUTSmallWriteAction(void);//action после записи
 
-COMPONENT_OBJ *doutsmallcomponent;
+SRAM1 COMPONENT_OBJ *doutsmallcomponent;
 
 /**************************************/
 //подготовка компонента ДВ

@@ -23,7 +23,7 @@ int  postMFTBigWriteAction(void);//action после записи
 int validMFTN_BIGACMD(unsigned short dataReg, int actControl);
 int validBazaN_BIGACMD(unsigned short dataReg, int actControl);
 
-COMPONENT_OBJ *mftbigcomponent;
+SRAM1 COMPONENT_OBJ *mftbigcomponent;
 
 /**************************************/
 //подготовка компонента МФТ
