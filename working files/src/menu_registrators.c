@@ -23,7 +23,8 @@ void make_ekran_list_registrators(void)
       " Dst recorder   ",
       " Binary recorder",
       " Diag recorder  ",
-      " Stat. recorder "    },
+      " Stat. recorder "    
+    },
     {
       " Аналог.рег-р   ",
       " Дискр. рег-р   ",
@@ -1660,7 +1661,7 @@ void make_ekran_list_titles_for_record_of_state_cmd_registrator(void)
   //if ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU) == 0)
   {
     //Процес зчитування даних з DataFlash вже закінчився
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR][MAX_COL_LCD] = 
     {
       {
         " Метка времени  ",
@@ -2031,15 +2032,15 @@ void make_ekran_changing_signals_statistica_registrator(void)
   {
     //Пеший байт сходиться із міткою початку запису - вважаємо, що у буфері достовірні дані
 #if (MODYFIKACIA_VERSII_PZ >= 10)
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][ NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][ NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #else
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
 #endif
     {
       {NAME_RANG_RU},
       {NAME_RANG_UA},
       {NAME_RANG_EN},
-      {NAME_RANG_KZ},
+      {NAME_RANG_KZ}
     };
 //?#ifndef cmt3_off    
     uint8_t name_string_tmp[NUMBER_TOTAL_SIGNAL_FOR_RANG][MAX_COL_LCD];
@@ -2264,7 +2265,7 @@ void make_ekran_changing_signals_statistica_registrator(void)
                 //?  "ms.",
                 //?  "мс."
                 //?};
-                const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
+                static const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
                 {
                   {"Пасс.", "Акт. "},
                   {"Пас. ", "Акт. "},
@@ -2365,7 +2366,7 @@ void make_ekran_changing_signals_statistica_registrator(void)
   else
   {
     //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Недостоверные  ",
@@ -2542,7 +2543,7 @@ void make_ekran_data_and_time_of_records_registrator_(unsigned int type_of_regis
   else if ((type_of_registrator == 2) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_AR_MENU) != 0))
   {
     //Процес зчитування даних з DataFlash ще не закінчився
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Процесс чтения ",
@@ -2581,7 +2582,7 @@ void make_ekran_data_and_time_of_records_registrator_(unsigned int type_of_regis
   else
   {
     //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
-    const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Недостоверные  ",
@@ -2752,7 +2753,7 @@ void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registra
     }
     else{  
             //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
-         const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+         static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
            {
              " Недостоверные  ",

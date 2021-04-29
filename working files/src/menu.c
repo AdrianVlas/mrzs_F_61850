@@ -2368,8 +2368,8 @@ void main_manu_function(void)
                      //?||(current_ekran.current_level == EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS)
                     )
             {
-              unsigned int number_records;
-              unsigned int type_registrator;
+              unsigned int number_records = 0;
+              unsigned int type_registrator = 0;
   
               if (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS)
               {
@@ -2397,6 +2397,10 @@ void main_manu_function(void)
               //?  number_records = holderCmdPlusTime.shTotalFixElem;//info_rejestrator_pr_err.number_records;
               //?  type_registrator = INDEX_ML_STATE_CMD_REGISTRATOR_INFO;
               //?}
+              else
+              {
+                total_error_sw_fixed();
+              }
               
               if(current_ekran.index_position >= ((int)number_records)) current_ekran.index_position = 0;
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
@@ -4891,8 +4895,8 @@ void main_manu_function(void)
                        //||(current_ekran.current_level == EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS)
                       )
               {
-                unsigned int number_records;
-                unsigned int type_registrator;
+                unsigned int number_records = 0;
+                unsigned int type_registrator = 0;
   
                 if (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS)
                 {
@@ -4920,6 +4924,10 @@ void main_manu_function(void)
                 //?  number_records = holderCmdPlusTime.shTotalFixElem;
                 //?  type_registrator = INDEX_ML_STATE_CMD_REGISTRATOR_INFO;
                 //?}
+                else
+                {
+                  total_error_sw_fixed();
+                }
                 
                 --current_ekran.index_position;
                 if((current_ekran.index_position < 0) || (current_ekran.index_position >= ((int)number_records))) 
@@ -5742,8 +5750,8 @@ void main_manu_function(void)
 					   //||(current_ekran.current_level == EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS)
                       )
               {
-                unsigned int number_records;
-                unsigned int type_registrator;
+                unsigned int number_records = 0;
+                unsigned int type_registrator = 0;
   
                 if (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS)
                 {
@@ -5771,6 +5779,10 @@ void main_manu_function(void)
                 //  number_records = holderCmdPlusTime.shTotalFixElem;
                 //  type_registrator = INDEX_ML_STATE_CMD_REGISTRATOR_INFO;
                 //}
+                else
+                {
+                  total_error_sw_fixed();
+                }
                 
                 if(++current_ekran.index_position >= ((int)number_records)) current_ekran.index_position = 0;
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
