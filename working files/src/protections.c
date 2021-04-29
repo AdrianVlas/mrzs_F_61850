@@ -4015,7 +4015,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
   uint32_t off_cb_tmp[N_BIG];
   for(size_t m = 0; m < N_BIG; ++m) 
   {
-    off_cb_tmp[m] = (p_active_functions[1] & current_settings_prt.ranguvannja_off_cb[1]);
+    off_cb_tmp[m] = (p_active_functions[m] & current_settings_prt.ranguvannja_off_cb[m]);
   }
   
   /*
