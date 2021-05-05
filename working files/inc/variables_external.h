@@ -158,6 +158,9 @@ extern unsigned int active_inputs;
 extern unsigned int state_outputs;
 extern unsigned int state_outputs_raw;
 extern unsigned int state_signal_outputs;
+#ifdef NUMBER_DS
+extern unsigned int ds;
+#endif
 extern unsigned int active_functions[N_BIG];
 extern unsigned int trigger_active_functions[N_BIG], trigger_active_functions_ctrl[N_BIG];
 extern unsigned char crc_trg_func, crc_trg_func_ctrl;

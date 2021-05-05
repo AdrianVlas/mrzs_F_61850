@@ -9451,7 +9451,7 @@ do{
     //Не зафіксовано аварійної ситуації, тому встановлювати реле можна
     
     //Визначаємо, які реле зараз мають бути замкнутими
-    for (unsigned int i = 0; i < NUMBER_OUTPUTS; i++)
+    for (unsigned int i = 0; i < NUMBER_SIMPLE_OUTPUTS; i++)
     {
       //У тимчасовий масив поміщаємо ЛОГІЧНЕ І ранжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
       unsigned int temp_array_of_outputs[N_BIG];
@@ -9540,6 +9540,79 @@ do{
         }
       }
     }
+
+#ifdef NUMBER_DS
+    if ((current_settings_prt.configuration & (1 << DS_BIT_CONFIGURATION)) != 0)
+    {
+      for (size_t i = NUMBER_SIMPLE_OUTPUTS; i != NUMBER_OUTPUTS; ++i)
+      {
+        //У тимчасовий масив поміщаємо ЛОГІЧНЕ І ранжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+        unsigned int temp_array_of_outputs[N_BIG];
+    
+        for (unsigned int j = 0; j < N_BIG; j++) temp_array_of_outputs[j] = current_settings_prt.ranguvannja_outputs[N_BIG*i + j] & active_functions[j];
+
+        //Сигнал "Аварійна несправність" працює у інверсному режимі: замикає реле на якому зранжована у випадку, коли даний сигнал не активинй
+        if(_CHECK_SET_BIT((current_settings_prt.ranguvannja_outputs + N_BIG*i), RANG_AVAR_DEFECT) !=0)
+        {
+          //Сигнал "Aварийная неисправность"  справді зранжовано на даний вихід
+          if (_CHECK_SET_BIT(temp_array_of_outputs, RANG_AVAR_DEFECT) == 0)
+          {
+            //Сигнал "Aварийная неисправность" не є активним
+            //Приимусово встановлюємо його у активний стан у масиві, який є  ЛОГІЧНИМ І анжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+            _SET_BIT(temp_array_of_outputs, RANG_AVAR_DEFECT);
+          }
+          else
+          {
+            //Сигнал "Aварийная неисправность" є активним
+            //Приимусово переводимо його у пасивний стан у масиві, який є  ЛОГІЧНИМ І анжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+            _CLEAR_BIT(temp_array_of_outputs, RANG_AVAR_DEFECT);
+          }
+        }
+      
+        //Сигнал "Загальна несправність" працює у інверсному режимі: замикає реле на якому зранжована у випадку, коли даний сигнал не активинй
+        if(_CHECK_SET_BIT((current_settings_prt.ranguvannja_outputs + N_BIG*i), RANG_DEFECT) !=0)
+        {
+          //Сигнал "Загальна несправність"  справді зранжовано на даний вихід
+          if (_CHECK_SET_BIT(temp_array_of_outputs, RANG_DEFECT) ==0)
+          {
+            //Сигнал "Загальна несправність" не є активним
+            //Приимусово встановлюємо його у активний стан у масиві, який є  ЛОГІЧНИМ І анжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+            _SET_BIT(temp_array_of_outputs, RANG_DEFECT);
+          }
+          else
+          {
+            //Сигнал "Загальна несправність" є активним
+            //Приимусово переводимо його у пасивний стан у масиві, який є  ЛОГІЧНИМ І анжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+            _CLEAR_BIT(temp_array_of_outputs, RANG_DEFECT);
+          }
+        }
+
+        //Перевіряємо, чи є співпадіння між ранжованими функціями на цьому виході і функціями, які зараз є активними - умова активації виходу
+        NOT_ZERO_OR(comp, temp_array_of_outputs, N_BIG)
+        if (comp)
+        {
+          if (_CHECK_SET_BIT((current_settings_prt.ranguvannja_outputs + N_BIG*i), RANG_WORK_BV) == 0)
+          {
+            //На дане реле не заводиться сигнал БВ (блок включення)
+          
+            //Відмічаємо, що даний вихід - ЗАМКНУТИЙ
+            _SET_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
+          }
+          else
+          {
+            //На дане реле заводиться сигнал БВ (блок включення)
+          
+            //Відмічаємо, що даний вихід - ЗАМКНУТИЙ тільки тоді, коли функція БВ активна зараз
+            if (_CHECK_SET_BIT(active_functions, RANG_WORK_BV) != 0)
+              _SET_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
+            else
+              _CLEAR_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
+          }
+        }
+      }
+    }
+    else ds = 0;
+#endif    
   }
   else
   {
@@ -9547,6 +9620,9 @@ do{
 
     //Деактивовуємо всі реле
     state_outputs = 0;
+#ifdef NUMBER_DS    
+    ds = 0;
+#endif
   }
   
   //Перевіряємо чи треба записувати стан сигнальних виходів у EEPROM

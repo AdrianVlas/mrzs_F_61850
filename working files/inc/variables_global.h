@@ -421,6 +421,9 @@ unsigned int active_inputs; //"вхід активний" - відповідає встановленому біту (1
 unsigned int state_outputs;
 unsigned int state_outputs_raw;
 unsigned int state_signal_outputs;
+#ifdef NUMBER_DS
+unsigned int ds;
+#endif
 unsigned int active_functions[N_BIG];
 unsigned int trigger_active_functions[N_BIG], trigger_active_functions_ctrl[N_BIG];
 unsigned char crc_trg_func, crc_trg_func_ctrl;

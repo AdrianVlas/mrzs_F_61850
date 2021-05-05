@@ -2343,7 +2343,12 @@ void main_manu_function(void)
               }
               else
               {
-                if(current_ekran.index_position >= NUMBER_OUTPUTS) current_ekran.index_position = 0;
+                if(current_ekran.index_position >= (
+                                                    NUMBER_SIMPLE_OUTPUTS
+#ifdef NUMBER_DS
+                                                       + ((current_settings.configuration & (1 << DS_BIT_CONFIGURATION)) != 0)*NUMBER_DS
+#endif
+                                                   )) current_ekran.index_position = 0;
               }
               
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
@@ -3910,24 +3915,6 @@ void main_manu_function(void)
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
               }
-              else if (current_ekran.current_level == EKRAN_LIST_INPUTS_OUTPUTS)
-              {
-                //Натисну кнопка Enter у вікні вибору станів входів-виходів
-                if(current_ekran.index_position == INDEX_ML_STATE_INPUTS)
-                {
-                  //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення станів входів
-                  current_ekran.current_level = EKRAN_STATE_INPUTS;
-                }
-                else
-                {
-                  //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення станів виходів
-                  current_ekran.current_level = EKRAN_STATE_OUTPUTS;
-                }
-                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
-                current_ekran.edition = 0;
-              }
               else if (current_ekran.current_level == EKRAN_LIST_REGISTRATORS)
               {
                 //Натисну кнопка Enter у вікні вибору реєстраторів
@@ -4788,7 +4775,11 @@ void main_manu_function(void)
                 }
                 else
                 {
-                  if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_OUTPUTS - 1;
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_SIMPLE_OUTPUTS
+#ifdef NUMBER_DS
+                                                                                        + ((current_settings.configuration & (1 << DS_BIT_CONFIGURATION)) != 0)*NUMBER_DS
+#endif
+                    - 1;
                 }
               
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
@@ -5613,7 +5604,11 @@ void main_manu_function(void)
                 }
                 else
                 {
-                  if(++current_ekran.index_position >= NUMBER_OUTPUTS) current_ekran.index_position = 0;
+                  if(++current_ekran.index_position >= (NUMBER_SIMPLE_OUTPUTS
+#ifdef NUMBER_DS
+                                                       + ((current_settings.configuration & (1 << DS_BIT_CONFIGURATION)) != 0)*NUMBER_DS
+#endif
+                                                       )) current_ekran.index_position = 0;
                 }
               
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
@@ -20005,10 +20000,28 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
-     (MODYFIKACIA_VERSII_PZ == 15)   \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 24)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)|| \
+     (MODYFIKACIA_VERSII_PZ == 34)   \
     )
 
     case EKRAN_RANGUVANNJA_OUTPUT_10:
+      
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
+    )
+
     case EKRAN_RANGUVANNJA_OUTPUT_11:
     case EKRAN_RANGUVANNJA_OUTPUT_12:
     case EKRAN_RANGUVANNJA_OUTPUT_13:
@@ -20018,16 +20031,28 @@ void main_manu_function(void)
 
 #if (                                \
      (MODYFIKACIA_VERSII_PZ == 5) || \
-     (MODYFIKACIA_VERSII_PZ == 15)   \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
     )
 
     case EKRAN_RANGUVANNJA_OUTPUT_17:
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )
+
     case EKRAN_RANGUVANNJA_OUTPUT_18:
     case EKRAN_RANGUVANNJA_OUTPUT_19:
     case EKRAN_RANGUVANNJA_OUTPUT_20:
       
 #endif
+      
+#endif
 
+#endif
+      
 #endif
 
     case EKRAN_RANGUVANNJA_LED_1:
