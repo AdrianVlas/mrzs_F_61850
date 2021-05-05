@@ -269,6 +269,27 @@ void global_vareiables_installation(void)
   
   //Modbus-RTU
   type_of_settings_changed = 0;
+  
+  //Ініціалізація Ігоревих глобальних змінних
+  pointInterface = 0;
+  
+  extern int sizeOutputPacket;
+  extern  unsigned char *inputPacket;
+  extern  int *received_count;
+  extern  int globalcntBit;//к-во бит
+  extern  int globalcntReg;//к-во регистров
+  extern  int globalbeginAdrReg;//адрес нач регистра
+  extern  int globalbeginAdrBit;//адрес нач бит
+  extern  int upravlSetting;//флаг Setting
+  extern  int upravlSchematic;//флаг Shematic
+  
+  sizeOutputPacket = 0;
+  globalcntBit  = 0;//к-во бит
+  globalcntReg  = 0;//к-во регистров
+  globalbeginAdrReg  = 0;//адрес нач регистра
+  globalbeginAdrBit  = 0;//адрес нач бит
+  upravlSetting=0;//флаг Setting
+  upravlSchematic=0;//флаг Shematic
 }
 /**************************************/
 

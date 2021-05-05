@@ -27,15 +27,15 @@ SRAM1 unsigned char  outputPacket_TCP[300];
 SRAM1 unsigned char  outputPacket_USB[300];
 SRAM1 unsigned char  outputPacket_RS485[300];
 
-SRAM1 int sizeOutputPacket = 0;
+SRAM1 int sizeOutputPacket;
 SRAM1 unsigned char *inputPacket;
 SRAM1 int *received_count;
-SRAM1 int globalcntBit  = 0;//к-во бит
-SRAM1 int globalcntReg  = 0;//к-во регистров
-SRAM1 int globalbeginAdrReg  = 0;//адрес нач регистра
-SRAM1 int globalbeginAdrBit  = 0;//адрес нач бит
-SRAM1 int upravlSetting=0;//флаг Setting
-SRAM1 int upravlSchematic=0;//флаг Shematic
+SRAM1 int globalcntBit;//к-во бит
+SRAM1 int globalcntReg;//к-во регистров
+SRAM1 int globalbeginAdrReg;//адрес нач регистра
+SRAM1 int globalbeginAdrBit;//адрес нач бит
+SRAM1 int upravlSetting;//флаг Setting
+SRAM1 int upravlSchematic;//флаг Shematic
 
 /**************************************/
 //разбор входного пакета
