@@ -745,7 +745,7 @@ void main_routines_for_spi1(void)
       TxBuffer_SPI_EDF[3 +  5] = (unsigned char)((temp_value_inv >> 16) & 0xff);
 
       temp_value = state_signal_outputs;
-      temp_value_inv = ((unsigned int)(~temp_value)) & ((1 << NUMBER_OUTPUTS) - 1);
+      temp_value_inv = ((unsigned int)(~temp_value)) & ((1 << NUMBER_SIMPLE_OUTPUTS) - 1);
       state_signal_outputs_comp = temp_value;
       TxBuffer_SPI_EDF[3 +  6] = (unsigned char)( temp_value            & 0xff);
       TxBuffer_SPI_EDF[3 +  7] = (unsigned char)((temp_value     >> 8 ) & 0xff);
@@ -1775,7 +1775,7 @@ void main_routines_for_spi1(void)
         //Перевіряємо достовірність стану сигнальних виходів
         state_signal_outputs_tmp = RxBuffer_SPI_EDF[3 + 6] | (RxBuffer_SPI_EDF[3 + 7] << 8) | (RxBuffer_SPI_EDF[3 + 8] << 16);
         value_1 = RxBuffer_SPI_EDF[3 + 9] | (RxBuffer_SPI_EDF[3 + 10] << 8) | (RxBuffer_SPI_EDF[3 + 11] << 16);
-        if (state_signal_outputs_tmp == ((unsigned int)((~value_1) & ((1 << NUMBER_OUTPUTS) - 1))) )
+        if (state_signal_outputs_tmp == ((unsigned int)((~value_1) & ((1 << NUMBER_SIMPLE_OUTPUTS) - 1))) )
         {
           //Контролдь зійшовся
 
@@ -1850,6 +1850,20 @@ void main_routines_for_spi1(void)
 
         //Виводимо інформацію по виходах на піни процесора
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37) = state_outputs_raw;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )  
+
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (state_outputs_raw >> 16)<< 8;
+
+#else
+
+#ifdef NUMBER_DS
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (ds & (MASKA_FOR_BIT(NUMBER_DS) - 1)) << 8;
+#endif
+  
+#endif
         TIM_PRT_write_tick = TIM2->CNT;
 //        //Виставляємо пін CON-OUTPUTS-1, щоб можна було управляти виходами
 //        GPIO_SetBits(CON_OUTPUTS, CON_1_OUTPUTS_PIN);

@@ -128,7 +128,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     }
   };
   
-  static const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
+  const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
   {
     MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA,
     MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA,
@@ -149,7 +149,6 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     N_OUT_LAN
 #endif
   };
-  
   int index_language = index_language_in_array(current_settings.language);
   unsigned int first_index_number_1 = first_index_number[index_language][type_of_window];
         
@@ -177,15 +176,24 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     }
     else if (type_of_window == ID_OUTPUT)
     {
-      for (size_t j = 0; j < N_OUTPUT_BOARDS; j++)
+      if (number <= NUMBER_SIMPLE_OUTPUTS)
       {
-        if (number <= output_boards[j][0])
+        for (size_t j = 0; j < N_OUTPUT_BOARDS; j++)
         {
-          tmp_1 = output_boards[j][1];
-          tmp_2 = (j == 0) ? number : number - output_boards[j - 1][0];
+          if (number <= output_boards[j][0])
+          {
+            tmp_1 = output_boards[j][1];
+            tmp_2 = (j == 0) ? number : number - output_boards[j - 1][0];
           
-          break;
+            break;
+          }
         }
+      }
+      else
+      {
+#ifndef NUMBER_DS
+        total_error_sw_fixed();
+#endif
       }
     }
     else
@@ -197,72 +205,91 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     //Наступні рядки треба перевірити, чи їх требе відображати у текучій кофігурації
     if (index_of_ekran < max_row[type_of_window])
     {
-      for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+#ifdef NUMBER_DS
+      if ((type_of_window == ID_OUTPUT) && (number > NUMBER_SIMPLE_OUTPUTS))
       {
-        if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3)))
-           working_ekran[i][j] = information[index_language][type_of_window][j];
-        else
-        {
-          if (j == (first_index_number_1 + 0))
+          static unsigned char const ds_name[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
           {
-            if (tmp_1 < 0) working_ekran[i][j] = '?';
-            else if (tmp_1 > 0 ) 
+            " ДШ             ",
+            " ДШ             ",
+            " ДШ             ",
+            " ДШ             "
+          };
+          for (size_t j = 0; j != MAX_COL_LCD; ++j) 
+          {
+            working_ekran[i][j] = ds_name[index_language][j];
+          }
+      }
+      else
+#endif
+      {
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+        {
+          if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3)))
+            working_ekran[i][j] = information[index_language][type_of_window][j];
+          else
+          {
+            if (j == (first_index_number_1 + 0))
+            {
+              if (tmp_1 < 0) working_ekran[i][j] = '?';
+              else if (tmp_1 > 0 ) 
+              {
+                if (
+                    (type_of_window != ID_INPUT) &&
+                    (type_of_window != ID_OUTPUT)
+                  )  
+                {
+                  working_ekran[i][j] = tmp_1 + 0x30;
+                }
+                else
+                {
+                  working_ekran[i][j] = tmp_1 + 0x40;
+                }
+              }
+            }
+            else if (
+                     (j == (first_index_number_1 + 1)) &&
+                     (
+                      (type_of_window == ID_INPUT) ||
+                      (type_of_window == ID_OUTPUT)
+                     )   
+                    )   
+            {
+              working_ekran[i][j] = '.';
+            }
+            else if (
+                     (j == (first_index_number_1 + 1))
+                     /*попередня перевірка вже перевірила, що якщо (j == (first_index_number_1 + 1)), то type_of_window != ID_INPUT і ID_OUTPUT*/  
+                     ||
+                     (
+                      (j == (first_index_number_1 + 2)) &&
+                      (
+                       (type_of_window == ID_INPUT) ||
+                       (type_of_window == ID_OUTPUT)
+                      )   
+                     ) 
+                    )   
             {
               if (
-                  (type_of_window != ID_INPUT) &&
-                  (type_of_window != ID_OUTPUT)
-                 )  
+                  (tmp_1 > 0) ||
+                  (tmp_1 < 0)  
+                 )   
               {
-                working_ekran[i][j] = tmp_1 + 0x30;
+                if (tmp_2 < 0) working_ekran[i][j] = '?';
+                else working_ekran[i][j] = tmp_2 + 0x30;
               }
               else
               {
-                working_ekran[i][j] = tmp_1 + 0x40;
+                if (tmp_2 < 0) working_ekran[i][j] = '?';
+                else
+                {
+                  working_ekran[i][j - 1] = tmp_2 + 0x30;
+                  working_ekran[i][j] = ' ';
+                }
               }
             }
+            else working_ekran[i][j] = ' ';  
           }
-          else if (
-                   (j == (first_index_number_1 + 1)) &&
-                   (
-                    (type_of_window == ID_INPUT) ||
-                    (type_of_window == ID_OUTPUT)
-                   )   
-                  )   
-          {
-            working_ekran[i][j] = '.';
-          }
-          else if (
-                   (j == (first_index_number_1 + 1))
-                   /*попередня перевірка вже перевірила, що якщо (j == (first_index_number_1 + 1)), то type_of_window != ID_INPUT і ID_OUTPUT*/  
-                   ||
-                   (
-                    (j == (first_index_number_1 + 2)) &&
-                    (
-                     (type_of_window == ID_INPUT) ||
-                     (type_of_window == ID_OUTPUT)
-                    )   
-                   ) 
-                  )   
-          {
-            if (
-                (tmp_1 > 0) ||
-                (tmp_1 < 0)  
-               )   
-            {
-              if (tmp_2 < 0) working_ekran[i][j] = '?';
-              else working_ekran[i][j] = tmp_2 + 0x30;
-            }
-            else
-            {
-              if (tmp_2 < 0) working_ekran[i][j] = '?';
-              else
-              {
-                working_ekran[i][j - 1] = tmp_2 + 0x30;
-                working_ekran[i][j] = ' ';
-              }
-            }
-          }
-          else working_ekran[i][j] = ' ';  
         }
       }
     }
@@ -579,7 +606,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     unsigned int position_temp = current_ekran.index_position;
     unsigned int index_of_ekran;
     unsigned int i, offset = 0;
-    static const int min_max_number[TOTAL_NUMBER_PROTECTION][2] =
+    static const int min_max_number[_FIX_NUMBER_PROTECTION][2] =
     {
       {
        (NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL),
@@ -729,7 +756,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
     //Функції загального призначення пропускаємо (вони знаходяться у початку списку), тому починаємо з першого захисту
     int index_in_list = NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL;
     
-    for (i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
+    for (i = 0; i < _FIX_NUMBER_PROTECTION; i++)
     {
       
       if((current_settings.configuration & (1 << i)) != 0)
@@ -1219,7 +1246,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     unsigned int position_temp = current_ekran.index_position;
     unsigned int index_of_ekran;
     unsigned int i, offset = 0;
-    static const int min_max_number[TOTAL_NUMBER_PROTECTION][2] =
+    static const int min_max_number[_FIX_NUMBER_PROTECTION][2] =
     {
       {
        (NUMBER_GENERAL_SIGNAL_FOR_RANG),
@@ -1357,7 +1384,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
     //Функції загального призначення пропускаємо (вони знаходяться у початку списку), тому починаємо з першого записту
     int index_in_list = NUMBER_GENERAL_SIGNAL_FOR_RANG;
     
-    for (i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
+    for (i = 0; i < _FIX_NUMBER_PROTECTION; i++)
     {
       
       if((current_settings.configuration & (1 << i)) != 0)

@@ -199,10 +199,10 @@ void make_ekran_state_inputs_or_outputs(unsigned int input_output)
           {
             static unsigned char const title_ds[MAX_NAMBER_LANGUAGE][MAX_COL_LCD_PART1] = 
             {
-              " ÄØ    ",
-              " ÄØ    ",
-              " ÄØ    ",
-              " ÄØ    "
+              " ÄØ       ",
+              " ÄØ       ",
+              " ÄØ       ",
+              " ÄØ       "
             };
             working_ekran[i][j] = title_ds[index_language][j];
           }

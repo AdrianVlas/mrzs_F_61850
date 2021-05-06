@@ -2585,7 +2585,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     }
     else
     {
-      for (size_t i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
+      for (size_t i = 0; i < _FIX_NUMBER_PROTECTION; i++)
       {
          if ((target_label->configuration & (1 << i)) == 0)
          {

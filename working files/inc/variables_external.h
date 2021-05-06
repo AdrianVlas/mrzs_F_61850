@@ -256,7 +256,7 @@ extern const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODY
 
 extern unsigned int realDateTime;
 
-extern const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
+extern const uint32_t max_value_for_tf[1 + _FIX_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
 
 extern unsigned char calibration;
 extern unsigned char time_edit[7]; 

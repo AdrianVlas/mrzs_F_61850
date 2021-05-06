@@ -53,7 +53,7 @@ void make_ekran_diagnostyka(unsigned int volatile diagnostyka_tmp[])
       for(unsigned int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
         name_string_tmp[index_1][index_2] = name_string[index_language][NUMBER_ROW_FOR_NO_ERRORS + index_1][index_2];
       
-      if ((index_1 >= ERROR_DIGITAL_OUTPUT_1_BIT) && (index_1 < (ERROR_DIGITAL_OUTPUT_1_BIT + NUMBER_OUTPUTS)))
+      if ((index_1 >= ERROR_DIGITAL_OUTPUT_1_BIT) && (index_1 < (ERROR_DIGITAL_OUTPUT_1_BIT + NUMBER_SIMPLE_OUTPUTS)))
       {
         uint32_t value = 0;
         uint32_t index_board = 0, index_number = 0;

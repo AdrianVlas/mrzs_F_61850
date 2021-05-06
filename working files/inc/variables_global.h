@@ -607,7 +607,7 @@ const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODYNYCI_VY
   {'À', 'Â', 'ñ'}
 };
 
-const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF] =
+const uint32_t max_value_for_tf[1 + _FIX_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF] =
 {
   {
     1 + NUMBER_GENERAL_SIGNAL_FOR_RANG,

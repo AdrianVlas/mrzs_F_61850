@@ -9274,6 +9274,9 @@ do{
     
     //Деактивовуємо всі реле
     state_outputs = 0;
+#ifdef NUMBER_DS
+    ds = 0;
+#endif
     
     //Переводимо у початковий стан деякі глобальні змінні
     static_logic_APV_0 = 0;
@@ -9641,8 +9644,16 @@ do{
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 15)      \
-    )                                   
+    )  
+
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (state_outputs_raw >> 16)<< 8;
+
+#else
+
+#ifdef NUMBER_DS
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (ds & (MASKA_FOR_BIT(NUMBER_DS) - 1)) << 8;
+#endif
+  
 #endif
 
   TIM_PRT_write_tick = TIM2->CNT;
@@ -10055,19 +10066,24 @@ void TIM2_IRQHandler(void)
                                            | (((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30          ) >> 8))) & 0xf   ) << 16);
 #else
       unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)))) & 0xffff);
+
+#ifdef NUMBER_DS
+      unsigned int control_ds =  ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) >> 8))) & (MASKA_FOR_BIT(NUMBER_DS) - 1) ) << 16;
+#endif
+      
 #endif
      
 
       static uint32_t error_rele[NUMBER_OUTPUTS];
-      if (control_state_outputs != state_outputs_raw) 
+      if (control_state_outputs != state_outputs_raw)
       {
-        for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++)
+        for (size_t index = 0; index < NUMBER_SIMPLE_OUTPUTS; ++index)
         {
           uint32_t maska = 1 << index;
         
           if ((control_state_outputs & maska) != (state_outputs_raw & maska))
           {
-            if (error_rele[index] < 3) error_rele[index]++;
+            if (error_rele[index] < 3) ++error_rele[index];
             if (error_rele[index] >= 3 ) _SET_BIT(set_diagnostyka, (ERROR_DIGITAL_OUTPUT_1_BIT + index));
           }
           else error_rele[index] = 0;
@@ -10075,8 +10091,29 @@ void TIM2_IRQHandler(void)
       }
       else
       {
-        for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++) error_rele[index] = 0;
+        for (size_t index = 0; index < NUMBER_SIMPLE_OUTPUTS; ++index) error_rele[index] = 0;
       }
+
+#ifdef NUMBER_DS
+      if (control_ds != ds)  
+      {
+        for (size_t index = 0; index < NUMBER_DS; ++index)
+        {
+          uint32_t maska = 1 << index;
+        
+          if ((control_ds & maska) != (ds & maska))
+          {
+            if (error_rele[NUMBER_SIMPLE_OUTPUTS + index] < 3) ++error_rele[NUMBER_SIMPLE_OUTPUTS + index];
+            if (error_rele[NUMBER_SIMPLE_OUTPUTS + index] >= 3 ) _SET_BIT(set_diagnostyka, (ERROR_DS_OUTPUT_BIT + index));
+          }
+          else error_rele[NUMBER_SIMPLE_OUTPUTS + index] = 0;
+        }
+      }
+      else
+      {
+        for (size_t index = 0; index < NUMBER_DS; ++index) error_rele[NUMBER_SIMPLE_OUTPUTS + index] = 0;
+      }
+#endif
     }
     
     //Діагностика необхідно-приєднаних плат

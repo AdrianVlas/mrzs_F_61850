@@ -308,7 +308,11 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)||  \
-       (MODYFIKACIA_VERSII_PZ == 15)    \
+       (MODYFIKACIA_VERSII_PZ == 15)||  \
+       (MODYFIKACIA_VERSII_PZ == 23)||  \
+       (MODYFIKACIA_VERSII_PZ == 24)||  \
+       (MODYFIKACIA_VERSII_PZ == 33)||  \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
       )   
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = 0;
 #endif

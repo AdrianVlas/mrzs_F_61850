@@ -1664,7 +1664,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
       for(unsigned int index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
         name_string_tmp[index_1][index_2] = name_string[index_language][index_1][index_2];
       
-      if ((index_1 >= ERROR_DIGITAL_OUTPUT_1_BIT) && (index_1 < (ERROR_DIGITAL_OUTPUT_1_BIT + NUMBER_OUTPUTS)))
+      if ((index_1 >= ERROR_DIGITAL_OUTPUT_1_BIT) && (index_1 < (ERROR_DIGITAL_OUTPUT_1_BIT + NUMBER_SIMPLE_OUTPUTS)))
       {
         uint32_t value = 0;
         uint32_t index_board = 0, index_number = 0;

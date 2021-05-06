@@ -3,7 +3,7 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 1))
+#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 2))
 #define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
 #define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
@@ -62,7 +62,9 @@ ERROR_OSCYLOJRAPH_OVERFLOW,
 
 ERROR_DIGITAL_OUTPUT_1_BIT,
 
-ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
+ERROR_DS_OUTPUT_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
+
+ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DS_OUTPUT_BIT + 1,
 ERROR_AR_OVERLOAD_BUFFER_BIT,
 ERROR_AR_MEMORY_FULL_BIT,
 ERROR_AR_UNDEFINED_BIT,
@@ -153,6 +155,7 @@ ERROR_FATFS
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
     (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 19 - 64))               \
+  | (1 << (ERROR_DS_OUTPUT_BIT - 64))                           \
   | (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
   | (1 << (ERROR_BA_1_FIX - 64))                                \
   | (1 << (ERROR_BA_1_CTLR - 64))                               \
@@ -160,11 +163,11 @@ ERROR_FATFS
   | (1 << (ERROR_BDVV5_1_CTLR - 64))                            \
   | (1 << (ERROR_BDVV5_2_FIX - 64))                             \
   | (1 << (ERROR_BDVV5_2_CTLR - 64))                            \
-  | (1 << (ERROR_BDV_DZ_FIX - 64))                              \
 )
 
 #define MASKA_AVAR_ERROR_3        (unsigned int)(               \
-    (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
+    (1 << (ERROR_BDV_DZ_FIX - 96))                              \
+  | (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
   | (1 << (ERROR_BDZ_FIX - 96))                                 \
   | (1 << (ERROR_BDZ_CTLR - 96))                                \
   | (1 << (ERROR_BDVV6_FIX - 96))                               \
@@ -240,6 +243,7 @@ ERROR_FATFS
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
+  " Ош.вых.ДШ      ",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
   " П.aн.рег.исч.  ",   \
@@ -277,7 +281,14 @@ ERROR_FATFS
   " БДВВ6 п.       ",   \
   " БДШ от.        ",   \
   " БДШ п.         ",   \
-  " Ош.Ф.С.        "   \
+  " Ош.Ф.С.        ",   \
+  " Ошибка 106     ",   \
+  " Ошибка 107     ",   \
+  " Ошибка 108     ",   \
+  " Ошибка 109     ",   \
+  " Ошибка 110     ",   \
+  " Ошибка 111     ",   \
+  " Ошибка 112     "
 
 # define NAME_DIAGN_UA  \
   " Пом.I2C        ",   \
@@ -346,6 +357,7 @@ ERROR_FATFS
   " Пом.вих.реле?.?",   \
   " Пом.вих.реле?.?",   \
   " Пом.вих.реле?.?",   \
+  " Пом.вих.ДШ     ",   \
   "Ан.р.тимч.зайнят",   \
   " Переп.буф.aн.р.",   \
   " П.aн.рег.вич.  ",   \
@@ -383,7 +395,14 @@ ERROR_FATFS
   " БДВВ6 п.       ",   \
   " БДШ від.       ",   \
   " БДШ п.         ",   \
-  " Пом.Ф.С.       "    \
+  " Пом.Ф.С.       ",   \
+  " Помилка 106    ",   \
+  " Помилка 107    ",   \
+  " Помилка 108    ",   \
+  " Помилка 109    ",   \
+  " Помилка 110    ",   \
+  " Помилка 111    ",   \
+  " Помилка 112    "
 
 # define NAME_DIAGN_EN  \
   " I2C Er         ",   \
@@ -452,6 +471,7 @@ ERROR_FATFS
   " BO?.? Ctl Er   ",   \
   " BO?.? Ctl Er   ",   \
   " BO?.? Ctl Er   ",   \
+  " Ош.вых.ДШ      ",   \
   " Dst Rec Busy   ",   \
   " Dst Rec Buf Ovf",   \
   "Dst Rec Mem Full",   \
@@ -489,7 +509,14 @@ ERROR_FATFS
   " BIOU06_Z ver   ",   \
   " БДШ от.        ",   \
   " БДШ п.         ",   \
-  " Error of FS    "    \
+  " Error of FS    ",   \
+  " Error 106      ",   \
+  " Error 107      ",   \
+  " Error 108      ",   \
+  " Error 109      ",   \
+  " Error 110      ",   \
+  " Error 111      ",   \
+  " Error 112      "
 
 # define NAME_DIAGN_KZ  \
   " Ош.I2C         ",   \
@@ -558,6 +585,7 @@ ERROR_FATFS
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
   " Ош.вых.реле ?.?",   \
+  " Ош.вых.ДШ      ",   \
   "Ан.рег.вр.занят.",   \
   " Пер.буф.aн.рег.",   \
   " П.aн.рег.исч.  ",   \
@@ -595,6 +623,13 @@ ERROR_FATFS
   " БДВВ6 к.       ",   \
   " БДШ от.        ",   \
   " БДШ п.         ",   \
-  " Ош.Ф.С.        "    \
+  " Ош.Ф.С.        ",   \
+  " Ошибка 106     ",   \
+  " Ошибка 107     ",   \
+  " Ошибка 108     ",   \
+  " Ошибка 109     ",   \
+  " Ошибка 110     ",   \
+  " Ошибка 111     ",   \
+  " Ошибка 112     "
     
 #endif

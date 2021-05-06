@@ -712,7 +712,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case MARKER1050:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output;
-    if ((regUst & ((unsigned int)(~((1<<NUMBER_OUTPUTS)-1)))) != 0) diapazon=0;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_SIMPLE_OUTPUTS)-1)))) != 0) diapazon=0;
     break;
   case 1051:
     (*multer) = 1;
@@ -723,7 +723,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case MARKER1052:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
-    if ((regUst & ((unsigned int)(~((1<<NUMBER_OUTPUTS)-1)))) != 0) diapazon=0;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_SIMPLE_OUTPUTS)-1)))) != 0) diapazon=0;
     break;
   case 1053:
     (*multer) = 1;

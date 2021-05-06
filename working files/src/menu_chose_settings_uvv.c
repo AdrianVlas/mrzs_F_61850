@@ -370,7 +370,7 @@ void make_ekran_type_output_uvv(void)
   
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    if (index_of_ekran < (NUMBER_OUTPUTS<<1))//Множення на два константи NUMBER_OUTPUTS потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
+    if (index_of_ekran < (NUMBER_SIMPLE_OUTPUTS<<1))//Множення на два константи NUMBER_SIMPLE_OUTPUTS потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
     {
       if ((i & 0x1) == 0)
       {

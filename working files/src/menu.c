@@ -6588,7 +6588,7 @@ void main_manu_function(void)
             }
             else if(current_ekran.current_level == EKRAN_TYPE_OUTPUT_UVV)
             {
-              if(current_ekran.index_position >= NUMBER_OUTPUTS) current_ekran.index_position = 0;
+              if(current_ekran.index_position >= NUMBER_SIMPLE_OUTPUTS) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_TYPE_OUTPUT_UVV] = current_ekran.index_position;
               //Формуємо екран типу виходу
               make_ekran_type_output_uvv();
@@ -11978,8 +11978,8 @@ void main_manu_function(void)
                 else if(current_ekran.current_level == EKRAN_TYPE_OUTPUT_UVV)
                 {
                   if (
-                      ((edition_settings.type_of_output       & ((unsigned int)(~((1<<NUMBER_OUTPUTS)-1)))) == 0) &&
-                      ((edition_settings.type_of_output_modif & ((unsigned int)(~((1<<NUMBER_OUTPUTS)-1)))) == 0)
+                      ((edition_settings.type_of_output       & ((unsigned int)(~((1<<NUMBER_SIMPLE_OUTPUTS)-1)))) == 0) &&
+                      ((edition_settings.type_of_output_modif & ((unsigned int)(~((1<<NUMBER_SIMPLE_OUTPUTS)-1)))) == 0)
                      )
                   {
                     if (
@@ -13922,7 +13922,7 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_TYPE_OUTPUT_UVV)
               {
-                if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_OUTPUTS - 1;
+                if(--current_ekran.index_position < 0) current_ekran.index_position = NUMBER_SIMPLE_OUTPUTS - 1;
                 position_in_current_level_menu[EKRAN_TYPE_OUTPUT_UVV] = current_ekran.index_position;
                 //Формуємо екран типу виходу
                 make_ekran_type_output_uvv();
@@ -15460,7 +15460,7 @@ void main_manu_function(void)
               }
               else if(current_ekran.current_level == EKRAN_TYPE_OUTPUT_UVV)
               {
-                if(++current_ekran.index_position >= NUMBER_OUTPUTS) current_ekran.index_position = 0;
+                if(++current_ekran.index_position >= NUMBER_SIMPLE_OUTPUTS) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_TYPE_OUTPUT_UVV] = current_ekran.index_position;
                 //Формуємо екран типу виходів
                 make_ekran_type_output_uvv();
@@ -17726,8 +17726,8 @@ void main_manu_function(void)
                   }
                 }
 
-                if (value >= max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION - 1][index_position]) value = 0;
-                for (size_t i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
+                if (value >= max_value_for_tf[1 + _FIX_NUMBER_PROTECTION - 1][index_position]) value = 0;
+                for (size_t i = 0; i < _FIX_NUMBER_PROTECTION; i++)
                 {
                   if (
                       ((current_settings.configuration & (1 << i)) == 0) &&
@@ -17735,7 +17735,7 @@ void main_manu_function(void)
                       (value <= max_value_for_tf[1 + i    ][index_position])
                      ) 
                   {
-                    value = (i < (TOTAL_NUMBER_PROTECTION - 1)) ? max_value_for_tf[1 + i][index_position] : 0;
+                    value = (i < (_FIX_NUMBER_PROTECTION - 1)) ? max_value_for_tf[1 + i][index_position] : 0;
                   }
                 }
                 edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] &= (uint32_t)(~(0xffff << (16*index_position)));
@@ -19712,8 +19712,8 @@ void main_manu_function(void)
                   }
                 }
 
-                if (value < 0) value = max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION - 1][index_position] - 1;
-                for (intptr_t i = (TOTAL_NUMBER_PROTECTION - 1); i >= 0; i--)
+                if (value < 0) value = max_value_for_tf[1 + _FIX_NUMBER_PROTECTION - 1][index_position] - 1;
+                for (intptr_t i = (_FIX_NUMBER_PROTECTION - 1); i >= 0; i--)
                 {
                   if (
                       ((current_settings.configuration & (1 << i)) == 0) &&
