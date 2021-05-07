@@ -3,7 +3,7 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 3))
+#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 4))
 #define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
 #define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
@@ -62,7 +62,9 @@ ERROR_OSCYLOJRAPH_OVERFLOW,
 
 ERROR_DIGITAL_OUTPUT_1_BIT,
 
-ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
+ERROR_DS_OUTPUT_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
+
+ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DS_OUTPUT_BIT + 1,
 ERROR_AR_OVERLOAD_BUFFER_BIT,
 ERROR_AR_MEMORY_FULL_BIT,
 ERROR_AR_UNDEFINED_BIT,
@@ -122,6 +124,8 @@ ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
 ERROR_BDVV6_FIX,
 ERROR_BDVV6_CTLR,
+ERROR_BDSH_FIX,
+ERROR_BDSH_CTLR,
 ERROR_CB_FIX,
 
 ERROR_FATFS,
@@ -137,12 +141,12 @@ EVENT_RESTART_CB_BIT
            (1 << (ERROR_CPU_ANSWER_CANAL_1 - 64))            |\
            (1 << (ERROR_CPU_NO_ANSWER_CANAL_1 - 64))         |\
            (1 << (ERROR_IEC_RECEIVING_CANAL_1 - 64))         |\
-           (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_1 - 64))   |\
-           (1 << (ERROR_IEC_REQUEST_CANAL_1 - 64))            \
+           (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_1 - 64))    \
           )   
 
 #define WORD_3_MASKA_ERRORS_FROM_CANAL_1 (unsigned int)       \
           (                                                   \
+           (1 << (ERROR_IEC_REQUEST_CANAL_1 - 96))           |\
            (1 << (ERROR_IEC_NO_ANSWER_CANAL_1 - 96))         |\
            (1 << (ERROR_IEC_RECEIVING_CANAL_2 - 96))         |\
            (1 << (ERROR_IEC_RECEIVED_PACKET_CANAL_2 - 96))   |\
@@ -204,6 +208,7 @@ EVENT_RESTART_CB_BIT
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
     (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 19 - 64))               \
+  | (1 << (ERROR_DS_OUTPUT_BIT - 64))                           \
   | (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
 )
 
@@ -220,6 +225,8 @@ EVENT_RESTART_CB_BIT
   | (1 << (ERROR_BDZ_CTLR - 96))                                \
   | (1 << (ERROR_BDVV6_FIX - 96))                               \
   | (1 << (ERROR_BDVV6_CTLR - 96))                              \
+  | (1 << (ERROR_BDSH_FIX - 96))                                \
+  | (1 << (ERROR_BDSH_CTLR - 96))                               \
   | (1 << (ERROR_CB_FIX - 96))                                  \
 )
 
@@ -290,6 +297,7 @@ EVENT_RESTART_CB_BIT
   " Îø.âûõ.ðåëå ?.?",   \
   " Îø.âûõ.ðåëå ?.?",   \
   " Îø.âûõ.ðåëå ?.?",   \
+  " Îø.âûõ.ÄØ      ",   \
   "Àí.ðåã.âð.çàíÿò.",   \
   " Ïåð.áóô.aí.ðåã.",   \
   " Ï.aí.ðåã.èñ÷.  ",   \
@@ -340,10 +348,17 @@ EVENT_RESTART_CB_BIT
   " ÁÄÇ ï.         ",   \
   " ÁÄÂÂ6 îò.      ",   \
   " ÁÄÂÂ6 ï.       ",   \
-  " ÊÏ ô.          ",   \
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " ÊÏ îò.         ",   \
   " Îø.Ô.Ñ.        ",   \
   " Ðåñòàðò ÊÏ     ",   \
-  " Îøèáêà 119     "
+  " Îøèáêà 123     ",   \
+  " Îøèáêà 124     ",   \
+  " Îøèáêà 125     ",   \
+  " Îøèáêà 126     ",   \
+  " Îøèáêà 127     ",   \
+  " Îøèáêà 128     "
 
 # define NAME_DIAGN_UA  \
   " Ïîì.I2C        ",   \
@@ -412,6 +427,7 @@ EVENT_RESTART_CB_BIT
   " Ïîì.âèõ.ðåëå?.?",   \
   " Ïîì.âèõ.ðåëå?.?",   \
   " Ïîì.âèõ.ðåëå?.?",   \
+  " Ïîì.âèõ.ÄØ     ",   \
   "Àí.ð.òèì÷.çàéíÿò",   \
   " Ïåðåï.áóô.aí.ð.",   \
   " Ï.aí.ðåã.âè÷.  ",   \
@@ -462,10 +478,17 @@ EVENT_RESTART_CB_BIT
   " ÁÄÇ ï.         ",   \
   " ÁÄÂÂ6 â³ä.     ",   \
   " ÁÄÂÂ6 ï.       ",   \
-  " ÊÏ ô.          ",   \
+  " ÁÄØ â³ä.       ",   \
+  " ÁÄØ ï.         ",   \
+  " ÊÏ â³ä.        ",   \
   " Ïîì.Ô.Ñ.       ",   \
   " Ðåñòàðò ÊÏ     ",   \
-  " Ïîìèëêà 119    "
+  " Ïîìèëêà 123    ",   \
+  " Ïîìèëêà 124    ",   \
+  " Ïîìèëêà 125    ",   \
+  " Ïîìèëêà 126    ",   \
+  " Ïîìèëêà 127    ",   \
+  " Ïîìèëêà 128    "
 
 # define NAME_DIAGN_EN  \
   " I2C Er         ",   \
@@ -534,6 +557,7 @@ EVENT_RESTART_CB_BIT
   " BO?.? Ctl Er   ",   \
   " BO?.? Ctl Er   ",   \
   " BO?.? Ctl Er   ",   \
+  " Îø.âûõ.ÄØ      ",   \
   " Dst Rec Busy   ",   \
   " Dst Rec Buf Ovf",   \
   "Dst Rec Mem Full",   \
@@ -584,10 +608,17 @@ EVENT_RESTART_CB_BIT
   " ASU ver        ",   \
   " BIOU06_Z abs   ",   \
   " BIOU06_Z ver   ",   \
-  " CU:No resp Ch2 ",   \
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " ÊÏ îò.         ",   \
   " Error of FS    ",   \
   " CB Restart     ",   \
-  " Error 119      "
+  " Error 123      ",   \
+  " Error 124      ",   \
+  " Error 125      ",   \
+  " Error 126      ",   \
+  " Error 127      ",   \
+  " Error 128      "
 
 # define NAME_DIAGN_KZ  \
   " Îø.I2C         ",   \
@@ -656,6 +687,7 @@ EVENT_RESTART_CB_BIT
   " Îø.âûõ.ðåëå ?.?",   \
   " Îø.âûõ.ðåëå ?.?",   \
   " Îø.âûõ.ðåëå ?.?",   \
+  " Îø.âûõ.ÄØ      ",   \
   "Àí.ðåã.âð.çàíÿò.",   \
   " Ïåð.áóô.aí.ðåã.",   \
   " Ï.aí.ðåã.èñ÷.  ",   \
@@ -706,9 +738,16 @@ EVENT_RESTART_CB_BIT
   " ÁÄÇ ê.         ",   \
   " ÁÄÂÂ6 ô.       ",   \
   " ÁÄÂÂ6 ê.       ",   \
-  " ÊÏ ô.          ",   \
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " ÊÏ îò.         ",   \
   " Îø.Ô.Ñ.        ",   \
   " Ðåñòàðò ÊÏ     ",   \
-  " Îøèáêà 119     "
+  " Îøèáêà 123     ",   \
+  " Îøèáêà 124     ",   \
+  " Îøèáêà 125     ",   \
+  " Îøèáêà 126     ",   \
+  " Îøèáêà 127     ",   \
+  " Îøèáêà 128     "
     
 #endif

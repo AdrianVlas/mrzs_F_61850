@@ -6,7 +6,8 @@
 #define NUMBER_ANALOG_CANALES           8
 
 #define NUMBER_INPUTS                   8
-#define NUMBER_OUTPUTS                  9
+#define NUMBER_SIMPLE_OUTPUTS           9
+#define NUMBER_OUTPUTS                  (NUMBER_SIMPLE_OUTPUTS)
 
 #define NUMBER_LEDS                     17
 
@@ -54,8 +55,9 @@ UMAX_BIT_CONFIGURATION,
 UP_BIT_CONFIGURATION,
 VMP_BIT_CONFIGURATION,
 EL_BIT_CONFIGURATION,
+  _FIX_NUMBER_PROTECTION,
 
-TOTAL_NUMBER_PROTECTION
+TOTAL_NUMBER_PROTECTION = _FIX_NUMBER_PROTECTION
 };
 
 /*****************************************/

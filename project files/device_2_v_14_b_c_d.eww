@@ -4,13 +4,25 @@
         <path>$WS_DIR$\v.14.00\device_2_v_14_0_4_0.ewp</path>
     </project>
     <project>
+        <path>$WS_DIR$\v.14.00\device_2_v_14_10_2_0.ewp</path>
+    </project>
+    <project>
         <path>$WS_DIR$\v.14.00\device_2_v_14_1_3_0.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\v.14.00\device_2_v_14_11_2_0.ewp</path>
     </project>
     <project>
         <path>$WS_DIR$\v.14.00\device_2_v_14_2_3_0.ewp</path>
     </project>
     <project>
+        <path>$WS_DIR$\v.14.00\device_2_v_14_12_0_0.ewp</path>
+    </project>
+    <project>
         <path>$WS_DIR$\v.14.00\device_2_v_14_3_4_0.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\v.14.00\device_2_v_14_13_1_0.ewp</path>
     </project>
     <project>
         <path>$WS_DIR$\v.14.00\device_2_v_14_4_2_0.ewp</path>
@@ -19,22 +31,10 @@
         <path>$WS_DIR$\v.14.00\device_2_v_14_24_0_0.ewp</path>
     </project>
     <project>
-        <path>$WS_DIR$\v.14.00\device_2_v_14_5_2_0.ewp</path>
-    </project>
-    <project>
-        <path>$WS_DIR$\v.14.00\device_2_v_14_10_2_0.ewp</path>
-    </project>
-    <project>
-        <path>$WS_DIR$\v.14.00\device_2_v_14_11_2_0.ewp</path>
-    </project>
-    <project>
-        <path>$WS_DIR$\v.14.00\device_2_v_14_12_0_0.ewp</path>
-    </project>
-    <project>
-        <path>$WS_DIR$\v.14.00\device_2_v_14_13_1_0.ewp</path>
-    </project>
-    <project>
         <path>$WS_DIR$\v.14.00\device_2_v_14_14_0_0.ewp</path>
+    </project>
+    <project>
+        <path>$WS_DIR$\v.14.00\device_2_v_14_5_2_0.ewp</path>
     </project>
     <project>
         <path>$WS_DIR$\v.14.00\device_2_v_14_15_2_0.ewp</path>

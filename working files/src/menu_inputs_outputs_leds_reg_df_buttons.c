@@ -158,53 +158,11 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
   //Формуємо рядки  у робочий екран
   for (unsigned int i=0; i< MAX_ROW_LCD; i++)
   {
-    unsigned int number = index_of_ekran + 1;
-    int tmp_1 = -1, tmp_2 = -1;
-    
-    if (type_of_window == ID_INPUT)
-    {
-      for (size_t j = 0; j < N_INPUT_BOARDS; j++)
-      {
-        if (number <= input_boards[j][0])
-        {
-          tmp_1 = input_boards[j][1];
-          tmp_2 = (j == 0) ? number : number - input_boards[j - 1][0];
-          
-          break;
-        }
-      }
-    }
-    else if (type_of_window == ID_OUTPUT)
-    {
-      if (number <= NUMBER_SIMPLE_OUTPUTS)
-      {
-        for (size_t j = 0; j < N_OUTPUT_BOARDS; j++)
-        {
-          if (number <= output_boards[j][0])
-          {
-            tmp_1 = output_boards[j][1];
-            tmp_2 = (j == 0) ? number : number - output_boards[j - 1][0];
-          
-            break;
-          }
-        }
-      }
-      else
-      {
-#ifndef NUMBER_DS
-        total_error_sw_fixed();
-#endif
-      }
-    }
-    else
-    {
-      tmp_1 = (number / 10);
-      tmp_2 = number - tmp_1*10;
-    }
-
     //Наступні рядки треба перевірити, чи їх требе відображати у текучій кофігурації
     if (index_of_ekran < max_row[type_of_window])
     {
+      unsigned int number = index_of_ekran + 1;
+      
 #ifdef NUMBER_DS
       if ((type_of_window == ID_OUTPUT) && (number > NUMBER_SIMPLE_OUTPUTS))
       {
@@ -223,7 +181,41 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
       else
 #endif
       {
-        for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+        int tmp_1 = -1, tmp_2 = -1;
+    
+        if (type_of_window == ID_INPUT)
+        {
+          for (size_t j = 0; j < N_INPUT_BOARDS; j++)
+          {
+            if (number <= input_boards[j][0])
+            {
+              tmp_1 = input_boards[j][1];
+              tmp_2 = (j == 0) ? number : number - input_boards[j - 1][0];
+          
+              break;
+            }
+          }
+        }
+        else if (type_of_window == ID_OUTPUT)
+        {
+          for (size_t j = 0; j < N_OUTPUT_BOARDS; j++)
+          {
+            if (number <= output_boards[j][0])
+            {
+              tmp_1 = output_boards[j][1];
+              tmp_2 = (j == 0) ? number : number - output_boards[j - 1][0];
+          
+              break;
+            }
+          }
+        }
+        else
+        {
+          tmp_1 = (number / 10);
+          tmp_2 = number - tmp_1*10;
+        }
+      
+        for (size_t j = 0; j < MAX_COL_LCD; ++j)
         {
           if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3)))
             working_ekran[i][j] = information[index_language][type_of_window][j];

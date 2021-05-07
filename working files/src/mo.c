@@ -366,6 +366,13 @@ void start_transmint_data_via_CANAL1_MO(void)
       sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&state_outputs) + i);
     }
     
+#ifdef NUMBER_DS
+    for (size_t i = 0; i < sizeof(ds); ++i) 
+    {
+      sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&ds) + i);
+    }
+#endif
+
     for (uint32_t i = 0; i < sizeof(state_leds); i++) 
     {
       sum += Canal1_MO_Transmit[index++] = *(((uint8_t *)&state_leds) + i);
