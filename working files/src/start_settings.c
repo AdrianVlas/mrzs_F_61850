@@ -424,7 +424,7 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 10) || \
        (MODYFIKACIA_VERSII_PZ == 13) || \
        (MODYFIKACIA_VERSII_PZ == 15) || \
-       (MODYFIKACIA_VERSII_PZ == 23)    \
+       (MODYFIKACIA_VERSII_PZ == 33)    \
       )   
   if ((board_register_tmp & 0x1F) != 0x1F)
 #elif (                                 \
