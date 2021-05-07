@@ -9612,6 +9612,11 @@ do{
               _CLEAR_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
           }
         }
+        else
+        {
+          //Â³äì³÷àºìî, ùî äàíèé âèõ³ä - ÐÎÇ²ÌÊÍÓÒÈÉ
+          _CLEAR_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
+        }
       }
     }
     else ds = 0;
@@ -10068,7 +10073,7 @@ void TIM2_IRQHandler(void)
       unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)))) & 0xffff);
 
 #ifdef NUMBER_DS
-      unsigned int control_ds =  ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) >> 8))) & (MASKA_FOR_BIT(NUMBER_DS) - 1) ) << 16;
+      unsigned int control_ds =  (~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) >> 8))) & (MASKA_FOR_BIT(NUMBER_DS) - 1);
 #endif
       
 #endif
