@@ -468,12 +468,66 @@ static  int time_before_start_record_dr = 0;
     //*(ptDRUVAd->number_items_dr) += 1;
     *(ptDRUVAd->number_changes_into_dr_record) += number_changes_into_current_item;// <<= як бути з доаварійним масивом
 
-}      
+} 
+/*     
  __root  CmdFunctionDepot* pDbgViewCmd = (CmdFunctionDepot*)&holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
 SRAM1  CmdFunctionDepot arViewCmd;// = holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
 
-
-
+ __root  const short arrEkransId[] = {
+     
+    EKRAN_CONTROL_UP                  , 
+    //.EKRAN_LIST_TYPE_IEC61850_NODES    ,
+    EKRAN_LIST_INPUTS_FOR_RANGUVANNJA ,
+    EKRAN_RANGUVANNJA_INPUT_1         ,
+    EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA, 
+    EKRAN_RANGUVANNJA_OUTPUT_1        ,
+    EKRAN_RANGUVANNJA_OUTPUT_LAST     ,   
+     
+     
+     
+    EKRAN_LIST_LEDS_FOR_RANGUVANNJA,
+    EKRAN_RANGUVANNJA_LED_1      ,
+    
+    
+    EKRAN_LIST_SETTINGS_FOR_DF          ,
+    EKRAN_RANGUVANNJA_DF8_BLK           ,
+    
+    EKRAN_LIST_DT                      ,
+    EKRAN_SET_RESET_DT1                ,
+    
+    EKRAN_RANGUVANNJA_RESET_DT4_MINUS  ,
+    
+    
+    EKRAN_LIST_D_AND          ,
+    EKRAN_RANGUVANNJA_D_AND1  ,
+    EKRAN_RANGUVANNJA_D_AND8  ,
+    EKRAN_LIST_D_OR          ,
+    EKRAN_RANGUVANNJA_D_OR1  ,
+    EKRAN_RANGUVANNJA_D_OR8  ,
+    EKRAN_LIST_D_XOR         ,
+    EKRAN_RANGUVANNJA_D_XOR1 ,
+    EKRAN_RANGUVANNJA_D_XOR8 ,
+    EKRAN_LIST_D_NOT         ,
+    EKRAN_RANGUVANNJA_D_NOT1  ,
+    EKRAN_RANGUVANNJA_D_NOT16 ,
+    EKRAN_LIST_TF_FOR_RANGUVANNJA,
+    EKRAN_LIST_SOURCE_TF1,
+    
+    
+    EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA,
+    EKRAN_RANGUVANNJA_BUTTON_1,
+    EKRAN_RANGUVANNJA_BUTTON_6,
+    
+    EKRAN_VIDKLUCHENNJA,
+    
+    (NUMBER_INPUTS + NUMBER_OUTPUTS + NUMBER_LEDS + 5*NUMBER_DEFINED_FUNCTIONS + 7*NUMBER_DEFINED_TRIGGERS + NUMBER_DEFINED_AND + NUMBER_DEFINED_OR + NUMBER_DEFINED_XOR + NUMBER_DEFINED_NOT + NUMBER_TRANSFER_FUNCTIONS + NUMBER_DEFINED_BUTTONS),
+    (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN + NUMBER_INPUTS +
+    NUMBER_OUTPUTS + NUMBER_LEDS + 5*NUMBER_DEFINED_FUNCTIONS + 
+    7*NUMBER_DEFINED_TRIGGERS + NUMBER_DEFINED_AND + NUMBER_DEFINED_OR + NUMBER_DEFINED_XOR + 
+    NUMBER_DEFINED_NOT + NUMBER_TRANSFER_FUNCTIONS + NUMBER_DEFINED_BUTTONS)
+    
+ };
+*/
 
 
 

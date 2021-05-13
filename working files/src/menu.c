@@ -1632,6 +1632,7 @@ void main_manu_function(void)
 #endif
       
     case EKRAN_VIEW_LIST_OF_REGISTRATORS:
+    case EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS:
     case EKRAN_VIEW_SETTINGS_OF_ANALOG_REGISTRATORS:
     case EKRAN_EXTENDED_LIGIC:
     case EKRAN_LIST_SETTINGS_FOR_DF:
@@ -2152,6 +2153,13 @@ void main_manu_function(void)
               position_in_current_level_menu[EKRAN_VIEW_SETTINGS_OF_ANALOG_REGISTRATORS] = current_ekran.index_position;
               //Формуємо екран вибору ностройок аналогового реєстратора
               make_ekran_settings_analog_registrators();
+            }
+            else if (current_ekran.current_level == EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS)
+            {
+              if(current_ekran.index_position >= MAX_ROW_FOR_SETTINGS_OF_DIGITAL_REGISTRATOR) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS] = current_ekran.index_position;
+              //Формуємо екран вибору ностройок аналогового реєстратора
+              make_ekran_settings_digital_registrators();
             }
             else if (current_ekran.current_level == EKRAN_EXTENDED_LIGIC)
             {
@@ -3670,9 +3678,9 @@ void main_manu_function(void)
                 {
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення списку ранжованих функцій для дискретного реєстратора
-                  current_ekran.current_level = EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR;
+                  current_ekran.current_level = EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS;//!@EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR;
                   //Для того, щоб при першому входженні завжди список починався із першої ранжованої функції обнуляємо цю позицію
-                  position_in_current_level_menu[current_ekran.current_level] = 0;
+                  //!@position_in_current_level_menu[current_ekran.current_level] = 0;
                 }
                 else if(current_ekran.index_position == INDEX_ML_ANALOG_REGISTRATOR)
                 {
@@ -3704,6 +3712,25 @@ void main_manu_function(void)
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню відображення управління для аналогового реєстратора
                   current_ekran.current_level = EKRAN_CONTROL_AR;
+                }
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+              }
+              else if (current_ekran.current_level == EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS)
+              {
+                if(current_ekran.index_position == INDEX_ML_SOURCE_DIGITAL_REGISTRATOR)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення списку ранжованих функцій для аналогового реєстратора
+                  current_ekran.current_level = EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR;
+                  //Для того, щоб при першому входженні завжди список починався із першої ранжованої функції обнуляємо цю позицію
+                  position_in_current_level_menu[current_ekran.current_level] = 0;
+                }
+                else if(current_ekran.index_position == INDEX_ML_TIMEOUT_DIGITAL_REGISTRATOR)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню відображення витримок для аналогового реєстратора
+                  current_ekran.current_level = EKRAN_TIMEOUT_DIGITAL_REGISTRATOR;
                 }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 0;
@@ -4677,6 +4704,13 @@ void main_manu_function(void)
                 //Формуємо екран вибору реєстратора
                 make_ekran_chose_registrators();
               }
+              else if (current_ekran.current_level == EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS)
+              {
+                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_SETTINGS_OF_DIGITAL_REGISTRATOR - 1;
+                position_in_current_level_menu[EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS] = current_ekran.index_position;
+                //Формуємо екран вибору настройок аналогового реєстратора
+                make_ekran_settings_digital_registrators();
+              }  
               else if (current_ekran.current_level == EKRAN_VIEW_SETTINGS_OF_ANALOG_REGISTRATORS)
               {
                 if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_SETTINGS_OF_ANALOG_REGISTRATOR - 1;
@@ -5529,6 +5563,13 @@ void main_manu_function(void)
                 //Формуємо екран вибору реєстратора
                 make_ekran_chose_registrators();
               }
+              else if (current_ekran.current_level == EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS)
+              {
+                if(++current_ekran.index_position >= MAX_ROW_FOR_SETTINGS_OF_DIGITAL_REGISTRATOR) current_ekran.index_position = 0;
+                position_in_current_level_menu[EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS] = current_ekran.index_position;
+                //Формуємо екран вибору настройок аналогового реєстратора
+                make_ekran_settings_digital_registrators();
+              }
               else if (current_ekran.current_level == EKRAN_VIEW_SETTINGS_OF_ANALOG_REGISTRATORS)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_SETTINGS_OF_ANALOG_REGISTRATOR) current_ekran.index_position = 0;
@@ -6079,6 +6120,7 @@ void main_manu_function(void)
     case EKRAN_TIMEOUT_DF7:
     case EKRAN_TIMEOUT_DF8:
     case EKRAN_TIMEOUT_ANALOG_REGISTRATOR:
+    case EKRAN_TIMEOUT_DIGITAL_REGISTRATOR:
     case EKRAN_CONTROL_AR:
     case EKRAN_VIEW_SETTING_LANGUAGE:
     case EKRAN_CHOSE_EXTRA_SETTINGS:
@@ -6860,6 +6902,13 @@ void main_manu_function(void)
               if(current_ekran.index_position >= MAX_ROW_LIST_SOURCE_TF) current_ekran.index_position = 0;
               //Формуємо екран
               make_ekran_list_source_tf();
+            }
+            else if(current_ekran.current_level == EKRAN_TIMEOUT_DIGITAL_REGISTRATOR)
+            {
+              if(current_ekran.index_position >= MAX_ROW_RANGUVANNJA_DIGITAL_REGISTRATOR) current_ekran.index_position = 0;
+              position_in_current_level_menu[EKRAN_TIMEOUT_DIGITAL_REGISTRATOR] = current_ekran.index_position;
+              //Формуємо екран витримок аналогового реєстратора
+              make_ekran_timeout_digital_registrator();
             }
             else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
             {
@@ -8070,6 +8119,15 @@ void main_manu_function(void)
                 {
                   edition_settings.control_ar = current_settings.control_ar;
                 }
+                else if(current_ekran.current_level == EKRAN_TIMEOUT_DIGITAL_REGISTRATOR)
+                {
+                  if (current_ekran.index_position == INDEX_ML_TMO_ELONGATION)
+                  {
+                    edition_settings.timeout_prolongation_work_digital_registrator = current_settings.timeout_prolongation_work_digital_registrator;
+                    current_ekran.position_cursor_x = COL_TMO_ELONGATION_BEGIN;//if (current_ekran.index_position == INDEX_ML_TMOPREFAULT)
+
+                  }
+                }
                 else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
                   if (current_ekran.index_position == INDEX_ML_TMOPREFAULT)
@@ -9112,6 +9170,14 @@ void main_manu_function(void)
                 else if((current_ekran.current_level >= EKRAN_LIST_SOURCE_TF1) && (current_ekran.current_level <= (EKRAN_LIST_SOURCE_TF1 + NUMBER_TRANSFER_FUNCTIONS - 1)))
                 {
                   if (edition_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1] != current_settings.ranguvannja_tf[current_ekran.current_level - EKRAN_LIST_SOURCE_TF1]) found_changes = 1;
+                }
+                else if(current_ekran.current_level == EKRAN_TIMEOUT_DIGITAL_REGISTRATOR)
+                {
+                  if (current_ekran.index_position == INDEX_ML_TMO_ELONGATION)
+                  {
+                    if (edition_settings.timeout_prolongation_work_digital_registrator != current_settings.timeout_prolongation_work_digital_registrator) found_changes = 1;
+                  }
+
                 }
                 else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
@@ -12729,6 +12795,28 @@ void main_manu_function(void)
                     current_ekran.edition = 0;
                   }
                 }
+                else if(current_ekran.current_level == EKRAN_TIMEOUT_DIGITAL_REGISTRATOR)
+                {
+                  if (current_ekran.index_position == INDEX_ML_TMO_ELONGATION)
+                  {
+                    if (check_data_setpoint((edition_settings.timeout_prolongation_work_digital_registrator), TIMEOUT_DR_ELONGATION_MIN, TIMEOUT_DR_ELONGATION_MAX) == 1)
+                    {
+                      if (edition_settings.timeout_prolongation_work_digital_registrator != current_settings.timeout_prolongation_work_digital_registrator)
+                      {
+                        //Помічаємо, що поле структури зараз буде змінене
+                        changed_settings = CHANGED_ETAP_EXECUTION;
+                        
+                        current_settings.timeout_prolongation_work_digital_registrator = edition_settings.timeout_prolongation_work_digital_registrator;
+
+                        //Формуємо запис у таблиці настройок про зміну конфігурації і ініціюємо запис у EEPROM нових настройок
+                        fix_change_settings(0, 1);
+                      }
+                      //Виходимо з режиму редагування
+                      current_ekran.edition = 0;
+                    }
+                  }
+         
+                }
                 else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
                 {
                   if (current_ekran.index_position == INDEX_ML_TMOPREFAULT)
@@ -14339,6 +14427,45 @@ void main_manu_function(void)
                 //Формуємо екран
                 make_ekran_list_source_tf();
               }
+              else if(current_ekran.current_level == EKRAN_TIMEOUT_DIGITAL_REGISTRATOR)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TIMEOUT_DIGITAL_REGISTRATOR - 1;
+                  position_in_current_level_menu[EKRAN_TIMEOUT_DIGITAL_REGISTRATOR] = current_ekran.index_position;
+                }
+                else
+                {
+                  ////Редагування числа
+                  //if (current_ekran.index_position == INDEX_ML_TMOPREFAULT)
+                  //{
+                  //  unsigned int temp_setpoint = edition_settings.prefault_number_periods*20;
+                  //  do
+                  //  {
+                  //    //Величину витримки збільшуємо почергого на 10 мс (ф-ція edit_setpoint збільшує/зменшує з крогом кратних 1, 10 і т.д.), щоб отримати крок 20 мс
+                  //    temp_setpoint = edit_setpoint(1, temp_setpoint, 1, COL_TMO_PREFAULT_COMMA, COL_TMO_PREFAULT_END, 10);
+                  //  }
+                  //  while ((temp_setpoint % 20) != 0);
+                  //  edition_settings.prefault_number_periods = temp_setpoint / 20;
+                  //}
+                  //else
+                  //{
+                    //unsigned int temp_setpoint = edition_settings.postfault_number_periods*20;
+                    //unsigned int temp_setpoint = edition_settings.timeout_prolongation_work_digital_registrator;
+                    //do
+                    //{
+                    //  //Величину витримки збільшуємо почергого на 10 мс (ф-ція edit_setpoint збільшує/зменшує з крогом кратних 1, 10 і т.д.), щоб отримати крок 20 мс
+                    //  temp_setpoint = edit_setpoint(1, temp_setpoint, 1, COL_TMO_ELONGATION_COMMA, COL_TMO_ELONGATION_END, 10);
+                    //}
+                    //while ((temp_setpoint % 20) != 0);
+                    //edition_settings.postfault_number_periods = temp_setpoint / 20;
+                  //}
+                  edition_settings.timeout_prolongation_work_digital_registrator = 
+                      edit_setpoint(1, edition_settings.timeout_prolongation_work_digital_registrator, 1, COL_TMO_ELONGATION_COMMA, COL_TMO_ELONGATION_END, 10);
+                }
+                //Формуємо екран витримок аналогового реєстратора
+                make_ekran_timeout_digital_registrator();
+              }
               else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
               {
                 if(current_ekran.edition == 0)
@@ -15877,6 +16004,34 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= MAX_ROW_LIST_SOURCE_TF) current_ekran.index_position = 0;
                 //Формуємо екран
                 make_ekran_list_source_tf();
+              }
+              else if(current_ekran.current_level == EKRAN_TIMEOUT_DIGITAL_REGISTRATOR)
+              {
+                if(current_ekran.edition == 0)
+                {
+                  if(++current_ekran.index_position >= MAX_ROW_FOR_TIMEOUT_DIGITAL_REGISTRATOR) current_ekran.index_position = 0;
+                  position_in_current_level_menu[EKRAN_TIMEOUT_DIGITAL_REGISTRATOR] = current_ekran.index_position;
+                }
+                else
+                {
+                  //Редагування числа
+                  
+                  //{
+                  //  unsigned int temp_setpoint = edition_settings.postfault_number_periods*20;
+                  //  do
+                  //  {
+                  //    //Величину витримки зменшуємо почергого на 10 мс (ф-ція edit_setpoint збільшує/зменшує з крогом кратних 1, 10 і т.д.), щоб отримати крок 20 мс
+                  //    temp_setpoint = edit_setpoint(0, temp_setpoint, 1, COL_TMO_PREFAULT_COMMA, COL_TMO_PREFAULT_END, 10);
+                  //  }
+                  //  while ((temp_setpoint % 20) != 0);
+                  //  edition_settings.postfault_number_periods = temp_setpoint / 20;
+                  //}
+				  edition_settings.timeout_prolongation_work_digital_registrator = 
+                      edit_setpoint(0, edition_settings.timeout_prolongation_work_digital_registrator, 1, COL_TMO_ELONGATION_COMMA, COL_TMO_ELONGATION_END, 10);
+                    
+                }
+                //Формуємо екран витримок аналогового реєстратора
+                make_ekran_timeout_digital_registrator();
               }
               else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
               {
@@ -17903,6 +18058,20 @@ void main_manu_function(void)
                 //Формуємо екран
                 make_ekran_list_source_tf();
               }
+              else if(current_ekran.current_level == EKRAN_TIMEOUT_DIGITAL_REGISTRATOR)
+              {
+
+                if(current_ekran.index_position == INDEX_ML_TMO_ELONGATION)
+                {
+                  if (current_ekran.position_cursor_x == COL_TMO_ELONGATION_COMMA )current_ekran.position_cursor_x++;
+                  if ((current_ekran.position_cursor_x < COL_TMO_ELONGATION_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_TMO_ELONGATION_END))
+                    current_ekran.position_cursor_x = COL_TMO_ELONGATION_END;
+                }
+
+                //Формуємо екран витримок аналогового реєстратора
+                make_ekran_timeout_digital_registrator();
+              }
               else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
               {
                 if(current_ekran.index_position == INDEX_ML_TMOPREFAULT)
@@ -19888,6 +20057,19 @@ void main_manu_function(void)
 
                 //Формуємо екран
                 make_ekran_list_source_tf();
+              }
+              else if(current_ekran.current_level == EKRAN_TIMEOUT_DIGITAL_REGISTRATOR)
+              {
+                if(current_ekran.index_position == INDEX_ML_TMO_ELONGATION)
+                {
+                  if (current_ekran.position_cursor_x == COL_TMO_ELONGATION_COMMA )current_ekran.position_cursor_x--;
+                  if ((current_ekran.position_cursor_x < COL_TMO_ELONGATION_BEGIN) ||
+                      (current_ekran.position_cursor_x > COL_TMO_ELONGATION_END))
+                    current_ekran.position_cursor_x = COL_TMO_ELONGATION_END;
+                }
+
+                //Формуємо екран витримок аналогового реєстратора
+                make_ekran_timeout_digital_registrator();
               }
               else if(current_ekran.current_level == EKRAN_TIMEOUT_ANALOG_REGISTRATOR)
               {
