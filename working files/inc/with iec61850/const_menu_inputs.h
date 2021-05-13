@@ -12,23 +12,34 @@
 #define EKRAN_RANGUVANNJA_INPUT_7                (EKRAN_RANGUVANNJA_INPUT_6 + 1)
 #define EKRAN_RANGUVANNJA_INPUT_8                (EKRAN_RANGUVANNJA_INPUT_7 + 1)
 
-#if (                                 \
+#if (                                \
      (MODYFIKACIA_VERSII_PZ == 10) || \
      (MODYFIKACIA_VERSII_PZ == 11) || \
      (MODYFIKACIA_VERSII_PZ == 13) || \
-     (MODYFIKACIA_VERSII_PZ == 15)    \
+     (MODYFIKACIA_VERSII_PZ == 15) || \
+     (MODYFIKACIA_VERSII_PZ == 16) || \
     )
 
 #define EKRAN_RANGUVANNJA_INPUT_9                (EKRAN_RANGUVANNJA_INPUT_8 + 1)
 #define EKRAN_RANGUVANNJA_INPUT_10               (EKRAN_RANGUVANNJA_INPUT_9 + 1)
 #define EKRAN_RANGUVANNJA_INPUT_11               (EKRAN_RANGUVANNJA_INPUT_10 + 1)
 #define EKRAN_RANGUVANNJA_INPUT_12               (EKRAN_RANGUVANNJA_INPUT_11 + 1)
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 10) || \
+     (MODYFIKACIA_VERSII_PZ == 11) || \
+     (MODYFIKACIA_VERSII_PZ == 13) || \
+     (MODYFIKACIA_VERSII_PZ == 15)    \
+    )
+
 #define EKRAN_RANGUVANNJA_INPUT_13               (EKRAN_RANGUVANNJA_INPUT_12 + 1)
 #define EKRAN_RANGUVANNJA_INPUT_14               (EKRAN_RANGUVANNJA_INPUT_13 + 1)
 #define EKRAN_RANGUVANNJA_INPUT_15               (EKRAN_RANGUVANNJA_INPUT_14 + 1)
 #define EKRAN_RANGUVANNJA_INPUT_16               (EKRAN_RANGUVANNJA_INPUT_15 + 1)
 
-#if (                                    \
+#endif
+
+#if (                                   \
      (MODYFIKACIA_VERSII_PZ == 10) ||    \
      (MODYFIKACIA_VERSII_PZ == 15)       \
     )                                   
@@ -55,6 +66,12 @@
       )   
 
 #define EKRAN_RANGUVANNJA_INPUT_LAST             EKRAN_RANGUVANNJA_INPUT_16
+
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 16)     \
+      )   
+
+#define EKRAN_RANGUVANNJA_INPUT_LAST             EKRAN_RANGUVANNJA_INPUT_12
 
 #else
 

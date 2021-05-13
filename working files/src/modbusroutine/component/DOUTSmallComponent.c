@@ -10,16 +10,27 @@
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 6) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
      (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 26)|| \
      (MODYFIKACIA_VERSII_PZ == 33)   \
     )
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 100
+
 //конечный bit в карте памяти
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
+     (MODYFIKACIA_VERSII_PZ == 26)      \
+    )   
+#define END_ADR_BIT 112
+#else
 #define END_ADR_BIT 115
+#endif
+
 #endif
 
 #if (                                   \

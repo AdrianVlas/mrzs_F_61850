@@ -375,6 +375,7 @@ unsigned int temp_states_for_mtz;
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -504,6 +505,7 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
     )
   ,
   {16, 5}
+  
 #if (                                \
      (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 15)   \
@@ -511,6 +513,14 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
   ,
   {20, 7}
 #endif
+
+#elif (                                \
+       (MODYFIKACIA_VERSII_PZ == 6) || \
+       (MODYFIKACIA_VERSII_PZ == 26)   \
+    )
+  ,
+  {13, 5}
+  
 #endif
 };
 
@@ -531,6 +541,7 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
     )
   ,
   {16, 5}
+  
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
@@ -540,6 +551,14 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
   ,
   {20, 7}
 #endif
+  
+#elif (                                \
+       (MODYFIKACIA_VERSII_PZ == 6) || \
+       (MODYFIKACIA_VERSII_PZ == 26)   \
+    )
+  ,
+  {12, 5}
+  
 #endif
 };
 

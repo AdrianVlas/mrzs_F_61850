@@ -15,12 +15,14 @@
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)||    \
      (MODYFIKACIA_VERSII_PZ == 15)||    \
      (MODYFIKACIA_VERSII_PZ == 23)||    \
      (MODYFIKACIA_VERSII_PZ == 24)||    \
+     (MODYFIKACIA_VERSII_PZ == 26)||    \
      (MODYFIKACIA_VERSII_PZ == 33)||    \
      (MODYFIKACIA_VERSII_PZ == 34)      \
     )   

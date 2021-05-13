@@ -7,6 +7,7 @@
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -779,6 +780,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -931,6 +933,11 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     if(inOffset>=1058 && inOffset<1074)
 #endif
 #if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 6)       \
+    )   
+    if(inOffset>=1058 && inOffset<1070)
+#endif
+#if (                                   \
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 12)||    \
@@ -1015,6 +1022,7 @@ int getUSTBigModbusRegister(int adrReg)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -1373,6 +1381,7 @@ int postUSTBigWriteAction(void)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \

@@ -19,6 +19,14 @@
 #define END_ADR_REGISTER 1355
 #endif
 
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 6) || \
+     (MODYFIKACIA_VERSII_PZ == 26)   \
+    )
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 1307
+#endif
+
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \

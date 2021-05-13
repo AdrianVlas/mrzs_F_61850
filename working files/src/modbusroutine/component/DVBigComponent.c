@@ -29,6 +29,15 @@
 #endif
 
 #if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
+     (MODYFIKACIA_VERSII_PZ == 26)      \
+    )   
+//конечный регистр в карте памяти
+//12 шт
+#define END_ADR_REGISTER 1515
+#endif
+
+#if (                                   \
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 12)||    \

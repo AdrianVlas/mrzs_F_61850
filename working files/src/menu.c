@@ -7071,6 +7071,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -8233,6 +8234,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -10003,6 +10005,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -10018,6 +10021,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -10035,6 +10039,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -16334,6 +16339,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -16353,6 +16359,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -18315,6 +18322,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -18334,6 +18342,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -19951,6 +19960,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
      (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 6) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
@@ -19961,6 +19971,18 @@ void main_manu_function(void)
     case EKRAN_RANGUVANNJA_INPUT_10:
     case EKRAN_RANGUVANNJA_INPUT_11:
     case EKRAN_RANGUVANNJA_INPUT_12:
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)   \
+    )
+
     case EKRAN_RANGUVANNJA_INPUT_13:
     case EKRAN_RANGUVANNJA_INPUT_14:
     case EKRAN_RANGUVANNJA_INPUT_15:
@@ -19981,6 +20003,8 @@ void main_manu_function(void)
 #endif
 
 #endif
+      
+#endif
 
     case EKRAN_RANGUVANNJA_OUTPUT_1:
     case EKRAN_RANGUVANNJA_OUTPUT_2:
@@ -19997,18 +20021,39 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 1) || \
      (MODYFIKACIA_VERSII_PZ == 3) || \
      (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 6) || \
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
      (MODYFIKACIA_VERSII_PZ == 15)|| \
      (MODYFIKACIA_VERSII_PZ == 23)|| \
      (MODYFIKACIA_VERSII_PZ == 24)|| \
+     (MODYFIKACIA_VERSII_PZ == 26)|| \
      (MODYFIKACIA_VERSII_PZ == 33)|| \
      (MODYFIKACIA_VERSII_PZ == 34)   \
     )
 
     case EKRAN_RANGUVANNJA_OUTPUT_10:
       
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 6) || \
+     (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 26)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
+    )
+
+    case EKRAN_RANGUVANNJA_OUTPUT_11:
+    case EKRAN_RANGUVANNJA_OUTPUT_12:
+    case EKRAN_RANGUVANNJA_OUTPUT_13:
+
 #if (                                \
      (MODYFIKACIA_VERSII_PZ == 0) || \
      (MODYFIKACIA_VERSII_PZ == 1) || \
@@ -20022,9 +20067,6 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 33)   \
     )
 
-    case EKRAN_RANGUVANNJA_OUTPUT_11:
-    case EKRAN_RANGUVANNJA_OUTPUT_12:
-    case EKRAN_RANGUVANNJA_OUTPUT_13:
     case EKRAN_RANGUVANNJA_OUTPUT_14:
     case EKRAN_RANGUVANNJA_OUTPUT_15:
     case EKRAN_RANGUVANNJA_OUTPUT_16:
@@ -20033,6 +20075,7 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 15)|| \
      (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 26)|| \
      (MODYFIKACIA_VERSII_PZ == 33)   \
     )
 
@@ -20051,6 +20094,8 @@ void main_manu_function(void)
       
 #endif
 
+#endif
+      
 #endif
       
 #endif

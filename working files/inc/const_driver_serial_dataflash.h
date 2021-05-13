@@ -257,7 +257,8 @@ enum _command_fatfs
 #elif (                                 \
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
-       (MODYFIKACIA_VERSII_PZ == 4)     \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6)     \
       )   
 #define SIZE_BUFFER_FOR_AR    ((10780 - 500)*(NUMBER_ANALOG_CANALES + NUMBER_WORD_DIGITAL_PART_AR))
 #else
