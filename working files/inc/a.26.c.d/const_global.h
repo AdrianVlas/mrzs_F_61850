@@ -5,8 +5,8 @@
 
 #define NUMBER_ANALOG_CANALES           8
 
-#define NUMBER_INPUTS                   16
-#define NUMBER_SIMPLE_OUTPUTS           16
+#define NUMBER_INPUTS                   12
+#define NUMBER_SIMPLE_OUTPUTS           13
 #define NUMBER_DS                       1
 #define NUMBER_OUTPUTS                  (NUMBER_SIMPLE_OUTPUTS + NUMBER_DS)
 

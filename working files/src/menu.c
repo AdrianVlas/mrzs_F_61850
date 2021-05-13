@@ -20064,10 +20064,25 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 13)|| \
      (MODYFIKACIA_VERSII_PZ == 15)|| \
      (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 26)|| \
      (MODYFIKACIA_VERSII_PZ == 33)   \
     )
 
     case EKRAN_RANGUVANNJA_OUTPUT_14:
+
+#if (                                \
+     (MODYFIKACIA_VERSII_PZ == 0) || \
+     (MODYFIKACIA_VERSII_PZ == 1) || \
+     (MODYFIKACIA_VERSII_PZ == 3) || \
+     (MODYFIKACIA_VERSII_PZ == 5) || \
+     (MODYFIKACIA_VERSII_PZ == 10)|| \
+     (MODYFIKACIA_VERSII_PZ == 11)|| \
+     (MODYFIKACIA_VERSII_PZ == 13)|| \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
+    )
+
     case EKRAN_RANGUVANNJA_OUTPUT_15:
     case EKRAN_RANGUVANNJA_OUTPUT_16:
 
@@ -20075,7 +20090,6 @@ void main_manu_function(void)
      (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 15)|| \
      (MODYFIKACIA_VERSII_PZ == 23)|| \
-     (MODYFIKACIA_VERSII_PZ == 26)|| \
      (MODYFIKACIA_VERSII_PZ == 33)   \
     )
 
@@ -20094,6 +20108,8 @@ void main_manu_function(void)
       
 #endif
 
+#endif
+      
 #endif
       
 #endif

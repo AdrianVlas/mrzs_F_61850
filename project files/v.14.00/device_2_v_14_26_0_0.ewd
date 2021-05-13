@@ -56,16 +56,11 @@
                 </option>
                 <option>
                     <name>CExtraOptionsCheck</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CExtraOptions</name>
-                    <state>"--drv_communication=TCPIP:10.0.0.83" </state>
-                    <state>"--drv_interface_speed=auto" </state>
-                    <state>"--jlink_initial_speed=1000" </state>
-                    <state>"--jlink_reset_strategy=0,0" </state>
-                    <state>"--drv_catch_exceptions=0x000" </state>
-                    <state>"--drv_swo_clock_setup=72000000,0,2000000" </state>
+                    <state></state>
                 </option>
                 <option>
                     <name>CFpuProcessor</name>
@@ -89,7 +84,7 @@
                 </option>
                 <option>
                     <name>OCDynDriverList</name>
-                    <state>THIRDPARTY_ID</state>
+                    <state>JLINK_ID</state>
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
@@ -1193,7 +1188,7 @@
                 <debug>1</debug>
                 <option>
                     <name>CThirdPartyDriverDll</name>
-                    <state>C:\Program Files\IAR Systems\Embedded Workbench 9.10.1\arm\bin\armjlink.dll</state>
+                    <state>###Uninitialized###</state>
                 </option>
                 <option>
                     <name>CThirdPartyLogFileCheck</name>

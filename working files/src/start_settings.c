@@ -609,7 +609,7 @@ void start_settings_peripherals(void)
        (MODYFIKACIA_VERSII_PZ == 33)||  \
        (MODYFIKACIA_VERSII_PZ == 34)    \
       )
-    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x23)  _SET_BIT(set_diagnostyka, ERROR_BDSH_CTLR);
+    if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x13)  _SET_BIT(set_diagnostyka, ERROR_BDSH_CTLR);
 #else
  #error  "UDEFINED MODIFIKACIA"
 #endif
