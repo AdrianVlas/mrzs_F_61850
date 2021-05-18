@@ -1409,7 +1409,17 @@ void make_ekran_changing_signals_digital_registrator(void)
                   {"Пасс.", "Акт. "}
                 };
                 unsigned int time_of_slice = buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + SD_DR*(1 + index_of_the_slice) + 0] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + SD_DR*(1 + index_of_the_slice) + 1]<<8) + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + SD_DR*(1 + index_of_the_slice) + 2]<<16);
-                
+                //...(buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + SD_DR*(1 + index_of_the_slice) + 3]<<24);
+                long sign = (long)(time_of_slice&(1<<23))>>23; 
+                if( sign!= 0){
+                    time_of_slice |= 0xff000000; 
+                    time_of_slice *= (-1);
+                  }
+                //else{
+                //    time_of_slice = (time_of_slice << 9)>>9;
+                //                    
+                //}
+                 
                 //Конвертуємо цей час у рядок
                 unsigned int ost, local_index = 0;
                 while ((time_of_slice >= 10) && (local_index < (8 - 1)))
@@ -1420,11 +1430,13 @@ void make_ekran_changing_signals_digital_registrator(void)
                   local_index++;
                 }
                 sring_of_time[7-local_index] =  time_of_slice + 0x30;
+                if( sign!= 0)
+                     sring_of_time[6-local_index] = '-'; 
                 
                 //Копіюємо цей рідок часу у наш робочий рядок
                 local_index = 0;
                 while ((sring_of_time[local_index] == ' ') && (local_index < 8)) local_index++;
-                unsigned int local_index1 = 0;
+                unsigned int local_index1 = 1;
                 while (local_index < 8) second_row[local_index1++] = sring_of_time[local_index++];
                 if (local_index1 < 8) second_row[local_index1++] = ' ';
                 second_row[local_index1++] = ms[index_language][0];
