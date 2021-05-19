@@ -17,7 +17,7 @@
      (MODYFIKACIA_VERSII_PZ == 11) || \
      (MODYFIKACIA_VERSII_PZ == 13) || \
      (MODYFIKACIA_VERSII_PZ == 15) || \
-     (MODYFIKACIA_VERSII_PZ == 16) || \
+     (MODYFIKACIA_VERSII_PZ == 16)    \
     )
 
 #define EKRAN_RANGUVANNJA_INPUT_9                (EKRAN_RANGUVANNJA_INPUT_8 + 1)

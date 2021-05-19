@@ -701,11 +701,14 @@ void CANAL2_MO_routine()
         clear_diagnostyka[3] |= WORD_3_MASKA_RECEIVING_ERRORS_CANAL_2;
 
         int32_t size_packet = BUFFER_CANAL2_MO - rx_ndtr;
+        static unsigned int lock_error_no_answer;
         if(size_packet != 0)
         {
+          lock_error_no_answer = 0;
           uint32_t error_status = CANAL2_MO->SR &  (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE);
     
           //Прийняті дані з комунікаційної плати по каналу 1
+          static unsigned int lock_error_receiving;
           if (
               (error_status == 0) &&
               (size_packet >= 3) &&
@@ -713,13 +716,17 @@ void CANAL2_MO_routine()
               (Canal2_MO_Received[size_packet - 1] == STOP_BYTE_MO)  
             )   
           {
+            lock_error_receiving = 0;
             if ((Canal2_MO_Received[1] == my_address_mo))
             {
               //Перевіряємо контрольну суму
               sum = 0;
               for (int32_t i = 0; i < (size_packet - 3); i++) sum += Canal2_MO_Received[1 + i];
+        
+              static unsigned int lock_error_received_packet;
               if (sum == Canal2_MO_Received[size_packet - 2])
               { 
+                lock_error_received_packet = 0;
                 if (
                     !(
                       ((_GET_STATE(queue_mo, STATE_QUEUE_MO_BREAK_LAST_ACTION_IN_IEC       )) && (Canal2_MO_Received[3] == CONFIRM_BREAKING_LAST_ACTION  )       ) ||
@@ -744,19 +751,31 @@ void CANAL2_MO_routine()
               }
               else 
               {
-                _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_2);
+                if (++lock_error_received_packet >= 5)
+                {
+                  _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_2);
+                  lock_error_received_packet &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+                }
               }
             }
           }
           else 
           {
-            _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_2);
+            if (++lock_error_receiving >= 5)
+            {
+              _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_2);
+              lock_error_receiving &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+            }
             CANAL2_MO_state = CANAL2_MO_ERROR;
           }
         }
         else 
         {
-          _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_2);
+          if (++lock_error_no_answer >= 5)
+          {
+            _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_2);
+            lock_error_no_answer &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+          }
           CANAL2_MO_state = CANAL2_MO_ERROR;
         }
       }
