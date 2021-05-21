@@ -4733,7 +4733,7 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
     unsigned int max_faze_current_tmp = measurement[IM_IA];
     if (max_faze_current_tmp < measurement[IM_IB]) max_faze_current_tmp = measurement[IM_IB];
     if (max_faze_current_tmp < measurement[IM_IC]) max_faze_current_tmp = measurement[IM_IC];
-    max_faze_current_tmp = max_faze_current_tmp*current_settings_prt.TCurrent/1000;
+    max_faze_current_tmp = lroundf((float)(max_faze_current_tmp*current_settings_prt.TCurrent)/1000.0f);
   
     if (_CHECK_SET_BIT(previous_active_functions, RANG_WORK_BO) == 0)
     {
