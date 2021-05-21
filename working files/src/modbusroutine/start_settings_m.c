@@ -40,5 +40,8 @@ void global_component_installation(void) {
   constructorMMSBigComponent(&(config_array[MMSBIGCOMPONENT]));//подготовка компонента mms
   constructorLANBigComponent(&(config_array[LANBIGCOMPONENT]));//подготовка компонента lan
 #endif
+#ifdef  MODYFIKACIA_VERSII_DS
+  constructorDOUTBigDSComponent(&(config_array[DOUTBIGDSCOMPONENT]));//подготовка компонента DS
+#endif
 }//global_vareiables_installation_bo(void)
 

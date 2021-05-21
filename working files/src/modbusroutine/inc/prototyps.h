@@ -2,14 +2,11 @@
 #define __PROTOTYPS_H
 
 void global_component_installation(void);
-//int  superReader20(int);
-//int  superReader20Pro(int);
 int  superReaderRegister(int);
 int  superWriterRegister(int, int);
 int  superReaderBit(int);
 int  superWriterBit(int, int);
-void superPreReadAction(void);
-void superPreWriteAction(void);
+void superPreAction(void);
 int  superPostWriteAction(void);
 void superSetOperativMarker(COMPONENT_OBJ *component, int adrReg);
 void superSetTempWriteArray(int dataReg);
@@ -69,4 +66,14 @@ void constructorGOOSBigComponent(COMPONENT_OBJ *);
 void constructorMMSBigComponent(COMPONENT_OBJ *);
 void constructorLANBigComponent(COMPONENT_OBJ *);
 #endif
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 23) ||    \
+     (MODYFIKACIA_VERSII_PZ == 24) ||    \
+     (MODYFIKACIA_VERSII_PZ == 26)||    \
+     (MODYFIKACIA_VERSII_PZ == 33)||    \
+     (MODYFIKACIA_VERSII_PZ == 34)      \
+    )   
+void constructorDOUTBigDSComponent(COMPONENT_OBJ *);
+#endif
+
 #endif

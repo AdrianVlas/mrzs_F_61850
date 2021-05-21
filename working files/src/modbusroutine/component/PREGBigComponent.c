@@ -16,9 +16,6 @@ int getPREGBigModbusBit(int);//получить содержимое бита
 int setPREGBigModbusRegister(int, int);//получить содержимое регистра
 int setPREGBigModbusBit(int, int);//получить содержимое бита
 
-void setPREGBigCountObject(void);//записать к-во обектов
-void prePREGBigReadAction(void);//action до чтения
-void prePREGBigWriteAction(void);//action до записи
 int  postPREGBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *pregbigcomponent;
@@ -35,11 +32,7 @@ void constructorPREGBigComponent(COMPONENT_OBJ *pregbigcomp)
   pregbigcomponent->setModbusRegister = setPREGBigModbusRegister;//получить содержимое регистра
   pregbigcomponent->setModbusBit      = setPREGBigModbusBit;//получить содержимое бита
 
-  pregbigcomponent->preReadAction   = prePREGBigReadAction;//action до чтения
-  pregbigcomponent->preWriteAction  = prePREGBigWriteAction;//action до записи
   pregbigcomponent->postWriteAction = postPREGBigWriteAction;//action после записи
-
-  pregbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getPREGBigModbusRegister(int adrReg)
@@ -80,11 +73,9 @@ int getPREGBigModbusRegister(int adrReg)
     case 17:
     case 18:
     case 19:
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     case 20:
     case 21:
-#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-    case 22:
-    case 23:
 #endif      
       if (
         ((pointInterface==USB_RECUEST) && (number_record_of_pr_err_into_USB   == 0xffff)) 
@@ -218,11 +209,9 @@ int getPREGBigModbusRegister(int adrReg)
                 case 14:
                 case 15:
                 case 16:
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                 case 17:
                 case 18:
-#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-                case 19:
-                case 20:
 #endif
                 {
                   return (((*(point_to_buffer + 15 + 2*(offset_tmp - 6)))  << 8) | (*(point_to_buffer + 14 + 2*(offset_tmp - 6)))) &0xFFFF;
@@ -318,18 +307,6 @@ int getPREGBigModbusRegister(int adrReg)
     return MARKER_OUTPERIMETR;
   }//getDOUTBigModbusRegister(int adrReg)
 
-  void prePREGBigReadAction(void)
-  {
-//action до чтения
-    pregbigcomponent->isActiveActualData = 1;
-  }//
-  void prePREGBigWriteAction(void)
-  {
-//action до записи
-    pregbigcomponent->operativMarker[0] = -1;
-    pregbigcomponent->operativMarker[1] = -1;//оперативный маркер
-    pregbigcomponent->isActiveActualData = 1;
-  }//
   int postPREGBigWriteAction(void)
   {
 //action после записи

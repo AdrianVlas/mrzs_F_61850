@@ -18,9 +18,6 @@ int getLANBigModbusBit(int);//получить содержимое бита
 int setLANBigModbusRegister(int, int);//получить содержимое регистра
 int setLANBigModbusBit(int, int);//получить содержимое бита
 
-void setLANBigCountObject(void);//записать к-во обектов
-void preLANBigReadAction(void);//action до чтения
-void preLANBigWriteAction(void);//action до записи
 int  postLANBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *lanbigcomponent;
@@ -37,11 +34,7 @@ void constructorLANBigComponent(COMPONENT_OBJ *lanbigcomp)
   lanbigcomponent->setModbusRegister = setLANBigModbusRegister;//получить содержимое регистра
   lanbigcomponent->setModbusBit      = setLANBigModbusBit;//получить содержимое бита
 
-  lanbigcomponent->preReadAction   = preLANBigReadAction;//action до чтения
-  lanbigcomponent->preWriteAction  = preLANBigWriteAction;//action до записи
   lanbigcomponent->postWriteAction = postLANBigWriteAction;//action после записи
-
-  lanbigcomponent->isActiveActualData = 0;
 }//
 
 int getLANBigModbusRegister(int adrReg)
@@ -95,16 +88,6 @@ int setLANBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//setLANBigModbusBit
 
-void preLANBigReadAction(void) {
-//action до чтения
-  lanbigcomponent->isActiveActualData = 1;
-}//
-void preLANBigWriteAction(void) {
-//action до записи
-  lanbigcomponent->operativMarker[0] = -1;
-  lanbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  lanbigcomponent->isActiveActualData = 1;
-}//
 int postLANBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

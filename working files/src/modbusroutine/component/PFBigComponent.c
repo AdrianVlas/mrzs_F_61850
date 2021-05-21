@@ -14,9 +14,6 @@ int getPFBigModbusBit(int);//получить содержимое бита
 int setPFBigModbusRegister(int, int);//получить содержимое регистра
 int setPFBigModbusBit(int, int);//получить содержимое бита
 
-void setPFBigCountObject(void);//записать к-во обектов
-void prePFBigReadAction(void);//action до чтения
-void prePFBigWriteAction(void);//action до записи
 int  postPFBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *pfbigcomponent;
@@ -33,11 +30,7 @@ void constructorPFBigComponent(COMPONENT_OBJ *pfbigcomp)
   pfbigcomponent->setModbusRegister = setPFBigModbusRegister;//получить содержимое регистра
   pfbigcomponent->setModbusBit      = setPFBigModbusBit;//получить содержимое бита
 
-  pfbigcomponent->preReadAction   = prePFBigReadAction;//action до чтения
-  pfbigcomponent->preWriteAction  = prePFBigWriteAction;//action до записи
   pfbigcomponent->postWriteAction = postPFBigWriteAction;//action после записи
-
-  pfbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getPFBigModbusRegister(int adrReg)
@@ -112,16 +105,6 @@ int setPFBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void prePFBigReadAction(void) {
-//action до чтения
-  pfbigcomponent->isActiveActualData = 1;
-}//
-void prePFBigWriteAction(void) {
-//action до записи
-  pfbigcomponent->operativMarker[0] = -1;
-  pfbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  pfbigcomponent->isActiveActualData = 1;
-}//
 int postPFBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

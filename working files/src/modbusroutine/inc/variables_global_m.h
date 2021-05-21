@@ -1,9 +1,7 @@
 #ifndef __GLOBAL_VARIABLES_M_H
 #define __GLOBAL_VARIABLES_M_H
 
-#include "componentdef.h"
-#include "componentenum.h"
-#include "prototyps.h"
+#include "header_m.h"
 
  COMPONENT_OBJ config_array[TOTAL_COMPONENT];
  short tempReadArray[130];

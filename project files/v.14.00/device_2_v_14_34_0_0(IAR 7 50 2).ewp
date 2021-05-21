@@ -77,7 +77,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.50.2.10499</state>
+          <state>7.40.3.8937</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -924,7 +924,7 @@
         </option>
         <option>
           <name>IlinkStackControlFile</name>
-          <state>$PROJ_DIR$\..\with iec61850\StackDepth.suc</state>
+          <state>$PROJ_DIR$\..\with iec61850\StackDepthDS.suc</state>
         </option>
         <option>
           <name>IlinkStackCallGraphFile</name>
@@ -1572,7 +1572,7 @@
     <group>
       <name>with iec61850</name>
       <file>
-        <name>$PROJ_DIR$\..\with iec61850\StackDepth.suc</name>
+        <name>$PROJ_DIR$\..\with iec61850\StackDepthDS.suc</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\with iec61850\stm32f2xx_flash.icf</name>
@@ -5545,6 +5545,9 @@
             </file>
             <file>
               <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigComponent.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigDSComponent.c</name>
             </file>
             <file>
               <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTSmallComponent.c</name>

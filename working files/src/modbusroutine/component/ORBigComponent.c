@@ -14,9 +14,6 @@ int getORBigModbusBit(int);//получить содержимое бита
 int setORBigModbusRegister(int, int);//получить содержимое регистра
 int setORBigModbusBit(int, int);//получить содержимое бита
 
-void setORBigCountObject(void);//записать к-во обектов
-void preORBigReadAction(void);//action до чтения
-void preORBigWriteAction(void);//action до записи
 int  postORBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *orbigcomponent;
@@ -33,11 +30,7 @@ void constructorORBigComponent(COMPONENT_OBJ *orbigcomp)
   orbigcomponent->setModbusRegister = setORBigModbusRegister;//получить содержимое регистра
   orbigcomponent->setModbusBit      = setORBigModbusBit;//получить содержимое бита
 
-  orbigcomponent->preReadAction   = preORBigReadAction;//action до чтения
-  orbigcomponent->preWriteAction  = preORBigWriteAction;//action до записи
   orbigcomponent->postWriteAction = postORBigWriteAction;//action после записи
-
-  orbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getORBigModbusRegister(int adrReg)
@@ -79,16 +72,6 @@ int setORBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preORBigReadAction(void) {
-//action до чтения
-  orbigcomponent->isActiveActualData = 1;
-}//
-void preORBigWriteAction(void) {
-//action до записи
-  orbigcomponent->operativMarker[0] = -1;
-  orbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  orbigcomponent->isActiveActualData = 1;
-}//
 int postORBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

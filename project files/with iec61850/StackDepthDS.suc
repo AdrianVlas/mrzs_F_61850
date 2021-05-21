@@ -51,6 +51,7 @@ possible calls superPostWriteAction :
 postACMDSmallWriteAction,
                                      postAISmallWriteAction, postANDBigWriteAction,
                                      postDOUTBigWriteAction, postDOUTSmallWriteAction, postDTRBigWriteAction,
+                                     postDOUTBigDSWriteAction,
                                      postDVBigWriteAction,   postDVSmallWriteAction,   postGCMDSmallWriteAction,
                                      postIUSmallWriteAction, postKEYBigWriteAction,    
                                      postMFTBigWriteAction,  postNOTBigWriteAction,    postORBigWriteAction,
@@ -60,7 +61,8 @@ postACMDSmallWriteAction,
                                      postRPRBigWriteAction,   postRPRSmallWriteAction,  postSDIBigWriteAction,
                                      postSDISmallWriteAction, postUPRBigWriteAction,    postUSTBigWriteAction,
                                      postVVBigWriteAction,
-                                     postXORBigWriteAction,   postYustBigWriteAction
+                                     postXORBigWriteAction,   postYustBigWriteAction,
+                                     postGOOSBigWriteAction,  postMMSBigWriteAction,   postLANBigWriteAction
                                      ;
 
 
@@ -68,6 +70,7 @@ possible calls  superReaderRegister:
 getACMDSmallModbusRegister,
                                      getAISmallModbusRegister, getANDBigModbusRegister,
                                      getDOUTBigModbusRegister, getDOUTSmallModbusRegister, getDTRBigModbusRegister,
+                                     getDOUTBigDSModbusRegister,
                                      getDVBigModbusRegister,   getDVSmallModbusRegister,   getGCMDSmallModbusRegister,
                                      getIUSmallModbusRegister, getKEYBigModbusRegister,    
                                      getMFTBigModbusRegister,  getNOTBigModbusRegister,    getORBigModbusRegister,
@@ -77,7 +80,8 @@ getACMDSmallModbusRegister,
                                      getRPRBigModbusRegister,   getRPRSmallModbusRegister,  getSDIBigModbusRegister,
                                      getSDISmallModbusRegister, getUPRBigModbusRegister,    getUSTBigModbusRegister,
                                      getVVBigModbusRegister,
-                                     getXORBigModbusRegister,   getYustBigModbusRegister
+                                     getXORBigModbusRegister,   getYustBigModbusRegister,
+                                     getGOOSBigModbusRegister,  getMMSBigModbusRegister,    getLANBigModbusRegister
                                      ;
 //exclude loadRPRSmallActualData;
 max recursion depth getRPRSmallModbusRegister : 1;
@@ -86,6 +90,7 @@ possible calls superReaderBit :
 getACMDSmallModbusBit,
                                      getAISmallModbusBit, getANDBigModbusBit,
                                      getDOUTBigModbusBit, getDOUTSmallModbusBit, getDTRBigModbusBit,
+                                     getDOUTBigDSModbusBit,
                                      getDVBigModbusBit,   getDVSmallModbusBit,   getGCMDSmallModbusBit,
                                      getIUSmallModbusBit, getKEYBigModbusBit,    
                                      getMFTBigModbusBit,  getNOTBigModbusBit,    getORBigModbusBit,
@@ -95,13 +100,15 @@ getACMDSmallModbusBit,
                                      getRPRBigModbusBit,   getRPRSmallModbusBit,  getSDIBigModbusBit,
                                      getSDISmallModbusBit, getUPRBigModbusBit,    getUSTBigModbusBit,
                                      getVVBigModbusBit,
-                                     getXORBigModbusBit,   getYustBigModbusBit
+                                     getXORBigModbusBit,   getYustBigModbusBit,
+                                     getGOOSBigModbusBit,  getMMSBigModbusBit,    getLANBigModbusBit
                                      ;
                                      
 possible calls superWriterRegister:  
 setACMDSmallModbusRegister,
                                      setAISmallModbusRegister, setANDBigModbusRegister,
                                      setDOUTBigModbusRegister, setDOUTSmallModbusRegister, setDTRBigModbusRegister,
+                                     setDOUTBigDSModbusRegister,
                                      setDVBigModbusRegister,   setDVSmallModbusRegister,   setGCMDSmallModbusRegister,
                                      setIUSmallModbusRegister, setKEYBigModbusRegister,    
                                      setMFTBigModbusRegister,  setNOTBigModbusRegister,    setORBigModbusRegister,
@@ -111,13 +118,15 @@ setACMDSmallModbusRegister,
                                      setRPRBigModbusRegister,   setRPRSmallModbusRegister,  setSDIBigModbusRegister,
                                      setSDISmallModbusRegister, setUPRBigModbusRegister,    setUSTBigModbusRegister,
                                      setVVBigModbusRegister,
-                                     setXORBigModbusRegister,   setYustBigModbusRegister
+                                     setXORBigModbusRegister,   setYustBigModbusRegister,
+                                     setGOOSBigModbusRegister,  setMMSBigModbusRegister,    setLANBigModbusRegister
                                      ;
 
 possible calls superWriterBit :      
 setACMDSmallModbusBit,
                                      setAISmallModbusBit, setANDBigModbusBit,
                                      setDOUTBigModbusBit, setDOUTSmallModbusBit, setDTRBigModbusBit,
+                                     setDOUTBigDSModbusBit,
                                      setDVBigModbusBit,   setDVSmallModbusBit,   setGCMDSmallModbusBit,
                                      setIUSmallModbusBit, setKEYBigModbusBit,    
                                      setMFTBigModbusBit,  setNOTBigModbusBit,    setORBigModbusBit,
@@ -127,7 +136,8 @@ setACMDSmallModbusBit,
                                      setRPRBigModbusBit,   setRPRSmallModbusBit,  setSDIBigModbusBit,
                                      setSDISmallModbusBit, setUPRBigModbusBit,    setUSTBigModbusBit,
                                      setVVBigModbusBit,
-                                     setXORBigModbusBit,   setYustBigModbusBit
+                                     setXORBigModbusBit,   setYustBigModbusBit,
+                                     setGOOSBigModbusBit,  setMMSBigModbusBit,   setLANBigModbusBit
                                      ;
 
 

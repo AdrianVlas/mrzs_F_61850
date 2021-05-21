@@ -18,9 +18,6 @@ int getGOOSBigModbusBit(int);//получить содержимое бита
 int setGOOSBigModbusRegister(int, int);//получить содержимое регистра
 int setGOOSBigModbusBit(int, int);//получить содержимое бита
 
-void setGOOSBigCountObject(void);//записать к-во обектов
-void preGOOSBigReadAction(void);//action до чтения
-void preGOOSBigWriteAction(void);//action до записи
 int  postGOOSBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *goosbigcomponent;
@@ -37,11 +34,7 @@ void constructorGOOSBigComponent(COMPONENT_OBJ *goosbigcomp)
   goosbigcomponent->setModbusRegister = setGOOSBigModbusRegister;//получить содержимое регистра
   goosbigcomponent->setModbusBit      = setGOOSBigModbusBit;//получить содержимое бита
 
-  goosbigcomponent->preReadAction   = preGOOSBigReadAction;//action до чтения
-  goosbigcomponent->preWriteAction  = preGOOSBigWriteAction;//action до записи
   goosbigcomponent->postWriteAction = postGOOSBigWriteAction;//action после записи
-
-  goosbigcomponent->isActiveActualData = 0;
 }//
 
 int getGOOSBigModbusRegister(int adrReg)
@@ -120,16 +113,6 @@ int setGOOSBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//
 
-void preGOOSBigReadAction(void) {
-//action до чтения
-  goosbigcomponent->isActiveActualData = 1;
-}//
-void preGOOSBigWriteAction(void) {
-//action до записи
-  goosbigcomponent->operativMarker[0] = -1;
-  goosbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  goosbigcomponent->isActiveActualData = 1;
-}//
 int postGOOSBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

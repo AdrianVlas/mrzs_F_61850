@@ -27,9 +27,6 @@ int getUSTBigModbusBit(int);//получить содержимое бита
 int setUSTBigModbusRegister(int, int);//получить содержимое регистра
 int setUSTBigModbusBit(int, int);//получить содержимое бита
 
-void setUSTBigCountObject(void);//записать к-во обектов
-void preUSTBigReadAction(void);//action до чтения
-void preUSTBigWriteAction(void);//action до записи
 int  postUSTBigWriteAction(void);//action после записи
 int  ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **editValue);
 int grupa_ustavok_control(int  offset, int *grupa_ustavok, int *adresGruppa);
@@ -991,11 +988,7 @@ void constructorUSTBigComponent(COMPONENT_OBJ *ustbigcomp)
   ustbigcomponent->setModbusRegister = setUSTBigModbusRegister;//получить содержимое регистра
   ustbigcomponent->setModbusBit      = setUSTBigModbusBit;//получить содержимое бита
 
-  ustbigcomponent->preReadAction   = preUSTBigReadAction;//action до чтения
-  ustbigcomponent->preWriteAction  = preUSTBigWriteAction;//action до записи
   ustbigcomponent->postWriteAction = postUSTBigWriteAction;//action после записи
-
-  ustbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getUSTBigModbusRegister(int adrReg)
@@ -1245,18 +1238,6 @@ int setUSTBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preUSTBigReadAction(void)
-{
-//action до чтения
-  ustbigcomponent->isActiveActualData = 1;
-}//
-void preUSTBigWriteAction(void)
-{
-//action до записи
-  ustbigcomponent->operativMarker[0] = -1;
-  ustbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  ustbigcomponent->isActiveActualData = 1;
-}//
 int postUSTBigWriteAction(void)
 {
   extern int upravlSetting;//флаг Setting

@@ -15,9 +15,6 @@ int getDTRBigModbusBit(int);//получить содержимое бита
 int setDTRBigModbusRegister(int, int);// регистра
 int setDTRBigModbusBit(int, int);// бита
 
-void setDTRBigCountObject(void);//записать к-во обектов
-void preDTRBigReadAction(void);//action до чтения
-void preDTRBigWriteAction(void);//action до записи
 int  postDTRBigWriteAction(void);//action после записи
 
 int validDTRN_BIGACMD(unsigned short dataReg, int actControl);
@@ -37,11 +34,7 @@ void constructorDTRBigComponent(COMPONENT_OBJ *dtrbigcomp)
   dtrbigcomponent->setModbusRegister = setDTRBigModbusRegister;// регистра
   dtrbigcomponent->setModbusBit      = setDTRBigModbusBit;// бита
 
-  dtrbigcomponent->preReadAction   = preDTRBigReadAction;//action до чтения
-  dtrbigcomponent->preWriteAction  = preDTRBigWriteAction;//action до записи
   dtrbigcomponent->postWriteAction = postDTRBigWriteAction;//action после записи
-
-  dtrbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getDTRBigModbusRegister(int adrReg)
@@ -100,16 +93,6 @@ int setDTRBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preDTRBigReadAction(void) {
-//action до чтения
-  dtrbigcomponent->isActiveActualData = 1;
-}//
-void preDTRBigWriteAction(void) {
-//action до записи
-  dtrbigcomponent->operativMarker[0] = -1;
-  dtrbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  dtrbigcomponent->isActiveActualData = 1;
-}//
 int postDTRBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

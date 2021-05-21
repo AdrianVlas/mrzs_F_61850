@@ -28,8 +28,6 @@ int getACMDSmallModbusBit(int);//получить содержимое бита
 int setACMDSmallModbusRegister(int, int);//записать регистр
 int setACMDSmallModbusBit(int, int);//записать бит
 
-void preACMDSmallReadAction(void);//action до чтения
-void preACMDSmallWriteAction(void);//action до записи
 int  postACMDSmallWriteAction(void);//action после записи
 
 int  cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl);
@@ -321,7 +319,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     break;
 //123456
 #else
-#define ZDZ_CONFIGURATION_END 116 /*???*/
+#define ZDZ_CONFIGURATION_END 116 
 #endif
 
 //  count_bit = 5;
@@ -1232,11 +1230,7 @@ void constructorACMDSmallComponent(COMPONENT_OBJ *acmdcomp)
   acmdsmallcomponent->setModbusRegister = setACMDSmallModbusRegister;// регистра
   acmdsmallcomponent->setModbusBit      = setACMDSmallModbusBit;// бита
 
-  acmdsmallcomponent->preReadAction   = preACMDSmallReadAction;//action до чтения
-  acmdsmallcomponent->preWriteAction  = preACMDSmallWriteAction;//action до записи
   acmdsmallcomponent->postWriteAction = postACMDSmallWriteAction;//action после записи
-
-  acmdsmallcomponent->isActiveActualData = 0;
 
   for(int i=0; i<N_BIG*32; i++)   decoderN_BIGACMDArray[i] = (unsigned short)decoderN_BIGACMDArrayLoader(i);//декодировщик индекса бита в адрес modbus  для реле
   for(int i=0; i<N_SMALL*32; i++) decoderN_SMALLACMDArray[i] = (unsigned short)decoderN_SMALLACMDArrayLoader(i);//декодировщик индекса бита в адрес modbus  для DV
@@ -1937,18 +1931,6 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   return MARKER_ERRORPERIMETR;
 }//writeACMDSmallActualDataBit(int offset)
 
-void preACMDSmallReadAction(void)
-{
-//action до чтения
-  acmdsmallcomponent->isActiveActualData = 1;
-}//
-void preACMDSmallWriteAction(void)
-{
-//action до записи
-  acmdsmallcomponent->operativMarker[0] = -1;
-  acmdsmallcomponent->operativMarker[1] = -1;//оперативный маркер
-  acmdsmallcomponent->isActiveActualData = 1;
-}//
 int postACMDSmallWriteAction(void)
 {
 //action после записи

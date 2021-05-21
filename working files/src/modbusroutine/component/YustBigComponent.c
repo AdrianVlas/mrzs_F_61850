@@ -12,8 +12,6 @@ int getYustBigModbusBit(int);//получить содержимое бита
 int setYustBigModbusRegister(int, int);//получить содержимое регистра
 int setYustBigModbusBit(int, int);//получить содержимое бита
 
-void preYustBigReadAction(void);//action до чтения
-void preYustBigWriteAction(void);//action до записи
 int postYustBigWriteAction(void);//action после записи
 int passwordImunitetRegYUSTBigComponent(int adrReg);
 
@@ -33,11 +31,7 @@ void constructorYustBigComponent(COMPONENT_OBJ *yustbigcomp)
   yustbigcomponent->setModbusRegister = setYustBigModbusRegister;//получить содержимое регистра
   yustbigcomponent->setModbusBit      = setYustBigModbusBit;//получить содержимое бита
 
-  yustbigcomponent->preReadAction   = preYustBigReadAction;//action до чтения
-  yustbigcomponent->preWriteAction  = preYustBigWriteAction;//action до записи
   yustbigcomponent->postWriteAction = postYustBigWriteAction;//action после записи
-
-  yustbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getYustBigModbusRegister(int adrReg)
@@ -109,20 +103,6 @@ int setYustBigModbusBit(int x, int y)
   //записать содержимое bit
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
-
-void preYustBigReadAction(void) {
-//action до чтения
-  yustbigcomponent->operativMarker[0] = -1;
-  yustbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  yustbigcomponent->isActiveActualData = 1;
-}//
-
-void preYustBigWriteAction(void) {
-//action до записи
-  yustbigcomponent->operativMarker[0] = -1;
-  yustbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  yustbigcomponent->isActiveActualData = 1;
-}//
 
 int postYustBigWriteAction(void) {
 //action после записи

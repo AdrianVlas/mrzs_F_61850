@@ -12,9 +12,6 @@ int getPKVBigModbusBit(int);//получить содержимое бита
 int setPKVBigModbusRegister(int, int);//получить содержимое регистра
 int setPKVBigModbusBit(int, int);//получить содержимое бита
 
-void setPKVBigCountObject(void);//записать к-во обектов
-void prePKVBigReadAction(void);//action до чтения
-void prePKVBigWriteAction(void);//action до записи
 int  postPKVBigWriteAction(void);//action после записи
 int PKVFunc000(int inOffset, int regPKV, uint32_t **editValue);
 int passwordImunitetRegPKVBigComponent(int x);
@@ -126,11 +123,7 @@ void constructorPKVBigComponent(COMPONENT_OBJ *pkvbigcomp)
   pkvbigcomponent->setModbusRegister = setPKVBigModbusRegister;//получить содержимое регистра
   pkvbigcomponent->setModbusBit      = setPKVBigModbusBit;//получить содержимое бита
 
-  pkvbigcomponent->preReadAction   = prePKVBigReadAction;//action до чтения
-  pkvbigcomponent->preWriteAction  = prePKVBigWriteAction;//action до записи
   pkvbigcomponent->postWriteAction = postPKVBigWriteAction;//action после записи
-
-  pkvbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getPKVBigModbusRegister(int adrReg)
@@ -292,18 +285,6 @@ int setPKVBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void prePKVBigReadAction(void)
-{
-//action до чтения
-  pkvbigcomponent->isActiveActualData = 1;
-}//
-void prePKVBigWriteAction(void)
-{
-//action до записи
-  pkvbigcomponent->operativMarker[0] = -1;
-  pkvbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  pkvbigcomponent->isActiveActualData = 1;
-}//
 int postPKVBigWriteAction(void)
 {
   extern int upravlSetting;//флаг Setting

@@ -60,8 +60,6 @@ int getRAISmallModbusBit(int);//получить содержимое бита
 int setRAISmallModbusRegister(int, int);//получить содержимое регистра
 int setRAISmallModbusBit(int, int);//получить содержимое бита
 
-void preRAISmallReadAction(void);//action до чтения
-void preRAISmallWriteAction(void);//action до записи
 int  postRAISmallWriteAction(void);//action после записи
 
 int privateRAISmallGetReg2(int adrReg);
@@ -80,11 +78,7 @@ void constructorRAISmallComponent(COMPONENT_OBJ *raismallcomp)
   raismallcomponent->setModbusRegister = setRAISmallModbusRegister;//получить содержимое регистра
   raismallcomponent->setModbusBit      = setRAISmallModbusBit;//получить содержимое бита
 
-  raismallcomponent->preReadAction   = preRAISmallReadAction;//action до чтения
-  raismallcomponent->preWriteAction  = preRAISmallWriteAction;//action до записи
   raismallcomponent->postWriteAction = postRAISmallWriteAction;//action после записи
-
-  raismallcomponent->isActiveActualData = 0;
 }//constructorIUSmallComponent(COMPONENT_OBJ *iucomp)
 
 int getRAISmallModbusRegister(int adrReg)
@@ -410,17 +404,6 @@ int setRAISmallModbusBit(int x, int y) {
   return MARKER_OUTPERIMETR;
 }//setIUModbusBit(int, int )
 
-void preRAISmallReadAction(void) {
-//action до чтения
-  raismallcomponent->isActiveActualData = 1;
-}//
-
-void preRAISmallWriteAction(void) {
-//action до записи
-  raismallcomponent->operativMarker[0] = -1;
-  raismallcomponent->operativMarker[1] = -1;//оперативный маркер
-  raismallcomponent->isActiveActualData = 1;
-}//
 int postRAISmallWriteAction(void) {
 //action после записи
   return 0;

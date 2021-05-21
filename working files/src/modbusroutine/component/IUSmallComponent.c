@@ -10,8 +10,6 @@ int getIUSmallModbusBit(int);//получить содержимое бита
 int setIUSmallModbusRegister(int, int);//получить содержимое регистра
 int setIUSmallModbusBit(int, int);//получить содержимое бита
 
-void preIUSmallReadAction(void);//action до чтения
-void preIUSmallWriteAction(void);//action до записи
 int postIUSmallWriteAction(void);//action после записи
 
 int privateIUGetReg2(int adrReg);
@@ -30,11 +28,7 @@ void constructorIUSmallComponent(COMPONENT_OBJ *iucomp)
   iucomponent->setModbusRegister = setIUSmallModbusRegister;//получить содержимое регистра
   iucomponent->setModbusBit      = setIUSmallModbusBit;//получить содержимое бита
 
-  iucomponent->preReadAction   = preIUSmallReadAction;//action до чтения
-  iucomponent->preWriteAction  = preIUSmallWriteAction;//action до записи
   iucomponent->postWriteAction = postIUSmallWriteAction;//action после записи
-
-  iucomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getIUSmallModbusRegister(int adrReg)
@@ -116,16 +110,6 @@ int setIUSmallModbusBit(int x, int y) {
   return MARKER_OUTPERIMETR;
 }//setIUModbusBit(int, int )
 
-void preIUSmallReadAction(void) {
-//action до чтения
-  iucomponent->isActiveActualData = 1;
-}//
-void preIUSmallWriteAction(void) {
-//action до записи
-  iucomponent->operativMarker[0] = -1;
-  iucomponent->operativMarker[1] = -1;//оперативный маркер
-  iucomponent->isActiveActualData = 1;
-}//
 int postIUSmallWriteAction(void) {
 //action после записи
  return 0;

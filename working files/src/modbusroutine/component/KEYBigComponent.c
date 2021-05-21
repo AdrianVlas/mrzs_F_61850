@@ -14,9 +14,6 @@ int getKEYBigModbusBit(int);//получить содержимое бита
 int setKEYBigModbusRegister(int, int);// регистра
 int setKEYBigModbusBit(int, int);// бита
 
-void setKEYBigCountObject(void);//записать к-во обектов
-void preKEYBigReadAction(void);//action до чтения
-void preKEYBigWriteAction(void);//action до записи
 int  postKEYBigWriteAction(void);//action после записи
 
 COMPONENT_OBJ *keybigcomponent;
@@ -33,11 +30,7 @@ void constructorKEYBigComponent(COMPONENT_OBJ *keybigcomp)
   keybigcomponent->setModbusRegister = setKEYBigModbusRegister;// регистра
   keybigcomponent->setModbusBit      = setKEYBigModbusBit;// бита
 
-  keybigcomponent->preReadAction   = preKEYBigReadAction;//action до чтения
-  keybigcomponent->preWriteAction  = preKEYBigWriteAction;//action до записи
   keybigcomponent->postWriteAction = postKEYBigWriteAction;//action после записи
-
-  keybigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getKEYBigModbusRegister(int adrReg)
@@ -193,16 +186,6 @@ int setKEYBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preKEYBigReadAction(void) {
-//action до чтения
-  keybigcomponent->isActiveActualData = 1;
-}//
-void preKEYBigWriteAction(void) {
-//action до записи
-  keybigcomponent->operativMarker[0] = -1;
-  keybigcomponent->operativMarker[1] = -1;//оперативный маркер
-  keybigcomponent->isActiveActualData = 1;
-}//
 int postKEYBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

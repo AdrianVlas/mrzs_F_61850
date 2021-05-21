@@ -16,8 +16,6 @@ int getREGBigModbusRegister(int);//получить содержимое регистра
 int getREGBigModbusBit(int);//получить содержимое бита
 int setREGBigModbusRegister(int, int);//получить содержимое регистра
 int setREGBigModbusBit(int, int);//получить содержимое бита
-void preREGBigReadAction(void);//action до чтения
-void preREGBigWriteAction(void);//action до записи
 
 int  postREGBigWriteAction(void);//action после записи
 int passwordImunitetRegREGBigComponent(int adrReg);
@@ -36,25 +34,8 @@ void constructorREGBigComponent(COMPONENT_OBJ *regbigcomp)
   regbigcomponent->setModbusRegister = setREGBigModbusRegister;//получить содержимое регистра
   regbigcomponent->setModbusBit      = setREGBigModbusBit;//получить содержимое бита
 
-  regbigcomponent->preReadAction   = preREGBigReadAction;//action до чтения
-  regbigcomponent->preWriteAction  = preREGBigWriteAction;//action до записи
-
   regbigcomponent->postWriteAction = postREGBigWriteAction;//action после записи
-  regbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
-
-void preREGBigReadAction(void)
-{
-//action до чтения
-  regbigcomponent->isActiveActualData = 1;
-}//
-void preREGBigWriteAction(void)
-{
-//action до записи
-  regbigcomponent->operativMarker[0] = -1;
-  regbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  regbigcomponent->isActiveActualData = 1;
-}//
 
 int getREGBigModbusRegister(int adrReg)
 {
