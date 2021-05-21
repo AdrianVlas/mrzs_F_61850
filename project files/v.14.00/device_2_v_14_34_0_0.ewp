@@ -943,7 +943,7 @@
                 </option>
                 <option>
                     <name>IlinkStackControlFile</name>
-                    <state>$PROJ_DIR$\..\with iec61850\StackDepth.suc</state>
+                    <state>$PROJ_DIR$\..\with iec61850\StackDepthDS.suc</state>
                 </option>
                 <option>
                     <name>IlinkStackCallGraphFile</name>
@@ -1646,7 +1646,7 @@
         <group>
             <name>with iec61850</name>
             <file>
-                <name>$PROJ_DIR$\..\with iec61850\StackDepth.suc</name>
+                <name>$PROJ_DIR$\..\with iec61850\StackDepthDS.suc</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\with iec61850\stm32f2xx_flash.icf</name>
@@ -5557,6 +5557,9 @@
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTBigDSComponent.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\DOUTSmallComponent.c</name>

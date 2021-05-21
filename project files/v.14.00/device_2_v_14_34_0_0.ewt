@@ -1496,14 +1496,14 @@
     <group>
         <name>Linker</name>
         <group>
-            <name>without iec61850</name>
+            <name>with iec61850</name>
             <file>
-                <name>$PROJ_DIR$\..\without iec61850\stm32f2xx_flash.icf</name>
+                <name>$PROJ_DIR$\..\with iec61850\StackDepthDS.suc</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\with iec61850\stm32f2xx_flash.icf</name>
             </file>
         </group>
-        <file>
-            <name>$PROJ_DIR$\..\without iec61850\StackDepthDS.suc</name>
-        </file>
         <file>
             <name>$PROJ_DIR$\..\stm32f2xx_flash_extsram.icf</name>
         </file>
@@ -1785,9 +1785,9 @@
             <group>
                 <name>general</name>
                 <group>
-                    <name>a.24.c.d</name>
+                    <name>a.34.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.24.c.d\const_global.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.34.c.d\const_global.h</name>
                     </file>
                 </group>
                 <file>
@@ -1836,18 +1836,21 @@
             <group>
                 <name>menu</name>
                 <group>
-                    <name>a.24.c.d</name>
+                    <name>a.34.c.d</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\a.24.c.d\const_menu_outputs.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\a.34.c.d\const_menu_outputs.h</name>
                     </file>
                 </group>
                 <group>
-                    <name>without iec61850</name>
+                    <name>with iec61850</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_diagnostyka.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_diagnostyka.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\..\working files\inc\without iec61850\const_menu_inputs.h</name>
+                        <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_IEC61850.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\inc\with iec61850\const_menu_inputs.h</name>
                     </file>
                 </group>
                 <file>
@@ -2011,6 +2014,15 @@
                 </file>
             </group>
             <group>
+                <name>MO</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\const_MO.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\inc\diagnostyka_mo.h</name>
+                </file>
+            </group>
+            <group>
                 <name>protection</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\inc\const_global_timers.h</name>
@@ -2102,13 +2114,22 @@
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GCMDSmallComponent.c</name>
                     </file>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\GOOSBigComponent.c</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\IUSmallComponent.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\KEYBigComponent.c</name>
                     </file>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\LANBigComponent.c</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MFTBigComponent.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\MMSBigComponent.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\NOTBigComponent.c</name>
@@ -2268,6 +2289,9 @@
                     <name>$PROJ_DIR$\..\..\working files\src\menu_general_pickups_el.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\menu_iec61850.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\working files\src\menu_info.c</name>
                 </file>
                 <file>
@@ -2356,6 +2380,12 @@
                     <configuration>
                         <name>Flash-Debug</name>
                     </configuration>
+                </file>
+            </group>
+            <group>
+                <name>MO</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\mo.c</name>
                 </file>
             </group>
             <group>
