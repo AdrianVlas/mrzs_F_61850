@@ -23,7 +23,7 @@ int setGCMDSmallModbusBit(int, int);//записать бит
 int  postGCMDSmallWriteAction(void);//action после записи
 void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset);
 
-COMPONENT_OBJ *gcmdsmallcomponent;
+SRAM1 COMPONENT_OBJ *gcmdsmallcomponent;
 /**************************************/
 //компонент Текущие активные и сработавшие функции
 /**************************************/

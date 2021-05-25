@@ -59,7 +59,7 @@ int setDVBigModbusBit(int, int);// бита
 
 int  postDVBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *dvbigcomponent;
+SRAM1 COMPONENT_OBJ *dvbigcomponent;
 
 /**************************************/
 //подготовка компонента ДВ

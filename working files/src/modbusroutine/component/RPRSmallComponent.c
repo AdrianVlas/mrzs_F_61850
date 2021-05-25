@@ -16,7 +16,7 @@ int  postRPRSmallWriteAction(void);//action после записи
 int getRPRSmallModbusBeginAdrRegister(void);
 int getRPRSmallModbusEndAdrRegister(void);
 
-COMPONENT_OBJ *rprsmallcomponent;
+SRAM1 COMPONENT_OBJ *rprsmallcomponent;
 
 int getRPRSmallModbusBeginAdrRegister(void)
 {

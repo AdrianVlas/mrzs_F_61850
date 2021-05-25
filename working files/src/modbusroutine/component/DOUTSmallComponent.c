@@ -77,7 +77,7 @@ int setDOUTSmallModbusBit(int, int);//записать бит
 
 int  postDOUTSmallWriteAction(void);//action после записи
 
-COMPONENT_OBJ *doutsmallcomponent;
+SRAM1 COMPONENT_OBJ *doutsmallcomponent;
 
 /**************************************/
 //подготовка компонента ДВ

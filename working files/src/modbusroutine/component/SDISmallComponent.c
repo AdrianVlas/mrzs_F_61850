@@ -21,7 +21,7 @@ int setSDISmallModbusBit(int, int);//записать бит
 
 int  postSDISmallWriteAction(void);//action после записи
 
-COMPONENT_OBJ *sdismallcomponent;
+SRAM1 COMPONENT_OBJ *sdismallcomponent;
 
 /**************************************/
 //подготовка компонента ДВ

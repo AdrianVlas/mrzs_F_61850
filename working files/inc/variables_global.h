@@ -1072,6 +1072,8 @@ unsigned int tail_fifo_buffer_pr_err_records;
 unsigned int temporary_block_writing_records_pr_err_into_DataFlash;
 unsigned int etap_writing_pr_err_into_dataflash = ETAP_NONE;
 unsigned int number_recods_writing_into_dataflash_now;
+unsigned int number_record_of_stt_cmd_into_menu = 0;
+unsigned int current_number_changes_of_stt_cmd_into_menu = 0;
 unsigned int number_record_of_pr_err_into_menu = 0xffff;
 unsigned int number_record_of_pr_err_into_USB = 0xffff;
 unsigned int number_record_of_pr_err_into_RS485 = 0xffff;

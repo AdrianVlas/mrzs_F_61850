@@ -4836,6 +4836,7 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
 inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsigned int* ranguvannja_registrator)
 {
   unsigned int stop = 0;
+  long tm_o = 0;
 
   {
     int flag = 1;
@@ -4850,7 +4851,7 @@ inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsi
     if (flag)
     {
       //Зафіксовано, що ні одне джерело активації реєстратора зараз не активне
-      
+#ifdef _OLD_CODE_DR_ACTIVE      
       flag = 1;
       static unsigned int const maska_const[N_BIG] = 
       {
@@ -4914,7 +4915,21 @@ inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsi
           stop = 0xff;
         }
       }
+#endif
+        //if (global_timers[INDEX_TIMER_DR_WORK] == 0)
+        _TIMER_0_T(INDEX_TIMER_DR_WORK,current_settings_prt.timeout_prolongation_work_digital_registrator,0,0,tm_o,1);	
+        if ( tm_o == 0)
+        {
+          //Зафіксовано, що  таймер  неактивний
+        
+          //Помічаємо, що реєстратор може бути зупиненим
+          stop = 0xff;
+        }
     }
+    else{
+		tm_o = 1;
+		_TIMER_0_T(INDEX_TIMER_DR_WORK,current_settings_prt.timeout_prolongation_work_digital_registrator,1,0,tm_o,1);
+	}
   }
   
   return stop;
@@ -6123,6 +6138,8 @@ inline void routine_for_queue_dr(void)
 }
 /*****************************************************/
 
+long tstBrrFooSelector = 0;//змінна для тестів і перевірок
+
 /*****************************************************/
 //Функція обробки логіки дискретного реєстратора
 /*****************************************************/
@@ -6161,6 +6178,19 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
   static unsigned int time_from_start_record_dr;
   static unsigned int blocking_continue_monitoring_min_U;
   
+ DigRegUniqVarsAddreses  drUniqVarsAddreses = {
+	&number_items_dr,
+	&number_changes_into_dr_record,
+	&time_from_start_record_dr,
+	&blocking_continue_monitoring_min_U,
+	previous_active_functions,
+	carrent_active_functions
+};
+  
+  
+//  TestStateNameSpaceFooBrrr((DigRegUniqVarsAddreses*)&drUniqVarsAddreses);
+  //put_before_info_in_buf
+  CmdPlusTimeStampLogHundler(active_functions);
   static unsigned int const monitoring_phase_signals[N_BIG] =
   {
     MASKA_MONITOTYNG_PHASE_SIGNALES_0,
@@ -6559,7 +6589,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
          )
       {
         //Є умова запуску дискретного реєстратора
-        
+        //global_timers[INDEX_TIMER_DR_WORK] = 0;//_TIMER_0_T(INDEX_TIMER_DR_WORK,current_settings_prt.timeout_prolongation_work_digital_registrator,1,1,0,0);
         //Перевіряємо, чи при початку нового запису ми не втратимо попередню інформацію
         if(number_records_dr_waiting_for_saving_operation < WIGHT_OF_DR_WAITING)
         {
@@ -8684,7 +8714,7 @@ do{
               
   if (not_null)
   {
-    _SET_BIT(active_functions, RANG_DEFECT);
+//@    _SET_BIT(active_functions, RANG_DEFECT);
     /**************************/
     //Сигнал "Несправность Аварийная"
     /**************************/
@@ -8698,7 +8728,7 @@ do{
     }
     if (not_null)
     {
-      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+//@      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
 //       #warning "No Avar Error"
     }
     else
@@ -9442,7 +9472,7 @@ do{
     previous_active_functions[i] = temp_data;
   }
   /**************************/
-
+  CmdPlusTimeLogHundler(active_functions);
   /**************************/
   //Вивід інформації на виходи
   /**************************/
@@ -9867,7 +9897,7 @@ do{
     state_leds_Fx_lock[bank_lock_tmp1][1] = 0;
   }
   /**************************/
-
+  
   /**************************/
   //
   /**************************/

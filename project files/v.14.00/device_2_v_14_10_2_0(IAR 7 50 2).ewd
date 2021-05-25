@@ -45,7 +45,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\debugger\ST\STM32F205ZG.ddf</state>
+          <state></state>
         </option>
         <option>
           <name>RunToEnable</name>
@@ -85,7 +85,7 @@
         </option>
         <option>
           <name>OCDynDriverList</name>
-          <state>JLINK_ID</state>
+          <state>ARMSIM_ID</state>
         </option>
         <option>
           <name>OCLastSavedByProductVersion</name>
@@ -117,7 +117,7 @@
         </option>
         <option>
           <name>FlashLoadersV3</name>
-          <state>$TOOLKIT_DIR$\config\flashloader\ST\FlashSTM32F205xG.board</state>
+          <state></state>
         </option>
         <option>
           <name>OCImagesSuppressCheck1</name>
@@ -185,7 +185,7 @@
         </option>
         <option>
           <name>OCMulticoreNrOfCores</name>
-          <state>1</state>
+          <state></state>
         </option>
         <option>
           <name>OCMulticoreMaster</name>

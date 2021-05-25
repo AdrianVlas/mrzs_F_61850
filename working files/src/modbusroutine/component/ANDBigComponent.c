@@ -16,7 +16,7 @@ int setANDBigModbusBit(int, int);// бит
 
 int  postANDBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *andbigcomponent;
+SRAM1 COMPONENT_OBJ *andbigcomponent;
 
 /**************************************/
 //подготовка компонента AND

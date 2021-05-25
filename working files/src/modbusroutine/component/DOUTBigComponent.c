@@ -56,7 +56,7 @@ int setDOUTBigModbusBit(int, int);// бита
 
 int  postDOUTBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *doutbigcomponent;
+SRAM1 COMPONENT_OBJ *doutbigcomponent;
 
 /**************************************/
 //подготовка компонента rele

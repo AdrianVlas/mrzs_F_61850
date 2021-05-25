@@ -18,7 +18,7 @@ int setPREGBigModbusBit(int, int);//получить содержимое бита
 
 int  postPREGBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *pregbigcomponent;
+SRAM1 COMPONENT_OBJ *pregbigcomponent;
 
 /**************************************/
 //подготовка компонента REGistrator prog

@@ -16,7 +16,7 @@ int setPFBigModbusBit(int, int);//получить содержимое бита
 
 int  postPFBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *pfbigcomponent;
+SRAM1 COMPONENT_OBJ *pfbigcomponent;
 
 /**************************************/
 //подготовка компонента PF

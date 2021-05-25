@@ -187,6 +187,11 @@ void make_ekran_analog_value_records_digital_registrator(void);
 void make_ekran_changing_signals_digital_registrator(void);
 void make_ekran_list_titles_for_record_of_pr_err_registrator(void);
 void make_ekran_changing_diagnostics_pr_err_registrator(void);
+void make_ekran_list_titles_for_record_of_state_cmd_registrator(void);
+void make_ekran_changing_signals_statistica_registrator(void);
+void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registrator);
+
+
 void make_ekran_setting_language(void);
 void make_ekran_resurs(void);
 void make_ekran_energy(unsigned int);
@@ -263,7 +268,17 @@ void routine_for_queue_dr(void);
 void digital_registrator(unsigned int*);
 void analog_registrator(unsigned int*);
 //void diagnostyca_adc_execution(void);
+long GetNumberChangingInLogElem( long lIdx);
 
+void CmdPlusTimeLogHundler(unsigned int *p_active_functions);
+void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx);
+void GetDateTimeLogElem(unsigned int *p_elem, long lIdx);
+void GetMsLogElem(unsigned int *p_elem, long lIdx);
+long GetNumberChangingInLogElem( long lIdx);
+void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
+
+
+extern void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 void Usb_routines_irq(void);
 void Usb_routines(void);
 void USART_RS485_Configure(void);

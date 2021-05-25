@@ -16,7 +16,7 @@ int setNOTBigModbusBit(int, int);//получить содержимое бита
 
 int  postNOTBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *notbigcomponent;
+SRAM1 COMPONENT_OBJ *notbigcomponent;
 
 /**************************************/
 //подготовка компонента NOT

@@ -16,7 +16,7 @@ int setVVBigModbusBit(int, int);// бита
 
 int  postVVBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *vvbigcomponent;
+SRAM1 COMPONENT_OBJ *vvbigcomponent;
 
 /**************************************/
 //подготовка компонента VV

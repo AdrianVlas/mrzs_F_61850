@@ -44,7 +44,7 @@ int special—heckUPRBigWriteAction(int offset);
 
 void loadUPRBigActualDataBit(int beginOffset, int endOffset);
 
-COMPONENT_OBJ *uprbigcomponent;
+SRAM1 COMPONENT_OBJ *uprbigcomponent;
 
 void uprFuncRead000(int inOffset, uint32_t *uprMaska, uint32_t **editControl)
 {

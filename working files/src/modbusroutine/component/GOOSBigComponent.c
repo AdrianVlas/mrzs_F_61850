@@ -20,7 +20,7 @@ int setGOOSBigModbusBit(int, int);//получить содержимое бита
 
 int  postGOOSBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *goosbigcomponent;
+SRAM1 COMPONENT_OBJ *goosbigcomponent;
 
 /**************************************/
 //подготовка компонента GOOS

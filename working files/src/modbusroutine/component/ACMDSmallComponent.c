@@ -41,12 +41,12 @@ int passwordImunitetBitACMDSmallComponent(int adrReg);
 int decoderN_BIGACMDArrayLoader(int idxBit);
 int decoderN_SMALLACMDArrayLoader(int idxBit);
 
-unsigned short decoderN_BIGACMDArray[N_BIG*32];//массив декодирования битов N_BIG
-unsigned short decoderN_SMALLACMDArray[N_SMALL*32];//массив декодирования битов N_SMALL
+SRAM1 unsigned short decoderN_BIGACMDArray[N_BIG*32];//массив декодирования битов N_BIG
+SRAM1 unsigned short decoderN_SMALLACMDArray[N_SMALL*32];//массив декодирования битов N_SMALL
 
 #define CLRACT_CONTROL  0
 
-COMPONENT_OBJ *acmdsmallcomponent;
+SRAM1 COMPONENT_OBJ *acmdsmallcomponent;
 int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 {
   int isValid = 1;

@@ -20,7 +20,7 @@ int setREGBigModbusBit(int, int);//получить содержимое бита
 int  postREGBigWriteAction(void);//action после записи
 int passwordImunitetRegREGBigComponent(int adrReg);
 
-COMPONENT_OBJ *regbigcomponent;
+SRAM1 COMPONENT_OBJ *regbigcomponent;
 
 /**************************************/
 //подготовка компонента REGistrator

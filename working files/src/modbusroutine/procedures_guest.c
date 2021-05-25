@@ -363,7 +363,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
         "                ",
         "3U0             "
       };
-      const char idetyficator_current[2][16] =
+      static const char idetyficator_current[2][16] =
       {
         "Ib              ",
         "I 0.4kV         "
@@ -375,7 +375,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
       if (phase_line == 0)
         {
-          const char idetyficator_phase[3][16] =
+          static const char idetyficator_phase[3][16] =
           {
             "Ua              ",
             "Ub              ",
@@ -389,7 +389,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
         }
       else
         {
-          const char idetyficator_line[3][16] =
+          static const char idetyficator_line[3][16] =
           {
             "Uab             ",
             "Ubc             ",
@@ -438,7 +438,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
           };
 
           {
-            const char phase_c[2][2] =
+            static const char phase_c[2][2] =
             {
               "B ",
               "04"
@@ -448,7 +448,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
           if (phase_line == 0)
             {
-              const char phase_p[3][2] =
+              static const char phase_p[3][2] =
               {
                 "A ",
                 "B ",
@@ -462,7 +462,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
             }
           else
             {
-              const char pase_l[3][2] =
+              static const char pase_l[3][2] =
               {
                 "AB",
                 "BC",

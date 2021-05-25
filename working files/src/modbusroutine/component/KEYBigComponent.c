@@ -16,7 +16,7 @@ int setKEYBigModbusBit(int, int);// бита
 
 int  postKEYBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *keybigcomponent;
+SRAM1 COMPONENT_OBJ *keybigcomponent;
 
 /**************************************/
 //подготовка компонента KEY

@@ -64,7 +64,7 @@ int  postRAISmallWriteAction(void);//action после записи
 
 int privateRAISmallGetReg2(int adrReg);
 
-COMPONENT_OBJ *raismallcomponent;
+SRAM1 COMPONENT_OBJ *raismallcomponent;
 
 /**************************************/
 //компонент измерений в момент аварии

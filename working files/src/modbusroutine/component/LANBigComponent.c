@@ -20,7 +20,7 @@ int setLANBigModbusBit(int, int);//получить содержимое бита
 
 int  postLANBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *lanbigcomponent;
+SRAM1 COMPONENT_OBJ *lanbigcomponent;
 
 /**************************************/
 //подготовка компонента LAN

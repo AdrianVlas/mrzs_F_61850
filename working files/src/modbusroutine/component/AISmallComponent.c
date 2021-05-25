@@ -16,7 +16,7 @@ void loadAISmallActualData(void);
 
 int privateAISmallGetReg2(int adrReg);
 
-COMPONENT_OBJ *aismallcomponent;
+SRAM1 COMPONENT_OBJ *aismallcomponent;
 
 /**************************************/
 //компонент измерений

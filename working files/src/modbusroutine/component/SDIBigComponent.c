@@ -17,7 +17,7 @@ int setSDIBigModbusBit(int, int);//получить содержимое бита
 
 int  postSDIBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *sdibigcomponent;
+SRAM1 COMPONENT_OBJ *sdibigcomponent;
 
 /**************************************/
 //подготовка компонента светоиндикаторов

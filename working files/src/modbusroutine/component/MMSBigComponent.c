@@ -20,7 +20,7 @@ int setMMSBigModbusBit(int, int);//получить содержимое бита
 
 int  postMMSBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *mmsbigcomponent;
+SRAM1 COMPONENT_OBJ *mmsbigcomponent;
 
 /**************************************/
 //подготовка компонента MMS

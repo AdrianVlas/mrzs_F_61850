@@ -16,7 +16,7 @@ int setXORBigModbusBit(int, int);//получить содержимое бита
 
 int  postXORBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *xorbigcomponent;
+SRAM1 COMPONENT_OBJ *xorbigcomponent;
 
 /**************************************/
 //подготовка компонента XOR

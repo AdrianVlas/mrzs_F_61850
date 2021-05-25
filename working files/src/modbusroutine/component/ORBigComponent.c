@@ -16,7 +16,7 @@ int setORBigModbusBit(int, int);//получить содержимое бита
 
 int  postORBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *orbigcomponent;
+SRAM1 COMPONENT_OBJ *orbigcomponent;
 
 /**************************************/
 //подготовка компонента OR
