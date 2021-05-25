@@ -77,7 +77,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.40.3.8937</state>
+          <state>7.50.2.10499</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -5019,6 +5019,12 @@
         </file>
       </group>
       <group>
+        <name>Log</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\log\cmd_log.h</name>
+        </file>
+      </group>
+      <group>
         <name>menu</name>
         <group>
           <name>a.33.c.d</name>
@@ -5676,6 +5682,12 @@
         <name>interrupts</name>
         <file>
           <name>$PROJ_DIR$\..\..\working files\src\interrupts.c</name>
+        </file>
+      </group>
+      <group>
+        <name>Log</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\working files\src\log\log.c</name>
         </file>
       </group>
       <group>

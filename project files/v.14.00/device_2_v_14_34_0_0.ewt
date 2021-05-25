@@ -1834,6 +1834,12 @@
                 </file>
             </group>
             <group>
+                <name>Log</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\log\cmd_log.h</name>
+                </file>
+            </group>
+            <group>
                 <name>menu</name>
                 <group>
                     <name>a.34.c.d</name>
@@ -2227,6 +2233,15 @@
                 <name>interrupts</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\interrupts.c</name>
+                </file>
+            </group>
+            <group>
+                <name>Log</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\log\log.c</name>
+                    <configuration>
+                        <name>Flash-Debug</name>
+                    </configuration>
                 </file>
             </group>
             <group>
