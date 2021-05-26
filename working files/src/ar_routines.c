@@ -88,7 +88,7 @@ void ar_routine_with_fatfs(unsigned int before_full_start)
             (state_ar_record_fatfs == STATE_AR_BLOCK_FATFS)
            )   
         {
-          if (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
+//          if (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
           {
             int first_number = info_rejestrator_ar.first_number;
             if ((first_number >= 0) && (number_record_of_ar_for_menu >= 0))
