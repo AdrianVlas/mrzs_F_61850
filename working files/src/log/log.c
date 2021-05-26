@@ -332,7 +332,9 @@ static  int time_before_start_record_dr = 0;
     //Записуємо попередній cтан сигналів перед аварією
     //Вираховуємо кількість змін сигналів
 //    *(ptDRUVAd->number_changes_into_dr_record) = 0;
-          
+       asm volatile(
+               "bkpt 1"
+               );      
     register long i;
     register CmdPlusTimeStampHolder *phld  = &holderCmdPlusTimeStamp;
     char chAmontRecords = 0;//One prev state
@@ -365,13 +367,13 @@ static  int time_before_start_record_dr = 0;
             j += AMOUNT_CMD_PLUS_TIME_STAMP_RECORD;
     do{
         pCmd = (unsigned long *)&(holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[j].cmd.uLCmd[0]);
-        long idx_data_dr =  FIRST_INDEX_FIRST_DATA_DR + (*(ptDRUVAd->number_items_dr))*38;
+        long idx_data_dr =  FIRST_INDEX_FIRST_DATA_DR + (*(ptDRUVAd->number_items_dr))*SD_DR;
         
         time_before_start_record_dr = phld->uLLDrecTimeStampVal
           - (phld->arrAdditionalInfoCmdPlusTimeStamp[j].ullTimeStamp);
         //.time_before_start_record_dr *= (-1); <- very bad reaction Taras Sys, system can`t view negative numbers
         if(*(ptDRUVAd->number_items_dr) != 0)
-            time_before_start_record_dr *= 1;//(-1);  
+            time_before_start_record_dr *= (-1);//1;  
           //unsigned int number_changes_into_current_item;
           //_NUMBER_CHANGES_INTO_UNSIGNED_INT_ARRAY(((unsigned long *)&(holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[j].cmd.uLCmd[0])), pCmd, N_BIG, number_changes_into_current_item);
           //number_changes_into_dr_record += number_changes_into_current_item;
@@ -400,18 +402,21 @@ static  int time_before_start_record_dr = 0;
           //.buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 33] = (pCmd[7] >> 16) & 0xff;
           //.buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 34] = (pCmd[7] >> 24) & 0xff;
           //.buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 35] =  pCmd[8]        & 0xff;
-        memcpy((void*)&buffer_for_save_dr_record[idx_data_dr +  3],(const void*)&pCmd[0],(36-3));                   
+        memcpy((void*)&buffer_for_save_dr_record[idx_data_dr +  3],(const void*)&pCmd[0],(NUMBER_BYTES_SAMPLE_DR));//.(36-3)                   
           
           //Кількість змін сигналів у порівнянні із попереднім станом
           //.buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 36] = number_changes_into_current_item & 0xff;
           //.buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 37] = (number_changes_into_current_item >> 8) & 0xff;
         if(*(ptDRUVAd->number_items_dr) != 0){
-		    buffer_for_save_dr_record[idx_data_dr + 36] = (phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem) & 0xff;
-            buffer_for_save_dr_record[idx_data_dr + 37] = ((phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem)>> 8) & 0xff;
+		    buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 0)] = 
+			(phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem) & 0xff;
+			
+            buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 1)] = 
+			((phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem)>> 8) & 0xff;
 		}
 		else{
-			buffer_for_save_dr_record[idx_data_dr + 36] =  0;
-			buffer_for_save_dr_record[idx_data_dr + 37] =  0;
+			buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 0)] =  0;
+			buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 1)] =  0;
 		}
         //Збільшуємо на один кількість нових зрізів
         *(ptDRUVAd->number_items_dr) += 1;
@@ -420,7 +425,7 @@ static  int time_before_start_record_dr = 0;
     }while( --chAmontRecords > 0  );
     
     //Записуємо попередній cтан сигналів перед аварією
-       long idx_data_dr =  FIRST_INDEX_FIRST_DATA_DR + (*(ptDRUVAd->number_items_dr))*38;
+       long idx_data_dr =  FIRST_INDEX_FIRST_DATA_DR + (*(ptDRUVAd->number_items_dr))*SD_DR;//.?38
 //.    //Мітка часу попереднього стану сигналів до моменту початку запису
 //.    buffer_for_save_dr_record[idx_data_dr +  0] = 0xff;
 //.    buffer_for_save_dr_record[idx_data_dr +  1] = 0xff;
@@ -445,7 +450,7 @@ static  int time_before_start_record_dr = 0;
     unsigned int number_changes_into_current_item;  
     _NUMBER_CHANGES_INTO_UNSIGNED_INT_ARRAY( (pCmd), (pI32), N_BIG, number_changes_into_current_item);
     //Записуємо текучий cтан сигналів
-     idx_data_dr =  FIRST_INDEX_FIRST_DATA_DR + (*(ptDRUVAd->number_items_dr))*38;
+     idx_data_dr =  FIRST_INDEX_FIRST_DATA_DR + (*(ptDRUVAd->number_items_dr))*SD_DR;
     //      //Мітка часу
     //      buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  0] =  time_from_start_record_dr        & 0xff;
     //      buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  1] = (time_from_start_record_dr >> 8 ) & 0xff;
@@ -457,23 +462,77 @@ static  int time_before_start_record_dr = 0;
     //      //Текучий стан сигналів
     //      buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  3] =  p_active_functions[0]        & 0xff;
     //      buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 35] =  p_active_functions[8]        & 0xff;
-    memcpy((void*)&buffer_for_save_dr_record[idx_data_dr +  3],(const void*)&((pI32)[0]),(36-3));
+    memcpy((void*)&buffer_for_save_dr_record[idx_data_dr +  3],(const void*)&((pI32)[0]),(NUMBER_BYTES_SAMPLE_DR));//?(36-3)
     
     //      
     //      //Кількість змін сигналів у порівнянні із попереднім станом
     //      buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 36] = number_changes_into_current_item & 0xff;
     //      buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 37] = (number_changes_into_current_item >> 8) & 0xff;
-    buffer_for_save_dr_record[idx_data_dr + 36] = number_changes_into_current_item & 0xff;
-    buffer_for_save_dr_record[idx_data_dr + 37] = (number_changes_into_current_item >> 8) & 0xff;
+    buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 0)] = number_changes_into_current_item & 0xff;
+    buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 1)] = (number_changes_into_current_item >> 8) & 0xff;
     //*(ptDRUVAd->number_items_dr) += 1;
     *(ptDRUVAd->number_changes_into_dr_record) += number_changes_into_current_item;// <<= як бути з доаварійним масивом
 
-}      
+} 
+     
  __root  CmdFunctionDepot* pDbgViewCmd = (CmdFunctionDepot*)&holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
 SRAM1  CmdFunctionDepot arViewCmd;// = holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
-
-
-
+/*
+ __root  const short arrEkransId[] = {
+     
+    EKRAN_CONTROL_UP                  , 
+    //.EKRAN_LIST_TYPE_IEC61850_NODES    ,
+    EKRAN_LIST_INPUTS_FOR_RANGUVANNJA ,
+    EKRAN_RANGUVANNJA_INPUT_1         ,
+    EKRAN_LIST_OUTPUTS_FOR_RANGUVANNJA, 
+    EKRAN_RANGUVANNJA_OUTPUT_1        ,
+    EKRAN_RANGUVANNJA_OUTPUT_LAST     ,   
+     
+     
+     
+    EKRAN_LIST_LEDS_FOR_RANGUVANNJA,
+    EKRAN_RANGUVANNJA_LED_1      ,
+    
+    
+    EKRAN_LIST_SETTINGS_FOR_DF          ,
+    EKRAN_RANGUVANNJA_DF8_BLK           ,
+    
+    EKRAN_LIST_DT                      ,
+    EKRAN_SET_RESET_DT1                ,
+    
+    EKRAN_RANGUVANNJA_RESET_DT4_MINUS  ,
+    
+    
+    EKRAN_LIST_D_AND          ,
+    EKRAN_RANGUVANNJA_D_AND1  ,
+    EKRAN_RANGUVANNJA_D_AND8  ,
+    EKRAN_LIST_D_OR          ,
+    EKRAN_RANGUVANNJA_D_OR1  ,
+    EKRAN_RANGUVANNJA_D_OR8  ,
+    EKRAN_LIST_D_XOR         ,
+    EKRAN_RANGUVANNJA_D_XOR1 ,
+    EKRAN_RANGUVANNJA_D_XOR8 ,
+    EKRAN_LIST_D_NOT         ,
+    EKRAN_RANGUVANNJA_D_NOT1  ,
+    EKRAN_RANGUVANNJA_D_NOT16 ,
+    EKRAN_LIST_TF_FOR_RANGUVANNJA,
+    EKRAN_LIST_SOURCE_TF1,
+    
+    
+    EKRAN_LIST_BUTTONS_FOR_RANGUVANNJA,
+    EKRAN_RANGUVANNJA_BUTTON_1,
+    EKRAN_RANGUVANNJA_BUTTON_6,
+    
+    EKRAN_VIDKLUCHENNJA,
+    
+    (NUMBER_INPUTS + NUMBER_OUTPUTS + NUMBER_LEDS + 5*NUMBER_DEFINED_FUNCTIONS + 7*NUMBER_DEFINED_TRIGGERS + NUMBER_DEFINED_AND + NUMBER_DEFINED_OR + NUMBER_DEFINED_XOR + NUMBER_DEFINED_NOT + NUMBER_TRANSFER_FUNCTIONS + NUMBER_DEFINED_BUTTONS),
+    (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN + NUMBER_INPUTS +
+    NUMBER_OUTPUTS + NUMBER_LEDS + 5*NUMBER_DEFINED_FUNCTIONS + 
+    7*NUMBER_DEFINED_TRIGGERS + NUMBER_DEFINED_AND + NUMBER_DEFINED_OR + NUMBER_DEFINED_XOR + 
+    NUMBER_DEFINED_NOT + NUMBER_TRANSFER_FUNCTIONS + NUMBER_DEFINED_BUTTONS)
+    
+ };
+*/
 
 
 

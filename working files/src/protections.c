@@ -4921,7 +4921,9 @@ inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsi
         if ( tm_o == 0)
         {
           //Зафіксовано, що  таймер  неактивний
-        
+           asm volatile(
+               "bkpt 1"
+               );
           //Помічаємо, що реєстратор може бути зупиненим
           stop = 0xff;
         }
@@ -6622,7 +6624,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
            //Джерела запуску
           for(unsigned int i = 0; i < NUMBER_BYTES_SAMPLE_DR; i++) 
             buffer_for_save_dr_record[FIRST_INDEX_SOURCE_DR + i] = *(((unsigned char*)cur_active_sources) + i);
-
+/*
           //Записуємо попередній cтан сигналів перед аварією
           //Мітка часу попереднього стану сигналів до моменту початку запису
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0xff;
@@ -6634,7 +6636,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
           
           //Помічаємо кількість нових зрізів
           number_items_dr = 1;
-      
+		  
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR +  0] =  time_from_start_record_dr        & 0xff;
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR +  1] = (time_from_start_record_dr >> 8 ) & 0xff;
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR +  2] = (time_from_start_record_dr >> 16) & 0xff;
@@ -6645,23 +6647,23 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
             size_t shift = 8*(i & ((1u << 2) - 1));
             
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR                        + 3 + i] = (previous_active_functions[offset] >> shift) & 0xff;
-
+		  
            buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR + 3 + i] = (carrent_active_functions[offset] >> shift) & 0xff;;
           }
           //Нулем позначаємо у цій позиції кількість змін
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 3 + NUMBER_BYTES_SAMPLE_DR + 0] = 0;
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + 3 + NUMBER_BYTES_SAMPLE_DR + 1] = 0;
-
+		  
           //Вираховуємо кількість змін сигналів
           number_changes_into_dr_record = 0;
           unsigned int number_changes_into_current_item;
           _NUMBER_CHANGES_INTO_UNSIGNED_INT_ARRAY(previous_active_functions, carrent_active_functions, N_BIG, number_changes_into_current_item);
           number_changes_into_dr_record += number_changes_into_current_item;
-      
+		  
           //Кількість змін сигналів у порівнянні із попереднім станом
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR + 3 + NUMBER_BYTES_SAMPLE_DR + 0] = number_changes_into_current_item & 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR + 3 + NUMBER_BYTES_SAMPLE_DR + 1] = (number_changes_into_current_item >> 8) & 0xff;
-
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR + 3 + NUMBER_BYTES_SAMPLE_DR + 1] = (number_changes_into_current_item >> 8) & 0xff;*/
+          put_before_info_in_buf(&drUniqVarsAddreses);
           //Скидаємо кількість фіксацій максимальних струмів/напруг
           number_max_phase_dr = 0;
           number_max_phase04_dr = 0;

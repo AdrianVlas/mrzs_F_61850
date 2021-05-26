@@ -494,6 +494,9 @@
 #define TIMEOUT_DF_WORK_MIN           0
 #define TIMEOUT_DF_WORK_MAX           600000
 
+#define TIMEOUT_DR_ELONGATION_MIN     0
+#define TIMEOUT_DR_ELONGATION_MAX     600000
+
 #define TIMEOUT_PREFAULT_MIN          100
 #define TIMEOUT_PREFAULT_MAX          5000
 
