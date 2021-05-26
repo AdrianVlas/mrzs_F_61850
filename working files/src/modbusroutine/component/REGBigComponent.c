@@ -622,13 +622,14 @@ int postREGBigWriteAction(void)
             ||
             (
               (control_tasks_dataflash & (
-                 TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR |
-                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                    |
-                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                  |
+                 TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR       |
+                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                          |
+                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                        |
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                    |
+                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                          |
 #endif  
-                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU
+                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU                         |
+                 TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU_SHORT
                )
               ) != 0
             )

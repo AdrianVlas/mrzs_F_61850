@@ -8716,7 +8716,7 @@ do{
               
   if (not_null)
   {
-//@    _SET_BIT(active_functions, RANG_DEFECT);
+    _SET_BIT(active_functions, RANG_DEFECT);
     /**************************/
     //Сигнал "Несправность Аварийная"
     /**************************/
@@ -8730,8 +8730,8 @@ do{
     }
     if (not_null)
     {
-//@      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
-//       #warning "No Avar Error"
+//      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+       #warning "No Avar Error"
     }
     else
     {
@@ -10045,13 +10045,14 @@ void TIM2_IRQHandler(void)
         &&  
         (
          (control_tasks_dataflash & (
-                                     TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR | 
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                    |
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                  |
+                                     TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR           | 
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                              |
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                            |
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                    |
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                              |
 #endif  
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU                             |
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU_SHORT
                                     )
          ) == 0
         )
