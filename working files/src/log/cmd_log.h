@@ -846,8 +846,8 @@ enum ONM_EKRAN_LIST
   ONM_EKRAN_CHOSE_DATA_TIME                           =  EKRAN_CHOSE_DATA_TIME    ,
   ONM_EKRAN_TIME_ZONE                                 =  EKRAN_TIME_ZONE          ,
   ONM_EKRAN_DST_RULE                                  =  EKRAN_DST_RULE           ,
-#if (MODYFIKACIA_VERSII_PZ >= 10)  
-   ONM_EKRAN_SYNCHRO                                 = EKRAN_SYNCHRO ,
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+  ONM_EKRAN_SYNCHRO                                 = EKRAN_SYNCHRO ,
 #endif
 
   ONM_EKRAN_CHOSE_COMMUNICATION_PARAMETERS            = EKRAN_CHOSE_COMMUNICATION_PARAMETERS  ,  
