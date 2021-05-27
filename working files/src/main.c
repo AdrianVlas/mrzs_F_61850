@@ -815,4 +815,9 @@ void assert_failed(u8* file, u32 line)
 }
 #endif
 
+
+#ifndef RSTATYSYKA
+#warning "Small Statistic Registrator"
+#endif
+
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
