@@ -278,6 +278,7 @@ extern void CmdPlusTimeLogHundler(unsigned int *p_active_functions);
 extern void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx);
 extern void GetDateTimeLogElem(unsigned int *p_elem, long lIdx);
 extern void GetMsLogElem(unsigned int *p_elem, long lIdx);
+extern long GetNumberChangingInLogElemUseLocal( long lIdx);
 extern long GetNumberChangingInLogElem( long lIdx);
 extern void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 

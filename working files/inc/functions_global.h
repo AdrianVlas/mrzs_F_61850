@@ -277,6 +277,7 @@ void CmdPlusTimeLogHundler(unsigned int *p_active_functions);
 void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx);
 void GetDateTimeLogElem(unsigned int *p_elem, long lIdx);
 void GetMsLogElem(unsigned int *p_elem, long lIdx);
+long GetNumberChangingInLogElemUseLocal( long lIdx);
 long GetNumberChangingInLogElem( long lIdx);
 void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 
