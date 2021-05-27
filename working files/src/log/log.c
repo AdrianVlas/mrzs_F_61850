@@ -121,6 +121,20 @@ void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx){
     sizeof(UNN_CmdState));
 
 }
+inline void GetCmdPlusTimeLogElemUseLocal(unsigned int *p_elem, long lIdx){
+    register long i;
+    //?UNUSED(p_active_functions);
+    i = holderCmdPlusTime.shIndexWR-1;
+    i -= lIdx;
+    
+    if (i < 0)
+        i += AMOUNT_CMD_PLUS_TIME_RECORD;
+//void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
+ 
+    memcpy((void *)p_elem,(const void*)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]),
+    sizeof(UNN_CmdState));
+
+}
 
 void GetDateTimeLogElem(unsigned int *p_elem, long lIdx){
     register long i;
@@ -172,6 +186,38 @@ long GetNumberChangingInLogElem( long lIdx){
     if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
         lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
     GetCmdPlusTimeLogElem(array_old ,lIdx);
+    
+     for (unsigned int j = 0; j < N_BIG; j++)
+         array_changing[j] = array_new[j] ^ array_old[j];
+long u32Count = 0;
+    for (unsigned int j = 0; j < N_BIG; j++){    
+        for(i = 0; i < 32; i++)
+            if((array_changing[j] &(1<<i)) != 0)
+                u32Count++;
+        
+    }
+            
+return u32Count;
+
+}
+long GetNumberChangingInLogElemUseLocal( long lIdx){
+    register long i;
+    //?UNUSED(p_active_functions);           Errorneus code as this
+    //?i = holderCmdPlusTime.shIndexWR-1;    ariphmetic make in lowfunc
+    //?i -= lIdx;
+    //?
+    //?if (i < 0)
+    //?    i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    
+    unsigned int array_old[N_BIG], array_new[N_BIG], array_changing[N_BIG];
+    GetCmdPlusTimeLogElemUseLocal(array_new ,lIdx);
+    //i--;                                     Errorneus code as this
+    //if (i < 0)                               ariphmetic make in lowfunc
+    //    i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    lIdx++;//Next elem on menu older
+    if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
+        lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
+    GetCmdPlusTimeLogElemUseLocal(array_old ,lIdx);
     
      for (unsigned int j = 0; j < N_BIG; j++)
          array_changing[j] = array_new[j] ^ array_old[j];

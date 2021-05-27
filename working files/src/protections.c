@@ -6594,7 +6594,9 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
         if(number_records_dr_waiting_for_saving_operation < WIGHT_OF_DR_WAITING)
         {
           //Можна починати новий запис
-          
+          asm volatile(
+               "bkpt 1"
+               );
           //Переводимо режим роботи із дискретним реєстратором у стан "Іде процес запису реєстратора"
           state_dr_record = STATE_DR_EXECUTING_RECORD;
           //Виставляємо активну функцію
@@ -7001,7 +7003,9 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
         {
           //Скидаємо сигнал роботи дискретного реєстратора
           _CLEAR_BIT(carrent_active_functions, RANG_WORK_D_REJESTRATOR);
-
+           asm volatile(
+               "bkpt 1"
+               );
           //Переводимо режим роботи із дискретним реєстратором у стан "Виконується безпосередній запис у послідовну DataFlash"
           state_dr_record = STATE_DR_MAKE_RECORD;
         }
