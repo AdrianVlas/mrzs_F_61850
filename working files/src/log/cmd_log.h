@@ -35,11 +35,14 @@ typedef struct tag_CmdPlusTimeStateElem{
     UNN_MicroSec mksec;
 } CmdPlusTimeStateElem;
 
-#define AMOUNT_CMD_PLUS_TIME_RECORD 400 //400
+#ifndef RSTATYSYKA
+    #define AMOUNT_CMD_PLUS_TIME_RECORD 4
+#else
+    #define AMOUNT_CMD_PLUS_TIME_RECORD 400 
+#endif
 
 
-
-
+  
 
 #define AMOUNT_CMD_PLUS_TIME_STAMP_RECORD 100 //400
 #define FIFTY_YEAR_NUMBER  ((unsigned long long)1000*3600*365*50)

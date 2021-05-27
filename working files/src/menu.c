@@ -2419,6 +2419,7 @@ void main_manu_function(void)
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
 
               //Формуємо екран відображення записів
+              //make_ekran_data_and_time_elem_d_p_a_registrator(type_registrator);
               make_ekran_list_records_registrator(type_registrator);
             }
             else if (current_ekran.current_level == EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS)
@@ -24686,6 +24687,13 @@ unsigned int check_data_setpoint(unsigned int current_value, unsigned int min_va
 }
 /*****************************************************/
 
+/*****************************************************/
+//
+/*****************************************************/
+/*****************************************************/
+//
+/*****************************************************/
+/*****************************************************/
 /*****************************************************/
 //
 /*****************************************************/

@@ -180,6 +180,7 @@ void make_ekran_list_inputs_outputs(void);
 void make_ekran_state_inputs_or_outputs(unsigned int);
 void make_ekran_list_registrators(void);
 void make_ekran_list_records_registrator(unsigned int);
+void make_ekran_data_and_time_elem_d_p_a_registrator(unsigned int type_of_registrator);
 void make_ekran_list_titles_for_record_of_digital_registrator(void);
 void make_ekran_data_and_time_of_records_registrator(unsigned int);
 void make_ekran_title_analog_value_records_digital_registrator(void);

@@ -1,5 +1,5 @@
 #include "header.h"
-
+void make_ekran_data_and_time_elem_d_p_a_registrator(unsigned int type_of_registrator);
 /*****************************************************/
 //Формуємо екран відображення заголовків реєстраторів
 /*****************************************************/
@@ -2812,6 +2812,397 @@ void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registra
 
 }
 /*****************************************************/
+#include <stdbool.h>
+/******************************************/
+    time_t  ar_time_dat_tmp[2];
+    int32_t ar_time_ms_tmp [2];
+char read_dr_record_of_ar_for_menu = 0;
+char read_pr_record_of_ar_for_menu = 0;
+char read_ar_record_of_ar_for_menu = 0;
+short cursor_index_pos = 0;
+char use_buffer_for_manu_read_record = 0;
 
+void make_ekran_data_and_time_elem_d_p_a_registrator(unsigned int type_of_registrator)
+{
+ asm volatile(
+               "bkpt 1"
+               );
+
+    UNUSED(type_of_registrator);
+  int index_language = index_language_in_array(current_settings.language);
+    bool bBufDataInvalid = 0;
+    bool bBufDataNotReady = 0;
+//.\./  if (
+//.\./      ((type_of_registrator == 0) && (buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] == LABEL_START_RECORD_DR    )) ||
+//.\./      ((type_of_registrator == 1) && (buffer_for_manu_read_record[0] == LABEL_START_RECORD_PR_ERR)) ||
+//.\./      ((type_of_registrator == 2) && !_GET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU) && (buffer_for_manu_read_record[0] == LABEL_START_RECORD_AR))||
+//.\./       (type_of_registrator == 3)
+//.\./     )
+     if (
+      ((type_of_registrator == 0) && read_dr_record_of_ar_for_menu == 2)||
+      ((type_of_registrator == 1) && read_pr_record_of_ar_for_menu == 2)||
+      ((type_of_registrator == 2) && read_ar_record_of_ar_for_menu == 2)||
+       (type_of_registrator == 3)
+     )
+  {
+    //Пеший байт сходиться із міткою початку запису - вважаємо, що у буфері достовірні дані
+    unsigned char name_string[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
+    {
+      "   XX-XX-20XX   ",
+      "  XX:XX:XX.XXX  "
+    };
+  
+    unsigned int position_temp = current_ekran.index_position;
+    unsigned int index_of_ekran;
+    unsigned int first_number = (info_rejestrator_ar.first_number < 0) ? 0 : (info_rejestrator_ar.first_number + 1);
+    unsigned int last_number  = (info_rejestrator_ar.last_number  < 0) ? 0 : (info_rejestrator_ar.last_number + 1);
+
+  
+    index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+    
+    unsigned int number_records = 0;
+    switch(type_of_registrator)
+    {
+        case 0:
+            number_records = info_rejestrator_dr.number_records;
+          break;
+        case 1:
+            number_records = info_rejestrator_pr_err.number_records;
+          break;
+        case 2:
+            if (first_number == 0) number_records = 0;
+            else if (first_number >= last_number) number_records = first_number - last_number + 1;
+            else number_records = NUMBER_FATFS_NAME - last_number + first_number + 1;
+          break;
+        default: ;           
+    }
+    /******************************************/
+    //Заповнюємо поля відповідними цифрами
+    /******************************************/
+    time_t time_dat_tmp = 0;
+    int32_t time_ms_tmp = 0;
+    for (unsigned int i = 0; i< MAX_ROW_LCD; i++)
+        {
+            if ( (index_of_ekran>>1) < (unsigned int)(number_records))//
+            {
+                if ((i & 0x1) == 0)
+                {
+                    time_dat_tmp = ar_time_dat_tmp[i>>1];//GetDateTimeLogElem((unsigned int *)&time_dat_tmp,index_of_ekran>>1);
+                    time_ms_tmp  = ar_time_ms_tmp [i>>1];//GetMsLogElem      ((unsigned int *)&time_ms_tmp ,index_of_ekran>>1);
+                    if (time_dat_tmp != 0)
+                    {
+                      struct tm *p = localtime(&time_dat_tmp);
+                      int field;
+                      
+                      //День
+                      field = p->tm_mday;
+                      name_string[ROW_R_Y_][COL_DY1_R] = (field / 10) + 0x30;
+                      name_string[ROW_R_Y_][COL_DY2_R] = (field % 10) + 0x30;
+                
+                      //Місяць
+                      field = p->tm_mon + 1;
+                      name_string[ROW_R_Y_][COL_MY1_R] = (field / 10) + 0x30;
+                      name_string[ROW_R_Y_][COL_MY2_R] = (field % 10) + 0x30;
+                
+                      //Рік
+                      field = p->tm_year - 100;
+                      name_string[ROW_R_Y_][COL_SY1_R] = (field / 10) + 0x30;
+                      name_string[ROW_R_Y_][COL_SY2_R] = (field % 10) + 0x30;
+                
+                      //Година
+                      field = p->tm_hour;
+                      name_string[ROW_R_T_][COL_HT1_R] = (field / 10) + 0x30;
+                      name_string[ROW_R_T_][COL_HT2_R] = (field % 10) + 0x30;
+                
+                      //Хвилини
+                      field = p->tm_min;
+                      name_string[ROW_R_T_][COL_MT1_R] = (field / 10) + 0x30;
+                      name_string[ROW_R_T_][COL_MT2_R] = (field % 10) + 0x30;
+                
+                      //Секунди
+                      field = p->tm_sec;
+                      name_string[ROW_R_T_][COL_ST1_R] = (field / 10) + 0x30;
+                      name_string[ROW_R_T_][COL_ST2_R] = (field % 10) + 0x30;
+                
+                      //Тисячні секунд
+                      field = time_ms_tmp;
+                      name_string[ROW_R_T_][COL_HST1_R] = (field / 100) + 0x30;
+                      field %= 100;
+                      
+                      name_string[ROW_R_T_][COL_HST2_R] = (field / 10) + 0x30;
+                      field %= 10;
+                      
+                      name_string[ROW_R_T_][COL_HST3_R] = field + 0x30;
+                    }
+                     //У непарному номері рядку виводимо заголовок
+                  for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+                     working_ekran[i][j] = name_string[(index_of_ekran&1) ][j];//
+                  
+                  
+                  
+                }
+                else
+                {
+                 // //У парному номері рядку виводимо 
+                 unsigned int index_bit = index_of_ekran&1;
+                for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+                     working_ekran[i][j] = name_string[index_bit][j];
+                  
+                }
+            }
+            else
+                for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+                    working_ekran[i][j] = ' ';
+        
+          index_of_ekran++;
+        }
+        //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням
+        current_ekran.position_cursor_x =  0;
+        current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+        //Курсор видимий
+        current_ekran.cursor_on = 1;
+  }
+    else if ((type_of_registrator == 2) && _GET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU))
+    {
+    //Процес зчитування даних з DataFlash ще не закінчився
+    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    {
+      {
+        " Процесс чтения ",
+        "  не завершен   "
+      },
+      {
+        " Процес читання ",
+        " не завершений  "
+      },
+      {
+        "    Reading     ",
+        "is not completed"
+      },
+      {
+        " Процесс чтения ",
+        "  не завершен   "
+      }
+    };
+
+    //Копіюємо  рядки у робочий екран
+    for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+    {
+      //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+      if (i < 2)
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+      else
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+    }
+
+    //Відображення курору по вертикалі
+    current_ekran.position_cursor_y = 0;
+
+    //Позначаємо, що цей екран треба перерисувати
+    rewrite_ekran_once_more = 1;
+    }
+    else if ((type_of_registrator == 2) && (read_ar_record_of_ar_for_menu < 2) 
+        //?&& (buffer_for_manu_read_record[0] == LABEL_START_RECORD_AR)
+           )
+    {
+        __HEADER_AR header_ar_tmp; 
+            header_ar_tmp = *((__HEADER_AR*)buffer_for_manu_read_record);
+        if( read_ar_record_of_ar_for_menu == 0){
+            ar_time_dat_tmp[0] = header_ar_tmp.time_dat;
+            ar_time_ms_tmp [0] = header_ar_tmp.time_ms;
+            read_ar_record_of_ar_for_menu ++;
+           
+         }else{
+             ar_time_dat_tmp[1] = header_ar_tmp.time_dat;
+             ar_time_ms_tmp [1] = header_ar_tmp.time_ms;
+             read_ar_record_of_ar_for_menu++;//
+           //Позначаємо, що більше цей екран перерисовувати не треба
+           rewrite_ekran_once_more = 0;
+        }
+         
+    }    
+    else if ((type_of_registrator == 0) && (read_dr_record_of_ar_for_menu < 2)        )
+    {
+        if( (read_dr_record_of_ar_for_menu == 0) && (use_buffer_for_manu_read_record == 0)//&& (buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] != LABEL_START_RECORD_DR)
+          ){
+            //Запам'ятовуємо, який номер запису дискретного реєстратори ми намагаємося продивитися
+            number_record_of_dr_for_menu = current_ekran.index_position;
+            cursor_index_pos = current_ekran.index_position;        
+            //Виставляємо першу частину запису
+            part_reading_dr_from_dataflash_for_menu = 0;
+            //Подаємо команду зчитати дані у бувер пам'яті
+            control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU;
+            buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] = 0xcc;    
+            //Виставляємо повідомлення, що поки дані не будуть зчитані, то екран треба перерисовувати кожну секунду
+            rewrite_ekran_once_more = 1;
+            use_buffer_for_manu_read_record++;
+            //?bBufDataNotReady = 1;
+        }else if( (read_dr_record_of_ar_for_menu == 0)
+         && (buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] == LABEL_START_RECORD_DR)  ){
+            ar_time_dat_tmp[0] = 0;
+            ar_time_ms_tmp [0] = 0; 
+            for(size_t i = 0; i < sizeof(time_t); i++)
+                *((unsigned char*)(&ar_time_dat_tmp[0]) + i) =  buffer_for_manu_read_record[1 + i];
+            for(size_t i = 0; i < sizeof(int32_t); i++)
+                *((unsigned char*)(&ar_time_ms_tmp [0]) + i) = buffer_for_manu_read_record[1 + sizeof(time_t) + i];  
+            read_dr_record_of_ar_for_menu = 1;
+             buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] = 0xcc;
+        }else if( (read_dr_record_of_ar_for_menu == 1)
+         && (buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] != LABEL_START_RECORD_DR)  ){
+            //Запам'ятовуємо, який номер запису дискретного реєстратори ми намагаємося продивитися
+            number_record_of_dr_for_menu = current_ekran.index_position + 1;
+            if(number_record_of_dr_for_menu >= info_rejestrator_dr.number_records)
+                number_record_of_dr_for_menu = 0;
+            //Виставляємо першу частину запису
+            part_reading_dr_from_dataflash_for_menu = 0;
+            //Подаємо команду зчитати дані у бувер пам'яті
+            control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU;
+                
+            //Виставляємо повідомлення, що поки дані не будуть зчитані, то екран треба перерисовувати кожну секунду
+                rewrite_ekran_once_more = 1; 
+              
+        
+        }else if( (read_dr_record_of_ar_for_menu == 1)
+         && (buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] == LABEL_START_RECORD_DR)  ){
+              ar_time_dat_tmp[1] = 0;
+              ar_time_ms_tmp [1] = 0;
+            for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&ar_time_dat_tmp[1]) + i) =  buffer_for_manu_read_record[1 + i];
+            for(size_t i = 0; i < sizeof(int32_t); i++) *((unsigned char*)(&ar_time_ms_tmp [1]) + i) = buffer_for_manu_read_record[1 + sizeof(time_t) + i];
+            use_buffer_for_manu_read_record = 0;   
+            buffer_for_manu_read_record[FIRST_INDEX_START_START_RECORD_DR] = 0xcc;
+            read_dr_record_of_ar_for_menu = 2;
+        }
+     bBufDataNotReady = 1;
+    }
+    else if ((type_of_registrator == 1) && (read_pr_record_of_ar_for_menu < 2) 
+    //?&&(buffer_for_manu_read_record[0] == LABEL_START_RECORD_PR_ERR)
+    )
+    {
+         
+    }    
+    else {  
+            //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
+         static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+         {
+           {
+             " Недостоверные  ",
+             "     данные     "
+           },
+           {
+             "  Недостовірні  ",
+             "      дані      "
+           },
+           {
+             "    Invalid     ",
+             "      data      "
+           },
+           {
+             " Недостоверные  ",
+             "     данные     "
+           }
+         };
+        
+         //Копіюємо  рядки у робочий екран
+         for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+         {
+           //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+           if (i < 2)
+             for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+           else
+             for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+         }
+        
+        //Відображення курору по вертикалі
+        current_ekran.position_cursor_y = 0;
+        //Курсор не видимий
+        current_ekran.cursor_on = 0;
+        
+        current_ekran.index_position = 0;
+    
+    }
+    if(bBufDataInvalid == 1)
+    {  
+                //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
+             static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+             {
+               {
+                 " Недостоверные  ",
+                 "     данные     "
+               },
+               {
+                 "  Недостовірні  ",
+                 "      дані      "
+               },
+               {
+                 "    Invalid     ",
+                 "      data      "
+               },
+               {
+                 " Недостоверные  ",
+                 "     данные     "
+               }
+             };
+            
+             //Копіюємо  рядки у робочий екран
+             for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+             {
+               //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+               if (i < 2)
+                 for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+               else
+                 for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+             }
+            
+            //Відображення курору по вертикалі
+            current_ekran.position_cursor_y = 0;
+            //Курсор не видимий
+            current_ekran.cursor_on = 0;
+            
+            current_ekran.index_position = 0;
+        
+    }
+    if(bBufDataNotReady == 1)
+    {
+        //Процес зчитування даних з DataFlash ще не закінчився
+        static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        {
+          {
+            " Процесс чтения ",
+            "  не завершен   "
+          },
+          {
+            " Процес читання ",
+            " не завершений  "
+          },
+          {
+            "    Reading     ",
+            "is not completed"
+          },
+          {
+            " Процесс чтения ",
+            "  не завершен   "
+          }
+        };
+    
+        //Копіюємо  рядки у робочий екран
+        for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+        {
+          //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+          if (i < 2)
+            for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+          else
+            for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+        }
+        
+        //Відображення курору по вертикалі
+        current_ekran.position_cursor_y = 0;
+    
+        //Позначаємо, що цей екран треба перерисувати
+        rewrite_ekran_once_more = 1;
+    }
+ //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+    
+}
 /*****************************************************/
 /*****************************************************/
