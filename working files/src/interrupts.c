@@ -926,7 +926,6 @@ void TIM4_IRQHandler(void)
     if (((current_ekran.current_level == EKRAN_TIME) && (current_ekran.edition == 0)) ||
         ((current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR) && (rewrite_ekran_once_more > 0)) ||
         ((current_ekran.current_level == EKRAN_TITLES_PR_ERR_REGISTRATOR ) && (rewrite_ekran_once_more > 0)) ||
-        ((current_ekran.current_level == EKRAN_DATA_LADEL_AR             ) && (rewrite_ekran_once_more > 0)) ||
         (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS       )   ||
         (current_ekran.current_level == EKRAN_LIST_DIGITAL_REGISTRATOR_RECORDS      )   ||
         (current_ekran.current_level == EKRAN_LIST_REGISTRATOR_PROGRAM_ERROR_RECORDS)   ||

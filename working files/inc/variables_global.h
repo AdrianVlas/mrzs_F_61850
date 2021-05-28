@@ -1009,6 +1009,10 @@ int last_number_time_sample_for_RS485;// -1 - заголовок запису ан.р.; 0 - перший
 char id_ar_record_for_RS485[8 + 1 + 3 + 1];
 int max_number_time_sample_RS485;
 
+time_t menu_ar_time_dat[MAX_ROW_LCD / 2];
+int32_t menu_ar_tims_ms[MAX_ROW_LCD / 2];
+
+
 int32_t timePowerDown = -1;
 int32_t timePowerDown_total = -1;
 unsigned int truncPrefault;

@@ -20,9 +20,6 @@
 #define EKRAN_DATA_LABEL_STATE_CMD                   (EKRAN_TITLES_STATE_CMD_REGISTRATOR +1)
 #define EKRAN_STATE_CMD_REG                          (EKRAN_DATA_LABEL_STATE_CMD + 1)
 
-//#define EKRAN_DATA_LADEL_AR                           (EKRAN_CHANGES_DIAGNOSTICS_PR_ERR + 1) //Останній індекс у масиві position_in_current_level_menu
-#define EKRAN_DATA_LADEL_AR                           (EKRAN_STATE_CMD_REG + 1) //Останній індекс у масиві position_in_current_level_menu
-
 #define MAX_ROW_FOR_LIST_REGISTRATORS                 4
 #define MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS         MAX_ROW_LCD
 #define MAX_ROW_FOR_EKRAN_DATA_LABEL                  2

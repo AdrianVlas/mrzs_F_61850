@@ -1687,7 +1687,6 @@ void main_manu_function(void)
     case EKRAN_TITLES_PR_ERR_REGISTRATOR:
     case EKRAN_DATA_LADEL_PR_ERR:
     case EKRAN_CHANGES_DIAGNOSTICS_PR_ERR:
-    case EKRAN_DATA_LADEL_AR:   
     case EKRAN_TITLES_STATE_CMD_REGISTRATOR:
     case EKRAN_DATA_LABEL_STATE_CMD:               
     case EKRAN_STATE_CMD_REG:                      
@@ -2420,7 +2419,9 @@ void main_manu_function(void)
 
               //Формуємо екран відображення записів
               //make_ekran_data_and_time_elem_d_p_a_registrator(type_registrator);
-              make_ekran_list_records_registrator(type_registrator);
+              if (type_registrator == INDEX_ML_ANALOG_REGISTRATOR_INFO) _SET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU);
+              else make_ekran_list_records_registrator(type_registrator);
+              
             }
             else if (current_ekran.current_level == EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS)
             {
@@ -2547,13 +2548,6 @@ void main_manu_function(void)
             {
               //Формуємо екран відображення змін діагностик - записаних у реєстраторі програмних подій
               make_ekran_changing_signals_statistica_registrator();
-            }
-            else if (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
-            {
-              if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_DATA_LABEL) current_ekran.index_position = 0;
-              position_in_current_level_menu[EKRAN_DATA_LADEL_AR] = current_ekran.index_position;
-              //Формуємо екран відображення мітки часу прочитаного запису аналогового реєстратора
-              make_ekran_data_and_time_of_records_registrator(2);
             }
             
             //Очищаємо біт обновлення екрану
@@ -4013,38 +4007,6 @@ void main_manu_function(void)
                 current_ekran.edition = 0;
               }
               else if (
-                       (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS) &&
-                       ((clean_rejestrators & CLEAN_AR) == 0)
-                      )
-              {
-                unsigned int first_number = (info_rejestrator_ar.first_number < 0) ? 0 : (info_rejestrator_ar.first_number + 1);
-                unsigned int last_number  = (info_rejestrator_ar.last_number  < 0) ? 0 : (info_rejestrator_ar.last_number + 1);
-                
-                int number_records;
-                if (first_number == 0) number_records = 0;
-                else if (first_number >= last_number) number_records = first_number - last_number + 1;
-                else number_records = NUMBER_FATFS_NAME - last_number + first_number + 1;
-                
-                if (
-                    (number_records > 0) && 
-                    (current_ekran.index_position < number_records)
-                   )
-                {
-                  //Натисну кнопка Enter у вікні вибору запису аналогового реєстратора і реально є записи для відображення
-                
-                  //Запам'ятовуємо, який номер запису дискретного реєстратори ми намагаємося продивитися
-                  number_record_of_ar_for_menu = current_ekran.index_position;
-                  _SET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU);
-                    
-                  //Виставляємо повідомлення, що поки дані не будуть зчитані, то екран треба перерисовувати кожну секунду
-                  rewrite_ekran_once_more = 1;
-                  //Виставляємо новий екран, який треба відобразити на РКІ
-                  current_ekran.current_level = EKRAN_DATA_LADEL_AR;
-                  current_ekran.index_position = 0; //При відкриванні цих вікон з старших розділів меню завжди треба попадати на найновіший запис
-                  current_ekran.edition = 0;
-                }
-              }
-              else if (
                        (current_ekran.current_level == EKRAN_LIST_DIGITAL_REGISTRATOR_RECORDS) && 
                        (info_rejestrator_dr.number_records > 0) &&
                        ((clean_rejestrators & CLEAN_DR) == 0)
@@ -4964,7 +4926,8 @@ void main_manu_function(void)
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
 
                 //Формуємо екран відображення записів
-                make_ekran_list_records_registrator(type_registrator);
+                if (type_registrator == INDEX_ML_ANALOG_REGISTRATOR_INFO) _SET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU);
+                else make_ekran_list_records_registrator(type_registrator);
               }
               else if (current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR)
               {
@@ -5082,13 +5045,6 @@ void main_manu_function(void)
                 current_ekran.index_position--;
                 //Формуємо екран відображення змін діагностик - записаних у реєстраторі програмних подій
                 make_ekran_changing_diagnostics_pr_err_registrator();
-              }
-              else if (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
-              {
-                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_EKRAN_DATA_LABEL - 1;
-                position_in_current_level_menu[EKRAN_DATA_LADEL_AR] = current_ekran.index_position;
-                //Формуємо екран відображення мітки часу прочитаного запису аналогового реєстратора
-                make_ekran_data_and_time_of_records_registrator(2);
               }
               else if (current_ekran.current_level == EKRAN_STATE_CMD_REG)
               {
@@ -5824,7 +5780,8 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= ((int)number_records)) current_ekran.index_position = 0;
                 position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
                 //Формуємо екран відображення записів
-                make_ekran_list_records_registrator(type_registrator);
+                if (type_registrator == INDEX_ML_ANALOG_REGISTRATOR_INFO) _SET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU);
+                else make_ekran_list_records_registrator(type_registrator);
               }
               else if (current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR)
               {
@@ -5943,17 +5900,10 @@ void main_manu_function(void)
                 //Формуємо екран відображення змін діагностик - записаних у реєстраторі програмних подій
                 make_ekran_changing_diagnostics_pr_err_registrator();
               }
-              else if (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
-              {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_DATA_LABEL) current_ekran.index_position =  0;
-                position_in_current_level_menu[EKRAN_DATA_LADEL_AR] = current_ekran.index_position;
-                //Формуємо екран відображення мітки часу прочитаного запису аналогового реєстратора
-                make_ekran_data_and_time_of_records_registrator(2);
-              }
               else if (current_ekran.current_level == EKRAN_DATA_LABEL_STATE_CMD)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_DATA_LABEL) current_ekran.index_position =  0;
-                position_in_current_level_menu[EKRAN_DATA_LADEL_AR] = current_ekran.index_position;
+                position_in_current_level_menu[EKRAN_DATA_LABEL_STATE_CMD] = current_ekran.index_position;
                 //Формуємо екран відображення мітки часу прочитаного запису аналогового реєстратора
                 make_ekran_data_and_time_of_records_registrator(2);
               }

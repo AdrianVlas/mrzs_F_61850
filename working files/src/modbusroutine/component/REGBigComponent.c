@@ -545,8 +545,6 @@ int postREGBigWriteAction(void)
         case 36://Очистить аналоговый регистратор
 //ОСОБАЯ ПРОВЕРКА
           if (
-            (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
-            ||
             (state_ar_record_m           != STATE_AR_NONE_M )
             ||  
             (state_ar_record_prt         != STATE_AR_NONE_PRT )

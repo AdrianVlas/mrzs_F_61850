@@ -562,8 +562,6 @@ enum ONM_EKRAN_LIST
   ONM_EKRAN_STATE_CMD_REG                            = EKRAN_STATE_CMD_REG                      ,
 
                        
-  ONM_EKRAN_DATA_LADEL_AR                            =  EKRAN_DATA_LADEL_AR      ,    
-                                                  
   ONM_EKRAN_POINT_TIME_SETTINGS                      =  EKRAN_POINT_TIME_SETTINGS     ,
   ONM_EKRAN_POINT_TIME_SETPOINT                      =  EKRAN_POINT_TIME_SETPOINT     ,
   ONM_EKRAN_POINT_TIME_RANGUVANNJA                   =  EKRAN_POINT_TIME_RANGUVANNJA  ,
