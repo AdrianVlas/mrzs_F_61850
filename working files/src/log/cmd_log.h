@@ -24,8 +24,8 @@ typedef union{
 }UNN_UnixTime;
 
 typedef union{
-    unsigned long uLCmd[9];
-    unsigned char uChCmd[36];
+    unsigned long uLCmd[N_BIG];
+    unsigned char uChCmd[(N_BIG<<2)];
     
 }UNN_CmdState;
 
@@ -92,6 +92,7 @@ typedef struct tag_dig_reg_uniq_vars{
 
 
 
+extern short GetAmountFixElem(void);
 
 void ChekCurrentStateCmd(unsigned int *p_active_functions);
 void CmdPlusTimeLogHundler(unsigned int *p_active_functions);

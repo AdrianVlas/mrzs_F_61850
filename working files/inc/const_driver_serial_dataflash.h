@@ -268,5 +268,7 @@ enum _command_fatfs
 #define CLEAN_DR              (1 << CLEAN_DR_BIT)
 #define CLEAN_PR_ERR_BIT      2
 #define CLEAN_PR_ERR          (1 << CLEAN_PR_ERR_BIT)
+#define CLEAN_SR_ERR_BIT      3
+#define CLEAN_SR_ERR          (1 << CLEAN_SR_ERR_BIT)
 
 #endif

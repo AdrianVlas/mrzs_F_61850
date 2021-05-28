@@ -47,11 +47,12 @@ SRAM1  CmdPlusTimeHolder holderCmdPlusTime;
 // @In the steps below I am using a timestamp of 1203161493 
 // @which corresponds to a date/time of 2-15-2008 11:31:33. 
 // @I'm ignoring timezones and whatnot, it isn't necessary for this.
-SRAM1 CmdPlusTimeStampHolder holderCmdPlusTimeStamp;
+ CmdPlusTimeStampHolder holderCmdPlusTimeStamp;
 
 
-
-
+short GetAmountFixElem(void){
+    return holderCmdPlusTime.shTotalFixElem;
+}
 void CmdPlusTimeLogHundler(unsigned int *p_active_functions){
     register long i;
     UNUSED(p_active_functions);
@@ -69,29 +70,35 @@ void CmdPlusTimeLogHundler(unsigned int *p_active_functions){
         i = AMOUNT_CMD_PLUS_TIME_RECORD;
     else 
         i--;
-    unsigned long *pCmd = (unsigned long *)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);    
-    if(
-        ((p_active_functions[0] != pCmd[0])  )||
-        ((p_active_functions[1] != pCmd[1])  )||
-        ((p_active_functions[2] != pCmd[2])  )||
-        ((p_active_functions[3] != pCmd[3])  )||
-        ((p_active_functions[4] != pCmd[4])  )||
-        ((p_active_functions[5] != pCmd[5])  )||
-        ((p_active_functions[6] != pCmd[6])  )||
-        ((p_active_functions[7] != pCmd[7])  )||
-        ((p_active_functions[8] != pCmd[8])  )
+    unsigned long *pCmd = (unsigned long *)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
+    bool b_comp = false;       
+    for (size_t _i = 0; ( (b_comp == false) && (_i < sizeof(N_BIG)) ); ++_i) 
+    {                                                          
+        b_comp |= (p_active_functions[_i] != pCmd[_i]);               
+    }
+    if( b_comp
+        //?((p_active_functions[0] != pCmd[0])  )||
+        //?((p_active_functions[1] != pCmd[1])  )||
+        //?((p_active_functions[2] != pCmd[2])  )||
+        //?((p_active_functions[3] != pCmd[3])  )||
+        //?((p_active_functions[4] != pCmd[4])  )||
+        //?((p_active_functions[5] != pCmd[5])  )||
+        //?((p_active_functions[6] != pCmd[6])  )||
+        //?((p_active_functions[7] != pCmd[7])  )||
+        //?((p_active_functions[8] != pCmd[8])  )
     ){
         i = holderCmdPlusTime.shIndexWR;
         pCmd = (unsigned long *)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
-        pCmd[0] = p_active_functions[0] ;
-        pCmd[1] = p_active_functions[1] ;
-        pCmd[2] = p_active_functions[2] ;
-        pCmd[3] = p_active_functions[3] ;
-        pCmd[4] = p_active_functions[4] ;
-        pCmd[5] = p_active_functions[5] ;
-        pCmd[6] = p_active_functions[6] ;
-        pCmd[7] = p_active_functions[7] ;
-        pCmd[8] = p_active_functions[8] ;
+        //?pCmd[0] = p_active_functions[0] ;
+        //?pCmd[1] = p_active_functions[1] ;
+        //?pCmd[2] = p_active_functions[2] ;
+        //?pCmd[3] = p_active_functions[3] ;
+        //?pCmd[4] = p_active_functions[4] ;
+        //?pCmd[5] = p_active_functions[5] ;
+        //?pCmd[6] = p_active_functions[6] ;
+        //?pCmd[7] = p_active_functions[7] ;
+        //?pCmd[8] = p_active_functions[8] ;
+        memcpy((void *)pCmd,(const void*)p_active_functions,sizeof(UNN_CmdState));
         //Put Time
         holderCmdPlusTime.arrCmdPlusTimeHolder[i].unix_time.time_dat = time_dat;
         //Put Mksec
@@ -110,45 +117,88 @@ void CmdPlusTimeLogHundler(unsigned int *p_active_functions){
 void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx){
     register long i;
     //?UNUSED(p_active_functions);
+    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+        lIdx = 0;
     i = holderCmdPlusTime.shIndexWR-1;
     i -= lIdx;
     
     if (i < 0)
         i += AMOUNT_CMD_PLUS_TIME_RECORD;
 //void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
- 
-    memcpy((void *)p_elem,(const void*)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]),
-    sizeof(UNN_CmdState));
+    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
+    memcpy((void *)p_elem,(const void*)pU32,  sizeof(UNN_CmdState));//for avoid situation when change data while reading
+    bool data_not_Ok = 0;char u8_iter = 0;
+    bool b_comp = false;       
+    for (size_t _i = 0; ( (b_comp == false) && (_i < sizeof(N_BIG)) ); ++_i) 
+    {                                                          
+        b_comp |= (pU32[_i] != p_elem[_i]);               
+    }
+    do{
+        if( b_comp
+            //.((p_elem[0] != pU32[0])) ||
+            //.((p_elem[1] != pU32[1])) ||
+            //.((p_elem[2] != pU32[2])) ||
+            //.((p_elem[3] != pU32[3])) ||
+            //.((p_elem[4] != pU32[4])) ||
+            //.((p_elem[5] != pU32[5])) ||
+            //.((p_elem[6] != pU32[6])) ||
+            //.((p_elem[7] != pU32[7])) ||
+            //.((p_elem[8] != pU32[8])) 
+           )
+        {
+            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_CmdState));   
+            data_not_Ok = 1;
+            u8_iter++;
+            //read again
+        }   
+            
+    }while (data_not_Ok && (u8_iter<3));
 
 }
-inline void GetCmdPlusTimeLogElemUseLocal(unsigned int *p_elem, long lIdx){
-    register long i;
-    //?UNUSED(p_active_functions);
-    i = holderCmdPlusTime.shIndexWR-1;
-    i -= lIdx;
-    
-    if (i < 0)
-        i += AMOUNT_CMD_PLUS_TIME_RECORD;
-//void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
- 
-    memcpy((void *)p_elem,(const void*)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]),
-    sizeof(UNN_CmdState));
-
-}
+//?inline void GetCmdPlusTimeLogElemUseLocal(unsigned int *p_elem, long lIdx){
+//?    register long i;
+//?    //?UNUSED(p_active_functions);
+//?    i = holderCmdPlusTime.shIndexWR-1;
+//?    i -= lIdx;
+//?    
+//?    if (i < 0)
+//?        i += AMOUNT_CMD_PLUS_TIME_RECORD;
+//?//void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
+//? 
+//?    memcpy((void *)p_elem,(const void*)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]),
+//?    sizeof(UNN_CmdState));
+//?
+//?}
 
 void GetDateTimeLogElem(unsigned int *p_elem, long lIdx){
     register long i;
     //?UNUSED(p_active_functions);
+    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+        lIdx = 0;
     i = holderCmdPlusTime.shIndexWR-1;
     i -= lIdx;
     
     if (i < 0)
         i += AMOUNT_CMD_PLUS_TIME_RECORD;
 //void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
- 
-    memcpy((void *)p_elem,(const void*)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].unix_time.arU08MkTime),
-    sizeof(UNN_UnixTime));
-
+    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].unix_time.arU32MkTime[0]);
+    memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_UnixTime));
+    bool data_not_Ok = 0;char u8_iter = 0;
+    
+    do{
+        bool b_comp = false;       
+        for (size_t _i = 0; ( (b_comp == false) && (_i < (sizeof(time_t)>>2)) ); ++_i) 
+        {                                                          
+            b_comp |= (pU32[_i] != p_elem[_i]);               
+        }                                                     
+        if( b_comp 
+        )
+        {
+            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_CmdState));   
+            data_not_Ok = 1;
+            u8_iter++;//read again
+        }   
+    }while (data_not_Ok && (u8_iter<3));
 }
 
 
@@ -156,6 +206,8 @@ void GetDateTimeLogElem(unsigned int *p_elem, long lIdx){
 void GetMsLogElem(unsigned int *p_elem, long lIdx){
     register long i;
     //?UNUSED(p_active_functions);
+    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+        lIdx = 0;
     i = holderCmdPlusTime.shIndexWR-1;
     i -= lIdx;
     
@@ -163,8 +215,19 @@ void GetMsLogElem(unsigned int *p_elem, long lIdx){
         i += AMOUNT_CMD_PLUS_TIME_RECORD;
 //void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
  
-    memcpy((void *)p_elem,(const void*)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].mksec.uLMkTime),
-    sizeof(UNN_MicroSec));
+    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].mksec.uLMkTime);
+    memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_MicroSec));
+    bool data_not_Ok = 0;char u8_iter = 0;
+                                                         
+    do{
+        if( pU32[0] != p_elem[0]
+        )
+        {
+            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_MicroSec));   
+            data_not_Ok = 1;
+            u8_iter++;//read again
+        }   
+    }while (data_not_Ok && (u8_iter<3));
 
 }
 
@@ -176,7 +239,8 @@ long GetNumberChangingInLogElem( long lIdx){
     //?
     //?if (i < 0)
     //?    i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    
+    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+        lIdx = 0;
     unsigned int array_old[N_BIG], array_new[N_BIG], array_changing[N_BIG];
     GetCmdPlusTimeLogElem(array_new ,lIdx);
     //i--;                                     Errorneus code as this
@@ -200,38 +264,38 @@ long u32Count = 0;
 return u32Count;
 
 }
-long GetNumberChangingInLogElemUseLocal( long lIdx){
-    register long i;
-    //?UNUSED(p_active_functions);           Errorneus code as this
-    //?i = holderCmdPlusTime.shIndexWR-1;    ariphmetic make in lowfunc
-    //?i -= lIdx;
-    //?
-    //?if (i < 0)
-    //?    i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    
-    unsigned int array_old[N_BIG], array_new[N_BIG], array_changing[N_BIG];
-    GetCmdPlusTimeLogElemUseLocal(array_new ,lIdx);
-    //i--;                                     Errorneus code as this
-    //if (i < 0)                               ariphmetic make in lowfunc
-    //    i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    lIdx++;//Next elem on menu older
-    if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
-        lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
-    GetCmdPlusTimeLogElemUseLocal(array_old ,lIdx);
-    
-     for (unsigned int j = 0; j < N_BIG; j++)
-         array_changing[j] = array_new[j] ^ array_old[j];
-long u32Count = 0;
-    for (unsigned int j = 0; j < N_BIG; j++){    
-        for(i = 0; i < 32; i++)
-            if((array_changing[j] &(1<<i)) != 0)
-                u32Count++;
-        
-    }
-            
-return u32Count;
-
-}
+//?long GetNumberChangingInLogElemUseLocal( long lIdx){
+//?    register long i;
+//?    //?UNUSED(p_active_functions);           Errorneus code as this
+//?    //?i = holderCmdPlusTime.shIndexWR-1;    ariphmetic make in lowfunc
+//?    //?i -= lIdx;
+//?    //?
+//?    //?if (i < 0)
+//?    //?    i += AMOUNT_CMD_PLUS_TIME_RECORD;
+//?    
+//?    unsigned int array_old[N_BIG], array_new[N_BIG], array_changing[N_BIG];
+//?    GetCmdPlusTimeLogElemUseLocal(array_new ,lIdx);
+//?    //i--;                                     Errorneus code as this
+//?    //if (i < 0)                               ariphmetic make in lowfunc
+//?    //    i += AMOUNT_CMD_PLUS_TIME_RECORD;
+//?    lIdx++;//Next elem on menu older
+//?    if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
+//?        lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
+//?    GetCmdPlusTimeLogElemUseLocal(array_old ,lIdx);
+//?    
+//?     for (unsigned int j = 0; j < N_BIG; j++)
+//?         array_changing[j] = array_new[j] ^ array_old[j];
+//?long u32Count = 0;
+//?    for (unsigned int j = 0; j < N_BIG; j++){    
+//?        for(i = 0; i < 32; i++)
+//?            if((array_changing[j] &(1<<i)) != 0)
+//?                u32Count++;
+//?        
+//?    }
+//?            
+//?return u32Count;
+//?
+//?}
 
 void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions){
 
@@ -249,17 +313,23 @@ void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions){
         i = AMOUNT_CMD_PLUS_TIME_STAMP_RECORD;
     
         i--;
+    
     unsigned long *pCmd = (unsigned long *)&(holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[i].cmd.uLCmd[0]);    
-    if(
-        ((p_active_functions[0] != pCmd[0])  )||
-        ((p_active_functions[1] != pCmd[1])  )||
-        ((p_active_functions[2] != pCmd[2])  )||
-        ((p_active_functions[3] != pCmd[3])  )||
-        ((p_active_functions[4] != pCmd[4])  )||
-        ((p_active_functions[5] != pCmd[5])  )||
-        ((p_active_functions[6] != pCmd[6])  )||
-        ((p_active_functions[7] != pCmd[7])  )||
-        ((p_active_functions[8] != pCmd[8])  )
+    bool b_comp = false;       
+    for (size_t _i = 0; ( (b_comp == false) && (_i < sizeof(N_BIG)) ); ++_i) 
+    {                                                          
+        b_comp |= (p_active_functions[_i] != pCmd[_i]);               
+    }
+    if( b_comp
+        //?((p_active_functions[0] != pCmd[0])  )||
+        //?((p_active_functions[1] != pCmd[1])  )||
+        //?((p_active_functions[2] != pCmd[2])  )||
+        //?((p_active_functions[3] != pCmd[3])  )||
+        //?((p_active_functions[4] != pCmd[4])  )||
+        //?((p_active_functions[5] != pCmd[5])  )||
+        //?((p_active_functions[6] != pCmd[6])  )||
+        //?((p_active_functions[7] != pCmd[7])  )||
+        //?((p_active_functions[8] != pCmd[8])  )
     ){
 
         long long lLCurrentDifer  = (phld->arrAdditionalInfoCmdPlusTimeStamp[i].ullTimeStamp);
@@ -269,7 +339,9 @@ void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions){
         else{
             lLCurrentDifer = (phld->uLLDrecTimeStampVal) - lLCurrentDifer;
         }
-        
+               //asm volatile(
+               //"bkpt 1"
+               //);
         if(lLCurrentDifer < 100){
             phld->shSumDifersElem += lLCurrentDifer;
             long u,k;
@@ -312,7 +384,7 @@ void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions){
         else{
             phld->shAmount100msElem = 0;
             phld->shSumDifersElem = 0;
-            phld->shIndexRD = i;
+            phld->shIndexRD = phld->shIndexWR;//..phld->shIndexRD = i;
         }
         //Вираховуємо кількість змін сигналів
           unsigned int number_changes_into_current_item;
@@ -320,15 +392,16 @@ void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions){
         
         i = holderCmdPlusTimeStamp.shIndexWR;
         pCmd = (unsigned long *)&(holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[i].cmd.uLCmd[0]);
-        pCmd[0] = p_active_functions[0] ;
-        pCmd[1] = p_active_functions[1] ;
-        pCmd[2] = p_active_functions[2] ;
-        pCmd[3] = p_active_functions[3] ;
-        pCmd[4] = p_active_functions[4] ;
-        pCmd[5] = p_active_functions[5] ;
-        pCmd[6] = p_active_functions[6] ;
-        pCmd[7] = p_active_functions[7] ;
-        pCmd[8] = p_active_functions[8] ;
+        //pCmd[0] = p_active_functions[0] ;
+        //pCmd[1] = p_active_functions[1] ;
+        //pCmd[2] = p_active_functions[2] ;
+        //pCmd[3] = p_active_functions[3] ;
+        //pCmd[4] = p_active_functions[4] ;
+        //pCmd[5] = p_active_functions[5] ;
+        //pCmd[6] = p_active_functions[6] ;
+        //pCmd[7] = p_active_functions[7] ;
+        //pCmd[8] = p_active_functions[8] ;
+        memcpy((void *)pCmd,(const void*)p_active_functions,sizeof(UNN_CmdState));
         //Put Time
         phld->arrCmdPlusTimeStampElem[i].unix_time.time_dat = time_dat;
         //Put Mksec
@@ -403,9 +476,9 @@ static  int time_before_start_record_dr = 0;
     i = phld->shIndexRD;
     
     unsigned long *pCmd;
-//D	if(*(ptDRUVAd->number_items_dr) > 0 )
-//D		*(ptDRUVAd->number_items_dr) += 1;
-
+//D if(*(ptDRUVAd->number_items_dr) > 0 )
+//D     *(ptDRUVAd->number_items_dr) += 1;
+     *(ptDRUVAd->number_changes_into_dr_record) = 0;
     *(ptDRUVAd->number_items_dr) = 0; 
 
     long j = i - 1;//point prev 
@@ -424,7 +497,7 @@ static  int time_before_start_record_dr = 0;
           //_NUMBER_CHANGES_INTO_UNSIGNED_INT_ARRAY(((unsigned long *)&(holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[j].cmd.uLCmd[0])), pCmd, N_BIG, number_changes_into_current_item);
           //number_changes_into_dr_record += number_changes_into_current_item;
         if(*(ptDRUVAd->number_items_dr) != 0)
-		 *(ptDRUVAd->number_changes_into_dr_record) += phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem;
+         *(ptDRUVAd->number_changes_into_dr_record) += phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem;
           //Записуємо текучий cтан сигналів
           //Мітка часу
           //buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  0] =  time_before_start_record_dr        & 0xff;
@@ -454,16 +527,16 @@ static  int time_before_start_record_dr = 0;
           //.buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 36] = number_changes_into_current_item & 0xff;
           //.buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 + 37] = (number_changes_into_current_item >> 8) & 0xff;
         if(*(ptDRUVAd->number_items_dr) != 0){
-		    buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 0)] = 
-			(phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem) & 0xff;
-			
+            buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 0)] = 
+            (phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem) & 0xff;
+            
             buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 1)] = 
-			((phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem)>> 8) & 0xff;
-		}
-		else{
-			buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 0)] =  0;
-			buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 1)] =  0;
-		}
+            ((phld->arrAdditionalInfoCmdPlusTimeStamp[j].lNumAlterSigInElem)>> 8) & 0xff;
+        }
+        else{
+            buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 0)] =  0;
+            buffer_for_save_dr_record[idx_data_dr + (3 + NUMBER_BYTES_SAMPLE_DR + 1)] =  0;
+        }
         //Збільшуємо на один кількість нових зрізів
         *(ptDRUVAd->number_items_dr) += 1;
         if( ++j >= AMOUNT_CMD_PLUS_TIME_STAMP_RECORD )//if( ++i >= AMOUNT_CMD_PLUS_TIME_STAMP_RECORD ) 
@@ -491,7 +564,7 @@ static  int time_before_start_record_dr = 0;
     
     //pCmd = (unsigned long *)(ptDRUVAd->p_active_functions);//unsigned int *pI32 = (ptDRUVAd->previous_active_functions);
     unsigned long *pI32 = (unsigned long *)(ptDRUVAd->p_active_functions);
-    
+    *(ptDRUVAd->time_from_start_record_dr) = 0;
     
     unsigned int number_changes_into_current_item;  
     _NUMBER_CHANGES_INTO_UNSIGNED_INT_ARRAY( (pCmd), (pI32), N_BIG, number_changes_into_current_item);

@@ -5958,7 +5958,7 @@ void main_manu_function(void)
               else if (current_ekran.current_level == EKRAN_DATA_LABEL_STATE_CMD)
               {
                 if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_DATA_LABEL) current_ekran.index_position =  0;
-                position_in_current_level_menu[EKRAN_DATA_LADEL_AR] = current_ekran.index_position;
+                position_in_current_level_menu[EKRAN_DATA_LABEL_STATE_CMD] = current_ekran.index_position;
                 //Формуємо екран відображення мітки часу прочитаного запису аналогового реєстратора
                 make_ekran_data_and_time_of_records_registrator(2);
               }
