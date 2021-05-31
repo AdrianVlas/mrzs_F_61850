@@ -84,6 +84,7 @@ void make_ekran_list_records_registrator_ar()
   else if (first_number >= last_number) number_records = first_number - last_number + 1;
   else number_records = NUMBER_FATFS_NAME - last_number + first_number + 1;
   
+  unsigned int error_reading = false;
   if(number_records == 0)
   {
     //Немає записів
@@ -213,17 +214,26 @@ void make_ekran_list_records_registrator_ar()
               time_dat_tmp = header_ar_tmp.time_dat;
               time_ms_tmp = header_ar_tmp.time_ms;
             }
+            else
+            {
+              error_reading = true;
+              break;
+            }
           }
           else
           {
             //Невизначена ситуація, якої ніколи б не мало бути.
             _SET_BIT(set_diagnostyka, ERROR_AR_UNDEFINED_BIT);
+            error_reading = true;
+            break;
           }
         }
         else
         {
           //Невизначена ситуація, якої ніколи б не мало бути.
           _SET_BIT(set_diagnostyka, ERROR_AR_UNDEFINED_BIT);
+          error_reading = true;
+          break;
         }
           
               
@@ -238,6 +248,8 @@ void make_ekran_list_records_registrator_ar()
       {
         //Невизначена ситуація, якої ніколи б не мало бути.
         _SET_BIT(set_diagnostyka, ERROR_AR_UNDEFINED_BIT);
+        error_reading = true;
+        break;
       }
         
 
@@ -295,17 +307,21 @@ void make_ekran_list_records_registrator_ar()
       ++k;
     }
 
-    for (size_t i = 2*k ; i < MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS; ++i )
+    if (error_reading == false)
     {
-      for (size_t j = 0; j != MAX_COL_LCD; ++j) working_ekran[i][j] = ' ';
-    }
+      for (size_t i = 2*k ; i < MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS; ++i )
+      {
+        for (size_t j = 0; j != MAX_COL_LCD; ++j) working_ekran[i][j] = ' ';
+      }
 
-    //Курсор видимий
-    current_ekran.cursor_on = 1;
+      //Курсор видимий
+      current_ekran.cursor_on = 1;
+    }
     
     _CLEAR_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU);
   }
-  else
+  
+  if (error_reading)
   {
     //Зафіксована помилкова ситуація
     
@@ -365,6 +381,7 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
   else if (type_registrator == INDEX_ML_PROGRAM_ERROE_REGISTRATOR_INFO) number_records = info_rejestrator_pr_err.number_records;
   else number_records = holderCmdPlusTime.shTotalFixElem;//info_rejestrator_pr_err.number_records;
   
+  unsigned int error_reading = false;
   if(number_records == 0)
   {
     //Немає записів
@@ -410,10 +427,32 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
     unsigned int index_of_ekran = ((position_temp << 1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
 
     unsigned int k = 0;
-    while ( ((index_of_ekran + k) < number_records) && (k < ( MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS >> 1)) ) 
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    while ( ((index_of_ekran_tmp + k) < number_records) && (k < ( MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS >> 1)) ) 
     {
+      number_record_of_dr_for_menu = index_of_ekran_tmp + k;
       time_t time_dat_tmp = 0;
       int32_t time_ms_tmp = 0;
+      
+      if (type_registrator == INDEX_ML_DIGITAL_REGISTRATOR_INFO)
+      {
+        _SET_STATE(control_tasks_dataflash, TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU_SHORT_BIT);
+        while (_GET_STATE(control_tasks_dataflash, TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU_SHORT_BIT))
+        {
+           periodical_operations(false);
+        }
+        
+        if (buffer_for_manu_read_record[0] == LABEL_START_RECORD_DR) 
+        {
+          for(size_t i = 0; i < sizeof(time_t); i++) *((unsigned char*)(&time_dat_tmp) + i) =  buffer_for_manu_read_record[1 + i];
+          for(size_t i = 0; i < sizeof(int32_t); i++) *((unsigned char*)(&time_ms_tmp) + i) = buffer_for_manu_read_record[1 + sizeof(time_t) + i];
+        }
+        else
+        {
+          error_reading = true;
+          break;
+        }
+      }
 
       //Копіюємо  рядки у робочий екран
       for (size_t i = 0; i != 2; ++i)
@@ -469,15 +508,19 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
       ++k;
     }
 
-    for (size_t i = 2*k ; i < MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS; ++i )
+    if (error_reading == false)
     {
-      for (size_t j = 0; j != MAX_COL_LCD; ++j) working_ekran[i][j] = ' ';
-    }
+      for (size_t i = 2*k ; i < MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS; ++i )
+      {
+        for (size_t j = 0; j != MAX_COL_LCD; ++j) working_ekran[i][j] = ' ';
+      }
 
-    //Курсор видимий
-    current_ekran.cursor_on = 1;
+      //Курсор видимий
+      current_ekran.cursor_on = 1;
+    }
   }
-  else
+  
+  if (error_reading)
   {
     //Зафіксована помилкова ситуація
     
@@ -515,7 +558,7 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
   //Курсор по горизонталі відображається на першій позиції
   current_ekran.position_cursor_x = 0;
   //Відображення курору по вертикалі
-  current_ekran.position_cursor_y = position_temp & (MAX_ROW_LCD - 1);
+  current_ekran.position_cursor_y = ((position_temp << 1) + 1) & (MAX_ROW_LCD - 1);
   //Курсор не мигає
   current_ekran.cursor_blinking_on = 0;
   //Обновити повністю весь екран
@@ -536,7 +579,6 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
     static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_TITLES_DIGITAL_REGISTRATOR][MAX_COL_LCD] = 
     {
       {
-        " Метка времени  ",
         " Изм.дискр.сигн.",
         " Изм.при м.фазе ",
         " Изм.при м.ф.0.4",
@@ -549,7 +591,6 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
         " Изм.при f-ЧАПВ "
       },
       {
-        " Мітка часу     ",
         " Зм.дискр.сигн. ",
         " Вим.при м.фазі ",
         " Вим.при м.ф.0.4",
@@ -562,7 +603,6 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
         " Вим.при f-ЧАПВ "
       },
       {
-        " Time label     ",
         " Bin S Changes  ",
         " M at Max Cur   ",
         " M at Max LV Cur",
@@ -575,7 +615,6 @@ void make_ekran_list_titles_for_record_of_digital_registrator(void)
         " M.at f -FAR    "
       },
       {
-        " Уакыт белгісі  ",
         " Изм.дискр.сигн.",
         " Изм.при м.фазе ",
         " Изм.при м.ф.0.4",
@@ -773,7 +812,7 @@ void make_ekran_data_and_time_of_records_registrator(unsigned int type_of_regist
     
     if (time_dat_tmp != 0)
     {
-      struct tm *p = localtime(&time_dat_tmp);
+      struct tm *p =  localtime(&time_dat_tmp);
       int field;
       
       //День

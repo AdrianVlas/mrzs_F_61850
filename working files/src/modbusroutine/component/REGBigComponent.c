@@ -610,8 +610,6 @@ int postREGBigWriteAction(void)
           if (
             (current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR)
             ||
-            (current_ekran.current_level == EKRAN_DATA_LADEL_DR             )
-            ||
             (current_ekran.current_level == EKRAN_CHANGES_SIGNALS_DR        )
             ||
             (current_ekran.current_level == EKRAN_TITLE_MAX_VALUES          )
