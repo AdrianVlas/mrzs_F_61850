@@ -98,7 +98,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>29</version>
+                    <version>30</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -115,7 +115,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>29</version>
+                    <version>30</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -138,7 +138,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>29</version>
+                    <version>30</version>
                     <state>38</state>
                 </option>
                 <option>

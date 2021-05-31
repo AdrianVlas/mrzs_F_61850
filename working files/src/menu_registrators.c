@@ -167,13 +167,14 @@ void make_ekran_list_records_registrator_ar()
     unsigned int index_of_ekran = ((position_temp << 1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
 
     unsigned int k = 0;
-    while ( ((index_of_ekran + k) < number_records) && (k < ( MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS >> 1)) ) 
+    unsigned int index_of_ekran_tmp = index_of_ekran >> 1;
+    while ( ((index_of_ekran_tmp + k) < number_records) && (k < ( MAX_ROW_FOR_LIST_REGISTRATORS_RECORDS >> 1)) ) 
     {
-      unsigned int n_record = index_of_ekran + k;
+      unsigned int n_record = index_of_ekran_tmp + k;
       time_t time_dat_tmp = 0;
       int32_t time_ms_tmp = 0;
 
-      int record_name = first_number - n_record;
+      int record_name = info_rejestrator_ar.first_number - n_record;
       if (record_name < 0) record_name += NUMBER_FATFS_NAME;
 
       char str[8 + 1 + 3 + 1];
@@ -342,7 +343,7 @@ void make_ekran_list_records_registrator_ar()
   //Курсор по горизонталі відображається на першій позиції
   current_ekran.position_cursor_x = 0;
   //Відображення курору по вертикалі
-  current_ekran.position_cursor_y = position_temp & (MAX_ROW_LCD - 1);
+  current_ekran.position_cursor_y = ((position_temp << 1) + 1) & (MAX_ROW_LCD - 1);
   //Курсор не мигає
   current_ekran.cursor_blinking_on = 0;
   //Обновити повністю весь екран
