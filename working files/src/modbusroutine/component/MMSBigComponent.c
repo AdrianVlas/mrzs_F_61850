@@ -1,5 +1,5 @@
 #include "header.h"
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 
 //начальный регистр в карте памяти
 #define BEGIN_ADR_REGISTER 3660
@@ -18,12 +18,9 @@ int getMMSBigModbusBit(int);//получить содержимое бита
 int setMMSBigModbusRegister(int, int);//получить содержимое регистра
 int setMMSBigModbusBit(int, int);//получить содержимое бита
 
-void setMMSBigCountObject(void);//записать к-во обектов
-void preMMSBigReadAction(void);//action до чтения
-void preMMSBigWriteAction(void);//action до записи
 int  postMMSBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *mmsbigcomponent;
+SRAM1 COMPONENT_OBJ *mmsbigcomponent;
 
 /**************************************/
 //подготовка компонента MMS
@@ -37,11 +34,7 @@ void constructorMMSBigComponent(COMPONENT_OBJ *mmsbigcomp)
   mmsbigcomponent->setModbusRegister = setMMSBigModbusRegister;//получить содержимое регистра
   mmsbigcomponent->setModbusBit      = setMMSBigModbusBit;//получить содержимое бита
 
-  mmsbigcomponent->preReadAction   = preMMSBigReadAction;//action до чтения
-  mmsbigcomponent->preWriteAction  = preMMSBigWriteAction;//action до записи
   mmsbigcomponent->postWriteAction = postMMSBigWriteAction;//action после записи
-
-  mmsbigcomponent->isActiveActualData = 0;
 }//
 
 int getMMSBigModbusRegister(int adrReg)
@@ -123,16 +116,6 @@ int setMMSBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//
 
-void preMMSBigReadAction(void) {
-//action до чтения
-  mmsbigcomponent->isActiveActualData = 1;
-}//
-void preMMSBigWriteAction(void) {
-//action до записи
-  mmsbigcomponent->operativMarker[0] = -1;
-  mmsbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  mmsbigcomponent->isActiveActualData = 1;
-}//
 int postMMSBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

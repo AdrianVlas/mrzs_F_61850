@@ -124,7 +124,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output);
 void make_ekran_transformator(void);
 void make_ekran_transformator_control(void);
 void make_ekran_set_function_in_bi(unsigned int, unsigned int, unsigned int * 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                                                                               , int, int
 #endif
 );
@@ -180,6 +180,7 @@ void make_ekran_list_inputs_outputs(void);
 void make_ekran_state_inputs_or_outputs(unsigned int);
 void make_ekran_list_registrators(void);
 void make_ekran_list_records_registrator(unsigned int);
+void make_ekran_list_records_registrator_ar(void);
 void make_ekran_data_and_time_elem_d_p_a_registrator(unsigned int type_of_registrator);
 void make_ekran_list_titles_for_record_of_digital_registrator(void);
 void make_ekran_data_and_time_of_records_registrator(unsigned int);
@@ -277,6 +278,7 @@ void CmdPlusTimeLogHundler(unsigned int *p_active_functions);
 void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx);
 void GetDateTimeLogElem(unsigned int *p_elem, long lIdx);
 void GetMsLogElem(unsigned int *p_elem, long lIdx);
+long GetNumberChangingInLogElemUseLocal( long lIdx);
 long GetNumberChangingInLogElem( long lIdx);
 void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 
@@ -347,7 +349,7 @@ void setpoints_selecting(unsigned int*, unsigned int);
 
 int str_to_int_DATE_Mmm(void);
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 void make_ekran_type_IEC61850_nodes(void);
 void make_ekran_list_in_out_for_iec61850(unsigned int, size_t);
 void start_transmint_data_via_CANAL1_MO(void);

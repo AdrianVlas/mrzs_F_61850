@@ -10,7 +10,7 @@ void make_ekran_chose_settings(void)
     {
       " Инфо.          ",
       " Метка настроек ",
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       " IEC 61850      ",
 #endif
       " Входы          ",
@@ -31,7 +31,7 @@ void make_ekran_chose_settings(void)
     {
       " Інфо.          ",
       " Мітка налашт.  ",
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       " IEC 61850      ",
 #endif
       " Входи          ",
@@ -52,7 +52,7 @@ void make_ekran_chose_settings(void)
     {
       " Info.          ",
       " Settings Mark  ",
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       " IEC 61850      ",
 #endif
       " Binary Inputs  ",
@@ -73,7 +73,7 @@ void make_ekran_chose_settings(void)
     {
       " Инфо.          ",
       " Метка настроек ",
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       " IEC 61850      ",
 #endif
       " Входы          ",

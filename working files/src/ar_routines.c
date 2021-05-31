@@ -52,7 +52,7 @@ void ar_routine_with_fatfs(unsigned int before_full_start)
       id_ar_record_for_USB[0] = '\0';
       number_record_of_ar_for_RS485 = 0xffff;
       id_ar_record_for_RS485[0] = '\0';
-#if (MODYFIKACIA_VERSII_PZ >= 10)            
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)            
       number_record_of_ar_for_LAN = 0xffff;
       id_ar_record_for_LAN[0] = '\0';
 #endif
@@ -82,56 +82,11 @@ void ar_routine_with_fatfs(unsigned int before_full_start)
       }
       else if (_GET_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU))
       {
-        if (
-            (state_ar_record_fatfs == STATE_AR_NONE_FATFS) ||
-            (state_ar_record_fatfs == STATE_AR_MEMORY_FULL_FATFS) ||
-            (state_ar_record_fatfs == STATE_AR_BLOCK_FATFS)
-           )   
+        if (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS)
         {
-          if (current_ekran.current_level == EKRAN_DATA_LADEL_AR)
-          {
-            int first_number = info_rejestrator_ar.first_number;
-            if ((first_number >= 0) && (number_record_of_ar_for_menu >= 0))
-            {
-              int record_name = first_number - number_record_of_ar_for_menu;
-              if (record_name < 0) record_name += NUMBER_FATFS_NAME;
-
-              char str[8 + 1 + 3 + 1];
-              int n = snprintf(str, (8 + 1), "%d", record_name);
-              if (n > 8) n = 8; //Теоретично цього ніколи б не мало бути
-              str[n++] = '.';
-              str[n++] = 'd';
-              str[n++] = 'a';
-              str[n++] = 't';
-              str[n++] = '\0';
-        
-              FIL fil;
-              FRESULT res = f_open(&fil, str, FA_READ);
-              if (res == FR_OK) 
-              {
-                res = f_lseek(&fil, 0);
-                if (res == FR_OK)
-                {
-                  unsigned int read_tmp;
-                  res = f_read(&fil, buffer_for_manu_read_record, sizeof(__HEADER_AR), &read_tmp);
-                  if ((res != FR_OK) || (read_tmp != sizeof(__HEADER_AR))) buffer_for_manu_read_record[0] = 0;
-                }
-                else buffer_for_manu_read_record[0] = 0;
-              
-                res = f_close(&fil);
-                if (res != FR_OK) 
-                {
-                  //Невизначена ситуація, якої ніколи б не мало бути.
-                  _SET_BIT(set_diagnostyka, ERROR_AR_UNDEFINED_BIT);
-                }
-              }
-              else buffer_for_manu_read_record[0] = 0;
-            }
-            else buffer_for_manu_read_record[0] = 0;
-          }
-
-          _CLEAR_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU);
+          make_ekran_list_records_registrator_ar();
         }
+        else _CLEAR_STATE(FATFS_command, FATFS_READ_DATA_FOR_MENU);
       }
     }
       

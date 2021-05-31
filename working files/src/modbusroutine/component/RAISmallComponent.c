@@ -60,13 +60,11 @@ int getRAISmallModbusBit(int);//получить содержимое бита
 int setRAISmallModbusRegister(int, int);//получить содержимое регистра
 int setRAISmallModbusBit(int, int);//получить содержимое бита
 
-void preRAISmallReadAction(void);//action до чтения
-void preRAISmallWriteAction(void);//action до записи
 int  postRAISmallWriteAction(void);//action после записи
 
 int privateRAISmallGetReg2(int adrReg);
 
-COMPONENT_OBJ *raismallcomponent;
+SRAM1 COMPONENT_OBJ *raismallcomponent;
 
 /**************************************/
 //компонент измерений в момент аварии
@@ -80,11 +78,7 @@ void constructorRAISmallComponent(COMPONENT_OBJ *raismallcomp)
   raismallcomponent->setModbusRegister = setRAISmallModbusRegister;//получить содержимое регистра
   raismallcomponent->setModbusBit      = setRAISmallModbusBit;//получить содержимое бита
 
-  raismallcomponent->preReadAction   = preRAISmallReadAction;//action до чтения
-  raismallcomponent->preWriteAction  = preRAISmallWriteAction;//action до записи
   raismallcomponent->postWriteAction = postRAISmallWriteAction;//action после записи
-
-  raismallcomponent->isActiveActualData = 0;
 }//constructorIUSmallComponent(COMPONENT_OBJ *iucomp)
 
 int getRAISmallModbusRegister(int adrReg)
@@ -97,7 +91,7 @@ int getRAISmallModbusRegister(int adrReg)
     ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB == 0xffff)) 
     ||
     ((pointInterface == RS485_RECUEST) && (number_record_of_dr_for_RS485 == 0xffff))
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     ||
     ((pointInterface == LAN_RECUEST) && (number_record_of_dr_for_LAN == 0xffff))
 #endif      
@@ -109,7 +103,7 @@ int getRAISmallModbusRegister(int adrReg)
       ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) 
       ||
       ((pointInterface == RS485_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       ||
       ((pointInterface == LAN_RECUEST) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
 #endif      
@@ -123,7 +117,7 @@ int getRAISmallModbusRegister(int adrReg)
   offset = (adrReg - MM_ADDRESS_FIRST_MEASUREMENTS_DR) - number_block*MMEASUREMENTS_DR_WIDTH;
   if (pointInterface == USB_RECUEST) point_to_buffer = buffer_for_USB_read_record_dr;
   else if (pointInterface == RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_dr;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   else if (pointInterface == LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_dr;
 #endif  
   else
@@ -410,17 +404,6 @@ int setRAISmallModbusBit(int x, int y) {
   return MARKER_OUTPERIMETR;
 }//setIUModbusBit(int, int )
 
-void preRAISmallReadAction(void) {
-//action до чтения
-  raismallcomponent->isActiveActualData = 1;
-}//
-
-void preRAISmallWriteAction(void) {
-//action до записи
-  raismallcomponent->operativMarker[0] = -1;
-  raismallcomponent->operativMarker[1] = -1;//оперативный маркер
-  raismallcomponent->isActiveActualData = 1;
-}//
 int postRAISmallWriteAction(void) {
 //action после записи
   return 0;

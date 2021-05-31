@@ -563,8 +563,6 @@ enum ONM_EKRAN_LIST
   ONM_EKRAN_STATE_CMD_REG                            = EKRAN_STATE_CMD_REG                      ,
 
                        
-  ONM_EKRAN_DATA_LADEL_AR                            =  EKRAN_DATA_LADEL_AR      ,    
-                                                  
   ONM_EKRAN_POINT_TIME_SETTINGS                      =  EKRAN_POINT_TIME_SETTINGS     ,
   ONM_EKRAN_POINT_TIME_SETPOINT                      =  EKRAN_POINT_TIME_SETPOINT     ,
   ONM_EKRAN_POINT_TIME_RANGUVANNJA                   =  EKRAN_POINT_TIME_RANGUVANNJA  ,
@@ -850,8 +848,8 @@ enum ONM_EKRAN_LIST
   ONM_EKRAN_CHOSE_DATA_TIME                           =  EKRAN_CHOSE_DATA_TIME    ,
   ONM_EKRAN_TIME_ZONE                                 =  EKRAN_TIME_ZONE          ,
   ONM_EKRAN_DST_RULE                                  =  EKRAN_DST_RULE           ,
-#if (MODYFIKACIA_VERSII_PZ >= 10)  
-   ONM_EKRAN_SYNCHRO                                 = EKRAN_SYNCHRO ,
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+  ONM_EKRAN_SYNCHRO                                 = EKRAN_SYNCHRO ,
 #endif
 
   ONM_EKRAN_CHOSE_COMMUNICATION_PARAMETERS            = EKRAN_CHOSE_COMMUNICATION_PARAMETERS  ,  

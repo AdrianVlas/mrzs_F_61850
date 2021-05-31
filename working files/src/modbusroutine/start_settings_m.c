@@ -35,10 +35,13 @@ void global_component_installation(void) {
   constructorAISmallComponent(&(config_array[AISMALLCOMPONENT]));//подготовка компонента aismall
   constructorQAISmallComponent(&(config_array[QAISMALLCOMPONENT]));//подготовка компонента qaismall
   constructorPFBigComponent(&(config_array[PFBIGCOMPONENT]));//подготовка компонента pf
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   constructorGOOSBigComponent(&(config_array[GOOSBIGCOMPONENT]));//подготовка компонента goos
   constructorMMSBigComponent(&(config_array[MMSBIGCOMPONENT]));//подготовка компонента mms
   constructorLANBigComponent(&(config_array[LANBIGCOMPONENT]));//подготовка компонента lan
+#endif
+#ifdef  MODYFIKACIA_VERSII_DS
+  constructorDOUTBigDSComponent(&(config_array[DOUTBIGDSCOMPONENT]));//подготовка компонента DS
 #endif
 }//global_vareiables_installation_bo(void)
 

@@ -9,9 +9,9 @@
         <debug>1</debug>
         <settings>
             <name>C-STAT</name>
-            <archiveVersion>514</archiveVersion>
+            <archiveVersion>515</archiveVersion>
             <data>
-                <version>514</version>
+                <version>515</version>
                 <cstatargs>
                     <useExtraArgs>0</useExtraArgs>
                     <extraArgs></extraArgs>
@@ -25,7 +25,7 @@
                     <outputDir>Flash-Debug\C-STAT</outputDir>
                 </cstatargs>
                 <cstat_settings>
-                    <cstat_version>2.2.0</cstat_version>
+                    <cstat_version>2.3.1</cstat_version>
                     <checks_tree>
                         <package enabled="true" name="STDCHECKS">
                             <group enabled="true" name="ARR">
@@ -1176,8 +1176,7 @@
                             </group>
                             <group enabled="true" name="MISRAC++2008-5-3">
                                 <check enabled="true" name="MISRAC++2008-5-3-1" />
-                                <check enabled="true" name="MISRAC++2008-5-3-2_a" />
-                                <check enabled="true" name="MISRAC++2008-5-3-2_b" />
+                                <check enabled="true" name="MISRAC++2008-5-3-2" />
                                 <check enabled="true" name="MISRAC++2008-5-3-3" />
                                 <check enabled="true" name="MISRAC++2008-5-3-4" />
                             </group>
@@ -1834,6 +1833,12 @@
                 </file>
             </group>
             <group>
+                <name>Log</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\working files\src\log\cmd_log.h</name>
+                </file>
+            </group>
+            <group>
                 <name>menu</name>
                 <group>
                     <name>a.02.c.d</name>
@@ -2209,6 +2214,9 @@
                 <name>Log</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\log\log.c</name>
+                    <configuration>
+                        <name>Flash-Debug</name>
+                    </configuration>
                 </file>
             </group>
             <group>

@@ -19,13 +19,9 @@ int getSDISmallModbusBit(int);//получить содержимое бита
 int setSDISmallModbusRegister(int, int);//записать регистр
 int setSDISmallModbusBit(int, int);//записать бит
 
-void setSDISmallCountObject(void);//записать к-во обектов
-
-void preSDISmallReadAction(void);//action до чтения
-void preSDISmallWriteAction(void);//action до записи
 int  postSDISmallWriteAction(void);//action после записи
 
-COMPONENT_OBJ *sdismallcomponent;
+SRAM1 COMPONENT_OBJ *sdismallcomponent;
 
 /**************************************/
 //подготовка компонента ДВ
@@ -39,11 +35,7 @@ void constructorSDISmallComponent(COMPONENT_OBJ *sdicomp)
   sdismallcomponent->setModbusRegister = setSDISmallModbusRegister;// регистра
   sdismallcomponent->setModbusBit      = setSDISmallModbusBit;// бита
 
-  sdismallcomponent->preReadAction   = preSDISmallReadAction;//action до чтения
-  sdismallcomponent->preWriteAction  = preSDISmallWriteAction;//action до записи
   sdismallcomponent->postWriteAction = postSDISmallWriteAction;//action после записи
- 
-  sdismallcomponent->isActiveActualData = 0;
 }//constructorSDISmallComponent(COMPONENT_OBJ *SDIcomp)
 
 int getSDISmallModbusRegister(int adrReg) {
@@ -84,16 +76,6 @@ int setSDISmallModbusBit(int x, int y) {
   return MARKER_OUTPERIMETR;
 }//getSDIModbusRegister(int adrReg)
 
-void preSDISmallReadAction(void) {
-//action до чтения
-  sdismallcomponent->isActiveActualData = 1;
-}//
-void preSDISmallWriteAction(void) {
-//action до записи
-  sdismallcomponent->operativMarker[0] = -1;
-  sdismallcomponent->operativMarker[1] = -1;//оперативный маркер
-  sdismallcomponent->isActiveActualData = 1;
-}//
 int postSDISmallWriteAction(void) {
 //action после записи
   return 0;

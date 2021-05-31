@@ -16,6 +16,8 @@ enum _start_label
   START_LABEL_NEW_BLOCK
 };
 
+#ifdef NUMBER_DS
+
 #define SIZE_SENDING_DATA_TM            \
 (                                       \
   sizeof(measurement) +                 \
@@ -29,13 +31,39 @@ enum _start_label
   (sizeof(phi_angle) >> 1) +            \
   sizeof(resurs_vymykacha) +            \
   sizeof(resurs_vidkljuchennja) +       \
-  sizeof(active_inputs) +                \
+  sizeof(active_inputs) +               \
+  sizeof(state_outputs) +               \
+  sizeof(ds) +                          \
+  sizeof(state_leds) +                  \
+  sizeof(active_functions) +            \
+  sizeof(diagnostyka) +                 \
+  sizeof(Output_Out_LAN_block)          \
+)
+
+#else
+
+#define SIZE_SENDING_DATA_TM            \
+(                                       \
+  sizeof(measurement) +                 \
+  sizeof(frequency) +                   \
+  sizeof(resistance) +                  \
+  (sizeof(P) >> 1) +                    \
+  (sizeof(Q) >> 1) +                    \
+  (sizeof(S) >> 1) +                    \
+  (sizeof(cos_phi_x1000) >> 1) +        \
+  (sizeof(energy) >> 1) +               \
+  (sizeof(phi_angle) >> 1) +            \
+  sizeof(resurs_vymykacha) +            \
+  sizeof(resurs_vidkljuchennja) +       \
+  sizeof(active_inputs) +               \
   sizeof(state_outputs) +               \
   sizeof(state_leds) +                  \
   sizeof(active_functions) +            \
   sizeof(diagnostyka) +                 \
   sizeof(Output_Out_LAN_block)          \
 )
+
+#endif
 
 #define SIZE_RECEIVING_DATA_TM          \
 (                                       \

@@ -6,7 +6,7 @@
 //начальный bit в карте памяти
 #define BEGIN_ADR_BIT 50000
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 296
 //конечный bit в карте памяти
@@ -28,8 +28,6 @@ int getACMDSmallModbusBit(int);//получить содержимое бита
 int setACMDSmallModbusRegister(int, int);//записать регистр
 int setACMDSmallModbusBit(int, int);//записать бит
 
-void preACMDSmallReadAction(void);//action до чтения
-void preACMDSmallWriteAction(void);//action до записи
 int  postACMDSmallWriteAction(void);//action после записи
 
 int  cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl);
@@ -43,12 +41,12 @@ int passwordImunitetBitACMDSmallComponent(int adrReg);
 int decoderN_BIGACMDArrayLoader(int idxBit);
 int decoderN_SMALLACMDArrayLoader(int idxBit);
 
-unsigned short decoderN_BIGACMDArray[N_BIG*32];//массив декодирования битов N_BIG
-unsigned short decoderN_SMALLACMDArray[N_SMALL*32];//массив декодирования битов N_SMALL
+SRAM1 unsigned short decoderN_BIGACMDArray[N_BIG*32];//массив декодирования битов N_BIG
+SRAM1 unsigned short decoderN_SMALLACMDArray[N_SMALL*32];//массив декодирования битов N_SMALL
 
 #define CLRACT_CONTROL  0
 
-COMPONENT_OBJ *acmdsmallcomponent;
+SRAM1 COMPONENT_OBJ *acmdsmallcomponent;
 int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
 {
   int isValid = 1;
@@ -301,6 +299,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -320,7 +319,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     break;
 //123456
 #else
-#define ZDZ_CONFIGURATION_END 116 /*???*/
+#define ZDZ_CONFIGURATION_END 116 
 #endif
 
 //  count_bit = 5;
@@ -1191,7 +1190,7 @@ int cmdFunc000(int inOffset, int *outMaska, int *dvMaska, int actControl)
     }//switch
   }//if
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   if(inOffset>=608 && inOffset<624)
   {
     int ingoosOffset = inOffset-608;
@@ -1231,11 +1230,7 @@ void constructorACMDSmallComponent(COMPONENT_OBJ *acmdcomp)
   acmdsmallcomponent->setModbusRegister = setACMDSmallModbusRegister;// регистра
   acmdsmallcomponent->setModbusBit      = setACMDSmallModbusBit;// бита
 
-  acmdsmallcomponent->preReadAction   = preACMDSmallReadAction;//action до чтения
-  acmdsmallcomponent->preWriteAction  = preACMDSmallWriteAction;//action до записи
   acmdsmallcomponent->postWriteAction = postACMDSmallWriteAction;//action после записи
-
-  acmdsmallcomponent->isActiveActualData = 0;
 
   for(int i=0; i<N_BIG*32; i++)   decoderN_BIGACMDArray[i] = (unsigned short)decoderN_BIGACMDArrayLoader(i);//декодировщик индекса бита в адрес modbus  для реле
   for(int i=0; i<N_SMALL*32; i++) decoderN_SMALLACMDArray[i] = (unsigned short)decoderN_SMALLACMDArrayLoader(i);//декодировщик индекса бита в адрес modbus  для DV
@@ -1263,7 +1258,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
         case RS485_RECUEST:
          value = password_set_RS485;//Пароль установлен
         break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         case LAN_RECUEST:
          value = password_set_LAN;//Пароль установлен
         break;
@@ -1291,7 +1286,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
           goto m1;
         }//if
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         if(pointInterface==LAN_RECUEST)//метка интерфейса 0-USB 1-RS485
         if(cmdSwitch==1) //GCMD
         { 
@@ -1322,7 +1317,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
           {
              value = trigger_functions_RS485[value/32] & (1<<(value%32));
           }//else
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
           else if(pointInterface==LAN_RECUEST)
           {
              value = trigger_functions_LAN[value/32] & (1<<(value%32));
@@ -1878,7 +1873,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
       case RS485_RECUEST:
       reset_trigger_function_from_interface |= (1 << RS485_RECUEST);
       break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       case LAN_RECUEST:
       reset_trigger_function_from_interface |= (1 << LAN_RECUEST);
       break;
@@ -1903,7 +1898,7 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
         //Активація внесекних змін
         int typI = 2;
         if(pointInterface==RS485_RECUEST) typI = 3;//метка интерфейса 0-USB 1-RS485
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
 #endif
         if(set_new_settings_from_interface(typI))//2-USB
@@ -1936,18 +1931,6 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
   return MARKER_ERRORPERIMETR;
 }//writeACMDSmallActualDataBit(int offset)
 
-void preACMDSmallReadAction(void)
-{
-//action до чтения
-  acmdsmallcomponent->isActiveActualData = 1;
-}//
-void preACMDSmallWriteAction(void)
-{
-//action до записи
-  acmdsmallcomponent->operativMarker[0] = -1;
-  acmdsmallcomponent->operativMarker[1] = -1;//оперативный маркер
-  acmdsmallcomponent->isActiveActualData = 1;
-}//
 int postACMDSmallWriteAction(void)
 {
 //action после записи

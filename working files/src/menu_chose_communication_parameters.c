@@ -10,7 +10,7 @@ void make_ekran_chose_communication_parameters(void)
     {
       " Имя ячейки     ",
       " Настр.RS-485   "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       " Ethernet       "
 #endif
@@ -18,7 +18,7 @@ void make_ekran_chose_communication_parameters(void)
     {
       " Ім'я комірки   ",
       " Налашт.RS-485  "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       " Ethernet       "
 #endif
@@ -26,7 +26,7 @@ void make_ekran_chose_communication_parameters(void)
     {
       " Bay name       ",
       " RS-485 Settings"
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       " Ethernet       "
 #endif
@@ -34,7 +34,7 @@ void make_ekran_chose_communication_parameters(void)
     {
       " Имя ячейки     ",
       " Настр.RS-485   "
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       " Ethernet       "
 #endif
@@ -789,7 +789,7 @@ void make_ekran_chose_setting_Ethernet(void)
 }
 /*****************************************************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 /*****************************************************/
 //Формуємо екран відображення налаштувань мережевого рівня Ethernet
 /*****************************************************/

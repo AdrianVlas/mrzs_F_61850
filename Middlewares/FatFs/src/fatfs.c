@@ -49,7 +49,6 @@ void MX_FATFS_Init(void)
               (_CHECK_SET_BIT(set_diagnostyka, EVENT_SOFT_RESTART_SYSTEM_BIT) != 0)
              )
         {
-//          periodical_operations_communication(((POWER_CTRL->IDR & POWER_CTRL_PIN) == (uint32_t)Bit_RESET));
           periodical_operations(false);
         }
         
@@ -70,36 +69,6 @@ void MX_FATFS_Init(void)
       }
     }
 
-//    FIL fil;
-//    res = f_open(&fil, "0.dat", FA_CREATE_ALWAYS | FA_WRITE);
-//    res = f_lseek(&fil, 0);
-//    
-//    uint16_t array[3] = {10, 12, 1978};
-//    unsigned int written;
-//    res = f_write(&fil, array, 3*sizeof(uint16_t), &written);
-//    res = f_close(&fil);
-//    if ((res != FR_OK) || (written != 3*sizeof(uint16_t))) _SET_BIT(set_diagnostyka, ERROR_FATFS);
-
-//    res = f_open(&fil, "0.dat", FA_READ);
-//    if (res == FR_OK)
-//    {
-//      res = f_lseek(&fil, 0);
-//    
-//      uint16_t array[3*3];
-//      uint8_t *p_array = (uint8_t*)array;
-//      unsigned int read = 0;
-//      while (!f_eof(&fil))
-//      {
-//        unsigned int read_tmp;
-//        res = f_read(&fil, p_array++, 1, &read_tmp);
-//        read += read_tmp;
-//      }
-//      res = f_close(&fil);
-//      if (res != FR_OK) _SET_BIT(set_diagnostyka, ERROR_FATFS);
-//    }
-
-//    res = f_unlink("0.dat");
-//    if (res != FR_OK) _SET_BIT(set_diagnostyka, ERROR_FATFS);
   }
   else  _SET_BIT(set_diagnostyka, ERROR_FATFS);
     

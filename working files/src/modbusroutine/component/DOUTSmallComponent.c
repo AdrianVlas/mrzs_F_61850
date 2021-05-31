@@ -6,19 +6,7 @@
 //начальный bit в карте памяти
 #define BEGIN_ADR_BIT 100
 
-#if (                                \
-     (MODYFIKACIA_VERSII_PZ == 0) || \
-     (MODYFIKACIA_VERSII_PZ == 1) || \
-     (MODYFIKACIA_VERSII_PZ == 3) || \
-     (MODYFIKACIA_VERSII_PZ == 10)|| \
-     (MODYFIKACIA_VERSII_PZ == 11)|| \
-     (MODYFIKACIA_VERSII_PZ == 13)   \
-    )
-//конечный регистр в карте памяти
-#define END_ADR_REGISTER 100
-//конечный bit в карте памяти
-#define END_ADR_BIT 115
-#endif
+#define TMP_OUTPUTS (tmp = 0)
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
@@ -32,6 +20,29 @@
 #define END_ADR_BIT 108
 #endif
 
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 6)     \
+    )   
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 100
+//конечный bit в карте памяти
+#define END_ADR_BIT 112
+#endif
+
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 1) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10) ||    \
+     (MODYFIKACIA_VERSII_PZ == 11) ||    \
+     (MODYFIKACIA_VERSII_PZ == 13)     \
+    )   
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 100
+//конечный bit в карте памяти
+#define END_ADR_BIT 115
+#endif
+
 #if (                                \
      (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 15)   \
@@ -40,6 +51,20 @@
 #define END_ADR_REGISTER 101
 //конечный bit в карте памяти
 #define END_ADR_BIT 119
+
+#undef TMP_OUTPUTS
+#define TMP_OUTPUTS (tmp = (state_outputs_raw>>16)&0xF)
+#endif
+
+#ifdef  MODYFIKACIA_VERSII_DS
+
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 101
+//конечный bit в карте памяти
+#define END_ADR_BIT 119
+
+#undef TMP_OUTPUTS
+#define TMP_OUTPUTS (tmp = ds&((1 << NUMBER_DS) - 1))
 #endif
 
 int privateDOUTSmallGetReg2(int adrReg);
@@ -50,13 +75,9 @@ int getDOUTSmallModbusBit(int);//получить содержимое бита
 int setDOUTSmallModbusRegister(int, int);//записать регистр
 int setDOUTSmallModbusBit(int, int);//записать бит
 
-void setDOUTSmallCountObject(void);//записать к-во обектов
-
-void preDOUTSmallReadAction(void);//action до чтения
-void preDOUTSmallWriteAction(void);//action до записи
 int  postDOUTSmallWriteAction(void);//action после записи
 
-COMPONENT_OBJ *doutsmallcomponent;
+SRAM1 COMPONENT_OBJ *doutsmallcomponent;
 
 /**************************************/
 //подготовка компонента ДВ
@@ -70,35 +91,38 @@ void constructorDOUTSmallComponent(COMPONENT_OBJ *doutcomp)
   doutsmallcomponent->setModbusRegister = setDOUTSmallModbusRegister;// регистра
   doutsmallcomponent->setModbusBit      = setDOUTSmallModbusBit;// бита
 
-  doutsmallcomponent->preReadAction   = preDOUTSmallReadAction;//action до чтения
-  doutsmallcomponent->preWriteAction  = preDOUTSmallWriteAction;//action до записи
   doutsmallcomponent->postWriteAction = postDOUTSmallWriteAction;//action после записи
- 
-  doutsmallcomponent->isActiveActualData = 0;
 }//constructorDOUTSmallComponent(COMPONENT_OBJ *doutcomp)
 
 int getDOUTSmallModbusRegister(int adrReg) {
   //получить содержимое регистра
   if(privateDOUTSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-//  return  (state_outputs) &0xFFFF;
+  int tmp   = state_outputs_raw&((1<<NUMBER_SIMPLE_OUTPUTS)-1);
   switch(adrReg-BEGIN_ADR_REGISTER)
   {
-    case 0:
-    return (state_outputs) &0xFFFF;
-    case 1:
-    return (state_outputs>>16)&0xFFFF;
+   case 0: tmp &= 0xFFFF; break;
+   case 1: TMP_OUTPUTS; break;
+   default: tmp = 0;
   }//switch
 
-  return 0;
-
+  return tmp;
 }//getDOUTModbusRegister(int adrReg)
+
 int getDOUTSmallModbusBit(int adrBit) {
   //получить содержимое bit
   if(privateDOUTSmallGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  short tmp   = state_outputs;
-  short maska = 1<<((adrBit-BEGIN_ADR_BIT)%16);
+  int tmp = state_outputs_raw&((1<<NUMBER_SIMPLE_OUTPUTS)-1);
+  int offset = adrBit-BEGIN_ADR_BIT;
+  switch(offset/16)
+  {
+   case 0: tmp &= 0xFFFF; break;
+   case 1: TMP_OUTPUTS; break;
+   default: tmp = 0;
+  }//switch
+
+  int maska = 1<<((adrBit-BEGIN_ADR_BIT)%16);
   if(tmp&maska) return 1;
   return 0;
 }//getDOUTModbusBit(int adrReg)
@@ -115,16 +139,6 @@ int setDOUTSmallModbusBit(int x, int y) {
   return MARKER_OUTPERIMETR;
 }//getDOUTModbusRegister(int adrReg)
 
-void preDOUTSmallReadAction(void) {
-//action до чтения
-  doutsmallcomponent->isActiveActualData = 1;
-}//
-void preDOUTSmallWriteAction(void) {
-//action до записи
-  doutsmallcomponent->operativMarker[0] = -1;
-  doutsmallcomponent->operativMarker[1] = -1;//оперативный маркер
-  doutsmallcomponent->isActiveActualData = 1;
-}//
 int postDOUTSmallWriteAction(void) {
 //action после записи
   return 0;

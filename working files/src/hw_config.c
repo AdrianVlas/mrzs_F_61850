@@ -24,7 +24,7 @@ void Set_System(void)
 
   //AHB1
   RCC_AHB1PeriphClockCmd(
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                          RCC_AHB1Periph_GPIO_CANAL1_MO          |
                          RCC_AHB1Periph_GPIO_CANAL2_MO          |
                          RCC_AHB1Periph_GPIO_CANAL1_MO_Out1     |
@@ -56,7 +56,7 @@ void Set_System(void)
 
   //APB2
   RCC_APB2PeriphClockCmd(
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                          RCC_CANAL1_MO          |
                          RCC_CANAL2_MO          |
 #endif

@@ -15,12 +15,9 @@ int getSDIBigModbusBit(int);//получить содержимое бита
 int setSDIBigModbusRegister(int, int);//получить содержимое регистра
 int setSDIBigModbusBit(int, int);//получить содержимое бита
 
-void setSDIBigCountObject(void);//записать к-во обектов
-void preSDIBigReadAction(void);//action до чтения
-void preSDIBigWriteAction(void);//action до записи
 int  postSDIBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *sdibigcomponent;
+SRAM1 COMPONENT_OBJ *sdibigcomponent;
 
 /**************************************/
 //подготовка компонента светоиндикаторов
@@ -34,11 +31,7 @@ void constructorSDIBigComponent(COMPONENT_OBJ *sdibigcomp)
   sdibigcomponent->setModbusRegister = setSDIBigModbusRegister;//получить содержимое регистра
   sdibigcomponent->setModbusBit      = setSDIBigModbusBit;//получить содержимое бита
 
-  sdibigcomponent->preReadAction   = preSDIBigReadAction;//action до чтения
-  sdibigcomponent->preWriteAction  = preSDIBigWriteAction;//action до записи
   sdibigcomponent->postWriteAction = postSDIBigWriteAction;//action после записи
-
-  sdibigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getSDIBigModbusRegister(int adrReg)
@@ -78,16 +71,6 @@ int setSDIBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preSDIBigReadAction(void) {
-//action до чтения
-  sdibigcomponent->isActiveActualData = 1;
-}//
-void preSDIBigWriteAction(void) {
-//action до записи
-  sdibigcomponent->operativMarker[0] = -1;
-  sdibigcomponent->operativMarker[1] = -1;//оперативный маркер
-  sdibigcomponent->isActiveActualData = 1;
-}//
 int postSDIBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

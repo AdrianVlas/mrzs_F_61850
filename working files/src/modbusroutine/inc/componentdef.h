@@ -5,7 +5,6 @@
 typedef struct
 {
   int operativMarker[2];//оперативный маркер
-//  int countObject;//к-во обектов
   int isActiveActualData;
 
   int (*getModbusRegister)(int);//получить содержимое регистра
@@ -13,8 +12,8 @@ typedef struct
   int (*setModbusRegister)(int, int);//записать регистр
   int (*setModbusBit)(int, int);//записать бит
 
-  void (*preReadAction)(void);//action до чтения
-  void (*preWriteAction)(void);//action до записи
+//  void (*preReadAction)(void);//action до чтения
+//  void (*preWriteAction)(void);//action до записи
   int (*postWriteAction)(void);//action после записи
 
 } COMPONENT_OBJ;

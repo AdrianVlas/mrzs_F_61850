@@ -11,14 +11,12 @@ int getQAISmallModbusBit(int);//получить содержимое бита
 int setQAISmallModbusRegister(int, int);//получить содержимое регистра
 int setQAISmallModbusBit(int, int);//получить содержимое бита
 
-void preQAISmallReadAction(void);//action до чтения
-void preQAISmallWriteAction(void);//action до записи
 int  postQAISmallWriteAction(void);//action после записи
 void loadQAISmallActualData(void);
 
 int privateQAISmallGetReg2(int adrReg);
 
-COMPONENT_OBJ *qaismallcomponent;
+SRAM1 COMPONENT_OBJ *qaismallcomponent;
 
 /**************************************/
 //компонент Измерения по методу суммы квадратов
@@ -32,11 +30,7 @@ void constructorQAISmallComponent(COMPONENT_OBJ *qaismallcomp)
   qaismallcomponent->setModbusRegister = setQAISmallModbusRegister;//получить содержимое регистра
   qaismallcomponent->setModbusBit      = setQAISmallModbusBit;//получить содержимое бита
 
-  qaismallcomponent->preReadAction   = preQAISmallReadAction;//action до чтения
-  qaismallcomponent->preWriteAction  = preQAISmallWriteAction;//action до записи
   qaismallcomponent->postWriteAction = postQAISmallWriteAction;//action после записи
-
-  qaismallcomponent->isActiveActualData = 0;
 }//constructorIUSmallComponent(COMPONENT_OBJ *iucomp)
 
 int getQAISmallModbusRegister(int adrReg)
@@ -72,17 +66,6 @@ int setQAISmallModbusBit(int x, int y) {
   return MARKER_OUTPERIMETR;
 }//setIUModbusBit(int, int )
 
-void preQAISmallReadAction(void) {
-//action до чтения
-  qaismallcomponent->isActiveActualData = 1;
-}//
-
-void preQAISmallWriteAction(void) {
-//action до записи
-  qaismallcomponent->operativMarker[0] = -1;
-  qaismallcomponent->operativMarker[1] = -1;//оперативный маркер
-  qaismallcomponent->isActiveActualData = 1;
-}//
 int postQAISmallWriteAction(void) {
 //action после записи
  return 0;

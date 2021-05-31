@@ -12,14 +12,12 @@ int getYustBigModbusBit(int);//получить содержимое бита
 int setYustBigModbusRegister(int, int);//получить содержимое регистра
 int setYustBigModbusBit(int, int);//получить содержимое бита
 
-void preYustBigReadAction(void);//action до чтения
-void preYustBigWriteAction(void);//action до записи
 int postYustBigWriteAction(void);//action после записи
 int passwordImunitetRegYUSTBigComponent(int adrReg);
 
-COMPONENT_OBJ *yustbigcomponent;
+SRAM1 COMPONENT_OBJ *yustbigcomponent;
 
-  int upravlYust=-1;//флаг юстировки
+int upravlYust=-1;//флаг юстировки
 
 /**************************************/
 //подготовка компонента Юстировки
@@ -33,11 +31,7 @@ void constructorYustBigComponent(COMPONENT_OBJ *yustbigcomp)
   yustbigcomponent->setModbusRegister = setYustBigModbusRegister;//получить содержимое регистра
   yustbigcomponent->setModbusBit      = setYustBigModbusBit;//получить содержимое бита
 
-  yustbigcomponent->preReadAction   = preYustBigReadAction;//action до чтения
-  yustbigcomponent->preWriteAction  = preYustBigWriteAction;//action до записи
   yustbigcomponent->postWriteAction = postYustBigWriteAction;//action после записи
-
-  yustbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getYustBigModbusRegister(int adrReg)
@@ -109,20 +103,6 @@ int setYustBigModbusBit(int x, int y)
   //записать содержимое bit
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
-
-void preYustBigReadAction(void) {
-//action до чтения
-  yustbigcomponent->operativMarker[0] = -1;
-  yustbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  yustbigcomponent->isActiveActualData = 1;
-}//
-
-void preYustBigWriteAction(void) {
-//action до записи
-  yustbigcomponent->operativMarker[0] = -1;
-  yustbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  yustbigcomponent->isActiveActualData = 1;
-}//
 
 int postYustBigWriteAction(void) {
 //action после записи
@@ -200,7 +180,7 @@ int postYustBigWriteAction(void) {
     int typI = 2;
     if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
 #endif
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;//2-USB
@@ -214,7 +194,7 @@ int postYustBigWriteAction(void) {
     {   
       serial_number_dev = edit_serial_number_dev;
       
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Помічаємо, що треба перезапустити КП
       _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
 #endif
@@ -241,7 +221,7 @@ int postYustBigWriteAction(void) {
     int typI = 2;
     if(pointInterface==RS485_RECUEST)//метка интерфейса 0-USB 1-RS485
       typI = 3;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     else if(pointInterface==LAN_RECUEST) typI = 4;//метка интерфейса 0-USB 1-RS485
 #endif
     if(set_new_settings_from_interface(typI)) return ERROR_VALID2;

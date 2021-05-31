@@ -120,6 +120,7 @@ extern unsigned int temp_states_for_mtz;
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -158,6 +159,9 @@ extern unsigned int active_inputs;
 extern unsigned int state_outputs;
 extern unsigned int state_outputs_raw;
 extern unsigned int state_signal_outputs;
+#ifdef NUMBER_DS
+extern unsigned int ds;
+#endif
 extern unsigned int active_functions[N_BIG];
 extern unsigned int trigger_active_functions[N_BIG], trigger_active_functions_ctrl[N_BIG];
 extern unsigned char crc_trg_func, crc_trg_func_ctrl;
@@ -221,7 +225,7 @@ extern const uint32_t buttons_mode[NUMBER_BUTTON_MODE][N_SMALL];
 extern const uint32_t output_boards[N_OUTPUT_BOARDS][2];
 extern const uint32_t input_boards[N_INPUT_BOARDS][2];
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 
 extern const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1];
 extern const uint32_t index_n_In_MMS[MAX_NAMBER_LANGUAGE][1];
@@ -253,7 +257,7 @@ extern const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODY
 
 extern unsigned int realDateTime;
 
-extern const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
+extern const uint32_t max_value_for_tf[1 + _FIX_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF];
 
 extern unsigned char calibration;
 extern unsigned char time_edit[7]; 
@@ -401,6 +405,9 @@ extern int last_number_time_sample_for_RS485;
 extern char id_ar_record_for_RS485[8 + 1 + 3 + 1];
 extern int max_number_time_sample_RS485;
 
+extern time_t menu_ar_time_dat[MAX_ROW_LCD / 2];
+extern int32_t menu_ar_tims_ms[MAX_ROW_LCD / 2];
+
 extern int32_t timePowerDown;
 extern int32_t timePowerDown_total;
 extern unsigned int truncPrefault;
@@ -541,7 +548,7 @@ extern unsigned int timeout_idle_USB;
 
 extern uint8_t  USB_Tx_State;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //MODBUS-TCP
 extern unsigned char LAN_received[BUFFER_LAN];
 extern int LAN_received_count;
@@ -594,7 +601,7 @@ extern unsigned int test_watchdogs;
  **************************************************************/
 extern unsigned int gr_ustavok_tmp;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //Міжпроцесорний обмін
 extern uint8_t Canal1_MO_Transmit[BUFFER_CANAL1_MO];
 extern uint8_t Canal1_MO_Received[BUFFER_CANAL1_MO];

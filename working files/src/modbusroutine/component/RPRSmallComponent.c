@@ -12,14 +12,11 @@ int getRPRSmallModbusBit(int);//получить содержимое бита
 int setRPRSmallModbusRegister(int, int);//получить содержимое регистра
 int setRPRSmallModbusBit(int, int);//получить содержимое бита
 
-void setRPRSmallCountObject(void);//записать к-во обектов
-void preRPRSmallReadAction(void);//action до чтения
-void preRPRSmallWriteAction(void);//action до записи
 int  postRPRSmallWriteAction(void);//action после записи
 int getRPRSmallModbusBeginAdrRegister(void);
 int getRPRSmallModbusEndAdrRegister(void);
 
-COMPONENT_OBJ *rprsmallcomponent;
+SRAM1 COMPONENT_OBJ *rprsmallcomponent;
 
 int getRPRSmallModbusBeginAdrRegister(void)
 {
@@ -44,11 +41,7 @@ void constructorRPRSmallComponent(COMPONENT_OBJ *rprsmallcomp)
   rprsmallcomponent->setModbusRegister = setRPRSmallModbusRegister;//получить содержимое регистра
   rprsmallcomponent->setModbusBit      = setRPRSmallModbusBit;//получить содержимое бита
 
-  rprsmallcomponent->preReadAction   = preRPRSmallReadAction;//action до чтения
-  rprsmallcomponent->preWriteAction  = preRPRSmallWriteAction;//action до записи
   rprsmallcomponent->postWriteAction = postRPRSmallWriteAction;//action после записи
-
-  rprsmallcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getRPRSmallModbusRegister(int adrReg)
@@ -56,7 +49,6 @@ int getRPRSmallModbusRegister(int adrReg)
   //получить содержимое регистра
   if(privateRPRSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  superPreReadAction();//action до чтения
   int result = superReaderRegister(current_settings_interfaces.user_register[adrReg-BEGIN_ADR_REGISTER]);
   if(result&0xffff0000) return 0;
 
@@ -83,19 +75,6 @@ int setRPRSmallModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void setRPRSmallCountObject(void) {
-//записать к-во обектов
-}//
-void preRPRSmallReadAction(void) {
-//action до чтения
-  rprsmallcomponent->isActiveActualData = 1;
-}//
-void preRPRSmallWriteAction(void) {
-//action до записи
-  rprsmallcomponent->operativMarker[0] = -1;
-  rprsmallcomponent->operativMarker[1] = -1;//оперативный маркер
-  rprsmallcomponent->isActiveActualData = 1;
-}//
 int postRPRSmallWriteAction(void) {
 //action после записи
   return 0;

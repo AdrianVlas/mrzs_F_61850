@@ -15,7 +15,7 @@ int openRegistrator(int number_file);
 #define ANALOG_REGISTRATOR  1
 
 //Ідентитифікатор каналу - 16 ASCII символів
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 static const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][16] =
 #else
 static const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG - NUMBER_UP_SIGNAL_FOR_RANG + 3][16] =
@@ -39,7 +39,7 @@ int openRegistrator(int number_file)
       (
         ((pointInterface == USB_RECUEST  ) && ((number_record_of_ar_for_USB   == -1) || (id_ar_record_for_USB[0]   == '\0'))) ||
         ((pointInterface == RS485_RECUEST) && ((number_record_of_ar_for_RS485 == -1) || (id_ar_record_for_RS485[0] == '\0')))
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         ||
         ((pointInterface == LAN_RECUEST) && ((number_record_of_ar_for_LAN == -1) || (id_ar_record_for_LAN[0] == '\0')))
 #endif
@@ -52,7 +52,7 @@ int openRegistrator(int number_file)
       (
         ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB   == 0xffff)) ||
         ((pointInterface == RS485_RECUEST  ) && (number_record_of_dr_for_RS485 == 0xffff))
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         ||
         ((pointInterface == LAN_RECUEST  ) && (number_record_of_dr_for_LAN == 0xffff))
 #endif
@@ -101,7 +101,7 @@ int openRegistrator(int number_file)
       (
         ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
         ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         ||
         ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
 #endif
@@ -122,7 +122,7 @@ int openRegistrator(int number_file)
       while (
         ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
         ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         ||
         ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
 #endif
@@ -211,7 +211,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
           
       point_to_Buffer = buffer_for_RS485_read_record_ar;
     }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   else if (pointInterface == LAN_RECUEST)
     {
       point_id_ar_record = id_ar_record_for_LAN;
@@ -306,7 +306,7 @@ int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
     point_to_buffer = buffer_for_USB_read_record_ar;
   else if (pointInterface == RS485_RECUEST)
     point_to_buffer = buffer_for_RS485_read_record_ar;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   else if (pointInterface == LAN_RECUEST)
     point_to_buffer = buffer_for_LAN_read_record_ar;
 #endif
@@ -342,7 +342,7 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
         header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
       else if (pointInterface==RS485_RECUEST)
         header_ar_tmp = (__HEADER_AR*)buffer_for_RS485_read_record_ar;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       else if (pointInterface == LAN_RECUEST)
         header_ar_tmp = (__HEADER_AR*)buffer_for_LAN_read_record_ar;
 #endif
@@ -610,7 +610,7 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
     header_ar_tmp = (__HEADER_AR*)buffer_for_USB_read_record_ar;
   else if (pointInterface==RS485_RECUEST)
     header_ar_tmp = (__HEADER_AR*)buffer_for_RS485_read_record_ar;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   else if (pointInterface == LAN_RECUEST)
         header_ar_tmp = (__HEADER_AR*)buffer_for_LAN_read_record_ar;
 #endif
@@ -660,7 +660,7 @@ int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, 
           if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
             point_to_buffer = buffer_for_USB_read_record_dr;
           else if (pointInterface==RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_dr;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
           else if (pointInterface == LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_dr;
 #endif
           else
@@ -758,7 +758,7 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
           size_t index_row;
           if (subObj < NUMBER_GENERAL_SIGNAL_FOR_RANG) 
           {
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
             if (subObj < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
             {
               index_row = subObj;
@@ -782,7 +782,7 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
           else if (subObj < RANG_BLOCK_UP1) 
           {
             index_row = subObj
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                          + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                          ;
@@ -790,7 +790,7 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
           else if (subObj < (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
           {
             index_row = RANG_BLOCK_UP1
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                          + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif
                          + ((subObj - RANG_BLOCK_UP1) % 3);
@@ -798,13 +798,13 @@ int recordNumberCaseDiskret(int subObj, int offsetRegister)
           else
           {
             index_row = subObj 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
 #endif        
                         + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
           }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
           if (
               (subObj >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
               (subObj <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&
@@ -911,7 +911,7 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
           
       point_to_Buffer = buffer_for_RS485_read_record_ar;
     }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     else if (pointInterface == LAN_RECUEST)
     {
       point_id_ar_record = id_ar_record_for_LAN;
@@ -984,7 +984,7 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
       point_to_Buffer = buffer_for_USB_read_record_dr;
     else if (pointInterface == RS485_RECUEST)
       point_to_Buffer = buffer_for_RS485_read_record_dr;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     else if (pointInterface == LAN_RECUEST) point_to_Buffer = buffer_for_LAN_read_record_dr;
 #endif
     else
@@ -1185,7 +1185,7 @@ int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
   if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
     point_to_buffer = buffer_for_USB_read_record_dr;
   else if (pointInterface==RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_dr;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   else if (pointInterface == LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_dr;
 #endif
   else

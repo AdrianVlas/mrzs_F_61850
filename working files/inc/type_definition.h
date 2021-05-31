@@ -108,7 +108,7 @@ typedef struct
                                                                                 //1 - Двопозиційний ключ
   unsigned int ranguvannja_buttons[N_SMALL*NUMBER_DEFINED_BUTTONS];             //Ранжування опреділюваних кнопок
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   uint32_t ranguvannja_In_GOOSE[N_IN_GOOSE][N_IN_GOOSE_MMS_OUT][N_SMALL];       //Ранжування виходів Вхідних GOOSE блоків
   uint32_t ranguvannja_In_MMS[N_IN_MMS][N_IN_GOOSE_MMS_OUT][N_SMALL];           //Ранжування виходів Вхідних MMS блоків
   uint16_t ranguvannja_Out_LAN[N_OUT_LAN][N_OUT_LAN_IN][MAX_FUNCTIONS_IN_OUT_LAN];//Ранжування входів  Вихідних мережевих блоків
@@ -203,6 +203,7 @@ typedef struct
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -334,7 +335,7 @@ typedef struct
   unsigned int timeout_deactivation_password_interface_RS485;   //Час деактивації паролю для редагування з інтерфейсу RS485
   unsigned int password_interface_RS485;                        //Пароль для редагування з інтерфейсу RS485
   
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   unsigned int timeout_deactivation_password_interface_LAN;   //Час деактивації паролю для редагування з інтерфейсу LAN
   unsigned int password_interface_LAN;                        //Пароль для редагування з інтерфейсу LAN
 #endif  
@@ -399,7 +400,7 @@ typedef struct
   uint32_t dst_on_rule;                                 //Правило переходу на Літній час
   uint32_t dst_off_rule;                                //Правило переходу на стандартний час
   
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   //IP4
   uint16_t IP4[4];                                      //XXX.XXX.XXX.XXX Можна б було обійтися типом в один байт, але для редагування може виходити число 999, тому я вибрав двобайтний тип
   uint32_t mask;                                        //XX
@@ -643,7 +644,7 @@ typedef enum _id_input_output
   ID_TF,
 
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   
   ID_IN_GOOSE,
   ID_IN_MMS,
@@ -653,5 +654,6 @@ typedef enum _id_input_output
   _MAX_ID_INPUT_OUPUT
   
 } __id_input_output;
+
 
 #endif

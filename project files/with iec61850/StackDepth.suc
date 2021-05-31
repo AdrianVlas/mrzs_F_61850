@@ -47,40 +47,6 @@ exclude USBD_USR_DeviceConnected, USBD_USR_DeviceDisconnected;
 exclude _LocaleC_isupper;
 
 //²ãîðÿ ôóíêö³¿
-possible calls superPreWriteAction : 
-preACMDSmallWriteAction,
-                                     preAISmallWriteAction, preANDBigWriteAction,
-                                     preDOUTBigWriteAction, preDOUTSmallWriteAction, preDTRBigWriteAction,
-                                     preDVBigWriteAction,   preDVSmallWriteAction,   preGCMDSmallWriteAction,
-                                     preIUSmallWriteAction, preKEYBigWriteAction,    
-                                     preMFTBigWriteAction,  preNOTBigWriteAction,    preORBigWriteAction,
-                                     prePFBigWriteAction,
-                                     prePKVBigWriteAction,  preQAISmallWriteAction,  preRAISmallWriteAction,
-                                     preREGBigWriteAction,   prePREGBigWriteAction,
-                                     preRPRBigWriteAction,   preRPRSmallWriteAction,  preSDIBigWriteAction,
-                                     preSDISmallWriteAction, preUPRBigWriteAction,    preUSTBigWriteAction,
-                                     preVVBigWriteAction,
-                                     preXORBigWriteAction,   preYustBigWriteAction,
-                                     preGOOSBigWriteAction,  preMMSBigWriteAction,  preLANBigWriteAction
-                                     ;
-
-possible calls superPreReadAction : 
-preACMDSmallReadAction,
-                                     preAISmallReadAction, preANDBigReadAction,
-                                     preDOUTBigReadAction, preDOUTSmallReadAction, preDTRBigReadAction,
-                                     preDVBigReadAction,   preDVSmallReadAction,   preGCMDSmallReadAction,
-                                     preIUSmallReadAction, preKEYBigReadAction,    
-                                     preMFTBigReadAction,  preNOTBigReadAction,    preORBigReadAction,
-                                     prePFBigReadAction,
-                                     prePKVBigReadAction,  preQAISmallReadAction,  preRAISmallReadAction,
-                                     preREGBigReadAction,  prePREGBigReadAction,
-                                     preRPRBigReadAction,   preRPRSmallReadAction,  preSDIBigReadAction,
-                                     preSDISmallReadAction, preUPRBigReadAction,    preUSTBigReadAction,
-                                     preVVBigReadAction,
-                                     preXORBigReadAction,   preYustBigReadAction,
-                                     preGOOSBigReadAction,  preMMSBigReadAction,   preLANBigReadAction
-                                     ;
-
 possible calls superPostWriteAction :
 postACMDSmallWriteAction,
                                      postAISmallWriteAction, postANDBigWriteAction,

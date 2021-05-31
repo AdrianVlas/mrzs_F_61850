@@ -24,6 +24,10 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "׃ַ        ",
      "־ּֿ       ",
      "׀אסר.כמד. "
+#ifdef NUMBER_DS
+                  ,
+     "ִ״        "
+#endif
     },
     {
      "ַּׁ       ",
@@ -40,6 +44,10 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "׃ַ        ",
      "ֲּֿ       ",
      "׀מחר.כמד. "
+#ifdef NUMBER_DS
+                 ,
+     "ִ״        "
+#endif
     },
     {
      "OCP       ",
@@ -56,6 +64,10 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "MFP       ",
      "FL        ",
      "UD-logic  "
+#ifdef NUMBER_DS
+                 ,
+     "ִ״        "
+#endif
     },
     {
      "ּׂK       ",
@@ -72,6 +84,10 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
      "׃ַ        ",
      "־ּֿ       ",
      "׀אסר.כמד. "
+#ifdef NUMBER_DS
+                 ,
+     "ִ״        "
+#endif
     }
   };
   static const unsigned char name_nzz[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD_PART1] = 

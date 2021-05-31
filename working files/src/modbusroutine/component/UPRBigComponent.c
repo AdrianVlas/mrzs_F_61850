@@ -6,10 +6,20 @@
 //начальный bit в карте памяти
 #define BEGIN_ADR_BIT 55000
 
+#ifdef  MODYFIKACIA_VERSII_DS
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 10029
+//конечный bit в карте памяти
+#define END_ADR_BIT 55464
+
+#else
 //конечный регистр в карте памяти
 #define END_ADR_REGISTER 10028
 //конечный bit в карте памяти
 #define END_ADR_BIT 55448
+
+#define DS_BIT_CONFIGURATION 0
+#endif
 
 #define CLRVALID_DATA  0
 
@@ -21,9 +31,6 @@ int getUPRBigModbusBit(int);//получить содержимое бита
 int setUPRBigModbusRegister(int, int);//получить содержимое регистра
 int setUPRBigModbusBit(int, int);//получить содержимое бита
 
-void setUPRBigCountObject(void);//записать к-во обектов
-void preUPRBigReadAction(void);//action до чтения
-void preUPRBigWriteAction(void);//action до записи
 int  postUPRBigWriteAction(void);//action после записи
 
 int  uprFunc000(int action, int inOffset, uint32_t *uprMaska, int validData, uint32_t **editControl);
@@ -37,7 +44,7 @@ int specialСheckUPRBigWriteAction(int offset);
 
 void loadUPRBigActualDataBit(int beginOffset, int endOffset);
 
-COMPONENT_OBJ *uprbigcomponent;
+SRAM1 COMPONENT_OBJ *uprbigcomponent;
 
 void uprFuncRead000(int inOffset, uint32_t *uprMaska, uint32_t **editControl)
 {
@@ -209,6 +216,7 @@ int uprFunc000(int actControl, int inOffset, uint32_t *uprMaska, int validData, 
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -659,6 +667,17 @@ int uprFunc000(int actControl, int inOffset, uint32_t *uprMaska, int validData, 
 //        }//if(actControl)
       break;
 
+//  count_bit = 3;
+    case 464:
+      (*uprMaska)   = DS_BIT_CONFIGURATION;
+      (*editControl) = &edition_settings.configuration;
+      if(actControl)
+        {
+         //Функція обновлення змінних при зміні конфігурації
+         if(action_after_changing_of_configuration(edition_settings.configuration, &edition_settings)) isValid = 0;
+        }//if(actControl)
+      break;
+
     }//switch
 
   if((*uprMaska)!=0xFFFFFFFF)
@@ -788,11 +807,7 @@ void constructorUPRBigComponent(COMPONENT_OBJ *uprbigcomp)
   uprbigcomponent->setModbusRegister = setUPRBigModbusRegister;//получить содержимое регистра
   uprbigcomponent->setModbusBit      = setUPRBigModbusBit;//получить содержимое бита
 
-  uprbigcomponent->preReadAction   = preUPRBigReadAction;//action до чтения
-  uprbigcomponent->preWriteAction  = preUPRBigWriteAction;//action до записи
   uprbigcomponent->postWriteAction = postUPRBigWriteAction;//action после записи
-
-  uprbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getUPRBigModbusRegister(int adrReg)
@@ -884,19 +899,6 @@ int setUPRBigModbusBit(int adrBit, int dataBit)
 
   return 0;
 }//getDOUTBigModbusRegister(int adrReg)
-
-void preUPRBigReadAction(void)
-{
-//action до чтения
-  uprbigcomponent->isActiveActualData = 1;
-}//
-void preUPRBigWriteAction(void)
-{
-//action до записи
-  uprbigcomponent->operativMarker[0] = -1;
-  uprbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  uprbigcomponent->isActiveActualData = 1;
-}//
 
 int postUPRBigWriteAction(void)
 {

@@ -7,6 +7,7 @@
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -26,14 +27,11 @@ int getUSTBigModbusBit(int);//получить содержимое бита
 int setUSTBigModbusRegister(int, int);//получить содержимое регистра
 int setUSTBigModbusBit(int, int);//получить содержимое бита
 
-void setUSTBigCountObject(void);//записать к-во обектов
-void preUSTBigReadAction(void);//action до чтения
-void preUSTBigWriteAction(void);//action до записи
 int  postUSTBigWriteAction(void);//action после записи
 int  ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **editValue);
 int grupa_ustavok_control(int  offset, int *grupa_ustavok, int *adresGruppa);
 
-COMPONENT_OBJ *ustbigcomponent;
+SRAM1 COMPONENT_OBJ *ustbigcomponent;
 
 int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **editValue)
 {
@@ -712,7 +710,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case MARKER1050:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output;
-    if ((regUst & ((unsigned int)(~((1<<NUMBER_OUTPUTS)-1)))) != 0) diapazon=0;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_SIMPLE_OUTPUTS)-1)))) != 0) diapazon=0;
     break;
   case 1051:
     (*multer) = 1;
@@ -723,7 +721,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
   case MARKER1052:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
-    if ((regUst & ((unsigned int)(~((1<<NUMBER_OUTPUTS)-1)))) != 0) diapazon=0;
+    if ((regUst & ((unsigned int)(~((1<<NUMBER_SIMPLE_OUTPUTS)-1)))) != 0) diapazon=0;
     break;
   case 1053:
     (*multer) = 1;
@@ -779,6 +777,7 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -931,6 +930,11 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     if(inOffset>=1058 && inOffset<1074)
 #endif
 #if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 6)       \
+    )   
+    if(inOffset>=1058 && inOffset<1070)
+#endif
+#if (                                   \
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 12)||    \
@@ -984,11 +988,7 @@ void constructorUSTBigComponent(COMPONENT_OBJ *ustbigcomp)
   ustbigcomponent->setModbusRegister = setUSTBigModbusRegister;//получить содержимое регистра
   ustbigcomponent->setModbusBit      = setUSTBigModbusBit;//получить содержимое бита
 
-  ustbigcomponent->preReadAction   = preUSTBigReadAction;//action до чтения
-  ustbigcomponent->preWriteAction  = preUSTBigWriteAction;//action до записи
   ustbigcomponent->postWriteAction = postUSTBigWriteAction;//action после записи
-
-  ustbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getUSTBigModbusRegister(int adrReg)
@@ -1015,6 +1015,7 @@ int getUSTBigModbusRegister(int adrReg)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -1237,18 +1238,6 @@ int setUSTBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preUSTBigReadAction(void)
-{
-//action до чтения
-  ustbigcomponent->isActiveActualData = 1;
-}//
-void preUSTBigWriteAction(void)
-{
-//action до записи
-  ustbigcomponent->operativMarker[0] = -1;
-  ustbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  ustbigcomponent->isActiveActualData = 1;
-}//
 int postUSTBigWriteAction(void)
 {
   extern int upravlSetting;//флаг Setting
@@ -1373,6 +1362,7 @@ int postUSTBigWriteAction(void)
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \

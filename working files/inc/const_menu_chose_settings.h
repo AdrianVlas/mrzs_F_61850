@@ -8,7 +8,7 @@ enum _index_ml_choose_settings
   INDEX_OF_INFO = 0,
   INDEX_OF_SETTINGS_POINT,
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   INDEX_OF_IEC61850,
 #endif
 

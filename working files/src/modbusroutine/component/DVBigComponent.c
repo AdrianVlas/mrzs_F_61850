@@ -5,6 +5,41 @@
 #define REGISTERS_DV 8
 
 #if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 2) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 12)||    \
+     (MODYFIKACIA_VERSII_PZ == 14)||    \
+     (MODYFIKACIA_VERSII_PZ == 24)||    \
+     (MODYFIKACIA_VERSII_PZ == 34)      \
+    )   
+//конечный регистр в карте памяти
+//8 шт
+#define END_ADR_REGISTER 1483
+#endif
+
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
+     (MODYFIKACIA_VERSII_PZ == 26)      \
+    )   
+//конечный регистр в карте памяти
+//12 шт
+#define END_ADR_REGISTER 1515
+#endif
+
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 1) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 11)||    \
+     (MODYFIKACIA_VERSII_PZ == 13)||    \
+     (MODYFIKACIA_VERSII_PZ == 23)||    \
+     (MODYFIKACIA_VERSII_PZ == 33)      \
+    )   
+//конечный регистр в карте памяти
+//16 шт
+#define END_ADR_REGISTER 1547
+#endif
+
+#if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
@@ -15,28 +50,6 @@
 #define END_ADR_REGISTER 1579
 #endif
 
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 1) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 11)||    \
-     (MODYFIKACIA_VERSII_PZ == 13)      \
-    )   
-//конечный регистр в карте памяти
-//16 шт
-#define END_ADR_REGISTER 1547
-#endif
-
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 2) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 12)||    \
-     (MODYFIKACIA_VERSII_PZ == 14)      \
-    )   
-//конечный регистр в карте памяти
-//8 шт
-#define END_ADR_REGISTER 1483
-#endif
-
 int privateDVBigGetReg2(int adrReg);
 
 int getDVBigModbusRegister(int);//получить содержимое регистра
@@ -44,12 +57,9 @@ int getDVBigModbusBit(int);//получить содержимое бита
 int setDVBigModbusRegister(int, int);// регистра
 int setDVBigModbusBit(int, int);// бита
 
-void setDVBigCountObject(void);//записать к-во обектов
-void preDVBigReadAction(void);//action до чтения
-void preDVBigWriteAction(void);//action до записи
 int  postDVBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *dvbigcomponent;
+SRAM1 COMPONENT_OBJ *dvbigcomponent;
 
 /**************************************/
 //подготовка компонента ДВ
@@ -63,11 +73,7 @@ void constructorDVBigComponent(COMPONENT_OBJ *dvbigcomp)
   dvbigcomponent->setModbusRegister = setDVBigModbusRegister;// регистра
   dvbigcomponent->setModbusBit      = setDVBigModbusBit;// бита
 
-  dvbigcomponent->preReadAction   = preDVBigReadAction;//action до чтения
-  dvbigcomponent->preWriteAction  = preDVBigWriteAction;//action до записи
   dvbigcomponent->postWriteAction = postDVBigWriteAction;//action после записи
-
-  dvbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getDVBigModbusRegister(int adrReg)
@@ -106,16 +112,6 @@ int setDVBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preDVBigReadAction(void) {
-//action до чтения
-  dvbigcomponent->isActiveActualData = 1;
-}//
-void preDVBigWriteAction(void) {
-//action до записи
-  dvbigcomponent->operativMarker[0] = -1;
-  dvbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  dvbigcomponent->isActiveActualData = 1;
-}//
 int postDVBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

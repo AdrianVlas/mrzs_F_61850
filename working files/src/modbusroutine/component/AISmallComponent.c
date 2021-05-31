@@ -11,14 +11,12 @@ int getAISmallModbusBit(int);//получить содержимое бита
 int setAISmallModbusRegister(int, int);//получить содержимое регистра
 int setAISmallModbusBit(int, int);//получить содержимое бита
 
-void preAISmallReadAction(void);//action до чтения
-void preAISmallWriteAction(void);//action до записи
 int  postAISmallWriteAction(void);//action после записи
 void loadAISmallActualData(void);
 
 int privateAISmallGetReg2(int adrReg);
 
-COMPONENT_OBJ *aismallcomponent;
+SRAM1 COMPONENT_OBJ *aismallcomponent;
 
 /**************************************/
 //компонент измерений
@@ -32,11 +30,7 @@ void constructorAISmallComponent(COMPONENT_OBJ *aismallcomp)
   aismallcomponent->setModbusRegister = setAISmallModbusRegister;//получить содержимое регистра
   aismallcomponent->setModbusBit      = setAISmallModbusBit;//получить содержимое бита
 
-  aismallcomponent->preReadAction   = preAISmallReadAction;//action до чтения
-  aismallcomponent->preWriteAction  = preAISmallWriteAction;//action до записи
   aismallcomponent->postWriteAction = postAISmallWriteAction;//action после записи
-
-  aismallcomponent->isActiveActualData = 0;
 }//constructorIUSmallComponent(COMPONENT_OBJ *iucomp)
 
 int getAISmallModbusRegister(int adrReg)
@@ -472,17 +466,6 @@ int setAISmallModbusBit(int x, int y) {
   return MARKER_OUTPERIMETR;
 }//setIUModbusBit(int, int )
 
-void preAISmallReadAction(void) {
-//action до чтения
-  aismallcomponent->isActiveActualData = 1;
-}//
-
-void preAISmallWriteAction(void) {
-//action до записи
-  aismallcomponent->operativMarker[0] = -1;
-  aismallcomponent->operativMarker[1] = -1;//оперативный маркер
-  aismallcomponent->isActiveActualData = 1;
-}//
 int postAISmallWriteAction(void) {
 //action после записи
  return 0;

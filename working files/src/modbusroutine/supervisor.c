@@ -1,7 +1,4 @@
 
-//0-adr  1-func   2-ByteCount 3-RefType  4-MFileNumber   5-LFileNumber   6-MRecordNumber  7-LRecordNumber  8-MRecordLen  9-LRecordLen
-//  byte inputPacket[] {0x1,      20,     7,          6,         0x0,               5,             0,             0,                  0,          9};
-
 #include "header.h"
 
 int inputPacketParser(void);
@@ -20,22 +17,22 @@ int outputFunc1PacketEncoder(int adrUnit, int adrReg, int cntReg);
 int passwordImunitetReg(int adrReg);
 int passwordImunitetBit(int adrBit);
 
-unsigned char  *outputPacket;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
-unsigned char  outputPacket_TCP[300];
+SRAM1 unsigned char  *outputPacket;
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+SRAM1 unsigned char  outputPacket_TCP[300];
 #endif
-unsigned char  outputPacket_USB[300];
-unsigned char  outputPacket_RS485[300];
+SRAM1 unsigned char  outputPacket_USB[300];
+SRAM1 unsigned char  outputPacket_RS485[300];
 
-int sizeOutputPacket = 0;
-unsigned char *inputPacket;
-int *received_count;
-int globalcntBit  = 0;//к-во бит
-int globalcntReg  = 0;//к-во регистров
-int globalbeginAdrReg  = 0;//адрес нач регистра
-int globalbeginAdrBit  = 0;//адрес нач бит
-int upravlSetting=0;//флаг Setting
-int upravlSchematic=0;//флаг Shematic
+SRAM1 int sizeOutputPacket;
+SRAM1 unsigned char *inputPacket;
+SRAM1 int *received_count;
+SRAM1 int globalcntBit;//к-во бит
+SRAM1 int globalcntReg;//к-во регистров
+SRAM1 int globalbeginAdrReg;//адрес нач регистра
+SRAM1 int globalbeginAdrBit;//адрес нач бит
+SRAM1 int upravlSetting;//флаг Setting
+SRAM1 int upravlSchematic;//флаг Shematic
 
 /**************************************/
 //разбор входного пакета
@@ -157,7 +154,7 @@ int inputPacketParser(void)
           recordNumber[item] = (unsigned int)inputPacket[7+item*7] +256*(unsigned int)inputPacket[6+item*7];
           recordLen[item]    = (unsigned int)inputPacket[9+item*7] +256*(unsigned int)inputPacket[8+item*7];
           recordLenSum += recordLen[item];
-          if(recordLenSum>125)
+          if(recordLenSum>125)//слишком много регистров захотел
             {
               sizeOutputPacket = Error_modbus_m(adrUnit, // address,
                                                 inputPacket[1],//function,
@@ -182,8 +179,8 @@ int inputPacketParser(void)
                                                 inputPacket[1],//function,
                                                 ERROR_SLAVE_DEVICE_BUSY,//error,
                                                 outputPacket);//output_data
-      break;
-    }
+              break;
+    }//case 20:
     break;
 
     default:
@@ -200,25 +197,6 @@ int inputPacketParser(void)
   *(outputPacket + sizeOutputPacket)  = CRC_sum & 0xff;
   *(outputPacket + sizeOutputPacket+1)  = CRC_sum >> 8;
   sizeOutputPacket += 2;
-  /*
-    int tt1 = outputPacket[0];
-    int tt2 = outputPacket[1];
-    int tt3 = outputPacket[2];
-    int tt4 = outputPacket[3];
-    int tt5 = outputPacket[4];
-    int tt6 = outputPacket[5];
-    int tt7 = outputPacket[6];
-    int tt8 = outputPacket[7];
-    int tt9 = outputPacket[8];
-    int tt10 = outputPacket[9];
-    int tt11 = outputPacket[10];
-    int tt12 = outputPacket[11];
-    int tt13 = outputPacket[12];
-    int tt14 = outputPacket[13];
-    int tt15 = outputPacket[14];
-    int tt16 = outputPacket[15];
-    int tt17 = outputPacket[16];
-  */
   return 1;
 }//inputPacketParser
 
@@ -226,7 +204,7 @@ int outputFunc16PacketEncoder(int adrUnit, int adrReg, int cntReg)
 {
 //выходной кодировщик 16 функции
   int   flag = 1;
-  superPreWriteAction();//action до записи
+  superPreAction();//action до записи
   for(int i=0; i<cntReg; i++)
     {
       uint32_t dataReg = (unsigned short) tempReadArray[i];
@@ -242,7 +220,6 @@ int outputFunc16PacketEncoder(int adrUnit, int adrReg, int cntReg)
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_ADDRESS,//error,
                                 outputPacket);//output_data
-
         case MARKER_ERRORDIAPAZON:
           result = -3;
           return Error_modbus_m(adrUnit, // address,
@@ -296,10 +273,11 @@ int outputFunc15PacketEncoder(int adrUnit, int adrBit, int cntBit)
 //выходной кодировщик 16 функции
   short dataBit = 0;
   int   flag = 1;
-  superPreWriteAction();//action до записи
+  superPreAction();//action до записи
   for(int i=0; i<cntBit; i++)
     {
-      dataBit = tempReadArray[i/8];
+      int idx = i/8;
+      dataBit = tempReadArray[idx];
       short maska = 1<<(i%8);
       int result = superWriterBit(adrBit+i, dataBit&maska ? 1:0);
       switch(result)
@@ -313,14 +291,12 @@ int outputFunc15PacketEncoder(int adrUnit, int adrBit, int cntBit)
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_ADDRESS,//error,
                                 outputPacket);//output_data
-
         case MARKER_ERRORDIAPAZON:
           result = -3;
           return Error_modbus_m(adrUnit, // address,
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_VALUE,//error,
                                 outputPacket);//output_data
-
         case MARKER_ERRORPAROL:
           result = -4;
           return Error_modbus_m(adrUnit, // address,
@@ -366,7 +342,7 @@ int outputFunc15PacketEncoder(int adrUnit, int adrBit, int cntBit)
 int outputFunc6PacketEncoder(int adrUnit, int adrReg, int dataReg)
 {
 //выходной кодировщик 6 функции
-  superPreWriteAction();//action до записи
+  superPreAction();//action до записи
   int result = superWriterRegister(adrReg, dataReg);
   switch(result)
     {
@@ -423,7 +399,7 @@ int outputFunc6PacketEncoder(int adrUnit, int adrReg, int dataReg)
 int outputFunc5PacketEncoder(int adrUnit, int adrBit, int dataBit)
 {
 //выходной кодировщик 5 функции
-  superPreWriteAction();//action до записи
+  superPreAction();//action до записи
   int result = superWriterBit(adrBit, dataBit);
   switch(result)
     {
@@ -484,18 +460,18 @@ int outputFunc3PacketEncoder(int adrUnit, int adrReg, int cntReg)
   short dataRegister[130];
   int   idxDataRegister = 0;
   int   flag = 1;
-  superPreReadAction();//action до чтения
+  superPreAction();//action до чтения
   for(; idxDataRegister<cntReg; idxDataRegister++)
     {
       int result = superReaderRegister(adrReg+ idxDataRegister);
       switch(result)
         {
         case MARKER_OUTPERIMETR:
-//          dataRegister[idxDataRegister] = -1;
-//          dataRegister[idxDataRegister] = 0;
+          dataRegister[idxDataRegister] = -1;
+          dataRegister[idxDataRegister] = 0;//(short) result;
           break;
         case MARKER_ERRORPERIMETR://ошибка периметра
-//          dataRegister[idxDataRegister] = -2;
+          dataRegister[idxDataRegister] = -2;
           return Error_modbus_m(adrUnit, // address,
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_ADDRESS,//error,
@@ -543,7 +519,7 @@ int outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
   int   idxDataBit = 0;
   int   flag = 1;
 
-  superPreReadAction();//action до чтения
+  superPreAction();//action до чтения
   for(; idxDataBit<cntBit; idxDataBit++)
     {
       int result = superReaderBit(adrBit+ idxDataBit);
@@ -553,6 +529,7 @@ int outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
         case MARKER_OUTPERIMETR:
           break;
         case MARKER_ERRORPERIMETR:
+//          dataRegister[idxReg] = -2;
           return Error_modbus_m(adrUnit, // address,
                                 outputPacket[1],//function,
                                 ERROR_ILLEGAL_DATA_ADDRESS,//error,
@@ -577,7 +554,6 @@ int outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
 //numFunc
   idxOutputPacket++;
 
-//cnt
       int cntByte = cntBit/8;
       if(cntBit%8) cntByte++;
       outputPacket[idxOutputPacket] = cntByte;
@@ -594,28 +570,19 @@ int outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
 }//outputFunc1PacketEncoder(int adrUnit, int adrBit, int cntBit)
 
 /**************************************/
-//action до чтения
+//action до чтения и записи
 /**************************************/
-void superPreReadAction(void)
+void superPreAction(void)
 {
   int i=0;
   for(; i<TOTAL_COMPONENT; i++)
     {
-      config_array[i].preReadAction();
+      config_array[i].operativMarker[0]=-1;
+      config_array[i].operativMarker[1]=-1;
+      config_array[i].isActiveActualData=1;
     }//for
-}//superPreReadAction
+}//superPreAction
 
-/**************************************/
-//action до записи
-/**************************************/
-void superPreWriteAction(void)
-{
-  int i=0;
-  for(; i<TOTAL_COMPONENT; i++)
-    {
-      config_array[i].preWriteAction();
-    }//for
-}//superPreWriteAction
 /**************************************/
 //action после записи
 /**************************************/
@@ -641,14 +608,14 @@ int superPostWriteAction(void)
 
     }//for
 
-  //рестарт таймера 12000 Время активации пароля после простоя
-  restart_timeout_interface |= (1 << pointInterface);//метка интерфейса 0-USB 1-RS485
-  if(!(upravlSetting>0 || upravlSchematic>0)) return 0;
-  _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
-  restart_timeout_idle_new_settings = true;
-  current_settings_interfaces = edition_settings;//утвердить изменения
-  if(upravlSetting==1) type_of_settings_changed |= (1 << SETTINGS_DATA_CHANGED_BIT);
-  if(upravlSchematic==1) type_of_settings_changed |= (1 << RANGUVANNJA_DATA_CHANGED_BIT);
+    //рестарт таймера 12000 Время активации пароля после простоя
+    restart_timeout_interface |= (1 << pointInterface);//метка интерфейса 0-USB 1-RS485
+    if(!(upravlSetting>0 || upravlSchematic>0)) return 0;
+    _SET_BIT(active_functions, RANG_SETTINGS_CHANGED);
+    restart_timeout_idle_new_settings = true;
+    current_settings_interfaces = edition_settings;//утвердить изменения
+    if(upravlSetting==1) type_of_settings_changed |= (1 << SETTINGS_DATA_CHANGED_BIT);
+    if(upravlSchematic==1) type_of_settings_changed |= (1 << RANGUVANNJA_DATA_CHANGED_BIT);
 
   return 0;
 }//superPostWriteAction
@@ -684,7 +651,7 @@ int superWriterRegister(int adrReg, int dataReg)
    case RS485_RECUEST:
       if(passwordImunitetReg(adrReg) && password_set_RS485) return MARKER_ERRORPAROL;
    break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
    case LAN_RECUEST:
       if(passwordImunitetReg(adrReg) && password_set_LAN) return MARKER_ERRORPAROL;
    break;
@@ -723,7 +690,6 @@ int superWriterBit(int adrBit, int dataBit)
 {
   int result=0;
   int i=0;
-
   switch(pointInterface)//метка интерфейса 0-USB 1-RS485
   {
    case USB_RECUEST:
@@ -732,7 +698,7 @@ int superWriterBit(int adrBit, int dataBit)
    case RS485_RECUEST:
       if(passwordImunitetBit(adrBit) && password_set_RS485) return MARKER_ERRORPAROL;
    break;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
    case LAN_RECUEST:
       if(passwordImunitetBit(adrBit) && password_set_LAN) return MARKER_ERRORPAROL;
    break;
@@ -801,7 +767,6 @@ void superClearActiveActualData(void)
   extern COMPONENT_OBJ *mftbigcomponent;
   extern COMPONENT_OBJ *notbigcomponent;
   extern COMPONENT_OBJ *orbigcomponent;
-  extern COMPONENT_OBJ *pfbigcomponent;
   extern COMPONENT_OBJ *pkvbigcomponent;
   extern COMPONENT_OBJ *regbigcomponent;
   extern COMPONENT_OBJ *rprbigcomponent;
@@ -809,6 +774,7 @@ void superClearActiveActualData(void)
   extern COMPONENT_OBJ *uprbigcomponent;
   extern COMPONENT_OBJ *vvbigcomponent;
   extern COMPONENT_OBJ *xorbigcomponent;
+  extern COMPONENT_OBJ *pfbigcomponent;
 
   ustbigcomponent->isActiveActualData = 0;
   andbigcomponent->isActiveActualData = 0;
@@ -819,7 +785,6 @@ void superClearActiveActualData(void)
   mftbigcomponent->isActiveActualData = 0;
   notbigcomponent->isActiveActualData = 0;
   orbigcomponent->isActiveActualData = 0;
-  pfbigcomponent->isActiveActualData = 0;
   pkvbigcomponent->isActiveActualData = 0;
   regbigcomponent->isActiveActualData = 0;
   rprbigcomponent->isActiveActualData = 0;
@@ -827,13 +792,18 @@ void superClearActiveActualData(void)
   uprbigcomponent->isActiveActualData = 0;
   vvbigcomponent->isActiveActualData = 0;
   xorbigcomponent->isActiveActualData = 0;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+  pfbigcomponent->isActiveActualData = 0;
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   extern COMPONENT_OBJ *goosbigcomponent;
   extern COMPONENT_OBJ *mmsbigcomponent;
   extern COMPONENT_OBJ *lanbigcomponent;
   goosbigcomponent->isActiveActualData = 0;
   mmsbigcomponent->isActiveActualData = 0;
   lanbigcomponent->isActiveActualData = 0;
+#endif
+#ifdef  MODYFIKACIA_VERSII_DS
+  extern COMPONENT_OBJ *doutbigdscomponent;
+  doutbigdscomponent->isActiveActualData = 0;
 #endif
 }//superClearActiveActualData()
 
@@ -844,7 +814,7 @@ int passwordImunitetBitACMDSmallComponent(int adrBit);
 int passwordImunitetBit(int adrBit)
 {
   if(passwordImunitetBitACMDSmallComponent(adrBit)==MARKER_OUTPERIMETR) return 1;//имунитета нет
-  return 0;//имунитет есть
+  return 0;//имунитет есть 
 }//passwordImunitetBit(int adrBit)
 
 int passwordImunitetReg(int adrReg)
@@ -854,5 +824,4 @@ int passwordImunitetReg(int adrReg)
      passwordImunitetRegYUSTBigComponent(adrReg)==MARKER_OUTPERIMETR) return 1;//имунитета нет  
      return 0;//имунитет есть 
 }//passwordImunitetReg(int adrReg)
-
 

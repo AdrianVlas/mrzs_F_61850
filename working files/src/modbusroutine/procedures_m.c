@@ -3,7 +3,7 @@
 extern unsigned char  *outputPacket;
 extern unsigned char  outputPacket_USB[300];
 extern unsigned char  outputPacket_RS485[300];
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 extern unsigned char  outputPacket_TCP[300];
 #endif
 
@@ -25,7 +25,7 @@ void inputPacketParserRS485(void);
 unsigned short int  AddCRC(unsigned char inpbyte, unsigned short int oldCRC);
 int  Error_modbus_m(unsigned int address, unsigned int function, unsigned int error, unsigned char *output_data);
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 /**************************************/
 //разбор входного пакета TCP
 /**************************************/

@@ -1316,6 +1316,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -1432,6 +1433,7 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -4015,7 +4017,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
   uint32_t off_cb_tmp[N_BIG];
   for(size_t m = 0; m < N_BIG; ++m) 
   {
-    off_cb_tmp[m] = (p_active_functions[1] & current_settings_prt.ranguvannja_off_cb[1]);
+    off_cb_tmp[m] = (p_active_functions[m] & current_settings_prt.ranguvannja_off_cb[m]);
   }
   
   /*
@@ -4716,7 +4718,7 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
     information_about_restart_counter |= (
                                             (1 << USB_RECUEST)
                                           | (1 << RS485_RECUEST)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                                           | (1 << LAN_RECUEST)
 #endif
                                          );
@@ -4731,7 +4733,7 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
     unsigned int max_faze_current_tmp = measurement[IM_IA];
     if (max_faze_current_tmp < measurement[IM_IB]) max_faze_current_tmp = measurement[IM_IB];
     if (max_faze_current_tmp < measurement[IM_IC]) max_faze_current_tmp = measurement[IM_IC];
-    max_faze_current_tmp = max_faze_current_tmp*current_settings_prt.TCurrent/1000;
+    max_faze_current_tmp = lroundf((float)(max_faze_current_tmp*current_settings_prt.TCurrent)/1000.0f);
   
     if (_CHECK_SET_BIT(previous_active_functions, RANG_WORK_BO) == 0)
     {
@@ -7414,7 +7416,7 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
 /*****************************************************/
 inline void main_protection(void)
 {
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /***
   Зафіксувати чи є активними сигнали блокування Вх.GOOSE блоків і Вх.MMS блоків
   ***/
@@ -7980,7 +7982,7 @@ do{
       information_about_restart_counter  &= (unsigned int)(~(1 << RS485_RECUEST));
       information_about_clean_energy     &= (unsigned int)(~(1 << RS485_RECUEST));
     }
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     if ((reset_trigger_function_from_interface & (1 << LAN_RECUEST)) != 0)
     {
       for (unsigned int i = 0; i < N_BIG; i++) trigger_functions_LAN[i] = 0;
@@ -8079,7 +8081,7 @@ do{
     }
   }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /***
   Зафіксувати чи є активними виходи Вх.GOOSE блоків (з врахуванням, що вхід міг бути активований попердньо а зараз утримуєтьсґя у активному стані) і Вх.MMS блоків
   ***/
@@ -8218,7 +8220,7 @@ do{
       )
       ||  
       (active_inputs !=0)
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
      /* якщо є активація виходів від Вх.GOOSE блоків і Вх.MMS блоків*/   
       || ((sLV.ch_amount_MmsSignal+sLV.ch_amount_GsSignal)>0)
 #endif
@@ -8229,7 +8231,7 @@ do{
     for(int m=0; m<N_SMALL; m++) temp_value_for_activated_function_button_interface[m]=0;
     for(int m=0; m<N_SMALL; m++) temp_value_for_activated_function[m]=0;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     /***
     Опрацювати логіку Вх.GOOSE блоків і Вх.MMS блоків і виставити сигнали, які ними активуються
     ***/
@@ -8390,7 +8392,7 @@ do{
       active_functions[(index_big + 1) >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, (index_small + 1)) != 0) << ((index_big + 1) & 0x1f);
     }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     {
       size_t word_n_small = RANG_SMALL_BLOCK_IN_GOOSE1 >> 5;
       unsigned int maska_small = (unsigned int)(1 << (RANG_SMALL_BLOCK_IN_GOOSE1 & 0x1f));
@@ -8706,7 +8708,7 @@ do{
   _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_SOFT_RESTART_SYSTEM_BIT);
   _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   _CLEAR_BIT(diagnostyka_tmp, EVENT_RESTART_CB_BIT);
 #endif
   unsigned int not_null = false;
@@ -8718,7 +8720,7 @@ do{
               
   if (not_null)
   {
-//@    _SET_BIT(active_functions, RANG_DEFECT);
+    _SET_BIT(active_functions, RANG_DEFECT);
     /**************************/
     //Сигнал "Несправность Аварийная"
     /**************************/
@@ -8732,8 +8734,8 @@ do{
     }
     if (not_null)
     {
-//@      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
-//       #warning "No Avar Error"
+//      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+       #warning "No Avar Error"
     }
     else
     {
@@ -9049,6 +9051,7 @@ do{
        (MODYFIKACIA_VERSII_PZ == 0) ||  \
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)    \
@@ -9310,6 +9313,9 @@ do{
     
     //Деактивовуємо всі реле
     state_outputs = 0;
+#ifdef NUMBER_DS
+    ds = 0;
+#endif
     
     //Переводимо у початковий стан деякі глобальні змінні
     static_logic_APV_0 = 0;
@@ -9339,7 +9345,7 @@ do{
   digital_registrator(active_functions);
   /**************************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /***
   Опрацювати логіку Вихідного Мережевого Блоку
   ***/
@@ -9453,7 +9459,7 @@ do{
     unsigned int temp_data = active_functions[i];
     trigger_functions_USB[i]   |= temp_data;
     trigger_functions_RS485[i] |= temp_data;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     trigger_functions_LAN[i]   |= temp_data;
 #endif
   }
@@ -9487,7 +9493,7 @@ do{
     //Не зафіксовано аварійної ситуації, тому встановлювати реле можна
     
     //Визначаємо, які реле зараз мають бути замкнутими
-    for (unsigned int i = 0; i < NUMBER_OUTPUTS; i++)
+    for (unsigned int i = 0; i < NUMBER_SIMPLE_OUTPUTS; i++)
     {
       //У тимчасовий масив поміщаємо ЛОГІЧНЕ І ранжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
       unsigned int temp_array_of_outputs[N_BIG];
@@ -9576,6 +9582,84 @@ do{
         }
       }
     }
+
+#ifdef NUMBER_DS
+    if ((current_settings_prt.configuration & (1 << DS_BIT_CONFIGURATION)) != 0)
+    {
+      for (size_t i = NUMBER_SIMPLE_OUTPUTS; i != NUMBER_OUTPUTS; ++i)
+      {
+        //У тимчасовий масив поміщаємо ЛОГІЧНЕ І ранжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+        unsigned int temp_array_of_outputs[N_BIG];
+    
+        for (unsigned int j = 0; j < N_BIG; j++) temp_array_of_outputs[j] = current_settings_prt.ranguvannja_outputs[N_BIG*i + j] & active_functions[j];
+
+        //Сигнал "Аварійна несправність" працює у інверсному режимі: замикає реле на якому зранжована у випадку, коли даний сигнал не активинй
+        if(_CHECK_SET_BIT((current_settings_prt.ranguvannja_outputs + N_BIG*i), RANG_AVAR_DEFECT) !=0)
+        {
+          //Сигнал "Aварийная неисправность"  справді зранжовано на даний вихід
+          if (_CHECK_SET_BIT(temp_array_of_outputs, RANG_AVAR_DEFECT) == 0)
+          {
+            //Сигнал "Aварийная неисправность" не є активним
+            //Приимусово встановлюємо його у активний стан у масиві, який є  ЛОГІЧНИМ І анжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+            _SET_BIT(temp_array_of_outputs, RANG_AVAR_DEFECT);
+          }
+          else
+          {
+            //Сигнал "Aварийная неисправность" є активним
+            //Приимусово переводимо його у пасивний стан у масиві, який є  ЛОГІЧНИМ І анжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+            _CLEAR_BIT(temp_array_of_outputs, RANG_AVAR_DEFECT);
+          }
+        }
+      
+        //Сигнал "Загальна несправність" працює у інверсному режимі: замикає реле на якому зранжована у випадку, коли даний сигнал не активинй
+        if(_CHECK_SET_BIT((current_settings_prt.ranguvannja_outputs + N_BIG*i), RANG_DEFECT) !=0)
+        {
+          //Сигнал "Загальна несправність"  справді зранжовано на даний вихід
+          if (_CHECK_SET_BIT(temp_array_of_outputs, RANG_DEFECT) ==0)
+          {
+            //Сигнал "Загальна несправність" не є активним
+            //Приимусово встановлюємо його у активний стан у масиві, який є  ЛОГІЧНИМ І анжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+            _SET_BIT(temp_array_of_outputs, RANG_DEFECT);
+          }
+          else
+          {
+            //Сигнал "Загальна несправність" є активним
+            //Приимусово переводимо його у пасивний стан у масиві, який є  ЛОГІЧНИМ І анжування виходу, який індексується інедексом "i" і функцій, які зараз є активними
+            _CLEAR_BIT(temp_array_of_outputs, RANG_DEFECT);
+          }
+        }
+
+        //Перевіряємо, чи є співпадіння між ранжованими функціями на цьому виході і функціями, які зараз є активними - умова активації виходу
+        NOT_ZERO_OR(comp, temp_array_of_outputs, N_BIG)
+        if (comp)
+        {
+          if (_CHECK_SET_BIT((current_settings_prt.ranguvannja_outputs + N_BIG*i), RANG_WORK_BV) == 0)
+          {
+            //На дане реле не заводиться сигнал БВ (блок включення)
+          
+            //Відмічаємо, що даний вихід - ЗАМКНУТИЙ
+            _SET_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
+          }
+          else
+          {
+            //На дане реле заводиться сигнал БВ (блок включення)
+          
+            //Відмічаємо, що даний вихід - ЗАМКНУТИЙ тільки тоді, коли функція БВ активна зараз
+            if (_CHECK_SET_BIT(active_functions, RANG_WORK_BV) != 0)
+              _SET_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
+            else
+              _CLEAR_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
+          }
+        }
+        else
+        {
+          //Відмічаємо, що даний вихід - РОЗІМКНУТИЙ
+          _CLEAR_STATE(ds, (i - NUMBER_SIMPLE_OUTPUTS));
+        }
+      }
+    }
+    else ds = 0;
+#endif    
   }
   else
   {
@@ -9583,6 +9667,9 @@ do{
 
     //Деактивовуємо всі реле
     state_outputs = 0;
+#ifdef NUMBER_DS    
+    ds = 0;
+#endif
   }
   
   //Перевіряємо чи треба записувати стан сигнальних виходів у EEPROM
@@ -9601,8 +9688,16 @@ do{
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
      (MODYFIKACIA_VERSII_PZ == 15)      \
-    )                                   
+    )  
+
   _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (state_outputs_raw >> 16)<< 8;
+
+#else
+
+#ifdef NUMBER_DS
+  _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) = (ds & (MASKA_FOR_BIT(NUMBER_DS) - 1)) << 8;
+#endif
+  
 #endif
 
   TIM_PRT_write_tick = TIM2->CNT;
@@ -9895,7 +9990,7 @@ void TIM2_IRQHandler(void)
     }
     /*************************************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     /***********************************************************/
     //Прийом інформації з комунікаційної плати
     /***********************************************************/
@@ -9954,13 +10049,14 @@ void TIM2_IRQHandler(void)
         &&  
         (
          (control_tasks_dataflash & (
-                                     TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR | 
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                    |
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                  |
-#if (MODYFIKACIA_VERSII_PZ >= 10)
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                    |
+                                     TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_DR           | 
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB                              |
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485                            |
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN                              |
 #endif  
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU                             |
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU_SHORT
                                     )
          ) == 0
         )
@@ -9980,7 +10076,7 @@ void TIM2_IRQHandler(void)
       number_record_of_dr_for_menu  = 0xffff;
       number_record_of_dr_for_USB   = 0xffff;
       number_record_of_dr_for_RS485 = 0xffff;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       number_record_of_dr_for_LAN = 0xffff;
 #endif  
 
@@ -10015,19 +10111,24 @@ void TIM2_IRQHandler(void)
                                            | (((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30          ) >> 8))) & 0xf   ) << 16);
 #else
       unsigned int control_state_outputs = ((~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD31_DD34_DD35_DD37)))) & 0xffff);
+
+#ifdef NUMBER_DS
+      unsigned int control_ds =  (~((unsigned int)(_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD28_DD30) >> 8))) & (MASKA_FOR_BIT(NUMBER_DS) - 1);
+#endif
+      
 #endif
      
 
       static uint32_t error_rele[NUMBER_OUTPUTS];
-      if (control_state_outputs != state_outputs_raw) 
+      if (control_state_outputs != state_outputs_raw)
       {
-        for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++)
+        for (size_t index = 0; index < NUMBER_SIMPLE_OUTPUTS; ++index)
         {
           uint32_t maska = 1 << index;
         
           if ((control_state_outputs & maska) != (state_outputs_raw & maska))
           {
-            if (error_rele[index] < 3) error_rele[index]++;
+            if (error_rele[index] < 3) ++error_rele[index];
             if (error_rele[index] >= 3 ) _SET_BIT(set_diagnostyka, (ERROR_DIGITAL_OUTPUT_1_BIT + index));
           }
           else error_rele[index] = 0;
@@ -10035,8 +10136,29 @@ void TIM2_IRQHandler(void)
       }
       else
       {
-        for (unsigned int index = 0; index < NUMBER_OUTPUTS; index++) error_rele[index] = 0;
+        for (size_t index = 0; index < NUMBER_SIMPLE_OUTPUTS; ++index) error_rele[index] = 0;
       }
+
+#ifdef NUMBER_DS
+      if (control_ds != ds)  
+      {
+        for (size_t index = 0; index < NUMBER_DS; ++index)
+        {
+          uint32_t maska = 1 << index;
+        
+          if ((control_ds & maska) != (ds & maska))
+          {
+            if (error_rele[NUMBER_SIMPLE_OUTPUTS + index] < 3) ++error_rele[NUMBER_SIMPLE_OUTPUTS + index];
+            if (error_rele[NUMBER_SIMPLE_OUTPUTS + index] >= 3 ) _SET_BIT(set_diagnostyka, (ERROR_DS_OUTPUT_BIT + index));
+          }
+          else error_rele[NUMBER_SIMPLE_OUTPUTS + index] = 0;
+        }
+      }
+      else
+      {
+        for (size_t index = 0; index < NUMBER_DS; ++index) error_rele[NUMBER_SIMPLE_OUTPUTS + index] = 0;
+      }
+#endif
     }
     
     //Діагностика необхідно-приєднаних плат
@@ -10063,7 +10185,7 @@ void TIM2_IRQHandler(void)
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
       
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       if ((board_register_tmp & 0x08) !=  0x8) _SET_BIT(set_diagnostyka, ERROR_CB_FIX);
       else if (board_register_diff & 0x08)
       {
@@ -10079,7 +10201,9 @@ void TIM2_IRQHandler(void)
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
-     (MODYFIKACIA_VERSII_PZ == 15)   \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
     )
       if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_FIX);
       else if (board_register_diff & 0x04)
@@ -10089,6 +10213,18 @@ void TIM2_IRQHandler(void)
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) >> 8) != 0x37)  _SET_BIT(set_diagnostyka, ERROR_BDVV5_2_CTLR);
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
       }
+#elif (                                \
+       (MODYFIKACIA_VERSII_PZ == 6) || \
+       (MODYFIKACIA_VERSII_PZ == 26)   \
+      )
+      if ((board_register_tmp & 0x04) !=  0x4) _SET_BIT(set_diagnostyka, ERROR_BDVV9_FIX);
+      else if (board_register_diff & 0x04)
+      {
+        _SET_BIT(clear_diagnostyka, ERROR_BDVV9_FIX);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x4;
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD33_DD36) >> 8) != 0x29)  _SET_BIT(set_diagnostyka, ERROR_BDVV9_CTLR);
+        _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
+      }
 #endif
 
 #if (                                   \
@@ -10096,25 +10232,47 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 3) ||  \
        (MODYFIKACIA_VERSII_PZ == 4) ||  \
        (MODYFIKACIA_VERSII_PZ == 5) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
        (MODYFIKACIA_VERSII_PZ == 10)||  \
        (MODYFIKACIA_VERSII_PZ == 13)||  \
        (MODYFIKACIA_VERSII_PZ == 14)||  \
-       (MODYFIKACIA_VERSII_PZ == 15)    \
+       (MODYFIKACIA_VERSII_PZ == 15)||  \
+       (MODYFIKACIA_VERSII_PZ == 23)||  \
+       (MODYFIKACIA_VERSII_PZ == 24)||  \
+       (MODYFIKACIA_VERSII_PZ == 26)||  \
+       (MODYFIKACIA_VERSII_PZ == 33)||  \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
       )   
-    if ((board_register_tmp & 0x010) != 0x10) 
+      if ((board_register_tmp & 0x010) != 0x10) 
       
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)      \
     )                                   
-      _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
+        _SET_BIT(set_diagnostyka, ERROR_BDV_DZ_FIX);
 #elif (                                 \
        (MODYFIKACIA_VERSII_PZ == 5) ||  \
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
-      _SET_BIT(set_diagnostyka, ERROR_BDVV6_FIX);
+        _SET_BIT(set_diagnostyka, ERROR_BDVV6_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
+      )
+        _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 23) || \
+       (MODYFIKACIA_VERSII_PZ == 24) || \
+       (MODYFIKACIA_VERSII_PZ == 26) || \
+       (MODYFIKACIA_VERSII_PZ == 33) || \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
+      )
+        _SET_BIT(set_diagnostyka, ERROR_BDSH_FIX);
 #else
-      _SET_BIT(set_diagnostyka, ERROR_BDZ_FIX);
+ #error  "UDEFINED MODIFIKACIA"
 #endif
       else if (board_register_diff & 0x10)
       {
@@ -10128,8 +10286,24 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
         _SET_BIT(clear_diagnostyka, ERROR_BDVV6_FIX);
-#else
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
+      )
         _SET_BIT(clear_diagnostyka, ERROR_BDZ_FIX);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 23) || \
+       (MODYFIKACIA_VERSII_PZ == 24) || \
+       (MODYFIKACIA_VERSII_PZ == 26) || \
+       (MODYFIKACIA_VERSII_PZ == 33) || \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
+      )
+        _SET_BIT(clear_diagnostyka, ERROR_BDSH_FIX);
+#else
+ #error  "UDEFINED MODIFIKACIA"
 #endif
 
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x10;
@@ -10144,8 +10318,24 @@ void TIM2_IRQHandler(void)
        (MODYFIKACIA_VERSII_PZ == 15)    \
       )   
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x12)  _SET_BIT(set_diagnostyka, ERROR_BDVV6_CTLR);
-#else
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 3) ||  \
+       (MODYFIKACIA_VERSII_PZ == 4) ||  \
+       (MODYFIKACIA_VERSII_PZ == 6) ||  \
+       (MODYFIKACIA_VERSII_PZ == 13)||  \
+       (MODYFIKACIA_VERSII_PZ == 14)    \
+      )
         if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x18)  _SET_BIT(set_diagnostyka, ERROR_BDZ_CTLR);
+#elif (                                 \
+       (MODYFIKACIA_VERSII_PZ == 23)||  \
+       (MODYFIKACIA_VERSII_PZ == 24)||  \
+       (MODYFIKACIA_VERSII_PZ == 26)||  \
+       (MODYFIKACIA_VERSII_PZ == 33)||  \
+       (MODYFIKACIA_VERSII_PZ == 34)    \
+      )
+        if ((_DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD26_DD29) >> 8) != 0x13)  _SET_BIT(set_diagnostyka, ERROR_BDSH_CTLR);
+#else
+ #error  "UDEFINED MODIFIKACIA"
 #endif
 
         _DEVICE_REGISTER_V2(Bank1_SRAM2_ADDR, OFFSET_DD39_DD40_DD47) = 0x0;
@@ -10156,7 +10346,7 @@ void TIM2_IRQHandler(void)
     //Функції захистів
     main_protection();
     
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     /***
     Очікування, щоб попередній пакет гарантовано завершив передаватися
     ***/
@@ -10442,7 +10632,7 @@ void setpoints_selecting(unsigned int *p_active_functions, unsigned int act_inp_
 }
 /*****************************************************/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 void proc_Gs_blk_out(void* pv,unsigned long lCtrGsSrc,short* p_arrOrdNumsGsSignal ){
 
     // ----------------    -------------------------       

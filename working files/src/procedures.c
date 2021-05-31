@@ -403,7 +403,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
       	for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];  
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -564,7 +564,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -722,7 +722,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -896,7 +896,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -1064,7 +1064,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -1225,7 +1225,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -1396,7 +1396,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -1564,7 +1564,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -1734,7 +1734,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -1925,7 +1925,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -2105,7 +2105,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -2285,7 +2285,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -2468,7 +2468,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
         for(size_t m = 0; m < N_SMALL; ++m) target_label->ranguvannja_inputs[N_SMALL*i+m] &= ~maska[m];
       }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування виходів Вх.GOOSE блоку
       for (size_t i = 0; i < N_IN_GOOSE; i++)
       {
@@ -2585,7 +2585,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
     }
     else
     {
-      for (size_t i = 0; i < TOTAL_NUMBER_PROTECTION; i++)
+      for (size_t i = 0; i < _FIX_NUMBER_PROTECTION; i++)
       {
          if ((target_label->configuration & (1 << i)) == 0)
          {
@@ -2615,6 +2615,18 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
          }
       }
     }
+
+#ifdef NUMBER_DS
+    //Налаштування для ДШ
+    if ((target_label->configuration & (1<<DS_BIT_CONFIGURATION)) == 0)
+    {
+      //Знімаємо всі функції для ДШ
+      for (size_t i = NUMBER_SIMPLE_OUTPUTS; i < NUMBER_OUTPUTS; ++i)
+      {
+        for (size_t j = 0; j < N_BIG; ++j ) target_label->ranguvannja_outputs[N_BIG*i+j] = 0;
+      }
+    }
+#endif
 
   }  
   return error_window;
@@ -2703,7 +2715,7 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
     _SET_BIT(maska_1, RANG_NZZ);
     _SET_BIT(maska_1, RANG_SECTOR_NZZ);
     
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Знімаємо всі функції для ранжування входів Вихідного Мережевого Блоку
       for (size_t i = 0; i < N_OUT_LAN; i++)
       {
@@ -3073,7 +3085,7 @@ void fix_change_settings(unsigned int setting_rang, unsigned int source)
       current_settings.time_setpoints = current_settings.time_ranguvannja = time_dat_tmp;
       current_settings.source_setpoints = current_settings.source_ranguvannja = (unsigned char)(source & 0xff);
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
       //Помічаємо, що треба перезапустити КП
       _SET_STATE(queue_mo, STATE_QUEUE_MO_RESTART_KP);
 #endif
@@ -3177,7 +3189,7 @@ unsigned int set_new_settings_from_interface(unsigned int source)
     set_password_RS485 = true;
   }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   unsigned int set_password_LAN = false;
   if (
       (current_settings.password_interface_LAN != current_settings_interfaces.password_interface_LAN) &&
@@ -3264,7 +3276,7 @@ unsigned int set_new_settings_from_interface(unsigned int source)
     
     if (set_password_USB   != false) password_set_USB   = 1;
     if (set_password_RS485 != false) password_set_RS485 = 1;
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     if (set_password_LAN != false) password_set_LAN = 1;
 #endif
     
@@ -3281,7 +3293,7 @@ unsigned int set_new_settings_from_interface(unsigned int source)
       if (reconfiguration_RS_485_with_reset_usart != 0) make_reconfiguration_RS_485 = 0xff;
     }
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     if (resrart_kp)
     {
       //Помічаємо, що треба перезапустити КП
@@ -3441,7 +3453,7 @@ void changing_diagnostyka_state(void)
   }
   /*****/
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /*****/
   //Подія "Рестарт КП"
   /*****/

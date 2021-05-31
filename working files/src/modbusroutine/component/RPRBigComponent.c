@@ -13,13 +13,11 @@ int getRPRBigModbusBit(int);//получить содержимое бита
 int setRPRBigModbusRegister(int, int);//получить содержимое регистра
 int setRPRBigModbusBit(int, int);//получить содержимое бита
 
-void preRPRBigReadAction(void);//action до чтения
-void preRPRBigWriteAction(void);//action до записи
 int  postRPRBigWriteAction(void);//action после записи
 int getRPRSmallModbusBeginAdrRegister(void);
 int getRPRSmallModbusEndAdrRegister(void);
 
-COMPONENT_OBJ *rprbigcomponent;
+SRAM1 COMPONENT_OBJ *rprbigcomponent;
 
 /**************************************/
 //подготовка компонента ранжирование пользовательских регистров
@@ -33,11 +31,7 @@ void constructorRPRBigComponent(COMPONENT_OBJ *rprbigcomp)
   rprbigcomponent->setModbusRegister = setRPRBigModbusRegister;//получить содержимое регистра
   rprbigcomponent->setModbusBit      = setRPRBigModbusBit;//получить содержимое бита
 
-  rprbigcomponent->preReadAction   = preRPRBigReadAction;//action до чтения
-  rprbigcomponent->preWriteAction  = preRPRBigWriteAction;//action до записи
   rprbigcomponent->postWriteAction = postRPRBigWriteAction;//action после записи
-
-  rprbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getRPRBigModbusRegister(int adrReg)
@@ -79,18 +73,6 @@ int setRPRBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preRPRBigReadAction(void)
-{
-//action до чтения
-  rprbigcomponent->isActiveActualData = 1;
-}//
-void preRPRBigWriteAction(void)
-{
-//action до записи
-  rprbigcomponent->operativMarker[0] = -1;
-  rprbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  rprbigcomponent->isActiveActualData = 1;
-}//
 int postRPRBigWriteAction(void)
 {
 extern int upravlSetting;//флаг Setting

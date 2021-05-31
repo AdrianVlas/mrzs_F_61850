@@ -4,14 +4,14 @@
 #define EKRAN_CHOSE_DATA_TIME                    (_EKRAN_COMMUNICATION_PARAMETERS_LAST + 1)
 #define EKRAN_TIME_ZONE                          (EKRAN_CHOSE_DATA_TIME + 1)
 #define EKRAN_DST_RULE                           (EKRAN_TIME_ZONE + 1)
-#if (MODYFIKACIA_VERSII_PZ >= 10)  
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)  
 #define EKRAN_SYNCHRO                            (EKRAN_DST_RULE + 1)
 #endif
 
-#if (MODYFIKACIA_VERSII_PZ < 10)
-#define _EKRAN_DATA_TIME_LAST                     EKRAN_DST_RULE
-#else
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 #define _EKRAN_DATA_TIME_LAST                     EKRAN_SYNCHRO
+#else
+#define _EKRAN_DATA_TIME_LAST                     EKRAN_DST_RULE
 #endif
 
 
@@ -21,7 +21,7 @@ enum _index_ml_data_time_settings
   INDEX_ML_CHDT_DST_ON,
   INDEX_ML_CHDT_DST_OFF,
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)  
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)  
   INDEX_ML_CHDT_SYNCHRO,
 #endif
   
@@ -84,7 +84,7 @@ enum _index_dr
 };
 
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)  
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)  
 enum _index_ml_syn
 {
   INDEX_ML_SYN_IPV4 = 0,

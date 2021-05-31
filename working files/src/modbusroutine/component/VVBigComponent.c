@@ -14,12 +14,9 @@ int getVVBigModbusBit(int);//получить содержимое бита
 int setVVBigModbusRegister(int, int);// регистра
 int setVVBigModbusBit(int, int);// бита
 
-void setVVBigCountObject(void);//записать к-во обектов
-void preVVBigReadAction(void);//action до чтения
-void preVVBigWriteAction(void);//action до записи
 int  postVVBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *vvbigcomponent;
+SRAM1 COMPONENT_OBJ *vvbigcomponent;
 
 /**************************************/
 //подготовка компонента VV
@@ -33,11 +30,7 @@ void constructorVVBigComponent(COMPONENT_OBJ *vvbigcomp)
   vvbigcomponent->setModbusRegister = setVVBigModbusRegister;// регистра
   vvbigcomponent->setModbusBit      = setVVBigModbusBit;// бита
 
-  vvbigcomponent->preReadAction   = preVVBigReadAction;//action до чтения
-  vvbigcomponent->preWriteAction  = preVVBigWriteAction;//action до записи
   vvbigcomponent->postWriteAction = postVVBigWriteAction;//action после записи
-
-  vvbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getVVBigModbusRegister(int adrReg)
@@ -99,16 +92,6 @@ int setVVBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preVVBigReadAction(void) {
-//action до чтения
-  vvbigcomponent->isActiveActualData = 1;
-}//
-void preVVBigWriteAction(void) {
-//action до записи
-  vvbigcomponent->operativMarker[0] = -1;
-  vvbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  vvbigcomponent->isActiveActualData = 1;
-}//
 int postVVBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

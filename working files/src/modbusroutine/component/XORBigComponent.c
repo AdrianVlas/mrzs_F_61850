@@ -14,12 +14,9 @@ int getXORBigModbusBit(int);//получить содержимое бита
 int setXORBigModbusRegister(int, int);//получить содержимое регистра
 int setXORBigModbusBit(int, int);//получить содержимое бита
 
-void setXORBigCountObject(void);//записать к-во обектов
-void preXORBigReadAction(void);//action до чтения
-void preXORBigWriteAction(void);//action до записи
 int  postXORBigWriteAction(void);//action после записи
 
-COMPONENT_OBJ *xorbigcomponent;
+SRAM1 COMPONENT_OBJ *xorbigcomponent;
 
 /**************************************/
 //подготовка компонента XOR
@@ -33,11 +30,7 @@ void constructorXORBigComponent(COMPONENT_OBJ *xorbigcomp)
   xorbigcomponent->setModbusRegister = setXORBigModbusRegister;//получить содержимое регистра
   xorbigcomponent->setModbusBit      = setXORBigModbusBit;//получить содержимое бита
 
-  xorbigcomponent->preReadAction   = preXORBigReadAction;//action до чтения
-  xorbigcomponent->preWriteAction  = preXORBigWriteAction;//action до записи
   xorbigcomponent->postWriteAction = postXORBigWriteAction;//action после записи
-
-  xorbigcomponent->isActiveActualData = 0;
 }//prepareDVinConfig
 
 int getXORBigModbusRegister(int adrReg)
@@ -79,16 +72,6 @@ int setXORBigModbusBit(int x, int y)
   return MARKER_OUTPERIMETR;
 }//getDOUTBigModbusRegister(int adrReg)
 
-void preXORBigReadAction(void) {
-//action до чтения
-  xorbigcomponent->isActiveActualData = 1;
-}//
-void preXORBigWriteAction(void) {
-//action до записи
-  xorbigcomponent->operativMarker[0] = -1;
-  xorbigcomponent->operativMarker[1] = -1;//оперативный маркер
-  xorbigcomponent->isActiveActualData = 1;
-}//
 int postXORBigWriteAction(void) {
 extern int upravlSchematic;//флаг Rang
 //action после записи

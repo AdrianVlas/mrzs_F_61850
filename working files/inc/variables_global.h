@@ -270,7 +270,7 @@ RANG_3_GRUPA_USTAVOK,
 RANG_4_GRUPA_USTAVOK,
 RANG_RESET_BLOCK_READY_TU_VID_ZAHYSTIV,
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 RANG_BLOCK_IN_GOOSE1 + 0,
 RANG_BLOCK_IN_GOOSE1 + 1,
 RANG_BLOCK_IN_GOOSE1 + 2,
@@ -375,6 +375,7 @@ unsigned int temp_states_for_mtz;
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ == 13)||    \
      (MODYFIKACIA_VERSII_PZ == 14)      \
@@ -421,6 +422,9 @@ unsigned int active_inputs; //"вхід активний" - відповідає встановленому біту (1
 unsigned int state_outputs;
 unsigned int state_outputs_raw;
 unsigned int state_signal_outputs;
+#ifdef NUMBER_DS
+unsigned int ds;
+#endif
 unsigned int active_functions[N_BIG];
 unsigned int trigger_active_functions[N_BIG], trigger_active_functions_ctrl[N_BIG];
 unsigned char crc_trg_func, crc_trg_func_ctrl;
@@ -495,10 +499,13 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
-     (MODYFIKACIA_VERSII_PZ == 15)   \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
     )
   ,
   {16, 5}
+  
 #if (                                \
      (MODYFIKACIA_VERSII_PZ == 5) || \
      (MODYFIKACIA_VERSII_PZ == 15)   \
@@ -506,6 +513,14 @@ const uint32_t output_boards[N_OUTPUT_BOARDS][2] =
   ,
   {20, 7}
 #endif
+
+#elif (                                \
+       (MODYFIKACIA_VERSII_PZ == 6) || \
+       (MODYFIKACIA_VERSII_PZ == 26)   \
+    )
+  ,
+  {13, 5}
+  
 #endif
 };
 
@@ -520,10 +535,13 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
      (MODYFIKACIA_VERSII_PZ == 10)|| \
      (MODYFIKACIA_VERSII_PZ == 11)|| \
      (MODYFIKACIA_VERSII_PZ == 13)|| \
-     (MODYFIKACIA_VERSII_PZ == 15)   \
+     (MODYFIKACIA_VERSII_PZ == 15)|| \
+     (MODYFIKACIA_VERSII_PZ == 23)|| \
+     (MODYFIKACIA_VERSII_PZ == 33)   \
     )
   ,
   {16, 5}
+  
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 5) ||    \
@@ -533,10 +551,18 @@ const uint32_t input_boards[N_INPUT_BOARDS][2] =
   ,
   {20, 7}
 #endif
+  
+#elif (                                \
+       (MODYFIKACIA_VERSII_PZ == 6) || \
+       (MODYFIKACIA_VERSII_PZ == 26)   \
+    )
+  ,
+  {12, 5}
+  
 #endif
 };
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 
 const uint32_t index_n_In_GOOSE[MAX_NAMBER_LANGUAGE][1] = 
 {
@@ -604,7 +630,7 @@ const unsigned char odynyci_vymirjuvannja[MAX_NAMBER_LANGUAGE][NUMBER_ODYNYCI_VY
   {'А', 'В', 'с'}
 };
 
-const uint32_t max_value_for_tf[1 + TOTAL_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF] =
+const uint32_t max_value_for_tf[1 + _FIX_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_TF] =
 {
   {
     1 + NUMBER_GENERAL_SIGNAL_FOR_RANG,
@@ -693,10 +719,10 @@ unsigned int changed_settings = CHANGED_ETAP_NONE;
 unsigned char crc_settings;
 __SETTINGS current_settings_prt;
 
-#if (MODYFIKACIA_VERSII_PZ < 10)
-__SETTINGS current_settings, edition_settings, current_settings_interfaces;
-#else
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 SRAM1 __SETTINGS current_settings, edition_settings, current_settings_interfaces;
+#else
+__SETTINGS current_settings, edition_settings, current_settings_interfaces;
 #endif
 
 int * const type_mtz_arr[NUMBER_LEVEL_MTZ] = 
@@ -983,6 +1009,10 @@ int last_number_time_sample_for_RS485;// -1 - заголовок запису ан.р.; 0 - перший
 char id_ar_record_for_RS485[8 + 1 + 3 + 1];
 int max_number_time_sample_RS485;
 
+time_t menu_ar_time_dat[MAX_ROW_LCD / 2];
+int32_t menu_ar_tims_ms[MAX_ROW_LCD / 2];
+
+
 int32_t timePowerDown = -1;
 int32_t timePowerDown_total = -1;
 unsigned int truncPrefault;
@@ -1113,7 +1143,7 @@ unsigned int timeout_idle_USB;
 
 extern uint8_t  USB_Tx_State;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //MODBUS-TCP
 unsigned char LAN_received[BUFFER_LAN];
 int LAN_received_count;
@@ -1166,7 +1196,7 @@ unsigned int test_watchdogs/* = 0*/;
  **************************************************************/
 unsigned int gr_ustavok_tmp = 0xf;
 
-#if (MODYFIKACIA_VERSII_PZ >= 10)
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //Міжпроцесорний обмін
 uint8_t Canal1_MO_Transmit[BUFFER_CANAL1_MO];
 uint8_t Canal1_MO_Received[BUFFER_CANAL1_MO];

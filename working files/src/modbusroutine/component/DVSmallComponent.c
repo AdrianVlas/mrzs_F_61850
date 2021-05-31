@@ -7,6 +7,44 @@
 #define BEGIN_ADR_BIT 200
 
 #if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 2) ||    \
+     (MODYFIKACIA_VERSII_PZ == 4) ||    \
+     (MODYFIKACIA_VERSII_PZ == 12)||    \
+     (MODYFIKACIA_VERSII_PZ == 14)||    \
+     (MODYFIKACIA_VERSII_PZ == 24)||    \
+     (MODYFIKACIA_VERSII_PZ == 34)      \
+    )   
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 200
+//конечный bit в карте памяти
+#define END_ADR_BIT 207
+#endif
+
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
+     (MODYFIKACIA_VERSII_PZ == 26)      \
+    )   
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 200
+//конечный bit в карте памяти
+#define END_ADR_BIT 211
+#endif
+
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 1) ||    \
+     (MODYFIKACIA_VERSII_PZ == 3) ||    \
+     (MODYFIKACIA_VERSII_PZ == 11) ||    \
+     (MODYFIKACIA_VERSII_PZ == 13) ||    \
+     (MODYFIKACIA_VERSII_PZ == 23) ||    \
+     (MODYFIKACIA_VERSII_PZ == 33)      \
+    )   
+//конечный регистр в карте памяти
+#define END_ADR_REGISTER 200
+//конечный bit в карте памяти
+#define END_ADR_BIT 215
+#endif
+
+#if (                                   \
      (MODYFIKACIA_VERSII_PZ == 0) ||    \
      (MODYFIKACIA_VERSII_PZ == 10)||    \
      (MODYFIKACIA_VERSII_PZ ==  5)||    \
@@ -18,30 +56,6 @@
 #define END_ADR_BIT 219
 #endif
 
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 1) ||    \
-     (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 11)||    \
-     (MODYFIKACIA_VERSII_PZ == 13)      \
-    )   
-//конечный регистр в карте памяти
-#define END_ADR_REGISTER 200
-//конечный bit в карте памяти
-#define END_ADR_BIT 215
-#endif
-
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 2) ||    \
-     (MODYFIKACIA_VERSII_PZ == 4) ||    \
-     (MODYFIKACIA_VERSII_PZ == 12)||    \
-     (MODYFIKACIA_VERSII_PZ == 14)      \
-    )   
-//конечный регистр в карте памяти
-#define END_ADR_REGISTER 200
-//конечный bit в карте памяти
-#define END_ADR_BIT 207
-#endif
-
 int privateDVSmallGetReg2(int adrReg);
 int privateDVSmallGetBit2(int adrBit);
 
@@ -50,13 +64,9 @@ int getDVSmallModbusBit(int);//получить содержимое бита
 int setDVSmallModbusRegister(int, int);//записать регистр
 int setDVSmallModbusBit(int, int);//записать бит
 
-void setDVSmallCountObject(void);//записать к-во обектов
-
-void preDVSmallReadAction(void);//action до чтения
-void preDVSmallWriteAction(void);//action до записи
 int  postDVSmallWriteAction(void);//action после записи
 
-COMPONENT_OBJ *dvsmallcomponent;
+SRAM1 COMPONENT_OBJ *dvsmallcomponent;
 
 /**************************************/
 //подготовка компонента ДВ
@@ -70,35 +80,37 @@ void constructorDVSmallComponent(COMPONENT_OBJ *dvcomp)
   dvsmallcomponent->setModbusRegister = setDVSmallModbusRegister;// регистра
   dvsmallcomponent->setModbusBit      = setDVSmallModbusBit;// бита
 
-  dvsmallcomponent->preReadAction   = preDVSmallReadAction;//action до чтения
-  dvsmallcomponent->preWriteAction  = preDVSmallWriteAction;//action до записи
   dvsmallcomponent->postWriteAction = postDVSmallWriteAction;//action после записи
- 
-  dvsmallcomponent->isActiveActualData = 0;
 }//constructorDVSmallComponent(COMPONENT_OBJ *DVcomp)
 
 int getDVSmallModbusRegister(int adrReg) {
   //получить содержимое регистра
   if(privateDVSmallGetReg2(adrReg)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
-  int  input_dv = state_inputs ^ current_settings_interfaces.type_of_input;
+
+  int tmp   = active_inputs&((1<<NUMBER_INPUTS)-1);
   switch(adrReg-BEGIN_ADR_REGISTER)
   {
-    case 0:
-    return (input_dv) &0xFFFF;
-    case 1:
-    return (input_dv>>16)&0xFFFF;
+   case 0: tmp &= 0xFFFF; break;
+   case 1: tmp = (tmp>>16)&0xF; break;
+   default: tmp = 0;
   }//switch
 
-  return 0;
+  return tmp;
 }//getDVModbusRegister(int adrReg)
 int getDVSmallModbusBit(int adrBit) {
   //получить содержимое bit
   if(privateDVSmallGetBit2(adrBit)==MARKER_OUTPERIMETR) return MARKER_OUTPERIMETR;
 
-  int  input_dv = state_inputs ^ current_settings_interfaces.type_of_input;
-  short tmp = input_dv &0xFFFF;
-  if((adrBit-BEGIN_ADR_BIT)>=16) tmp = (input_dv>>16)&0xFFFF;
-  short maska = 1<<((adrBit-BEGIN_ADR_BIT)%16);
+  int tmp   = active_inputs&((1<<NUMBER_INPUTS)-1);
+  int offset = adrBit-BEGIN_ADR_BIT;
+  switch(offset/16)
+  {
+   case 0: tmp &= 0xFFFF; break;
+   case 1: tmp = (tmp>>16)&0xF; break;
+   default: tmp = 0;
+  }//switch
+
+  int maska = 1<<((adrBit-BEGIN_ADR_BIT)%16);
   if(tmp&maska) return 1;
   return 0;
 }//getDVModbusBit(int adrReg)
@@ -115,16 +127,6 @@ int setDVSmallModbusBit(int x, int y) {
   return MARKER_OUTPERIMETR;
 }//getDVModbusRegister(int adrReg)
 
-void preDVSmallReadAction(void) {
-//action до чтения
-  dvsmallcomponent->isActiveActualData = 1;
-}//
-void preDVSmallWriteAction(void) {
-//action до записи
-  dvsmallcomponent->operativMarker[0] = -1;
-  dvsmallcomponent->operativMarker[1] = -1;//оперативный маркер
-  dvsmallcomponent->isActiveActualData = 1;
-}//
 int postDVSmallWriteAction(void) {
 //action после записи
   return 0;

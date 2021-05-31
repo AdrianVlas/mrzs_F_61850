@@ -3,7 +3,7 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 1))
+#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 2))
 #define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
 #define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
@@ -62,7 +62,9 @@ ERROR_OSCYLOJRAPH_OVERFLOW,
 
 ERROR_DIGITAL_OUTPUT_1_BIT,
 
-ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
+ERROR_DS_OUTPUT_BIT = ERROR_DIGITAL_OUTPUT_1_BIT + 20,
+
+ERROR_AR_TEMPORARY_BUSY_BIT = ERROR_DS_OUTPUT_BIT + 1,
 ERROR_AR_OVERLOAD_BUFFER_BIT,
 ERROR_AR_MEMORY_FULL_BIT,
 ERROR_AR_UNDEFINED_BIT,
@@ -105,6 +107,10 @@ ERROR_BDZ_FIX,
 ERROR_BDZ_CTLR,
 ERROR_BDVV6_FIX,
 ERROR_BDVV6_CTLR,
+ERROR_BDSH_FIX,
+ERROR_BDSH_CTLR,
+ERROR_BDVV9_FIX,
+ERROR_BDVV9_CTLR,
 
 ERROR_FATFS
 };
@@ -151,6 +157,7 @@ ERROR_FATFS
 #define MASKA_AVAR_ERROR_2        (unsigned int)(               \
     (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 18 - 64))               \
   | (1 << (ERROR_DIGITAL_OUTPUT_1_BIT + 19 - 64))               \
+  | (1 << (ERROR_DS_OUTPUT_BIT - 64))                           \
   | (1 << (ERROR_INTERNAL_FLASH_BIT - 64))                      \
   | (1 << (ERROR_BA_1_FIX - 64))                                \
   | (1 << (ERROR_BA_1_CTLR - 64))                               \
@@ -158,15 +165,19 @@ ERROR_FATFS
   | (1 << (ERROR_BDVV5_1_CTLR - 64))                            \
   | (1 << (ERROR_BDVV5_2_FIX - 64))                             \
   | (1 << (ERROR_BDVV5_2_CTLR - 64))                            \
-  | (1 << (ERROR_BDV_DZ_FIX - 64))                              \
 )
 
 #define MASKA_AVAR_ERROR_3        (unsigned int)(               \
-    (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
+    (1 << (ERROR_BDV_DZ_FIX - 96))                              \
+  | (1 << (ERROR_BDV_DZ_CTLR - 96))                             \
   | (1 << (ERROR_BDZ_FIX - 96))                                 \
   | (1 << (ERROR_BDZ_CTLR - 96))                                \
   | (1 << (ERROR_BDVV6_FIX - 96))                               \
   | (1 << (ERROR_BDVV6_CTLR - 96))                              \
+  | (1 << (ERROR_BDSH_FIX - 96))                                \
+  | (1 << (ERROR_BDSH_CTLR - 96))                               \
+  | (1 << (ERROR_BDVV9_FIX - 96))                               \
+  | (1 << (ERROR_BDVV9_CTLR - 96))                              \
 )
 
 # define NAME_DIAGN_RU  \
@@ -236,6 +247,7 @@ ERROR_FATFS
   " Îø.âûõ.ðåëå ?.?",   \
   " Îø.âûõ.ðåëå ?.?",   \
   " Îø.âûõ.ðåëå ?.?",   \
+  " Îø.âûõ.ÄØ      ",   \
   "Àí.ðåã.âð.çàíÿò.",   \
   " Ïåð.áóô.aí.ðåã.",   \
   " Ï.aí.ðåã.èñ÷.  ",   \
@@ -271,9 +283,16 @@ ERROR_FATFS
   " ÁÄÇ ï.         ",   \
   " ÁÄÂÂ6 îò.      ",   \
   " ÁÄÂÂ6 ï.       ",   \
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " ÁÄÂÂ9 îò.      ",   \
+  " ÁÄÂÂ9 ï.       ",   \
   " Îø.Ô.Ñ.        ",   \
-  " Îøèáêà 102     ",   \
-  " Îøèáêà 103     "
+  " Îøèáêà 108     ",   \
+  " Îøèáêà 109     ",   \
+  " Îøèáêà 110     ",   \
+  " Îøèáêà 111     ",   \
+  " Îøèáêà 112     "
 
 # define NAME_DIAGN_UA  \
   " Ïîì.I2C        ",   \
@@ -342,6 +361,7 @@ ERROR_FATFS
   " Ïîì.âèõ.ðåëå?.?",   \
   " Ïîì.âèõ.ðåëå?.?",   \
   " Ïîì.âèõ.ðåëå?.?",   \
+  " Ïîì.âèõ.ÄØ     ",   \
   "Àí.ð.òèì÷.çàéíÿò",   \
   " Ïåðåï.áóô.aí.ð.",   \
   " Ï.aí.ðåã.âè÷.  ",   \
@@ -377,9 +397,16 @@ ERROR_FATFS
   " ÁÄÇ ï.         ",   \
   " ÁÄÂÂ6 â³ä.     ",   \
   " ÁÄÂÂ6 ï.       ",   \
+  " ÁÄØ â³ä.       ",   \
+  " ÁÄØ ï.         ",   \
+  " ÁÄÂÂ9 â³ä.     ",   \
+  " ÁÄÂÂ9 ï.       ",   \
   " Ïîì.Ô.Ñ.       ",   \
-  " Ïîìèëêà 102    ",   \
-  " Ïîìèëêà 103    "
+  " Ïîìèëêà 108    ",   \
+  " Ïîìèëêà 109    ",   \
+  " Ïîìèëêà 110    ",   \
+  " Ïîìèëêà 111    ",   \
+  " Ïîìèëêà 112    "
 
 # define NAME_DIAGN_EN  \
   " I2C Er         ",   \
@@ -448,6 +475,7 @@ ERROR_FATFS
   " BO?.? Ctl Er   ",   \
   " BO?.? Ctl Er   ",   \
   " BO?.? Ctl Er   ",   \
+  " Îø.âûõ.ÄØ      ",   \
   " Dst Rec Busy   ",   \
   " Dst Rec Buf Ovf",   \
   "Dst Rec Mem Full",   \
@@ -483,9 +511,16 @@ ERROR_FATFS
   " ASU ver        ",   \
   " BIOU06_Z abs   ",   \
   " BIOU06_Z ver   ",   \
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " BIOU09 abs     ",   \
+  " BIOU09 ver     ",   \
   " Error of FS    ",   \
-  " Error 102      ",   \
-  " Error 103      "
+  " Error 108      ",   \
+  " Error 109      ",   \
+  " Error 110      ",   \
+  " Error 111      ",   \
+  " Error 112      "
 
 # define NAME_DIAGN_KZ  \
   " Îø.I2C         ",   \
@@ -554,6 +589,7 @@ ERROR_FATFS
   " Îø.âûõ.ðåëå ?.?",   \
   " Îø.âûõ.ðåëå ?.?",   \
   " Îø.âûõ.ðåëå ?.?",   \
+  " Îø.âûõ.ÄØ      ",   \
   "Àí.ðåã.âð.çàíÿò.",   \
   " Ïåð.áóô.aí.ðåã.",   \
   " Ï.aí.ðåã.èñ÷.  ",   \
@@ -589,8 +625,15 @@ ERROR_FATFS
   " ÁÄÇ ê.         ",   \
   " ÁÄÂÂ6 ô.       ",   \
   " ÁÄÂÂ6 ê.       ",   \
+  " ÁÄØ îò.        ",   \
+  " ÁÄØ ï.         ",   \
+  " ÁÄÂÂ9 ô.       ",   \
+  " ÁÄÂÂ9 ê.       ",   \
   " Îø.Ô.Ñ.        ",   \
-  " Îøèáêà 102     ",   \
-  " Îøèáêà 103     "
+  " Îøèáêà 108     ",   \
+  " Îøèáêà 109     ",   \
+  " Îøèáêà 110     ",   \
+  " Îøèáêà 111     ",   \
+  " Îøèáêà 112     "
     
 #endif
