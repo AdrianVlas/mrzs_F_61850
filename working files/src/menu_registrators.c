@@ -1692,7 +1692,7 @@ void make_ekran_changing_signals_digital_registrator(void)
                 long sign = (long)(time_of_slice&(1<<23))>>23; 
                 if( sign!= 0){
                     time_of_slice |= 0xff000000; 
-                    time_of_slice *= (-1);
+                    time_of_slice *= (unsigned int)(-1);
                   }
                 //else{
                 //    time_of_slice = (time_of_slice << 9)>>9;
