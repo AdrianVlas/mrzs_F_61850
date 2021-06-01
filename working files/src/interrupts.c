@@ -925,7 +925,6 @@ void TIM4_IRQHandler(void)
     /***********************************************************/
     if (((current_ekran.current_level == EKRAN_TIME) && (current_ekran.edition == 0)) ||
         ((current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR) && (rewrite_ekran_once_more > 0)) ||
-        ((current_ekran.current_level == EKRAN_TITLES_PR_ERR_REGISTRATOR ) && (rewrite_ekran_once_more > 0)) ||
         (current_ekran.current_level == EKRAN_LIST_ANALOG_REGISTRATOR_RECORDS       )   ||
         (current_ekran.current_level == EKRAN_LIST_DIGITAL_REGISTRATOR_RECORDS      )   ||
         (current_ekran.current_level == EKRAN_LIST_REGISTRATOR_PROGRAM_ERROR_RECORDS)   ||
@@ -1176,7 +1175,8 @@ void TIM4_IRQHandler(void)
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                                      TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN |
 #endif
-                                     TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU |
+                                     TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU_SHORT
                                     )
          ) == 0
         )
