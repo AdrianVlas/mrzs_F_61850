@@ -514,6 +514,7 @@ static  int time_before_start_record_dr = 0;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0xff;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  1] = 0xff;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  2] = 0xff;
+            buffer_for_save_dr_record[FIRST_INDEX_DATA_TIME_DR] = (time_before_start_record_dr * (-1));
         }
           //Текучий стан сигналів
           //.buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*38 +  3] =  pCmd[0]        & 0xff;
