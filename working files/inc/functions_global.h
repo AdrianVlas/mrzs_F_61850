@@ -281,6 +281,9 @@ long GetNumberChangingInLogElemUseLocal( long lIdx);
 long GetNumberChangingInLogElem( long lIdx);
 void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 
+long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
+long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
+long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
 
 extern void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 void Usb_routines_irq(void);

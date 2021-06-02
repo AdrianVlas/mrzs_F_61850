@@ -282,6 +282,11 @@ extern long GetNumberChangingInLogElemUseLocal( long lIdx);
 extern long GetNumberChangingInLogElem( long lIdx);
 extern void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 
+extern long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
+extern long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
+extern long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
+
+
 extern void Usb_routines_irq(void);
 extern void Usb_routines(void);
 extern void USART_RS485_Configure(void);

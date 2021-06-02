@@ -47,7 +47,7 @@ SRAM1  CmdPlusTimeHolder holderCmdPlusTime;
 // @In the steps below I am using a timestamp of 1203161493 
 // @which corresponds to a date/time of 2-15-2008 11:31:33. 
 // @I'm ignoring timezones and whatnot, it isn't necessary for this.
- CmdPlusTimeStampHolder holderCmdPlusTimeStamp;
+SRAM1  CmdPlusTimeStampHolder holderCmdPlusTimeStamp;
 
 
 short GetAmountFixElem(void){
@@ -111,6 +111,9 @@ void CmdPlusTimeLogHundler(unsigned int *p_active_functions){
             holderCmdPlusTime.shIndexWR = i;
         if (holderCmdPlusTime.shTotalFixElem < AMOUNT_CMD_PLUS_TIME_RECORD)
             holderCmdPlusTime.shTotalFixElem++;
+		if (holderCmdPlusTime.u32IDModifyIndexWR < 0xffffffff)
+            holderCmdPlusTime.u32IDModifyIndexWR++;
+		
     }
 }
 
@@ -596,6 +599,165 @@ static  int time_before_start_record_dr = 0;
      
  __root  CmdFunctionDepot* pDbgViewCmd = (CmdFunctionDepot*)&holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
 SRAM1  CmdFunctionDepot arViewCmd;// = holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
+long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber){
+    register long i,d;
+    //?UNUSED(p_active_functions);
+    if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+        return 1;//Invalid  lIdx
+    i = holderCmdPlusTime.shIndexWR-1;
+    i -= lIdx;
+    if (i < 0)
+        i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    
+    if(ulWorkNumber != 0xffffffff){
+        if(ulWorkNumber > holderCmdPlusTime.u32IDModifyIndexWR){
+            d = ulWorkNumber - holderCmdPlusTime.u32IDModifyIndexWR;
+            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                return 2;//Invalid  lWorkNumber
+            i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
+        }else if(ulWorkNumber < holderCmdPlusTime.u32IDModifyIndexWR){
+            d = holderCmdPlusTime.u32IDModifyIndexWR - ulWorkNumber;
+            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                return 2;//Invalid  lWorkNumber
+            i -= d;
+        }           
+        
+    
+    }
+    if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
+        return 3;//Invalid  sum lWorkNumber& lIdx
+    else if (i < 0)
+             i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    
+    
+
+    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
+    memcpy((void *)p_elem,(const void*)pU32,  sizeof(UNN_CmdState));//for avoid situation when change data while reading
+    bool data_not_Ok = 0;char u8_iter = 0;
+    bool b_comp = false;       
+    for (size_t _i = 0; ( (b_comp == false) && (_i < sizeof(N_BIG)) ); ++_i) 
+    {                                                          
+        b_comp |= (pU32[_i] != p_elem[_i]);               
+    }
+    do{
+        if( b_comp
+
+           )
+        {
+            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_CmdState));   
+            data_not_Ok = 1;
+            u8_iter++;
+            //read again
+        }   
+            
+    }while (data_not_Ok && (u8_iter<3));
+    p_elem[sizeof(UNN_CmdState)] = holderCmdPlusTime.u32IDModifyIndexWR;
+    return 0;
+}
+
+long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber){
+    register long i,d;
+    //?UNUSED(p_active_functions);
+    if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+        return 1;//Invalid  lIdx
+    
+    i = holderCmdPlusTime.shIndexWR-1;
+    i -= lIdx;
+    
+    if (i < 0)
+        i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    
+    
+    if(ulWorkNumber != 0xffffffff){
+        if(ulWorkNumber > holderCmdPlusTime.u32IDModifyIndexWR){
+            d = ulWorkNumber - holderCmdPlusTime.u32IDModifyIndexWR;
+            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                return 2;//Invalid  lWorkNumber
+            i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
+        }else if(ulWorkNumber < holderCmdPlusTime.u32IDModifyIndexWR){
+            d = holderCmdPlusTime.u32IDModifyIndexWR - ulWorkNumber;
+            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                return 2;//Invalid  lWorkNumber
+            i -= d;
+        }           
+    }    
+    if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
+        return 3;//Invalid  sum lWorkNumber& lIdx
+    else if (i < 0)
+             i += AMOUNT_CMD_PLUS_TIME_RECORD;    
+    
+    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].unix_time.arU32MkTime[0]);
+    memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_UnixTime));
+    bool data_not_Ok = 0;char u8_iter = 0;
+    
+    do{
+        bool b_comp = false;       
+        for (size_t _i = 0; ( (b_comp == false) && (_i < (sizeof(time_t)>>2)) ); ++_i) 
+        {                                                          
+            b_comp |= (pU32[_i] != p_elem[_i]);               
+        }                                                     
+        if( b_comp 
+        )
+        {
+            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_CmdState));   
+            data_not_Ok = 1;
+            u8_iter++;//read again
+        }   
+    }while (data_not_Ok && (u8_iter<3));
+    p_elem[sizeof(UNN_CmdState)] = holderCmdPlusTime.u32IDModifyIndexWR;
+    return holderCmdPlusTime.u32IDModifyIndexWR;
+}
+
+
+    
+long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber){
+    register long i,d;
+    //?UNUSED(p_active_functions);
+    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+        return 1;//Invalid  lIdx
+    i = holderCmdPlusTime.shIndexWR-1;
+    i -= lIdx;
+    
+    if (i < 0)
+        i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    
+    if(ulWorkNumber != 0xffffffff){
+        if(ulWorkNumber > holderCmdPlusTime.u32IDModifyIndexWR){
+            d = ulWorkNumber - holderCmdPlusTime.u32IDModifyIndexWR;
+            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                return 2;//Invalid  lWorkNumber
+            i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
+        }else if(ulWorkNumber < holderCmdPlusTime.u32IDModifyIndexWR){
+            d = holderCmdPlusTime.u32IDModifyIndexWR - ulWorkNumber;
+            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                return 2;//Invalid  lWorkNumber
+            i -= d;
+        }           
+        
+    
+    }    
+    if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
+        return 3;//Invalid  sum lWorkNumber& lIdx
+    else if (i < 0)
+             i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    
+ 
+    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].mksec.uLMkTime);
+    memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_MicroSec));
+    bool data_not_Ok = 0;char u8_iter = 0;
+                                                         
+    do{
+        if( pU32[0] != p_elem[0]
+        )
+        {
+            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_MicroSec));   
+            data_not_Ok = 1;
+            u8_iter++;//read again
+        }   
+    }while (data_not_Ok && (u8_iter<3));
+    p_elem[sizeof(UNN_CmdState)] = holderCmdPlusTime.u32IDModifyIndexWR;
+    return 0;
+}
 /*
  __root  const short arrEkransId[] = {
      

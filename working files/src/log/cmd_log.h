@@ -51,6 +51,7 @@ typedef struct tag_CmdPlusTimeHolder{
     CmdPlusTimeStateElem arrCmdPlusTimeHolder[AMOUNT_CMD_PLUS_TIME_RECORD];
     short shIndexWR;
 	short shTotalFixElem;
+	unsigned long u32IDModifyIndexWR;//Identificator Last Changes Statistics Reg
 } CmdPlusTimeHolder;    
 extern CmdPlusTimeHolder holderCmdPlusTime;
 

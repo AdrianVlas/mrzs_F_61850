@@ -2330,7 +2330,7 @@ void make_ekran_changing_signals_statistica_registrator(void)
         idx_record_of_stt_cmd_prev -= AMOUNT_CMD_PLUS_TIME_RECORD;//
     GetCmdPlusTimeLogElem(array_old ,idx_record_of_stt_cmd_prev);
 
-
+    ms_time = 0;
     //?GetMsLogElem(&ms_time,number_record_of_stt_cmd_into_menu);//position_temp
 //?#endif   
 //#ifdef cmt1_off  
