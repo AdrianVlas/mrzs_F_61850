@@ -33,6 +33,8 @@ possible calls USBD_IsoINIncomplete : ;
 possible calls DCD_IsoOUTIncomplete_ISR : USBD_IsoOUTIncomplete;
 possible calls USBD_IsoOUTIncomplete : ;
 
+max recursion depth main_manu_function : 1;
+
 call graph root [Interrupt]: NMI_Handler, HardFault_Handler, MemManage_Handler, BusFault_Handler, UsageFault_Handler, SVC_Handler, DebugMon_Handler, PendSV_Handler, SysTick_Handler, TIM2_IRQHandler, TIM4_IRQHandler, TIM5_IRQHandler, I2C1_EV_IRQHandler, I2C1_ER_IRQHandler, DMA1_Stream7_IRQHandler, DMA1_Stream0_IRQHandler, SPI2_IRQHandler, DMA2_Stream0_IRQHandler, SPI1_IRQHandler, USART2_IRQHandler, DMA1_Stream6_IRQHandler, EXTI0_IRQHandler, OTG_FS_IRQHandler;
 call graph root [System]: SystemInit;
 
