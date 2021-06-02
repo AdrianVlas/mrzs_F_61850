@@ -248,10 +248,6 @@ int getPREGBigModbusRegister(int adrReg)
       {
       case 0://Очистить регистратор программных ошибок
         if (
-          (current_ekran.current_level == EKRAN_TITLES_PR_ERR_REGISTRATOR )
-          ||
-          (current_ekran.current_level == EKRAN_DATA_LADEL_PR_ERR         )
-          ||
           (current_ekran.current_level == EKRAN_CHANGES_DIAGNOSTICS_PR_ERR)
           ||
           (
@@ -262,7 +258,8 @@ int getPREGBigModbusRegister(int adrReg)
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN |
 #endif
-               TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU
+               TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU |
+               TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU_SHORT
              )
             ) != 0
           )

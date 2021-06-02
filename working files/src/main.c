@@ -119,9 +119,18 @@ void periodical_operations(unsigned int full_actions)
     lcd_init();
     new_state_keyboard |= (1<<BIT_REWRITE);
   }
-  main_manu_function();
-  //Обновляємо інформацію на екрані
-  view_whole_ekran();
+  
+  static unsigned int lock_menu;
+  if (lock_menu == false)
+  {
+    lock_menu = true;
+  
+    main_manu_function();
+    //Обновляємо інформацію на екрані
+    view_whole_ekran();
+    
+    lock_menu = false;
+  }
     
   //Робота з Watchdog
   watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);

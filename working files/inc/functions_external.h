@@ -187,7 +187,6 @@ extern void make_ekran_data_and_time_of_records_registrator(unsigned int);
 extern void make_ekran_title_analog_value_records_digital_registrator(void);
 extern void make_ekran_analog_value_records_digital_registrator(void);
 extern void make_ekran_changing_signals_digital_registrator(void);
-extern void make_ekran_list_titles_for_record_of_pr_err_registrator(void);
 extern void make_ekran_changing_diagnostics_pr_err_registrator(void);
 extern void make_ekran_list_titles_for_record_of_state_cmd_registrator(void);
 extern void make_ekran_changing_signals_statistica_registrator(void);

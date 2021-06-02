@@ -304,6 +304,8 @@ void dataflash_mamory_read(int index_chip)
       }
     }
     else if (
+             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_SHORT_FOR_MENU ) 
+             ||
              (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU ) 
              ||
              (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
@@ -317,7 +319,15 @@ void dataflash_mamory_read(int index_chip)
     {
       //Читання даних реєстратора програмних помилок
       unsigned int number_record = 0;
-      if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU)
+      
+      size_read = SIZE_ONE_RECORD_PR_ERR;
+      
+      if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_SHORT_FOR_MENU)
+      {
+        number_record = number_record_of_pr_err_into_menu;
+        size_read = SIZE_PR_ERR_SHORT;
+      }
+      else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU)
       {
         number_record = number_record_of_pr_err_into_menu;
       }
@@ -354,7 +364,7 @@ void dataflash_mamory_read(int index_chip)
       //Подальше вмістиме не має значення
 
       //Запускаємо процес запису
-      start_exchange_via_spi(index_chip, (5 + SIZE_ONE_RECORD_PR_ERR));
+      start_exchange_via_spi(index_chip, (5 + size_read));
     }
     else
     {
@@ -714,6 +724,11 @@ inline void analize_received_data_dataflash(int index_chip)
           point_part_reading = &part_reading_dr_from_dataflash_for_LAN;
         }
 #endif                   
+        else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_SHORT_FOR_MENU)
+        {
+          point_buffer = (unsigned char *)(buffer_for_manu_read_record);
+          number_byte_copy_into_target_buffer = SIZE_PR_ERR_SHORT;
+        }
         else if (
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU )
                  ||
@@ -753,6 +768,8 @@ inline void analize_received_data_dataflash(int index_chip)
             (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_USB      )
             ||  
             (what_we_are_reading_from_dataflash_1 == READING_DR_FOR_RS485    )
+            ||  
+            (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_SHORT_FOR_MENU )
             ||  
             (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU )
             ||
@@ -837,6 +854,8 @@ inline void analize_received_data_dataflash(int index_chip)
           }
         }
         else if (
+                 (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_SHORT_FOR_MENU ) 
+                 ||
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU ) 
                  ||
                  (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_USB  )
@@ -850,7 +869,17 @@ inline void analize_received_data_dataflash(int index_chip)
         {
           //Відбувалося зчитування реєстратора програмних подій
           //Знімаємо з черги запуск зчитування запису реєстратора програмних подій
-          if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU)
+          if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_SHORT_FOR_MENU)
+          {
+            control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU_SHORT);
+
+            /*Подаємо команду на обновлення екрану на LCD, хоч він десь за 
+            час <= 1c обновиться автоматично, бо система меню чекає, поки
+            буде зчитано запис
+            */
+            new_state_keyboard |= (1<<BIT_REWRITE);
+          }
+          else if (what_we_are_reading_from_dataflash_1 == READING_PR_ERR_FOR_MENU)
           {
             control_tasks_dataflash &= (unsigned int)(~TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU);
 
@@ -1182,19 +1211,20 @@ void main_function_for_dataflash_req(int index_chip)
             dataflash_mamory_page_program_through_buffer(index_chip);
           }
           else if (
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_FS           ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU_SHORT) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU      ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB       ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485     ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU  ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB   ) !=0 ) ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485 ) !=0 )
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_FS               ) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU_SHORT    ) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU          ) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB           ) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485         ) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU_SHORT) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU      ) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_USB       ) !=0 ) ||
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_RS485     ) !=0 )
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                    ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN    ) !=0 )
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN           ) !=0 )
                    ||
-                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN) !=0 )
+                   ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_LAN       ) !=0)
 #endif
                   )   
           {
@@ -1213,6 +1243,8 @@ void main_function_for_dataflash_req(int index_chip)
               what_we_are_reading_from_dataflash_1 = READING_DR_SHORT_FOR_MENU;
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU) !=0 )
               what_we_are_reading_from_dataflash_1 = READING_DR_FOR_MENU;
+            else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU_SHORT) !=0 )
+              what_we_are_reading_from_dataflash_1 = READING_PR_ERR_SHORT_FOR_MENU;
             else if ((tasks_register & TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU) !=0 )
               what_we_are_reading_from_dataflash_1 = READING_PR_ERR_FOR_MENU;
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
