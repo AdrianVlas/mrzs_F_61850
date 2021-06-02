@@ -461,7 +461,7 @@
                 </option>
                 <option>
                     <name>CCStackProtection</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -1369,7 +1369,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -1630,7 +1630,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -1638,6 +1638,30 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\user_diskio.c</name>
+            </file>
+        </group>
+    </group>
+    <group>
+        <name>lib</name>
+        <group>
+            <name>runtime</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\lib\runtime\stack_protection.c</name>
+            </file>
+        </group>
+        <group>
+            <name>time</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\clock.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\getzone.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\time.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\time64.c</name>
             </file>
         </group>
     </group>
@@ -1978,7 +2002,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -2239,7 +2263,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -2500,7 +2524,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -2764,7 +2788,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -3025,7 +3049,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -3319,7 +3343,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -3605,7 +3629,7 @@
                                     </option>
                                     <option>
                                         <name>CCStackProtection</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                 </data>
                             </settings>
@@ -3891,7 +3915,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -4155,7 +4179,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -4444,7 +4468,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -4705,7 +4729,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -4966,7 +4990,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -5537,7 +5561,7 @@
                                     </option>
                                     <option>
                                         <name>CCStackProtection</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                 </data>
                             </settings>
@@ -5932,7 +5956,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -6336,7 +6360,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -6607,7 +6631,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -6619,21 +6643,6 @@
                     <name>$PROJ_DIR$\..\..\working files\src\driver_serial_dataflash.c</name>
                 </file>
             </group>
-        </group>
-        <group>
-            <name>time</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\clock.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\getzone.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\time.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\time64.c</name>
-            </file>
         </group>
         <group>
             <name>usb</name>
@@ -6909,7 +6918,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -7170,7 +7179,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -7431,7 +7440,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -7692,7 +7701,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
