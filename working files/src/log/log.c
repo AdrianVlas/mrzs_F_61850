@@ -454,9 +454,9 @@ static  int time_before_start_record_dr = 0;
     //Записуємо попередній cтан сигналів перед аварією
     //Вираховуємо кількість змін сигналів
 //    *(ptDRUVAd->number_changes_into_dr_record) = 0;
-       asm volatile(
-               "bkpt 1"
-               );      
+    //.   asm volatile(
+    //.           "bkpt 1"
+    //.           );      
     register long i;
     register CmdPlusTimeStampHolder *phld  = &holderCmdPlusTimeStamp;
     char chAmontRecords = 0;//One prev state
