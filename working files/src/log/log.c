@@ -47,7 +47,9 @@ SRAM1  CmdPlusTimeHolder holderCmdPlusTime;
 // @In the steps below I am using a timestamp of 1203161493 
 // @which corresponds to a date/time of 2-15-2008 11:31:33. 
 // @I'm ignoring timezones and whatnot, it isn't necessary for this.
-  CmdPlusTimeStampHolder holderCmdPlusTimeStamp;
+
+/*SRAM1 */ CmdPlusTimeStampHolder holderCmdPlusTimeStamp;
+
 
 
 short GetAmountFixElem(void){

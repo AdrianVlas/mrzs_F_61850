@@ -588,7 +588,7 @@ const uint32_t index_n_Out_LAN[MAX_NAMBER_LANGUAGE][1] =
   {11} 
 };
 
-unsigned int edit_rang_Out_LAN[N_BIG];
+SRAM1 unsigned int edit_rang_Out_LAN[N_BIG];
 
 const uint32_t rang_iec61850_blocks[2][N_SMALL] = 
 {
@@ -720,10 +720,11 @@ unsigned char crc_settings;
 __SETTINGS current_settings_prt;
 
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-SRAM1 __SETTINGS current_settings, edition_settings, current_settings_interfaces;
+SRAM1 __SETTINGS current_settings;
 #else
-__SETTINGS current_settings, edition_settings, current_settings_interfaces;
+__SETTINGS current_settings;
 #endif
+SRAM1 __SETTINGS edition_settings, current_settings_interfaces;
 
 int * const type_mtz_arr[NUMBER_LEVEL_MTZ] = 
 {
@@ -962,8 +963,8 @@ unsigned int error_into_spi_df;/*Ненульве значення означає, що зафіксована помил
 unsigned int dataflash_not_busy;
 volatile unsigned int control_tasks_dataflash;
 SRAM1 unsigned char buffer_for_manu_read_record[SIZE_BUFFER_FOR_DR_RECORD];
-unsigned char buffer_for_USB_read_record_ar[SIZE_PAGE_DATAFLASH_2];
-unsigned char buffer_for_RS485_read_record_ar[SIZE_PAGE_DATAFLASH_2];
+SRAM1 unsigned char buffer_for_USB_read_record_ar[SIZE_PAGE_DATAFLASH_2];
+SRAM1 unsigned char buffer_for_RS485_read_record_ar[SIZE_PAGE_DATAFLASH_2];
 unsigned char buffer_for_USB_read_record_dr[SIZE_BUFFER_FOR_DR_RECORD];
 unsigned char buffer_for_RS485_read_record_dr[SIZE_BUFFER_FOR_DR_RECORD];
 unsigned char buffer_for_USB_read_record_pr_err[SIZE_ONE_RECORD_PR_ERR];
@@ -1145,9 +1146,9 @@ extern uint8_t  USB_Tx_State;
 
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 //MODBUS-TCP
-unsigned char LAN_received[BUFFER_LAN];
+SRAM1 unsigned char LAN_received[BUFFER_LAN];
 int LAN_received_count;
-unsigned char LAN_transmiting[BUFFER_LAN];
+SRAM1 unsigned char LAN_transmiting[BUFFER_LAN];
 int LAN_transmiting_count;
 
 SRAM1 unsigned int timeout_idle_LAN;

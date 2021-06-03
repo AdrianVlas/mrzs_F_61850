@@ -461,7 +461,7 @@
                 </option>
                 <option>
                     <name>CCStackProtection</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -1369,7 +1369,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -1630,7 +1630,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -1638,6 +1638,30 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Middlewares\FatFs\src\user_diskio.c</name>
+            </file>
+        </group>
+    </group>
+    <group>
+        <name>lib</name>
+        <group>
+            <name>runtime</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\lib\runtime\stack_protection.c</name>
+            </file>
+        </group>
+        <group>
+            <name>time</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\clock.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\getzone.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\time.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\time64.c</name>
             </file>
         </group>
     </group>
@@ -1978,7 +2002,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -2239,7 +2263,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -2500,7 +2524,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -2764,7 +2788,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -3025,7 +3049,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -3319,7 +3343,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -3605,7 +3629,7 @@
                                     </option>
                                     <option>
                                         <name>CCStackProtection</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                 </data>
                             </settings>
@@ -3891,7 +3915,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -4155,7 +4179,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -4444,7 +4468,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -4705,7 +4729,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -4966,7 +4990,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -5549,7 +5573,7 @@
                                     </option>
                                     <option>
                                         <name>CCStackProtection</name>
-                                        <state>0</state>
+                                        <state>1</state>
                                     </option>
                                 </data>
                             </settings>
@@ -5699,265 +5723,265 @@
                 <name>Log</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\log\log.c</name>
-                    <configuration>
-                        <name>Flash-Debug</name>
-                        <settings>
-                            <name>ICCARM</name>
-                            <data>
-                                <version>37</version>
-                                <wantNonLocal>0</wantNonLocal>
-                                <debug>1</debug>
-                                <option>
-                                    <name>CCOptimizationNoSizeConstraints</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCDefines</name>
-                                    <state>_DLIB_TIME_USES_64</state>
-                                    <state>USE_STDPERIPH_DRIVER</state>
-                                    <state>STM32F2XX</state>
-                                    <state>USE_USB_OTG_FS</state>
-                                    <state>KEYBOARD_VER_2_1</state>
-                                </option>
-                                <option>
-                                    <name>CCPreprocFile</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCPreprocComments</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCPreprocLine</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCListCFile</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCListCMnemonics</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCListCMessages</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCListAssFile</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCListAssSource</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCEnableRemarks</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCDiagSuppress</name>
-                                    <state></state>
-                                </option>
-                                <option>
-                                    <name>CCDiagRemark</name>
-                                    <state></state>
-                                </option>
-                                <option>
-                                    <name>CCDiagWarning</name>
-                                    <state></state>
-                                </option>
-                                <option>
-                                    <name>CCDiagError</name>
-                                    <state></state>
-                                </option>
-                                <option>
-                                    <name>CCObjPrefix</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCAllowList</name>
-                                    <version>1</version>
-                                    <state>11111110</state>
-                                </option>
-                                <option>
-                                    <name>CCDebugInfo</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>IEndianMode</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>IProcessor</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>IExtraOptionsCheck</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>IExtraOptions</name>
-                                    <state></state>
-                                </option>
-                                <option>
-                                    <name>CCLangConformance</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCSignedPlainChar</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCRequirePrototypes</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCDiagWarnAreErr</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCCompilerRuntimeInfo</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>IFpuProcessor</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>OutputFile</name>
-                                    <state>$FILE_BNAME$.o</state>
-                                </option>
-                                <option>
-                                    <name>CCLibConfigHeader</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>PreInclude</name>
-                                    <state></state>
-                                </option>
-                                <option>
-                                    <name>CCIncludePath2</name>
-                                    <state>$PROJ_DIR$\..\..\working files\inc</state>
-                                    <state>$PROJ_DIR$\..\..\working files\inc\a.14.c.d</state>
-                                    <state>$PROJ_DIR$\..\..\working files\usb</state>
-                                    <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
-                                    <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
-                                    <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
-                                    <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
-                                    <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
-                                    <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
-                                    <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
-                                    <state>$PROJ_DIR$\..\..\SystemView\Config</state>
-                                    <state>$PROJ_DIR$\..\..\SystemView\OS</state>
-                                    <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
-                                </option>
-                                <option>
-                                    <name>CCStdIncCheck</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCCodeSection</name>
-                                    <state>.text</state>
-                                </option>
-                                <option>
-                                    <name>IProcessorMode2</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCOptLevel</name>
-                                    <state>3</state>
-                                </option>
-                                <option>
-                                    <name>CCOptStrategy</name>
-                                    <version>0</version>
-                                    <state>2</state>
-                                </option>
-                                <option>
-                                    <name>CCOptLevelSlave</name>
-                                    <state>3</state>
-                                </option>
-                                <option>
-                                    <name>CCPosIndRopi</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCPosIndRwpi</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCPosIndNoDynInit</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>IccLang</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>IccCDialect</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>IccAllowVLA</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>IccStaticDestr</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>IccCppInlineSemantics</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>IccCmsis</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>IccFloatSemantics</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCNoLiteralPool</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCOptStrategySlave</name>
-                                    <version>0</version>
-                                    <state>2</state>
-                                </option>
-                                <option>
-                                    <name>CCEncSource</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCEncOutput</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCEncOutputBom</name>
-                                    <state>1</state>
-                                </option>
-                                <option>
-                                    <name>CCEncInput</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>IccExceptions2</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>IccRTTI2</name>
-                                    <state>0</state>
-                                </option>
-                                <option>
-                                    <name>CCStackProtection</name>
-                                    <state>0</state>
-                                </option>
-                            </data>
-                        </settings>
-                    </configuration>
                 </file>
+                <configuration>
+                    <name>Flash-Debug</name>
+                    <settings>
+                        <name>ICCARM</name>
+                        <data>
+                            <version>37</version>
+                            <wantNonLocal>0</wantNonLocal>
+                            <debug>1</debug>
+                            <option>
+                                <name>CCOptimizationNoSizeConstraints</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCDefines</name>
+                                <state>_DLIB_TIME_USES_64</state>
+                                <state>USE_STDPERIPH_DRIVER</state>
+                                <state>STM32F2XX</state>
+                                <state>USE_USB_OTG_FS</state>
+                                <state>KEYBOARD_VER_2_1</state>
+                            </option>
+                            <option>
+                                <name>CCPreprocFile</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCPreprocComments</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCPreprocLine</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCListCFile</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCListCMnemonics</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCListCMessages</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCListAssFile</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCListAssSource</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCEnableRemarks</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCDiagSuppress</name>
+                                <state></state>
+                            </option>
+                            <option>
+                                <name>CCDiagRemark</name>
+                                <state></state>
+                            </option>
+                            <option>
+                                <name>CCDiagWarning</name>
+                                <state></state>
+                            </option>
+                            <option>
+                                <name>CCDiagError</name>
+                                <state></state>
+                            </option>
+                            <option>
+                                <name>CCObjPrefix</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCAllowList</name>
+                                <version>1</version>
+                                <state>11111110</state>
+                            </option>
+                            <option>
+                                <name>CCDebugInfo</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>IEndianMode</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>IProcessor</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>IExtraOptionsCheck</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>IExtraOptions</name>
+                                <state></state>
+                            </option>
+                            <option>
+                                <name>CCLangConformance</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCSignedPlainChar</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCRequirePrototypes</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCDiagWarnAreErr</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCCompilerRuntimeInfo</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>IFpuProcessor</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>OutputFile</name>
+                                <state>$FILE_BNAME$.o</state>
+                            </option>
+                            <option>
+                                <name>CCLibConfigHeader</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>PreInclude</name>
+                                <state></state>
+                            </option>
+                            <option>
+                                <name>CCIncludePath2</name>
+                                <state>$PROJ_DIR$\..\..\working files\inc</state>
+                                <state>$PROJ_DIR$\..\..\working files\inc\a.14.c.d</state>
+                                <state>$PROJ_DIR$\..\..\working files\usb</state>
+                                <state>$PROJ_DIR$\..\..\working files\src\modbusroutine\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\CMSIS\Device\ST\STM32F2xx\Include</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32F2xx_StdPeriph_Driver\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_OTG_Driver\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Core\inc</state>
+                                <state>$PROJ_DIR$\..\..\Libraries\STM32_USB_Device_Library\Class\cdc\inc</state>
+                                <state>$PROJ_DIR$\..\..\Middlewares\FatFs\inc</state>
+                                <state>$PROJ_DIR$\..\..\SystemView\Config</state>
+                                <state>$PROJ_DIR$\..\..\SystemView\OS</state>
+                                <state>$PROJ_DIR$\..\..\SystemView\SEGGER</state>
+                            </option>
+                            <option>
+                                <name>CCStdIncCheck</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCCodeSection</name>
+                                <state>.text</state>
+                            </option>
+                            <option>
+                                <name>IProcessorMode2</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCOptLevel</name>
+                                <state>3</state>
+                            </option>
+                            <option>
+                                <name>CCOptStrategy</name>
+                                <version>0</version>
+                                <state>2</state>
+                            </option>
+                            <option>
+                                <name>CCOptLevelSlave</name>
+                                <state>3</state>
+                            </option>
+                            <option>
+                                <name>CCPosIndRopi</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCPosIndRwpi</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCPosIndNoDynInit</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>IccLang</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>IccCDialect</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>IccAllowVLA</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>IccStaticDestr</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>IccCppInlineSemantics</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>IccCmsis</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>IccFloatSemantics</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCNoLiteralPool</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCOptStrategySlave</name>
+                                <version>0</version>
+                                <state>2</state>
+                            </option>
+                            <option>
+                                <name>CCEncSource</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCEncOutput</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCEncOutputBom</name>
+                                <state>1</state>
+                            </option>
+                            <option>
+                                <name>CCEncInput</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>IccExceptions2</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>IccRTTI2</name>
+                                <state>0</state>
+                            </option>
+                            <option>
+                                <name>CCStackProtection</name>
+                                <state>1</state>
+                            </option>
+                        </data>
+                    </settings>
+                </configuration>
             </group>
             <group>
                 <name>menu</name>
@@ -6360,7 +6384,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -6637,7 +6661,7 @@
                             </option>
                             <option>
                                 <name>CCStackProtection</name>
-                                <state>0</state>
+                                <state>1</state>
                             </option>
                         </data>
                     </settings>
@@ -6649,21 +6673,6 @@
                     <name>$PROJ_DIR$\..\..\working files\src\driver_serial_dataflash.c</name>
                 </file>
             </group>
-        </group>
-        <group>
-            <name>time</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\clock.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\getzone.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\time.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\time64.c</name>
-            </file>
         </group>
         <group>
             <name>usb</name>
@@ -6939,7 +6948,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -7200,7 +7209,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -7461,7 +7470,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
@@ -7722,7 +7731,7 @@
                                 </option>
                                 <option>
                                     <name>CCStackProtection</name>
-                                    <state>0</state>
+                                    <state>1</state>
                                 </option>
                             </data>
                         </settings>
