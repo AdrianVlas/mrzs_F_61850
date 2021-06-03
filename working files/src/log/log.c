@@ -124,38 +124,28 @@ void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx){
     //?UNUSED(p_active_functions);
     if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         lIdx = 0;
-    i = holderCmdPlusTime.shIndexWR-1;
-    i -= lIdx;
     
-    if (i < 0)
-        i += AMOUNT_CMD_PLUS_TIME_RECORD;
-//void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
-    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
-    memcpy((void *)p_elem,(const void*)pU32,  sizeof(UNN_CmdState));//for avoid situation when change data while reading
+    unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
-    bool b_comp = false;       
-    for (size_t _i = 0; ( (b_comp == false) && (_i < sizeof(N_BIG)) ); ++_i) 
-    {                                                          
-        b_comp |= (pU32[_i] != p_elem[_i]);               
-    }
+    i = holderCmdPlusTime.shIndexWR-1;
     do{
-        if( b_comp
-            //.((p_elem[0] != pU32[0])) ||
-            //.((p_elem[1] != pU32[1])) ||
-            //.((p_elem[2] != pU32[2])) ||
-            //.((p_elem[3] != pU32[3])) ||
-            //.((p_elem[4] != pU32[4])) ||
-            //.((p_elem[5] != pU32[5])) ||
-            //.((p_elem[6] != pU32[6])) ||
-            //.((p_elem[7] != pU32[7])) ||
-            //.((p_elem[8] != pU32[8])) 
-           )
-        {
-            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_CmdState));   
-            data_not_Ok = 1;
-            u8_iter++;
-            //read again
-        }   
+        //?id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+        i -= lIdx;
+    
+        if (i < 0)
+            i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    //void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
+        unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
+        memcpy((void *)p_elem,(const void*)pU32,  sizeof(UNN_CmdState));//for avoid situation when change data while reading
+
+        data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;     
+        u8_iter++;
+        if(u8_iter >= 3)
+            return ;//3 Leak of resorses
+		if(data_not_Ok){
+			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+			 i = holderCmdPlusTime.shIndexWR-1;
+		}
             
     }while (data_not_Ok && (u8_iter<3));
 
@@ -180,29 +170,29 @@ void GetDateTimeLogElem(unsigned int *p_elem, long lIdx){
     //?UNUSED(p_active_functions);
     if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         lIdx = 0;
-    i = holderCmdPlusTime.shIndexWR-1;
-    i -= lIdx;
-    
-    if (i < 0)
-        i += AMOUNT_CMD_PLUS_TIME_RECORD;
-//void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
-    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].unix_time.arU32MkTime[0]);
-    memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_UnixTime));
+    unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
-    
+    i = holderCmdPlusTime.shIndexWR-1;
     do{
-        bool b_comp = false;       
-        for (size_t _i = 0; ( (b_comp == false) && (_i < (sizeof(time_t)>>2)) ); ++_i) 
-        {                                                          
-            b_comp |= (pU32[_i] != p_elem[_i]);               
-        }                                                     
-        if( b_comp 
-        )
-        {
-            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_CmdState));   
-            data_not_Ok = 1;
-            u8_iter++;//read again
-        }   
+        //?id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+        
+        i -= lIdx;
+        
+        if (i < 0)
+            i += AMOUNT_CMD_PLUS_TIME_RECORD;
+//vo    id *memcpy(void *restrict s1, const void *restrict s2, size_t n);
+        unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].unix_time.arU32MkTime[0]);
+        memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_UnixTime));
+        
+        data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;     
+        u8_iter++;
+        if(u8_iter >= 3)
+            return ;//3Leak of resorses
+		if(data_not_Ok){
+			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+			 i = holderCmdPlusTime.shIndexWR-1;
+		}
+  
     }while (data_not_Ok && (u8_iter<3));
 }
 
@@ -213,25 +203,29 @@ void GetMsLogElem(unsigned int *p_elem, long lIdx){
     //?UNUSED(p_active_functions);
     if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         lIdx = 0;
-    i = holderCmdPlusTime.shIndexWR-1;
-    i -= lIdx;
-    
-    if (i < 0)
-        i += AMOUNT_CMD_PLUS_TIME_RECORD;
-//void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
- 
-    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].mksec.uLMkTime);
-    memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_MicroSec));
+    unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
-                                                         
+    i = holderCmdPlusTime.shIndexWR-1;
     do{
-        if( pU32[0] != p_elem[0]
-        )
-        {
-            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_MicroSec));   
-            data_not_Ok = 1;
-            u8_iter++;//read again
-        }   
+        //?id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+        
+        i -= lIdx;
+        
+        if (i < 0)
+            i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    //void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
+     
+        unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].mksec.uLMkTime);
+        memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_MicroSec));
+    
+        data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;     
+        u8_iter++;
+        if(u8_iter >= 3)
+            return ;//3Leak of resorses
+		if(data_not_Ok){
+			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+			 i = holderCmdPlusTime.shIndexWR-1;
+		}
     }while (data_not_Ok && (u8_iter<3));
 
 }
@@ -604,57 +598,53 @@ static  int time_before_start_record_dr = 0;
 SRAM1  CmdFunctionDepot arViewCmd;// = holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
 long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber){
     register long i,d;
+	
     //?UNUSED(p_active_functions);
     if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         return 1;//Invalid  lIdx
-    i = holderCmdPlusTime.shIndexWR-1;
-    i -= lIdx;
-    if (i < 0)
-        i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    
-    if(ulWorkNumber != 0xffffffff){
-        if(ulWorkNumber > holderCmdPlusTime.u32IDModifyIndexWR){
-            d = ulWorkNumber - holderCmdPlusTime.u32IDModifyIndexWR;
-            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                return 2;//Invalid  lWorkNumber
-            i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
-        }else if(ulWorkNumber < holderCmdPlusTime.u32IDModifyIndexWR){
-            d = holderCmdPlusTime.u32IDModifyIndexWR - ulWorkNumber;
-            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                return 2;//Invalid  lWorkNumber
-            i -= d;
-        }           
-        
-    
-    }
-    if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
-        return 3;//Invalid  sum lWorkNumber& lIdx
-    else if (i < 0)
-             i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    
-    
-
-    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
-    memcpy((void *)p_elem,(const void*)pU32,  sizeof(UNN_CmdState));//for avoid situation when change data while reading
+    unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
-    bool b_comp = false;       
-    for (size_t _i = 0; ( (b_comp == false) && (_i < sizeof(N_BIG)) ); ++_i) 
-    {                                                          
-        b_comp |= (pU32[_i] != p_elem[_i]);               
-    }
+    i = holderCmdPlusTime.shIndexWR-1;
     do{
-        if( b_comp
-
-           )
-        {
-            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_CmdState));   
-            data_not_Ok = 1;
-            u8_iter++;
-            //read again
-        }   
-            
-    }while (data_not_Ok && (u8_iter<3));
-    p_elem[sizeof(UNN_CmdState)] = holderCmdPlusTime.u32IDModifyIndexWR;
+        //?id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+        
+        i -= lIdx;
+        if (i < 0)
+            i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    
+        if(ulWorkNumber != 0xffffffff){
+            if(ulWorkNumber > id_change_index_wr){
+                d = ulWorkNumber - id_change_index_wr;
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                    return 2;//Invalid  lWorkNumber
+                i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
+            }else if(ulWorkNumber < id_change_index_wr){
+                d = id_change_index_wr - ulWorkNumber;
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                    return 2;//Invalid  lWorkNumber
+                i -= d;
+            }           
+        }
+        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
+            return 3;//Invalid  sum lWorkNumber& lIdx
+        else if (i < 0)
+                 i += AMOUNT_CMD_PLUS_TIME_RECORD;
+	    
+        unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
+        memcpy((void *)p_elem,(const void*)pU32,  sizeof(UNN_CmdState));//for avoid situation when change data while reading
+	    
+        data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;     
+        u8_iter++;
+        if(u8_iter >= 3)
+            return 3;//Leak of resorses
+		if(data_not_Ok){
+			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+			 i = holderCmdPlusTime.shIndexWR-1;
+		}
+    }while ( (data_not_Ok == 1) && (u8_iter < 3) );
+	//if(id_change_index_wr != ulWorkNumber)
+	//	ERROR? Now data exaxtly differ compare to start reading
+    p_elem[sizeof(UNN_CmdState)>>2] = id_change_index_wr;//holderCmdPlusTime.u32IDModifyIndexWR;
     return 0;
 }
 
@@ -663,52 +653,50 @@ long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWo
     //?UNUSED(p_active_functions);
     if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         return 1;//Invalid  lIdx
-    
-    i = holderCmdPlusTime.shIndexWR-1;
-    i -= lIdx;
-    
-    if (i < 0)
-        i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    
-    
-    if(ulWorkNumber != 0xffffffff){
-        if(ulWorkNumber > holderCmdPlusTime.u32IDModifyIndexWR){
-            d = ulWorkNumber - holderCmdPlusTime.u32IDModifyIndexWR;
-            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                return 2;//Invalid  lWorkNumber
-            i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
-        }else if(ulWorkNumber < holderCmdPlusTime.u32IDModifyIndexWR){
-            d = holderCmdPlusTime.u32IDModifyIndexWR - ulWorkNumber;
-            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                return 2;//Invalid  lWorkNumber
-            i -= d;
-        }           
-    }    
-    if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
-        return 3;//Invalid  sum lWorkNumber& lIdx
-    else if (i < 0)
-             i += AMOUNT_CMD_PLUS_TIME_RECORD;    
-    
-    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].unix_time.arU32MkTime[0]);
-    memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_UnixTime));
+    unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
+    i = holderCmdPlusTime.shIndexWR-1;
     
     do{
-        bool b_comp = false;       
-        for (size_t _i = 0; ( (b_comp == false) && (_i < (sizeof(time_t)>>2)) ); ++_i) 
-        {                                                          
-            b_comp |= (pU32[_i] != p_elem[_i]);               
-        }                                                     
-        if( b_comp 
-        )
-        {
-            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_CmdState));   
-            data_not_Ok = 1;
-            u8_iter++;//read again
-        }   
+        i -= lIdx;
+        if (i < 0)
+            i += AMOUNT_CMD_PLUS_TIME_RECORD;
+    
+    
+        if(ulWorkNumber != 0xffffffff){
+            if(ulWorkNumber > id_change_index_wr){
+                d = ulWorkNumber - id_change_index_wr;
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                    return 2;//Invalid  lWorkNumber
+                i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
+            }else if(ulWorkNumber < id_change_index_wr){
+                d = id_change_index_wr - ulWorkNumber;
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                    return 2;//Invalid  lWorkNumber
+                i -= d;
+            }           
+        }    
+        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
+            return 3;//Invalid  sum lWorkNumber& lIdx
+        else if (i < 0)
+                 i += AMOUNT_CMD_PLUS_TIME_RECORD;    
+    
+        unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].unix_time.arU32MkTime[0]);
+        memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_UnixTime));
+        data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;
+        u8_iter++;
+        if(u8_iter >= 3)
+            return 3;//Leak of recorses
+		if(data_not_Ok){
+			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+			 i = holderCmdPlusTime.shIndexWR-1;
+		}
+   
     }while (data_not_Ok && (u8_iter<3));
-    p_elem[sizeof(UNN_CmdState)] = holderCmdPlusTime.u32IDModifyIndexWR;
-    return holderCmdPlusTime.u32IDModifyIndexWR;
+    //if(id_change_index_wr != ulWorkNumber)
+	//	ERROR? Now data exaxtly differ compare to start reading
+	p_elem[sizeof(UNN_UnixTime)>>2] = id_change_index_wr;
+    return 0;
 }
 
 
@@ -718,47 +706,49 @@ long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumb
     //?UNUSED(p_active_functions);
     if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         return 1;//Invalid  lIdx
+    unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
+    bool data_not_Ok = 0;char u8_iter = 0;
     i = holderCmdPlusTime.shIndexWR-1;
-    i -= lIdx;
+    do{
+    //?id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+        i -= lIdx;
+        if (i < 0)
+            i += AMOUNT_CMD_PLUS_TIME_RECORD;
     
-    if (i < 0)
-        i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    
-    if(ulWorkNumber != 0xffffffff){
-        if(ulWorkNumber > holderCmdPlusTime.u32IDModifyIndexWR){
-            d = ulWorkNumber - holderCmdPlusTime.u32IDModifyIndexWR;
-            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                return 2;//Invalid  lWorkNumber
-            i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
-        }else if(ulWorkNumber < holderCmdPlusTime.u32IDModifyIndexWR){
-            d = holderCmdPlusTime.u32IDModifyIndexWR - ulWorkNumber;
-            if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                return 2;//Invalid  lWorkNumber
-            i -= d;
-        }           
+        if(ulWorkNumber != 0xffffffff){
+            if(ulWorkNumber > id_change_index_wr){
+                d = ulWorkNumber - id_change_index_wr;
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                    return 2;//Invalid  lWorkNumber
+                i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
+            }else if(ulWorkNumber < id_change_index_wr){
+                d = id_change_index_wr - ulWorkNumber;
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                    return 2;//Invalid  lWorkNumber
+                i -= d;
+            }           
+            
         
-    
-    }    
-    if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
-        return 3;//Invalid  sum lWorkNumber& lIdx
-    else if (i < 0)
-             i += AMOUNT_CMD_PLUS_TIME_RECORD;
+        }    
+        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
+            return 3;//Invalid  sum lWorkNumber& lIdx
+        else if (i < 0)
+                 i += AMOUNT_CMD_PLUS_TIME_RECORD;
     
  
-    unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].mksec.uLMkTime);
-    memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_MicroSec));
-    bool data_not_Ok = 0;char u8_iter = 0;
-                                                         
-    do{
-        if( pU32[0] != p_elem[0]
-        )
-        {
-            memcpy((void *)p_elem,(const void*)pU32,sizeof(UNN_MicroSec));   
-            data_not_Ok = 1;
-            u8_iter++;//read again
-        }   
+        unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].mksec.uLMkTime);
+        memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_MicroSec));
+  
+        data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;     
+        u8_iter++;
+        if(u8_iter >= 3)
+            return 3;//Leak of resorses
+		if(data_not_Ok){
+			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+			 i = holderCmdPlusTime.shIndexWR-1;
+		}
     }while (data_not_Ok && (u8_iter<3));
-    p_elem[sizeof(UNN_CmdState)] = holderCmdPlusTime.u32IDModifyIndexWR;
+    p_elem[sizeof(UNN_MicroSec)>>2] = id_change_index_wr;
     return 0;
 }
 /*
