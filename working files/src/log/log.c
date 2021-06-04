@@ -115,6 +115,8 @@ void CmdPlusTimeLogHundler(unsigned int *p_active_functions){
             holderCmdPlusTime.shTotalFixElem++;
 		if (holderCmdPlusTime.u32IDModifyIndexWR < 0xffffffff)
             holderCmdPlusTime.u32IDModifyIndexWR++;
+		else
+			holderCmdPlusTime.u32IDModifyIndexWR = 0;
 		
     }
 }
@@ -614,11 +616,11 @@ long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long u
     
         if(ulWorkNumber != 0xffffffff){
             if(ulWorkNumber > id_change_index_wr){
-                d = ulWorkNumber - id_change_index_wr;
+                d = (0xffffffff - ulWorkNumber) + id_change_index_wr;//d = ulWorkNumber - id_change_index_wr;
                 if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
                     return 2;//Invalid  lWorkNumber
                 i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
-            }else if(ulWorkNumber < id_change_index_wr){
+            }else if(ulWorkNumber <= id_change_index_wr){
                 d = id_change_index_wr - ulWorkNumber;
                 if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
                     return 2;//Invalid  lWorkNumber
@@ -665,11 +667,11 @@ long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWo
     
         if(ulWorkNumber != 0xffffffff){
             if(ulWorkNumber > id_change_index_wr){
-                d = ulWorkNumber - id_change_index_wr;
+                d = (0xffffffff - ulWorkNumber) + id_change_index_wr;
                 if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
                     return 2;//Invalid  lWorkNumber
                 i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
-            }else if(ulWorkNumber < id_change_index_wr){
+            }else if(ulWorkNumber <= id_change_index_wr){
                 d = id_change_index_wr - ulWorkNumber;
                 if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
                     return 2;//Invalid  lWorkNumber
@@ -717,11 +719,11 @@ long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumb
     
         if(ulWorkNumber != 0xffffffff){
             if(ulWorkNumber > id_change_index_wr){
-                d = ulWorkNumber - id_change_index_wr;
+                d = (0xffffffff - ulWorkNumber) + id_change_index_wr;//d = ulWorkNumber - id_change_index_wr;
                 if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
                     return 2;//Invalid  lWorkNumber
                 i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
-            }else if(ulWorkNumber < id_change_index_wr){
+            }else if(ulWorkNumber <= id_change_index_wr){
                 d = id_change_index_wr - ulWorkNumber;
                 if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
                     return 2;//Invalid  lWorkNumber
