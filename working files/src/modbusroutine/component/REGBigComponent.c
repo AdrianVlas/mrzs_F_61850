@@ -266,6 +266,8 @@ int getREGBigModbusRegister(int adrReg)
     case 36://Очистить аналоговый регистратор
       return MARKER_ERRORPERIMETR;
 
+    case 333://Выдержка доаварийного массива DR
+      return (current_settings_interfaces.timeout_prolongation_work_digital_registrator) &0xFFFF; 
     case 334://Количество дискретных регистраторов
       return (info_rejestrator_dr.number_records) &0xFFFF;
 #define IMUNITET_REG335 335
@@ -350,6 +352,9 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
       break;
     case 36://Очистить аналоговый регистратор
       if(dataReg!=CMD_WORD_CLEAR_AR) return MARKER_ERRORDIAPAZON;
+      break;
+    case 333://Выдержка доаварийного массива DR
+      if(dataReg<TIMEOUT_DR_ELONGATION_MIN/20 || dataReg>TIMEOUT_DR_ELONGATION_MAX/20) return MARKER_ERRORDIAPAZON;
       break;
     case 334://Количество дискретных регистраторов
       return MARKER_ERRORDIAPAZON;
@@ -564,6 +569,10 @@ int postREGBigWriteAction(void)
           clean_rejestrators |= CLEAN_AR;
           break;
 
+        case 333://Время записи аналогового регистратора (доаварийный массив)
+          edition_settings.timeout_prolongation_work_digital_registrator = tempWriteArray[offsetTempWriteArray+i];
+          upravlSetting = 1;//флаг Setting
+          break;
         case 335://Текущий дискретный регистратор
 
           if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485

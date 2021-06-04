@@ -1253,14 +1253,17 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
        switch(pointInterface)//метка интерфейса 0-USB 1-RS485
        {
         case USB_RECUEST:
-         value = password_set_USB;//Пароль установлен
+         if(cmdSwitch==0) //ACMD
+           value = password_set_USB;//Пароль установлен
         break;
         case RS485_RECUEST:
-         value = password_set_RS485;//Пароль установлен
+         if(cmdSwitch==0) //ACMD
+           value = password_set_RS485;//Пароль установлен
         break;
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         case LAN_RECUEST:
-         value = password_set_LAN;//Пароль установлен
+         if(cmdSwitch==0) //ACMD
+           value = password_set_LAN;//Пароль установлен
         break;
 #endif
        }//switch(pointInterface)
@@ -1307,7 +1310,7 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
           //ACMD
           value = active_functions[value/32] & (1<<(value%32));
         }//if(cmdSwitch==0)
-        if(cmdSwitch==1) {
+        else if(cmdSwitch==1) {
           //GCMD
           if(pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
           {
@@ -1328,7 +1331,12 @@ void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset)
             //Теоретично цього ніколи не мало б бути
             total_error_sw_fixed();
           }
-        }//if(cmdSwitch==0)
+        }//if(cmdSwitch==1)
+        else if(cmdSwitch==2) {
+          //RDS
+             value = rds_functions[value/32] & (1<<(value%32));
+        }//if(cmdSwitch==2)
+
       }
     }//if(item>=beginOffset && item<endOffset)
 m1:

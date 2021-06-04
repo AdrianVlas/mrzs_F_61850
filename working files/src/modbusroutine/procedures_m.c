@@ -180,6 +180,7 @@ int outputFunc20PacketEncoder(int adrUnit, int *fileNumberArray, int *recordNumb
 //Resp. Data length
   idxOutputPacket++;
 
+  ulWorkNumber_rds = 0xffffffff;
   for(int item=0; item<cntitem; item++)  //блоки fileNumber, recordNumber, recordLen
     {
      int tmp1 = openRegistrator(fileNumberArray[item]);//открыть данные регистратора AR DR
@@ -191,6 +192,8 @@ int outputFunc20PacketEncoder(int adrUnit, int *fileNumberArray, int *recordNumb
 //Ref. Type
       outputPacket[idxOutputPacket] = 6;
       idxOutputPacket++;
+
+      recordNumber_old = -1;
 
       for(; idxDataRegister<recordLenArray[item]; idxDataRegister++)
         {

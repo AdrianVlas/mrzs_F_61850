@@ -5622,6 +5622,9 @@
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>
                     </file>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RDSBigComponent.c</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\REGBigComponent.c</name>
                     </file>
                     <file>
@@ -5677,6 +5680,9 @@
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_rdsguest.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\start_settings_m.c</name>

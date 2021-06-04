@@ -10,6 +10,9 @@ int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int reg
 int superReader20(int offsetRegister, int fileNumber, int recordNumber, int recordLen);
 int openRegistrator(int number_file);
 
+int openRegistratorRDS(void);//Регистратор дискретных сигналов
+int dataRegistratorRDS(int offsetRegister, int recordNumber, int recordLen);//Регистратор дискретных сигналов
+
 #define DISKRET_TOTAL NUMBER_TOTAL_SIGNAL_FOR_RANG
 #define DISKRET_REGISTRATOR 0
 #define ANALOG_REGISTRATOR  1
@@ -32,6 +35,7 @@ static const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR
 /***********************************************************************************/
 int openRegistrator(int number_file)
 {
+  if(number_file==100) return openRegistratorRDS();//Регистратор дискретных сигналов
 //ОБЩЕЕ AR DR
   if (
     (
@@ -169,6 +173,9 @@ int superReader20(int offsetRegister, int fileNumber, int recordNumber, int reco
 
     case 4://Конфигурация аналогового регистратора
       return configAnalogRegistrator(offsetRegister, recordNumber, recordLen);
+
+    case 100://Данные Регистратор дискретных сигналов
+      return dataRegistratorRDS(offsetRegister, recordNumber, recordLen);
 
     default:
       {
@@ -1116,8 +1123,33 @@ m1:
               for (unsigned int i = 0; i < sizeof(time_t); i++) *((unsigned char *)(&time_dat_tmp) + i) = point_to_Buffer[FIRST_INDEX_DATA_TIME_DR + i];
               for (unsigned int i = 0; i < sizeof(int32_t); i++) *((unsigned char *)(&time_ms_tmp) + i) = point_to_Buffer[FIRST_INDEX_DATA_TIME_DR + sizeof(time_t) + i];
 
-              int temp_data;
+               if(subObj==3)
+               {
+                //(Дата и время первых данных)
+             //данные Diskret регистратора
+               unsigned char *point_to_buffer = NULL;
+               if (pointInterface==USB_RECUEST)//метка интерфейса 0-USB 1-RS485
+                 point_to_buffer = buffer_for_USB_read_record_dr;
+               else if (pointInterface==RS485_RECUEST) point_to_buffer = buffer_for_RS485_read_record_dr;
+             #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+               else if (pointInterface == LAN_RECUEST) point_to_buffer = buffer_for_LAN_read_record_dr;
+             #endif
+               else
+               {
+                 //Теоретично цього ніколи не мало б бути
+                 total_error_sw_fixed();
+               }
+               unsigned char time_before_dr = (*(point_to_buffer + FIRST_INDEX_NUMBER_BEFORE_ITEMS_DR));// тривалість доаваріного масиву
+
+                 time_ms_tmp -= (int32_t)time_before_dr;
+                 if(time_ms_tmp < 0)
+                 {
+                   time_ms_tmp += 1000;
+                   --time_dat_tmp;
+                 }//if
+                }//if(subObj==3)
               struct tm *p = localtime(&time_dat_tmp);
+              int temp_data;
               switch(offsetRegister)
                 {
                 case 0:
@@ -1202,16 +1234,22 @@ int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
   if(recordNumber>(*(point_to_buffer + FIRST_INDEX_NUMBER_ITEMS_DR))) return MARKER_ERRORPERIMETR;//уйти если превышение
 
+  unsigned char time_before_dr = (*(point_to_buffer + FIRST_INDEX_NUMBER_BEFORE_ITEMS_DR));// тривалість доаваріного масиву
+
   unsigned int offset = FIRST_INDEX_FIRST_DATA_DR + (recordNumber + 1)*SD_DR; //бо найперший запис містить попереднє значення (до фіксації запуску роботи дискретного реєстратора)
+
+  unsigned int time_marker_dr = (*(point_to_buffer + offset + 0)) + ((*(point_to_buffer + offset + 1)) << 8 ) +
+                                ((*(point_to_buffer + offset + 2)) << 16);
+  time_marker_dr += (unsigned int) time_before_dr;
 
   switch(offsetRegister)
     {
     case 0://порядковый номер выборки
       return recordNumber + 1;
     case 1://метка времени (ms)
-      return (*(point_to_buffer + offset + 0)) + ((*(point_to_buffer + offset + 1)) << 8 );
+      return time_marker_dr&0xFFFF;//(*(point_to_buffer + offset + 0)) + ((*(point_to_buffer + offset + 1)) << 8 );
     case 2://метка времени (ms)
-      return *(point_to_buffer + offset + 2);
+      return (time_marker_dr>>16)&0xFFFF;//*(point_to_buffer + offset + 2);
     }//switch
 
   return (*(point_to_buffer + offset + 3 + (offsetRegister - 3)*2)) + ((*(point_to_buffer + offset + 4 + (offsetRegister - 3)*2)) << 8);
