@@ -15,7 +15,8 @@ int dataRegistratorRDS(int offsetRegister, int recordNumber, int recordLen)
 {
 //данные Регистратор дискретных сигналов
       if(recordLen>47) return MARKER_ERRORPERIMETR;
-      if(recordNumber >= GetAmountFixElem()) return MARKER_ERRORPERIMETR;
+      short cntRecord = GetAmountFixElem();
+      if(recordNumber >= cntRecord) return MARKER_ERRORPERIMETR;
 
 //  time_t time_dat_tmp = 0;
 //  int32_t time_ms_tmp = 0;
@@ -25,12 +26,12 @@ int dataRegistratorRDS(int offsetRegister, int recordNumber, int recordLen)
     if(err) return MARKER_ERRORPERIMETR;
     uint32_t* tmp;
     tmp = &((uint32_t*)&time_dat_rds)[2];
-    ulWorkNumber_rds = (unsigned long)tmp;
+    ulWorkNumber_rds = (unsigned long)(*tmp);
   
     err = GetMsLogElemPlWnum      ((unsigned int *)&time_ms_rds , recordNumber, ulWorkNumber_rds);//0xffffffff);
     if(err) return MARKER_ERRORPERIMETR;
     tmp = &((uint32_t*)&time_ms_rds)[1];
-    ulWorkNumber_rds = (unsigned long)tmp;
+    ulWorkNumber_rds = (unsigned long)(*tmp);
   }//if
       
   switch(offsetRegister)
