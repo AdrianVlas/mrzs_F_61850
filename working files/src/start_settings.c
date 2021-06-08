@@ -35,6 +35,24 @@ inline void test_external_SRAM(void)
       _SET_BIT(set_diagnostyka, ERROR_EXTERNAL_SRAM_BIT);
     }
   }
+
+#ifdef RSTATYSYKA  
+  if (error == 0)
+  {
+    point = (unsigned short int *)(&__ICFEDIT_region_RAM1_start__);
+    size_t size = (size_t)(&__ICFEDIT_region_RAM1_size__) + 1;
+    uint16_t *pointTmp = point + (size >> 2); /*раз ділимо, щоб обтимати середину пам'яті, а другий раз ділю, бо  вказівник вказує на двобайтне число*/
+    *point = 0x0;
+    *pointTmp = 0xaa55;
+    if (*point != 0x0) 
+    {
+      error = 0xff;
+      //Виставляємо повідомлення про помилку тесту зовнішьої оперативної пам'яті
+      _SET_BIT(set_diagnostyka, ERROR_EXTERNAL_SRAM_BIT);
+    }
+    else *pointTmp = 0;
+  }
+#endif
 }
 /**************************************/
 
