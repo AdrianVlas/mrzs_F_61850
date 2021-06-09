@@ -1399,6 +1399,8 @@ enum __mtz_abc_direction_const {
    | (1 << (RANG_MTZ04_1 - 96))                               \
    | (1 << (RANG_PO_MTZ04_2 - 96))                            \
    | (1 << (RANG_MTZ04_2 - 96))                               \
+   | (1 << (RANG_PO_ZDZ - 96))                                \
+   | (1 << (RANG_ZDZ - 96))                                   \
    | (1 << (RANG_PO_NZZ - 96))                                \
    | (1 << (RANG_NZZ - 96))                                   \
    | (1 << (RANG_PO_3I0 - 96))                                \

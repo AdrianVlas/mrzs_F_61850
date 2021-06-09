@@ -1203,6 +1203,8 @@ enum __mtz_abc_direction_const {
    | (1 << (RANG_MTZ04_1 - 64))                               \
    | (1 << (RANG_PO_MTZ04_2 - 64))                            \
    | (1 << (RANG_MTZ04_2 - 64))                               \
+   | (1 << (RANG_PO_ZDZ - 64))                                \
+   | (1 << (RANG_ZDZ - 64))                                   \
    | (1 << (RANG_PO_NZZ - 64))                                \
    | (1 << (RANG_NZZ - 64))                                   \
    | (1 << (RANG_PO_3I0 - 64))                                \
