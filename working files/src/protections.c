@@ -4851,71 +4851,7 @@ inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsi
     if (flag)
     {
       //Зафіксовано, що ні одне джерело активації реєстратора зараз не активне
-#ifdef _OLD_CODE_DR_ACTIVE      
-      flag = 1;
-      static unsigned int const maska_const[N_BIG] = 
-      {
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_0,
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_1,
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_2,
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_3,
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_4,
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_5,
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_6,
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_7
-
-#ifdef MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_8
-                                               ,
-        MASKA_FOR_CONTINUE_GET_DR_ACTINE_WORD_8
-#endif
-      };
-      for(size_t m = 0; m < N_BIG; ++m) 
-      {
-        if((carrent_active_functions[m] & maska_const[m]) != 0) 
-        {
-          flag = 0;
-          break;
-        }
-      }
-      if (flag)
-      {
-        //Зафіксовано, що всі функції, які можуть утримувати реєстратор активним зараз скинуті
-          
-        //Перевіряємо, чи всі таймери, які працють у логіці схеми виключені
-        unsigned int global_timers_work = false;
-        for (int *p = (global_timers + INDEX_TIMER_VIDKL_VV); ((global_timers_work == 0) && (p != (global_timers + _MAX_NUMBER_GLOBAL_TIMERS))); ++p)
-        {
-          if (*p >= 0) 
-          {
-            size_t shift = p - global_timers;
-            if (
-                (
-                 (shift != INDEX_TIMER_PRYVOD_VV) ||
-                 (  
-                  ((current_settings_prt.control_switch & CTR_PRYVOD_VV) != 0) &&
-                  (*p < current_settings_prt.timeout_pryvoda_VV) 
-                 )   
-                ) 
-                &&
-                (shift != INDEX_TIMER_ACHR_CHAPV_100MS_1)
-                &&
-                (shift != INDEX_TIMER_POSTFAULT)
-                &&
-                (shift != INDEX_TIMER_FULL_AR_RECORD)
-               )
-            global_timers_work = true;
-          }
-        }
-          
-        if (global_timers_work == 0)
-        {
-          //Зафіксовано, що всі таймери, які працюють у лозіці неактивні
-        
-          //Помічаємо, що реєстратор може бути зупиненим
-          stop = 0xff;
-        }
-      }
-#endif
+      
         //if (global_timers[INDEX_TIMER_DR_WORK] == 0)
         _TIMER_0_T(INDEX_TIMER_DR_WORK,current_settings_prt.timeout_prolongation_work_digital_registrator,0,0,tm_o,1);	
         if ( tm_o == 0)
@@ -8734,8 +8670,8 @@ do{
     }
     if (not_null)
     {
-      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
-//       #warning "No Avar Error"
+//      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+       #warning "No Avar Error"
     }
     else
     {
