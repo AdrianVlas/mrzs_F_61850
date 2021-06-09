@@ -4835,19 +4835,22 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
 /*****************************************************/
 inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsigned int* ranguvannja_registrator)
 {
-  unsigned int stop = 0;
-  long tm_o = 0;
+//  unsigned int stop = 0;
+//  long tm_o = 0;
 
-  {
-    int flag = 1;
+//  {
+    if (global_timers[INDEX_TIMER_DR_WORK] < 0) global_timers[INDEX_TIMER_DR_WORK] = DELTA_TIME_FOR_TIMERS; /*вже, к мінімум з моменту запуску ДР процшло стільки мілісекунд*/
+    
+    int flag = 0;
     for(size_t m = 0; m < N_BIG; ++m) 
     {
       if((carrent_active_functions[m] & ranguvannja_registrator[m]) != 0) 
       {
-        flag = 0;
+        flag = (1u << 0);
         break;
       }
     }
+    /*
     if (flag)
     {
       //Зафіксовано, що ні одне джерело активації реєстратора зараз не активне
@@ -4868,9 +4871,11 @@ inline unsigned int stop_regisrator(unsigned int* carrent_active_functions, unsi
 		tm_o = 1;
 		_TIMER_0_T(INDEX_TIMER_DR_WORK,current_settings_prt.timeout_prolongation_work_digital_registrator,1,0,tm_o,1);
 	}
-  }
+    */
+    _TIMER_0_T(INDEX_TIMER_DR_WORK, current_settings_prt.timeout_prolongation_work_digital_registrator + DELTA_TIME_FOR_TIMERS, flag, 0, flag, 1);
+//  }
   
-  return stop;
+  return (flag == 0);
 }
 /*****************************************************/
 
@@ -8670,8 +8675,8 @@ do{
     }
     if (not_null)
     {
-//      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
-       #warning "No Avar Error"
+      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+//       #warning "No Avar Error"
     }
     else
     {
