@@ -1611,7 +1611,7 @@ void make_ekran_changing_signals_digital_registrator(void)
       if (index_of_ekran < max_number_changers_in_record)
       {
         //Шукаємо масиви зрізів: попередній до вибраної зміни і у момент даної зміни
-        int index_of_the_slice = 0; //починаємо з першого зрізу
+        unsigned int index_of_the_slice = 0; //починаємо з першого зрізу
         unsigned int current_number_changes = 0;
         while (
                ((current_number_changes + buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + SD_DR*(1 + index_of_the_slice) + (SD_DR - 2)] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + SD_DR*(1 + index_of_the_slice) + (SD_DR - 1)] << 8)) < (index_of_ekran + 1)) &&
@@ -2341,7 +2341,7 @@ void make_ekran_changing_signals_statistica_registrator(void)
       if (index_of_ekran < max_number_changers_in_record)
       {
         //Шукаємо масиви зрізів: попередній до вибраної зміни і у момент даної зміни
-        int index_of_the_slice = 0; //починаємо з першого зрізу
+        unsigned int index_of_the_slice = 0; //починаємо з першого зрізу
         unsigned int current_number_changes = 0;
         //..while (
         //..       ((current_number_changes + buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + (38 - 2)] + (buffer_for_manu_read_record[FIRST_INDEX_FIRST_DATA_DR + 38*(1 + index_of_the_slice) + (38 - 1)] << 8)) < (index_of_ekran + 1)) &&

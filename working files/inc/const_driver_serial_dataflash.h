@@ -35,6 +35,10 @@
 #define NUMBER_BYTES_SAMPLE_DR                ( ( NUMBER_TOTAL_SIGNAL_FOR_RANG / 8 ) + ( ( NUMBER_TOTAL_SIGNAL_FOR_RANG % 8 ) != 0))
 #define SD_DR                                 (3 + NUMBER_BYTES_SAMPLE_DR + 2)  
 
+#define MAX_TIME_OFFSET_FROM_START                      0x7FFFFF // 2 год. 19 хв. 48 сек. 607 мілісек
+#define MAX_NUMBER_FIX_MAX_MEASUREMENTS                 10
+#define SIZE_ARRAY_FIX_MAX_MEASUREMENTS                 (NUMBER_ANALOG_CANALES + 20)
+
 #define FIRST_INDEX_START_START_RECORD_DR     0
 #define FIRST_INDEX_DATA_TIME_DR              1
 #define FIRST_INDEX_EXTRA_SETTINGS_DR         13
@@ -53,9 +57,21 @@
 #define FIRST_INDEX_NUMBER_MIN_F_ACHR_DR      (60 + NUMBER_BYTES_SAMPLE_DR)
 #define FIRST_INDEX_NUMBER_F_CHAPV_DR         (61 + NUMBER_BYTES_SAMPLE_DR)
 #define FIRST_INDEX_FIRST_BLOCK_DR            (62 + NUMBER_BYTES_SAMPLE_DR)
-#define FIRST_INDEX_FIRST_DATA_DR             (1182 + NUMBER_BYTES_SAMPLE_DR)
+#define FIRST_INDEX_FIRST_DATA_DR             (FIRST_INDEX_FIRST_BLOCK_DR + MAX_NUMBER_FIX_MAX_MEASUREMENTS*SIZE_ARRAY_FIX_MAX_MEASUREMENTS*sizeof(unsigned int))
+
+#define MAX_EVENTS_IN_ONE_RECORD               ((SIZE_BUFFER_FOR_DR_RECORD - FIRST_INDEX_FIRST_DATA_DR)/SD_DR)
 
 #define SIZE_DR_SHORT                         FIRST_INDEX_EXTRA_SETTINGS_DR  
+
+#define WIGHT_OF_DR_WAITING                       2
+
+#define STATE_DR_NO_RECORD                        0 //На даний момент ніких дій з дискретним реєстратором не виконується
+#define STATE_DR_FORCE_START_NEW_RECORD           1 //Оформлені події оформити як запис, але ще не досягнуто умови завершення роботи дискретного реєстратора тому при наступному проході розпочати новий запис
+#define STATE_DR_EXECUTING_RECORD                 2 //Іде процес запису реєстратора
+#define STATE_DR_MAKE_RECORD                      3 //Оформити запис для  запису у Dataflash
+#define STATE_DR_CUT_RECORD                       4 //Оформлені події оформити як запис, але ще не досягнуто умови завершення роботи дискретного реєстратора тому при наступному проході розпочати новий запис
+
+#define LABEL_START_RECORD_DR           0xA5
 
 #define VAGA_SIZE_ONE_RECORD_PR_ERR           6
 #define SIZE_ONE_RECORD_PR_ERR                (1<<VAGA_SIZE_ONE_RECORD_PR_ERR)
@@ -134,22 +150,6 @@ enum _dataflash_bit
 #define TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS       MASKA_FOR_BIT(TASK_MAMORY_PART_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS_BIT)
 #define TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS            MASKA_FOR_BIT(TASK_MAMORY_PAGE_PROGRAM_THROUGH_BUFFER_DATAFLASH_FOR_FS_BIT)
 #define TASK_MAMORY_READ_DATAFLASH_FOR_FS                                   MASKA_FOR_BIT(TASK_MAMORY_READ_DATAFLASH_FOR_FS_BIT)
-
-
-#define WIGHT_OF_DR_WAITING                       2
-
-#define STATE_DR_NO_RECORD                        0 //На даний момент ніких дій з дискретним реєстратором не виконується
-#define STATE_DR_FORCE_START_NEW_RECORD           1 //Оформлені події оформити як запис, але ще не досягнуто умови завершення роботи дискретного реєстратора тому при наступному проході розпочати новий запис
-#define STATE_DR_EXECUTING_RECORD                 2 //Іде процес запису реєстратора
-#define STATE_DR_MAKE_RECORD                      3 //Оформити запис для  запису у Dataflash
-#define STATE_DR_CUT_RECORD                       4 //Оформлені події оформити як запис, але ще не досягнуто умови завершення роботи дискретного реєстратора тому при наступному проході розпочати новий запис
-
-#define MAX_TIME_OFFSET_FROM_START                      0xFFFFFF // 4 год. 39 хв. 37 сек. 215 мілісек.
-#define MAX_EVENTS_IN_ONE_RECORD                        36
-#define MAX_NUMBER_FIX_MAX_MEASUREMENTS                 10
-#define SIZE_ARRAY_FIX_MAX_MEASUREMENTS                 (NUMBER_ANALOG_CANALES + 20)
-
-#define LABEL_START_RECORD_DR           0xA5
 
 enum _identifier_bit_arrays
 {
