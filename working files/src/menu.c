@@ -23910,7 +23910,7 @@ void main_manu_function(void)
                   }
                   else total_error_sw_fixed();
                 }
-                else total_error_sw_fixed();                
+                else total_error_sw_fixed();
                 
               }
               else if (current_ekran.current_level == EKRAN_LN_FOR_IEC61850_RANG)

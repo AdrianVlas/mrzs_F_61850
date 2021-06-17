@@ -547,7 +547,8 @@ void CANAL2_MO_routine()
         } 
         else if (_GET_STATE(queue_mo, STATE_QUEUE_MO_ASK_MAKING_MEMORY_BLOCK))
         {
-                 Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
+
+          Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
           sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
           sum += Canal2_MO_Transmit[index_w++] = my_address_mo;
   

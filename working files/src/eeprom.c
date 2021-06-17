@@ -1154,7 +1154,6 @@ void main_routines_for_spi1(void)
       if ((RxBuffer_SPI_EDF[1 + 0] & (1 << 0)) == 0)
       {
         //Процес запису у EEPROM не відбувається
-        //Процес запису у EEPROM не відбувається
         if (_CHECK_SET_BIT(control_spi1_taskes, TASK_START_READ_ENERGY_EEPROM_BIT) !=0)
         {
           //Скидаємо біт запуску читання юстування і виставляємо біт процесу читання юстування
