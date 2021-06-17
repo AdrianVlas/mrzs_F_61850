@@ -3,10 +3,6 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 2))
-#define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
-#define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
-
 enum _error_id 
 {
 ERROR_START_VIA_I2C_BIT = 0,
@@ -112,8 +108,13 @@ ERROR_BDSH_CTLR,
 ERROR_BDVV9_FIX,
 ERROR_BDVV9_CTLR,
 
-ERROR_FATFS
+ERROR_FATFS,
+
+MAX_ROW_FOR_DIAGNOSTYKA
 };
+
+#define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
+#define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
 #define MASKA_AVAR_ERROR_0        (unsigned int)(               \
     (1 << (ERROR_SETTINGS_EEPROM_BIT))                          \
@@ -287,12 +288,7 @@ ERROR_FATFS
   " ÁÄØ ï.         ",   \
   " ÁÄÂÂ9 îò.      ",   \
   " ÁÄÂÂ9 ï.       ",   \
-  " Îø.Ô.Ñ.        ",   \
-  " Îøèáêà 108     ",   \
-  " Îøèáêà 109     ",   \
-  " Îøèáêà 110     ",   \
-  " Îøèáêà 111     ",   \
-  " Îøèáêà 112     "
+  " Îø.Ô.Ñ.        "
 
 # define NAME_DIAGN_UA  \
   " Ïîì.I2C        ",   \
@@ -401,12 +397,7 @@ ERROR_FATFS
   " ÁÄØ ï.         ",   \
   " ÁÄÂÂ9 â³ä.     ",   \
   " ÁÄÂÂ9 ï.       ",   \
-  " Ïîì.Ô.Ñ.       ",   \
-  " Ïîìèëêà 108    ",   \
-  " Ïîìèëêà 109    ",   \
-  " Ïîìèëêà 110    ",   \
-  " Ïîìèëêà 111    ",   \
-  " Ïîìèëêà 112    "
+  " Ïîì.Ô.Ñ.       "
 
 # define NAME_DIAGN_EN  \
   " I2C Er         ",   \
@@ -515,12 +506,7 @@ ERROR_FATFS
   " ÁÄØ ï.         ",   \
   " BIOU09 abs     ",   \
   " BIOU09 ver     ",   \
-  " Error of FS    ",   \
-  " Error 108      ",   \
-  " Error 109      ",   \
-  " Error 110      ",   \
-  " Error 111      ",   \
-  " Error 112      "
+  " Error of FS    "
 
 # define NAME_DIAGN_KZ  \
   " Îø.I2C         ",   \
@@ -629,11 +615,6 @@ ERROR_FATFS
   " ÁÄØ ï.         ",   \
   " ÁÄÂÂ9 îò.      ",   \
   " ÁÄÂÂ9 ï.       ",   \
-  " Îø.Ô.Ñ.        ",   \
-  " Îøèáêà 108     ",   \
-  " Îøèáêà 109     ",   \
-  " Îøèáêà 110     ",   \
-  " Îøèáêà 111     ",   \
-  " Îøèáêà 112     "
+  " Îø.Ô.Ñ.        "
     
 #endif

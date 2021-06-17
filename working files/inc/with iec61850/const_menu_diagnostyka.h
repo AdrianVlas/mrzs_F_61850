@@ -3,10 +3,6 @@
 
 #define EKRAN_DIAGNOSTYKA                    (EKRAN_POINT_TIME_RANGUVANNJA + 1)
 
-#define MAX_ROW_FOR_DIAGNOSTYKA              (8*(4 + 4 + 4 + 4))
-#define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
-#define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
-
 enum _error_id 
 {
 ERROR_START_VIA_I2C_BIT = 0,
@@ -131,8 +127,13 @@ ERROR_BDVV9_CTLR,
 ERROR_CB_FIX,
 
 ERROR_FATFS,
-EVENT_RESTART_CB_BIT
+EVENT_RESTART_CB_BIT,
+
+MAX_ROW_FOR_DIAGNOSTYKA
 };
+
+#define N_DIAGN                              ((MAX_ROW_FOR_DIAGNOSTYKA >> 5) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x1f) != 0))
+#define N_DIAGN_BYTES                        ((MAX_ROW_FOR_DIAGNOSTYKA >> 3) + ((MAX_ROW_FOR_DIAGNOSTYKA & 0x07) != 0))
 
 #define WORD_0_MASKA_ERRORS_FROM_CANAL_1 0
 #define WORD_1_MASKA_ERRORS_FROM_CANAL_1 0
@@ -358,11 +359,7 @@ EVENT_RESTART_CB_BIT
   " БДВВ9 п.       ",   \
   " КП от.         ",   \
   " Ош.Ф.С.        ",   \
-  " Рестарт КП     ",   \
-  " Ошибка 125     ",   \
-  " Ошибка 126     ",   \
-  " Ошибка 127     ",   \
-  " Ошибка 128     "
+  " Рестарт КП     "
 
 # define NAME_DIAGN_UA  \
   " Пом.I2C        ",   \
@@ -488,11 +485,7 @@ EVENT_RESTART_CB_BIT
   " БДВВ9 п.       ",   \
   " КП від.        ",   \
   " Пом.Ф.С.       ",   \
-  " Рестарт КП     ",   \
-  " Помилка 125    ",   \
-  " Помилка 126    ",   \
-  " Помилка 127    ",   \
-  " Помилка 128    "
+  " Рестарт КП     "
 
 # define NAME_DIAGN_EN  \
   " I2C Er         ",   \
@@ -618,11 +611,7 @@ EVENT_RESTART_CB_BIT
   " BIOU09 ver     ",   \
   " CU abs.        ",   \
   " Error of FS    ",   \
-  " CB Restart     ",   \
-  " Error 125      ",   \
-  " Error 126      ",   \
-  " Error 127      ",   \
-  " Error 128      "
+  " CB Restart     "
 
 # define NAME_DIAGN_KZ  \
   " Ош.I2C         ",   \
@@ -748,10 +737,6 @@ EVENT_RESTART_CB_BIT
   " БДВВ9 п.       ",   \
   " КП от.         ",   \
   " Ош.Ф.С.        ",   \
-  " Рестарт КП     ",   \
-  " Ошибка 125     ",   \
-  " Ошибка 126     ",   \
-  " Ошибка 127     ",   \
-  " Ошибка 128     "
+  " Рестарт КП     "
     
 #endif

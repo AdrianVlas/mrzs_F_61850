@@ -154,7 +154,11 @@ void make_ekran_speed_interface(void);
 void make_ekran_pare_interface(void);
 void make_ekran_stopbits_interface(void);
 void make_ekran_timeout_interface(void);
+
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 void make_ekran_settings_network_layer_Ethernet(void);
+#endif
+
 void make_ekran_chose_data_time_settings(void);
 void make_ekran_timezone_dst(void);
 void make_ekran_dst_rule(uint32_t);
