@@ -128,7 +128,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     }
   };
   
-  const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
+  static const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
   {
     MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA,
     MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA,
@@ -229,7 +229,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
                 if (
                     (type_of_window != ID_INPUT) &&
                     (type_of_window != ID_OUTPUT)
-                  )  
+                   )  
                 {
                   working_ekran[i][j] = tmp_1 + 0x30;
                 }
@@ -1398,7 +1398,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
             //Формуємо маску біт, які не треба переміщати при переміщенні імен полів
             unsigned int maska[N_BIG];
-            for (size_t m = 0; m < N_BIG; ++m) maska[i] = 0;
+            for (size_t m = 0; m < N_BIG; ++m) maska[m] = 0;
             unsigned int j1;
             for (j1 = 0; j1 < (min_max_number[i][0] - offset); j1++) _SET_BIT(maska, j1);
           
@@ -1434,7 +1434,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
                   state_viewing_input[k] = new_temp_data_1[k] | new_temp_data_2[k];
                 }
                 /***/
-                for (unsigned int j = (index_in_list - offset); j < NUMBER_TOTAL_SIGNAL_FOR_RANG; j++)
+                for (unsigned int j = (index_in_list - offset); j < (NUMBER_TOTAL_SIGNAL_FOR_RANG  - offset); j++)
                 {
                   if ((j + 1) < (NUMBER_TOTAL_SIGNAL_FOR_RANG - offset))
                   {

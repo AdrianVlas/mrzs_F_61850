@@ -6719,7 +6719,8 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
       }
 
       //Збільшуємо час з початку запуску запису
-      time_from_start_record_dr++;
+      time_from_start_record_dr += DELTA_TIME_FOR_TIMERS;
+
       //Включно до цього часу іде процес запису
 
       //Контроль-фіксація максимальних аналогових сигналів
@@ -6986,9 +6987,9 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
         
         //Перевіряємо, чи стоїть умова завершення запису
         if (
-            (state_dr_record == STATE_DR_MAKE_RECORD)                  ||
-            (time_from_start_record_dr >= MAX_TIME_OFFSET_FROM_START)  ||  
-            ((number_items_dr + 1)     >= MAX_EVENTS_IN_ONE_RECORD  )  ||
+            (state_dr_record == STATE_DR_MAKE_RECORD) ||
+            (time_from_start_record_dr >= (MAX_TIME_OFFSET_FROM_START - DELTA_TIME_FOR_TIMERS + 1))  ||
+            ((number_items_dr + 1)     >= MAX_EVENTS_IN_ONE_RECORD  ) || 
             (statePowerDown == STATE_POWER_DOWN_ETAP_CUT)  
            )
         {
@@ -8169,8 +8170,12 @@ do{
   {
     unsigned int temp_value_for_activated_function_button_interface[N_SMALL];
     unsigned int temp_value_for_activated_function[N_SMALL];
-    for(int m=0; m<N_SMALL; m++) temp_value_for_activated_function_button_interface[m]=0;
-    for(int m=0; m<N_SMALL; m++) temp_value_for_activated_function[m]=0;
+    for(int m=0; m<N_SMALL; m++) 
+    {
+      temp_value_for_activated_function_button_interface[m]=0;
+      temp_value_for_activated_function[m]=0;
+	}
+
 
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
     /***
@@ -10573,6 +10578,9 @@ void setpoints_selecting(unsigned int *p_active_functions, unsigned int act_inp_
 }
 /*****************************************************/
 
+/*****************************************************/
+
+/*****************************************************/
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
 void proc_Gs_blk_out(void* pv,unsigned long lCtrGsSrc,short* p_arrOrdNumsGsSignal ){
 
