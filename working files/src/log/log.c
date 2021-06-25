@@ -44,12 +44,13 @@ void ChekCurrentStateCmd(unsigned int *p_active_functions){
 //SRAM1 CmdPlusTimeHolder holderCmdPlusTime;
 SRAM1  CmdPlusTimeHolder holderCmdPlusTime;
 
+static int clean_started = 0;
 // @In the steps below I am using a timestamp of 1203161493 
 // @which corresponds to a date/time of 2-15-2008 11:31:33. 
 // @I'm ignoring timezones and whatnot, it isn't necessary for this.
 
 /*SRAM1 */ CmdPlusTimeStampHolder holderCmdPlusTimeStamp;
-
+static short cmdPlusTimeHolderBusy = 0;//indicate holderCmdPlusTimeStamp now in use
 
 
 short GetAmountFixElem(void){
@@ -57,24 +58,25 @@ short GetAmountFixElem(void){
 }
 void CmdPlusTimeLogHundler(unsigned int *p_active_functions){
     register long i;
-    UNUSED(p_active_functions);
-    
+    //UNUSED(p_active_functions);
+
     if(holderCmdPlusTimeStamp.uLLDrecTimeStampVal >= (FIFTY_YEAR_NUMBER))
         holderCmdPlusTimeStamp.uLLDrecTimeStampVal = 0;
     else
         holderCmdPlusTimeStamp.uLLDrecTimeStampVal++;
-    
+    if(clean_started != 0)
+        return;
     if(time_dat < 1203161493 )//&& time_ms == 0 
         return;
         
     i = holderCmdPlusTime.shIndexWR;
     if (i == 0)
-        i = AMOUNT_CMD_PLUS_TIME_RECORD;
+        i = AMOUNT_CMD_PLUS_TIME_RECORD - 1;
     else 
         i--;
     unsigned long *pCmd = (unsigned long *)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
     bool b_comp = false;       
-    for (size_t _i = 0; ( (b_comp == false) && (_i < sizeof(N_BIG)) ); ++_i) 
+    for (size_t _i = 0; ( (b_comp == false) && (_i < (N_BIG)) ); ++_i) 
     {                                                          
         b_comp |= (p_active_functions[_i] != pCmd[_i]);               
     }
@@ -89,6 +91,9 @@ void CmdPlusTimeLogHundler(unsigned int *p_active_functions){
         //?((p_active_functions[7] != pCmd[7])  )||
         //?((p_active_functions[8] != pCmd[8])  )
     ){
+        //asm volatile(
+        //    "bkpt 1"
+        //    );
         i = holderCmdPlusTime.shIndexWR;
         pCmd = (unsigned long *)&(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
         //?pCmd[0] = p_active_functions[0] ;
@@ -107,26 +112,31 @@ void CmdPlusTimeLogHundler(unsigned int *p_active_functions){
         holderCmdPlusTime.arrCmdPlusTimeHolder[i].mksec.time_ms      = time_ms;
         //i = CmdPlusTimeHolder.shIndexWR;
         i++;
-        if( i >= AMOUNT_CMD_PLUS_TIME_RECORD)
+        if( i >= AMOUNT_CMD_PLUS_TIME_RECORD){
             holderCmdPlusTime.shIndexWR = 0;
+            //asm volatile(
+            //"bkpt 1"
+            //);
+        }
         else
             holderCmdPlusTime.shIndexWR = i;
         if (holderCmdPlusTime.shTotalFixElem < AMOUNT_CMD_PLUS_TIME_RECORD)
             holderCmdPlusTime.shTotalFixElem++;
-		if (holderCmdPlusTime.u32IDModifyIndexWR < 0xffffffff)
+        if (holderCmdPlusTime.u32IDModifyIndexWR < 0xffffffff)
             holderCmdPlusTime.u32IDModifyIndexWR++;
-		else
-			holderCmdPlusTime.u32IDModifyIndexWR = 0;
-		
-    }
+        else
+            holderCmdPlusTime.u32IDModifyIndexWR = 0;
+    }    
+    
 }
 
 void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx){
     register long i;
     //?UNUSED(p_active_functions);
-    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+    if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         lIdx = 0;
-    
+    if(clean_started != 0)
+        return;
     unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
     i = holderCmdPlusTime.shIndexWR-1;
@@ -144,10 +154,10 @@ void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx){
         u8_iter++;
         if(u8_iter >= 3)
             return ;//3 Leak of resorses
-		if(data_not_Ok){
-			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
-			 i = holderCmdPlusTime.shIndexWR-1;
-		}
+        if(data_not_Ok){
+            id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+             i = holderCmdPlusTime.shIndexWR-1;
+        }
             
     }while (data_not_Ok && (u8_iter<3));
 
@@ -170,8 +180,10 @@ void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx){
 void GetDateTimeLogElem(unsigned int *p_elem, long lIdx){
     register long i;
     //?UNUSED(p_active_functions);
-    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+    if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         lIdx = 0;
+    if(clean_started != 0)
+    return;
     unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
     i = holderCmdPlusTime.shIndexWR-1;
@@ -190,10 +202,10 @@ void GetDateTimeLogElem(unsigned int *p_elem, long lIdx){
         u8_iter++;
         if(u8_iter >= 3)
             return ;//3Leak of resorses
-		if(data_not_Ok){
-			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
-			 i = holderCmdPlusTime.shIndexWR-1;
-		}
+        if(data_not_Ok){
+            id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+             i = holderCmdPlusTime.shIndexWR-1;
+        }
   
     }while (data_not_Ok && (u8_iter<3));
 }
@@ -203,8 +215,10 @@ void GetDateTimeLogElem(unsigned int *p_elem, long lIdx){
 void GetMsLogElem(unsigned int *p_elem, long lIdx){
     register long i;
     //?UNUSED(p_active_functions);
-    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+    if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         lIdx = 0;
+    if(clean_started != 0)
+        return;
     unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
     i = holderCmdPlusTime.shIndexWR-1;
@@ -224,10 +238,10 @@ void GetMsLogElem(unsigned int *p_elem, long lIdx){
         u8_iter++;
         if(u8_iter >= 3)
             return ;//3Leak of resorses
-		if(data_not_Ok){
-			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
-			 i = holderCmdPlusTime.shIndexWR-1;
-		}
+        if(data_not_Ok){
+            id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+             i = holderCmdPlusTime.shIndexWR-1;
+        }
     }while (data_not_Ok && (u8_iter<3));
 
 }
@@ -240,8 +254,10 @@ long GetNumberChangingInLogElem( long lIdx){
     //?
     //?if (i < 0)
     //?    i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
+    if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
         lIdx = 0;
+    if(clean_started != 0)
+        return 0;//!@_is correct? May be better return error
     unsigned int array_old[N_BIG], array_new[N_BIG], array_changing[N_BIG];
     GetCmdPlusTimeLogElem(array_new ,lIdx);
     //i--;                                     Errorneus code as this
@@ -298,6 +314,32 @@ return u32Count;
 //?
 //?}
 
+
+void CleanCmdPlusTimeLog(void){
+    
+    if((clean_rejestrators& CLEAN_SR_ERR) != 0){
+
+        if(clean_started == 0)//first block new req
+            clean_started++;
+ 
+        if( (cmdPlusTimeHolderBusy == 0) 
+            && (clean_rejestrators& CLEAN_SR_ERR)){//check 1)Busy == 0 means all leave resorce 2)check  &CLEAN_SR_ERR still need clear becouse other int can call & clear resorce
+            CmdPlusTimeHolder *ph = &holderCmdPlusTime;
+			//void *memset(void *s, int c, size_t n);
+			memset((void *)&(ph->arrCmdPlusTimeHolder[AMOUNT_CMD_PLUS_TIME_RECORD-1]), (int) 0, sizeof(CmdPlusTimeStateElem) );
+			//?memset((void *)&(ph->arrCmdPlusTimeHolder[0]), (int) 0, sizeof(CmdPlusTimeStateElem) );
+            ph ->shIndexWR           = 0;
+            ph ->shTotalFixElem      = 0;
+            ph ->u32IDModifyIndexWR  = 0;
+            clean_rejestrators &= (unsigned int)(~CLEAN_SR_ERR);
+            clean_started = 0; 
+        } 
+          
+       
+    }
+
+}
+
 void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions){
 
 #ifdef __DBG_CODE_  
@@ -317,7 +359,7 @@ void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions){
     
     unsigned long *pCmd = (unsigned long *)&(holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[i].cmd.uLCmd[0]);    
     bool b_comp = false;       
-    for (size_t _i = 0; ( (b_comp == false) && (_i < sizeof(N_BIG)) ); ++_i) 
+    for (size_t _i = 0; ( (b_comp == false) && (_i < (N_BIG)) ); ++_i) 
     {                                                          
         b_comp |= (p_active_functions[_i] != pCmd[_i]);               
     }
@@ -598,12 +640,23 @@ static  int time_before_start_record_dr = 0;
      
  __root  CmdFunctionDepot* pDbgViewCmd = (CmdFunctionDepot*)&holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
 SRAM1  CmdFunctionDepot arViewCmd;// = holderCmdPlusTimeStamp.arrCmdPlusTimeStampElem[0];
+
+
+
+
 long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber){
     register long i,d;
-	
+    struct {
+        char error_code;
+    }sLV;
     //?UNUSED(p_active_functions);
+    if(clean_started != 0)
+        return SLOG_DATA_BLOCKED_CLEAN_FUNC;
+
     if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
-        return 1;//Invalid  lIdx
+        return SLOG_INVALID_IDX;//Invalid  lIdx
+    sLV.error_code = SLOG_OK;
+    cmdPlusTimeHolderBusy++;
     unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
     i = holderCmdPlusTime.shIndexWR-1;
@@ -617,44 +670,58 @@ long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long u
         if(ulWorkNumber != 0xffffffff){
             if(ulWorkNumber > id_change_index_wr){
                 d = (0xffffffff - ulWorkNumber) + id_change_index_wr;//d = ulWorkNumber - id_change_index_wr;
-                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                    return 2;//Invalid  lWorkNumber
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD){    
+                    sLV.error_code = SLOG_INVALID_L_WNUM;
+                    cmdPlusTimeHolderBusy--;return sLV.error_code;
+                }
                 i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
             }else if(ulWorkNumber <= id_change_index_wr){
                 d = id_change_index_wr - ulWorkNumber;
-                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                    return 2;//Invalid  lWorkNumber
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD){   
+                    sLV.error_code = SLOG_INVALID_L_WNUM;
+                    cmdPlusTimeHolderBusy--;return sLV.error_code;
+                }//return 2;Invalid  lWorkNumber
                 i -= d;
             }           
         }
-        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
-            return 3;//Invalid  sum lWorkNumber& lIdx
-        else if (i < 0)
+        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD)){//return 3;Invalid  sum lWorkNumber& lIdx
+               
+                    sLV.error_code = SLOG_INVALID_SUM_IDX_PL_WNUM;
+                    cmdPlusTimeHolderBusy--;return sLV.error_code;
+                
+        }else if (i < 0)
                  i += AMOUNT_CMD_PLUS_TIME_RECORD;
-	    
+        
         unsigned long *pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[i].cmd.uLCmd[0]);
         memcpy((void *)p_elem,(const void*)pU32,  sizeof(UNN_CmdState));//for avoid situation when change data while reading
-	    
+        
         data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;     
         u8_iter++;
-        if(u8_iter >= 3)
-            return 3;//Leak of resorses
-		if(data_not_Ok){
-			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
-			 i = holderCmdPlusTime.shIndexWR-1;
-		}
+        if(u8_iter >= 3){
+            sLV.error_code = SLOG_LACK_COMPUTE_RESORCES;
+            cmdPlusTimeHolderBusy--;return sLV.error_code;
+        }    //return 3;Leak of resorses
+        if(data_not_Ok){
+            id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+             i = holderCmdPlusTime.shIndexWR-1;
+        }
     }while ( (data_not_Ok == 1) && (u8_iter < 3) );
-	//if(id_change_index_wr != ulWorkNumber)
-	//	ERROR? Now data exaxtly differ compare to start reading
+    //if(id_change_index_wr != ulWorkNumber)
+    //  ERROR? Now data exaxtly differ compare to start reading
     p_elem[sizeof(UNN_CmdState)>>2] = id_change_index_wr;//holderCmdPlusTime.u32IDModifyIndexWR;
-    return 0;
+
+    cmdPlusTimeHolderBusy--;
+    return sLV.error_code;//0 - normal ret - OK value;
 }
 
 long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber){
     register long i,d;
     //?UNUSED(p_active_functions);
+    if(clean_started != 0)
+        return SLOG_DATA_BLOCKED_CLEAN_FUNC;
     if(lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
-        return 1;//Invalid  lIdx
+        return SLOG_INVALID_IDX;//Invalid  lIdx
+    cmdPlusTimeHolderBusy++;
     unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
     i = holderCmdPlusTime.shIndexWR-1;
@@ -668,18 +735,24 @@ long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWo
         if(ulWorkNumber != 0xffffffff){
             if(ulWorkNumber > id_change_index_wr){
                 d = (0xffffffff - ulWorkNumber) + id_change_index_wr;
-                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                    return 2;//Invalid  lWorkNumber
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD){
+                    cmdPlusTimeHolderBusy--;
+                    return SLOG_INVALID_L_WNUM;
+                }
                 i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
             }else if(ulWorkNumber <= id_change_index_wr){
                 d = id_change_index_wr - ulWorkNumber;
-                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                    return 2;//Invalid  lWorkNumber
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD){
+                    cmdPlusTimeHolderBusy--;
+                    return SLOG_INVALID_L_WNUM;
+                }
                 i -= d;
             }           
         }    
-        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
-            return 3;//Invalid  sum lWorkNumber& lIdx
+        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD)){
+            cmdPlusTimeHolderBusy--;
+            return SLOG_INVALID_SUM_IDX_PL_WNUM;
+        }
         else if (i < 0)
                  i += AMOUNT_CMD_PLUS_TIME_RECORD;    
     
@@ -687,18 +760,22 @@ long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWo
         memcpy((void *)p_elem,(const void*)pU32,    sizeof(UNN_UnixTime));
         data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;
         u8_iter++;
-        if(u8_iter >= 3)
-            return 3;//Leak of recorses
-		if(data_not_Ok){
-			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
-			 i = holderCmdPlusTime.shIndexWR-1;
-		}
+        if(u8_iter >= 3){
+            cmdPlusTimeHolderBusy--;
+            return SLOG_LACK_COMPUTE_RESORCES;
+        }
+        if(data_not_Ok){
+            id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+             i = holderCmdPlusTime.shIndexWR-1;
+        }
    
     }while (data_not_Ok && (u8_iter<3));
     //if(id_change_index_wr != ulWorkNumber)
-	//	ERROR? Now data exaxtly differ compare to start reading
-	p_elem[sizeof(UNN_UnixTime)>>2] = id_change_index_wr;
-    return 0;
+    //  ERROR? Now data exaxtly differ compare to start reading
+    p_elem[sizeof(UNN_UnixTime)>>2] = id_change_index_wr;
+    cmdPlusTimeHolderBusy--;
+
+    return SLOG_OK;
 }
 
 
@@ -706,8 +783,11 @@ long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWo
 long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber){
     register long i,d;
     //?UNUSED(p_active_functions);
+    if(clean_started != 0)
+        return SLOG_DATA_BLOCKED_CLEAN_FUNC;
     if(lIdx > AMOUNT_CMD_PLUS_TIME_RECORD || lIdx < 0)
-        return 1;//Invalid  lIdx
+        return SLOG_INVALID_IDX;//Invalid  lIdx
+    cmdPlusTimeHolderBusy++;
     unsigned long id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;    
     bool data_not_Ok = 0;char u8_iter = 0;
     i = holderCmdPlusTime.shIndexWR-1;
@@ -720,20 +800,28 @@ long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumb
         if(ulWorkNumber != 0xffffffff){
             if(ulWorkNumber > id_change_index_wr){
                 d = (0xffffffff - ulWorkNumber) + id_change_index_wr;//d = ulWorkNumber - id_change_index_wr;
-                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                    return 2;//Invalid  lWorkNumber
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD){
+                    cmdPlusTimeHolderBusy--;
+                    return SLOG_INVALID_L_WNUM;
+                }
+
                 i -= AMOUNT_CMD_PLUS_TIME_RECORD - d;//lWorkNumber + holderCmdPlusTime.lIDModifyIndexWR;
             }else if(ulWorkNumber <= id_change_index_wr){
                 d = id_change_index_wr - ulWorkNumber;
-                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                    return 2;//Invalid  lWorkNumber
+                if(d >= AMOUNT_CMD_PLUS_TIME_RECORD){
+                    cmdPlusTimeHolderBusy--;
+                    return SLOG_INVALID_L_WNUM;
+                }
+                    
                 i -= d;
             }           
             
         
         }    
-        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD))
-            return 3;//Invalid  sum lWorkNumber& lIdx
+        if (i <= (-AMOUNT_CMD_PLUS_TIME_RECORD)){
+            cmdPlusTimeHolderBusy--;
+            return SLOG_INVALID_SUM_IDX_PL_WNUM;
+        }            
         else if (i < 0)
                  i += AMOUNT_CMD_PLUS_TIME_RECORD;
     
@@ -743,15 +831,18 @@ long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumb
   
         data_not_Ok = id_change_index_wr != holderCmdPlusTime.u32IDModifyIndexWR;     
         u8_iter++;
-        if(u8_iter >= 3)
-            return 3;//Leak of resorses
-		if(data_not_Ok){
-			id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
-			 i = holderCmdPlusTime.shIndexWR-1;
-		}
+        if(u8_iter >= 3){
+            cmdPlusTimeHolderBusy--;
+            return SLOG_LACK_COMPUTE_RESORCES;
+        }
+        if(data_not_Ok){
+            id_change_index_wr = holderCmdPlusTime.u32IDModifyIndexWR;
+             i = holderCmdPlusTime.shIndexWR-1;
+        }
     }while (data_not_Ok && (u8_iter<3));
     p_elem[sizeof(UNN_MicroSec)>>2] = id_change_index_wr;
-    return 0;
+    cmdPlusTimeHolderBusy--;
+    return SLOG_OK;
 }
 /*
  __root  const short arrEkransId[] = {

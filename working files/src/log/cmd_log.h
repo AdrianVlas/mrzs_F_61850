@@ -52,6 +52,7 @@ typedef struct tag_CmdPlusTimeHolder{
     short shIndexWR;
 	short shTotalFixElem;
 	unsigned long u32IDModifyIndexWR;//Identificator Last Changes Statistics Reg
+//	int   cmdPlusTimeHolderBusy;
 } CmdPlusTimeHolder;    
 extern CmdPlusTimeHolder holderCmdPlusTime;
 
@@ -95,6 +96,7 @@ typedef struct tag_dig_reg_uniq_vars{
 
 extern short GetAmountFixElem(void);
 
+void CleanCmdPlusTimeLog(void);
 void ChekCurrentStateCmd(unsigned int *p_active_functions);
 void CmdPlusTimeLogHundler(unsigned int *p_active_functions);
 extern void GetCmdPlusTimeLogElem(unsigned int *p_elem, long lIdx);
@@ -438,7 +440,18 @@ typedef struct tag_cmd_bit_depot{
 } CmdFunctionDepot;
 
 extern CmdFunctionDepot* pDbgViewCmd;
+enum STATISTICAL_LOG_RETURN_VALUE_LIST{
+//SR - statistical REG or SLOG - statistical LOGGER
+  SLOG_OK = 0,                 //OK Value
+  SLOG_INVALID_IDX,            //Error Value - Invalid  lIdx PARAMETER
+  SLOG_INVALID_L_WNUM,         //Error Value - Invalid  WorkNumber PARAMETER
+  SLOG_INVALID_SUM_IDX_PL_WNUM,//Error Value - Invalid  SUM lIdx+WorkNumber PARAMETER
+  SLOG_LACK_COMPUTE_RESORCES,  //INFO  Value - NOT ENOUGH PROCESSOR TIME FOR CALCULATION -- 
+  SLOG_DATA_BLOCKED_CLEAN_FUNC,//INFO  Value now start clening statistical registrator
+                               //
+  TOTAL_SR_MESAGE_INFO          //
 
+};
 
 enum ONM_EKRAN_LIST
 {
