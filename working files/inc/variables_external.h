@@ -405,9 +405,6 @@ extern int last_number_time_sample_for_RS485;
 extern char id_ar_record_for_RS485[8 + 1 + 3 + 1];
 extern int max_number_time_sample_RS485;
 
-extern time_t menu_ar_time_dat[MAX_ROW_LCD / 2];
-extern int32_t menu_ar_tims_ms[MAX_ROW_LCD / 2];
-
 extern int32_t timePowerDown;
 extern int32_t timePowerDown_total;
 extern unsigned int truncPrefault;
