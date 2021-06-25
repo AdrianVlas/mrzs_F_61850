@@ -157,7 +157,7 @@ void periodical_operations(unsigned int full_actions)
     //Теоретично цього ніколи не мало б бути
     total_error_sw_fixed();
   }
-
+   CleanCmdPlusTimeLog();
   /*******************/
   //Контроль достовірності важливих даних
   /*******************/
