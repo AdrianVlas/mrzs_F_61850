@@ -128,7 +128,7 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
     }
   };
   
-  static const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
+  const unsigned int max_row[_MAX_ID_INPUT_OUPUT] =
   {
     MAX_ROW_LIST_INPUTS_FOR_RANGUVANNJA,
     MAX_ROW_LIST_OUTPUTS_FOR_RANGUVANNJA,
