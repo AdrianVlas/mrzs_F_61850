@@ -924,13 +924,16 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 1) ||    \
      (MODYFIKACIA_VERSII_PZ == 3) ||    \
-     (MODYFIKACIA_VERSII_PZ == 11)||    \
-     (MODYFIKACIA_VERSII_PZ == 13)      \
+     (MODYFIKACIA_VERSII_PZ == 11) ||    \
+     (MODYFIKACIA_VERSII_PZ == 13) ||    \
+     (MODYFIKACIA_VERSII_PZ == 23) ||    \
+     (MODYFIKACIA_VERSII_PZ == 33)      \
     )   
     if(inOffset>=1058 && inOffset<1074)
 #endif
 #if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 6)       \
+     (MODYFIKACIA_VERSII_PZ == 6) ||    \
+     (MODYFIKACIA_VERSII_PZ == 26)      \
     )   
     if(inOffset>=1058 && inOffset<1070)
 #endif
@@ -938,7 +941,9 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
      (MODYFIKACIA_VERSII_PZ == 4) ||    \
      (MODYFIKACIA_VERSII_PZ == 12)||    \
-     (MODYFIKACIA_VERSII_PZ == 14)      \
+     (MODYFIKACIA_VERSII_PZ == 14)||    \
+     (MODYFIKACIA_VERSII_PZ == 24)||    \
+     (MODYFIKACIA_VERSII_PZ == 34)      \
     )   
       if(inOffset>=1058 && inOffset<1066)
 #endif
