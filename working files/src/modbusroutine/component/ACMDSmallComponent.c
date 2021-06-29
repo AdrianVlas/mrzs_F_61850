@@ -1926,6 +1926,15 @@ int writeACMDSmallActualDataBit(int inOffset, int dataBit)
     }//if(action)
     return 0;
 
+  case 570://Запуск аналогового реєстратора
+    if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
+    if (_CHECK_SET_BIT(active_functions, RANG_READY_TU) == 0)return MARKER_ERRORPERIMETR;
+    if(actControl&&dataBit)
+    {
+      start_ar = 0xff; //Запуск аналогового реєстратора
+    }//if(action)
+    return 0;
+
   case 599://Скидання блокування готорності ТУ від захистів
     if(_CHECK_SET_BIT(active_functions, RANG_MISCEVE_DYSTANCIJNE) != 0) return MARKER_ERRORPERIMETR;
     if(actControl&&dataBit)
