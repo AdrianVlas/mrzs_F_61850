@@ -68,10 +68,10 @@ void make_ekran_energy(unsigned int pervynna_vtorynna)
         {
           if (
               (pervynna_vtorynna == 0) ||
-              (j != energy_k_M[index_language][index_of_ekran>>1])  
+              (j != energy_k_M[index_language][index_of_ekran_tmp])  
              )
           {
-            working_ekran[i][j] = name_string[index_language][index_of_ekran>>1][j];
+            working_ekran[i][j] = name_string[index_language][index_of_ekran_tmp][j];
           }
           else
           {
@@ -82,7 +82,7 @@ void make_ekran_energy(unsigned int pervynna_vtorynna)
       else
       {
         //У парному номері рядку виводимо значення
-        double value_double = energy[0][index_of_ekran>>1];
+        double value_double = energy[0][index_of_ekran_tmp];
         if (pervynna_vtorynna == 0) 
           value_double *= 1000.0;
         else

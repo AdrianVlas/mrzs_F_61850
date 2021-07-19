@@ -84,14 +84,14 @@ void I2C_EV_IRQHandler(void)
       if(driver_i2c.action == 0)
       {
         //Підготовлюємо буфер для передачі в мікросхему для запису (адреса)
-        if (driver_i2c.device_id == EEPROM_ADDRESS)
-        {
-          //Внутрішня адреса для EEPROM становить 2 байти
-          Temporaty_I2C_Buffer[0] = ((driver_i2c.internal_address & 0xFF00) >> 8);
-          Temporaty_I2C_Buffer[1] = (driver_i2c.internal_address & 0x00FF);
-          number_transmit_with_i2c = 2;
-        }
-        else
+//        if (driver_i2c.device_id == EEPROM_ADDRESS)
+//        {
+//          //Внутрішня адреса для EEPROM становить 2 байти
+//          Temporaty_I2C_Buffer[0] = ((driver_i2c.internal_address & 0xFF00) >> 8);
+//          Temporaty_I2C_Buffer[1] = (driver_i2c.internal_address & 0x00FF);
+//          number_transmit_with_i2c = 2;
+//        }
+//        else
         {
           //Внутрішня адреса для RTC становить 1 байт
           Temporaty_I2C_Buffer[0] = (driver_i2c.internal_address & 0x00FF);
@@ -101,18 +101,18 @@ void I2C_EV_IRQHandler(void)
       else if(driver_i2c.action == 2)
       {
         //Підготовлюємо буфер для передачі в мікросхему для запису (адреса + корисні дані)
-        if (driver_i2c.device_id == EEPROM_ADDRESS)
-        {
-          //Запис корисних байт іде разом із двома байтами внутрішньої адреси для EEPROM
-          Temporaty_I2C_Buffer[0] = ((driver_i2c.internal_address & 0xFF00) >> 8);
-          Temporaty_I2C_Buffer[1] = (driver_i2c.internal_address & 0x00FF);
-          for (unsigned int i= 0; i < driver_i2c.number_bytes; i++)
-          {
-            Temporaty_I2C_Buffer[2 + i] = *(driver_i2c.point_buffer + i);
-          }
-          number_transmit_with_i2c = 2 + driver_i2c.number_bytes;
-        }
-        else
+//        if (driver_i2c.device_id == EEPROM_ADDRESS)
+//        {
+//          //Запис корисних байт іде разом із двома байтами внутрішньої адреси для EEPROM
+//          Temporaty_I2C_Buffer[0] = ((driver_i2c.internal_address & 0xFF00) >> 8);
+//          Temporaty_I2C_Buffer[1] = (driver_i2c.internal_address & 0x00FF);
+//          for (unsigned int i= 0; i < driver_i2c.number_bytes; i++)
+//          {
+//            Temporaty_I2C_Buffer[2 + i] = *(driver_i2c.point_buffer + i);
+//          }
+//          number_transmit_with_i2c = 2 + driver_i2c.number_bytes;
+//        }
+//        else
         {
           //Запис корисних байт іде разом із одним байтами внутрішньої адреси для RTC
           Temporaty_I2C_Buffer[0] = (driver_i2c.internal_address & 0x00FF);

@@ -3,7 +3,7 @@
 
 
 #define SIZE_PAGE_EEPROM      64
-#define EEPROM_ADDRESS        0xA2
+//#define EEPROM_ADDRESS        0xA2
 #define RTC_ADDRESS           0xD0
 
 #define SIZE_USTUVANNJA         (sizeof(unsigned int) + sizeof(ustuvannja) + sizeof(phi_ustuvannja) + sizeof(phi_ustuvannja_sin_cos) + sizeof(serial_number_dev))

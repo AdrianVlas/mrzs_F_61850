@@ -444,7 +444,7 @@ typedef struct
   
   //Ідентифікатор пристрою, з яким ведетьсяобмін
   int device_id;              //-1 - пристрій не визначений
-                              // EEPROM_ADDRESS - EEPROM
+//                              // EEPROM_ADDRESS - EEPROM
                               // RTC_ADDRESS - RTC
   //Код операції
   int action;                 //-1 - не визначений

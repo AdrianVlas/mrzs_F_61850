@@ -8776,6 +8776,7 @@ do{
       for (size_t i = 0; i < N_BIG; ++i) active_functions[i] &= (unsigned int)(~maska_mtz04_signals[i]);
       for (int *p = (global_timers + _INDEX_MTZ04_BEGIN); p <= (global_timers + _INDEX_MTZ04_END); ++p) *p = -1;
     }
+    /**************************/
 
     /**************************/
     //ÇÇ

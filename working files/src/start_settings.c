@@ -1901,26 +1901,26 @@ void error_reading_with_eeprom()
     {
       "  Настроек нет  ",
       " Ош.к.с.настр.  ",
-      "  Триг.инф.нет  ",
-      "Ош.к.с.триг.инф."
+      " Ин.ЭнНезСЛ Нет ",
+      "  Ош.Ин.ЭнНезСЛ "
     },
     {
       "Налагоджень нема",
       " Пом.к.с.налаг. ",
-      " Триґ.інф.нема  ",
-      "Пом.к.с.триґ.інф"
+      " Ін.ЕнНезСЛ Нема",
+      " Пом.Ін.ЕнНезСЛ "
     },
     {
       "Param are absent",
       "Error Param chks",
-      "F-F info.are abs",
-      "Er.F-F info.chks"
+      " No Nvol LS Inf ",
+      " Nvol LS Inf Er "
     },
     {
       "  Настроек нет  ",
       " Ош.к.с.настр.  ",
-      "  Триг.инф.нет  ",
-      "Ош.к.с.триг.инф."
+      " Ин.ЭнНезСЛ Нет ",
+      "  Ош.Ин.ЭнНезСЛ "
     } 
   };
   static const unsigned char string_action[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] =
@@ -2211,7 +2211,7 @@ void start_checking_dataflash(void)
       },
       {
         "     Reset      ",
-        "   the device   "
+        "     Device     "
       },
       {
         " Перезапустите  ",
