@@ -289,6 +289,7 @@ long GetMsLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumb
 long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
 long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
 void CleanCmdPlusTimeLog(void); 
+void PuCmdinRawBuf(unsigned int *p_active_functions);
 
 extern void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 void Usb_routines_irq(void);
