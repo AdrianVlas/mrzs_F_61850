@@ -358,8 +358,8 @@ void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions){
     register CmdPlusTimeStampHolder *phld  = &holderCmdPlusTimeStamp;
     //UNUSED(p_active_functions);
     
-    if(time_dat < 1203161493 )//&& time_ms == 0 
-        return;
+//?    if(time_dat < 1203161493 )//&& time_ms == 0 
+//?        return;
     i = holderCmdPlusTimeStamp.shIndexWR;
     if (i == 0)
         i = AMOUNT_CMD_PLUS_TIME_STAMP_RECORD;
