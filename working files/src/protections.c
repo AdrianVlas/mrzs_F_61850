@@ -6133,7 +6133,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
   
 //  TestStateNameSpaceFooBrrr((DigRegUniqVarsAddreses*)&drUniqVarsAddreses);
   //put_before_info_in_buf
-  CmdPlusTimeStampLogHundler(active_functions);
+  //CmdPlusTimeStampLogHundler(active_functions);
   static unsigned int const monitoring_phase_signals[N_BIG] =
   {
     MASKA_MONITOTYNG_PHASE_SIGNALES_0,
@@ -6606,7 +6606,8 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
           //Кількість змін сигналів у порівнянні із попереднім станом
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR + 3 + NUMBER_BYTES_SAMPLE_DR + 0] = number_changes_into_current_item & 0xff;
           buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR + number_items_dr*SD_DR + 3 + NUMBER_BYTES_SAMPLE_DR + 1] = (number_changes_into_current_item >> 8) & 0xff;*/
-          put_before_info_in_buf(&drUniqVarsAddreses);
+          put_before_info_in_buf_from_queue(&drUniqVarsAddreses);
+          //put_before_info_in_buf(&drUniqVarsAddreses);FillBeforeBufinDirectOrder(&drUniqVarsAddreses);
           //Скидаємо кількість фіксацій максимальних струмів/напруг
           number_max_phase_dr = 0;
           number_max_phase04_dr = 0;
@@ -7084,7 +7085,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
   
   //Перевіряємо, чи стоїть умова сформований запис передати на запис у DataFlash
   routine_for_queue_dr();
-
+  PuCmdinRawBuf(carrent_active_functions);
   /*********************/
   //Формуємо попереденій стан сигналів для функції ввімкнення/вимкнення
   /*********************/
@@ -8807,13 +8808,26 @@ do{
       for (int *p = (global_timers + _INDEX_NZZ_BEGIN); p <= (global_timers + _INDEX_NZZ_END); ++p) *p = -1;
     }
     /**************************/
-
+//?static int dbg_val = 0, dbg_porch = 40;
     /**************************/
     //ТЗНП
     /**************************/
     if ((current_settings_prt.configuration & (1 << TZNP_BIT_CONFIGURATION)) != 0)
     {
       tznp_handler(active_functions, number_group_stp);
+//?      if(dbg_val++ >= dbg_porch){
+//?          dbg_val = 0;
+//?           _SET_BIT(active_functions,  RANG_SECTOR_TZNP1_VPERED);
+//?           _SET_BIT(active_functions,  RANG_SECTOR_TZNP1_NAZAD );
+//?           _SET_BIT(active_functions,  RANG_PO_3I0_TZNP1_VPERED);
+//?           _SET_BIT(active_functions,  RANG_PO_3I0_TZNP1_NAZAD );
+//?      }
+//?      else{
+//?          _CLEAR_BIT(active_functions, RANG_SECTOR_TZNP1_VPERED);
+//?          _CLEAR_BIT(active_functions, RANG_SECTOR_TZNP1_NAZAD );
+//?          _CLEAR_BIT(active_functions, RANG_PO_3I0_TZNP1_VPERED);
+//?          _CLEAR_BIT(active_functions, RANG_PO_3I0_TZNP1_NAZAD );
+//?      }   
     }
     else
     {

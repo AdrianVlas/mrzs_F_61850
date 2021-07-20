@@ -50,9 +50,9 @@ typedef struct tag_CmdPlusTimeStateElem{
 typedef struct tag_CmdPlusTimeHolder{
     CmdPlusTimeStateElem arrCmdPlusTimeHolder[AMOUNT_CMD_PLUS_TIME_RECORD];
     short shIndexWR;
-	short shTotalFixElem;
-	unsigned long u32IDModifyIndexWR;//Identificator Last Changes Statistics Reg
-//	int   cmdPlusTimeHolderBusy;
+    short shTotalFixElem;
+    unsigned long u32IDModifyIndexWR;//Identificator Last Changes Statistics Reg
+//  int   cmdPlusTimeHolderBusy;
 } CmdPlusTimeHolder;    
 extern CmdPlusTimeHolder holderCmdPlusTime;
 
@@ -65,19 +65,19 @@ typedef struct tag_CmdPlusTimeStampElem{
 } CmdPlusTimeStampElem;
 
 typedef struct tag_AdditionalInfoCmdPlusTimeStamp{
-	unsigned long long ullTimeStamp;
-	long lNumAlterSigInElem;// analog number_changes_into_current_item
+    unsigned long long ullTimeStamp;
+    long lNumAlterSigInElem;// analog number_changes_into_current_item
 } AdditionalInfoCmdPlusTimeStamp;
 
 typedef struct tag_CmdPlusTimeStampHolder{
     CmdPlusTimeStampElem arrCmdPlusTimeStampElem[AMOUNT_CMD_PLUS_TIME_STAMP_RECORD];
-	AdditionalInfoCmdPlusTimeStamp arrAdditionalInfoCmdPlusTimeStamp[AMOUNT_CMD_PLUS_TIME_STAMP_RECORD];
+    AdditionalInfoCmdPlusTimeStamp arrAdditionalInfoCmdPlusTimeStamp[AMOUNT_CMD_PLUS_TIME_STAMP_RECORD];
     short shIndexWR;
-	short shIndexRD;
-	short shTotalFixElem;
-	short shSumDifersElem;
-	short shAmount100msElem;
-	unsigned long long uLLDrecTimeStampVal;
+    short shIndexRD;
+    short shTotalFixElem;
+    short shSumDifersElem;
+    short shAmount100msElem;
+    unsigned long long uLLDrecTimeStampVal;
 } CmdPlusTimeStampHolder;    
 extern CmdPlusTimeStampHolder holderCmdPlusTimeStamp;
 
@@ -85,11 +85,19 @@ typedef struct tag_dig_reg_uniq_vars{
    unsigned int *number_items_dr;
    unsigned int *number_changes_into_dr_record;
    unsigned int *time_from_start_record_dr;
-   unsigned int *blocking_continue_monitoring_min_U;	
+   unsigned int *blocking_continue_monitoring_min_U;    
    unsigned int *previous_active_functions;
    unsigned int *p_active_functions;
 } DigRegUniqVarsAddreses;
 
+#define SIZE_QUUE ((int32_t)(MAX_EVENTS_IN_ONE_RECORD - 1))//100//102  7
+typedef struct Queue_tag {
+    unsigned char size;//front, rear
+    unsigned char capacity;
+    unsigned char existent_elem;
+    unsigned char amount_elem;
+    uint8_t arTimeLab            [SIZE_QUUE];
+} QueueChangeMarker;
 
 
 
@@ -105,13 +113,17 @@ extern void GetMsLogElem(unsigned int *p_elem, long lIdx);
 
 extern void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 extern void put_before_info_in_buf (DigRegUniqVarsAddreses *ptDRecUniqVarsAddreses);
+extern void put_before_info_in_buf_from_queue (DigRegUniqVarsAddreses *ptDRecUniqVarsAddreses);
 
 extern void TestStateNameSpaceFooBrrr(DigRegUniqVarsAddreses *ptDRecUniqVarsAddreses );
-
-
-
-
-
+extern void PuCmdinRawBuf(unsigned int *p_active_functions);
+extern void FillBeforeBufinDirectOrder(DigRegUniqVarsAddreses *ptDRUVAd);
+extern void* FillBeforeBufReverseOrder(DigRegUniqVarsAddreses *ptDRUVAd);
+extern void InithldQueueChangeMarker(void);
+extern int enQueue(int value);
+extern int deQueue(void);
+int getFromRear(int distance);
+int getFromFront(int distance);
 
 
 typedef union U32_cmd1_Unn{ 
@@ -434,7 +446,7 @@ typedef struct tag_cmd_bit_depot{
    U32_cmd4_wrp w4;
    U32_cmd5_wrp w5;
    U32_cmd6_wrp w6;
-   U32_cmd7_wrp	w7;
+   U32_cmd7_wrp w7;
    U32_cmd8_wrp w8;
    U32_cmd8_wrp w9;
 } CmdFunctionDepot;
@@ -473,17 +485,17 @@ enum ONM_EKRAN_LIST
   ONM_EKRAN_TIMEOUT_ZOP_GROUP3                 = EKRAN_TIMEOUT_ZOP_GROUP3 ,   
   ONM_EKRAN_TIMEOUT_ZOP_GROUP4                 = EKRAN_TIMEOUT_ZOP_GROUP4 ,   
   ONM_EKRAN_CONTROL_ZOP                        = EKRAN_CONTROL_ZOP        ,   
-										   							
+                                                                    
   ONM_EKRAN_TIMEOUT_ZDZ_GROUP1                 = EKRAN_TIMEOUT_ZDZ_GROUP1,   
   ONM_EKRAN_TIMEOUT_ZDZ_GROUP2                 = EKRAN_TIMEOUT_ZDZ_GROUP2,   
   ONM_EKRAN_TIMEOUT_ZDZ_GROUP3                 = EKRAN_TIMEOUT_ZDZ_GROUP3,   
   ONM_EKRAN_TIMEOUT_ZDZ_GROUP4                 = EKRAN_TIMEOUT_ZDZ_GROUP4,   
   ONM_EKRAN_CONTROL_ZDZ                        = EKRAN_CONTROL_ZDZ       ,   
-										   							
+                                                                    
   ONM_EKRAN_SETPOINT_VMP_FORWARD               = EKRAN_SETPOINT_VMP_FORWARD  ,
   ONM_EKRAN_SETPOINT_VMP_BACKWARD              = EKRAN_SETPOINT_VMP_BACKWARD ,
   ONM_EKRAN_CONTROL_VMP                        = EKRAN_CONTROL_VMP           ,
-										   							
+                                                                    
   ONM_EKRAN_VIDKLUCHENNJA                      = EKRAN_VIDKLUCHENNJA        , 
 
   ONM_EKRAN_SETPOINT_UROV_GROUP1               = EKRAN_SETPOINT_UROV_GROUP1 , 
@@ -504,7 +516,7 @@ enum ONM_EKRAN_LIST
   ONM_EKRAN_TIMEOUT_UP_GROUP3                  = EKRAN_TIMEOUT_UP_GROUP3    ,    
   ONM_EKRAN_TIMEOUT_UP_GROUP4                  = EKRAN_TIMEOUT_UP_GROUP4    ,    
   ONM_EKRAN_CONTROL_UP                         = EKRAN_CONTROL_UP           ,    
-										  
+                                          
   ONM_EKRAN_SETPOINT_UMIN_GROUP1               = EKRAN_SETPOINT_UMIN_GROUP1 ,
   ONM_EKRAN_SETPOINT_UMIN_GROUP2               = EKRAN_SETPOINT_UMIN_GROUP2 ,
   ONM_EKRAN_SETPOINT_UMIN_GROUP3               = EKRAN_SETPOINT_UMIN_GROUP3 ,
@@ -783,11 +795,11 @@ enum ONM_EKRAN_LIST
   ONM_EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS  = EKRAN_VIEW_SETTINGS_OF_DIGITAL_REGISTRATORS ,
   ONM_EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR        = EKRAN_RANGUVANNJA_DIGITAL_REGISTRATOR       ,
   ONM_EKRAN_TIMEOUT_DIGITAL_REGISTRATOR            = EKRAN_TIMEOUT_DIGITAL_REGISTRATOR           ,
-											
+                                            
   ONM_EKRAN_VIEW_SETTINGS_OF_ANALOG_REGISTRATORS   = EKRAN_VIEW_SETTINGS_OF_ANALOG_REGISTRATORS ,
   ONM_EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR         = EKRAN_RANGUVANNJA_ANALOG_REGISTRATOR       ,
   ONM_EKRAN_TIMEOUT_ANALOG_REGISTRATOR             = EKRAN_TIMEOUT_ANALOG_REGISTRATOR           ,
-											
+                                            
   ONM_EKRAN_CONTROL_AR                             = EKRAN_CONTROL_AR,
 
   ONM_EKRAN_CHOOSE_SETTINGS_MTZ                         =  EKRAN_CHOOSE_SETTINGS_MTZ                    ,                   
