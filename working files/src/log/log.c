@@ -44,9 +44,9 @@ void ChekCurrentStateCmd(unsigned int *p_active_functions){
 //SRAM1 CmdPlusTimeHolder holderCmdPlusTime;
 SRAM1  CmdPlusTimeHolder holderCmdPlusTime;
 
-SRAM1 UNN_CmdState arRawCmd        [100];
-SRAM1 UNN_CmdState arChangeStateCmd[100];
-SRAM1 uint8_t arTimeLab            [100];uint8_t arAmontChangesinSlice[100]; 
+UNN_CmdState arRawCmd        [100];uint8_t arAmontChangesinSlice[100]; 
+//?SRAM1 UNN_CmdState arChangeStateCmd[100];
+//?SRAM1 uint8_t arTimeLab            [100];
 //SRAM1 
 short shIndexWRRawCmd;
 short shIndexRDRawCmd = 99;
