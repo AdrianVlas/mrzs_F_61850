@@ -231,7 +231,7 @@ extern void d_or_handler(unsigned int*);
 extern void d_xor_handler(unsigned int*);
 extern void d_not_handler(unsigned int*);
 extern void tf_handler(unsigned int*, unsigned int*);
-extern void mtz_handler(unsigned int*, unsigned int);
+extern void ocp_handler(unsigned int*, unsigned int);
 extern void mtz04_handler(unsigned int*, unsigned int);
 extern void zdz_handler(unsigned int*, unsigned int);
 extern int timeout_dependent_general(unsigned int, unsigned int, int, int);

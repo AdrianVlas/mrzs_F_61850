@@ -460,42 +460,6 @@ NUMBER_TOTAL_SIGNAL_FOR_RANG
 
 /*****************************************/
 
-enum __mtz_const {
-  RANG_BLOCK_MTZ = 0,
-  RANG_BLOCK_USK_MTZ,
-  RANG_SECTOR_VPERED_MTZN,
-  RANG_SECTOR_NAZAD_MTZN,
-  RANG_PO_MTZ,
-  RANG_PO_MTZN_VPERED,
-  RANG_PO_MTZN_NAZAD,
-  RANG_PO_U_MTZPN,
-  RANG_PO_MTZPN,
-  RANG_MTZ,
-  /*************************************/
-  MTZ_SETTINGS_LENGTH
-};
-
-enum __mtz_levels_const {
-  MTZ_LEVEL1 = 0,
-  MTZ_LEVEL2,
-  MTZ_LEVEL3,
-  MTZ_LEVEL4,
-  /*************************************/
-  NUMBER_LEVEL_MTZ //Количество ступеней МТЗ
-};
-
-enum __mtz_abc_const {
-  PHASE_A_INDEX = 0,
-  PHASE_B_INDEX,
-  PHASE_C_INDEX
-};
-
-enum __mtz_abc_direction_const {
-  MTZ_NEVYZN = 0,
-  MTZ_VPERED,
-  MTZ_NAZAD
-};
-
 /*****************************************/
 //Макски сигналів, які можна зранжувати на функціональні кнопки у Режимі Кнопка
 /*****************************************/
@@ -1182,6 +1146,8 @@ enum __mtz_abc_direction_const {
    | (1 << (RANG_MTZ04_1 - 64))                               \
    | (1 << (RANG_PO_MTZ04_2 - 64))                            \
    | (1 << (RANG_MTZ04_2 - 64))                               \
+   | (1 << (RANG_PO_ZDZ - 64))                                \
+   | (1 << (RANG_ZDZ - 64))                                   \
    | (1 << (RANG_PO_NZZ - 64))                                \
    | (1 << (RANG_NZZ - 64))                                   \
    | (1 << (RANG_PO_3I0 - 64))                                \
@@ -1621,7 +1587,7 @@ enum _leds_colors
 /*****************************************/
 //Константи для реєстратора статистики
 /*****************************************/
-//#define RSTATYSYKA 1
+#define RSTATYSYKA 1
 /*****************************************/
 
 /*****************************************/

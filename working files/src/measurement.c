@@ -2510,7 +2510,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
           cos_fi = cos_fi >> shift;
           sin_fi = sin_fi >> shift;
           
-          if (sector_directional_mtz[mtz][i] != 1)
+          if (sector_directional_mtz[mtz][i] != MTZ_VPERED)
             sector = sector_1_mtz_tznp;
           else
             sector = sector_2_mtz_tznp;
@@ -2519,7 +2519,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
 #define SIN_SECTOR sector[1]    
 
           sin_fi1_minus_fi2 = sin_fi*COS_SECTOR - cos_fi*SIN_SECTOR;
-          sector_directional_mtz[mtz][i] = (sin_fi1_minus_fi2 <= 0) ?  1 : 0;
+          sector_directional_mtz[mtz][i] = (sin_fi1_minus_fi2 <= 0) ?  MTZ_VPERED : MTZ_NEVYZN;
     
 #undef COS_SECTOR    
 #undef SIN_SECTOR   
@@ -2530,7 +2530,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
           cos_fi = cos_fi >> shift;
           sin_fi = sin_fi >> shift;
 
-          if (sector_directional_mtz[mtz][i] != 2)
+          if (sector_directional_mtz[mtz][i] != MTZ_NAZAD)
             sector = sector_1_mtz_tznp;
           else
             sector = sector_2_mtz_tznp;
@@ -2539,7 +2539,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
 #define SIN_SECTOR sector[3]    
 
           sin_fi1_minus_fi2 = sin_fi*COS_SECTOR - cos_fi*SIN_SECTOR;
-          sector_directional_mtz[mtz][i] = (sin_fi1_minus_fi2 >= 0) ?  2 : 0;
+          sector_directional_mtz[mtz][i] = (sin_fi1_minus_fi2 >= 0) ?  MTZ_NAZAD : MTZ_NEVYZN;
     
 #undef COS_SECTOR    
 #undef SIN_SECTOR    
@@ -2550,7 +2550,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
           cos_fi = cos_fi >> shift;
           sin_fi = sin_fi >> shift;
 
-          if (sector_directional_mtz[mtz][i] != 2)
+          if (sector_directional_mtz[mtz][i] != MTZ_NAZAD)
             sector = sector_1_mtz_tznp;
           else
             sector = sector_2_mtz_tznp;
@@ -2559,7 +2559,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
 #define SIN_SECTOR sector[5]    
 
           sin_fi1_minus_fi2 = sin_fi*COS_SECTOR - cos_fi*SIN_SECTOR;
-          sector_directional_mtz[mtz][i] = (sin_fi1_minus_fi2 <= 0) ?  2 : 0;
+          sector_directional_mtz[mtz][i] = (sin_fi1_minus_fi2 <= 0) ?  MTZ_NAZAD : MTZ_NEVYZN;
     
 #undef COS_SECTOR    
 #undef SIN_SECTOR    
@@ -2570,7 +2570,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
           cos_fi = cos_fi >> shift;
           sin_fi = sin_fi >> shift;
 
-          if (sector_directional_mtz[mtz][i] != 1)
+          if (sector_directional_mtz[mtz][i] != MTZ_VPERED)
             sector = sector_1_mtz_tznp;
           else
             sector = sector_2_mtz_tznp;
@@ -2579,7 +2579,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
 #define SIN_SECTOR sector[7]    
 
           sin_fi1_minus_fi2 = sin_fi*COS_SECTOR - cos_fi*SIN_SECTOR;
-          sector_directional_mtz[mtz][i] = (sin_fi1_minus_fi2 >= 0) ?  1 : 0;
+          sector_directional_mtz[mtz][i] = (sin_fi1_minus_fi2 >= 0) ?  MTZ_VPERED : MTZ_NEVYZN;
     
 #undef COS_SECTOR    
 #undef SIN_SECTOR    
@@ -2587,7 +2587,7 @@ inline void directional_mtz(int ortogonal_local_calc[], unsigned int number_grou
       }
       else
       {
-        sector_directional_mtz[mtz][i] = 0;
+        sector_directional_mtz[mtz][i] = MTZ_NEVYZN;
       }
     }
   }
@@ -3424,7 +3424,7 @@ void calc_measurement(unsigned int number_group_stp)
     {
       Uxy_bilshe_porogu[i] = 0;
       Ix_bilshe_porogu[i] = 0;
-      for (size_t msz = 0; msz < 4; msz++) sector_directional_mtz[msz][i] = 0;
+      for (size_t msz = 0; msz < 4; msz++) sector_directional_mtz[msz][i] = MTZ_NEVYZN;
     }
   }
   /***/

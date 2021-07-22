@@ -947,72 +947,73 @@ inline int timeout_dependent_general(unsigned int i, unsigned int setpoint_mtz_2
 /*****************************************************/
 // МТЗ
 /*****************************************************/
-inline void mtz_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
+inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
-  unsigned int tmp_value;
-  
-  unsigned int po_mtz_x;
-  unsigned int direction_ABC_tmp;
-  unsigned int po_mtzn_x_vpered_setpoint;
-  unsigned int po_mtzn_x_nazad_setpoint;
-//  unsigned int po_block_u_mtzn_x_setpoint;
-  unsigned int po_i_ncn_setpoint;
-  unsigned int po_u_ncn_setpoint;
-  unsigned int po_u_mtzpn_x_setpoint;
-  unsigned int po_mtzpn_x_setpoint;
-  
-  /******Неисправность цепей напряжения для 4-х ступеней*******/
-  _Bool ctr_mtz_nespr_kil_napr = (current_settings_prt.control_mtz & CTR_MTZ_NESPR_KIL_NAPR) != 0; //Неиспр. Напр. Вкл. (М)
-  
+	unsigned int const Ia = measurement[IM_IA];
+	unsigned int const Ib = measurement[IM_IB];
+	unsigned int const Ic = measurement[IM_IC];
+
+	unsigned int const Uab = measurement[IM_UAB];
+	unsigned int const Ubc = measurement[IM_UBC];
+	unsigned int const Uca = measurement[IM_UCA];
+	
+	unsigned int Imax = Ia;
+	if (Imax < Ib) Imax = Ib;
+	if (Imax < Ic) Imax = Ic;
+	
+  /****** Несправність кіл напруги *******/
+#define I_NOM_CONST (I_NOM * KOEF_1_2_I)
+
   //ПО Iнцн
-  po_i_ncn_setpoint = previous_state_mtz_po_incn ?
-            i_nom_const * KOEF_POVERNENNJA_MTZ_I_DOWN / 100 :
-            i_nom_const;
-  
-  previous_state_mtz_po_incn = ((measurement[IM_IA] <= po_i_ncn_setpoint)   &&
-                                (measurement[IM_IB] <= po_i_ncn_setpoint) &&
-                                (measurement[IM_IC] <= po_i_ncn_setpoint));
+  unsigned int const po_i_ncn_setpoint = (unsigned int)(_GET_STATE(ocp_general_bits, 0) ? (I_NOM_CONST * KOEF_POVERNENNJA_MTZ_I_DOWN / 100) : I_NOM_CONST);
+  if ((Ia <= po_i_ncn_setpoint) && (Ib <= po_i_ncn_setpoint) && (Ic <= po_i_ncn_setpoint)) _SET_STATE(ocp_general_bits, 0);
+	else _CLEAR_STATE(ocp_general_bits, 0);
+	
+#undef I_NOM_CONST
   
   //ПО Uнцн
   if ((current_settings_prt.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)) == 0)
   {
-    po_u_ncn_setpoint = previous_state_mtz_po_uncn ?
-              u_f_nom_const * U_DOWN / 100 :
-              u_f_nom_const;
-  
-    previous_state_mtz_po_uncn = ((measurement[IM_UA] <= po_u_ncn_setpoint) ||
-                                  (measurement[IM_UB] <= po_u_ncn_setpoint) ||
-                                  (measurement[IM_UC] <= po_u_ncn_setpoint));
+#define U_F_NOM_CONST (U_F_NOM * KOEF_0_2_U)
+
+		unsigned int const po_u_ncn_setpoint = (unsigned int)(_GET_STATE(ocp_general_bits, 1) ? (U_F_NOM_CONST * U_DOWN  / 100) : U_F_NOM_CONST);
+    if ((measurement[IM_UA] <= po_u_ncn_setpoint) || (measurement[IM_UB] <= po_u_ncn_setpoint) || (measurement[IM_UC] <= po_u_ncn_setpoint))  _SET_STATE(ocp_general_bits, 1);
+		else _CLEAR_STATE(ocp_general_bits, 1);
+		
+#undef U_F_NOM_CONST
   }
   else
   {
-    po_u_ncn_setpoint = previous_state_mtz_po_uncn ?
-              u_linear_nom_const * U_DOWN / 100 :
-              u_linear_nom_const;
-  
-    previous_state_mtz_po_uncn = ((measurement[IM_UAB] <= po_u_ncn_setpoint) ||
-                                  (measurement[IM_UBC] <= po_u_ncn_setpoint) ||
-                                  (measurement[IM_UCA] <= po_u_ncn_setpoint));
+#define U_LINER_NOM_CONST (U_LINEAR_NOM * KOEF_0_2_U)
+
+    unsigned int const po_u_ncn_setpoint = (unsigned int)(_GET_STATE(ocp_general_bits, 1) ? (U_LINER_NOM_CONST * U_DOWN / 100) : U_LINER_NOM_CONST);
+    if ((Uab <= po_u_ncn_setpoint) || (Ubc <= po_u_ncn_setpoint) || (Uca <= po_u_ncn_setpoint))  _SET_STATE(ocp_general_bits, 1);
+		else _CLEAR_STATE(ocp_general_bits, 1);
+		
+#undef U_LINER_NOM_CONST
   }
   
-  ctr_mtz_nespr_kil_napr = ctr_mtz_nespr_kil_napr && previous_state_mtz_po_incn && previous_state_mtz_po_uncn; //Неисправность цепей напряжения (_AND3)
-  
-  //Неисправность цепей напряжения
-  if (ctr_mtz_nespr_kil_napr)
-    _SET_BIT(p_active_functions, RANG_NCN_MTZ);
-  else
-    _CLEAR_BIT(p_active_functions, RANG_NCN_MTZ);
-  /******Неисправность цепей напряжения для 4-х ступеней*******/
-  
-  /******ПО U блок. МТЗНх***********************/
-  //Уставка ПО U блок. МТЗНх з врахуванням гістерезису
-  unsigned int po_block_u_mtzn_x_setpoint = (_CHECK_SET_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN) == 0) ? PORIG_CHUTLYVOSTI_VOLTAGE : PORIG_CHUTLYVOSTI_VOLTAGE * U_DOWN / 100;
-  
-  //ПО U блок. МТЗНх
   if (
-      (measurement[IM_UAB] <= po_block_u_mtzn_x_setpoint) ||
-      (measurement[IM_UBC] <= po_block_u_mtzn_x_setpoint) ||
-      (measurement[IM_UCA] <= po_block_u_mtzn_x_setpoint)
+			((current_settings_prt.control_mtz & CTR_MTZ_NESPR_KIL_NAPR) != 0) &&
+			((ocp_general_bits & ((1u << 0) | (1u << 1))) == ((1u << 0) | (1u << 1)))
+		)
+	{
+		_SET_BIT(p_active_functions, RANG_NCN_MTZ);
+	}
+	else
+	{
+		_CLEAR_BIT(p_active_functions, RANG_NCN_MTZ);
+	}
+  /****** Несправність кіл напруги *******/
+	
+  /****** ПО U блок. МСЗС *******/
+  unsigned int po_block_u_ocp_setpoint = (_CHECK_SET_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN) == 0) ? PORIG_CHUTLYVOSTI_VOLTAGE : PORIG_CHUTLYVOSTI_VOLTAGE * U_DOWN / 100;
+  
+  //ПО U блок. МСЗС
+  if (
+      (Uab <= po_block_u_ocp_setpoint) ||
+      (Ubc <= po_block_u_ocp_setpoint) ||
+      (Uca <= po_block_u_ocp_setpoint)
      )
   {
     _SET_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN);
@@ -1021,286 +1022,641 @@ inline void mtz_handler(unsigned int *p_active_functions, unsigned int number_gr
   {
     _CLEAR_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN);
   }
-  /******ПО U блок. МТЗНх***********************/
+  /****** ПО U блок. МСЗС *******/
+	
+	static int const ocp_signals[NUMBER_LEVEL_OCP][OCP_SIGNALS_LENGTH] = 
+	{
+  	{
+    	RANG_BLOCK_MTZ1, 
+    	-1,
+    	RANG_SECTOR_VPERED_MTZN1,
+    	RANG_SECTOR_NAZAD_MTZN1,
+    	RANG_PO_MTZ1,
+    	RANG_PO_MTZN1_VPERED,
+    	RANG_PO_MTZN1_NAZAD,
+    	RANG_PO_U_MTZPN1,
+    	RANG_PO_MTZPN1,
+    	RANG_MTZ1
+  	},
+  	{
+    	RANG_BLOCK_MTZ2, 
+    	RANG_BLOCK_USK_MTZ2,
+    	RANG_SECTOR_VPERED_MTZN2,
+    	RANG_SECTOR_NAZAD_MTZN2,
+    	RANG_PO_MTZ2,
+    	RANG_PO_MTZN2_VPERED,
+    	RANG_PO_MTZN2_NAZAD,
+    	RANG_PO_U_MTZPN2,
+    	RANG_PO_MTZPN2,
+    	RANG_MTZ2
+  	},
+  	{
+    	RANG_BLOCK_MTZ3, 
+    	-1,
+    	RANG_SECTOR_VPERED_MTZN3,
+    	RANG_SECTOR_NAZAD_MTZN3,
+    	RANG_PO_MTZ3,
+    	RANG_PO_MTZN3_VPERED,
+    	RANG_PO_MTZN3_NAZAD,
+    	RANG_PO_U_MTZPN3,
+    	RANG_PO_MTZPN3,
+    	RANG_MTZ3
+  	},
+  	{
+    	RANG_BLOCK_MTZ4, 
+    	-1,
+    	RANG_SECTOR_VPERED_MTZN4,
+    	RANG_SECTOR_NAZAD_MTZN4,
+    	RANG_PO_MTZ4,
+    	RANG_PO_MTZN4_VPERED,
+    	RANG_PO_MTZN4_NAZAD,
+    	RANG_PO_U_MTZPN4,
+    	RANG_PO_MTZPN4,
+    	RANG_MTZ4
+  	}
+	};
+	static int const ocp_tmr_index[NUMBER_LEVEL_OCP][NUMBER_LEVEL_TMR_CONST] = 
+	{
+  	{
+    	INDEX_TIMER_MTZ1,
+    	INDEX_TIMER_MTZ1_N_VPERED,
+    	INDEX_TIMER_MTZ1_N_NAZAD,
+    	INDEX_TIMER_MTZ1_PO_NAPRUZI,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1
+  	},
+  	{
+    	INDEX_TIMER_MTZ2,
+    	INDEX_TIMER_MTZ2_N_VPERED,
+    	INDEX_TIMER_MTZ2_N_NAZAD,
+    	INDEX_TIMER_MTZ2_PO_NAPRUZI,
 
-  for (int mtz_level = 0; mtz_level < NUMBER_LEVEL_MTZ; mtz_level++) {
-    //Для отладки
-//    if (mtz_level == 0) {
-//      mtz_level = 0;
-//    } else if (mtz_level == 1) {
-//      mtz_level = 1;
-//    } else if (mtz_level == 2) {
-//      mtz_level = 2;
-//    } else if (mtz_level == 3) {
-//      mtz_level = 3;
-//    }
-    
-    //М
-    /*Проверяем тип МТЗ*/
-    tmp_value = (*type_mtz_arr[mtz_level] == 1)                                  << 0; //Направленная
-    tmp_value |= (*type_mtz_arr[mtz_level] == 2)                                 << 1; //С пуском
-    tmp_value |= (*type_mtz_arr[mtz_level] == 0)                                 << 2; //Простая
-    tmp_value |= (
-                  (mtz_level == 1)
-                  && (*type_mtz_arr[mtz_level] >= TYPE_MTZ_DEPENDENT_A) //A, B, C (3-5)
-                  && (*type_mtz_arr[mtz_level] <= TYPE_MTZ_DEPENDENT_RTV_I)
-                 )                                                               << 3; //Зависимая (если mtz_level == 1 (2-я ступень МТЗ))
-    
-    /******ПО МТЗх***********************/
-    //Уставка ПО МТЗх с учетом гистерезиса
-    po_mtz_x = (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZ]) != 0) ?
-            *(setpoint_mtz[mtz_level] + number_group_stp) * KOEF_POVERNENNJA_MTZ_I_UP / 100 :
-            *(setpoint_mtz[mtz_level] + number_group_stp);
-    
-    tmp_value |= ((measurement[IM_IA] >= po_mtz_x) ||
-          (measurement[IM_IB] >= po_mtz_x) ||
-          (measurement[IM_IC] >= po_mtz_x)) << 4; //ПО МТЗх
-    /******ПО МТЗх***********************/
-    
-    //М
-    tmp_value |= ((current_settings_prt.control_mtz & mtz_const_menu_settings_prt[mtz_level][CTR_MTZ]) != 0) << 5; //МТЗх Вкл.
-    //ДВ
-    tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_BLOCK_MTZ]) == 0) << 6; //Блокировка МТЗх
-    //М
-    tmp_value |= ((current_settings_prt.control_mtz & mtz_const_menu_settings_prt[mtz_level][CTR_MTZ_VPERED]) != 0) << 7; //МТЗНх: Вкл. прям
-    tmp_value |= ((current_settings_prt.control_mtz & mtz_const_menu_settings_prt[mtz_level][CTR_MTZ_NAZAD]) != 0) << 8; //МТЗНх: Вкл. обр
-    
-    /******Сектор МТЗНх Вперед/Назад**********/
-    //Проверка направленности фаз А,В,С
-    direction_ABC_tmp = (sector_directional_mtz[mtz_level][PHASE_A_INDEX] == MTZ_VPERED) << 0; //Проверка направленности фазы А вперед
-    direction_ABC_tmp |= (sector_directional_mtz[mtz_level][PHASE_B_INDEX] == MTZ_VPERED) << 1; //Проверка направленности фазы B вперед
-    direction_ABC_tmp |= (sector_directional_mtz[mtz_level][PHASE_C_INDEX] == MTZ_VPERED) << 2; //Проверка направленности фазы C вперед
-    
-    _OR3(direction_ABC_tmp, 0, direction_ABC_tmp, 1, direction_ABC_tmp, 2, direction_ABC_tmp, 3);
-    
-    //Сектор МТЗНх Вперед
-    if (_GET_STATE(direction_ABC_tmp, 3))
-      _SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_SECTOR_VPERED_MTZN]);
+			INDEX_TIMER_MTZ2_DEPENDENT_A,
+  		INDEX_TIMER_MTZ2_DEPENDENT_B,
+  		INDEX_TIMER_MTZ2_DEPENDENT_C,
+  		INDEX_TIMER_MTZ2_DEPENDENT_RT_80,
+  		INDEX_TIMER_MTZ2_DEPENDENT_RTV_I,
+	
+			INDEX_TIMER_MTZ2_PR,
+			INDEX_TIMER_MTZ2_N_VPERED_PR,
+			INDEX_TIMER_MTZ2_N_NAZAD_PR,
+			INDEX_TIMER_MTZ2_PO_NAPRUZI_PR,
+			INDEX_TIMER_MTZ2_VVID_PR,
+  	},
+  	{
+    	INDEX_TIMER_MTZ3,
+    	INDEX_TIMER_MTZ3_N_VPERED,
+    	INDEX_TIMER_MTZ3_N_NAZAD,
+    	INDEX_TIMER_MTZ3_PO_NAPRUZI,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1
+  	},
+  	{
+    	INDEX_TIMER_MTZ4,
+    	INDEX_TIMER_MTZ4_N_VPERED,
+    	INDEX_TIMER_MTZ4_N_NAZAD,
+    	INDEX_TIMER_MTZ4_PO_NAPRUZI,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1
+  	},
+	};
+
+	static int const * const p_type_ocp[NUMBER_LEVEL_OCP] = 
+	{
+  	&current_settings_prt.type_mtz1,
+  	&current_settings_prt.type_mtz2,
+  	&current_settings_prt.type_mtz3,
+  	&current_settings_prt.type_mtz4
+	};
+	static int const ocp_ctr_setting[NUMBER_LEVEL_OCP][MTZ_CONST_MENU_SETTINGS_LENGTH] = 
+	{
+  	{
+    	CTR_MTZ_1,
+    	CTR_MTZ_1_VPERED,
+    	CTR_MTZ_1_NAZAD,
+			-1,
+			-1
+  	},
+  	{
+    	CTR_MTZ_2,
+    	CTR_MTZ_2_VPERED,
+    	CTR_MTZ_2_NAZAD,
+			CTR_MTZ_2_PRYSKORENNJA,
+			CTR_MTZ_2_PRYSKORENA
+  	},
+  	{
+    	CTR_MTZ_3,
+    	CTR_MTZ_3_VPERED,
+    	CTR_MTZ_3_NAZAD,
+			-1,
+			-1
+  	},
+  	{
+    	CTR_MTZ_4,
+    	CTR_MTZ_4_VPERED,
+    	CTR_MTZ_4_NAZAD,
+			-1,
+			-1
+  	}
+	};
+	
+	static unsigned int const * const setpoint_ocp[NUMBER_LEVEL_OCP] = 
+	{
+  	current_settings_prt.setpoint_mtz_1,
+  	current_settings_prt.setpoint_mtz_2,
+  	current_settings_prt.setpoint_mtz_3,
+  	current_settings_prt.setpoint_mtz_4
+	};
+	static unsigned int const * const setpoint_ocp_fw[NUMBER_LEVEL_OCP] = 
+	{
+  	current_settings_prt.setpoint_mtz_1_n_vpered,
+  	current_settings_prt.setpoint_mtz_2_n_vpered,
+  	current_settings_prt.setpoint_mtz_3_n_vpered,
+  	current_settings_prt.setpoint_mtz_4_n_vpered
+	};
+	static unsigned int const * const setpoint_ocp_bw[NUMBER_LEVEL_OCP] = 
+	{
+  	current_settings_prt.setpoint_mtz_1_n_nazad,
+  	current_settings_prt.setpoint_mtz_2_n_nazad,
+  	current_settings_prt.setpoint_mtz_3_n_nazad,
+  	current_settings_prt.setpoint_mtz_4_n_nazad
+	};
+	static unsigned int const * const setpoint_ocp_U_by_U[NUMBER_LEVEL_OCP] = 
+	{
+  	current_settings_prt.setpoint_mtz_1_U,
+  	current_settings_prt.setpoint_mtz_2_U,
+  	current_settings_prt.setpoint_mtz_3_U,
+  	current_settings_prt.setpoint_mtz_4_U
+	};
+	static unsigned int const * const setpoint_ocp_I_by_U[NUMBER_LEVEL_OCP] = 
+	{
+  	current_settings_prt.setpoint_mtz_1_po_napruzi,
+  	current_settings_prt.setpoint_mtz_2_po_napruzi,
+  	current_settings_prt.setpoint_mtz_3_po_napruzi,
+  	current_settings_prt.setpoint_mtz_4_po_napruzi
+	};
+
+	static int const * const timeout_ocp[NUMBER_LEVEL_OCP] =
+	{
+  	current_settings_prt.timeout_mtz_1,
+  	current_settings_prt.timeout_mtz_2,
+  	current_settings_prt.timeout_mtz_3,
+  	current_settings_prt.timeout_mtz_4
+	};
+	static int const * const timeout_ocp_fw[NUMBER_LEVEL_OCP] = 
+	{
+  	current_settings_prt.timeout_mtz_1_n_vpered,
+  	current_settings_prt.timeout_mtz_2_n_vpered,
+  	current_settings_prt.timeout_mtz_3_n_vpered,
+  	current_settings_prt.timeout_mtz_4_n_vpered
+	};
+	static int const * const timeout_ocp_bw[NUMBER_LEVEL_OCP] = 
+	{
+  	current_settings_prt.timeout_mtz_1_n_nazad,
+  	current_settings_prt.timeout_mtz_2_n_nazad,
+  	current_settings_prt.timeout_mtz_3_n_nazad,
+  	current_settings_prt.timeout_mtz_4_n_nazad
+	};
+	static int const * const timeout_ocp_by_U[NUMBER_LEVEL_OCP] = 
+	{
+  	current_settings_prt.timeout_mtz_1_po_napruzi,
+  	current_settings_prt.timeout_mtz_2_po_napruzi,
+  	current_settings_prt.timeout_mtz_3_po_napruzi,
+  	current_settings_prt.timeout_mtz_4_po_napruzi
+	};
+	static int const * const timeout_ocp_vvid_pr[NUMBER_LEVEL_OCP] =
+	{
+  	NULL,
+  	current_settings_prt.timeout_mtz_2_vvid_pr,
+  	NULL,
+  	NULL
+	};
+	static int const * const timeout_ocp_pr[NUMBER_LEVEL_OCP] =
+	{
+  	NULL,
+  	current_settings_prt.timeout_mtz_2_pr,
+  	NULL,
+  	NULL
+	};
+	static int const * const timeout_ocp_pr_fw[NUMBER_LEVEL_OCP] = 
+	{
+  	NULL,
+  	current_settings_prt.timeout_mtz_2_n_vpered_pr,
+  	NULL,
+  	NULL
+	};
+	static int const * const timeout_ocp_pr_bw[NUMBER_LEVEL_OCP] = 
+	{
+  	NULL,
+  	current_settings_prt.timeout_mtz_2_n_nazad_pr,
+  	NULL,
+  	NULL
+	};
+	static int const * const timeout_ocp_pr_by_U[NUMBER_LEVEL_OCP] = 
+	{
+  	NULL,
+  	current_settings_prt.timeout_mtz_2_po_napruzi_pr,
+  	NULL,
+  	NULL
+	};
+	
+
+	enum _ext_par 
+	{
+		DEP = 0,
+		ACC,
+		
+		NUM_EXT_PAR
+	};
+	
+	static unsigned int const ocp_ext[NUMBER_LEVEL_OCP][NUM_EXT_PAR] = 
+	{
+		{0, 0},
+		{1, 1},
+		{0, 0},
+		{0, 0}
+	};
+	
+	ocp_general_bits |= (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV)) << (2 + NUMBER_LEVEL_OCP);
+	
+	unsigned int const control_ocp = current_settings_prt.control_mtz;
+	for (size_t i = 0; i != NUMBER_LEVEL_OCP; ++i)
+	{
+		uint32_t l_ocp_0 = 0;
+		uint32_t dep_ocp_0 = 0;
+		uint32_t acc_ocp_0 = 0;
+				
+		int const type_ocp = *(p_type_ocp[i]);
+		if (type_ocp == TYPE_MTZ_SIMPLE          ) _SET_STATE(l_ocp_0, 0);
+		else if (type_ocp == TYPE_MTZ_DIRECTIONAL) _SET_STATE(l_ocp_0, 1);
+		else if (type_ocp == TYPE_MTZ_VOLTAGE    ) _SET_STATE(l_ocp_0, 2);
+		else if (ocp_ext[i][DEP] != 0)
+		{
+			if (type_ocp == TYPE_MTZ_DEPENDENT_A         )  _SET_STATE(dep_ocp_0, 0);
+			else if (type_ocp == TYPE_MTZ_DEPENDENT_B    )  _SET_STATE(dep_ocp_0, 1);
+			else if (type_ocp == TYPE_MTZ_DEPENDENT_C    )  _SET_STATE(dep_ocp_0, 2);
+			else if (type_ocp == TYPE_MTZ_DEPENDENT_RT_80)  _SET_STATE(dep_ocp_0, 3);
+			else if (type_ocp == TYPE_MTZ_DEPENDENT_RTV_I)  _SET_STATE(dep_ocp_0, 4);
+			
+			_OR5(dep_ocp_0, 0, dep_ocp_0, 1, dep_ocp_0, 2, dep_ocp_0, 3, dep_ocp_0, 4, dep_ocp_0, 5);
+		}
+		_INVERTOR(dep_ocp_0, 0, dep_ocp_0, 6); //у випадку, якщо заоежної немає, то цей біт має розблокувати можливість працювати простої МСЗ у випадку наявного присорення
+		
+		//Проста МСЗ
+    unsigned int const pickup_ocp = (_CHECK_SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZ]) != 0) ?
+            setpoint_ocp[i][number_group_stp] * KOEF_POVERNENNJA_MTZ_I_UP / 100 :
+            setpoint_ocp[i][number_group_stp];
+	  l_ocp_0 |= (Imax >= pickup_ocp) << 3;
+		l_ocp_0 |= ((control_ocp & ocp_ctr_setting[i][CTR_MTZ]) != 0) << 4;
+		l_ocp_0 |= (_CHECK_SET_BIT(p_active_functions, ocp_signals[i][RANG_BLOCK_MTZ]) == 0) << 5;
+		_AND2(l_ocp_0, 4, l_ocp_0, 5, l_ocp_0, 6);
+		
+		l_ocp_0 |= ((control_ocp & ocp_ctr_setting[i][CTR_MTZ_VPERED]) != 0) << 7;
+		l_ocp_0 |= ((control_ocp & ocp_ctr_setting[i][CTR_MTZ_NAZAD]) != 0) << 8;
+
+		//Направлена МСЗ
+		unsigned int dir_ocp = 0;
+		unsigned int const * const sector_ocp = sector_directional_mtz[i];
+
+		dir_ocp |= (sector_ocp[PHASE_A_INDEX] == MTZ_VPERED) << 0;
+		dir_ocp |= (sector_ocp[PHASE_B_INDEX] == MTZ_VPERED) << 1;
+		dir_ocp |= (sector_ocp[PHASE_C_INDEX] == MTZ_VPERED) << 2;
+
+		_OR3(dir_ocp, 0, dir_ocp, 1, dir_ocp, 2, dir_ocp, 3);
+    if (_GET_STATE(dir_ocp, 3))
+      _SET_BIT(p_active_functions, ocp_signals[i][RANG_SECTOR_VPERED_MTZN]);
     else
-      _CLEAR_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_SECTOR_VPERED_MTZN]);
-    
-    direction_ABC_tmp |= (sector_directional_mtz[mtz_level][PHASE_A_INDEX] == MTZ_NAZAD) << 4; //Проверка направленности фазы А назад
-    direction_ABC_tmp |= (sector_directional_mtz[mtz_level][PHASE_B_INDEX] == MTZ_NAZAD) << 5; //Проверка направленности фазы B назад
-    direction_ABC_tmp |= (sector_directional_mtz[mtz_level][PHASE_C_INDEX] == MTZ_NAZAD) << 6; //Проверка направленности фазы C назад
-    
-    _OR3(direction_ABC_tmp, 4, direction_ABC_tmp, 5, direction_ABC_tmp, 6, direction_ABC_tmp, 7);
-    
-    //Сектор МТЗНх Назад
-    if (_GET_STATE(direction_ABC_tmp, 7))
-      _SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_SECTOR_NAZAD_MTZN]);
+      _CLEAR_BIT(p_active_functions, ocp_signals[i][RANG_SECTOR_VPERED_MTZN]);
+		
+    unsigned int const pickup_ocp_fw = (_CHECK_SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZN_VPERED]) != 0) ?
+            setpoint_ocp_fw[i][number_group_stp] * KOEF_POVERNENNJA_MTZ_I_UP / 100 :
+            setpoint_ocp_fw[i][number_group_stp];
+		l_ocp_0 |= (
+								(_GET_STATE(dir_ocp, 0) && (Ia >= pickup_ocp_fw)) ||
+								(_GET_STATE(dir_ocp, 1) && (Ib >= pickup_ocp_fw)) ||
+								(_GET_STATE(dir_ocp, 2) && (Ic >= pickup_ocp_fw))
+							 ) << 9;
+
+		dir_ocp |= (sector_ocp[PHASE_A_INDEX] == MTZ_NAZAD) << 4;
+		dir_ocp |= (sector_ocp[PHASE_B_INDEX] == MTZ_NAZAD) << 5;
+		dir_ocp |= (sector_ocp[PHASE_C_INDEX] == MTZ_NAZAD) << 6;
+
+		_OR3(dir_ocp, 4, dir_ocp, 5, dir_ocp, 6, dir_ocp, 7);
+    if (_GET_STATE(dir_ocp, 7))
+      _SET_BIT(p_active_functions, ocp_signals[i][RANG_SECTOR_NAZAD_MTZN]);
     else
-      _CLEAR_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_SECTOR_NAZAD_MTZN]);
-    
-    //Уставка ПО МТЗН1 прям. с учетом гистерезиса
-    po_mtzn_x_vpered_setpoint = (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_VPERED]) != 0) ?
-            *(setpoint_mtz_n_vpered[mtz_level] + number_group_stp) * KOEF_POVERNENNJA_MTZ_I_UP / 100 :
-            *(setpoint_mtz_n_vpered[mtz_level] + number_group_stp);
-    
-    direction_ABC_tmp |= (measurement[IM_IA] >= po_mtzn_x_vpered_setpoint) << 8; //Сравниваем с уставкой тока по фазе А (вперед)
-    direction_ABC_tmp |= (measurement[IM_IB] >= po_mtzn_x_vpered_setpoint) << 9; //Сравниваем с уставкой тока по фазе B (вперед)
-    direction_ABC_tmp |= (measurement[IM_IC] >= po_mtzn_x_vpered_setpoint) << 10; //Сравниваем с уставкой тока по фазе C (вперед)
-    
-    //Уставка ПО МТЗН1 прям. с учетом гистерезиса
-    po_mtzn_x_nazad_setpoint = (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_NAZAD]) != 0) ?
-            *(setpoint_mtz_n_nazad[mtz_level] + number_group_stp) * KOEF_POVERNENNJA_MTZ_I_UP / 100 :
-            *(setpoint_mtz_n_nazad[mtz_level] + number_group_stp);
-    
-    direction_ABC_tmp |= (measurement[IM_IA] >= po_mtzn_x_nazad_setpoint) << 11; //Сравниваем с уставкой тока по фазе А (назад)
-    direction_ABC_tmp |= (measurement[IM_IB] >= po_mtzn_x_nazad_setpoint) << 12; //Сравниваем с уставкой тока по фазе B (назад)
-    direction_ABC_tmp |= (measurement[IM_IC] >= po_mtzn_x_nazad_setpoint) << 13; //Сравниваем с уставкой тока по фазе C (назад)
-    
-    _AND2(direction_ABC_tmp, 8, direction_ABC_tmp, 0, direction_ABC_tmp, 14);
-    _AND2(direction_ABC_tmp, 9, direction_ABC_tmp, 1, direction_ABC_tmp, 15);
-    _AND2(direction_ABC_tmp, 10, direction_ABC_tmp, 2, direction_ABC_tmp, 16);
-    
-    _AND2(direction_ABC_tmp, 11, direction_ABC_tmp, 4, direction_ABC_tmp, 17);
-    _AND2(direction_ABC_tmp, 12, direction_ABC_tmp, 5, direction_ABC_tmp, 18);
-    _AND2(direction_ABC_tmp, 13, direction_ABC_tmp, 6, direction_ABC_tmp, 19);
-    
-    _OR3(direction_ABC_tmp, 14, direction_ABC_tmp, 15, direction_ABC_tmp, 16, tmp_value, 12);
-    _OR3(direction_ABC_tmp, 17, direction_ABC_tmp, 18, direction_ABC_tmp, 19, tmp_value, 13);
-    /******Сектор МТЗНх Вперед/Назад**********/
-    
-//    /******ПО U блок. МТЗНх***********************/
-//    //Уставка ПО U блок. МТЗНх с учетом гистерезиса
-//    po_block_u_mtzn_x_setpoint = (_CHECK_SET_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN) != 0) ?
-//           PORIG_CHUTLYVOSTI_VOLTAGE :
-//           PORIG_CHUTLYVOSTI_VOLTAGE * U_DOWN / 100;
-//    
-//    tmp_value |= ((measurement[IM_UAB] <= po_block_u_mtzn_x_setpoint) ||
-//                  (measurement[IM_UBC] <= po_block_u_mtzn_x_setpoint) ||
-//                  (measurement[IM_UCA] <= po_block_u_mtzn_x_setpoint)) << 14; //ПО U блок. МТЗНх
-//    
-//    //ПО U блок. МТЗНх
-//    if (_GET_STATE(tmp_value, 14))
-//      _SET_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN);
-//    else
-//      _CLEAR_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN);
-//    /******ПО U блок. МТЗНх***********************/
-    tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN) != 0) << 14;
-    
-    //Неисправность цепей напряжения для ступени МТЗх
-    tmp_value |= (
-                   !(_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_VPERED]) != 0 ||
-                     _CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_NAZAD])  != 0 ||
-                     _CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZPN])     != 0)
-                   &&
-                   ctr_mtz_nespr_kil_napr
-                 ) << 15;
-    
-    /******ПО U МТЗПНх***********************/
-    po_u_mtzpn_x_setpoint = (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_U_MTZPN]) != 0) ?
-            *(setpoint_mtz_U[mtz_level] + number_group_stp) * U_DOWN / 100:
-            *(setpoint_mtz_U[mtz_level] + number_group_stp) ;
-    
-    tmp_value |= ((measurement[IM_UAB] <= po_u_mtzpn_x_setpoint) ||
-                  (measurement[IM_UBC] <= po_u_mtzpn_x_setpoint) ||
-                  (measurement[IM_UCA] <= po_u_mtzpn_x_setpoint)) << 16; //ПО U МТЗПНх
-    
-    //ПО U МТЗПНх
-    if (_GET_STATE(tmp_value, 16))
-      _SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_U_MTZPN]);
+      _CLEAR_BIT(p_active_functions, ocp_signals[i][RANG_SECTOR_NAZAD_MTZN]);
+
+    unsigned int const pickup_ocp_bw = (_CHECK_SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZN_NAZAD]) != 0) ?
+            setpoint_ocp_bw[i][number_group_stp] * KOEF_POVERNENNJA_MTZ_I_UP / 100 :
+            setpoint_ocp_bw[i][number_group_stp];
+		l_ocp_0 |= (
+								(_GET_STATE(dir_ocp, 4) && (Ia >= pickup_ocp_bw)) ||
+								(_GET_STATE(dir_ocp, 5) && (Ib >= pickup_ocp_bw)) ||
+								(_GET_STATE(dir_ocp, 6) && (Ic >= pickup_ocp_bw))
+							 ) << 10;
+		
+		//З пуском за напругою МСЗ
+    unsigned int const pickup_ocp_U_by_U = (_CHECK_SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_U_MTZPN]) != 0) ?
+            setpoint_ocp_U_by_U[i][number_group_stp] * U_DOWN / 100:
+            setpoint_ocp_U_by_U[i][number_group_stp] ;
+	  l_ocp_0 |= ((Uab <= pickup_ocp_U_by_U) || (Ubc <= pickup_ocp_U_by_U) ||(Uca <= pickup_ocp_U_by_U)) << 11;
+    if (_GET_STATE(l_ocp_0, 11))
+      _SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_U_MTZPN]);
     else
-      _CLEAR_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_U_MTZPN]);
-    /******ПО U МТЗПНх***********************/
-    
-    /******ПО МТЗПНх***********************/
-    po_mtzpn_x_setpoint = (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZPN]) != 0) ?
-            *(setpoint_mtz_po_napruzi[mtz_level] + number_group_stp) * KOEF_POVERNENNJA_MTZ_I_UP / 100:
-            *(setpoint_mtz_po_napruzi[mtz_level] + number_group_stp);
-    
-    tmp_value |= ((measurement[IM_IA] >= po_mtzpn_x_setpoint)   ||
-                  (measurement[IM_IB] >= po_mtzpn_x_setpoint) ||
-                  (measurement[IM_IC] >= po_mtzpn_x_setpoint)) << 17; //ПО МТЗПНх
-    /******ПО МТЗПНх***********************/
-    
-    if (mtz_level == 1) { //только для 2-ой ступени
-      //ДВ
-      tmp_value |= (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_BLOCK_USK_MTZ]) == 0) << 9; //Блокировка ускорения МТЗ 2
-      //М
-      tmp_value |= ((current_settings_prt.control_mtz & CTR_MTZ_2_PRYSKORENA) != 0) << 10; //МТЗ2 Ускоренная
-      //ДВ
-      tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV) != 0) << 18; //Положение ВВ
-      //M
-      tmp_value |= ((current_settings_prt.control_mtz & CTR_MTZ_2_PRYSKORENNJA) != 0) << 11; //Ускорение МТЗ2 вкл.
-    }
-    
-    if (_GET_STATE(tmp_value, 15)) { //Если зафиксирована неисправность цепей напряжения для ступени МТЗх
-      _CLEAR_STATE(tmp_value, 16); //Очистка ПО U МТЗПНх
-    }
-    
-    _OR2_INVERTOR(tmp_value, 14, tmp_value, 15, tmp_value, 14);
-    
-    if (_CHECK_SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZ]) != 0) 
-    {
-      _SET_STATE(tmp_value, 19);
-    } 
-    else 
-    {
-      if (mtz_level == 1)
-      {
-        //только для 2-ой ступени при формировании 19-го сигнала будет учитываться
-        //сигнал "Зависимая" (tmp_value 3)
-        if (_GET_STATE(tmp_value, 14)) 
-        {
-          _OR3(tmp_value, 2, tmp_value, 3, tmp_value, 15, tmp_value, 19);
-        }
-        else 
-        {
-          _OR4(tmp_value, 0, tmp_value, 2, tmp_value, 3, tmp_value, 15, tmp_value, 19);
-        }
-      }
-      else 
-      {
-        if (_GET_STATE(tmp_value, 14))
-        {
-          _OR2(tmp_value, 2, tmp_value, 15, tmp_value, 19);
-        } 
-        else
-        {
-          _OR3(tmp_value, 0, tmp_value, 2, tmp_value, 15, tmp_value, 19);
-        }
-      }
-    }
-    
-    _AND2(tmp_value, 5, tmp_value, 6, tmp_value, 20);
-    
-    //ПО МТЗх
-    _AND3(tmp_value, 19, tmp_value, 4, tmp_value, 20, tmp_value, 21);
-    if (_GET_STATE(tmp_value, 21))
-      _SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZ]);
+      _CLEAR_BIT(p_active_functions, ocp_signals[i][RANG_PO_U_MTZPN]);
+
+		unsigned int const pickup_ocp_I_by_U  = (_CHECK_SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZPN]) != 0) ?
+            setpoint_ocp_I_by_U[i][number_group_stp] * KOEF_POVERNENNJA_MTZ_I_UP / 100:
+            setpoint_ocp_I_by_U[i][number_group_stp];
+	  l_ocp_0 |= (Imax >= pickup_ocp_I_by_U) << 12;
+		
+		uint32_t ocp_global_var_copy;
+		do
+		{
+			ocp_global_var_copy = ocp_general_bits; //копія на почтку ітераційного процесу
+			
+			l_ocp_0 |= (
+									(_CHECK_SET_BIT(p_active_functions, RANG_PO_BLOCK_U_MTZN) == 0) &&
+									(_GET_STATE(ocp_general_bits, (2 + i)) == 0)	
+								 ) << 13;
+			_INVERTOR(l_ocp_0, 13, l_ocp_0, 14);
+			_AND2(l_ocp_0, 1, l_ocp_0, 14, l_ocp_0, 15);
+			
+			_AND5(l_ocp_0, 1, l_ocp_0, 6, l_ocp_0, 7, l_ocp_0,  9, l_ocp_0, 13, l_ocp_0, 16);
+			_AND5(l_ocp_0, 1, l_ocp_0, 6, l_ocp_0, 8, l_ocp_0, 10, l_ocp_0, 13, l_ocp_0, 17);
+			
+			_INVERTOR(ocp_general_bits, (2 + i), l_ocp_0, 18);
+			_AND2(l_ocp_0, 11, l_ocp_0, 18, l_ocp_0, 19);
+			
+			_AND4(l_ocp_0, 2, l_ocp_0, 6, l_ocp_0, 19, l_ocp_0, 12, l_ocp_0, 20);
+			
+			uint32_t tmp_select_bits;
+			do
+			{
+				tmp_select_bits = static_ocp_select_tmp_bits & (1u << i);
+				
+				_AND3(static_ocp_select_tmp_bits, i, l_ocp_0, 3, l_ocp_0, 6, l_ocp_0, 21);
+				_OR5(l_ocp_0, 15, l_ocp_0, 0, l_ocp_0, 21, dep_ocp_0, 5, ocp_general_bits, (2 + i), static_ocp_select_tmp_bits, i);
+			}
+			while((static_ocp_select_tmp_bits & (1u << i)) != tmp_select_bits);
+			
+			_INVERTOR(l_ocp_0, 21, l_ocp_0, 22);
+			_AND2(l_ocp_0, 22, l_ocp_0, 16, l_ocp_0, 23);
+			_AND2(l_ocp_0, 22, l_ocp_0, 17, l_ocp_0, 24);
+			_AND2(l_ocp_0, 22, l_ocp_0, 20, l_ocp_0, 25);
+			
+			_OR3_INVERTOR(l_ocp_0, 23, l_ocp_0, 24, l_ocp_0, 25, l_ocp_0, 26);
+			
+			if(
+				  _GET_STATE(l_ocp_0, 26) &&
+					(_CHECK_SET_BIT(p_active_functions, RANG_NCN_MTZ) != 0)	 
+				)
+			{
+				_SET_STATE(ocp_general_bits, (2 + i));
+			}
+			else
+			{
+				_CLEAR_STATE(ocp_general_bits, (2 + i));
+			}
+		}
+		while (ocp_global_var_copy != ocp_general_bits);
+
+		//ПО МСЗх
+		if (_GET_STATE(l_ocp_0, 21))
+      _SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZ]);
     else
-      _CLEAR_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZ]);
-    
-    //ПО МТЗНх вперед
-    _AND5(tmp_value, 0, tmp_value, 20, tmp_value, 7, tmp_value, 12, tmp_value, 14, tmp_value, 22);
-    if (_GET_STATE(tmp_value, 22))
-      _SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_VPERED]);
+      _CLEAR_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZ]);
+		
+		//ПО МСЗCх Прямий
+		if (_GET_STATE(l_ocp_0, 23))
+      _SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZN_VPERED]);
     else
-      _CLEAR_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_VPERED]);
-    
-    //ПО МТЗНх назад
-    _AND5(tmp_value, 0, tmp_value, 20, tmp_value, 8, tmp_value, 13, tmp_value, 14, tmp_value, 23);
-    if (_GET_STATE(tmp_value, 23)) 
-      _SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_NAZAD]);
+      _CLEAR_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZN_VPERED]);
+		
+		//ПО МСЗCх Звороний
+		if (_GET_STATE(l_ocp_0, 24))
+      _SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZN_NAZAD]);
     else
-      _CLEAR_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZN_NAZAD]);
-    
-    //ПО МТЗПНх
-    _AND4(tmp_value, 1, tmp_value, 20, tmp_value, 16, tmp_value, 17, tmp_value, 24);
-    if (_GET_STATE(tmp_value, 24))
-      _SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZPN]);
+      _CLEAR_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZN_NAZAD]);
+		
+		//ПО МСЗПНх
+		if (_GET_STATE(l_ocp_0, 25))
+      _SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZPN]);
     else
-      _CLEAR_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_PO_MTZPN]);
-    
-    if (mtz_level != 1) { //для всех ступеней кроме 2-ой
-      _TIMER_T_0(mtz_tmr_const[mtz_level][INDEX_TIMER_MTZ], *(timeout_mtz[mtz_level] + number_group_stp), tmp_value, 21, tmp_value, 25);
-      _TIMER_T_0(mtz_tmr_const[mtz_level][INDEX_TIMER_MTZ_N_VPERED], *(timeout_mtz_n_vpered[mtz_level] + number_group_stp), tmp_value, 22, tmp_value, 26);
-      _TIMER_T_0(mtz_tmr_const[mtz_level][INDEX_TIMER_MTZ_N_NAZAD], *(timeout_mtz_n_nazad[mtz_level] + number_group_stp), tmp_value, 23, tmp_value, 27);
-      _TIMER_T_0(mtz_tmr_const[mtz_level][INDEX_TIMER_MTZ_PO_NAPRUZI], *(timeout_mtz_po_napruzi[mtz_level] + number_group_stp), tmp_value, 24, tmp_value, 28);
-      _OR4(tmp_value, 25, tmp_value, 26, tmp_value, 27, tmp_value, 28, tmp_value, 31);
-    } else {
-      unsigned int tmp = 0;
-      _AND2(tmp_value, 18, tmp_value, 11, tmp, 0);
-      _TIMER_IMPULSE(INDEX_TIMER_MTZ2_VVID_PR, current_settings_prt.timeout_mtz_2_vvid_pr[number_group_stp], temp_states_for_mtz, 0, tmp, 0, tmp, 1);
-      _OR2(tmp, 1, tmp_value, 10, tmp, 2);
-      _AND2(tmp_value, 9, tmp, 2, tmp, 3);
-      _INVERTOR(tmp, 3, tmp, 4);
-      _INVERTOR(tmp_value, 3, tmp, 23); /*Добавлено Тарасом у Богданову програму*/
-      _AND3(tmp, 4, tmp_value, 3, tmp_value, 21, tmp, 5);
-      _AND2(tmp, 3, tmp_value, 21, tmp, 6);
-      _AND3(tmp, 4, tmp_value, 21, tmp, 23, tmp, 7); /*Модифіковано Тарасом у Богдановій програмі*/
-      _AND2(tmp, 4, tmp_value, 22, tmp, 8);
-      _AND2(tmp, 3, tmp_value, 22, tmp, 9);
-      _AND2(tmp, 4, tmp_value, 23, tmp, 10);
-      _AND2(tmp, 3, tmp_value, 23, tmp, 11);
-      _AND2(tmp, 4, tmp_value, 24, tmp, 12);
-      _AND2(tmp, 3, tmp_value, 24, tmp, 13);
-      
-      unsigned int i_max = measurement[IM_IA];
-      if (i_max < measurement[IM_IB]) i_max = measurement[IM_IB];
-      if (i_max < measurement[IM_IC]) i_max = measurement[IM_IC];
-      _TIMER_T_0_LOCK(INDEX_TIMER_MTZ2_DEPENDENT, timeout_dependent_general(i_max, current_settings_prt.setpoint_mtz_2[number_group_stp], current_settings_prt.timeout_mtz_2[number_group_stp], current_settings_prt.type_mtz2), tmp, 5, p_global_trigger_state_mtz2, 0);
-      _TIMER_T_0(INDEX_TIMER_MTZ2_PR, current_settings_prt.timeout_mtz_2_pr[number_group_stp], tmp, 6, tmp, 15);
-      _TIMER_T_0(INDEX_TIMER_MTZ2, current_settings_prt.timeout_mtz_2[number_group_stp], tmp, 7, tmp, 16);
-      _TIMER_T_0(INDEX_TIMER_MTZ2_N_VPERED, current_settings_prt.timeout_mtz_2_n_vpered[number_group_stp], tmp, 8, tmp, 17);
-      _TIMER_T_0(INDEX_TIMER_MTZ2_N_VPERED_PR, current_settings_prt.timeout_mtz_2_n_vpered_pr[number_group_stp], tmp, 9, tmp, 18);
-      _TIMER_T_0(INDEX_TIMER_MTZ2_N_NAZAD, current_settings_prt.timeout_mtz_2_n_nazad[number_group_stp], tmp, 10, tmp, 19);
-      _TIMER_T_0(INDEX_TIMER_MTZ2_N_NAZAD_PR, current_settings_prt.timeout_mtz_2_n_nazad_pr[number_group_stp], tmp, 11, tmp, 20);
-      _TIMER_T_0(INDEX_TIMER_MTZ2_PO_NAPRUZI, current_settings_prt.timeout_mtz_2_po_napruzi[number_group_stp], tmp, 12, tmp, 21);
-      _TIMER_T_0(INDEX_TIMER_MTZ2_PO_NAPRUZI_PR, current_settings_prt.timeout_mtz_2_po_napruzi_pr[number_group_stp], tmp, 13, tmp, 22);
-      
-      _OR6(p_global_trigger_state_mtz2, 0, tmp, 15, tmp, 16, tmp, 17, tmp, 18, tmp, 19, tmp_value, 29);
-      _OR3(tmp, 20, tmp, 21, tmp, 22, tmp_value, 30);
-      _OR2(tmp_value, 29, tmp_value, 30, tmp_value, 31);
-    }
-    
-    //Сраб.МТЗх
-    if (_GET_STATE(tmp_value, 31))
-      _SET_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_MTZ]);
-    else
-      _CLEAR_BIT(p_active_functions, mtz_settings_prt[mtz_level][RANG_MTZ]);
-  }
+      _CLEAR_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZPN]);
+		
+		//Функціонал, який відповідає за прискорення
+		if(ocp_ext[i][ACC] != 0)
+		{
+			acc_ocp_0 |= (_CHECK_SET_BIT(p_active_functions, ocp_signals[i][RANG_BLOCK_USK_MTZ]) == 0) << 0;
+			
+			acc_ocp_0 |= ((control_ocp & ocp_ctr_setting[i][CTR_MTZ_PRYSKORENA]) != 0) << 1;
+			acc_ocp_0 |= ((control_ocp & ocp_ctr_setting[i][CTR_MTZ_PRYSKORENNJA]) != 0) << 2;
+
+			_AND2(ocp_general_bits, (2 + NUMBER_LEVEL_OCP), acc_ocp_0, 2, acc_ocp_0, 3);
+
+			_TIMER_IMPULSE(ocp_tmr_index[i][INDEX_TIMER_MTZ_VVID_PR], timeout_ocp_vvid_pr[i][number_group_stp], ocp_general_bits, (2 + NUMBER_LEVEL_OCP + 1 + i), acc_ocp_0, 3, acc_ocp_0, 4);
+			_OR2(acc_ocp_0, 1, acc_ocp_0, 4, acc_ocp_0, 5);
+			_AND2(acc_ocp_0, 0, acc_ocp_0, 5, acc_ocp_0, 6);
+			_INVERTOR(acc_ocp_0, 6, acc_ocp_0, 7);
+
+			//Прямий напрямок струмозалежної МСЗ
+			uint32_t ocp_fw_tmp_bits;
+			do
+			{
+				ocp_fw_tmp_bits = static_ocp_fw_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)));
+				
+				_OR2(acc_ocp_0, 7, static_ocp_fw_tmp_bits, (2*i), acc_ocp_0, 8);
+				_INVERTOR(static_ocp_fw_tmp_bits, (2*i), acc_ocp_0, 9);
+				
+				_OR2(acc_ocp_0, 6, static_ocp_fw_tmp_bits, (2*i + 1), acc_ocp_0, 10);
+				_INVERTOR(static_ocp_fw_tmp_bits, (2*i + 1), acc_ocp_0, 11);
+				
+				_AND3(acc_ocp_0, 8, acc_ocp_0, 11, l_ocp_0, 23, static_ocp_fw_tmp_bits, (2*i    ));
+				_AND3(acc_ocp_0, 9, acc_ocp_0, 10, l_ocp_0, 23, static_ocp_fw_tmp_bits, (2*i + 1));
+			}
+			while((static_ocp_fw_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)))) != ocp_fw_tmp_bits);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_VPERED   ], timeout_ocp_fw[i][number_group_stp]   , static_ocp_fw_tmp_bits, (2*i    ), l_ocp_0  , 28);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_VPERED_PR], timeout_ocp_pr_fw[i][number_group_stp], static_ocp_fw_tmp_bits, (2*i + 1), acc_ocp_0, 12);
+
+			//Зворотний напрямок струмозалежної МСЗ
+			uint32_t ocp_bw_tmp_bits;
+			do
+			{
+				ocp_bw_tmp_bits = static_ocp_bw_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)));
+				
+				_OR2(acc_ocp_0, 7, static_ocp_bw_tmp_bits, (2*i), acc_ocp_0, 13);
+				_INVERTOR(static_ocp_bw_tmp_bits, (2*i), acc_ocp_0, 14);
+				
+				_OR2(acc_ocp_0, 6, static_ocp_bw_tmp_bits, (2*i + 1), acc_ocp_0, 15);
+				_INVERTOR(static_ocp_bw_tmp_bits, (2*i + 1), acc_ocp_0, 16);
+				
+				_AND3(acc_ocp_0, 13, acc_ocp_0, 16, l_ocp_0, 24, static_ocp_bw_tmp_bits, (2*i    ));
+				_AND3(acc_ocp_0, 14, acc_ocp_0, 15, l_ocp_0, 24, static_ocp_bw_tmp_bits, (2*i + 1));
+			}
+			while((static_ocp_bw_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)))) != ocp_bw_tmp_bits);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_NAZAD   ], timeout_ocp_bw[i][number_group_stp]   , static_ocp_bw_tmp_bits, (2*i    ), l_ocp_0  , 29);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_NAZAD_PR], timeout_ocp_pr_bw[i][number_group_stp], static_ocp_bw_tmp_bits, (2*i + 1), acc_ocp_0, 17);
+
+			//МСЗ з пуском за напругою
+			uint32_t ocp_by_U_tmp_bits;
+			do
+			{
+				ocp_by_U_tmp_bits = static_ocp_by_U_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)));
+				
+				_OR2(acc_ocp_0, 7, static_ocp_by_U_tmp_bits, (2*i), acc_ocp_0, 18);
+				_INVERTOR(static_ocp_by_U_tmp_bits, (2*i), acc_ocp_0, 19);
+				
+				_OR2(acc_ocp_0, 6, static_ocp_by_U_tmp_bits, (2*i + 1), acc_ocp_0, 20);
+				_INVERTOR(static_ocp_by_U_tmp_bits, (2*i + 1), acc_ocp_0, 21);
+				
+				_AND3(acc_ocp_0, 18, acc_ocp_0, 21, l_ocp_0, 25, static_ocp_by_U_tmp_bits, (2*i    ));
+				_AND3(acc_ocp_0, 19, acc_ocp_0, 20, l_ocp_0, 25, static_ocp_by_U_tmp_bits, (2*i + 1));
+			}
+			while((static_ocp_by_U_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)))) != ocp_by_U_tmp_bits);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_PO_NAPRUZI   ], timeout_ocp_by_U[i][number_group_stp]   , static_ocp_by_U_tmp_bits, (2*i    ), l_ocp_0  , 30);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_PO_NAPRUZI_PR], timeout_ocp_pr_by_U[i][number_group_stp], static_ocp_by_U_tmp_bits, (2*i + 1), acc_ocp_0, 22);
+
+			//МСЗ проста або струмозалежна
+			uint32_t ocp_tmp_bits;
+			uint32_t ocp_dep_tmp_bits;
+			do
+			{
+				ocp_tmp_bits     = static_ocp_tmp_bits     & ((1u << (2*i)) | (1u << (2*i + 1)));
+				ocp_dep_tmp_bits = static_ocp_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A + 1)) - 1));
+				
+				_OR2(acc_ocp_0, 7, static_ocp_tmp_bits, (2*i), acc_ocp_0, 23);
+				_OR6_INVERTOR(
+											static_ocp_tmp_bits, (2*i), 
+											static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i),
+											static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i),
+											static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i),
+											static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i),
+											static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i),
+											acc_ocp_0, 24
+										 );
+				
+				_OR2(acc_ocp_0, 6, static_ocp_tmp_bits, (2*i + 1), acc_ocp_0, 25);
+				_INVERTOR(static_ocp_tmp_bits, (2*i + 1), acc_ocp_0, 26);
+				
+				_AND4(dep_ocp_0, 6, acc_ocp_0, 23, acc_ocp_0, 26, l_ocp_0, 21, static_ocp_tmp_bits, (2*i    ));
+				_AND3(              acc_ocp_0, 24, acc_ocp_0, 25, l_ocp_0, 21, static_ocp_tmp_bits, (2*i + 1));
+				
+				if(ocp_ext[i][DEP] != 0)
+				{
+					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 0, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 1, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 2, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 3, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 4, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i));
+				}
+			}
+			while(
+						((static_ocp_tmp_bits     & ((1u << (2*i)) | (1u << (2*i + 1)))                                                   ) != ocp_tmp_bits    ) ||
+						((static_ocp_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A + 1)) - 1))) != ocp_dep_tmp_bits)
+					 );
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ   ], timeout_ocp[i][number_group_stp]   , static_ocp_tmp_bits, (2*i    ), l_ocp_0  , 27);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_PR], timeout_ocp_pr[i][number_group_stp], static_ocp_tmp_bits, (2*i + 1), acc_ocp_0, 27);
+		}
+		else
+		{
+			if(ocp_ext[i][DEP] != 0)
+			{
+				_AND2(dep_ocp_0, 0, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
+				_AND2(dep_ocp_0, 1, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
+				_AND2(dep_ocp_0, 2, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
+				_AND2(dep_ocp_0, 3, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i));
+				_AND2(dep_ocp_0, 4, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i));
+			}
+			
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_VPERED  ], timeout_ocp_fw[i][number_group_stp]  , l_ocp_0, 23, l_ocp_0, 28);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_NAZAD   ], timeout_ocp_bw[i][number_group_stp]  , l_ocp_0, 24, l_ocp_0, 29);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_PO_NAPRUZI], timeout_ocp_by_U[i][number_group_stp], l_ocp_0, 25, l_ocp_0, 30);
+			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ]           , timeout_ocp[i][number_group_stp]     , l_ocp_0, 21, l_ocp_0, 27);
+		}
+		
+		if(ocp_ext[i][DEP] != 0)
+		{
+			for(int type_ocp_tmp = TYPE_MTZ_DEPENDENT_A; type_ocp_tmp <= TYPE_MTZ_DEPENDENT_RTV_I; ++type_ocp_tmp)
+			{
+				int const shift = type_ocp_tmp - TYPE_MTZ_DEPENDENT_A;
+				if (_GET_STATE(static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP * shift + i)))
+				{
+					unsigned int const pickup  = setpoint_ocp[i][number_group_stp];
+					int const timeout = timeout_ocp[i][number_group_stp];
+					
+					_TIMER_T_0_LOCK(ocp_tmr_index[i][INDEX_TIMER_MTZ_DEPENDENT_A  + shift], timeout_dependent_general(Imax, pickup, timeout, type_ocp_tmp), static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP * shift + i), dep_ocp_0,  (7 + shift));
+				}
+				else
+				{
+					global_timers[ocp_tmr_index[i][INDEX_TIMER_MTZ_DEPENDENT_A  + shift]] = -1;
+					_CLEAR_STATE(dep_ocp_0, (7 + shift));
+				}
+			}
+		}
+		
+		if (
+				(
+				 _GET_STATE(l_ocp_0, 27) ||
+				 _GET_STATE(l_ocp_0, 28) ||
+				 _GET_STATE(l_ocp_0, 29) ||
+				 _GET_STATE(l_ocp_0, 30)
+				)
+				||
+				(
+				 (ocp_ext[i][DEP] != 0) &&
+				 (
+					_GET_STATE(dep_ocp_0,  7) ||
+					_GET_STATE(dep_ocp_0,  8) ||
+					_GET_STATE(dep_ocp_0,  9) ||
+					_GET_STATE(dep_ocp_0, 10) ||
+					_GET_STATE(dep_ocp_0, 11)
+				 )	
+				) 
+				||
+				(
+				 (ocp_ext[i][ACC] != 0) &&
+				 (
+  				_GET_STATE(acc_ocp_0, 12) ||
+	  			_GET_STATE(acc_ocp_0, 17) ||
+		  		_GET_STATE(acc_ocp_0, 22) ||
+			  	_GET_STATE(acc_ocp_0, 27)
+				 )	
+				) 
+			 )	
+		{
+      _SET_BIT(p_active_functions, ocp_signals[i][RANG_MTZ]);
+		}
+		else
+		{
+      _CLEAR_BIT(p_active_functions, ocp_signals[i][RANG_MTZ]);
+		}
+	}
 }
 /*****************************************************/
 
@@ -8722,7 +9078,7 @@ do{
     /**************************/
     if ((current_settings_prt.configuration & (1 << MTZ_BIT_CONFIGURATION)) != 0)
     {
-      mtz_handler(active_functions, number_group_stp);
+      ocp_handler(active_functions, number_group_stp);
     }
     else
     {
@@ -8745,6 +9101,13 @@ do{
       };
       for (size_t i = 0; i < N_BIG; ++i) active_functions[i] &= (unsigned int)(~maska_mtz_signals[i]);
       for (int *p = (global_timers + _INDEX_MTZ_BEGIN); p <= (global_timers + _INDEX_MTZ_END); ++p) *p = -1;
+			
+			ocp_general_bits = 0;
+			static_ocp_select_tmp_bits = 0;
+			static_ocp_fw_tmp_bits = 0;
+			static_ocp_bw_tmp_bits = 0;
+			static_ocp_by_U_tmp_bits = 0;
+
     }
     /**************************/
     

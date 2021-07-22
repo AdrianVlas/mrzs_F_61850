@@ -6,13 +6,13 @@
 #define MASKA_FOR_BIT(_n)      (1u << _n)
 
 #define _CHECK_SET_BIT(_array, _number_bit)                                     \
-    (_array[_number_bit >> 5] & ( (unsigned int)( 1 << (_number_bit & 0x1f)) ) )                           
+    (_array[_number_bit >> 5] & ( 1u << (_number_bit & 0x1f)) )                           
 
 #define _SET_BIT(_array, _number_bit)                                           \
-      _array[_number_bit >> 5] |= (unsigned int)(1 << (_number_bit & 0x1f))
+      _array[_number_bit >> 5] |= (1u << (_number_bit & 0x1f))
 
 #define _CLEAR_BIT(_array, _number_bit)                                         \
-      _array[_number_bit >> 5] &= (unsigned int)(~(1 << (_number_bit & 0x1f)))
+      _array[_number_bit >> 5] &= ~(1u << (_number_bit & 0x1f))
 
 //#define _DEVICE_REGISTER(addr,offset)   *(unsigned short int *)(addr + (offset<<1) )
 #define _DEVICE_REGISTER_V2(addr,offset)   *(uint16_t *)(addr + offset)
@@ -325,6 +325,29 @@
             _output |= (unsigned int)(1 << _output_bit);       \
           else                                                 \
             _output &= (unsigned int)(~(1 << _output_bit));    \
+        }
+
+#define _OR6_INVERTOR(                                         \
+             _input_1, _input_bit_1,                           \
+             _input_2, _input_bit_2,                           \
+             _input_3, _input_bit_3,                           \
+             _input_4, _input_bit_4,                           \
+             _input_5, _input_bit_5,                           \
+             _input_6, _input_bit_6,                           \
+             _output , _output_bit                             \
+            )                                                  \
+        {                                                      \
+          if(                                                  \
+             (_input_1 & (unsigned int)(1 << _input_bit_1)) || \
+             (_input_2 & (unsigned int)(1 << _input_bit_2)) || \
+             (_input_3 & (unsigned int)(1 << _input_bit_3)) || \
+             (_input_4 & (unsigned int)(1 << _input_bit_4)) || \
+             (_input_5 & (unsigned int)(1 << _input_bit_5)) || \
+             (_input_6 & (unsigned int)(1 << _input_bit_6))    \
+            )                                                  \
+            _output &= (unsigned int)(~(1 << _output_bit));    \
+          else                                                 \
+            _output |= (unsigned int)(1 << _output_bit);       \
         }
 
 #define _OR8(                                                  \
