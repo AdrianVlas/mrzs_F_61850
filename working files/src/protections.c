@@ -1569,11 +1569,17 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 				
 				if(ocp_ext[i][DEP] != 0)
 				{
-					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 0, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 1, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 2, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 3, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(acc_ocp_0, 7, acc_ocp_0, 26, dep_ocp_0, 4, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i));
+					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 12);
+					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 13);
+					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 14);
+					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 15);
+					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 16);
+
+					_AND4(dep_ocp_0, 12, acc_ocp_0, 26, dep_ocp_0, 0, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(dep_ocp_0, 13, acc_ocp_0, 26, dep_ocp_0, 1, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(dep_ocp_0, 14, acc_ocp_0, 26, dep_ocp_0, 2, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(dep_ocp_0, 15, acc_ocp_0, 26, dep_ocp_0, 3, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(dep_ocp_0, 16, acc_ocp_0, 26, dep_ocp_0, 4, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i));
 				}
 			}
 			while(
