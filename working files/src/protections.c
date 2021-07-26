@@ -7449,6 +7449,9 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
             (statePowerDown == STATE_POWER_DOWN_ETAP_CUT)  
            )
         {
+          //Підтверджуємо примусовий запис у енергонезалежну пам'ять через пропадання живлення
+          if (statePowerDown == STATE_POWER_DOWN_ETAP_CUT) statePowerDown = STATE_POWER_DOWN_ETAP_CUT_CONFIRMED;
+          
           //Немає умови продовження запису, або є умова завершення запису - завершуємо формування запису і подаємо команду на запис
           buffer_for_save_dr_record[FIRST_INDEX_NUMBER_ITEMS_DR      ] = number_items_dr;
           buffer_for_save_dr_record[FIRST_INDEX_NUMBER_CHANGES_DR    ] =  number_changes_into_dr_record       & 0xff;
@@ -7683,7 +7686,7 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
             header_ar.TVoltage = current_settings_prt.TVoltage;
             
             //Додаткові налаштування при яких було запущено аналоговий реєстратор
-            header_ar.control_extra_settings_1 = current_settings_prt.control_extra_settings_1 & (MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE));
+            header_ar.control_extra_settings_1 = current_settings_prt.control_extra_settings_1 & (MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04) | (MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE)));
 
             //Час доаварійного масиву
             header_ar.prefault_number_periods = prefault_number_periods_tmp;
