@@ -320,7 +320,7 @@ enum __mtz_tmr_const
 	INDEX_TIMER_MTZ_VVID_PR,
 	
   /*************************************/
-  NUMBER_LEVEL_TMR_CONST
+  NUMBER_LEVEL_OCP_TMR_CONST
 };
 
 
@@ -379,8 +379,5 @@ enum __mtz_abc_const {
   PHASE_B_INDEX,
   PHASE_C_INDEX
 };
-
-
-
 
 #endif

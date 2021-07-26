@@ -283,8 +283,6 @@ extern unsigned char crc_settings;
 extern __SETTINGS current_settings_prt, current_settings;
 extern __SETTINGS edition_settings, current_settings_interfaces;
 
-extern unsigned int p_global_trigger_state_mtz04_2;
-
 //МСЗ
 extern unsigned int ocp_general_bits;
 extern uint32_t static_ocp_select_tmp_bits;
@@ -293,6 +291,11 @@ extern uint32_t static_ocp_fw_tmp_bits;
 extern uint32_t static_ocp_bw_tmp_bits;
 extern uint32_t static_ocp_by_U_tmp_bits;
 extern uint32_t static_ocp_dep_tmp_bits;
+
+//МСЗ 0.4кВ
+extern unsigned int ocp04_general_bits;
+extern uint32_t static_ocp04_tmp_bits;
+extern uint32_t static_ocp04_dep_tmp_bits;
 
 //Визначення періодів у хвилину і більше
 extern unsigned int number_seconds;

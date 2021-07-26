@@ -231,7 +231,7 @@ void d_xor_handler(unsigned int*);
 void d_not_handler(unsigned int*);
 void tf_handler(unsigned int*, unsigned int*);
 void ocp_handler(unsigned int*, unsigned int);
-void mtz04_handler(unsigned int*, unsigned int);
+void ocp04_handler(unsigned int*, unsigned int);
 void zdz_handler(unsigned int*, unsigned int);
 int timeout_dependent_general(unsigned int, unsigned int, int, int);
 void zz_handler(unsigned int*, unsigned int);

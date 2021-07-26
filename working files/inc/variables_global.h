@@ -726,8 +726,6 @@ __SETTINGS current_settings;
 #endif
 SRAM1 __SETTINGS edition_settings, current_settings_interfaces;
 
-unsigned int p_global_trigger_state_mtz04_2;
-
 //МСЗ
 unsigned int ocp_general_bits;
 uint32_t static_ocp_select_tmp_bits;
@@ -736,6 +734,11 @@ uint32_t static_ocp_fw_tmp_bits;
 uint32_t static_ocp_bw_tmp_bits;
 uint32_t static_ocp_by_U_tmp_bits;
 uint32_t static_ocp_dep_tmp_bits;
+
+//МСЗ 0.4кВ
+unsigned int ocp04_general_bits;
+uint32_t static_ocp04_tmp_bits;
+uint32_t static_ocp04_dep_tmp_bits;
 
 //Визначення періодів у хвилину і більше
 unsigned int number_seconds;

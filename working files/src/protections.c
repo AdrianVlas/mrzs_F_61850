@@ -1075,7 +1075,7 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
     	RANG_MTZ4
   	}
 	};
-	static int const ocp_tmr_index[NUMBER_LEVEL_OCP][NUMBER_LEVEL_TMR_CONST] = 
+	static int const ocp_tmr_index[NUMBER_LEVEL_OCP][NUMBER_LEVEL_OCP_TMR_CONST] = 
 	{
   	{
     	INDEX_TIMER_MTZ1,
@@ -2945,160 +2945,253 @@ void umin2_handler(unsigned int *p_active_functions, unsigned int number_group_s
 /*****************************************************/
 // МТЗ04
 /*****************************************************/
-void mtz04_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
+void ocp04_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
- //проверка предыдущего состояния ПО МТЗ04_1
-  _Bool previous_state_po_mtz04_1 = _CHECK_SET_BIT(p_active_functions, RANG_PO_MTZ04_1) > 0;
-  _Bool previous_state_po_mtz04_2 = _CHECK_SET_BIT(p_active_functions, RANG_PO_MTZ04_2) > 0;
-//пороги сраб и возв для ПО в зависимости от гр уставок
-  unsigned int setpoint1 = previous_state_po_mtz04_1 ?
-          current_settings_prt.setpoint_mtz04_1[number_group_stp] * U_UP / 100 :
-          current_settings_prt.setpoint_mtz04_1[number_group_stp];
+	unsigned int const I04 = measurement[IM_I04];
+	
+	static int const ocp04_signals[NUMBER_LEVEL_OCP04][OCP04_SIGNALS_LENGTH] = 
+	{
+  	{
+    	RANG_BLOCK_MTZ04_1, 
+    	-1,
+    	RANG_PO_MTZ04_1,
+    	RANG_MTZ04_1
+  	},
+  	{
+    	RANG_BLOCK_MTZ04_2, 
+    	RANG_BLOCK_USK_MTZ04_2,
+    	RANG_PO_MTZ04_2,
+    	RANG_MTZ04_2
+  	}
+	};
+	static int const ocp04_tmr_index[NUMBER_LEVEL_OCP04][NUMBER_LEVEL_OCP04_TMR_CONST] = 
+	{
+  	{
+    	INDEX_TIMER_MTZ04_1,
+			-1,
+			-1,
+			-1,
+			-1,
+			-1
+  	},
+  	{
+    	INDEX_TIMER_MTZ04_2,
 
-  unsigned int setpoint2 = previous_state_po_mtz04_2 ?
-          current_settings_prt.setpoint_mtz04_2[number_group_stp] * U_UP / 100 :
-          current_settings_prt.setpoint_mtz04_2[number_group_stp];
+			INDEX_TIMER_MTZ04_2_DEPENDENT_A,
+  		INDEX_TIMER_MTZ04_2_DEPENDENT_B,
+  		INDEX_TIMER_MTZ04_2_DEPENDENT_C,
+	
+			INDEX_TIMER_MTZ04_2_PR,
+			INDEX_TIMER_MTZ04_2_VVID_PR,
+  	}
+	};
 
-//#define IM_I04         9
-  _Bool I04_is_larger_than_ust1 = measurement[IM_I04] >= setpoint1;
-  _Bool I04_is_larger_than_ust2 = measurement[IM_I04] >= setpoint2;
-  //М
-  //ВКЛ-ОТКЛ  МТЗ04_1
-  unsigned int tmp_value = ((current_settings_prt.control_mtz04 & CTR_MTZ04_1) != 0)  << 0;
-  //ВКЛ-ОТКЛ  МТЗ04_2
-  tmp_value |= ((current_settings_prt.control_mtz04 & CTR_MTZ04_2) != 0) << 1;
-  //ВКЛ-ОТКЛ  УСКОРЕНИЕ МТЗ04_2
-  tmp_value |= ((current_settings_prt.control_mtz04 & CTR_MTZ04_2_PRYSKORENNJA) != 0) << 2;
-  //ВКЛ-ОТКЛ  УСКОРЕННАЯ МТЗ04_2
-  tmp_value |= ((current_settings_prt.control_mtz04 & CTR_MTZ04_2_PRYSKORENA) != 0) << 3;
-  //ДВ блок МТЗ04_1
-  tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_BLOCK_MTZ04_1) != 0) << 4;
-  //ДВ блок МТЗ04_2
-  tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_BLOCK_MTZ04_2) != 0) << 5;
-  //ДВ блок ускорения МТЗ04_2
-  tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_BLOCK_USK_MTZ04_2) != 0) << 6;
-  //Полож ВВ
-  tmp_value |= (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV) != 0)  << 7;
-/*
-//ТИП МТЗ04
- unsigned int tmp3=0;
- //Простая
- if(current_settings_prt.type_mtz04_2==0) _SET_BIT(tmp3, 0);
-  unsigned int type_mtz04 = 0;
- //Зависимая А
- if(current_settings_prt.type_mtz04_2==3) type_mtz04 = TYPE_MTZ_DEPENDENT_A;
- //Зависимая В
- if(current_settings_prt.type_mtz04_2==4) type_mtz04 = TYPE_MTZ_DEPENDENT_B;
- //Зависимая С
- if(current_settings_prt.type_mtz04_2==5) type_mtz04 = TYPE_MTZ_DEPENDENT_C;
-*/
-//RANG_BLOCK_MTZ04_1,
- //MTZ04_1 LOGIKA
-  _INVERTOR(tmp_value, 4, tmp_value, 8);
-        //ПО МТЗ04_1
-  _AND3(I04_is_larger_than_ust1, 0, 
-        //ВКЛ-ОТКЛ  МТЗ04_1
-        tmp_value, 0,
-        //INVERTOR
-        tmp_value, 8, tmp_value, 9);
-  //Сраб.ПО MTZ04_1
-  if (_GET_STATE(tmp_value, 9)) 
-  {
-     //PO MTZ04_1
-    _SET_BIT(p_active_functions, RANG_PO_MTZ04_1);
-  }
-  else _CLEAR_BIT(p_active_functions, RANG_PO_MTZ04_1);
+	static int const * const p_type_ocp04[NUMBER_LEVEL_OCP04] = 
+	{
+		NULL,
+  	&current_settings_prt.type_mtz04_2
+	};
+	static int const ocp04_ctr_setting[NUMBER_LEVEL_OCP04][MTZ04_CONST_MENU_SETTINGS_LENGTH] = 
+	{
+  	{
+    	CTR_MTZ04_1,
+			-1,
+			-1
+  	},
+  	{
+    	CTR_MTZ04_2,
+			CTR_MTZ04_2_PRYSKORENNJA,
+			CTR_MTZ04_2_PRYSKORENA
+  	}
+	};
+	
+	static unsigned int const * const setpoint_ocp04[NUMBER_LEVEL_OCP04] = 
+	{
+  	current_settings_prt.setpoint_mtz04_1,
+  	current_settings_prt.setpoint_mtz04_2
+	};
 
-    _TIMER_T_0(INDEX_TIMER_MTZ04_1, current_settings_prt.timeout_mtz04_1[number_group_stp], tmp_value, 9, tmp_value, 10);
-  //Сраб. MTZ04_1
-  if (_GET_STATE(tmp_value, 10)) 
-  {
-     //MTZ04_1
-    _SET_BIT(p_active_functions, RANG_MTZ04_1);
-  }
-  else _CLEAR_BIT(p_active_functions, RANG_MTZ04_1);
-    
-//MTZ04_2
-//RANG_STATE_VV,
-//ПОЛОЖ ВВ
-//  if (_GET_STATE(p_active_functions, RANG_STATE_VV)) {
-//  }//if
+	static int const * const timeout_ocp04[NUMBER_LEVEL_OCP04] =
+	{
+  	current_settings_prt.timeout_mtz04_1,
+  	current_settings_prt.timeout_mtz04_2
+	};
+	static int const * const timeout_ocp04_vvid_pr[NUMBER_LEVEL_OCP04] =
+	{
+  	NULL,
+  	current_settings_prt.timeout_mtz04_2_vvid_pr
+	};
+	static int const * const timeout_ocp04_pr[NUMBER_LEVEL_OCP04] =
+	{
+  	NULL,
+  	current_settings_prt.timeout_mtz04_2_pr
+	};
 
- unsigned int tmp2=0;
-  _AND2(tmp_value, 7, 
-        //УСКОРЕНИЕ МТЗ04_2
-        tmp_value, 2, tmp2, 0);
+	enum _ext_par 
+	{
+		DEP = 0,
+		ACC,
+		
+		NUM_EXT_PAR
+	};
+	
+	static unsigned int const ocp04_ext[NUMBER_LEVEL_OCP04][NUM_EXT_PAR] = 
+	{
+		{0, 0},
+		{1, 1}
+	};
+	
+	ocp04_general_bits |= (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV)) << 0;
+	
+	unsigned int const control_ocp04 = current_settings_prt.control_mtz04;
+	for (size_t i = 0; i != NUMBER_LEVEL_OCP04; ++i)
+	{
+		uint32_t l_ocp04_0 = 0;
+		uint32_t dep_ocp04_0 = 0;
+		uint32_t acc_ocp04_0 = 0;
+				
+		int const type_ocp04 = (p_type_ocp04[i] != NULL) ? *(p_type_ocp04[i]) : TYPE_MTZ_SIMPLE;
+		if (type_ocp04 == TYPE_MTZ_SIMPLE) _SET_STATE(l_ocp04_0, 0);
+		else if (ocp04_ext[i][DEP] != 0)
+		{
+			if (type_ocp04 == TYPE_MTZ_DEPENDENT_A     )  _SET_STATE(dep_ocp04_0, 0);
+			else if (type_ocp04 == TYPE_MTZ_DEPENDENT_B)  _SET_STATE(dep_ocp04_0, 1);
+			else if (type_ocp04 == TYPE_MTZ_DEPENDENT_C)  _SET_STATE(dep_ocp04_0, 2);
+		}
+		
+		//Проста МСЗ
+    unsigned int const pickup_ocp04 = (_CHECK_SET_BIT(p_active_functions, ocp04_signals[i][RANG_PO_MTZ04]) != 0) ?
+            setpoint_ocp04[i][number_group_stp] * U_UP / 100 :
+            setpoint_ocp04[i][number_group_stp];
+	  l_ocp04_0 |= (I04 >= pickup_ocp04) << 1;
+		l_ocp04_0 |= ((control_ocp04 & ocp04_ctr_setting[i][CTR_MTZ04]) != 0) << 2;
+		l_ocp04_0 |= (_CHECK_SET_BIT(p_active_functions, ocp04_signals[i][RANG_BLOCK_MTZ04]) == 0) << 3;
+		_AND3(l_ocp04_0, 1, l_ocp04_0, 2, l_ocp04_0, 3, l_ocp04_0, 4);
+		
+		//ПО МСЗх
+		if (_GET_STATE(l_ocp04_0, 4))
+      _SET_BIT(p_active_functions, ocp04_signals[i][RANG_PO_MTZ04]);
+    else
+      _CLEAR_BIT(p_active_functions, ocp04_signals[i][RANG_PO_MTZ04]);
+		
+		//Функціонал, який відповідає за прискорення
+		if(ocp04_ext[i][ACC] != 0)
+		{
+			acc_ocp04_0 |= (_CHECK_SET_BIT(p_active_functions, ocp04_signals[i][RANG_BLOCK_USK_MTZ04]) == 0) << 0;
+			
+			acc_ocp04_0 |= ((control_ocp04 & ocp04_ctr_setting[i][CTR_MTZ04_PRYSKORENA]) != 0) << 1;
+			acc_ocp04_0 |= ((control_ocp04 & ocp04_ctr_setting[i][CTR_MTZ04_PRYSKORENNJA]) != 0) << 2;
 
-  _TIMER_IMPULSE(INDEX_TIMER_MTZ04_2, current_settings_prt.timeout_mtz04_2_vvid_pr[number_group_stp],
-                 previous_states_MTZ04_vvid_pr_0, 0, tmp2, 0, tmp2, 1);
-//Ускоренная
-  _OR2(tmp_value, 3, 
-        tmp2, 1, tmp2, 2);
-  _INVERTOR(tmp_value, 6, tmp2, 3);
-  _AND2(tmp2, 3, 
-        tmp2, 2, tmp2, 4);
-  _INVERTOR(tmp2, 4, tmp2, 5);
-  _INVERTOR(tmp_value, 5, tmp2, 6);
-  _AND3(I04_is_larger_than_ust2, 0, 
-        tmp_value, 1, 
-        tmp2, 6, tmp2, 7);
-  //Сраб.ПО MTZ04_2
-  if (_GET_STATE(tmp2, 7)) 
-  {
-     //PO MTZ04_2
-    _SET_BIT(p_active_functions, RANG_PO_MTZ04_2);
-  }
-  else _CLEAR_BIT(p_active_functions, RANG_PO_MTZ04_2);
-    
-//ускорение
-  _AND2(tmp2, 4, 
-        tmp2, 7, tmp2, 8);
-//Простая
-//ТИП МТЗ04
- unsigned int tmp3=0;
- //Простая
-// if(current_settings_prt.type_mtz04_2==0){
-//   _SET_STATE(tmp3, 0);
-// }//if
-  _AND2(tmp2, 5, 
-        tmp2, 7, 
-             tmp2, 10);
-//Зависимая А B C
-//  _INVERTOR(tmp2, 9, tmp2, 10);
-//  _AND3(tmp2, 4, 
-  //      tmp2, 7, 
-    //    tmp3, 0, tmp2, 10);
-//ускорение
-  _TIMER_T_0(INDEX_TIMER_MTZ04_3, current_settings_prt.timeout_mtz04_2_pr[number_group_stp], tmp2, 8, tmp3, 4);
-//Простая
- switch(current_settings_prt.type_mtz04_2)
- {
- case 0:
-   {
-     _TIMER_T_0(INDEX_TIMER_MTZ04_4, current_settings_prt.timeout_mtz04_2[number_group_stp], tmp2, 10, /*tmp3, 6*/ p_global_trigger_state_mtz04_2, 0);
-     break;
-   }
- case TYPE_MTZ_DEPENDENT_A:
- case TYPE_MTZ_DEPENDENT_B:
- case TYPE_MTZ_DEPENDENT_C:
-   {
-     //расчет выдержки
-     _TIMER_T_0_LOCK(INDEX_TIMER_MTZ04_4,  timeout_dependent_general(measurement[IM_I04], current_settings_prt.setpoint_mtz04_2[number_group_stp], current_settings_prt.timeout_mtz04_2[number_group_stp], current_settings_prt.type_mtz04_2), tmp2, 10, /*tmp3, 6*/ p_global_trigger_state_mtz04_2, 0);
-     break;
-   }
- }
+			_AND2(ocp04_general_bits, 0, acc_ocp04_0, 2, acc_ocp04_0, 3);
 
-  _OR2(tmp3, 4, /*tmp3, 6*/p_global_trigger_state_mtz04_2, 0, tmp3, 7);
-  //Сраб. MTZ04_2
-  if (_GET_STATE(tmp3, 7))
-  {
-     //MTZ04_1
-    _SET_BIT(p_active_functions, RANG_MTZ04_2);
-  }
-  else _CLEAR_BIT(p_active_functions, RANG_MTZ04_2);
+			_TIMER_IMPULSE(ocp04_tmr_index[i][INDEX_TIMER_MTZ04_VVID_PR], timeout_ocp04_vvid_pr[i][number_group_stp], ocp04_general_bits, (1 + i), acc_ocp04_0, 3, acc_ocp04_0, 4);
+			_OR2(acc_ocp04_0, 1, acc_ocp04_0, 4, acc_ocp04_0, 5);
+			_AND2(acc_ocp04_0, 0, acc_ocp04_0, 5, acc_ocp04_0, 6);
+			_INVERTOR(acc_ocp04_0, 6, acc_ocp04_0, 7);
 
-}//mtz04
+			//МСЗ проста або струмозалежна
+			uint32_t ocp04_tmp_bits;
+			uint32_t ocp04_dep_tmp_bits;
+			do
+			{
+				ocp04_tmp_bits     = static_ocp04_tmp_bits     & ((1u << (2*i)) | (1u << (2*i + 1)));
+				ocp04_dep_tmp_bits = static_ocp04_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A + 1)) - 1));
+				
+				_OR2(acc_ocp04_0, 7, static_ocp04_tmp_bits, (2*i), acc_ocp04_0, 8);
+				_OR4_INVERTOR(
+											static_ocp04_tmp_bits, (2*i), 
+											static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_A - TYPE_MTZ_DEPENDENT_A) + i),
+											static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_B - TYPE_MTZ_DEPENDENT_A) + i),
+											static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A) + i),
+											acc_ocp04_0, 9
+										 );
+				
+				_OR2(acc_ocp04_0, 6, static_ocp04_tmp_bits, (2*i + 1), acc_ocp04_0, 10);
+				_INVERTOR(static_ocp04_tmp_bits, (2*i + 1), acc_ocp04_0, 11);
+				
+				_AND4(l_ocp04_0, 0, acc_ocp04_0, 8, acc_ocp04_0, 11, l_ocp04_0, 4, static_ocp04_tmp_bits, (2*i    ));
+				_AND3(              acc_ocp04_0, 9, acc_ocp04_0, 10, l_ocp04_0, 4, static_ocp04_tmp_bits, (2*i + 1));
+				
+				if(ocp04_ext[i][DEP] != 0)
+				{
+					_OR2(acc_ocp04_0, 7, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_A - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp04_0, 3);
+					_OR2(acc_ocp04_0, 7, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_B - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp04_0, 4);
+					_OR2(acc_ocp04_0, 7, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp04_0, 5);
 
+					_AND4(dep_ocp04_0, 3, acc_ocp04_0, 11, dep_ocp04_0, 0, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(dep_ocp04_0, 4, acc_ocp04_0, 11, dep_ocp04_0, 1, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(dep_ocp04_0, 5, acc_ocp04_0, 11, dep_ocp04_0, 2, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
+				}
+			}
+			while(
+						((static_ocp04_tmp_bits     & ((1u << (2*i)) | (1u << (2*i + 1)))                                                 ) != ocp04_tmp_bits    ) ||
+						((static_ocp04_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A + 1)) - 1))) != ocp04_dep_tmp_bits)
+					 );
+			_TIMER_T_0(ocp04_tmr_index[i][INDEX_TIMER_MTZ04   ], timeout_ocp04[i][number_group_stp]   , static_ocp04_tmp_bits, (2*i    ), l_ocp04_0  ,  5);
+			_TIMER_T_0(ocp04_tmr_index[i][INDEX_TIMER_MTZ04_PR], timeout_ocp04_pr[i][number_group_stp], static_ocp04_tmp_bits, (2*i + 1), acc_ocp04_0, 12);
+		}
+		else
+		{
+			if(ocp04_ext[i][DEP] != 0)
+			{
+				_AND2(dep_ocp04_0, 0, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
+				_AND2(dep_ocp04_0, 1, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
+				_AND2(dep_ocp04_0, 2, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
+			}
+			
+			_TIMER_T_0(ocp04_tmr_index[i][INDEX_TIMER_MTZ04], timeout_ocp04[i][number_group_stp], l_ocp04_0, 4, l_ocp04_0, 5);
+		}
+		
+		if(ocp04_ext[i][DEP] != 0)
+		{
+			for(int type_ocp04_tmp = TYPE_MTZ_DEPENDENT_A; type_ocp04_tmp <= TYPE_MTZ_DEPENDENT_C; ++type_ocp04_tmp)
+			{
+				int const shift = type_ocp04_tmp - TYPE_MTZ_DEPENDENT_A;
+				if (_GET_STATE(static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04 * shift + i)))
+				{
+					unsigned int const pickup  = setpoint_ocp04[i][number_group_stp];
+					int const timeout = timeout_ocp04[i][number_group_stp];
+					
+					_TIMER_T_0_LOCK(ocp04_tmr_index[i][INDEX_TIMER_MTZ04_DEPENDENT_A  + shift], timeout_dependent_general(I04, pickup, timeout, type_ocp04_tmp), static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04 * shift + i), dep_ocp04_0,  (6 + shift));
+				}
+				else
+				{
+					global_timers[ocp04_tmr_index[i][INDEX_TIMER_MTZ04_DEPENDENT_A  + shift]] = -1;
+					_CLEAR_STATE(dep_ocp04_0, (6 + shift));
+				}
+			}
+		}
+		
+		if (
+				(
+				 _GET_STATE(l_ocp04_0, 5)
+				)
+				||
+				(
+				 (ocp04_ext[i][DEP] != 0) &&
+				 (
+					_GET_STATE(dep_ocp04_0, 6) ||
+					_GET_STATE(dep_ocp04_0, 7) ||
+					_GET_STATE(dep_ocp04_0, 8)
+				 )	
+				) 
+				||
+				(
+				 (ocp04_ext[i][ACC] != 0) &&
+				 (
+			  	_GET_STATE(acc_ocp04_0, 12)
+				 )	
+				) 
+			 )	
+		{
+      _SET_BIT(p_active_functions, ocp04_signals[i][RANG_MTZ04]);
+		}
+		else
+		{
+      _CLEAR_BIT(p_active_functions, ocp04_signals[i][RANG_MTZ04]);
+		}
+	}
+}
 /*****************************************************/
 // ЗНМАКС1
 /*****************************************************/
@@ -9104,19 +9197,20 @@ do{
 			
 			ocp_general_bits = 0;
 			static_ocp_select_tmp_bits = 0;
+			static_ocp_tmp_bits = 0;
 			static_ocp_fw_tmp_bits = 0;
 			static_ocp_bw_tmp_bits = 0;
 			static_ocp_by_U_tmp_bits = 0;
-
+			static_ocp_dep_tmp_bits = 0;
     }
     /**************************/
     
     /**************************/
-    //МТЗ04
+    //МСЗ04
     /**************************/
     if ((current_settings_prt.configuration & (1 << MTZ04_BIT_CONFIGURATION)) != 0)
     {
-      mtz04_handler(active_functions, number_group_stp);
+      ocp04_handler(active_functions, number_group_stp);
     }
     else
     {
@@ -9139,6 +9233,10 @@ do{
       };
       for (size_t i = 0; i < N_BIG; ++i) active_functions[i] &= (unsigned int)(~maska_mtz04_signals[i]);
       for (int *p = (global_timers + _INDEX_MTZ04_BEGIN); p <= (global_timers + _INDEX_MTZ04_END); ++p) *p = -1;
+			
+			ocp04_general_bits = 0;
+			static_ocp04_tmp_bits = 0;
+			static_ocp04_dep_tmp_bits = 0;
     }
     /**************************/
 
