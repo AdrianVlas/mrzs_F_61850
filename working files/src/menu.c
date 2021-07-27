@@ -3996,7 +3996,9 @@ void main_manu_function(void)
                 //Виставляємо першу частину запису
                 part_reading_dr_from_dataflash_for_menu = 0;
                 //Подаємо команду зчитати дані у бувер пам'яті
+								mutex_spi1 = true;
                 control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU;
+								mutex_spi1 = false;
                 
                 //Виставляємо повідомлення, що поки дані не будуть зчитані, то екран треба перерисовувати кожну секунду
                 rewrite_ekran_once_more = 1;
@@ -4049,7 +4051,9 @@ void main_manu_function(void)
                 number_record_of_pr_err_into_menu = current_ekran.index_position;
                 
                 //Подаємо команду зчитати дані у бувер пам'яті
+								mutex_spi1 = true;
                 control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU;
+								mutex_spi1 = false;
                 
                 //Виставляємо новий екран, який треба відобразити на РКІ
                 current_ekran.current_level = EKRAN_CHANGES_DIAGNOSTICS_PR_ERR;
