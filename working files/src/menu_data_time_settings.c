@@ -184,8 +184,8 @@ void make_ekran_timezone_dst(void)
         {
           unsigned int state = ((point_1->dst & MASKA_FOR_BIT(N_BIT_TZ_DST)) != 0);
 
-          for (size_t j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = string_off_on[index_language][state][j];
-          if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x_string_off_on[index_language][state];
+          for (size_t j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = information_off_on[index_language][state][j];
+          if (position_temp == index_of_ekran_tmp) current_ekran.position_cursor_x = cursor_x_off_on[index_language][state];
         }
       }
     }

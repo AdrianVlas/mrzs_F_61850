@@ -1301,7 +1301,8 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 		{0, 0}
 	};
 	
-	ocp_general_bits |= (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV)) << (2 + NUMBER_LEVEL_OCP);
+	if (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV) != 0) _SET_STATE(ocp_general_bits, (2 + NUMBER_LEVEL_OCP));
+	else _CLEAR_STATE(ocp_general_bits, (2 + NUMBER_LEVEL_OCP));
 	
 	unsigned int const control_ocp = current_settings_prt.control_mtz;
 	for (size_t i = 0; i != NUMBER_LEVEL_OCP; ++i)
@@ -3047,7 +3048,8 @@ void ocp04_handler(unsigned int *p_active_functions, unsigned int number_group_s
 		{1, 1}
 	};
 	
-	ocp04_general_bits |= (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV)) << 0;
+	if (_CHECK_SET_BIT(p_active_functions, RANG_STATE_VV) != 0) _SET_STATE(ocp04_general_bits, 0);
+	else _CLEAR_STATE(ocp04_general_bits, 0);
 	
 	unsigned int const control_ocp04 = current_settings_prt.control_mtz04;
 	for (size_t i = 0; i != NUMBER_LEVEL_OCP04; ++i)
