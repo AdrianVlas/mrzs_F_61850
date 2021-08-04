@@ -291,11 +291,13 @@ extern uint32_t static_ocp_fw_tmp_bits;
 extern uint32_t static_ocp_bw_tmp_bits;
 extern uint32_t static_ocp_by_U_tmp_bits;
 extern uint32_t static_ocp_dep_tmp_bits;
+extern uint32_t static_ocp_dep_rez_bits;
 
 //ћ—« 0.4к¬
 extern unsigned int ocp04_general_bits;
 extern uint32_t static_ocp04_tmp_bits;
 extern uint32_t static_ocp04_dep_tmp_bits;
+extern uint32_t static_ocp04_dep_rez_bits;
 
 //¬изначенн€ пер≥од≥в у хвилину ≥ б≥льше
 extern unsigned int number_seconds;

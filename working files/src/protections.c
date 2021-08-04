@@ -1617,12 +1617,12 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 					unsigned int const pickup  = setpoint_ocp[i][number_group_stp];
 					int const timeout = timeout_ocp[i][number_group_stp];
 					
-					_TIMER_T_0_LOCK(ocp_tmr_index[i][INDEX_TIMER_MTZ_DEPENDENT_A  + shift], timeout_dependent_general(Imax, pickup, timeout, type_ocp_tmp), static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP * shift + i), dep_ocp_0,  (7 + shift));
+					_TIMER_T_0_LOCK(ocp_tmr_index[i][INDEX_TIMER_MTZ_DEPENDENT_A  + shift], timeout_dependent_general(Imax, pickup, timeout, type_ocp_tmp), static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP * shift + i), static_ocp_dep_rez_bits, (NUMBER_LEVEL_OCP * shift + i));
 				}
 				else
 				{
 					global_timers[ocp_tmr_index[i][INDEX_TIMER_MTZ_DEPENDENT_A  + shift]] = -1;
-					_CLEAR_STATE(dep_ocp_0, (7 + shift));
+					_CLEAR_STATE(static_ocp_dep_rez_bits, (NUMBER_LEVEL_OCP * shift + i));
 				}
 			}
 		}
@@ -1638,11 +1638,11 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 				(
 				 (ocp_ext[i][DEP] != 0) &&
 				 (
-					_GET_STATE(dep_ocp_0,  7) ||
-					_GET_STATE(dep_ocp_0,  8) ||
-					_GET_STATE(dep_ocp_0,  9) ||
-					_GET_STATE(dep_ocp_0, 10) ||
-					_GET_STATE(dep_ocp_0, 11)
+					_GET_STATE(static_ocp_dep_rez_bits, (NUMBER_LEVEL_OCP * (TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i)) ||
+					_GET_STATE(static_ocp_dep_rez_bits, (NUMBER_LEVEL_OCP * (TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i)) ||
+					_GET_STATE(static_ocp_dep_rez_bits, (NUMBER_LEVEL_OCP * (TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i)) ||
+					_GET_STATE(static_ocp_dep_rez_bits, (NUMBER_LEVEL_OCP * (TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i)) ||
+					_GET_STATE(static_ocp_dep_rez_bits, (NUMBER_LEVEL_OCP * (TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i))
 				 )	
 				) 
 				||
@@ -3160,12 +3160,12 @@ void ocp04_handler(unsigned int *p_active_functions, unsigned int number_group_s
 					unsigned int const pickup  = setpoint_ocp04[i][number_group_stp];
 					int const timeout = timeout_ocp04[i][number_group_stp];
 					
-					_TIMER_T_0_LOCK(ocp04_tmr_index[i][INDEX_TIMER_MTZ04_DEPENDENT_A  + shift], timeout_dependent_general(I04, pickup, timeout, type_ocp04_tmp), static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04 * shift + i), dep_ocp04_0,  (6 + shift));
+					_TIMER_T_0_LOCK(ocp04_tmr_index[i][INDEX_TIMER_MTZ04_DEPENDENT_A  + shift], timeout_dependent_general(I04, pickup, timeout, type_ocp04_tmp), static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04 * shift + i), static_ocp04_dep_rez_bits, (NUMBER_LEVEL_OCP04 * shift + i));
 				}
 				else
 				{
 					global_timers[ocp04_tmr_index[i][INDEX_TIMER_MTZ04_DEPENDENT_A  + shift]] = -1;
-					_CLEAR_STATE(dep_ocp04_0, (6 + shift));
+					_CLEAR_STATE(static_ocp04_dep_rez_bits, (NUMBER_LEVEL_OCP04 * shift + i));
 				}
 			}
 		}
@@ -3178,9 +3178,9 @@ void ocp04_handler(unsigned int *p_active_functions, unsigned int number_group_s
 				(
 				 (ocp04_ext[i][DEP] != 0) &&
 				 (
-					_GET_STATE(dep_ocp04_0, 6) ||
-					_GET_STATE(dep_ocp04_0, 7) ||
-					_GET_STATE(dep_ocp04_0, 8)
+					_GET_STATE(static_ocp04_dep_rez_bits, (NUMBER_LEVEL_OCP04 * (TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i)) ||
+					_GET_STATE(static_ocp04_dep_rez_bits, (NUMBER_LEVEL_OCP04 * (TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i)) ||
+					_GET_STATE(static_ocp04_dep_rez_bits, (NUMBER_LEVEL_OCP04 * (TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i))
 				 )	
 				) 
 				||
@@ -9213,6 +9213,7 @@ do{
 			static_ocp_bw_tmp_bits = 0;
 			static_ocp_by_U_tmp_bits = 0;
 			static_ocp_dep_tmp_bits = 0;
+			static_ocp_dep_rez_bits = 0;
     }
     /**************************/
     
@@ -9248,6 +9249,7 @@ do{
 			ocp04_general_bits = 0;
 			static_ocp04_tmp_bits = 0;
 			static_ocp04_dep_tmp_bits = 0;
+			static_ocp04_dep_rez_bits = 0;
     }
     /**************************/
 
