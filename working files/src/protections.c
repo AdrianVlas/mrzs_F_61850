@@ -1325,7 +1325,7 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 			
 			_OR5(dep_ocp_0, 0, dep_ocp_0, 1, dep_ocp_0, 2, dep_ocp_0, 3, dep_ocp_0, 4, dep_ocp_0, 5);
 		}
-		_INVERTOR(dep_ocp_0, 0, dep_ocp_0, 6); //у випадку, якщо заоежної немає, то цей біт має розблокувати можливість працювати простої МСЗ у випадку наявного присорення
+		_INVERTOR(dep_ocp_0, 5, dep_ocp_0, 6); //у випадку, якщо заоежної немає, то цей біт має розблокувати можливість працювати простої МСЗ у випадку наявного присорення
 		
 		//Проста МСЗ
     unsigned int const pickup_ocp = (_CHECK_SET_BIT(p_active_functions, ocp_signals[i][RANG_PO_MTZ]) != 0) ?
