@@ -1213,7 +1213,7 @@ void TIM4_IRQHandler(void)
         (mutex_spi1 == false) &&
         (state_execution_spi1 < 0) &&
         (((DMA_StreamSPI_EDF_Tx->CR & (uint32_t)DMA_SxCR_EN) == 0) && ((DMA_StreamSPI_EDF_Rx->CR & (uint32_t)DMA_SxCR_EN) == 0))
-       )   
+       )
     {
       if ((number_chip_dataflsh_exchange >= INDEX_DATAFLASH_1) && (number_chip_dataflsh_exchange <= INDEX_DATAFLASH_2))
       {
@@ -1242,7 +1242,7 @@ void TIM4_IRQHandler(void)
           {
             unsigned int head = head_fifo_buffer_pr_err_records, tail = tail_fifo_buffer_pr_err_records;
             if (
-                (head != tail) || 
+                (head != tail) ||
                 (_CHECK_SET_BIT(diagnostyka, ERROR_PR_ERR_OVERLOAD_BIT) != 0)
                )
             {

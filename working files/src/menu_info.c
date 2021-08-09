@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_info()
 {
-  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_INFO][MAX_COL_LCD] = 
+  static unsigned char const name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_INFO][MAX_COL_LCD] = 
   {
     {
       "   Версия ПО    ",

@@ -1767,7 +1767,7 @@ void min_settings(__SETTINGS *target_label)
 /**************************************/
 void error_reading_with_eeprom()
 {
-  static const unsigned char string_info[MAX_NAMBER_LANGUAGE][4][MAX_COL_LCD] = 
+  static unsigned char const string_info[MAX_NAMBER_LANGUAGE][4][MAX_COL_LCD] = 
   {
     {
       "  Настроек нет  ",
@@ -1794,7 +1794,7 @@ void error_reading_with_eeprom()
       "  Ош.Ин.ЭнНезСЛ "
     } 
   };
-  static const unsigned char string_action[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] =
+  static unsigned char const string_action[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] =
   {
     {
       "Мин.парам.:Enter",
@@ -2070,7 +2070,7 @@ void start_checking_dataflash(void)
   
   if (page_size_256_total == 0)
   {
-    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static unsigned char const name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Перезапустите  ",

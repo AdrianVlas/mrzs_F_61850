@@ -1305,6 +1305,7 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 	else _CLEAR_STATE(ocp_general_bits, (2 + NUMBER_LEVEL_OCP));
 	
 	unsigned int const control_ocp = current_settings_prt.control_mtz;
+	uint32_t static_ocp_dep_tmp_bits = 0; //цю змінну спочатку було об'явлено, як глобальну, але потім функціонал змінився і я її переніс сюди, а логіку її роботи не переробляв
 	for (size_t i = 0; i != NUMBER_LEVEL_OCP; ++i)
 	{
 		uint32_t l_ocp_0 = 0;
@@ -1490,18 +1491,18 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 			uint32_t ocp_fw_tmp_bits;
 			do
 			{
-				ocp_fw_tmp_bits = static_ocp_fw_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)));
+				ocp_fw_tmp_bits = static_ocp_fw_tmp_bits & (/*(1u << (2*i)) |*/ (1u << (2*i + 1)));
 				
-				_OR2(acc_ocp_0, 7, static_ocp_fw_tmp_bits, (2*i), acc_ocp_0, 8);
-				_INVERTOR(static_ocp_fw_tmp_bits, (2*i), acc_ocp_0, 9);
+				//_OR2(acc_ocp_0, 7, static_ocp_fw_tmp_bits, (2*i), acc_ocp_0, 8);
+				//_INVERTOR(static_ocp_fw_tmp_bits, (2*i), acc_ocp_0, 9);
 				
 				_OR2(acc_ocp_0, 6, static_ocp_fw_tmp_bits, (2*i + 1), acc_ocp_0, 10);
 				_INVERTOR(static_ocp_fw_tmp_bits, (2*i + 1), acc_ocp_0, 11);
 				
-				_AND3(acc_ocp_0, 8, acc_ocp_0, 11, l_ocp_0, 23, static_ocp_fw_tmp_bits, (2*i    ));
-				_AND3(acc_ocp_0, 9, acc_ocp_0, 10, l_ocp_0, 23, static_ocp_fw_tmp_bits, (2*i + 1));
+				_AND3(acc_ocp_0, 7/*8*/, acc_ocp_0, 11, l_ocp_0, 23, static_ocp_fw_tmp_bits, (2*i    ));
+				_AND2/*3*/(/*acc_ocp_0, 9, */acc_ocp_0, 10, l_ocp_0, 23, static_ocp_fw_tmp_bits, (2*i + 1));
 			}
-			while((static_ocp_fw_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)))) != ocp_fw_tmp_bits);
+			while((static_ocp_fw_tmp_bits & (/*(1u << (2*i)) |*/ (1u << (2*i + 1)))) != ocp_fw_tmp_bits);
 			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_VPERED   ], timeout_ocp_fw[i][number_group_stp]   , static_ocp_fw_tmp_bits, (2*i    ), l_ocp_0  , 28);
 			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_VPERED_PR], timeout_ocp_pr_fw[i][number_group_stp], static_ocp_fw_tmp_bits, (2*i + 1), acc_ocp_0, 12);
 
@@ -1509,18 +1510,18 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 			uint32_t ocp_bw_tmp_bits;
 			do
 			{
-				ocp_bw_tmp_bits = static_ocp_bw_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)));
+				ocp_bw_tmp_bits = static_ocp_bw_tmp_bits & (/*(1u << (2*i)) |*/ (1u << (2*i + 1)));
 				
-				_OR2(acc_ocp_0, 7, static_ocp_bw_tmp_bits, (2*i), acc_ocp_0, 13);
-				_INVERTOR(static_ocp_bw_tmp_bits, (2*i), acc_ocp_0, 14);
+				//_OR2(acc_ocp_0, 7, static_ocp_bw_tmp_bits, (2*i), acc_ocp_0, 13);
+				//_INVERTOR(static_ocp_bw_tmp_bits, (2*i), acc_ocp_0, 14);
 				
 				_OR2(acc_ocp_0, 6, static_ocp_bw_tmp_bits, (2*i + 1), acc_ocp_0, 15);
 				_INVERTOR(static_ocp_bw_tmp_bits, (2*i + 1), acc_ocp_0, 16);
 				
-				_AND3(acc_ocp_0, 13, acc_ocp_0, 16, l_ocp_0, 24, static_ocp_bw_tmp_bits, (2*i    ));
-				_AND3(acc_ocp_0, 14, acc_ocp_0, 15, l_ocp_0, 24, static_ocp_bw_tmp_bits, (2*i + 1));
+				_AND3(acc_ocp_0, 7/*13*/, acc_ocp_0, 16, l_ocp_0, 24, static_ocp_bw_tmp_bits, (2*i    ));
+				_AND2/*3*/(/*acc_ocp_0, 14, */acc_ocp_0, 15, l_ocp_0, 24, static_ocp_bw_tmp_bits, (2*i + 1));
 			}
-			while((static_ocp_bw_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)))) != ocp_bw_tmp_bits);
+			while((static_ocp_bw_tmp_bits & (/*(1u << (2*i)) |*/ (1u << (2*i + 1)))) != ocp_bw_tmp_bits);
 			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_NAZAD   ], timeout_ocp_bw[i][number_group_stp]   , static_ocp_bw_tmp_bits, (2*i    ), l_ocp_0  , 29);
 			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_N_NAZAD_PR], timeout_ocp_pr_bw[i][number_group_stp], static_ocp_bw_tmp_bits, (2*i + 1), acc_ocp_0, 17);
 
@@ -1528,30 +1529,31 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 			uint32_t ocp_by_U_tmp_bits;
 			do
 			{
-				ocp_by_U_tmp_bits = static_ocp_by_U_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)));
+				ocp_by_U_tmp_bits = static_ocp_by_U_tmp_bits & (/*(1u << (2*i)) |*/ (1u << (2*i + 1)));
 				
-				_OR2(acc_ocp_0, 7, static_ocp_by_U_tmp_bits, (2*i), acc_ocp_0, 18);
-				_INVERTOR(static_ocp_by_U_tmp_bits, (2*i), acc_ocp_0, 19);
+				//_OR2(acc_ocp_0, 7, static_ocp_by_U_tmp_bits, (2*i), acc_ocp_0, 18);
+				//_INVERTOR(static_ocp_by_U_tmp_bits, (2*i), acc_ocp_0, 19);
 				
 				_OR2(acc_ocp_0, 6, static_ocp_by_U_tmp_bits, (2*i + 1), acc_ocp_0, 20);
 				_INVERTOR(static_ocp_by_U_tmp_bits, (2*i + 1), acc_ocp_0, 21);
 				
-				_AND3(acc_ocp_0, 18, acc_ocp_0, 21, l_ocp_0, 25, static_ocp_by_U_tmp_bits, (2*i    ));
-				_AND3(acc_ocp_0, 19, acc_ocp_0, 20, l_ocp_0, 25, static_ocp_by_U_tmp_bits, (2*i + 1));
+				_AND3(acc_ocp_0, 7/*18*/, acc_ocp_0, 21, l_ocp_0, 25, static_ocp_by_U_tmp_bits, (2*i    ));
+				_AND2/*3*/(/*acc_ocp_0, 19, */acc_ocp_0, 20, l_ocp_0, 25, static_ocp_by_U_tmp_bits, (2*i + 1));
 			}
-			while((static_ocp_by_U_tmp_bits & ((1u << (2*i)) | (1u << (2*i + 1)))) != ocp_by_U_tmp_bits);
+			while((static_ocp_by_U_tmp_bits & (/*(1u << (2*i)) |*/ (1u << (2*i + 1)))) != ocp_by_U_tmp_bits);
 			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_PO_NAPRUZI   ], timeout_ocp_by_U[i][number_group_stp]   , static_ocp_by_U_tmp_bits, (2*i    ), l_ocp_0  , 30);
 			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_PO_NAPRUZI_PR], timeout_ocp_pr_by_U[i][number_group_stp], static_ocp_by_U_tmp_bits, (2*i + 1), acc_ocp_0, 22);
 
 			//МСЗ проста або струмозалежна
 			uint32_t ocp_tmp_bits;
-			uint32_t ocp_dep_tmp_bits;
+//			uint32_t ocp_dep_tmp_bits;
 			do
 			{
-				ocp_tmp_bits     = static_ocp_tmp_bits     & ((1u << (2*i)) | (1u << (2*i + 1)));
-				ocp_dep_tmp_bits = static_ocp_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A + 1)) - 1));
+				ocp_tmp_bits     = static_ocp_tmp_bits     & (/*(1u << (2*i)) |*/ (1u << (2*i + 1)));
+//				ocp_dep_tmp_bits = static_ocp_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A + 1)) - 1));
 				
-				_OR2(acc_ocp_0, 7, static_ocp_tmp_bits, (2*i), acc_ocp_0, 23);
+				//_OR2(acc_ocp_0, 7, static_ocp_tmp_bits, (2*i), acc_ocp_0, 23);
+				/*
 				_OR6_INVERTOR(
 											static_ocp_tmp_bits, (2*i), 
 											static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i),
@@ -1561,31 +1563,34 @@ inline void ocp_handler(unsigned int *p_active_functions, unsigned int number_gr
 											static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i),
 											acc_ocp_0, 24
 										 );
+				*/
 				
 				_OR2(acc_ocp_0, 6, static_ocp_tmp_bits, (2*i + 1), acc_ocp_0, 25);
 				_INVERTOR(static_ocp_tmp_bits, (2*i + 1), acc_ocp_0, 26);
 				
-				_AND4(dep_ocp_0, 6, acc_ocp_0, 23, acc_ocp_0, 26, l_ocp_0, 21, static_ocp_tmp_bits, (2*i    ));
-				_AND3(              acc_ocp_0, 24, acc_ocp_0, 25, l_ocp_0, 21, static_ocp_tmp_bits, (2*i + 1));
+				_AND4(dep_ocp_0, 6, acc_ocp_0, 7/*23*/, acc_ocp_0, 26, l_ocp_0, 21, static_ocp_tmp_bits, (2*i    ));
+				_AND2/*3*/(/*acc_ocp_0, 24, */acc_ocp_0, 25, l_ocp_0, 21, static_ocp_tmp_bits, (2*i + 1));
 				
 				if(ocp_ext[i][DEP] != 0)
 				{
+					/*
 					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 12);
 					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 13);
 					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 14);
 					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 15);
 					_OR2(acc_ocp_0, 7, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp_0, 16);
+					*/
 
-					_AND4(dep_ocp_0, 12, acc_ocp_0, 26, dep_ocp_0, 0, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(dep_ocp_0, 13, acc_ocp_0, 26, dep_ocp_0, 1, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(dep_ocp_0, 14, acc_ocp_0, 26, dep_ocp_0, 2, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(dep_ocp_0, 15, acc_ocp_0, 26, dep_ocp_0, 3, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(dep_ocp_0, 16, acc_ocp_0, 26, dep_ocp_0, 4, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7,/* dep_ocp_0, 12, */acc_ocp_0, 26, dep_ocp_0, 0, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7,/* dep_ocp_0, 13, */acc_ocp_0, 26, dep_ocp_0, 1, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7,/* dep_ocp_0, 14, */acc_ocp_0, 26, dep_ocp_0, 2, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7,/* dep_ocp_0, 15, */acc_ocp_0, 26, dep_ocp_0, 3, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RT_80 - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp_0, 7,/* dep_ocp_0, 16, */acc_ocp_0, 26, dep_ocp_0, 4, l_ocp_0, 21, static_ocp_dep_tmp_bits, (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A) + i));
 				}
 			}
 			while(
-						((static_ocp_tmp_bits     & ((1u << (2*i)) | (1u << (2*i + 1)))                                                   ) != ocp_tmp_bits    ) ||
-						((static_ocp_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A + 1)) - 1))) != ocp_dep_tmp_bits)
+						((static_ocp_tmp_bits     & (/*(1u << (2*i)) | */(1u << (2*i + 1)))                                                   ) != ocp_tmp_bits    )/* ||
+						((static_ocp_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP*(TYPE_MTZ_DEPENDENT_RTV_I - TYPE_MTZ_DEPENDENT_A + 1)) - 1))) != ocp_dep_tmp_bits)*/
 					 );
 			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ   ], timeout_ocp[i][number_group_stp]   , static_ocp_tmp_bits, (2*i    ), l_ocp_0  , 27);
 			_TIMER_T_0(ocp_tmr_index[i][INDEX_TIMER_MTZ_PR], timeout_ocp_pr[i][number_group_stp], static_ocp_tmp_bits, (2*i + 1), acc_ocp_0, 27);
@@ -3052,6 +3057,7 @@ void ocp04_handler(unsigned int *p_active_functions, unsigned int number_group_s
 	else _CLEAR_STATE(ocp04_general_bits, 0);
 	
 	unsigned int const control_ocp04 = current_settings_prt.control_mtz04;
+	uint32_t static_ocp04_dep_tmp_bits = 0; //цю змінну спочатку було об'явлено, як глобальну, але потім функціонал змінився і я її переніс сюди, а логіку її роботи не переробляв
 	for (size_t i = 0; i != NUMBER_LEVEL_OCP04; ++i)
 	{
 		uint32_t l_ocp04_0 = 0;
@@ -3099,13 +3105,14 @@ void ocp04_handler(unsigned int *p_active_functions, unsigned int number_group_s
 
 			//МСЗ проста або струмозалежна
 			uint32_t ocp04_tmp_bits;
-			uint32_t ocp04_dep_tmp_bits;
+//			uint32_t ocp04_dep_tmp_bits;
 			do
 			{
-				ocp04_tmp_bits     = static_ocp04_tmp_bits     & ((1u << (2*i)) | (1u << (2*i + 1)));
-				ocp04_dep_tmp_bits = static_ocp04_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A + 1)) - 1));
+				ocp04_tmp_bits     = static_ocp04_tmp_bits     & (/*(1u << (2*i)) | */(1u << (2*i + 1)));
+//				ocp04_dep_tmp_bits = static_ocp04_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A + 1)) - 1));
 				
-				_OR2(acc_ocp04_0, 7, static_ocp04_tmp_bits, (2*i), acc_ocp04_0, 8);
+				//_OR2(acc_ocp04_0, 7, static_ocp04_tmp_bits, (2*i), acc_ocp04_0, 8);
+				/*
 				_OR4_INVERTOR(
 											static_ocp04_tmp_bits, (2*i), 
 											static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_A - TYPE_MTZ_DEPENDENT_A) + i),
@@ -3113,27 +3120,30 @@ void ocp04_handler(unsigned int *p_active_functions, unsigned int number_group_s
 											static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A) + i),
 											acc_ocp04_0, 9
 										 );
+				*/
 				
 				_OR2(acc_ocp04_0, 6, static_ocp04_tmp_bits, (2*i + 1), acc_ocp04_0, 10);
 				_INVERTOR(static_ocp04_tmp_bits, (2*i + 1), acc_ocp04_0, 11);
 				
-				_AND4(l_ocp04_0, 0, acc_ocp04_0, 8, acc_ocp04_0, 11, l_ocp04_0, 4, static_ocp04_tmp_bits, (2*i    ));
-				_AND3(              acc_ocp04_0, 9, acc_ocp04_0, 10, l_ocp04_0, 4, static_ocp04_tmp_bits, (2*i + 1));
+				_AND4(l_ocp04_0, 0, acc_ocp04_0, 7/*8*/, acc_ocp04_0, 11, l_ocp04_0, 4, static_ocp04_tmp_bits, (2*i    ));
+				_AND2/*3*/(/*acc_ocp04_0, 9, */acc_ocp04_0, 10, l_ocp04_0, 4, static_ocp04_tmp_bits, (2*i + 1));
 				
 				if(ocp04_ext[i][DEP] != 0)
 				{
+					/*
 					_OR2(acc_ocp04_0, 7, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_A - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp04_0, 3);
 					_OR2(acc_ocp04_0, 7, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_B - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp04_0, 4);
 					_OR2(acc_ocp04_0, 7, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A) + i), dep_ocp04_0, 5);
+					*/
 
-					_AND4(dep_ocp04_0, 3, acc_ocp04_0, 11, dep_ocp04_0, 0, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(dep_ocp04_0, 4, acc_ocp04_0, 11, dep_ocp04_0, 1, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
-					_AND4(dep_ocp04_0, 5, acc_ocp04_0, 11, dep_ocp04_0, 2, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp04_0, 7, /*dep_ocp04_0, 3, */acc_ocp04_0, 11, dep_ocp04_0, 0, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_A     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp04_0, 7, /*dep_ocp04_0, 4, */acc_ocp04_0, 11, dep_ocp04_0, 1, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_B     - TYPE_MTZ_DEPENDENT_A) + i));
+					_AND4(acc_ocp04_0, 7, /*dep_ocp04_0, 5, */acc_ocp04_0, 11, dep_ocp04_0, 2, l_ocp04_0, 4, static_ocp04_dep_tmp_bits, (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C     - TYPE_MTZ_DEPENDENT_A) + i));
 				}
 			}
 			while(
-						((static_ocp04_tmp_bits     & ((1u << (2*i)) | (1u << (2*i + 1)))                                                 ) != ocp04_tmp_bits    ) ||
-						((static_ocp04_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A + 1)) - 1))) != ocp04_dep_tmp_bits)
+						((static_ocp04_tmp_bits     & (/*(1u << (2*i)) | */(1u << (2*i + 1)))                                                 ) != ocp04_tmp_bits    )/* ||
+						((static_ocp04_dep_tmp_bits & ((1u << (NUMBER_LEVEL_OCP04*(TYPE_MTZ_DEPENDENT_C - TYPE_MTZ_DEPENDENT_A + 1)) - 1))) != ocp04_dep_tmp_bits)*/
 					 );
 			_TIMER_T_0(ocp04_tmr_index[i][INDEX_TIMER_MTZ04   ], timeout_ocp04[i][number_group_stp]   , static_ocp04_tmp_bits, (2*i    ), l_ocp04_0  ,  5);
 			_TIMER_T_0(ocp04_tmr_index[i][INDEX_TIMER_MTZ04_PR], timeout_ocp04_pr[i][number_group_stp], static_ocp04_tmp_bits, (2*i + 1), acc_ocp04_0, 12);
@@ -9212,7 +9222,7 @@ do{
 			static_ocp_fw_tmp_bits = 0;
 			static_ocp_bw_tmp_bits = 0;
 			static_ocp_by_U_tmp_bits = 0;
-			static_ocp_dep_tmp_bits = 0;
+//			static_ocp_dep_tmp_bits = 0;
 			static_ocp_dep_rez_bits = 0;
     }
     /**************************/
@@ -9248,7 +9258,7 @@ do{
 			
 			ocp04_general_bits = 0;
 			static_ocp04_tmp_bits = 0;
-			static_ocp04_dep_tmp_bits = 0;
+//			static_ocp04_dep_tmp_bits = 0;
 			static_ocp04_dep_rez_bits = 0;
     }
     /**************************/

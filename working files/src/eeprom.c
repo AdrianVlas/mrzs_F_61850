@@ -459,7 +459,7 @@ void main_routines_for_spi1(void)
         comparison_writing |= COMPARISON_WRITING_RESURS;
         _SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT);
         
-        //Скидаємо умову запису кутів у EEPROM
+        //Скидаємо умову запису ресурсу вимикача у EEPROM
         _CLEAR_BIT(control_spi1_taskes, TASK_WRITING_RESURS_EEPROM_BIT);
       }  
     }  
@@ -676,7 +676,7 @@ void main_routines_for_spi1(void)
       }
       offset += sizeof(ustuvannja);
 
-      //Додаємо юстуючі попревки фаз
+      //Додаємо юстуючі поправки фаз
       point_1 = (unsigned char*)(&phi_ustuvannja); 
       point_2 = (unsigned char*)(&phi_ustuvannja_comp);
       for (unsigned int i = 0; i < sizeof(phi_ustuvannja); i++)
@@ -1125,7 +1125,7 @@ void main_routines_for_spi1(void)
       }
       else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_WRITING_RESURS_EEPROM_BIT) != 0)
       {
-        //Виставляємо наступний блок інформації по лічильниках запису у EEPROM
+        //Виставляємо наступний блок інформації по ресурсу вимикача запису у EEPROM
         number_block_resurs_write_to_eeprom++;
       }         
       else
@@ -2992,6 +2992,9 @@ void main_routines_for_spi1(void)
     }
     else if (_CHECK_SET_BIT(control_spi1_taskes, TASK_READING_RESURS_EEPROM_BIT) !=0)
     {
+      //Стоїть умова читання блоку у EEPROM по ресурсу вимикача
+      
+      //Повторно запускаємо процес читання
       _SET_BIT(control_spi1_taskes, TASK_START_READ_RESURS_EEPROM_BIT);
       _CLEAR_BIT(control_spi1_taskes, TASK_READING_RESURS_EEPROM_BIT);
     } 
