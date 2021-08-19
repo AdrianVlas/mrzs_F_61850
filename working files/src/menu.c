@@ -17904,7 +17904,7 @@ void main_manu_function(void)
                   if (
                       ((current_settings.configuration & (1 << i)) == 0) &&
                       (value >= max_value_for_tf[1 + i - 1][index_position]) &&
-                      (value <= max_value_for_tf[1 + i    ][index_position])
+                      (value <  max_value_for_tf[1 + i    ][index_position])
                      ) 
                   {
                     value = (i < (_FIX_NUMBER_PROTECTION - 1)) ? max_value_for_tf[1 + i][index_position] : 0;
@@ -19906,7 +19906,7 @@ void main_manu_function(void)
                   if (
                       ((current_settings.configuration & (1 << i)) == 0) &&
                       ((uint32_t)value >= max_value_for_tf[1 + i - 1][index_position]) &&
-                      ((uint32_t)value <= max_value_for_tf[1 + i    ][index_position])
+                      ((uint32_t)value <  max_value_for_tf[1 + i    ][index_position])
                      ) 
                   {
                     value = max_value_for_tf[1 + i - 1][index_position] - 1;

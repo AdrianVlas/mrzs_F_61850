@@ -2595,7 +2595,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
              uint32_t value_1 = (value >> (16*0)) & 0xffff;
              if (
                  (value_1 >= max_value_for_tf[1 + i - 1][0]) &&
-                 (value_1 <= max_value_for_tf[1 + i    ][0])
+                 (value_1 <  max_value_for_tf[1 + i    ][0])
                 ) 
              {
                value_1 = 0;
@@ -2604,7 +2604,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
              uint32_t value_2 = (value >> (16*1)) & 0xffff;
              if (
                  (value_2 >= max_value_for_tf[1 + i - 1][1]) &&
-                 (value_2 <= max_value_for_tf[1 + i    ][1])
+                 (value_2 <  max_value_for_tf[1 + i    ][1])
                 ) 
              {
                value_2 = 0;
