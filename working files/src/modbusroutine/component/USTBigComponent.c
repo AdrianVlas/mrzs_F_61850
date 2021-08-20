@@ -690,44 +690,68 @@ int ustFunc000(int inOffset, int gruppa, int *multer, int regUst, uint32_t **edi
     (*editValue) = (uint32_t*)&edition_settings.type_of_input_signal;
     if ((regUst & ((unsigned int)(~((1<<NUMBER_INPUTS)-1)))) != 0) diapazon=0;
     break;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
   case 1047:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_input_signal;
     if(regUst&(~(0xF))) diapazon=0;
     break;
+#endif
 #define MARKER1048  1048
   case MARKER1048:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_input;
     if ((regUst & ((unsigned int)(~((1<<NUMBER_INPUTS)-1)))) != 0) diapazon=0;
     break;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 0) ||    \
+     (MODYFIKACIA_VERSII_PZ == 10)||    \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
   case 1049:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_input;
     if(regUst&(~(0xF))) diapazon=0;
     break;
+#endif
 #define MARKER1050  1050
   case MARKER1050:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output;
     if ((regUst & ((unsigned int)(~((1<<NUMBER_SIMPLE_OUTPUTS)-1)))) != 0) diapazon=0;
     break;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
   case 1051:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output;
     if(regUst&(~(0xF))) diapazon=0;
     break;
+#endif
 #define MARKER1052  1052
   case MARKER1052:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
     if ((regUst & ((unsigned int)(~((1<<NUMBER_SIMPLE_OUTPUTS)-1)))) != 0) diapazon=0;
     break;
+#if (                                   \
+     (MODYFIKACIA_VERSII_PZ == 5) ||    \
+     (MODYFIKACIA_VERSII_PZ == 15)      \
+    )                                   
   case 1053:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_of_output_modif;
     if(regUst&(~(0xF))) diapazon=0;
     break;
+#endif
   case 1054:
     (*multer) = 1;
     (*editValue) = (uint32_t*)&edition_settings.type_df;
@@ -1288,12 +1312,6 @@ int postUSTBigWriteAction(void)
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input_signal)
     if(editValue == (uint32_t*)&edition_settings.type_of_input)
     {
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 0) ||    \
-     (MODYFIKACIA_VERSII_PZ == 10)||    \
-     (MODYFIKACIA_VERSII_PZ == 5) ||    \
-     (MODYFIKACIA_VERSII_PZ == 15)      \
-    )                                   
       if(offset==MARKER1048)
       {
         (*editValue) &= (uint32_t)~0xffff;
@@ -1306,14 +1324,6 @@ int postUSTBigWriteAction(void)
         (*editValue)  |= (((~value) & 0xf)<<16);//
         goto m1;
       }//else
-#else
-      if(offset==MARKER1048)
-      {
-        (*editValue) &= (uint32_t)~((1<<NUMBER_INPUTS)-1);//(uint32_t)~0xffff;
-        (*editValue) |= ((~value) & ((1<<NUMBER_INPUTS)-1));//0xffff);
-        goto m1;
-      }
-#endif
     }//if(editValue == (uint32_t*)&edition_settings.type_of_input)
 
     if(editValue == (uint32_t*)&edition_settings.type_of_output)
