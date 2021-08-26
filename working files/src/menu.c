@@ -17924,7 +17924,7 @@ void main_manu_function(void)
                   if (current_ekran.position_cursor_x == COL_TMO_ELONGATION_COMMA )current_ekran.position_cursor_x++;
                   if ((current_ekran.position_cursor_x < COL_TMO_ELONGATION_BEGIN) ||
                       (current_ekran.position_cursor_x > COL_TMO_ELONGATION_END))
-                    current_ekran.position_cursor_x = COL_TMO_ELONGATION_END;
+                    current_ekran.position_cursor_x = COL_TMO_ELONGATION_BEGIN;
                 }
 
                 //Формуємо екран витримок аналогового реєстратора
