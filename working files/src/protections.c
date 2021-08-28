@@ -4923,7 +4923,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
 /*****************************************************/
 //Визначення місця до пошкодження
 /*****************************************************/
-inline void vmp_handler(unsigned int p_active_functions[])
+ inline void vmp_handler(unsigned int p_active_functions[])
 {
   //Перевіряємо чи стоїть фіксуються спрацювання від КЗ на фазних лініях
   static unsigned int const maska_vmp_signals[N_BIG] =

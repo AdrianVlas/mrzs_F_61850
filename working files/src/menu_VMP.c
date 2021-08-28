@@ -10,7 +10,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
     {
       "  Кол.участков  ",
       "   Длина уч.X   ",
-      " П.сопрот.уч.X  "
+      " У.сопрот.уч.X  "
     },
     {
       " Кільк.ділянок  ",
@@ -25,7 +25,7 @@ void make_ekran_setpoint_VMP(int forward_backward)
     {
       "  Кол.участков  ",
       "   Длина уч.X   ",
-      " П.сопрот.уч.X  "
+      " У.сопрот.уч.X  "
     }
   };
 
