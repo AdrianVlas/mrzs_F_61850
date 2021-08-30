@@ -7525,7 +7525,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
             //ѕереводимо режим роботи ≥з дискретним реЇстратором у стан "¬иконуЇтьс€ безпосередн≥й запис у DataFlash"
             if (state_dr_record != STATE_DR_MAKE_RECORD)
             {
-              if (time_from_start_record_dr >= MAX_TIME_OFFSET_FROM_START)
+              if (time_from_start_record_dr >= (MAX_TIME_OFFSET_FROM_START - DELTA_TIME_FOR_TIMERS + 1))
               {
                 //якщо в≥дбулос€ перевищенн€ по часу запису, то подаЇмо команду завершити запис без продовженн€ пот≥м цього запису у наступному запис≥
                 state_dr_record = STATE_DR_MAKE_RECORD;
