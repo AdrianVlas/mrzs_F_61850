@@ -1682,6 +1682,7 @@ void min_settings(__SETTINGS *target_label)
   
   target_label->prefault_number_periods = TIMEOUT_PREFAULT_MIN / 20;
   target_label->postfault_number_periods = TIMEOUT_POSTFAULT_MIN / 20;
+	target_label->control_ar = 0;
   
   target_label->timeout_prolongation_work_digital_registrator = 0;
 
