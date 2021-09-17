@@ -1234,13 +1234,16 @@ int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen)
 
   if(recordNumber>(*(point_to_buffer + FIRST_INDEX_NUMBER_ITEMS_DR))) return MARKER_ERRORPERIMETR;//уйти если превышение
 
-  unsigned char time_before_dr = (*(point_to_buffer + FIRST_INDEX_NUMBER_BEFORE_ITEMS_DR));// тривалість доаваріного масиву
+  int const time_before_dr = point_to_buffer[FIRST_INDEX_NUMBER_BEFORE_ITEMS_DR];// тривалість доаваріного масиву
+  unsigned int const offset = FIRST_INDEX_FIRST_DATA_DR + (recordNumber + 1)*SD_DR; //бо найперший запис містить попереднє значення (до фіксації запуску роботи дискретного реєстратора)
 
-  unsigned int offset = FIRST_INDEX_FIRST_DATA_DR + (recordNumber + 1)*SD_DR; //бо найперший запис містить попереднє значення (до фіксації запуску роботи дискретного реєстратора)
-
-  unsigned int time_marker_dr = (*(point_to_buffer + offset + 0)) + ((*(point_to_buffer + offset + 1)) << 8 ) +
-                                ((*(point_to_buffer + offset + 2)) << 16);
-  time_marker_dr += (unsigned int) time_before_dr;
+	int time_marker_dr = (int)(
+														 (unsigned int)(point_to_buffer[offset + 0]      ) + 
+														 (unsigned int)(point_to_buffer[offset + 1] <<  8) + 
+														 (unsigned int)(point_to_buffer[offset + 2] << 16) + 
+														               ((point_to_buffer[offset + 2] & 0x80) ? 0xff000000u : 0x0u) 
+													  );
+  time_marker_dr += time_before_dr;
 
   switch(offsetRegister)
     {
