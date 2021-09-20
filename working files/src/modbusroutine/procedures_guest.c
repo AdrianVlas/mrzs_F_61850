@@ -27,7 +27,7 @@ static const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR
   {NAME_RANG_RU},
   {NAME_RANG_UA},
   {NAME_RANG_EN},
-  {NAME_RANG_KZ},
+  {NAME_RANG_KZ}
 };
 
 /***********************************************************************************/
