@@ -3996,7 +3996,9 @@ void main_manu_function(void)
                 //Виставляємо першу частину запису
                 part_reading_dr_from_dataflash_for_menu = 0;
                 //Подаємо команду зчитати дані у бувер пам'яті
+								mutex_spi1 = true;
                 control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_DR_MENU;
+								mutex_spi1 = false;
                 
                 //Виставляємо повідомлення, що поки дані не будуть зчитані, то екран треба перерисовувати кожну секунду
                 rewrite_ekran_once_more = 1;
@@ -4049,7 +4051,9 @@ void main_manu_function(void)
                 number_record_of_pr_err_into_menu = current_ekran.index_position;
                 
                 //Подаємо команду зчитати дані у бувер пам'яті
+								mutex_spi1 = true;
                 control_tasks_dataflash |= TASK_MAMORY_READ_DATAFLASH_FOR_PR_ERR_MENU;
+								mutex_spi1 = false;
                 
                 //Виставляємо новий екран, який треба відобразити на РКІ
                 current_ekran.current_level = EKRAN_CHANGES_DIAGNOSTICS_PR_ERR;
@@ -17900,7 +17904,7 @@ void main_manu_function(void)
                   if (
                       ((current_settings.configuration & (1 << i)) == 0) &&
                       (value >= max_value_for_tf[1 + i - 1][index_position]) &&
-                      (value <= max_value_for_tf[1 + i    ][index_position])
+                      (value <  max_value_for_tf[1 + i    ][index_position])
                      ) 
                   {
                     value = (i < (_FIX_NUMBER_PROTECTION - 1)) ? max_value_for_tf[1 + i][index_position] : 0;
@@ -17920,7 +17924,7 @@ void main_manu_function(void)
                   if (current_ekran.position_cursor_x == COL_TMO_ELONGATION_COMMA )current_ekran.position_cursor_x++;
                   if ((current_ekran.position_cursor_x < COL_TMO_ELONGATION_BEGIN) ||
                       (current_ekran.position_cursor_x > COL_TMO_ELONGATION_END))
-                    current_ekran.position_cursor_x = COL_TMO_ELONGATION_END;
+                    current_ekran.position_cursor_x = COL_TMO_ELONGATION_BEGIN;
                 }
 
                 //Формуємо екран витримок аналогового реєстратора
@@ -19902,7 +19906,7 @@ void main_manu_function(void)
                   if (
                       ((current_settings.configuration & (1 << i)) == 0) &&
                       ((uint32_t)value >= max_value_for_tf[1 + i - 1][index_position]) &&
-                      ((uint32_t)value <= max_value_for_tf[1 + i    ][index_position])
+                      ((uint32_t)value <  max_value_for_tf[1 + i    ][index_position])
                      ) 
                   {
                     value = max_value_for_tf[1 + i - 1][index_position] - 1;

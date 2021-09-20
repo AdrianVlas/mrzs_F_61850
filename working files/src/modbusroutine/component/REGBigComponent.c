@@ -267,7 +267,7 @@ int getREGBigModbusRegister(int adrReg)
       return MARKER_ERRORPERIMETR;
 
     case 333://Выдержка доаварийного массива DR
-      return (current_settings_interfaces.timeout_prolongation_work_digital_registrator) &0xFFFF; 
+      return (current_settings_interfaces.timeout_prolongation_work_digital_registrator/10) &0xFFFF; 
     case 334://Количество дискретных регистраторов
       return (info_rejestrator_dr.number_records) &0xFFFF;
 #define IMUNITET_REG335 335
@@ -354,7 +354,7 @@ int setREGBigModbusRegister(int adrReg, int dataReg)
       if(dataReg!=CMD_WORD_CLEAR_AR) return MARKER_ERRORDIAPAZON;
       break;
     case 333://Выдержка доаварийного массива DR
-      if(dataReg<TIMEOUT_DR_ELONGATION_MIN/20 || dataReg>TIMEOUT_DR_ELONGATION_MAX/20) return MARKER_ERRORDIAPAZON;
+      if(dataReg<TIMEOUT_DR_ELONGATION_MIN/10 || dataReg>TIMEOUT_DR_ELONGATION_MAX/10) return MARKER_ERRORDIAPAZON;
       break;
     case 334://Количество дискретных регистраторов
       return MARKER_ERRORDIAPAZON;
@@ -570,7 +570,7 @@ int postREGBigWriteAction(void)
           break;
 
         case 333://Время записи аналогового регистратора (доаварийный массив)
-          edition_settings.timeout_prolongation_work_digital_registrator = tempWriteArray[offsetTempWriteArray+i];
+          edition_settings.timeout_prolongation_work_digital_registrator = tempWriteArray[offsetTempWriteArray+i]*10;
           upravlSetting = 1;//флаг Setting
           break;
         case 335://Текущий дискретный регистратор

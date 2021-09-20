@@ -289,13 +289,40 @@
 #define N_BIT_CTRMTZ_NESPR_KIL_NAPR             (INDEX_ML_CTRMTZ_NESPR_KIL_NAPR - 4)      
 #define CTR_MTZ_NESPR_KIL_NAPR                  (1 << N_BIT_CTRMTZ_NESPR_KIL_NAPR)          
 
-enum {
+enum 
+{
   CTR_MTZ = 0,
   CTR_MTZ_VPERED,
   CTR_MTZ_NAZAD,
+	CTR_MTZ_PRYSKORENNJA,
+	CTR_MTZ_PRYSKORENA,
   /*************************************/
   MTZ_CONST_MENU_SETTINGS_LENGTH
 };
+
+enum __mtz_tmr_const 
+{
+  INDEX_TIMER_MTZ = 0,
+  INDEX_TIMER_MTZ_N_VPERED,
+  INDEX_TIMER_MTZ_N_NAZAD,
+  INDEX_TIMER_MTZ_PO_NAPRUZI,
+	
+  INDEX_TIMER_MTZ_DEPENDENT_A,
+  INDEX_TIMER_MTZ_DEPENDENT_B,
+  INDEX_TIMER_MTZ_DEPENDENT_C,
+  INDEX_TIMER_MTZ_DEPENDENT_RT_80,
+  INDEX_TIMER_MTZ_DEPENDENT_RTV_I,
+	
+	INDEX_TIMER_MTZ_PR,
+	INDEX_TIMER_MTZ_N_VPERED_PR,
+	INDEX_TIMER_MTZ_N_NAZAD_PR,
+	INDEX_TIMER_MTZ_PO_NAPRUZI_PR,
+	INDEX_TIMER_MTZ_VVID_PR,
+	
+  /*************************************/
+  NUMBER_LEVEL_OCP_TMR_CONST
+};
+
 
 #define CTR_MTZ_MASKA                   (                                \
                                          CTR_MTZ_1                      |\
@@ -314,5 +341,43 @@ enum {
                                          CTR_MTZ_4_NAZAD                |\
                                          CTR_MTZ_NESPR_KIL_NAPR          \
                                          )
+
+enum __mtz_const 
+{
+  RANG_BLOCK_MTZ = 0,
+  RANG_BLOCK_USK_MTZ,
+  RANG_SECTOR_VPERED_MTZN,
+  RANG_SECTOR_NAZAD_MTZN,
+  RANG_PO_MTZ,
+  RANG_PO_MTZN_VPERED,
+  RANG_PO_MTZN_NAZAD,
+  RANG_PO_U_MTZPN,
+  RANG_PO_MTZPN,
+  RANG_MTZ,
+  /*************************************/
+  OCP_SIGNALS_LENGTH
+};
+
+enum __mtz_levels_const 
+{
+  OCP_LEVEL1 = 0,
+  OCP_LEVEL2,
+  OCP_LEVEL3,
+  OCP_LEVEL4,
+  /*************************************/
+  NUMBER_LEVEL_OCP
+};
+
+enum __mtz_abc_direction_const {
+  MTZ_NEVYZN = 0,
+  MTZ_VPERED,
+  MTZ_NAZAD
+};
+
+enum __mtz_abc_const {
+  PHASE_A_INDEX = 0,
+  PHASE_B_INDEX,
+  PHASE_C_INDEX
+};
 
 #endif

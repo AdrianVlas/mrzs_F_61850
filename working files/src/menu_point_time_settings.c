@@ -5,7 +5,7 @@
 /*****************************************************/
 void make_ekran_chose_item_of_point_time_settings(void)
 {
-  static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_POINT_TIME_SETTINGS][MAX_COL_LCD] = 
+  static unsigned char const name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_POINT_TIME_SETTINGS][MAX_COL_LCD] = 
   {
     {
       " Метка настроек ",
@@ -178,7 +178,7 @@ void make_ekran_time_settings(unsigned int kind)
   else
   {
     //теоретично ми сюди б не мали ніколи заходити, але якщо ми сюди зайшли, то виводимо сигналізацію про помилку на екран
-    static const unsigned char error_meas[MAX_NAMBER_LANGUAGE][7] = 
+    static unsigned char const error_meas[MAX_NAMBER_LANGUAGE][7] = 
     {
       " Ошибка",
       "Помилка",

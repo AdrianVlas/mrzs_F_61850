@@ -283,26 +283,21 @@ extern unsigned char crc_settings;
 extern __SETTINGS current_settings_prt, current_settings;
 extern __SETTINGS edition_settings, current_settings_interfaces;
 
-extern int * const type_mtz_arr[NUMBER_LEVEL_MTZ];
-extern unsigned int const mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH];
-extern unsigned int const mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST];
-extern unsigned int const mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH];
-extern unsigned int const i_nom_const;
-extern unsigned int const u_f_nom_const;
-extern unsigned int u_linear_nom_const;
-extern unsigned int * const setpoint_mtz[NUMBER_LEVEL_MTZ];
-extern unsigned int * const setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ];
-extern unsigned int * const setpoint_mtz_n_nazad[NUMBER_LEVEL_MTZ];
-extern unsigned int * const setpoint_mtz_U[NUMBER_LEVEL_MTZ];
-extern unsigned int * const setpoint_mtz_po_napruzi[NUMBER_LEVEL_MTZ];
-extern int * const timeout_mtz[NUMBER_LEVEL_MTZ];
-extern int * const timeout_mtz_n_vpered[NUMBER_LEVEL_MTZ];
-extern int * const timeout_mtz_n_nazad[NUMBER_LEVEL_MTZ];
-extern int * const timeout_mtz_po_napruzi[NUMBER_LEVEL_MTZ];
-extern _Bool previous_state_mtz_po_incn;
-extern _Bool previous_state_mtz_po_uncn;
-extern unsigned int p_global_trigger_state_mtz2;
-extern unsigned int p_global_trigger_state_mtz04_2;
+//МСЗ
+extern unsigned int ocp_general_bits;
+extern uint32_t static_ocp_select_tmp_bits;
+extern uint32_t static_ocp_tmp_bits;
+extern uint32_t static_ocp_fw_tmp_bits;
+extern uint32_t static_ocp_bw_tmp_bits;
+extern uint32_t static_ocp_by_U_tmp_bits;
+//extern uint32_t static_ocp_dep_tmp_bits;
+extern uint32_t static_ocp_dep_rez_bits;
+
+//МСЗ 0.4кВ
+extern unsigned int ocp04_general_bits;
+extern uint32_t static_ocp04_tmp_bits;
+//extern uint32_t static_ocp04_dep_tmp_bits;
+extern uint32_t static_ocp04_dep_rez_bits;
 
 //Визначення періодів у хвилину і більше
 extern unsigned int number_seconds;
@@ -478,9 +473,6 @@ extern unsigned int clean_rejestrators;
 
 extern const unsigned char letters[69][2];
 extern const unsigned char extra_letters[12][1 + MAX_NAMBER_LANGUAGE];
-
-extern const unsigned char string_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD];
-extern const unsigned int cursor_x_string_off_on[MAX_NAMBER_LANGUAGE][2];
 
 extern int current_language;
 

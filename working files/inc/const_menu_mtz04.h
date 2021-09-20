@@ -69,4 +69,46 @@
                                            CTR_MTZ04_2_PRYSKORENA            \
                                           )
 
+enum 
+{
+  CTR_MTZ04 = 0,
+	CTR_MTZ04_PRYSKORENNJA,
+	CTR_MTZ04_PRYSKORENA,
+  /*************************************/
+  MTZ04_CONST_MENU_SETTINGS_LENGTH
+};
+
+enum __mtz04_tmr_const 
+{
+  INDEX_TIMER_MTZ04 = 0,
+	
+  INDEX_TIMER_MTZ04_DEPENDENT_A,
+  INDEX_TIMER_MTZ04_DEPENDENT_B,
+  INDEX_TIMER_MTZ04_DEPENDENT_C,
+	
+	INDEX_TIMER_MTZ04_PR,
+	INDEX_TIMER_MTZ04_VVID_PR,
+	
+  /*************************************/
+  NUMBER_LEVEL_OCP04_TMR_CONST
+};
+
+enum __mtz04_const 
+{
+  RANG_BLOCK_MTZ04 = 0,
+  RANG_BLOCK_USK_MTZ04,
+  RANG_PO_MTZ04,
+  RANG_MTZ04,
+  /*************************************/
+  OCP04_SIGNALS_LENGTH
+};
+
+enum __mtz04_levels_const 
+{
+  OCP04_LEVEL1 = 0,
+  OCP04_LEVEL2,
+  /*************************************/
+  NUMBER_LEVEL_OCP04
+};
+
 #endif

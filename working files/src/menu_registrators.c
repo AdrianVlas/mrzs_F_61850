@@ -1917,7 +1917,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
   if (buffer_for_manu_read_record[0] == LABEL_START_RECORD_PR_ERR)
   {
     //Пеший байт сходиться із міткою початку запису - вважаємо, що у буфері достовірні дані
-    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_DIAGNOSTYKA][MAX_COL_LCD] = 
+    static unsigned char const name_string[MAX_NAMBER_LANGUAGE][MAX_ROW_FOR_DIAGNOSTYKA][MAX_COL_LCD] = 
     {
       {
         NAME_DIAGN_RU
@@ -2046,7 +2046,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
                 //У другому рядку відображаємо яке значення прийняла зараз дана діагностика
                 unsigned char second_row[MAX_COL_LCD] = "                ";
 
-                static const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
+                static unsigned char const passive_active[MAX_NAMBER_LANGUAGE][2][5] = 
                 {
                   {"Пасс.", "Акт. "},
                   {"Пас. ", "Акт. "},
@@ -2121,7 +2121,7 @@ void make_ekran_changing_diagnostics_pr_err_registrator(void)
   else
   {
     //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
-    static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+    static unsigned char const name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
     {
       {
         " Недостоверные  ",

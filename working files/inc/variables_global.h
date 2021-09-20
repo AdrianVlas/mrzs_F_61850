@@ -661,7 +661,7 @@ const uint32_t max_value_for_tf[1 + _FIX_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_
     1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL
   },
   {
-    1 + NUMBER_GENERAL_SIGNAL_FOR_RANG + NUMBER_MTZ_SIGNAL_FOR_RANG + NUMBER_MTZ04_SIGNAL_FOR_RANG + NUMBER_ZDZ_SIGNAL_FOR_RANG + NUMBER_ZZ_SIGNAL_FOR_RANG + NUMBER_TZNP_SIGNAL_FOR_RANG + NUMBER_APV_SIGNAL_FOR_RANG + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL,
+    1 + NUMBER_GENERAL_SIGNAL_FOR_RANG + NUMBER_MTZ_SIGNAL_FOR_RANG + NUMBER_MTZ04_SIGNAL_FOR_RANG + NUMBER_ZDZ_SIGNAL_FOR_RANG + NUMBER_ZZ_SIGNAL_FOR_RANG + NUMBER_TZNP_SIGNAL_FOR_RANG + NUMBER_APV_SIGNAL_FOR_RANG + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG,
     1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL
   },
   {
@@ -685,7 +685,7 @@ const uint32_t max_value_for_tf[1 + _FIX_NUMBER_PROTECTION][MAX_ROW_LIST_SOURCE_
     1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL + NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL + NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL + NUMBER_UP_SIGNAL_FOR_RANG_SMALL
   },
   {
-    1 + NUMBER_GENERAL_SIGNAL_FOR_RANG + NUMBER_MTZ_SIGNAL_FOR_RANG + NUMBER_MTZ04_SIGNAL_FOR_RANG + NUMBER_ZDZ_SIGNAL_FOR_RANG + NUMBER_ZZ_SIGNAL_FOR_RANG + NUMBER_TZNP_SIGNAL_FOR_RANG + NUMBER_APV_SIGNAL_FOR_RANG + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG + NUMBER_UROV_SIGNAL_FOR_RANG + NUMBER_ZOP_SIGNAL_FOR_RANG + NUMBER_UMIN_SIGNAL_FOR_RANG + NUMBER_UMAX_SIGNAL_FOR_RANG + NUMBER_UP_SIGNAL_FOR_RANG + NUMBER_VMP_SIGNAL_FOR_RANG_SMALL,
+    1 + NUMBER_GENERAL_SIGNAL_FOR_RANG + NUMBER_MTZ_SIGNAL_FOR_RANG + NUMBER_MTZ04_SIGNAL_FOR_RANG + NUMBER_ZDZ_SIGNAL_FOR_RANG + NUMBER_ZZ_SIGNAL_FOR_RANG + NUMBER_TZNP_SIGNAL_FOR_RANG + NUMBER_APV_SIGNAL_FOR_RANG + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG + NUMBER_UROV_SIGNAL_FOR_RANG + NUMBER_ZOP_SIGNAL_FOR_RANG + NUMBER_UMIN_SIGNAL_FOR_RANG + NUMBER_UMAX_SIGNAL_FOR_RANG + NUMBER_UP_SIGNAL_FOR_RANG + NUMBER_VMP_SIGNAL_FOR_RANG,
     1 + NUMBER_GENERAL_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ_SIGNAL_FOR_RANG_SMALL + NUMBER_MTZ04_SIGNAL_FOR_RANG_SMALL + NUMBER_ZDZ_SIGNAL_FOR_RANG_SMALL + NUMBER_ZZ_SIGNAL_FOR_RANG_SMALL + NUMBER_TZNP_SIGNAL_FOR_RANG_SMALL + NUMBER_APV_SIGNAL_FOR_RANG_SMALL + NUMBER_ACHR_CHAPV_SIGNAL_FOR_RANG_SMALL + NUMBER_UROV_SIGNAL_FOR_RANG_SMALL + NUMBER_ZOP_SIGNAL_FOR_RANG_SMALL + NUMBER_UMIN_SIGNAL_FOR_RANG_SMALL + NUMBER_UMAX_SIGNAL_FOR_RANG_SMALL + NUMBER_UP_SIGNAL_FOR_RANG_SMALL + NUMBER_VMP_SIGNAL_FOR_RANG_SMALL
   },
   {
@@ -726,184 +726,21 @@ __SETTINGS current_settings;
 #endif
 SRAM1 __SETTINGS edition_settings, current_settings_interfaces;
 
-int * const type_mtz_arr[NUMBER_LEVEL_MTZ] = 
-{
-  &current_settings_prt.type_mtz1,
-  &current_settings_prt.type_mtz2,
-  &current_settings_prt.type_mtz3,
-  &current_settings_prt.type_mtz4,
-};
-const unsigned int mtz_settings_prt[NUMBER_LEVEL_MTZ][MTZ_SETTINGS_LENGTH] = 
-{
-  {
-    RANG_BLOCK_MTZ1, 
-    0,
-    RANG_SECTOR_VPERED_MTZN1,
-    RANG_SECTOR_NAZAD_MTZN1,
-    RANG_PO_MTZ1,
-    RANG_PO_MTZN1_VPERED,
-    RANG_PO_MTZN1_NAZAD,
-    RANG_PO_U_MTZPN1,
-    RANG_PO_MTZPN1,
-    RANG_MTZ1
-  },
-  {
-    RANG_BLOCK_MTZ2, 
-    RANG_BLOCK_USK_MTZ2,
-    RANG_SECTOR_VPERED_MTZN2,
-    RANG_SECTOR_NAZAD_MTZN2,
-    RANG_PO_MTZ2,
-    RANG_PO_MTZN2_VPERED,
-    RANG_PO_MTZN2_NAZAD,
-    RANG_PO_U_MTZPN2,
-    RANG_PO_MTZPN2,
-    RANG_MTZ2
-  },
-  {
-    RANG_BLOCK_MTZ3, 
-    0,
-    RANG_SECTOR_VPERED_MTZN3,
-    RANG_SECTOR_NAZAD_MTZN3,
-    RANG_PO_MTZ3,
-    RANG_PO_MTZN3_VPERED,
-    RANG_PO_MTZN3_NAZAD,
-    RANG_PO_U_MTZPN3,
-    RANG_PO_MTZPN3,
-    RANG_MTZ3
-  },
-  {
-    RANG_BLOCK_MTZ4, 
-    0,
-    RANG_SECTOR_VPERED_MTZN4,
-    RANG_SECTOR_NAZAD_MTZN4,
-    RANG_PO_MTZ4,
-    RANG_PO_MTZN4_VPERED,
-    RANG_PO_MTZN4_NAZAD,
-    RANG_PO_U_MTZPN4,
-    RANG_PO_MTZPN4,
-    RANG_MTZ4
-  }
-};
-const unsigned int mtz_tmr_const[NUMBER_LEVEL_MTZ][NUMBER_LEVEL_TMR_CONST] = 
-{
-  {
-    INDEX_TIMER_MTZ1,
-    INDEX_TIMER_MTZ1_N_VPERED,
-    INDEX_TIMER_MTZ1_N_NAZAD,
-    INDEX_TIMER_MTZ1_PO_NAPRUZI
-  },
-  {
-    INDEX_TIMER_MTZ2,
-    INDEX_TIMER_MTZ2_N_VPERED,
-    INDEX_TIMER_MTZ2_N_NAZAD,
-    INDEX_TIMER_MTZ2_PO_NAPRUZI
-  },
-  {
-    INDEX_TIMER_MTZ3,
-    INDEX_TIMER_MTZ3_N_VPERED,
-    INDEX_TIMER_MTZ3_N_NAZAD,
-    INDEX_TIMER_MTZ3_PO_NAPRUZI
-  },
-  {
-    INDEX_TIMER_MTZ4,
-    INDEX_TIMER_MTZ4_N_VPERED,
-    INDEX_TIMER_MTZ4_N_NAZAD,
-    INDEX_TIMER_MTZ4_PO_NAPRUZI
-  },
-};
-const unsigned int mtz_const_menu_settings_prt[NUMBER_LEVEL_MTZ][MTZ_CONST_MENU_SETTINGS_LENGTH] = 
-{
-  {
-    CTR_MTZ_1,
-    CTR_MTZ_1_VPERED,
-    CTR_MTZ_1_NAZAD
-  },
-  {
-    CTR_MTZ_2,
-    CTR_MTZ_2_VPERED,
-    CTR_MTZ_2_NAZAD
-  },
-  {
-    CTR_MTZ_3,
-    CTR_MTZ_3_VPERED,
-    CTR_MTZ_3_NAZAD
-  },
-  {
-    CTR_MTZ_4,
-    CTR_MTZ_4_VPERED,
-    CTR_MTZ_4_NAZAD
-  }
-};
-unsigned int const i_nom_const = I_NOM * KOEF_1_2_I;
-unsigned int const u_f_nom_const = U_F_NOM * KOEF_0_2_U;
-unsigned int const u_linear_nom_const = U_LINEAR_NOM * KOEF_0_2_U;
-unsigned int * const setpoint_mtz[NUMBER_LEVEL_MTZ] = 
-{
-  current_settings_prt.setpoint_mtz_1,
-  current_settings_prt.setpoint_mtz_2,
-  current_settings_prt.setpoint_mtz_3,
-  current_settings_prt.setpoint_mtz_4
-};
-unsigned int * const setpoint_mtz_n_vpered[NUMBER_LEVEL_MTZ] = 
-{
-  current_settings_prt.setpoint_mtz_1_n_vpered,
-  current_settings_prt.setpoint_mtz_2_n_vpered,
-  current_settings_prt.setpoint_mtz_3_n_vpered,
-  current_settings_prt.setpoint_mtz_4_n_vpered
-};
-unsigned int * const setpoint_mtz_n_nazad[NUMBER_LEVEL_MTZ] = 
-{
-  current_settings_prt.setpoint_mtz_1_n_nazad,
-  current_settings_prt.setpoint_mtz_2_n_nazad,
-  current_settings_prt.setpoint_mtz_3_n_nazad,
-  current_settings_prt.setpoint_mtz_4_n_nazad
-};
-unsigned int * const setpoint_mtz_U[NUMBER_LEVEL_MTZ] = 
-{
-  current_settings_prt.setpoint_mtz_1_U,
-  current_settings_prt.setpoint_mtz_2_U,
-  current_settings_prt.setpoint_mtz_3_U,
-  current_settings_prt.setpoint_mtz_4_U
-};
-unsigned int * const setpoint_mtz_po_napruzi[NUMBER_LEVEL_MTZ] = 
-{
-  current_settings_prt.setpoint_mtz_1_po_napruzi,
-  current_settings_prt.setpoint_mtz_2_po_napruzi,
-  current_settings_prt.setpoint_mtz_3_po_napruzi,
-  current_settings_prt.setpoint_mtz_4_po_napruzi
-};
-int * const timeout_mtz[NUMBER_LEVEL_MTZ] =
-{
-  current_settings_prt.timeout_mtz_1,
-  current_settings_prt.timeout_mtz_2,
-  current_settings_prt.timeout_mtz_3,
-  current_settings_prt.timeout_mtz_4
-};
-int * const timeout_mtz_n_vpered[NUMBER_LEVEL_MTZ] = 
-{
-  current_settings_prt.timeout_mtz_1_n_vpered,
-  current_settings_prt.timeout_mtz_2_n_vpered,
-  current_settings_prt.timeout_mtz_3_n_vpered,
-  current_settings_prt.timeout_mtz_4_n_vpered
-};
-int * const timeout_mtz_n_nazad[NUMBER_LEVEL_MTZ] = 
-{
-  current_settings_prt.timeout_mtz_1_n_nazad,
-  current_settings_prt.timeout_mtz_2_n_nazad,
-  current_settings_prt.timeout_mtz_3_n_nazad,
-  current_settings_prt.timeout_mtz_4_n_nazad
-};
-int * const timeout_mtz_po_napruzi[NUMBER_LEVEL_MTZ] = 
-{
-  current_settings_prt.timeout_mtz_1_po_napruzi,
-  current_settings_prt.timeout_mtz_2_po_napruzi,
-  current_settings_prt.timeout_mtz_3_po_napruzi,
-  current_settings_prt.timeout_mtz_4_po_napruzi
-};
-_Bool previous_state_mtz_po_incn = 0;
-_Bool previous_state_mtz_po_uncn = 0;
-unsigned int p_global_trigger_state_mtz2;
-unsigned int p_global_trigger_state_mtz04_2;
+//МСЗ
+unsigned int ocp_general_bits;
+uint32_t static_ocp_select_tmp_bits;
+uint32_t static_ocp_tmp_bits;
+uint32_t static_ocp_fw_tmp_bits;
+uint32_t static_ocp_bw_tmp_bits;
+uint32_t static_ocp_by_U_tmp_bits;
+//uint32_t static_ocp_dep_tmp_bits;
+uint32_t static_ocp_dep_rez_bits;
+
+//МСЗ 0.4кВ
+unsigned int ocp04_general_bits;
+uint32_t static_ocp04_tmp_bits;
+//uint32_t static_ocp04_dep_tmp_bits;
+uint32_t static_ocp04_dep_rez_bits;
 
 //Визначення періодів у хвилину і більше
 unsigned int number_seconds;
@@ -1309,21 +1146,6 @@ const unsigned char extra_letters[12][1 + MAX_NAMBER_LANGUAGE] =
 { 0xBE, 0xFF, 0xFF, 0xFF, 0x03}, // ѕ - замінний символ з даним кодом для WIN1251
 { 0x80, 0xFF, 0xFF, 0xFF, 0x04}, // Ђ - замінний символ з даним кодом для WIN1251
 { 0x90, 0xFF, 0xFF, 0xFF, 0x05}  // ђ - замінний символ з даним кодом для WIN1251
-};
-
-const unsigned char string_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
-{
-  {"     Откл.      ", "      Вкл.      "},
-  {"     Вимк.      ", "     Ввімк.     "},
-  {"      Off       ", "       On       "},
-  {"     Сљнд.      ", "     Косу.      "}
-};
-const unsigned int cursor_x_string_off_on[MAX_NAMBER_LANGUAGE][2] = 
-{
-  {4, 5},
-  {4, 4},
-  {5, 6},
-  {4, 4}
 };
 
 int current_language = LANGUAGE_ABSENT;

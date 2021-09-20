@@ -462,42 +462,6 @@ NUMBER_TOTAL_SIGNAL_FOR_RANG
 
 /*****************************************/
 
-enum __mtz_const {
-  RANG_BLOCK_MTZ = 0,
-  RANG_BLOCK_USK_MTZ,
-  RANG_SECTOR_VPERED_MTZN,
-  RANG_SECTOR_NAZAD_MTZN,
-  RANG_PO_MTZ,
-  RANG_PO_MTZN_VPERED,
-  RANG_PO_MTZN_NAZAD,
-  RANG_PO_U_MTZPN,
-  RANG_PO_MTZPN,
-  RANG_MTZ,
-  /*************************************/
-  MTZ_SETTINGS_LENGTH
-};
-
-enum __mtz_levels_const {
-  MTZ_LEVEL1 = 0,
-  MTZ_LEVEL2,
-  MTZ_LEVEL3,
-  MTZ_LEVEL4,
-  /*************************************/
-  NUMBER_LEVEL_MTZ //Количество ступеней МТЗ
-};
-
-enum __mtz_abc_const {
-  PHASE_A_INDEX = 0,
-  PHASE_B_INDEX,
-  PHASE_C_INDEX
-};
-
-enum __mtz_abc_direction_const {
-  MTZ_NEVYZN = 0,
-  MTZ_VPERED,
-  MTZ_NAZAD
-};
-
 /*****************************************/
 //Макски сигналів, які можна зранжувати на функціональні кнопки у Режимі Кнопка
 /*****************************************/
@@ -1273,6 +1237,44 @@ enum __mtz_abc_direction_const {
 /*****************************************/
 
 /*****************************************/
+//Макска моніторингу максимального фазного струму для дискретного реєстратора
+/*****************************************/
+#define MASKA_MONITOTYNG_PHASE_SIGNALES_0        0
+
+#define MASKA_MONITOTYNG_PHASE_SIGNALES_1 (unsigned int)(     \
+     (1 << (RANG_PO_MTZ1 - 32))                               \
+   | (1 << (RANG_PO_MTZN1_VPERED - 32))                       \
+   | (1 << (RANG_PO_MTZN1_NAZAD - 32))                        \
+   | (1 << (RANG_PO_MTZPN1 - 32))                             \
+   | (1 << (RANG_MTZ1 - 32))                                  \
+   | (1 << (RANG_PO_MTZ2 - 32))                               \
+   | (1 << (RANG_PO_MTZN2_VPERED - 32))                       \
+   | (1 << (RANG_PO_MTZN2_NAZAD - 32))                        \
+   | (1 << (RANG_PO_MTZPN2 - 32))                             \
+   | (1 << (RANG_MTZ2 - 32))                                  \
+   | (1 << (RANG_PO_MTZ3 - 32))                               \
+   | (1 << (RANG_PO_MTZN3_VPERED - 32))                       \
+   | (1 << (RANG_PO_MTZN3_NAZAD - 32))                        \
+   | (1 << (RANG_PO_MTZPN3 - 32))                             \
+   | (1 << (RANG_MTZ3 - 32))                                  \
+   | (1 << (RANG_PO_MTZ4 - 32))                               \
+   | (1 << (RANG_PO_MTZN4_VPERED - 32))                       \
+   | (1 << (RANG_PO_MTZN4_NAZAD - 32))                        \
+)
+
+#define MASKA_MONITOTYNG_PHASE_SIGNALES_2 (unsigned int)(     \
+     (1 << (RANG_PO_MTZPN4 - 64))                             \
+   | (1 << (RANG_MTZ4 - 64))                                  \
+)
+
+#define MASKA_MONITOTYNG_PHASE_SIGNALES_3        0
+#define MASKA_MONITOTYNG_PHASE_SIGNALES_4        0
+#define MASKA_MONITOTYNG_PHASE_SIGNALES_5        0
+#define MASKA_MONITOTYNG_PHASE_SIGNALES_6        0
+#define MASKA_MONITOTYNG_PHASE_SIGNALES_7        0
+/*****************************************/
+
+/*****************************************/
 //Макска моніторингу максимального фазного струму сторони 0.4кВ для дискретного реєстратора
 /*****************************************/
 #define MASKA_MONITOTYNG_PHASE04_SIGNALES_0        0
@@ -1587,7 +1589,7 @@ enum _leds_colors
 /*****************************************/
 //Константи для реєстратора статистики
 /*****************************************/
-//#define RSTATYSYKA 1
+#define RSTATYSYKA 1
 /*****************************************/
 
 /*****************************************/
