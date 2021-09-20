@@ -1035,7 +1035,8 @@ static  int time_before_start_record_dr = 0;
     uint32_t* pCmd = (uint32_t *)&(arRawCmd[shIndexRDRawCmd]);
 
     *(ptDRUVAd->number_changes_into_dr_record) = 0;
-    *(ptDRUVAd->number_items_dr) = 0; 
+    *(ptDRUVAd->number_items_dr) = 0;
+    time_before_start_record_dr = 0;//!--  //@AddidtionalzZeroed
     if(chAmontRecords == 0 || state_dr_record == STATE_DR_FORCE_START_NEW_RECORD){
         buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0xff;
         buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  1] = 0xff;
@@ -1077,6 +1078,7 @@ static  int time_before_start_record_dr = 0;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0xff;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  1] = 0xff;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  2] = 0xff;
+            time_before_start_record_dr += 1; time_before_start_record_dr *=-1 ;
             buffer_for_save_dr_record[FIRST_INDEX_NUMBER_BEFORE_ITEMS_DR] = (time_before_start_record_dr );
         }
           //Текучий стан сигналів
