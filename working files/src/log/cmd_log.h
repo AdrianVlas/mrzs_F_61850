@@ -44,7 +44,7 @@ typedef struct tag_CmdPlusTimeStateElem{
 
   
 
-#define AMOUNT_CMD_PLUS_TIME_STAMP_RECORD 100 //400
+#define AMOUNT_CMD_PLUS_TIME_STAMP_RECORD 101 //400
 #define FIFTY_YEAR_NUMBER  ((unsigned long long)1000*3600*365*50)
 
 typedef struct tag_CmdPlusTimeHolder{
