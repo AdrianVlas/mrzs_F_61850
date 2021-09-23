@@ -1028,9 +1028,9 @@ static  int time_before_start_record_dr = 0;
     //!@!*(ptDRUVAd->number_changes_into_dr_record) = 0;
     //Помічаємо кількість нових зрізів
    //!@! *(ptDRUVAd->number_items_dr) = 0; 
-       asm volatile(
-               "bkpt 1"
-               );      
+    //.   asm volatile(
+    //.           "bkpt 1"
+    //.           );      
     register long j;
     QueueChangeMarker *phld  = &hldQueueChangeMarker;
     uint32_t* pCmd = (uint32_t *)&(arRawCmd[shIndexRDRawCmd]);
