@@ -44,12 +44,13 @@ void ChekCurrentStateCmd(unsigned int *p_active_functions){
 //SRAM1 CmdPlusTimeHolder holderCmdPlusTime;
 SRAM1  CmdPlusTimeHolder holderCmdPlusTime;
 
-UNN_CmdState arRawCmd        [100];uint8_t arAmontChangesinSlice[100]; 
+//?UNN_CmdState arRawCmd        [100];uint8_t arAmontChangesinSlice[100];  - old Code
+UNN_CmdState arRawCmd        [AMOUNT_CMD_PLUS_TIME_STAMP_RECORD];uint8_t arAmontChangesinSlice[AMOUNT_CMD_PLUS_TIME_STAMP_RECORD]; 
 //?SRAM1 UNN_CmdState arChangeStateCmd[100];
 //?SRAM1 uint8_t arTimeLab            [100];
 //SRAM1 
 short shIndexWRRawCmd;
-short shIndexRDRawCmd = 99;
+short shIndexRDRawCmd = (AMOUNT_CMD_PLUS_TIME_STAMP_RECORD - 1);//99;<- previous val
 //uint32_t* pAFVal
 
 static int clean_started = 0;
@@ -1016,6 +1017,7 @@ typedef unsigned char uint8_t;typedef unsigned short uint16_t;typedef unsigned l
 */
 void put_before_info_in_buf_from_queue (DigRegUniqVarsAddreses *ptDRUVAd){
     
+static  char fierst_time_before_start_record_dr_selector = 0;
 static  int time_before_start_record_dr = 0;
 
     //Записуємо попередній cтан сигналів перед аварією
@@ -1026,14 +1028,19 @@ static  int time_before_start_record_dr = 0;
     //!@!*(ptDRUVAd->number_changes_into_dr_record) = 0;
     //Помічаємо кількість нових зрізів
    //!@! *(ptDRUVAd->number_items_dr) = 0; 
-    //.   asm volatile(
-    //.           "bkpt 1"
-    //.           );      
+       asm volatile(
+               "bkpt 1"
+               );      
     register long j;
     QueueChangeMarker *phld  = &hldQueueChangeMarker;
-    char chAmontRecords = phld->amount_elem;
     uint32_t* pCmd = (uint32_t *)&(arRawCmd[shIndexRDRawCmd]);
-
+    
+    j = getFromRear(0);
+    j -= 3;
+    if(j == shIndexWRRawCmd ){//Max Val <-This is wrong situation as we have lost state cmd
+        deQueue();//!--  //@Exclude possible last elem
+    }
+    char chAmontRecords = phld->amount_elem;
     *(ptDRUVAd->number_changes_into_dr_record) = 0;
     *(ptDRUVAd->number_items_dr) = 0;
     time_before_start_record_dr = 0;//!--  //@AddidtionalzZeroed
@@ -1055,9 +1062,16 @@ static  int time_before_start_record_dr = 0;
         long idx_data_dr =  FIRST_INDEX_FIRST_DATA_DR + (*(ptDRUVAd->number_items_dr))*SD_DR;
         if(*(ptDRUVAd->number_items_dr) == 0){
             if (--j < 0)
-            j += 100;//AMOUNT_CMD_PLUS_TIME_STAMP_RECORD;
+            j += AMOUNT_CMD_PLUS_TIME_STAMP_RECORD;//100;
             chAmontRecords++;
-        }    
+            if( j == shIndexWRRawCmd)//j == shIndexRDRawCmd ||
+            {
+                fierst_time_before_start_record_dr_selector = 1;
+               //asm volatile(
+               //"bkpt 1"
+               //);      
+            }
+        }
         pCmd =  (uint32_t *)&arRawCmd[j];
         if(j <=  shIndexWRRawCmd)
             time_before_start_record_dr = j;
@@ -1078,8 +1092,13 @@ static  int time_before_start_record_dr = 0;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0xff;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  1] = 0xff;
             buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  2] = 0xff;
-            time_before_start_record_dr += 1; time_before_start_record_dr *=-1 ;
-            buffer_for_save_dr_record[FIRST_INDEX_NUMBER_BEFORE_ITEMS_DR] = (time_before_start_record_dr );
+            if(fierst_time_before_start_record_dr_selector == 0){
+                time_before_start_record_dr += 1; time_before_start_record_dr *=-1 ;
+                buffer_for_save_dr_record[FIRST_INDEX_NUMBER_BEFORE_ITEMS_DR] = (time_before_start_record_dr );
+            }else{
+                buffer_for_save_dr_record[FIRST_INDEX_NUMBER_BEFORE_ITEMS_DR] = AMOUNT_CMD_PLUS_TIME_STAMP_RECORD-1;
+                fierst_time_before_start_record_dr_selector = 0;
+            }
         }
           //Текучий стан сигналів
         memcpy((void*)&buffer_for_save_dr_record[idx_data_dr +  3],(const void*)&pCmd[0],(NUMBER_BYTES_SAMPLE_DR));
