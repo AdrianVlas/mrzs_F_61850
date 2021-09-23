@@ -8369,7 +8369,7 @@ do{
     MASKA_FOR_INPUT_SIGNALS_6, 
     MASKA_FOR_INPUT_SIGNALS_7
       
-#ifdef fMASKA_FOR_INPUT_SIGNALS_8
+#ifdef MASKA_FOR_INPUT_SIGNALS_8
                              ,
     MASKA_FOR_INPUT_SIGNALS_8
 #endif
