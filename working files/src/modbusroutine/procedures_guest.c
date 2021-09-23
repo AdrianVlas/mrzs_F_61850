@@ -376,8 +376,8 @@ int configAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
         "I 0.4kV         "
       };
 
-      unsigned int phase_line = header_ar_tmp->control_extra_settings_1 & INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE;
-      unsigned int Ib_I04 = header_ar_tmp->control_extra_settings_1 & INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04;
+      unsigned int phase_line = header_ar_tmp->control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_PHASE_LINE);
+      unsigned int Ib_I04 = header_ar_tmp->control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_IB_I04);
       for (unsigned int k = 0; k < 16; k++) idetyficator[2][k] = idetyficator_current[Ib_I04 != 0][k];
 
       if (phase_line == 0)
