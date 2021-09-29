@@ -229,7 +229,7 @@ void d_and_handler(unsigned int*);
 void d_or_handler(unsigned int*);
 void d_xor_handler(unsigned int*);
 void d_not_handler(unsigned int*);
-void tf_handler(unsigned int*, unsigned int*);
+void tf_handler(unsigned int*, unsigned int*, unsigned int*);
 void ocp_handler(unsigned int*, unsigned int);
 void ocp04_handler(unsigned int*, unsigned int);
 void zdz_handler(unsigned int*, unsigned int);

@@ -772,7 +772,7 @@ inline void d_not_handler(unsigned int *p_active_functions)
 /*****************************************************/
 //Опрацювання Передавальних функцій
 /*****************************************************/
-inline void tf_handler(unsigned int *p_previous_active_functions, unsigned int *p_active_functions)
+inline void tf_handler(unsigned int *p_previous_active_functions, unsigned int *p_active_functions, unsigned int *p_active_inputs_grupa_ustavok)
 {
   for (size_t i = 0; i < NUMBER_TRANSFER_FUNCTIONS; i++)
   {
@@ -791,7 +791,18 @@ inline void tf_handler(unsigned int *p_previous_active_functions, unsigned int *
             value_output--;
             if (value_output < NUMBER_TOTAL_SIGNAL_FOR_RANG_SMALL)
             {
-              _SET_BIT(p_active_functions, small_big_rang[value_output]);
+							uint32_t const small_big_rang_tmp = small_big_rang[value_output];
+							if (
+									(small_big_rang_tmp >= RANG_1_GRUPA_USTAVOK) &&
+									(small_big_rang_tmp < (RANG_1_GRUPA_USTAVOK + NUMBER_GROUP_USTAVOK))
+								 )
+							{
+					      *p_active_inputs_grupa_ustavok |= 1u << (small_big_rang_tmp - RANG_1_GRUPA_USTAVOK);
+							}
+							else
+							{
+              	_SET_BIT(p_active_functions, small_big_rang_tmp);
+							}
             }
             else
             {
@@ -9006,7 +9017,85 @@ do{
   }
   /**************************/
 
+//  //Діагностика справності раз на період
+//  diagnostyca_adc_execution();
+  
   /**************************/
+  //Сигнал "Несправность Общая"
+  /**************************/
+  unsigned int diagnostyka_tmp[N_DIAGN];
+  for (size_t i = 0; i < N_DIAGN; i ++)
+  {
+    diagnostyka_tmp[i] = diagnostyka[i];
+
+    diagnostyka_tmp[i] &= (unsigned int)(~clear_diagnostyka[i]); 
+    diagnostyka_tmp[i] |= set_diagnostyka[i]; 
+  }
+
+  _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
+  _CLEAR_BIT(diagnostyka_tmp, EVENT_SOFT_RESTART_SYSTEM_BIT);
+  _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+  _CLEAR_BIT(diagnostyka_tmp, EVENT_RESTART_CB_BIT);
+#endif
+  unsigned int not_null = false;
+  for (size_t i = 0; i < N_DIAGN; i++) 
+  {
+    not_null |= (diagnostyka_tmp[i] != 0);
+    if (not_null) break;
+  }
+              
+  if (not_null)
+  {
+    _SET_BIT(active_functions, RANG_DEFECT);
+    /**************************/
+    //Сигнал "Несправность Аварийная"
+    /**************************/
+    static unsigned int const maska_avar_error[N_DIAGN] = 
+		{
+			MASKA_AVAR_ERROR_0,
+			MASKA_AVAR_ERROR_1,
+			MASKA_AVAR_ERROR_2,
+			MASKA_AVAR_ERROR_3
+		};
+
+    not_null = false;
+    for (size_t i = 0; i < N_DIAGN; i++) 
+    {
+      not_null |= ((diagnostyka_tmp[i] & maska_avar_error[i])  != 0);
+      if (not_null) break;
+    }
+    if (not_null)
+    {
+      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
+//       #warning "No Avar Error"
+    }
+    else
+    {
+      _CLEAR_BIT(active_functions, RANG_AVAR_DEFECT);
+    }
+    /**************************/
+  }
+  else
+  {
+    _CLEAR_BIT(active_functions, RANG_DEFECT);
+    _CLEAR_BIT(active_functions, RANG_AVAR_DEFECT);
+  }
+  /**************************/
+
+  static unsigned int previous_active_functions[N_BIG];
+  if (_CHECK_SET_BIT(active_functions, RANG_AVAR_DEFECT) == 0)
+  {
+    //Аварійна ситуація не зафіксована
+    
+    /**************************/
+    //Обробка передавальних функцій
+    /**************************/
+    tf_handler(previous_active_functions, active_functions, &active_inputs_grupa_ustavok);
+    /**************************/
+	}
+	
+	/**************************/
   //Вибір групи уставок
   /**************************/
   for (size_t i = 0; i < NUMBER_GROUP_USTAVOK; i++)
@@ -9023,9 +9112,27 @@ do{
   }
   
   if (count_number_set_bit(&active_inputs_grupa_ustavok, NUMBER_GROUP_USTAVOK) > 1)
+	{
     _SET_BIT(set_diagnostyka, ERROR_SELECT_GRUPY_USRAVOK);
+		_SET_BIT(diagnostyka_tmp, ERROR_SELECT_GRUPY_USRAVOK);
+		_SET_BIT(active_functions, RANG_DEFECT);
+	}
   else
+	{
     _SET_BIT(clear_diagnostyka, ERROR_SELECT_GRUPY_USRAVOK);
+		_CLEAR_BIT(diagnostyka_tmp, ERROR_SELECT_GRUPY_USRAVOK);
+		
+		not_null = false;
+		for (size_t i = 0; i < N_DIAGN; i++) 
+		{
+	    not_null |= (diagnostyka_tmp[i] != 0);
+  	  if (not_null) break;
+		}
+	  if (not_null == false)
+  	{
+    	_CLEAR_BIT(active_functions, RANG_DEFECT);
+		}
+	}
 
   static unsigned int const maska_signals_for_lock_group[N_BIG] =
   {
@@ -9086,9 +9193,6 @@ do{
   /***********************************************************/
   calc_measurement(number_group_stp);
 
-//  //Діагностика справності раз на період
-//  diagnostyca_adc_execution();
-  
   //Копіюємо вимірювання для низькопріоритетних і високопріоритетних завдань
   unsigned int bank_measurement_high_tmp = (bank_measurement_high ^ 0x1) & 0x1;
   if(semaphore_measure_values_low1 == 0)
@@ -9109,78 +9213,11 @@ do{
   bank_measurement_high = bank_measurement_high_tmp;
   /***********************************************************/
   
-  
-  /**************************/
-  //Сигнал "Несправность Общая"
-  /**************************/
-  unsigned int diagnostyka_tmp[N_DIAGN];
-  for (size_t i = 0; i < N_DIAGN; i ++)
-  {
-    diagnostyka_tmp[i] = diagnostyka[i];
-
-    diagnostyka_tmp[i] &= (unsigned int)(~clear_diagnostyka[i]); 
-    diagnostyka_tmp[i] |= set_diagnostyka[i]; 
-  }
-
-  _CLEAR_BIT(diagnostyka_tmp, EVENT_START_SYSTEM_BIT);
-  _CLEAR_BIT(diagnostyka_tmp, EVENT_SOFT_RESTART_SYSTEM_BIT);
-  _CLEAR_BIT(diagnostyka_tmp, EVENT_DROP_POWER_BIT);
-#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-  _CLEAR_BIT(diagnostyka_tmp, EVENT_RESTART_CB_BIT);
-#endif
-  unsigned int not_null = false;
-  for (size_t i = 0; i < N_DIAGN; i++) 
-  {
-    not_null |= (diagnostyka_tmp[i] != 0);
-    if (not_null) break;
-  }
-              
-  if (not_null)
-  {
-    _SET_BIT(active_functions, RANG_DEFECT);
-    /**************************/
-    //Сигнал "Несправность Аварийная"
-    /**************************/
-    static const unsigned int maska_avar_error[N_DIAGN] = {MASKA_AVAR_ERROR_0, MASKA_AVAR_ERROR_1, MASKA_AVAR_ERROR_2, MASKA_AVAR_ERROR_3};
-
-    not_null = false;
-    for (size_t i = 0; i < N_DIAGN; i++) 
-    {
-      not_null |= ((diagnostyka_tmp[i] & maska_avar_error[i])  != 0);
-      if (not_null) break;
-    }
-    if (not_null)
-    {
-      _SET_BIT(active_functions, RANG_AVAR_DEFECT);
-//       #warning "No Avar Error"
-    }
-    else
-    {
-      _CLEAR_BIT(active_functions, RANG_AVAR_DEFECT);
-    }
-    /**************************/
-  }
-  else
-  {
-    _CLEAR_BIT(active_functions, RANG_DEFECT);
-    _CLEAR_BIT(active_functions, RANG_AVAR_DEFECT);
-  }
-  /**************************/
-
-  
-  static unsigned int previous_active_functions[N_BIG];
-  
   //Логічні схеми мають працювати тільки у тому випадку, якщо немє сигналу "Аварийная неисправность"
   if (_CHECK_SET_BIT(active_functions, RANG_AVAR_DEFECT) == 0)
   {
     //Аварійна ситуація не зафіксована
     
-    /**************************/
-    //Обробка передавальних функцій
-    /**************************/
-    tf_handler(previous_active_functions, active_functions);
-    /**************************/
-
     /**************************/
     //Контроль привода ВВ
     /**************************/
