@@ -68,7 +68,7 @@ void make_ekran_list_registrators(void)
 /*****************************************************/
 
 /*****************************************************/
-//Формуємо екран відображення записів дискретного реєстратора
+//Формуємо екран відображення записів аналогового реєстратора
 /*****************************************************/
 void make_ekran_list_records_registrator_ar()
 {
@@ -158,7 +158,7 @@ void make_ekran_list_records_registrator_ar()
   }
   else if (current_ekran.index_position < ((int)number_records))
   {
-    unsigned char const template_string[2][MAX_COL_LCD] = 
+    static unsigned char const template_string[2][MAX_COL_LCD] = 
     {
       "   XX-XX-20XX   ",
       "  XX:XX:XX.XXX  "
@@ -417,7 +417,7 @@ void make_ekran_list_records_registrator(unsigned int type_registrator)
   }
   else if (current_ekran.index_position < ((int)number_records))
   {
-    unsigned char const template_string[2][MAX_COL_LCD] = 
+    static unsigned char const template_string[2][MAX_COL_LCD] = 
     {
       "   XX-XX-20XX   ",
       "  XX:XX:XX.XXX  "
@@ -1477,7 +1477,7 @@ void make_ekran_changing_signals_digital_registrator(void)
       {NAME_RANG_RU},
       {NAME_RANG_UA},
       {NAME_RANG_EN},
-      {NAME_RANG_KZ},
+      {NAME_RANG_KZ}
     };
     
     uint8_t name_string_tmp[NUMBER_TOTAL_SIGNAL_FOR_RANG][MAX_COL_LCD];
@@ -1701,7 +1701,7 @@ void make_ekran_changing_signals_digital_registrator(void)
                  
                 //Конвертуємо цей час у рядок
                 unsigned int ost, local_index = 0;
-                while ((time_of_slice >= 10) && (local_index < (8 - 1)))
+                while ((time_of_slice >= 10) && (local_index < (8 - 1 - 1)))
                 {
                   ost = time_of_slice % 10;
                   sring_of_time[7-local_index] = ost + 0x30;
