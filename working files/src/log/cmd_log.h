@@ -465,6 +465,7 @@ enum STATISTICAL_LOG_RETURN_VALUE_LIST{
 
 };
 
+extern unsigned int mnu_array_old[N_BIG], mnu_array_new[N_BIG];
 enum ONM_EKRAN_LIST
 {
   ONM_EKRAN_EKRAN_SETPOINT_ZZ_GROUP1                  =  EKRAN_SETPOINT_ZZ_GROUP1,  
