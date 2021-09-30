@@ -254,7 +254,8 @@ void GetMsLogElem(unsigned int *p_elem, long lIdx){
     }while (data_not_Ok && (u8_iter<3));
 
 }
-
+unsigned int mnu_array_old[N_BIG], mnu_array_new[N_BIG];//, mnu_array_changing[N_BIG];
+ unsigned long u32IDModifyIndexWR_copy;//need for inform that data change and incorrect
 long GetNumberChangingInLogElem( long lIdx){
     register long i;
     //?UNUSED(p_active_functions);           Errorneus code as this
@@ -267,26 +268,28 @@ long GetNumberChangingInLogElem( long lIdx){
         lIdx = 0;
     if(clean_started != 0)
         return 0;//!@_is correct? May be better return error
-    unsigned int array_old[N_BIG], array_new[N_BIG], array_changing[N_BIG];
-    GetCmdPlusTimeLogElem(array_new ,lIdx);
+    unsigned int array_changing[N_BIG];//^^!@ array_old[N_BIG], array_new[N_BIG], 
+    //^^!@GetCmdPlusTimeLogElem(array_new ,lIdx);
+    //^^!@ memcpy((void *)mnu_array_new,(const void*)array_new,N_BIG*sizeof(unsigned int));
     //i--;                                     Errorneus code as this
     //if (i < 0)                               ariphmetic make in lowfunc
     //    i += AMOUNT_CMD_PLUS_TIME_RECORD;
-    lIdx++;//Next elem on menu older
-    if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
-        lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
-    GetCmdPlusTimeLogElem(array_old ,lIdx);
-    
+    //^^!@lIdx++;//Next elem on menu older
+    //^^!@if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
+    //^^!@    lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
+    //^^!@GetCmdPlusTimeLogElem(array_old ,lIdx);
+    //^^!@ memcpy((void *)mnu_array_old,(const void*)array_old,N_BIG*sizeof(unsigned int));
      for (unsigned int j = 0; j < N_BIG; j++)
-         array_changing[j] = array_new[j] ^ array_old[j];
+         //?array_changing[j] = array_new[j] ^ array_old[j];
+         array_changing[j] = mnu_array_new[j] ^ mnu_array_old[j];
 long u32Count = 0;
-    for (unsigned int j = 0; j < N_BIG; j++){    
+    for (unsigned int j = 0; j < N_BIG; j++){
         for(i = 0; i < 32; i++)
             if((array_changing[j] &(1<<i)) != 0)
                 u32Count++;
         
     }
-            
+     //memcpy((void *)mnu_array_changing,(const void*)array_changing,N_BIG*sizeof(unsigned int));        
 return u32Count;
 
 }

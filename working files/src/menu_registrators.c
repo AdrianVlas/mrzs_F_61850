@@ -2322,14 +2322,17 @@ void make_ekran_changing_signals_statistica_registrator(void)
 
     position_temp = current_ekran.index_position;//?position_temp = current_ekran.index_position;
     index_of_ekran = position_temp & (unsigned int)(~((1<<(POWER_MAX_ROW_LCD>>1)) - 1));
+
+    
     
 
-    GetCmdPlusTimeLogElem(array_new ,number_record_of_stt_cmd_into_menu);//
+    //.GetCmdPlusTimeLogElem(array_new ,number_record_of_stt_cmd_into_menu);//
+    memcpy((void *)array_new,(const void*)mnu_array_new,N_BIG*sizeof(unsigned int));
     idx_record_of_stt_cmd_prev = number_record_of_stt_cmd_into_menu + 1;
     if (idx_record_of_stt_cmd_prev >= AMOUNT_CMD_PLUS_TIME_RECORD)// work for add as more old elem next in menu
         idx_record_of_stt_cmd_prev -= AMOUNT_CMD_PLUS_TIME_RECORD;//
-    GetCmdPlusTimeLogElem(array_old ,idx_record_of_stt_cmd_prev);
-
+    //.GetCmdPlusTimeLogElem(array_old ,idx_record_of_stt_cmd_prev);
+    memcpy((void *)array_old,(const void*)mnu_array_old,N_BIG*sizeof(unsigned int));    
     ms_time = 0;
     //?GetMsLogElem(&ms_time,number_record_of_stt_cmd_into_menu);//position_temp
 //?#endif   
@@ -2565,17 +2568,23 @@ void make_ekran_changing_signals_statistica_registrator(void)
 /*****************************************************/
 
 /*****************************************************/
+
 void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registrator)
 {
   int index_language = index_language_in_array(current_settings.language);
     UNUSED(type_of_registrator);
-
-
+    struct{
+        char compare_res_time_dat,compare_res_time_ms,counter_reading,compare_res;
+		char data_correct; 
+        time_t time_dat_tmp,copy_time_dat_tmp ; 
+        int32_t time_ms_tmp,copy_time_ms_tmp ; 
+    }sLV; 
+    sLV.data_correct = 0;
     unsigned int position_temp = current_ekran.index_position;
     unsigned int index_of_ekran;
     if ( (holderCmdPlusTime.shTotalFixElem > 0) && (number_record_of_stt_cmd_into_menu < (uint32_t)holderCmdPlusTime.shTotalFixElem))
     {  
-
+        
 
 
         unsigned char name_string[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
@@ -2586,7 +2595,7 @@ void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registra
         //..unsigned char name_string_tmp[ MAX_ROW_FOR_EKRAN_DATA_LABEL*2 ][MAX_COL_LCD];
         //Множення на два величини position_temp потрібне для того, бо на одну позицію ми використовуємо два рядки (назва + значення)
         index_of_ekran = ((position_temp<<1) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
-        time_t time_dat_tmp;
+        time_t time_dat_tmp; 
         int32_t time_ms_tmp;//?time_dat_tmp = header_ar_tmp.time_dat;
         //?time_ms_tmp = header_ar_tmp.time_ms;
         
@@ -2596,12 +2605,39 @@ void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registra
             {
                 if ((i & 0x1) == 0)
                 {
-                  
-                    
-                    GetDateTimeLogElem((unsigned int *)&time_dat_tmp,index_of_ekran>>1);
-                    GetMsLogElem      ((unsigned int *)&time_ms_tmp ,index_of_ekran>>1);
-                    if (time_dat_tmp != 0)
+                    sLV.counter_reading = 3;sLV.data_correct = 0;
+                    do{
+                        GetDateTimeLogElem((unsigned int *)&(sLV.time_dat_tmp),index_of_ekran>>1);
+                        GetMsLogElem      ((unsigned int *)&(sLV.time_ms_tmp ),index_of_ekran>>1);
+                        register long lIdx = index_of_ekran;
+                        GetCmdPlusTimeLogElem(mnu_array_new ,lIdx);
+                        lIdx++;//Next elem on menu older
+                        if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                            lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
+                        GetCmdPlusTimeLogElem(mnu_array_old ,lIdx);
+                        GetDateTimeLogElem((unsigned int *)&(sLV.copy_time_dat_tmp),index_of_ekran>>1);
+                        GetMsLogElem      ((unsigned int *)&(sLV.copy_time_ms_tmp ),index_of_ekran>>1);
+                        if(sLV.time_dat_tmp == sLV.copy_time_dat_tmp){
+                            
+                            sLV.compare_res_time_dat = 1;
+                        }
+                        else 
+                             sLV.compare_res_time_dat = 0;
+                        if(sLV.time_ms_tmp == sLV.copy_time_ms_tmp){
+                            
+                            sLV.compare_res_time_ms = 1;
+                        }
+                        else 
+                             sLV.compare_res_time_ms = 0;
+                        sLV.compare_res = sLV.compare_res_time_ms + sLV.compare_res_time_dat;
+                    }while( (--sLV.counter_reading > 0) && (sLV.compare_res != 2));
+
+                    //GetDateTimeLogElem((unsigned int *)&time_dat_tmp,index_of_ekran>>1);
+                    //GetMsLogElem      ((unsigned int *)&time_ms_tmp ,index_of_ekran>>1);
+                    //if (time_dat_tmp != 0)
+                    if (sLV.compare_res == 2)
                     {
+                       sLV.data_correct = 1;time_ms_tmp = sLV.time_ms_tmp;time_dat_tmp = sLV.time_dat_tmp;
                       struct tm *p = localtime(&time_dat_tmp);
                       int field;
                       
@@ -2680,7 +2716,7 @@ void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registra
         
         
     }
-    else{  
+    if(sLV.data_correct == 0){  
             //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
          static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
