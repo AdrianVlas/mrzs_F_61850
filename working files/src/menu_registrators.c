@@ -2609,12 +2609,14 @@ void make_ekran_data_and_time_elem_stt_registrator(unsigned int type_of_registra
                     do{
                         GetDateTimeLogElem((unsigned int *)&(sLV.time_dat_tmp),index_of_ekran>>1);
                         GetMsLogElem      ((unsigned int *)&(sLV.time_ms_tmp ),index_of_ekran>>1);
-                        register long lIdx = index_of_ekran;
-                        GetCmdPlusTimeLogElem(mnu_array_new ,lIdx);
-                        lIdx++;//Next elem on menu older
-                        if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
-                            lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
-                        GetCmdPlusTimeLogElem(mnu_array_old ,lIdx);
+                        if((index_of_ekran>>1) == position_temp){
+                            register long lIdx = position_temp;
+                            GetCmdPlusTimeLogElem(mnu_array_new ,lIdx);
+                            lIdx++;//Next elem on menu older
+                            if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                                lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
+                            GetCmdPlusTimeLogElem(mnu_array_old ,lIdx);
+                        }
                         GetDateTimeLogElem((unsigned int *)&(sLV.copy_time_dat_tmp),index_of_ekran>>1);
                         GetMsLogElem      ((unsigned int *)&(sLV.copy_time_ms_tmp ),index_of_ekran>>1);
                         if(sLV.time_dat_tmp == sLV.copy_time_dat_tmp){

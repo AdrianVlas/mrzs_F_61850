@@ -825,7 +825,7 @@
                 </option>
                 <option>
                     <name>CCJLinkCommRadio</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCJLinkTCPIP</name>
@@ -948,7 +948,7 @@
                 </option>
                 <option>
                     <name>CCJLinkTcpIpSerialNo</name>
-                    <state></state>
+                    <state>164207263</state>
                 </option>
                 <option>
                     <name>CCCpuClockEdit</name>
