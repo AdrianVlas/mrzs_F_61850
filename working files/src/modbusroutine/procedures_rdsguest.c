@@ -1,15 +1,15 @@
 #include "header.h"
 
-int openRegistratorRDS(void);//–егистратор дискретных сигналов
+//int openRegistratorRDS(void);//–егистратор дискретных сигналов
 int dataRegistratorRDS(int offsetRegister, int recordNumber, int recordLen);
 int activeFunctionRDS(int offsetActiveFunc, int recordNumber);
 void loadACMDSmallActualDataBit(int cmdSwitch, int beginOffset, int endOffset);
 
-int openRegistratorRDS(void)
-{
+//int openRegistratorRDS(void)
+//{
 //валидаци€ –егистратор дискретных сигналов
-  return 0;//есть валидаци€
-}//openRegistratorRDS
+//  return 0;//есть валидаци€
+//}//openRegistratorRDS
 
 int dataRegistratorRDS(int offsetRegister, int recordNumber, int recordLen)
 {

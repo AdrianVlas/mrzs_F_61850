@@ -2,14 +2,14 @@
 #include "header.h"
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 232
+#define BEGIN_ADR_REGISTER 400
 //начальный bit в карте памяти
-#define BEGIN_ADR_BIT 232
+#define BEGIN_ADR_BIT 24000
 
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 233
+#define END_ADR_REGISTER 401
 //конечный bit в карте памяти
-#define END_ADR_BIT 248
+#define END_ADR_BIT 24016
 
 int privateSDISmallGetReg2(int adrReg);
 int privateSDISmallGetBit2(int adrBit);

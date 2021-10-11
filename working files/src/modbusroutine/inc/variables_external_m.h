@@ -4,11 +4,11 @@
 #include "constants.h"
 #include "fatfs.h"
 #include "libraries.h"
-//#include "variables_global.h"
-//#include "functions_global.h"
 
 #include "header_m.h"
 
+extern  COMPONENT2021_OBJ config_array2021func[];
+extern  int isActiveActualData2021;//action до записи
 extern  COMPONENT_OBJ config_array[];
 extern  short tempReadArray[];
 extern  short tempWriteArray[];

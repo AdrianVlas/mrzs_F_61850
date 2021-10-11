@@ -2,9 +2,9 @@
 #include "header.h"
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 200
+#define BEGIN_ADR_REGISTER 300
 //начальный bit в карте памяти
-#define BEGIN_ADR_BIT 200
+#define BEGIN_ADR_BIT 23000
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 2) ||    \
@@ -15,9 +15,9 @@
      (MODYFIKACIA_VERSII_PZ == 34)      \
     )   
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 200
+#define END_ADR_REGISTER 300
 //конечный bit в карте памяти
-#define END_ADR_BIT 207
+#define END_ADR_BIT 23007
 #endif
 
 #if (                                   \
@@ -25,9 +25,9 @@
      (MODYFIKACIA_VERSII_PZ == 26)      \
     )   
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 200
+#define END_ADR_REGISTER 300
 //конечный bit в карте памяти
-#define END_ADR_BIT 211
+#define END_ADR_BIT 23011
 #endif
 
 #if (                                   \
@@ -39,9 +39,9 @@
      (MODYFIKACIA_VERSII_PZ == 33)      \
     )   
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 200
+#define END_ADR_REGISTER 300
 //конечный bit в карте памяти
-#define END_ADR_BIT 215
+#define END_ADR_BIT 23015
 #endif
 
 #if (                                   \
@@ -51,9 +51,9 @@
      (MODYFIKACIA_VERSII_PZ == 15)      \
     )                                   
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 201
+#define END_ADR_REGISTER 301
 //конечный bit в карте памяти
-#define END_ADR_BIT 219
+#define END_ADR_BIT 23019
 #endif
 
 int privateDVSmallGetReg2(int adrReg);

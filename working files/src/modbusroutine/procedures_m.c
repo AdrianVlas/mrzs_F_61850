@@ -15,10 +15,6 @@ extern int globalcntReg;//к-во регистров
 extern int globalbeginAdrReg;//адрес нач регистра
 extern int globalbeginAdrBit;//адрес нач бит
 
-int superReader20(int offsetRegister, int fileNumber, int recordNumber, int recordLen);
-int openRegistrator(int number_file);
-
-int  outputFunc20PacketEncoder(int adrUnit, int *fileNumber, int *recordNumber, int *recordLen, int cntitem);
 int  inputPacketParser(void);
 void inputPacketParserUSB(void);
 void inputPacketParserRS485(void);
@@ -88,14 +84,6 @@ void inputPacketParserUSB(void)
 
   inputPacket = usb_received;
   outputPacket = outputPacket_USB;
-  //Перевірка контрольної суми
-  unsigned short CRC_sum;
-  CRC_sum = 0xffff;
-  for (int index = 0; index < (*received_count-2); index++) CRC_sum = AddCRC(*(inputPacket + index),CRC_sum);
-  if((CRC_sum & 0xff)  != *(inputPacket+*received_count-2)) return;
-  if ((CRC_sum >> 8  ) != *(inputPacket+*received_count-1)) return;
-
-  if(inputPacket[0]!=current_settings.address) return;
 
   if(inputPacketParser()==0) return;
 
@@ -109,45 +97,14 @@ void inputPacketParserUSB(void)
 /**************************************/
 void inputPacketParserRS485(void)
 {
-  pointInterface=RS485_RECUEST;//метка интерфейса 0-USB 1-RS485
+  pointInterface = RS485_RECUEST;//метка интерфейса 0-USB 1-RS485
 
   inputPacket = RxBuffer_RS485;
 
   received_count = &RxBuffer_RS485_count;
   outputPacket = outputPacket_RS485;
 
-  //Перевірка контрольної суми
-  unsigned short CRC_sum;
-  CRC_sum = 0xffff;
-  for (int index = 0; index < (*received_count-2); index++) CRC_sum = AddCRC(*(inputPacket + index),CRC_sum);
-  if((CRC_sum & 0xff)  != *(inputPacket+*received_count-2) ||//) return;
-      (CRC_sum >> 8  ) != *(inputPacket+*received_count-1))
-    {
-      /***
-      12345
-      Причина рестарту (не співпала контрольна сума)
-      ***/
-      //reason_of_restart_RS485 |= (1 << 5);
-      /***/
-
-      restart_monitoring_RS485();
-      return;
-    }
-
-  if(!(inputPacket[0]==current_settings.address))
-    {
-      /***
-      12345
-      Причина рестарту (не співпала адреса 2)
-      ***/
-      //reason_of_restart_RS485 |= (1 << 6);
-      /***/
-
-      restart_monitoring_RS485();
-      return;
-    }
-
-  if(inputPacketParser()==0)
+  if(inputPacketParser()==0) 
     {
       /***
       12345
@@ -164,70 +121,6 @@ void inputPacketParserRS485(void)
   for (int i = 0; i < TxBuffer_RS485_count; i++) TxBuffer_RS485[i] = outputPacket[i];
   start_transmint_data_via_RS_485(TxBuffer_RS485_count);
 }//inputPacketParserRS485(void)
-
-int outputFunc20PacketEncoder(int adrUnit, int *fileNumberArray, int *recordNumberArray, int *recordLenArray, int cntitem)
-{
-//выходной кодировщик 20 функции
-  short dataRegister[130];
-  int   idxDataRegister = 0;
-  int idxOutputPacket = 0;
-  unsigned int respDataLength = 0;
-//adrUnit
-  outputPacket[idxOutputPacket] = (unsigned char)adrUnit;
-  idxOutputPacket++;
-//numFunc
-  idxOutputPacket++;
-//Resp. Data length
-  idxOutputPacket++;
-
-  ulWorkNumber_rds = 0xffffffff;
-  for(int item=0; item<cntitem; item++)  //блоки fileNumber, recordNumber, recordLen
-    {
-     int tmp1 = openRegistrator(fileNumberArray[item]);//открыть данные регистратора AR DR
-     if (tmp1!=0) return tmp1;
-
-//File resp. length
-      respDataLength += outputPacket[idxOutputPacket] = (unsigned char)((1+recordLenArray[item]*2)&0xFF);
-      idxOutputPacket++;
-//Ref. Type
-      outputPacket[idxOutputPacket] = 6;
-      idxOutputPacket++;
-
-      recordNumber_old = -1;
-
-      for(; idxDataRegister<recordLenArray[item]; idxDataRegister++)
-        {
-          int result = superReader20(idxDataRegister, fileNumberArray[item], recordNumberArray[item], recordLenArray[item]);
-
-          switch(result)
-            {
-            case MARKER_ERRORPERIMETR:
-              return -1;
-            default:
-            {
-
-              dataRegister[idxDataRegister] = (short) result;
-              //        flag = 0;
-            }
-            }//switch
-        }//for
-
-      for(int i=0; i<idxDataRegister; i++)
-        {
-//Mdata
-          outputPacket[idxOutputPacket] = (unsigned char)((dataRegister[i]>>8)&0xFF);
-          idxOutputPacket++;
-//Ldata
-          outputPacket[idxOutputPacket] = (unsigned char)(dataRegister[i]&0xFF);
-          idxOutputPacket++;
-        }//for(int i=0; i<idxDataRegister; i++)
-      idxDataRegister=0;
-    }//for(int item=0; item<cntitem; item++)
-
-//Resp. Data length
-  outputPacket[2] = respDataLength+cntitem;
-  return idxOutputPacket;
-}//outputFunc20PacketEncoder(int adrUnit, int *fileNumber, int *recordNumber, int *recordLen, int cntitem)
 
 /***********************************************************************************/
 //Функція відповіді по протоколу Modbus-RTU на помилку
@@ -262,10 +155,8 @@ unsigned short AddCRC(unsigned char inpbyte, unsigned short oldCRC)
   return v;
 }
 
-
-
-
-
-
-
+unsigned short swapByteInShort(unsigned short data)
+{
+  return data<<8 | data>>8;
+}//swapByteInShort
 

@@ -85,6 +85,8 @@ inline void watchdog_routine(unsigned int maska)
 /*************************************************************************
 Періодичні низькопріоритетні задачі
 *************************************************************************/
+void decoderN_BIGACMDArrayLoader(void);
+void decoderN_SMALLACMDArrayLoader(void);
 void periodical_operations(unsigned int full_actions)
 {
   watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
@@ -134,6 +136,8 @@ void periodical_operations(unsigned int full_actions)
     
   //Робота з Watchdog
   watchdog_routine((before_full_start == true) ? UNITED_BITS_WATCHDOG_SHORT : UNITED_BITS_WATCHDOG);
+  decoderN_BIGACMDArrayLoader();
+  decoderN_SMALLACMDArrayLoader();
 
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
   /*******************/

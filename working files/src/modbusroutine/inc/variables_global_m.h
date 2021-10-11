@@ -3,6 +3,9 @@
 
 #include "header_m.h"
 
+SRAM1 COMPONENT2021_OBJ config_array2021func[TOTAL_COMPONENT2021];
+
+SRAM1 int isActiveActualData2021;//action до записи
 SRAM1 COMPONENT_OBJ config_array[TOTAL_COMPONENT];
 SRAM1 short tempReadArray[130];
 SRAM1 short tempWriteArray[MAXIMUMTW];

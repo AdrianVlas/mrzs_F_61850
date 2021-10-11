@@ -2,9 +2,9 @@
 #include "header.h"
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 100
+#define BEGIN_ADR_REGISTER 200
 //начальный bit в карте памяти
-#define BEGIN_ADR_BIT 100
+#define BEGIN_ADR_BIT 20000
 
 #define TMP_OUTPUTS (tmp = 0)
 
@@ -15,18 +15,18 @@
      (MODYFIKACIA_VERSII_PZ == 14)      \
     )   
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 100
+#define END_ADR_REGISTER 200
 //конечный bit в карте памяти
-#define END_ADR_BIT 108
+#define END_ADR_BIT 20008
 #endif
 
 #if (                                   \
      (MODYFIKACIA_VERSII_PZ == 6)     \
     )   
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 100
+#define END_ADR_REGISTER 200
 //конечный bit в карте памяти
-#define END_ADR_BIT 112
+#define END_ADR_BIT 20012
 #endif
 
 #if (                                   \
@@ -38,9 +38,9 @@
      (MODYFIKACIA_VERSII_PZ == 13)     \
     )   
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 100
+#define END_ADR_REGISTER 200
 //конечный bit в карте памяти
-#define END_ADR_BIT 115
+#define END_ADR_BIT 20015
 #endif
 
 #if (                                \
@@ -48,9 +48,9 @@
      (MODYFIKACIA_VERSII_PZ == 15)   \
     )   
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 101
+#define END_ADR_REGISTER 201
 //конечный bit в карте памяти
-#define END_ADR_BIT 119
+#define END_ADR_BIT 20019
 
 #undef TMP_OUTPUTS
 #define TMP_OUTPUTS (tmp = (state_outputs_raw>>16)&0xF)
@@ -59,12 +59,12 @@
 #ifdef  MODYFIKACIA_VERSII_DS
 
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 101
+#define END_ADR_REGISTER 203
 //конечный bit в карте памяти
-#define END_ADR_BIT 119
+#define END_ADR_BIT 20051
 
-#undef TMP_OUTPUTS
-#define TMP_OUTPUTS (tmp = ds&((1 << NUMBER_DS) - 1))
+#undef TMP_DS
+#define TMP_DS (tmp = ds&((1 << NUMBER_DS) - 1))
 #endif
 
 int privateDOUTSmallGetReg2(int adrReg);
@@ -103,6 +103,9 @@ int getDOUTSmallModbusRegister(int adrReg) {
   {
    case 0: tmp &= 0xFFFF; break;
    case 1: TMP_OUTPUTS; break;
+#ifdef  MODYFIKACIA_VERSII_DS
+   case 3: TMP_DS; break;
+#endif   
    default: tmp = 0;
   }//switch
 
@@ -119,6 +122,9 @@ int getDOUTSmallModbusBit(int adrBit) {
   {
    case 0: tmp &= 0xFFFF; break;
    case 1: TMP_OUTPUTS; break;
+#ifdef  MODYFIKACIA_VERSII_DS
+   case 3: TMP_DS; break;
+#endif   
    default: tmp = 0;
   }//switch
 

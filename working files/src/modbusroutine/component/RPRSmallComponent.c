@@ -1,9 +1,9 @@
 #include "header.h"
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 16
+#define BEGIN_ADR_REGISTER M_ADDRESS_FIRST_USER_REGISTER_DATA
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 99
+#define END_ADR_REGISTER M_ADDRESS_LAST_USER_REGISTER_DATA
 
 int privateRPRSmallGetReg2(int adrReg);
 
