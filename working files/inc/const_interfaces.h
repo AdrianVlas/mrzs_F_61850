@@ -4,8 +4,8 @@
 /*****************************************************/
 /* Регістри користувача */
 /*****************************************************/
-#define M_ADDRESS_FIRST_USER_REGISTER_DATA      16
-#define M_ADDRESS_LAST_USER_REGISTER_DATA       99
+#define M_ADDRESS_FIRST_USER_REGISTER_DATA      20
+#define M_ADDRESS_LAST_USER_REGISTER_DATA       144
 /*****************************************************/
 
 /*****************************************************/

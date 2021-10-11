@@ -2,14 +2,14 @@
 #include "header.h"
 
 //начальный регистр в карте памяти
-#define BEGIN_ADR_REGISTER 297
+#define BEGIN_ADR_REGISTER 700
 //начальный bit в карте памяти
-#define BEGIN_ADR_BIT 50656
+#define BEGIN_ADR_BIT 27000
 
 //конечный регистр в карте памяти
-#define END_ADR_REGISTER 337
+#define END_ADR_REGISTER 781
 //конечный bit в карте памяти
-#define END_ADR_BIT 51311
+#define END_ADR_BIT 28311
 //#endif
 
 int privateGCMDSmallGetReg2(int adrReg);

@@ -1,6 +1,23 @@
 #ifndef __PROTOTYPS_H
 #define __PROTOTYPS_H
 
+int ustFunc000for2021(int fileRecordNumber, int registerNumber, int *multer, int regUst, unsigned int **editValue);
+
+void uprFuncRead000for2021(int fileRecordNumber, int registerNumber, unsigned int *uprMaska, unsigned int **editControl);
+void uprFuncGroupRead000for2021(int fileRecordNumber, int registerNumber);
+void uprFuncValidWrite000for2021(int fileRecordNumber, int registerNumber, int inOffset, unsigned int *uprMaska, unsigned int **editControl);
+
+int getUprRegister000for20(int fileRecordNumber, int registerNumber);
+int getGroupUprRegister000for20(int fileRecordNumber, int registerNumber, int countGroupBit);
+int setGroupUprRegister000for21(int fileRecordNumber, int registerNumber, int countGroupBit, int validData);
+int setUprRegister000for21(int fileRecordNumber, int registerNumber, int value);
+int postUprRegister000for21(int fileRecordNumber, int registerNumber, unsigned int value);
+int postGroupUprRegister000for21(int fileRecordNumber, int registerNumber, int countGroupBit, unsigned int value);
+
+int getUstRegister000for20(int fileRecordNumber, int registerNumber);
+int setUstRegister000for21(int fileRecordNumber, int registerNumber, unsigned int value);
+int postUstRegister000for21(int fileRecordNumber, int registerNumber, unsigned int value);
+
 void global_component_installation(void);
 int  superReaderRegister(int);
 int  superWriterRegister(int, int);
@@ -13,7 +30,11 @@ void superSetTempWriteArray(int dataReg);
 int  superFindTempWriteArrayOffset(int adr);
 void superClearActiveActualData(void);
 int  controlPerimetr(int adrReg, int begin_adr, int end_adr);
-//void fix_change_settings_m(unsigned int setting_rang, unsigned int source);
+
+void writeRangN_BIGModbusRegister2021(unsigned int *ranguvannja_d, unsigned short *dataPacket, int countAdr);
+int getRangN_BIGModbusRegister2021(unsigned int *ranguvannja_d, int offset );
+void writeRangN_SMALLModbusRegister2021(unsigned int *ranguvannja_d, unsigned short *dataPacket, int countAdr);
+int getRangN_SMALLModbusRegister2021(unsigned int *ranguvannja_d, int offset );
 
 int decoderN_BIGACMD(int idxBit);
 unsigned int encoderN_BIGACMD(int offsetCMD);
@@ -31,50 +52,26 @@ int getRangN_SMALLModbusRegister(unsigned int *ranguvannja, int countItem, int o
 void writeRangN_SMALLModbusRegister(unsigned int *ranguvannja, int countItem, int beginAdr, 
                                   int countAdr, int begin_adr_register);
 
+unsigned short swapByteInShort(unsigned short data);
+
 void constructorIUSmallComponent(COMPONENT_OBJ *);
-void constructorUSTBigComponent(COMPONENT_OBJ *);
 void constructorACMDSmallComponent(COMPONENT_OBJ *);
-void constructorUPRBigComponent(COMPONENT_OBJ *);
-void constructorANDBigComponent(COMPONENT_OBJ *);
-void constructorDOUTBigComponent(COMPONENT_OBJ *);
 void constructorDOUTSmallComponent(COMPONENT_OBJ *);
-void constructorDTRBigComponent(COMPONENT_OBJ *);
-void constructorDVBigComponent(COMPONENT_OBJ *);
 void constructorDVSmallComponent(COMPONENT_OBJ *);
 void constructorGCMDSmallComponent(COMPONENT_OBJ *);
-void constructorKEYBigComponent(COMPONENT_OBJ *);
-void constructorMFTBigComponent(COMPONENT_OBJ *);
-void constructorNOTBigComponent(COMPONENT_OBJ *);
-void constructorORBigComponent(COMPONENT_OBJ *);
 void constructorPKVBigComponent(COMPONENT_OBJ *);
-void constructorRAISmallComponent(COMPONENT_OBJ *);
-void constructorREGBigComponent(COMPONENT_OBJ *);
+void constructorREG1BigComponent(COMPONENT_OBJ *);
+void constructorREG2BigComponent(COMPONENT_OBJ *);
 void constructorPREGBigComponent(COMPONENT_OBJ *);
-void constructorRPRBigComponent(COMPONENT_OBJ *);
 void constructorRPRSmallComponent(COMPONENT_OBJ *);
-void constructorSDIBigComponent(COMPONENT_OBJ *);
 void constructorSDISmallComponent(COMPONENT_OBJ *);
-void constructorVVBigComponent(COMPONENT_OBJ *);
-void constructorXORBigComponent(COMPONENT_OBJ *);
 void constructorYustBigComponent(COMPONENT_OBJ *);
 void constructorAISmallComponent(COMPONENT_OBJ *);
 void constructorQAISmallComponent(COMPONENT_OBJ *);
-void constructorPFBigComponent(COMPONENT_OBJ *);
-void constructorRDSBigComponent(COMPONENT_OBJ *);
 
-#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-void constructorGOOSBigComponent(COMPONENT_OBJ *);
-void constructorMMSBigComponent(COMPONENT_OBJ *);
-void constructorLANBigComponent(COMPONENT_OBJ *);
-#endif
-#if (                                   \
-     (MODYFIKACIA_VERSII_PZ == 23) ||    \
-     (MODYFIKACIA_VERSII_PZ == 24) ||    \
-     (MODYFIKACIA_VERSII_PZ == 26)||    \
-     (MODYFIKACIA_VERSII_PZ == 33)||    \
-     (MODYFIKACIA_VERSII_PZ == 34)      \
-    )   
-void constructorDOUTBigDSComponent(COMPONENT_OBJ *);
-#endif
+
+void constructorUVVComponent2021(COMPONENT2021_OBJ *);
+void constructorPROTComponent2021(COMPONENT2021_OBJ *);
+void constructorPERIFComponent2021(COMPONENT2021_OBJ *);
 
 #endif

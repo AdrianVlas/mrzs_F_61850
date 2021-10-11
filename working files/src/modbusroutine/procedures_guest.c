@@ -7,11 +7,11 @@ int dataDiskretRegistrator(int offsetRegister, int recordNumber, int recordLen);
 int recordNumberCase0Case1(int offsetRegister, int recordNumber, int recordLen, int registrator);
 int recordNumberCaseDiskret(int subObj, int offsetRegister);
 int recordNumberCaseOther(int subObj, int offsetRegister, int recordLen, int registrator);
-int superReader20(int offsetRegister, int fileNumber, int recordNumber, int recordLen);
-int openRegistrator(int number_file);
 
 int openRegistratorRDS(void);//Регистратор дискретных сигналов
 int dataRegistratorRDS(int offsetRegister, int recordNumber, int recordLen);//Регистратор дискретных сигналов
+int openRegistratorFunc20(int number_file);
+int superReaderFunc20(int offsetRegister, int fileNumber, int recordNumber, int recordLen);
 
 #define DISKRET_TOTAL NUMBER_TOTAL_SIGNAL_FOR_RANG
 #define DISKRET_REGISTRATOR 0
@@ -33,13 +33,18 @@ static const char idetyficator_rang[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR
 /***********************************************************************************/
 //открыть данные регистратора AR DR
 /***********************************************************************************/
-int openRegistrator(int number_file)
+int openRegistratorFunc20(int number_file)
 {
-  if(number_file==100) return openRegistratorRDS();//Регистратор дискретных сигналов
+//  if(number_file==100) return openRegistratorRDS();//Регистратор дискретных сигналов
 //ОБЩЕЕ AR DR
   if (
     (
-      (number_file >= 4) &&
+//      (number_file >= 4) &&
+      ((number_file == FILENUMBER(FILEPERIF_ANLCONF1REGISTER20)) ||
+       (number_file == FILENUMBER(FILEPERIF_ANLDATA1REGISTER20)) ||
+       (number_file == FILENUMBER(FILEPERIF_ANLDATA2REGISTER20)) ||
+       (number_file == FILENUMBER(FILEPERIF_ANLDATA3REGISTER20))
+      ) &&
       (
         ((pointInterface == USB_RECUEST  ) && ((number_record_of_ar_for_USB   == -1) || (id_ar_record_for_USB[0]   == '\0'))) ||
         ((pointInterface == RS485_RECUEST) && ((number_record_of_ar_for_RS485 == -1) || (id_ar_record_for_RS485[0] == '\0')))
@@ -51,8 +56,9 @@ int openRegistrator(int number_file)
     )
     ||
     (
-      (number_file >= 1) &&
-      (number_file <= 2) &&
+//      (number_file >= 1) &&
+//      (number_file <= 2) &&
+      (number_file == FILENUMBER(FILEPERIF_DRCONF1REGISTER20)) &&
       (
         ((pointInterface == USB_RECUEST  ) && (number_record_of_dr_for_USB   == 0xffff)) ||
         ((pointInterface == RS485_RECUEST  ) && (number_record_of_dr_for_RS485 == 0xffff))
@@ -63,12 +69,17 @@ int openRegistrator(int number_file)
       )
     )
   )
-    {
-      //Невірний номер файлу, або не подано команди вичитування відповідного запису
-      return -1;
-    }
+  {
+    //Невірний номер файлу, або не подано команди вичитування відповідного запису
+    return -1;
+  }
   else if (
-    (number_file >= 4) &&
+//    (number_file >= 4) &&
+    ((number_file == FILENUMBER(FILEPERIF_ANLCONF1REGISTER20)) ||
+     (number_file == FILENUMBER(FILEPERIF_ANLDATA1REGISTER20)) ||
+     (number_file == FILENUMBER(FILEPERIF_ANLDATA2REGISTER20)) ||
+     (number_file == FILENUMBER(FILEPERIF_ANLDATA3REGISTER20))
+    ) &&
     (
       (
         (state_ar_record_fatfs != STATE_AR_NONE_FATFS) &&
@@ -87,20 +98,21 @@ int openRegistrator(int number_file)
       )
     )
   )
-    {
-      //Зараз іде операція запису/стирання для аналоговго реєстратора, яка може тривати довго (післяаварійний масив становить 20 с), тому читання аналогового реєстратора є тимчасово недоступне
-      //error = ERROR_SLAVE_DEVICE_BUSY;
-      return -2;
-      /*
-      Тут ми не перевіряємо умову на виставлений біт TASK_MAMORY_READ_DATAFLASH_FOR_AR_INTERFACE,
-      бо, оскільки, масиви є великі і зразу весь запис прочитати не можливо, то
-      програмне забеспечення побудоване на принципі докачки. Тобто формується відповідь з даних, які зараз
-      зчитуються з мікросхеми dataFlash
-      */
-    }
+  {
+    //Зараз іде операція запису/стирання для аналоговго реєстратора, яка може тривати довго (післяаварійний масив становить 20 с), тому читання аналогового реєстратора є тимчасово недоступне
+    //error = ERROR_SLAVE_DEVICE_BUSY;
+    return -2;
+    /*
+    Тут ми не перевіряємо умову на виставлений біт TASK_MAMORY_READ_DATAFLASH_FOR_AR_INTERFACE,
+    бо, оскільки, масиви є великі і зразу весь запис прочитати не можливо, то
+    програмне забеспечення побудоване на принципі докачки. Тобто формується відповідь з даних, які зараз
+    зчитуються з мікросхеми dataFlash
+    */
+  }
   else if (
-    (number_file >= 1) &&
-    (number_file <= 2) &&
+//    (number_file >= 1) &&
+//    (number_file <= 2) &&
+    (number_file == FILENUMBER(FILEPERIF_DRCONF1REGISTER20)) &&
     (
       (
         ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
@@ -114,80 +126,79 @@ int openRegistrator(int number_file)
       ((clean_rejestrators & CLEAN_DR) != 0)
     )
   )
-    {
-      //Зараз іде зчитування для інтерфейсу запису дискретного реєстратора, тому ця операція є тимчасово недоступною
-      //error = ERROR_SLAVE_DEVICE_BUSY;
-      return -2;
-    }//if
+  {
+    //Зараз іде зчитування для інтерфейсу запису дискретного реєстратора, тому ця операція є тимчасово недоступною
+    //error = ERROR_SLAVE_DEVICE_BUSY;
+    return -2;
+  }//if
 
 //ТОЛЬКО DR
-  if(number_file<3)//
-    {
-      while (
-        ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
-        ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
+//  if(number_file<3)//
+  if((number_file == FILENUMBER(FILEPERIF_DRCONF1REGISTER20)) ||
+     (number_file == FILENUMBER(FILEPERIF_DRDATA1REGISTER20)) ||
+     (number_file == FILENUMBER(FILEPERIF_DRDATA2REGISTER20))
+    )
+  {
+    while (
+      ((pointInterface == USB_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_USB  ) != 0)) ||
+      ((pointInterface == RS485_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_RS485) != 0))
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-        ||
-        ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
+      ||
+      ((pointInterface == LAN_RECUEST  ) && ((control_tasks_dataflash & TASK_MAMORY_READ_DATAFLASH_FOR_DR_LAN) != 0))
 #endif
-      )
-        {
-          //Якщ очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
-          if (
-            (control_spi1_taskes[0] != 0) ||
-            (control_spi1_taskes[1] != 0) ||
-            (state_execution_spi1 > 0)
-          )
-            {
-              mutex_spi1 = true;
-              if (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE)
-                {
-                  main_routines_for_spi1();
-                }
-              mutex_spi1 = false;
-            }
-        }//while
-    }//else
-//ТОЛЬКО AR
-  else
+    )
     {
-    }//if(number_file<5)
+      //Якщ очасом буде спрацьовувати Watchdog, то тут треба буде поставити функцію роботи з ним
+      if (
+        (control_spi1_taskes[0] != 0) ||
+        (control_spi1_taskes[1] != 0) ||
+        (state_execution_spi1 > 0)
+      )
+      {
+        mutex_spi1 = true;
+        if (driver_spi_df[number_chip_dataflsh_exchange].state_execution == TRANSACTION_EXECUTING_NONE)
+        {
+          main_routines_for_spi1();
+        }
+        mutex_spi1 = false;
+      }
+    }//while
+  }//else
 
   return 0;
-}//openRegistrator(int number_file)
+}//openRegistratorFunc20(int number_file)
 
 /**************************************/
 //регистровый читатель 20-й функции
 /**************************************/
-int superReader20(int offsetRegister, int fileNumber, int recordNumber, int recordLen)
+int superReaderFunc20(int offsetRegister, int fileNumber, int recordNumber, int recordLen)
 {
   switch (fileNumber)
-    {
-    case 1://Конфигурация дискретного регистратора
-      return configDiskretRegistrator(offsetRegister, recordNumber, recordLen);
+  {
+  case FILENUMBER(FILEPERIF_DRCONF1REGISTER20)://Конфигурация дискретного регистратора
+    return configDiskretRegistrator(offsetRegister, recordNumber, recordLen);
 
-    case 2://Данные дискретного регистратора 1часть
-    case 3://Данные дискретного регистратора 2часть
-      if (fileNumber == 3) recordNumber += 10000;
-      return dataDiskretRegistrator(offsetRegister, recordNumber, recordLen);
+  case FILENUMBER(FILEPERIF_DRDATA1REGISTER20)://Данные дискретного регистратора 1часть
+    return dataDiskretRegistrator(offsetRegister, recordNumber, recordLen);
+  case FILENUMBER(FILEPERIF_DRDATA2REGISTER20)://Данные дискретного регистратора 2часть
+    return dataDiskretRegistrator(offsetRegister, recordNumber+10000, recordLen);
 
-    case 4://Конфигурация аналогового регистратора
-      return configAnalogRegistrator(offsetRegister, recordNumber, recordLen);
+  case FILENUMBER(FILEPERIF_ANLCONF1REGISTER20)://Конфигурация аналогового регистратора
+    return configAnalogRegistrator(offsetRegister, recordNumber, recordLen);
 
-    case 100://Данные Регистратор дискретных сигналов
-      return dataRegistratorRDS(offsetRegister, recordNumber, recordLen);
+  case FILENUMBER(FILEPERIF_ANLDATA1REGISTER20)://Данные аналогового регистратора 1часть
+    return dataAnalogRegistrator(offsetRegister, recordNumber, recordLen);
 
-    default:
-      {
-      //Данные аналогового регистратора 
-      if (fileNumber == 0) break;
-      if (fileNumber > 5) recordNumber += (fileNumber - 5)*10000;
-      return dataAnalogRegistrator(offsetRegister, recordNumber, recordLen);
-      }//default
-    }//switch
+  case FILENUMBER(FILEPERIF_ANLDATA2REGISTER20)://Данные аналогового регистратора 2часть
+    return dataAnalogRegistrator(offsetRegister, recordNumber+10000, recordLen);
+
+  case FILENUMBER(FILEPERIF_ANLDATA3REGISTER20)://Данные аналогового регистратора 3часть
+    return dataAnalogRegistrator(offsetRegister, recordNumber+20000, recordLen);
+
+  }//switch
 
   return MARKER_ERRORPERIMETR;
-}//superReader20(int fileNumber, int offsetRegister)
+}//superReaderFunc20
 
 int dataAnalogRegistrator(int offsetRegister, int recordNumber, int recordLen)
 {

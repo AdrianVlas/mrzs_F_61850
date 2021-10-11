@@ -7,42 +7,22 @@
 /**************************************/
 void global_component_installation(void) {
   constructorIUSmallComponent(&(config_array[IUSMALLCOMPONENT]));//подготовка компонента iu
-  constructorUSTBigComponent(&(config_array[USTBIGCOMPONENT]));//подготовка компонента ust
   constructorACMDSmallComponent(&(config_array[ACMDSMALLCOMPONENT]));//подготовка компонента acmd
-  constructorUPRBigComponent(&(config_array[UPRBIGCOMPONENT]));//подготовка компонента upr
-  constructorANDBigComponent(&(config_array[ANDBIGCOMPONENT]));//подготовка компонента and
-  constructorDOUTBigComponent(&(config_array[DOUTBIGCOMPONENT]));//подготовка компонента rele
   constructorDOUTSmallComponent(&(config_array[DOUTSMALLCOMPONENT]));//подготовка компонента dout
-  constructorDTRBigComponent(&(config_array[DTRBIGCOMPONENT]));//подготовка компонента trg
-  constructorDVBigComponent(&(config_array[DVBIGCOMPONENT]));//подготовка компонента dv
   constructorDVSmallComponent(&(config_array[DVSMALLCOMPONENT]));//подготовка компонента dv
   constructorGCMDSmallComponent(&(config_array[GCMDSMALLCOMPONENT]));//подготовка компонента gcmd
-  constructorKEYBigComponent(&(config_array[KEYBIGCOMPONENT]));//подготовка компонента key
-  constructorMFTBigComponent(&(config_array[MFTBIGCOMPONENT]));//подготовка компонента mft
-  constructorNOTBigComponent(&(config_array[NOTBIGCOMPONENT]));//подготовка компонента not
-  constructorORBigComponent(&(config_array[ORBIGCOMPONENT]));//подготовка компонента or
   constructorPKVBigComponent(&(config_array[PKVBIGCOMPONENT]));//подготовка компонента pkv
-  constructorRAISmallComponent(&(config_array[RAISMALLCOMPONENT]));//подготовка компонента raismall
-  constructorREGBigComponent(&(config_array[REGBIGCOMPONENT]));//подготовка компонента reg
+  constructorREG1BigComponent(&(config_array[REG1BIGCOMPONENT]));//подготовка компонента reg
+  constructorREG2BigComponent(&(config_array[REG2BIGCOMPONENT]));//подготовка компонента reg
   constructorPREGBigComponent(&(config_array[PREGBIGCOMPONENT]));//подготовка компонента reg
-  constructorRPRBigComponent(&(config_array[RPRBIGCOMPONENT]));//подготовка компонента prpr
   constructorRPRSmallComponent(&(config_array[RPRSMALLCOMPONENT]));//подготовка компонента rpr
-  constructorSDIBigComponent(&(config_array[SDIBIGCOMPONENT]));//подготовка компонента sdi
   constructorSDISmallComponent(&(config_array[SDISMALLCOMPONENT]));//подготовка компонента sdi
-  constructorVVBigComponent(&(config_array[VVBIGCOMPONENT]));//подготовка компонента vv
-  constructorXORBigComponent(&(config_array[XORBIGCOMPONENT]));//подготовка компонента xor
   constructorYustBigComponent(&(config_array[YUSTBIGCOMPONENT]));//подготовка компонента yust
   constructorAISmallComponent(&(config_array[AISMALLCOMPONENT]));//подготовка компонента aismall
   constructorQAISmallComponent(&(config_array[QAISMALLCOMPONENT]));//подготовка компонента qaismall
-  constructorPFBigComponent(&(config_array[PFBIGCOMPONENT]));//подготовка компонента pf
-  constructorRDSBigComponent(&(config_array[RDSBIGCOMPONENT]));//подготовка компонента rds
-#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-  constructorGOOSBigComponent(&(config_array[GOOSBIGCOMPONENT]));//подготовка компонента goos
-  constructorMMSBigComponent(&(config_array[MMSBIGCOMPONENT]));//подготовка компонента mms
-  constructorLANBigComponent(&(config_array[LANBIGCOMPONENT]));//подготовка компонента lan
-#endif
-#ifdef  MODYFIKACIA_VERSII_DS
-  constructorDOUTBigDSComponent(&(config_array[DOUTBIGDSCOMPONENT]));//подготовка компонента DS
-#endif
+
+  constructorUVVComponent2021(&(config_array2021func[UVVCOMPONENT2021]));//подготовка компонента UVVCOMPONENT2021
+  constructorPROTComponent2021(&(config_array2021func[PROTCOMPONENT2021]));//подготовка компонента PROTCOMPONENT2021
+  constructorPERIFComponent2021(&(config_array2021func[PERIFCOMPONENT2021]));//подготовка компонента PERIFCOMPONENT2021
 }//global_vareiables_installation_bo(void)
 
