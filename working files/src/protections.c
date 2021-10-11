@@ -7048,10 +7048,10 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
 /*
           //Записуємо попередній cтан сигналів перед аварією
           //Мітка часу попереднього стану сигналів до моменту початку запису
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  1] = 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  2] = 0xff;
-
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0x00;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  1] = 0x00;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  2] = 0x80;
+          
           //Помічаємо скільки часу пройшло з початку запуску запису
           time_from_start_record_dr = 0;
           
@@ -7687,7 +7687,6 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
           {
             //запис на рівні FATFs зараз не проводиться, тому треба підготувати інформацію про умову старту нового запису
           
-//             global_timers[INDEX_TIMER_FULL_AR_RECORD] = 20*current_settings_prt.prefault_number_periods; //Запускаємо таймер цілого запису  з врахуванням щбуде доданий доаварійний масив
             prefault_number_periods_tmp = ((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET) ? current_settings_prt.prefault_number_periods : AR_TAIL_MIN_NUMBER_PERIOD;
             global_timers[INDEX_TIMER_FULL_AR_RECORD] =  20*prefault_number_periods_tmp; //Запускаємо таймер цілого запису  з врахуванням що буде доданий доаварійний масив
 
@@ -9330,26 +9329,13 @@ do{
       for (int *p = (global_timers + _INDEX_NZZ_BEGIN); p <= (global_timers + _INDEX_NZZ_END); ++p) *p = -1;
     }
     /**************************/
-//?static int dbg_val = 0, dbg_porch = 40;
+
     /**************************/
     //ТЗНП
     /**************************/
     if ((current_settings_prt.configuration & (1 << TZNP_BIT_CONFIGURATION)) != 0)
     {
       tznp_handler(active_functions, number_group_stp);
-//?      if(dbg_val++ >= dbg_porch){
-//?          dbg_val = 0;
-//?           _SET_BIT(active_functions,  RANG_SECTOR_TZNP1_VPERED);
-//?           _SET_BIT(active_functions,  RANG_SECTOR_TZNP1_NAZAD );
-//?           _SET_BIT(active_functions,  RANG_PO_3I0_TZNP1_VPERED);
-//?           _SET_BIT(active_functions,  RANG_PO_3I0_TZNP1_NAZAD );
-//?      }
-//?      else{
-//?          _CLEAR_BIT(active_functions, RANG_SECTOR_TZNP1_VPERED);
-//?          _CLEAR_BIT(active_functions, RANG_SECTOR_TZNP1_NAZAD );
-//?          _CLEAR_BIT(active_functions, RANG_PO_3I0_TZNP1_VPERED);
-//?          _CLEAR_BIT(active_functions, RANG_PO_3I0_TZNP1_NAZAD );
-//?      }   
     }
     else
     {
