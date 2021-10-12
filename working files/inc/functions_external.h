@@ -392,6 +392,10 @@ extern void proc_Mms_blk_out(void* pv,unsigned long lCtrMmsSrc,short* p_arrOrdNu
 extern void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_functions, void *pLanDsc);
 extern void inputPacketParserLAN(void);
 void make_ekran_settings_synchro(void);
+extern void GetArrayGooseBlockOuts(unsigned char *pArGsBlockOuts);
+extern void GetArrayMmsBlockOuts  (unsigned char *pArMmsBlockOuts);
+extern void GetArrayLanBlockOuts  (unsigned char *pArLanBlockOuts);
+
 #endif
 
 extern void inputPacketParserUSB(void);

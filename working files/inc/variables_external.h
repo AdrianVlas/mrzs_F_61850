@@ -614,7 +614,18 @@ extern uint8_t Input_In_MMS_block[N_IN_MMS];
 extern uint8_t Input_ctrl_In_MMS_block[N_IN_MMS];
 
 extern uint8_t Output_Out_LAN_block[N_OUT_LAN];
+extern char request_goose_block_data;
+extern char request_mms_block_data;
+extern char request_lan_block_data;
+
+extern unsigned char arr_copy_stt_goose_block [N_IN_GOOSE]; 
+extern unsigned char arr_copy_stt_mms_block[N_IN_MMS  ];
+extern unsigned char arr_copy_stt_lan_block[N_OUT_LAN]; 
+
 #endif
+
+
+
 
 extern unsigned short const __checksum;
 extern unsigned int __checksum_begin;

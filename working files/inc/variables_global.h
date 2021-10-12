@@ -1056,7 +1056,16 @@ uint8_t Input_ctrl_In_MMS_block[N_IN_MMS];
 
 uint8_t Output_Out_LAN_block[N_OUT_LAN];
 
+char request_goose_block_data = 0;
+char request_mms_block_data   = 0;
+char request_lan_block_data   = 0;
+
+unsigned char arr_copy_stt_goose_block [N_IN_GOOSE]; 
+unsigned char arr_copy_stt_mms_block[N_IN_MMS  ];
+unsigned char arr_copy_stt_lan_block[N_OUT_LAN]; 
 #endif
+
+
 
 const unsigned char letters[69][2] =
 {

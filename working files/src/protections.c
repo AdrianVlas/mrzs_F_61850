@@ -8543,6 +8543,8 @@ do{
                 lV |= Input_In_GOOSE_block[i]&Input_ctrl_In_GOOSE_block[i];//Set ones only
                 //if(noerror)
                     arrGsBlk[i].arCh[2] = lV;//arrGsBlk[i].arCh[0]
+                    if(request_goose_block_data == 0)
+                        arr_copy_stt_goose_block[i] = lV;
                 if(arrGsBlk[i].GS_Hld.Blk == 0){   
 					register unsigned long wrpLV;
 					wrpLV = arrGsBlk[i].arCh[2];//!!arrGsBlk[i].arCh[2] = arrGsBlk[i].arCh[0]
@@ -8597,6 +8599,8 @@ do{
                 lV |= Input_In_MMS_block[i]&Input_ctrl_In_MMS_block[i];//Set ones only
                 //if(noerror)
                     arrMmsBlk[i].arCh[2] = lV;//
+                    if(request_mms_block_data == 0)
+                        arr_copy_stt_mms_block[i] = lV;
                 if(arrMmsBlk[i].Mms_Hld.Blk == 0 && (((MmsBlkParamDsc*)pvl)->ch_amount_blk_src&0x80)){ 
                     register unsigned long wrpLV;
         
@@ -11293,7 +11297,33 @@ void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_func
     
     }   
     Output_Out_LAN_block[IdxBlk] = l_O;
+    if(request_lan_block_data == 0)
+        arr_copy_stt_lan_block[IdxBlk] = l_O;
 }
 
+/*****************************************************/
+void GetArrayGooseBlockOuts(unsigned char *pArGsBlockOuts){
+    if(request_goose_block_data < 127){
+    request_goose_block_data++;
+    memcpy((void *)pArGsBlockOuts,(const void*)arr_copy_stt_goose_block,  sizeof(arr_copy_stt_goose_block));
+    request_goose_block_data--; 
+    }
+}
+void GetArrayMmsBlockOuts  (unsigned char *pArMmsBlockOuts){
+    if(request_mms_block_data < 127){
+    request_mms_block_data++;
+    memcpy((void *)pArMmsBlockOuts,(const void*)arr_copy_stt_mms_block,  sizeof(arr_copy_stt_mms_block));
+    request_mms_block_data--; 
+    }    
+}
+void GetArrayLanBlockOuts  (unsigned char *pArLanBlockOuts){
+    if(request_lan_block_data < 127){    
+    request_lan_block_data++;
+    memcpy((void *)pArLanBlockOuts,(const void*)arr_copy_stt_lan_block,  sizeof(arr_copy_stt_lan_block));
+    request_lan_block_data--; 
+    }
+}
+/*****************************************************/
 #endif
 /*****************************************************/
+

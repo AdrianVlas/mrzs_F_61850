@@ -365,6 +365,9 @@ void start_receive_data_via_CANAL1_MO(void);
 void CANAL2_MO_routine(void);
 void inputPacketParserLAN(void);
 void make_ekran_settings_synchro(void);
+void GetArrayGooseBlockOuts(unsigned char *pArGsBlockOuts);
+void GetArrayMmsBlockOuts  (unsigned char *pArMmsBlockOuts);
+void GetArrayLanBlockOuts  (unsigned char *pArLanBlockOuts);
 #endif
 
 extern void inputPacketParserUSB(void);
