@@ -1922,7 +1922,7 @@ void main_manu_function(void)
               if(current_ekran.index_position >= MAX_ROW_FOR_CHOSE_SETTINGS_PROTECTION_WITH_TIMEOUT) current_ekran.index_position = 0;
               position_in_current_level_menu[current_ekran.current_level] = current_ekran.index_position;
 
-                //Формуємо екран витримки для захистів у яких є багато груп уставок
+              //Формуємо екран витримок для захистів у яких є багато груп уставок
               make_ekran_chose_timeout();
             }
             else if (current_ekran.current_level == EKRAN_TRANSFORMATOR_INFO)

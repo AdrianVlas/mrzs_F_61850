@@ -35,6 +35,6 @@ enum _index_ml_ctrl_transformator
 #define COL_TN_END                          9
 
 
-#define CTR_TRANSFORMATOR_MASKA                         (MASKA_FOR_BIT(MAX_ROW_FOR_TRANSFORMATOR_INFO_SETPOINT) - 1)
+#define CTR_TRANSFORMATOR_MASKA                         (MASKA_FOR_BIT(MAX_ROW_FOR_TRANSFORMATOR_INFO_CONTROL) - 1)
 
 #endif
