@@ -109,6 +109,7 @@ ERROR_BDVV9_FIX,
 ERROR_BDVV9_CTLR,
 
 ERROR_FATFS,
+WARNING_REPROGRAM,
 
 MAX_ROW_FOR_DIAGNOSTYKA
 };
@@ -179,6 +180,7 @@ MAX_ROW_FOR_DIAGNOSTYKA
   | (1 << (ERROR_BDSH_CTLR - 96))                               \
   | (1 << (ERROR_BDVV9_FIX - 96))                               \
   | (1 << (ERROR_BDVV9_CTLR - 96))                              \
+  | (1 << (WARNING_REPROGRAM - 96))                             \
 )
 
 #define NAME_DIAGN_RU   \
@@ -288,7 +290,8 @@ MAX_ROW_FOR_DIAGNOSTYKA
   " ÁÄØ ï.         ",   \
   " ÁÄÂÂ9 îò.      ",   \
   " ÁÄÂÂ9 ï.       ",   \
-  " Îø.Ô.Ñ.        "
+  " Îø.Ô.Ñ.        ",   \
+  "Ðåæèì ïåðåïðîãð."   
 
 # define NAME_DIAGN_UA  \
   " Ïîì.I2C        ",   \
@@ -397,7 +400,8 @@ MAX_ROW_FOR_DIAGNOSTYKA
   " ÁÄØ ï.         ",   \
   " ÁÄÂÂ9 â³ä.     ",   \
   " ÁÄÂÂ9 ï.       ",   \
-  " Ïîì.Ô.Ñ.       "
+  " Ïîì.Ô.Ñ.       ",   \
+  "Ðåæèì ïåðåïðîãð."   
 
 # define NAME_DIAGN_EN  \
   " I2C Er         ",   \
@@ -506,7 +510,8 @@ MAX_ROW_FOR_DIAGNOSTYKA
   " ÁÄØ ï.         ",   \
   " BIOU09 abs     ",   \
   " BIOU09 ver     ",   \
-  " Error of FS    "
+  " Error of FS    ",   \
+  " Reprogram Mode "   
 
 # define NAME_DIAGN_KZ  \
   " Îø.I2C         ",   \
@@ -615,6 +620,7 @@ MAX_ROW_FOR_DIAGNOSTYKA
   " ÁÄØ ï.         ",   \
   " ÁÄÂÂ9 îò.      ",   \
   " ÁÄÂÂ9 ï.       ",   \
-  " Îø.Ô.Ñ.        "
+  " Îø.Ô.Ñ.        ",   \
+  "Ðåæèì ïåðåïðîãð."
     
 #endif

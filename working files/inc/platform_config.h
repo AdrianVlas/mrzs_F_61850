@@ -347,6 +347,22 @@
   /********************************************/
 #endif
 
+  /********************************************/
+  /* Перепрограмування/Штатний режим*/
+  /********************************************/
+#define GPIO_REPROGRAM                    GPIOC
+#define RCC_AHB1Periph_GPIO_REPROGRAM     RCC_AHB1Periph_GPIOC
+#define GPIO_PIN_REPROGRAM                GPIO_Pin_3
+
+#define GPIO_STAFF                        GPIOC
+#define RCC_AHB1Periph_GPIO_STAFF         RCC_AHB1Periph_GPIOC
+#define GPIO_PIN_STAFF                    GPIO_Pin_2
+
+#define GPIO_STAFF_REPROGRAM              GPIOA
+#define RCC_AHB1Periph_GPIO_STAFF_REPROGRAM     RCC_AHB1Periph_GPIOA
+#define GPIO_PIN_STAFF_REPROGRAM          GPIO_Pin_0
+  /********************************************/
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 

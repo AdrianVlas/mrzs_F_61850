@@ -134,7 +134,11 @@ void global_vareiables_installation(void)
  
   for(unsigned int i=0; i<MAX_LEVEL_MENU; i++)
   {
-    if ((i == EKRAN_LEVEL_PASSWORD) || (i == EKRAN_LEVEL_SET_NEW_PASSWORD1) || (i == EKRAN_LEVEL_SET_NEW_PASSWORD2)) position_in_current_level_menu[i] = INDEX_LINE_NUMBER_1_FOR_LEVEL_PASSWORD;
+    if ((i == EKRAN_LEVEL_PASSWORD) || 
+        (i == EKRAN_LEVEL_SET_NEW_PASSWORD1) || 
+        (i == EKRAN_LEVEL_SET_NEW_PASSWORD2) ||
+        (i == EKRAN_LEVEL_SET_NEW_PASSWORD3) 
+        ) position_in_current_level_menu[i] = INDEX_LINE_NUMBER_1_FOR_LEVEL_PASSWORD;
     else  position_in_current_level_menu[i] = 0;
     previous_level_in_current_level_menu[i] = -1;
   }
@@ -620,6 +624,18 @@ void start_settings_peripherals(void)
 #endif
   /**************/
 
+  /* Пін Перепрограмування*/
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_REPROGRAM;
+  GPIO_Init(GPIO_REPROGRAM, &GPIO_InitStructure);
+  /* Знімаємо пін Перепрограмування */
+  GPIO_ResetBits(GPIO_REPROGRAM, GPIO_PIN_REPROGRAM);
+
+  /* Пін "Штатний режим"*/
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_STAFF;
+  GPIO_Init(GPIO_STAFF, &GPIO_InitStructure);
+  /* Знімаємо пін "Штатний режим" */
+  GPIO_ResetBits(GPIO_STAFF, GPIO_PIN_STAFF);
+
   /**************/
   //Піни на ввід
   /**************/
@@ -640,6 +656,11 @@ void start_settings_peripherals(void)
   /*Контроль живлення */
   GPIO_InitStructure.GPIO_Pin = POWER_CTRL_PIN;
   GPIO_Init(POWER_CTRL, &GPIO_InitStructure);
+
+  /*Контроль Перепрограмування/Штатний режим */
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_STAFF_REPROGRAM;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+  GPIO_Init(GPIO_STAFF_REPROGRAM, &GPIO_InitStructure);
   /**************/
 
   /**************/
@@ -1688,6 +1709,7 @@ void min_settings(__SETTINGS *target_label)
 
   target_label->password1 = 0;
   target_label->password2 = 1234;
+  target_label->password3 = 4321;
   target_label->timeout_deactivation_password_interface_USB = TIMEOUT_DEACTIVATION_PASSWORD_MIN;
   target_label->password_interface_USB = 0;
   target_label->timeout_deactivation_password_interface_RS485 = TIMEOUT_DEACTIVATION_PASSWORD_MIN;

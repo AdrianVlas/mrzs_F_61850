@@ -1,5 +1,10 @@
 #include "header.h"
-
+///*
+static int32_t p_rele_reprogram_command = -1;
+static int32_t p_rele_staff_command = -1;
+static int32_t timerWaitReprogram = -1;
+//static unsigned int realDateTime;
+//*/
 /*****************************************************/
 //Модуль обробки дискретних входів
 /*****************************************************/
@@ -189,6 +194,68 @@ inline void clocking_global_timers(void)
   {
     timer_prt_signal_output_mode_2 = 0;
     output_timer_prt_signal_output_mode_2 ^= true;
+  }
+  
+  //Управління поляризованим реле для перепрограмування
+  if (
+      (p_rele_reprogram_command < 0) && 
+      (p_rele_staff_command < 0)  
+     )
+  {
+    if (_GET_STATE(reprogram_device, REPROGRAM_COMMAND))
+    {
+      p_rele_reprogram_command = 0;
+      GPIO_REPROGRAM->BSRRL = GPIO_PIN_REPROGRAM;
+    }
+
+    if (_GET_STATE(reprogram_device, STAFF_COMMAND))
+    {
+      p_rele_staff_command = 0;
+      GPIO_STAFF->BSRRL = GPIO_PIN_STAFF;
+    }
+  }
+  else
+  {
+    int32_t * point_p_rele = NULL;
+    if (p_rele_reprogram_command >= 0) point_p_rele = &p_rele_reprogram_command;
+    else point_p_rele = &p_rele_staff_command;
+
+    if (*point_p_rele < (0x7fffffff - DELTA_TIME_FOR_TIMERS)) *point_p_rele += DELTA_TIME_FOR_TIMERS;
+    if (*point_p_rele >= TIMEOUT_IMPULSE_P_RELE_REPROGRAM_STAFF)
+    {
+      *point_p_rele = -1;
+      
+      if (point_p_rele == &p_rele_reprogram_command) 
+      {
+        _CLEAR_STATE(reprogram_device, REPROGRAM_COMMAND);
+        GPIO_REPROGRAM->BSRRH = GPIO_PIN_REPROGRAM;
+      }
+      else if (point_p_rele == &p_rele_staff_command) 
+      {
+        _CLEAR_STATE(reprogram_device, STAFF_COMMAND);
+        GPIO_STAFF->BSRRH = GPIO_PIN_STAFF;
+      }
+      else
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed();
+      }
+    }
+  }
+  
+  if (p_rele_reprogram_command == 0) timerWaitReprogram = 0;
+  else
+  {
+    if (timerWaitReprogram >= 0) 
+    {
+      if (++timerWaitReprogram > (2*TIMEOUT_IMPULSE_P_RELE_REPROGRAM_STAFF))
+      {
+        //Режим перепрограмування не підтримується
+        timerWaitReprogram = -1;
+        _SET_STATE(reprogram_device, UNSUPPORT_REPROGRAM);
+          
+      }
+    }
   }
 }
 /*****************************************************/
@@ -9015,6 +9082,17 @@ do{
       state_leds_ctrl &=  (uint32_t)(~(((1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) | ((1 << LED_COLOR_RED_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I))));
     }
   }
+  /**************************/
+
+  /**************************/
+  /*Режим перепрограмування*/
+  /**************************/
+  if ((GPIO_STAFF_REPROGRAM->IDR & GPIO_PIN_STAFF_REPROGRAM) != (uint32_t)Bit_RESET)
+  {
+    _SET_BIT(set_diagnostyka, WARNING_REPROGRAM);
+    timerWaitReprogram = -1;
+  }
+  else _SET_BIT(clear_diagnostyka, WARNING_REPROGRAM);
   /**************************/
 
 //  //Діагностика справності раз на період
