@@ -919,7 +919,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
          static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
            {"      ОТКЛ      ", "      ВКЛ       "},
-           {"      ВИМК      ", "     ВВІМК      "},
+           {"      ВИМК      ", "     УВІМК      "},
            {"      OFF       ", "       ON       "},
            {"      СЉНД      ", "      КОСУ      "}
         };
@@ -1392,7 +1392,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
              )
           {
             /*
-            Випадок коли сигнали, які відповідають за НЗЗ треба відфільтрувати
+            Випадок коли сигнали, які відповідають за СЗЗ треба відфільтрувати
             */
 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
@@ -1703,7 +1703,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
          static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
            {"      ОТКЛ      ", "      ВКЛ       "},
-           {"      ВИМК      ", "     ВВІМК      "},
+           {"      ВИМК      ", "     УВІМК      "},
            {"      OFF       ", "       ON       "},
            {"      СЉНД      ", "      КОСУ      "}
          };

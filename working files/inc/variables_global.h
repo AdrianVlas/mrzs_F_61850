@@ -384,7 +384,7 @@ uint32_t delta_time_test = PERIOD_ZDZ_TEST;
 uint32_t zdz_ovd_diagnostyka;
 #endif
 
-//НЗЗ
+//СЗЗ
 int sector_1[8];
 int sector_2[8];
 unsigned int sector_i_minus_u_1;
@@ -1153,7 +1153,7 @@ int current_language = LANGUAGE_ABSENT;
 const uint8_t information_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
 {
   {"     Откл.      ", "      Вкл.      "},
-  {"     Вимк.      ", "     Ввімк.     "},
+  {"     Вимк.      ", "     Увімк.     "},
   {"      Off       ", "       On       "},
   {"     Сљнд.      ", "     Косу.      "}
 };

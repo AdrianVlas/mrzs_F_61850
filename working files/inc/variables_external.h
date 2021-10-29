@@ -129,7 +129,7 @@ extern uint32_t delta_time_test;
 extern uint32_t zdz_ovd_diagnostyka;
 #endif
 
-//ÍÇÇ
+//ÑÇÇ
 extern int sector_1[8];
 extern int sector_2[8];
 extern unsigned int sector_i_minus_u_1;

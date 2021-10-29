@@ -1957,7 +1957,7 @@ void main_manu_function(void)
               
               position_in_current_level_menu[EKRAN_CHOOSE_RANG_SWITCH] = current_ekran.index_position;
 
-              //Формуємо екран БВимк./БВвімк.
+              //Формуємо екран БВимк./БУвімк.
               make_ekran_choose_CBOn_CBOff();
             }
             else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_VMP)
@@ -3194,7 +3194,7 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_RANG_SWITCH)
               {
-                //Натисну кнопка Enter у вікні вибору Бвимк./БВвімк.
+                //Натисну кнопка Enter у вікні вибору Бвимк./БУвімк.
                 if(current_ekran.index_position == INDEX_ML_RANG_OFF_CB)
                 {
                   //Запам'ятовуємо поперердній екран
@@ -3206,7 +3206,7 @@ void main_manu_function(void)
                 else if (current_ekran.index_position == INDEX_ML_RANG_ON_CB)
                 {
                   //Запам'ятовуємо поперердній екран
-                  //Переходимо на меню відображення ранжування ББввімк.
+                  //Переходимо на меню відображення ранжування БУвімк.
                   current_ekran.current_level = EKRAN_RANGUVANNJA_ON_CB;
                   //Для того, щоб при першому входженні завжди список починався із першої ранжованої функції обнуляємо цю позицію
                   position_in_current_level_menu[current_ekran.current_level] = 0;
@@ -4426,7 +4426,7 @@ void main_manu_function(void)
               
                 position_in_current_level_menu[EKRAN_CHOOSE_RANG_SWITCH] = current_ekran.index_position;
 
-                //Формуємо екран БВимк./БВвімк.
+                //Формуємо екран БВимк./БУвімк.
                 make_ekran_choose_CBOn_CBOff();
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_VMP)
@@ -5255,7 +5255,7 @@ void main_manu_function(void)
               
                 position_in_current_level_menu[EKRAN_CHOOSE_RANG_SWITCH] = current_ekran.index_position;
 
-                //Формуємо екран БВимк./БВвімк.
+                //Формуємо екран БВимк./БУвімк.
                 make_ekran_choose_CBOn_CBOff();
               }
               else if (current_ekran.current_level == EKRAN_CHOOSE_SETTINGS_VMP)

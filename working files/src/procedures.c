@@ -848,7 +848,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
          )
         target_label->ctrl_zdz_type = ZDZ_CTRL_NONE;
 
-      //Âèâîäèì çàõèñòè 3I0, 3U0 ³ ÍÇÇ ç ÓÐÎÂ
+      //Âèâîäèì çàõèñòè 3I0, 3U0 ³ ÑÇÇ ç ÓÐÎÂ
       target_label->control_urov &= (unsigned int)(
                                                    ~(
                                                      MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3I0) | 
@@ -2702,10 +2702,10 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
 {
   if ((target_label->control_zz & CTR_ZZ1_TYPE) != 0)
   {
-    //Âèâîäèì ÍÇÇ ³ Ñåêòîð ÍÇÇ
+    //Âèâîäèì ÑÇÇ ³ Ñåêòîð ÑÇÇ
     target_label->control_zz &= (unsigned int)(~(CTR_ZZ1_NZZ_STATE/* | CTR_ZZ1_SECTOR*/));
     
-    //Âèâîäèì ÍÇÇ ç ÓÐÎÂ
+    //Âèâîäèì ÑÇÇ ç ÓÐÎÂ
     target_label->control_urov &= (unsigned int)(~MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_NZZ));
       
     unsigned int maska_1[N_BIG];
