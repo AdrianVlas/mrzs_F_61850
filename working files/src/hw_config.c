@@ -50,7 +50,11 @@ void Set_System(void)
                          RCC_AHB1Periph_GPIO_USART_RS485        |
                          RCC_AHB1Periph_GPIO_485DE              |
                          RCC_AHB1Periph_GPIO_EXTERNAL_WATCHDOG  |
-                         RCC_AHB1Periph_GPIO_POWER_CTRL,
+                         RCC_AHB1Periph_GPIO_POWER_CTRL         |
+                         RCC_AHB1Periph_GPIO_REPROGRAM          |
+                         RCC_AHB1Periph_GPIO_STAFF              |
+                         RCC_AHB1Periph_GPIO_STAFF_REPROGRAM/*    |
+                         RCC_AHB1Periph_GPIO_TEST_OUTPUT*/,
                          
                          ENABLE);
 

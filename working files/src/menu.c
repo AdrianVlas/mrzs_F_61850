@@ -1,14 +1,73 @@
 #include "header.h"
 
+static __CURRENT_EKRAN current_ekran_reserv_off_on;
+static unsigned char working_ekran_reserv_off_on[MAX_ROW_LCD][MAX_COL_LCD];
+
+static __CURRENT_EKRAN current_ekran_reserv_repr;
+static unsigned char working_ekran_reserv_repr[MAX_ROW_LCD][MAX_COL_LCD];
+
 /*****************************************************/
 //Функція меню з якої здійснюються всі інші операції
 /*****************************************************/
 void main_manu_function(void)
 {
-  //Перевіряємо чи не треба відобразити інформацію про спрацювання захистів
-  static __CURRENT_EKRAN current_ekran_reserv;
-  static unsigned char working_ekran_reserv[MAX_ROW_LCD][MAX_COL_LCD];
-  if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_WINDOW_OFF_CB)) != 0)
+  //Перевіряємо чи не треба відобразити інформацію про режим перпрограмування або спрацювання захистів
+  if (
+      (
+       (_GET_STATE(reprogram_device, UNSUPPORT_REPROGRAM)) ||
+       (_CHECK_SET_BIT(diagnostyka, WARNING_REPROGRAM) != 0)
+      )
+      &&
+      (current_ekran.current_level != EKRAN_UNSUPPORT_REPROGRAM) 
+      &&
+      (current_ekran.current_level != EKRAN_REPROGRAM_ACTIVE   )
+      &&
+      (new_state_keyboard == 0)
+     ) 
+  {
+    //Запам'ятовуємо поперердній стан меню
+    current_ekran_reserv_repr = current_ekran;
+    //Запам'ятовуємо попередній екран (бо діалогові вікна не обновлюються при виконанні команди REWRITE)
+    for (size_t i = 0; i < MAX_ROW_LCD; ++i)
+    {
+      for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran_reserv_repr[i][j] = working_ekran[i][j];
+    }
+
+    //Переходимо на меню відображення повідомлення, що ми у режимі репрограмування
+    current_ekran.current_level = (_CHECK_SET_BIT(diagnostyka, WARNING_REPROGRAM) != 0) ? EKRAN_REPROGRAM_ACTIVE : EKRAN_UNSUPPORT_REPROGRAM;
+    current_ekran.index_position = -1/*position_in_current_level_menu[current_ekran.current_level]*/;
+    current_ekran.edition = 0;
+    current_ekran.cursor_on = 0;
+    current_ekran.cursor_blinking_on = 0;
+
+    //Виставляємо команду на обновлекння нового екрану, а всі попередні натискування відміняємо
+    new_state_keyboard = (1<<BIT_REWRITE);
+  }
+  else if (
+           (
+            ((current_ekran.current_level == EKRAN_REPROGRAM_ACTIVE   ) && (_CHECK_SET_BIT(diagnostyka, WARNING_REPROGRAM) == 0)) ||
+            ((current_ekran.current_level == EKRAN_UNSUPPORT_REPROGRAM) && (!_GET_STATE(reprogram_device, UNSUPPORT_REPROGRAM)))
+           )   
+           &&
+           (new_state_keyboard == 0)
+          )
+  {
+    //Переходимо у попереднє меню
+    current_ekran = current_ekran_reserv_repr;
+
+    //Відображаємо попередній екран (бо діалогові вікна не обновлюються при виконанні команди REWRITE)
+    for (size_t i = 0; i < MAX_ROW_LCD; ++i)
+    {
+      for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = working_ekran_reserv_repr[i][j];
+    }
+    //Обновити повністю весь екран
+    current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+    time_rewrite = MAX_TIME_REWRITE_EKRAN;
+
+    new_state_keyboard = (1<<BIT_REWRITE); //Ця команда буде виконана після поперднього відновлення стану екрану, який був до переходу у вікно відображення інформації про програмування або вікно, яке говорить, що цей режим не підтримується
+    return; //цим виходом я перериваю зараз виконання цієї функції, щоб спочатку булоа виведена попередня інформація, к потім вже відпрацюав біт BIT_REWRITE
+  }
+  else if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_WINDOW_OFF_CB) != 0)
   {
     if (
         (
@@ -22,11 +81,11 @@ void main_manu_function(void)
 
       time_rewrite = 0;
       //Запам'ятовуємо поперердній стан меню
-      current_ekran_reserv = current_ekran;
+      current_ekran_reserv_off_on = current_ekran;
       //Запам'ятовуємо попередній екран (бо діалогові вікна не обновлюються при виконанні команди REWRITE)
       for (unsigned int i = 0; i < MAX_ROW_LCD; i++)
       {
-        for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran_reserv[i][j] = working_ekran[i][j];
+        for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran_reserv_off_on[i][j] = working_ekran[i][j];
       }
 
       //Переходимо на меню відображення спрацювання захистів
@@ -58,6 +117,7 @@ void main_manu_function(void)
 /******************************************************************************************************************************************/ 
     case EKRAN_LEVEL_PASSWORD:
     case EKRAN_LEVEL_PASSWORD_HARD:
+    case EKRAN_LEVEL_PASSWORD_REPROGRAM:
       {
         //Зміння для фіксації стану курсору з попреднього рівня меню
         static __PREVIOUS_STATE_CURSOR previous_state_cursor;
@@ -99,6 +159,8 @@ void main_manu_function(void)
                 password = current_settings.password1;
               else if (current_ekran.current_level == EKRAN_LEVEL_PASSWORD_HARD)
                 password = current_settings.password2;
+              else if (current_ekran.current_level == EKRAN_LEVEL_PASSWORD_REPROGRAM)
+                password = current_settings.password3;
               else
               {
                 //Теоретично цього ніколи не мало б бути
@@ -120,12 +182,23 @@ void main_manu_function(void)
               {
                 //Пароль не зійшовся
                 //Переходимо у попереднє меню і анульовуємо процес редагування
-                current_ekran.current_level = previous_level_in_current_level_menu[current_ekran.current_level];
-                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
-                current_ekran.edition = 0;
-                current_ekran.position_cursor_x = previous_state_cursor.position_cursor_x;
-                current_ekran.cursor_on = previous_state_cursor.cursor_on;
-                current_ekran.cursor_blinking_on = previous_state_cursor.cursor_blinking_on;
+                unsigned int repeat = false;
+                do
+                {
+                  current_ekran.current_level = previous_level_in_current_level_menu[current_ekran.current_level];
+                  current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                  current_ekran.edition = 0;
+                  if (repeat == false)
+                  {
+                    current_ekran.position_cursor_x = previous_state_cursor.position_cursor_x;
+                    current_ekran.cursor_on = previous_state_cursor.cursor_on;
+                    current_ekran.cursor_blinking_on = previous_state_cursor.cursor_blinking_on;
+                  }
+                  else break;
+                  
+                  if (current_ekran.current_level == EKRAN_REPROGRAM) repeat = true;
+                }
+                while (repeat);
               }
 
               //Очистити сигналізацію, що натиснута кнопка 
@@ -138,12 +211,23 @@ void main_manu_function(void)
               //Натиснута кнопка ESC
 
               //Переходимо у попереднє меню і анульовуємо процес редагування
-              current_ekran.current_level = previous_level_in_current_level_menu[current_ekran.current_level];
-              current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
-              current_ekran.edition = 0;
-              current_ekran.position_cursor_x = previous_state_cursor.position_cursor_x;
-              current_ekran.cursor_on = previous_state_cursor.cursor_on;
-              current_ekran.cursor_blinking_on = previous_state_cursor.cursor_blinking_on;
+              unsigned int repeat = false;
+              do
+              {
+                current_ekran.current_level = previous_level_in_current_level_menu[current_ekran.current_level];
+                current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                current_ekran.edition = 0;
+                if (repeat == false)
+                {
+                  current_ekran.position_cursor_x = previous_state_cursor.position_cursor_x;
+                  current_ekran.cursor_on = previous_state_cursor.cursor_on;
+                  current_ekran.cursor_blinking_on = previous_state_cursor.cursor_blinking_on;
+                }
+                else break;
+                  
+                if (current_ekran.current_level == EKRAN_REPROGRAM) repeat = true;
+              }
+              while (repeat);
               
               //Очистити сигналізацію, що натиснута кнопка 
               new_state_keyboard &= (unsigned int)(~(1<<BIT_KEY_ESC));
@@ -222,6 +306,7 @@ void main_manu_function(void)
 /******************************************************************************************************************************************/ 
     case EKRAN_LEVEL_SET_NEW_PASSWORD1:
     case EKRAN_LEVEL_SET_NEW_PASSWORD2:
+    case EKRAN_LEVEL_SET_NEW_PASSWORD3:
       {
         //Змінні для фіксації введеного паролю
         static unsigned int new_setting_password;
@@ -242,6 +327,8 @@ void main_manu_function(void)
             p_password = &current_settings.password1;
           else if (current_ekran.current_level == EKRAN_LEVEL_SET_NEW_PASSWORD2)
             p_password = &current_settings.password2;
+          else if (current_ekran.current_level == EKRAN_LEVEL_SET_NEW_PASSWORD3)
+            p_password = &current_settings.password3;
           else
           {
             //Теоретично цього ніколи не мало б бути
@@ -3368,11 +3455,17 @@ void main_manu_function(void)
                   //Переходимо на меню зміни паролю
                   current_ekran.current_level = EKRAN_LEVEL_SET_NEW_PASSWORD1;
                 }
-                else
+                else if(current_ekran.index_position == INDEX_OF_PASSWORD2)
                 {
                   //Запам'ятовуємо поперердній екран
                   //Переходимо на меню зміни паролю
                   current_ekran.current_level = EKRAN_LEVEL_SET_NEW_PASSWORD2;
+                }
+                else 
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню зміни паролю
+                  current_ekran.current_level = EKRAN_LEVEL_SET_NEW_PASSWORD3;
                 }
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 1;
@@ -3917,6 +4010,21 @@ void main_manu_function(void)
                   current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                   current_ekran.edition = 0;
                 }
+                else if (current_ekran.index_position == INDEX_ML_REPROGRAM)
+                {
+                  //Запам'ятовуємо поперердній екран
+                  //Переходимо на меню активації режиму перепрограмування
+                  current_ekran.current_level = EKRAN_REPROGRAM;
+
+                  current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                  current_ekran.edition = 0; 
+                  
+                  //Щоб зразу перейти на запит паролю
+                  previous_level_in_current_level_menu[current_ekran.current_level] = temp_current_level;
+                  temp_current_level = current_ekran.current_level;
+                  current_ekran.current_level = EKRAN_LEVEL_PASSWORD_REPROGRAM;
+                  current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                }
               }
               else if (current_ekran.current_level == EKRAN_POINT_TIME_SETTINGS)
               {
@@ -4113,7 +4221,8 @@ void main_manu_function(void)
               
                 if(
                    ((current_ekran.current_level == EKRAN_LEVEL_SET_NEW_PASSWORD1) && (current_settings.password1 != 0)) ||
-                    (current_ekran.current_level == EKRAN_LEVEL_SET_NEW_PASSWORD2)  
+                    (current_ekran.current_level == EKRAN_LEVEL_SET_NEW_PASSWORD2) ||
+                    (current_ekran.current_level == EKRAN_LEVEL_SET_NEW_PASSWORD3)
                   )   
                 {
                   //У випавдку, якщо ми намагаємося перейти у вікно зміни паролю, то спочатку треба запитати старий пароль доступу, якщо він встановлений
@@ -4126,6 +4235,11 @@ void main_manu_function(void)
                   {
                     current_ekran.current_level = EKRAN_LEVEL_PASSWORD_HARD;
                     previous_level_in_current_level_menu[current_ekran.current_level] = EKRAN_LEVEL_SET_NEW_PASSWORD2;
+                  }
+                  else if (current_ekran.current_level == EKRAN_LEVEL_SET_NEW_PASSWORD3)
+                  {
+                    current_ekran.current_level = EKRAN_LEVEL_PASSWORD_REPROGRAM;
+                    previous_level_in_current_level_menu[current_ekran.current_level] = EKRAN_LEVEL_SET_NEW_PASSWORD3;
                   }
                   else
                   {
@@ -19993,9 +20107,11 @@ void main_manu_function(void)
 
 /******************************************************************************************************************************************/      
     case EKRAN_RESURS:
+    case EKRAN_REPROGRAM:
       {
         //Очищаємо всі біти краім упралінських
-        unsigned int maska_keyboard_bits = (1<<BIT_KEY_ENTER)| (1<<BIT_KEY_ESC)|(1<<BIT_REWRITE)|(1<<BIT_KEY_UP)|(1<<BIT_KEY_DOWN);
+        unsigned int maska_keyboard_bits = (1<<BIT_KEY_ENTER)| (1<<BIT_KEY_ESC)|(1<<BIT_REWRITE);
+        if (current_ekran.current_level == EKRAN_RESURS) maska_keyboard_bits |= (1<<BIT_KEY_UP)|(1<<BIT_KEY_DOWN);
 
         new_state_keyboard &= maska_keyboard_bits;
         //Дальше виконуємо дії, якщо натиснута кнопка на яку треба реагувати, або стоїть команда обновити екран
@@ -20014,10 +20130,17 @@ void main_manu_function(void)
                 //Формуємо екран відображення лічильників ресурсу
                 make_ekran_resurs();
               }
+              else
+              {
+                //Теоретично цього ніколи не мало б бути
+                total_error_sw_fixed();
+              }
             }
-            else if (current_ekran.edition == 1)
+            else if ((current_ekran.edition == 1) || (current_ekran.edition == 2))
             {
-              if(current_ekran.current_level == EKRAN_RESURS)
+              current_ekran.cursor_on = 0;
+              current_ekran.cursor_blinking_on = 0;
+              if (current_ekran.current_level == EKRAN_RESURS)
               {
                 unsigned char information_about_reset_counter[1][MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
                 {
@@ -20026,10 +20149,20 @@ void main_manu_function(void)
                   " Reset Res Coun ",
                   " Очистить ресурс"
                 };
-
-                current_ekran.cursor_on = 0;
-                current_ekran.cursor_blinking_on = 0;
+              
                 make_ekran_about_activation_command(0, information_about_reset_counter);
+              }
+              else if (current_ekran.current_level == EKRAN_REPROGRAM)
+              {
+                unsigned char information_about_reprogram[1][MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+                {
+                  "Режим перепрогр.",
+                  "Режим перепрогр.",
+                  " Reprogram Mode ",
+                  "Режим перепрогр."
+                };
+              
+                make_ekran_about_activation_command(0, information_about_reprogram);
               }
 
               //Переходимо в режим введення значень у дію
@@ -20059,6 +20192,15 @@ void main_manu_function(void)
                 {
                   restart_counter = 0xff; /*Сигнал про очищення ресурсу лічильників з системи зазистів*/
                 }
+                else if (current_ekran.current_level == EKRAN_REPROGRAM)
+                {
+                  //Подаємо команду на перехід у режим перепрограмування
+                  _SET_STATE(reprogram_device, REPROGRAM_COMMAND);
+                  
+                  //Переходимо у попереднє меню
+                  current_ekran.current_level = previous_level_in_current_level_menu[current_ekran.current_level];
+                  current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
+                }
 
                 //Виходимо з режиму редагування
                 current_ekran.edition = 0;
@@ -20072,7 +20214,10 @@ void main_manu_function(void)
             }
             else if (new_state_keyboard == (1<<BIT_KEY_ESC))
             {
-              if(current_ekran.edition == 0)
+              if (
+                  (current_ekran.edition == 0) || 
+                  (current_ekran.current_level == EKRAN_REPROGRAM)
+                 )   
               {
                 //Вихід у режимі спостерігання
                 //Переходимо у попереднє меню
@@ -20082,8 +20227,16 @@ void main_manu_function(void)
               }
               else
               {
-                //Вихід у режимі редагування без введення змін
-                current_ekran.edition = 0;
+                if (current_ekran.current_level == EKRAN_RESURS)
+                {
+                  //Вихід у режимі редагування без введення змін
+                  current_ekran.edition = 0;
+                }
+                else
+                {
+                  //Теоретично цього ніколи не мало б бути
+                  total_error_sw_fixed();
+                }
               }
 
               //Виставляємо команду на обновлекння нового екрану
@@ -20128,6 +20281,87 @@ void main_manu_function(void)
 
               //Очистити сигналізацію, що натиснута кнопка 
               new_state_keyboard &= (unsigned int)(~(1<<BIT_KEY_DOWN));
+            }
+            else
+            {
+              //Натиснуто зразу декілька кнопок - це є невизначена ситуація, тому скидаємо сигналізацію про натиснуті кнопки і чекаємо знову
+              unsigned int temp_data = new_state_keyboard;
+              new_state_keyboard &= ~temp_data;
+            }
+          }
+        }
+        break;
+      }
+/******************************************************************************************************************************************/ 
+
+/******************************************************************************************************************************************/      
+    case EKRAN_REPROGRAM_ACTIVE:
+    case EKRAN_UNSUPPORT_REPROGRAM:
+      {
+        //Очищаємо всі біти краім упралінських
+        unsigned int maska_keyboard_bits = (1<<BIT_KEY_ENTER) | (1<<BIT_REWRITE);
+
+        new_state_keyboard &= maska_keyboard_bits;
+        //Дальше виконуємо дії, якщо натиснута кнопка на яку треба реагувати, або стоїть команда обновити екран
+        if (new_state_keyboard !=0)
+        {
+          //Пріоритет стоїть на обновлені екрану
+          if((new_state_keyboard & (1<<BIT_REWRITE)) !=0)
+          {
+            static uint8_t const name_string1[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+            {
+              {"Режим перепрогр.", "Режим не поддерж"},
+              {"Режим перепрогр.", "Режим не підтрим"},
+              {" Reprogram Mode ", "Unsupported Mode"},
+              {"Режим перепрогр.", "Режим не поддерж"}
+            };
+            
+            static uint8_t const name_string2[MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+            {
+              "  Выйти: Enter  ",
+              "  Вийти: Enter  ",
+              "   Exit: Enter  ",
+              "  Выйти: Enter  "
+            };
+            
+            int index_language = index_language_in_array(current_settings.language);
+            uint8_t const * const pArray[2] = 
+            {
+              name_string1[index_language][current_ekran.current_level == EKRAN_UNSUPPORT_REPROGRAM],
+              name_string2[index_language]
+            };
+            for (size_t i = 0; i < MAX_ROW_LCD; ++i)
+            {
+              //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+              if (i < 2)
+              {
+                for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = pArray[i][j];
+              } 
+              else
+                for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = ' ';
+            }
+
+            current_ekran.cursor_on = 0;
+            current_ekran.cursor_blinking_on = 0;
+            current_ekran.position_cursor_x = 0;
+            current_ekran.position_cursor_y = 0;
+            //Обновити повністю весь екран
+            current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+
+            //Очищаємо біт обновлення екрану
+            new_state_keyboard &= (unsigned int)(~(1<<BIT_REWRITE));
+          }
+          else
+          {
+            if (new_state_keyboard == (1<<BIT_KEY_ENTER))
+            {
+              //Натиснута кнопка ENTER
+              //Подаємо команду на перехід у режим перепрограмування
+              if (current_ekran.current_level == EKRAN_REPROGRAM_ACTIVE) _SET_STATE(reprogram_device, STAFF_COMMAND);
+              else _CLEAR_STATE(reprogram_device, UNSUPPORT_REPROGRAM);
+              
+              //Очистити сигналізацію, що натиснута кнопка 
+              new_state_keyboard &= (unsigned int)(~(1<<BIT_KEY_ENTER));
             }
             else
             {
@@ -24183,12 +24417,12 @@ void main_manu_function(void)
               info_vidkluchennja_vymykacha[1] = 0;
               
               //Переходимо у попереднє меню
-              current_ekran = current_ekran_reserv;
+              current_ekran = current_ekran_reserv_off_on;
 
               //Відображаємо попередній екран (бо діалогові вікна не обновлюються при виконанні команди REWRITE)
               for (unsigned int i = 0; i < MAX_ROW_LCD; i++)
               {
-                for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = working_ekran_reserv[i][j];
+                for (unsigned int j = 0; j < MAX_COL_LCD; j++) working_ekran[i][j] = working_ekran_reserv_off_on[i][j];
               }
               //Обновити повністю весь екран
               current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;

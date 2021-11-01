@@ -498,6 +498,9 @@ extern unsigned int number_of_phases_last_KZ;
 extern int VMP_last_KZ;
 extern unsigned int equal_more_KZ;
 
+//Перепрограмування приладу
+extern unsigned int reprogram_device;
+
 //RS-485
 extern unsigned char TxBuffer_RS485[BUFFER_RS485];
 extern unsigned char RxBuffer_RS485[BUFFER_RS485];

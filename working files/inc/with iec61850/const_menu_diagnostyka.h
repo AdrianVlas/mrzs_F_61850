@@ -128,6 +128,7 @@ ERROR_CB_FIX,
 
 ERROR_FATFS,
 EVENT_RESTART_CB_BIT,
+WARNING_REPROGRAM,
 
 MAX_ROW_FOR_DIAGNOSTYKA
 };
@@ -233,6 +234,7 @@ MAX_ROW_FOR_DIAGNOSTYKA
   | (1 << (ERROR_BDVV9_FIX - 96))                               \
   | (1 << (ERROR_BDVV9_CTLR - 96))                              \
   | (1 << (ERROR_CB_FIX - 96))                                  \
+  | (1 << (WARNING_REPROGRAM - 96))                             \
 )
 
 #define NAME_DIAGN_RU   \
@@ -359,7 +361,8 @@ MAX_ROW_FOR_DIAGNOSTYKA
   " БДВВ9 п.       ",   \
   " КП от.         ",   \
   " Ош.Ф.С.        ",   \
-  " Рестарт КП     "
+  " Рестарт КП     ",   \
+  "Режим перепрогр."   
 
 # define NAME_DIAGN_UA  \
   " Пом.I2C        ",   \
@@ -485,7 +488,8 @@ MAX_ROW_FOR_DIAGNOSTYKA
   " БДВВ9 п.       ",   \
   " КП від.        ",   \
   " Пом.Ф.С.       ",   \
-  " Рестарт КП     "
+  " Рестарт КП     ",   \
+  "Режим перепрогр."   
 
 # define NAME_DIAGN_EN  \
   " I2C Er         ",   \
@@ -611,7 +615,8 @@ MAX_ROW_FOR_DIAGNOSTYKA
   " BIOU09 ver     ",   \
   " CU abs.        ",   \
   " Error of FS    ",   \
-  " CB Restart     "
+  " CB Restart     ",   \
+  " Reprogram Mode "   
 
 # define NAME_DIAGN_KZ  \
   " Ош.I2C         ",   \
@@ -737,6 +742,7 @@ MAX_ROW_FOR_DIAGNOSTYKA
   " БДВВ9 п.       ",   \
   " КП от.         ",   \
   " Ош.Ф.С.        ",   \
-  " Рестарт КП     "
+  " Рестарт КП     ",   \
+  "Режим перепрогр."
     
 #endif

@@ -3260,7 +3260,15 @@ unsigned int set_new_settings_from_interface(unsigned int source)
       //Переводимо меню у висхідний стан
       for(unsigned int i=0; i<MAX_LEVEL_MENU; i++)
       {
-        if ((i == EKRAN_LEVEL_PASSWORD) || (i == EKRAN_LEVEL_SET_NEW_PASSWORD1) || (i == EKRAN_LEVEL_SET_NEW_PASSWORD2)) position_in_current_level_menu[i] = INDEX_LINE_NUMBER_1_FOR_LEVEL_PASSWORD;
+        if (
+            (i == EKRAN_LEVEL_PASSWORD) || 
+            (i == EKRAN_LEVEL_SET_NEW_PASSWORD1) ||
+            (i == EKRAN_LEVEL_SET_NEW_PASSWORD2) ||
+            (i == EKRAN_LEVEL_SET_NEW_PASSWORD3)
+           )
+        {
+          position_in_current_level_menu[i] = INDEX_LINE_NUMBER_1_FOR_LEVEL_PASSWORD;
+        }
         else  position_in_current_level_menu[i] = 0;
         previous_level_in_current_level_menu[i] = -1;
       }

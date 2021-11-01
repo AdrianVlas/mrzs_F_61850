@@ -938,6 +938,9 @@ unsigned int number_of_phases_last_KZ;
 int VMP_last_KZ = UNDEF_VMP;
 unsigned int equal_more_KZ;
 
+//Перепрограмування приладу
+unsigned int reprogram_device;
+
 //RS-485
 SRAM1 unsigned char TxBuffer_RS485[BUFFER_RS485];
 SRAM1 unsigned char RxBuffer_RS485[BUFFER_RS485];

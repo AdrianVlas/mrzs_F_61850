@@ -330,6 +330,7 @@ typedef struct
   
   unsigned int password1;                                       //Пароль для редагування з меню
   unsigned int password2;                                       //Пароль для очистки лічилчників енегії і ресурсу вимикача
+  unsigned int password3;                                       //Пароль для переходу у режим програмування
   unsigned int timeout_deactivation_password_interface_USB;     //Час деактивації паролю для редагування з інтерфейсу USB
   unsigned int password_interface_USB;                          //Пароль для редагування з інтерфейсу USB
   unsigned int timeout_deactivation_password_interface_RS485;   //Час деактивації паролю для редагування з інтерфейсу RS485
