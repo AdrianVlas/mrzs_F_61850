@@ -1173,6 +1173,9 @@ extern unsigned int __ICFEDIT_region_RAM1_start__;
 extern unsigned int __ICFEDIT_region_RAM1_size__;
 
 #ifdef DEBUG_TEST
+
+volatile unsigned int meas_Ia = 0;
+
 //unsigned int time_1 = 0xffff0000, time_2 = 0xffff0000, max_delay = 0;
 
 //Тимчасові змінні

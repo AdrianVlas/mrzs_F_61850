@@ -7041,6 +7041,30 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
            //І'мя комірки
           for(unsigned int i=0; i< MAX_CHAR_IN_NAME_OF_CELL; i++) 
             buffer_for_save_dr_record[FIRST_INDEX_NAME_OF_CELL_DR + i] = current_settings_prt.name_of_cell[i] & 0xff;
+          
+          //Коефіцієнти трансформації
+          {
+            unsigned char *ptr_target = buffer_for_save_dr_record + FIRST_INDEX_T0;
+            unsigned char *ptr_source = (unsigned char *)(&current_settings_prt.T0);
+            for(size_t i = 0; i < sizeof(current_settings_prt.T0); ++i) 
+              *ptr_target++ = *ptr_source++;
+
+            ptr_target = buffer_for_save_dr_record + FIRST_INDEX_TC;
+            ptr_source = (unsigned char *)(&current_settings_prt.TCurrent);
+            for(size_t i = 0; i < sizeof(current_settings_prt.TCurrent); ++i) 
+              *ptr_target++ = *ptr_source++;
+
+            ptr_target = buffer_for_save_dr_record + FIRST_INDEX_TC04;
+            ptr_source = (unsigned char *)(&current_settings_prt.TCurrent04);
+            for(size_t i = 0; i < sizeof(current_settings_prt.TCurrent04); ++i) 
+              *ptr_target++ = *ptr_source++;
+
+            ptr_target = buffer_for_save_dr_record + FIRST_INDEX_TV;
+            ptr_source = (unsigned char *)(&current_settings_prt.TVoltage);
+            for(size_t i = 0; i < sizeof(current_settings_prt.TVoltage); ++i) 
+              *ptr_target++ = *ptr_source++;
+          }
+          
 
            //Джерела запуску
           for(unsigned int i = 0; i < NUMBER_BYTES_SAMPLE_DR; i++) 
@@ -9191,6 +9215,10 @@ do{
   //Розрахунок вимірювань
   /***********************************************************/
   calc_measurement(number_group_stp);
+  
+#ifdef DEBUG_TEST 
+  if (meas_Ia != 0) measurement[IM_IA] = meas_Ia;
+#endif
 
   //Копіюємо вимірювання для низькопріоритетних і високопріоритетних завдань
   unsigned int bank_measurement_high_tmp = (bank_measurement_high ^ 0x1) & 0x1;
@@ -11297,3 +11325,8 @@ void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_func
 
 #endif
 /*****************************************************/
+
+#ifdef DEBUG_TEST
+#warning "TEST VARIABLES IS PRESENT"
+#endif
+

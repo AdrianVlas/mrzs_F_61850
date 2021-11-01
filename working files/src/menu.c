@@ -2499,7 +2499,7 @@ void main_manu_function(void)
               while (current_ekran.index_position >= MAX_ROW_FOR_EKRAN_ANALOG_VALUES_DR);
 
               //Формуємо екран відображення аналогових значень з запису дискретного реєстратора
-              make_ekran_analog_value_records_digital_registrator();
+              make_ekran_analog_value_records_digital_registrator(pervynna_vtorynna);
             }
             else if (current_ekran.current_level == EKRAN_TITLES_STATE_CMD_REGISTRATOR)
             {
@@ -2616,7 +2616,8 @@ void main_manu_function(void)
                        (current_ekran.current_level == EKRAN_MEASURMENT_VOLTAGE_LINE) ||
                        (current_ekran.current_level == EKRAN_MEASURMENT_POWER) ||
                        (current_ekran.current_level == EKRAN_ENERGY) ||
-                       (current_ekran.current_level == EKRAN_MEASURMENT_RESISTANCE)
+                       (current_ekran.current_level == EKRAN_MEASURMENT_RESISTANCE) ||
+                       (current_ekran.current_level == EKRAN_MAX_VALUES)  
                       )   
               {
                 //Ми у вікні відображення або струмів, напруг, потужностей, опорів, енергій
@@ -4035,6 +4036,9 @@ void main_manu_function(void)
                   //Переходимо у нове вікно тільки у тому випадку, якщо ми попередньо зафіксували з якого місця розміщається блок, який визначений курсором
                   current_ekran.current_level = EKRAN_MAX_VALUES;
 
+                  //Спочатку відображаємо інформацію на вторинній обмотці трансворматора - значення , які поступають на аналогові входи приладу
+                  pervynna_vtorynna = 0;
+                  
                   current_ekran.index_position = 0; //Завжди починаэмо з першого вікна
                   current_ekran.edition = 0;
                 }
@@ -4957,7 +4961,7 @@ void main_manu_function(void)
                 while (current_ekran.index_position < 0);
                 
                 //Формуємо екран відображення аналогових значень з запису дискретного реєстратора
-                make_ekran_analog_value_records_digital_registrator();
+                make_ekran_analog_value_records_digital_registrator(pervynna_vtorynna);
               }
               else if (current_ekran.current_level == EKRAN_TITLES_STATE_CMD_REGISTRATOR)
               {
@@ -5790,7 +5794,7 @@ void main_manu_function(void)
                 while (current_ekran.index_position >= MAX_ROW_FOR_EKRAN_ANALOG_VALUES_DR);
 
                 //Формуємо екран відображення аналогових значень з запису дискретного реєстратора
-                make_ekran_analog_value_records_digital_registrator();
+                make_ekran_analog_value_records_digital_registrator(pervynna_vtorynna);
               }
               else if (current_ekran.current_level == EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS)
               {

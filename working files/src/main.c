@@ -831,4 +831,8 @@ void assert_failed(u8* file, u32 line)
 #warning "Small Statistic Registrator"
 #endif
 
+#ifdef DEBUG_TEST
+#warning "TEST VARIABLES IS PRESENT"
+#endif
+
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
