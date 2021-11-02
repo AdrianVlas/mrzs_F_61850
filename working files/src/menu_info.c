@@ -13,7 +13,7 @@ void make_ekran_info()
       " Версия ПО(КП)  ",
 #endif
       "   Версия КП    ",
-      " Серийный номер ",
+      " Серийный номер "
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       "   MAC-адрес    ",
@@ -26,7 +26,7 @@ void make_ekran_info()
       " Версія ПЗ(КП)  ",
 #endif
       "   Версія КП    ",
-      " Серійний номер ",
+      " Серійний номер "
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       "   MAC-адреса   ",
@@ -39,7 +39,7 @@ void make_ekran_info()
       "Firmware ver(CU)",
 #endif
       "  Mem Card ver  ",
-      " Serial number  ",
+      " Serial number  "
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       "  MAC address   ",
@@ -52,7 +52,7 @@ void make_ekran_info()
       " Версия ПО(КП)  ",
 #endif
       "   Версия КП    ",
-      " Серийный номер ",
+      " Серийный номер "
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
                         ,
       "   MAC-адрес    ",
