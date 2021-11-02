@@ -1,7 +1,7 @@
 #ifndef __CONST_MENU_VIDKLUCHENNJA__
 #define __CONST_MENU_VIDKLUCHENNJA__
 
-#define EKRAN_VIDKLUCHENNJA        (EKRAN_STATE_CMD_REG + 1) //Останній індекс у масиві position_in_current_level_menu
+#define EKRAN_VIDKLUCHENNJA        (EKRAN_STATE_CMD_REG + 1)
 
 #define MAX_ROW_FOR_VIDKLUCHENNJA       VYMKNENNJA_VID_MAX_NUMBER
 

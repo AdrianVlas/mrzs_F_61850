@@ -67,7 +67,7 @@ void main_manu_function(void)
     new_state_keyboard = (1<<BIT_REWRITE); //Ця команда буде виконана після поперднього відновлення стану екрану, який був до переходу у вікно відображення інформації про програмування або вікно, яке говорить, що цей режим не підтримується
     return; //цим виходом я перериваю зараз виконання цієї функції, щоб спочатку булоа виведена попередня інформація, к потім вже відпрацюав біт BIT_REWRITE
   }
-  else if ((current_settings.control_extra_settings_1 & CTR_EXTRA_SETTINGS_1_CTRL_WINDOW_OFF_CB) != 0)
+  else if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_WINDOW_OFF_CB)) != 0)
   {
     if (
         (
@@ -99,7 +99,7 @@ void main_manu_function(void)
       new_state_keyboard = (1<<BIT_REWRITE);
     }
   }
-  else
+  else if ((current_settings.control_extra_settings_1 & MASKA_FOR_BIT(INDEX_ML_CTREXTRA_SETTINGS_1_CTRL_WINDOW_OFF_CB)) == 0)
   {
     //Очищаємо інформацію про спрацювання захистів
     info_vidkluchennja_vymykacha[0] = 0;
@@ -3467,6 +3467,7 @@ void main_manu_function(void)
                   //Переходимо на меню зміни паролю
                   current_ekran.current_level = EKRAN_LEVEL_SET_NEW_PASSWORD3;
                 }
+                
                 current_ekran.index_position = position_in_current_level_menu[current_ekran.current_level];
                 current_ekran.edition = 1;
               }

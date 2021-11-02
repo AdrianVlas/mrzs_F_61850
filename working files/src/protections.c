@@ -1,10 +1,9 @@
 #include "header.h"
-///*
+
 static int32_t p_rele_reprogram_command = -1;
 static int32_t p_rele_staff_command = -1;
 static int32_t timerWaitReprogram = -1;
-//static unsigned int realDateTime;
-//*/
+
 /*****************************************************/
 //Модуль обробки дискретних входів
 /*****************************************************/

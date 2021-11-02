@@ -458,7 +458,10 @@ void periodical_operations_communication(unsigned int ar_working)
 *******************************************************************************/
 int main(void)
 {
-//	position_in_current_level_menu[EKRAN_VIDKLUCHENNJA] = 0; //Тест, що оптимально вибрано константу MAX_LEVEL_MENU
+//  static const size_t index_global_tmp = EKRAN_UNSUPPORT_REPROGRAM;
+//  position_in_current_level_menu[index_global_tmp] = 0; //Тест, що оптимально вибрано константу MAX_LEVEL_MENU
+//  position_in_current_level_menu[EKRAN_UNSUPPORT_REPROGRAM] = 0; //Тест, що оптимально вибрано константу MAX_LEVEL_MENU
+//#warning "Test size menu array"
 
 //  /************************************************************/
 //  //Перевірка контрольної суми програми
