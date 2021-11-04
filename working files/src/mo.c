@@ -182,14 +182,28 @@ void start_receive_data_via_CANAL1_MO(void)
                 {
                   *(point++) = Canal1_MO_Received[index++];
                 }
-                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVING_CANAL_1)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVING_CANAL_1);
-                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVED_PACKET_CANAL_1)) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVED_PACKET_CANAL_1);
-                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_REQUEST_CANAL_1)        ) _SET_BIT(set_diagnostyka, ERROR_IEC_REQUEST_CANAL_1);
-                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_NO_ANSWER_CANAL_1)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_NO_ANSWER_CANAL_1);
+                
+                static int block_errors;
+                if (
+                    (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+                    (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+                   )   
+                {
+                  if (--block_errors < 0)
+                  {
+                    if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVING_CANAL_1)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVING_CANAL_1);
+                    if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVED_PACKET_CANAL_1)) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVED_PACKET_CANAL_1);
+                    if (_GET_STATE(confirm_diagnostyka_mo, ERROR_REQUEST_CANAL_1)        ) _SET_BIT(set_diagnostyka, ERROR_IEC_REQUEST_CANAL_1);
+                    if (_GET_STATE(confirm_diagnostyka_mo, ERROR_NO_ANSWER_CANAL_1)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_NO_ANSWER_CANAL_1);
 
-                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVING_CANAL_2)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVING_CANAL_2);
-                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVED_PACKET_CANAL_2)) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVED_PACKET_CANAL_2);
-                if (_GET_STATE(confirm_diagnostyka_mo, ERROR_REQUEST_CANAL_2)        ) _SET_BIT(set_diagnostyka, ERROR_IEC_REQUEST_CANAL_2);
+                    if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVING_CANAL_2)      ) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVING_CANAL_2);
+                    if (_GET_STATE(confirm_diagnostyka_mo, ERROR_RECEIVED_PACKET_CANAL_2)) _SET_BIT(set_diagnostyka, ERROR_IEC_RECEIVED_PACKET_CANAL_2);
+                    if (_GET_STATE(confirm_diagnostyka_mo, ERROR_REQUEST_CANAL_2)        ) _SET_BIT(set_diagnostyka, ERROR_IEC_REQUEST_CANAL_2);
+                  
+                    block_errors = 0;
+                  }
+                }
+                else block_errors = 2;
               }
               
               
@@ -206,21 +220,35 @@ void start_receive_data_via_CANAL1_MO(void)
         }
         else 
         {
-          if (++lock_error_received_packet >= 5)
+          if (
+              (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+              (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+             )   
           {
-            _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_1);
-            lock_error_received_packet &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+            if (++lock_error_received_packet >= 5)
+            {
+              _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVED_PACKET_CANAL_1);
+              lock_error_received_packet &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+            }
           }
+          else lock_error_received_packet = 0;
         }
       }
     }
     else 
     {
-      if (++lock_error_receiving >= 5)
+      if (
+          (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+          (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+         )   
       {
-        _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_1);
-        lock_error_receiving &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+        if (++lock_error_receiving >= 5)
+        {
+          _SET_BIT(set_diagnostyka, ERROR_CPU_RECEIVING_CANAL_1);
+          lock_error_receiving &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+        }
       }
+      else lock_error_receiving = 0;
     }
   }
   else
@@ -230,11 +258,18 @@ void start_receive_data_via_CANAL1_MO(void)
     {
       if (IEC_board_uncall == 0) 
       {
-        if (++lock_error_no_answer >= 5)
+        if (
+            (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+            (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+           )   
         {
-          _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
-          lock_error_no_answer &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+          if (++lock_error_no_answer >= 5)
+          {
+            _SET_BIT(set_diagnostyka, ERROR_CPU_NO_ANSWER_CANAL_1);
+            lock_error_no_answer &= ~(1u << 31); // щоб не винекла ситуація переходу з максимального числа до нуля
+          }
         }
+        else lock_error_no_answer = 0;
       }
       else IEC_board_uncall--;
     }
@@ -461,7 +496,9 @@ void CANAL2_MO_routine()
   {
     if (
         (queue_mo == MASKA_FOR_BIT(STATE_QUEUE_MO_RESTART_KP)) &&
-        (CANAL2_MO_state == CANAL2_MO_FREE)
+        (CANAL2_MO_state == CANAL2_MO_FREE) &&
+        (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+        (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
        )
     {
       _SET_BIT(set_diagnostyka, EVENT_RESTART_CB_BIT);
@@ -479,7 +516,11 @@ void CANAL2_MO_routine()
   static uint32_t delta_max;
       
   
-  if (CANAL2_MO_state == CANAL2_MO_BREAK_LAST_ACTION)
+  if (
+      (CANAL2_MO_state == CANAL2_MO_BREAK_LAST_ACTION) &&
+      (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+      (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+     )   
   {
            Canal2_MO_Transmit[index_w++] = START_BYTE_MO;
     sum += Canal2_MO_Transmit[index_w++] = IEC_board_address;
@@ -494,7 +535,11 @@ void CANAL2_MO_routine()
     //На даний момент не іде передавання даних по Каналу 2
     if (!_GET_STATE(queue_mo, STATE_QUEUE_MO_TRANSACTION_PROGRESS_IN_IEC))
     {
-      if (Canal1 == true)
+      if (
+          (Canal1 == true) &&
+          (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+          (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+         )   
       {
         if (_GET_STATE(queue_mo, STATE_QUEUE_MO_ASK_BASIC_SETTINGS))
         {
@@ -976,48 +1021,60 @@ void CANAL2_MO_routine()
   
   if (index_w != 0)
   {
-    CANAL2_MO_state = CANAL2_MO_SENDING;
+    if( 
+       (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+       (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+      )   
+    {
+      CANAL2_MO_state = CANAL2_MO_SENDING;
 
-    //Додаємомконтрольну суму і мітку зафершенняпакету
-    Canal2_MO_Transmit[index_w++] = sum;
-    Canal2_MO_Transmit[index_w++] = STOP_BYTE_MO;
+      //Додаємомконтрольну суму і мітку зафершенняпакету
+      Canal2_MO_Transmit[index_w++] = sum;
+      Canal2_MO_Transmit[index_w++] = STOP_BYTE_MO;
   
-    /*
-    Підготовляємо канал до прийняття даних
-    */
-    //Зупиняємо канал приймання
-    if ((DMA_StreamCANAL2_MO_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL2_MO_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;  
+      /*
+      Підготовляємо канал до прийняття даних
+      */
+      //Зупиняємо канал приймання
+      if ((DMA_StreamCANAL2_MO_Rx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL2_MO_Rx->CR &= ~(uint32_t)DMA_SxCR_EN;  
       
-    //Скидуємо всі можливі помилки
-    CANAL2_MO->SR;
-    (unsigned short int)(CANAL2_MO->DR & (uint16_t)0x01FF);
-    CANAL2_MO->SR = (uint16_t)(~(uint32_t)USART_FLAG_LBD);
+      //Скидуємо всі можливі помилки
+      CANAL2_MO->SR;
+      (unsigned short int)(CANAL2_MO->DR & (uint16_t)0x01FF);
+      CANAL2_MO->SR = (uint16_t)(~(uint32_t)USART_FLAG_LBD);
       
-    // Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA 
-    DMA_ClearFlag(DMA_StreamCANAL2_MO_Rx, DMA_FLAG_TCCANAL2_MO_Rx | DMA_FLAG_HTCANAL2_MO_Rx | DMA_FLAG_TEICANAL2_MO_Rx | DMA_FLAG_DMEICANAL2_MO_Rx | DMA_FLAG_FEICANAL2_MO_Rx);
+      // Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA 
+      DMA_ClearFlag(DMA_StreamCANAL2_MO_Rx, DMA_FLAG_TCCANAL2_MO_Rx | DMA_FLAG_HTCANAL2_MO_Rx | DMA_FLAG_TEICANAL2_MO_Rx | DMA_FLAG_DMEICANAL2_MO_Rx | DMA_FLAG_FEICANAL2_MO_Rx);
 
-    DMA_StreamCANAL2_MO_Rx->NDTR = BUFFER_CANAL2_MO;
-    //Запускаємо очікування прийому
-    DMA_StreamCANAL2_MO_Rx->CR |= (uint32_t)DMA_SxCR_EN;
-    /***/
+      DMA_StreamCANAL2_MO_Rx->NDTR = BUFFER_CANAL2_MO;
+      //Запускаємо очікування прийому
+      DMA_StreamCANAL2_MO_Rx->CR |= (uint32_t)DMA_SxCR_EN;
+      /***/
 
-    /*
-    Починаємо відправляти дані
-    */
-    //Скидаємо біт, що символізує, що опстанній байт переданий
-    USART_ClearFlag(CANAL2_MO, USART_FLAG_TC);
+      /*
+      Починаємо відправляти дані
+      */
+      //Скидаємо біт, що символізує, що опстанній байт переданий
+      USART_ClearFlag(CANAL2_MO, USART_FLAG_TC);
 
-    //Зупиняємо потік DMA якщо він запущений
-    if ((DMA_StreamCANAL2_MO_Tx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL2_MO_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
-    DMA_StreamCANAL2_MO_Tx->NDTR = index_w;
-    //Дозволяємо передачу через DMA
-    if ((CANAL2_MO->CR3 & USART_DMAReq_Tx) == 0) USART2->CR3 |= USART_DMAReq_Tx;
+      //Зупиняємо потік DMA якщо він запущений
+      if ((DMA_StreamCANAL2_MO_Tx->CR & (uint32_t)DMA_SxCR_EN) !=0) DMA_StreamCANAL2_MO_Tx->CR &= ~(uint32_t)DMA_SxCR_EN;
+      DMA_StreamCANAL2_MO_Tx->NDTR = index_w;
+      //Дозволяємо передачу через DMA
+      if ((CANAL2_MO->CR3 & USART_DMAReq_Tx) == 0) USART2->CR3 |= USART_DMAReq_Tx;
 
-    //Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA1 по потоку CANAL1_MO_TX
-    DMA_ClearFlag(DMA_StreamCANAL2_MO_Tx, DMA_FLAG_TCCANAL2_MO_Tx | DMA_FLAG_HTCANAL2_MO_Tx | DMA_FLAG_TEICANAL2_MO_Tx | DMA_FLAG_DMEICANAL2_MO_Tx | DMA_FLAG_FEICANAL2_MO_Tx);
-    //Запускаємо передачу
-    DMA_StreamCANAL2_MO_Tx->CR |= (uint32_t)DMA_SxCR_EN;
-    /***/
+      //Очищаємо прапореці, що сигналізує про завершення передачі даних для DMA1 по потоку CANAL1_MO_TX
+      DMA_ClearFlag(DMA_StreamCANAL2_MO_Tx, DMA_FLAG_TCCANAL2_MO_Tx | DMA_FLAG_HTCANAL2_MO_Tx | DMA_FLAG_TEICANAL2_MO_Tx | DMA_FLAG_DMEICANAL2_MO_Tx | DMA_FLAG_FEICANAL2_MO_Tx);
+      //Запускаємо передачу
+      DMA_StreamCANAL2_MO_Tx->CR |= (uint32_t)DMA_SxCR_EN;
+      /***/
+    }
+    else
+    {
+      //Резим перепрограмування - треба всі процеси припинити
+      CANAL2_MO_state = CANAL2_MO_BREAK_LAST_ACTION;
+      queue_mo = 0;
+    }
   }
 }
 /***********************************************************************************/

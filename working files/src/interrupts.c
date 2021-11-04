@@ -1437,23 +1437,6 @@ void TIM4_IRQHandler(void)
       }
     }
     while (repeat != 0);
-    
-    /*Vidladka*/
-#ifdef DEBUG_TEST
-//    static unsigned int t_1, t_2, delta_tmp;
-//    t_1 = TIM4->CCR2;
-//    t_2 = TIM4->CNT;
-//    if (t_1 >= t_2) delta_tmp = t_1 - t_2;
-//    else delta_tmp = t_1 + 0xffff - t_2;
-//    
-//    if (
-//        (delta_tmp > TIM4_CCR2_VAL) &&
-//        (TIM_GetITStatus(TIM4, TIM_IT_CC2) == RESET)  
-//       )   
-//    {
-//      while(delta_tmp > 0);
-//    }
-#endif
     /***/
     /***********************************************************/
 

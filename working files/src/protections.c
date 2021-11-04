@@ -9109,7 +9109,11 @@ do{
   /**************************/
   /*Режим перепрограмування*/
   /**************************/
+//#ifndef DEBUG_TEST  
   if ((GPIO_STAFF_REPROGRAM->IDR & GPIO_PIN_STAFF_REPROGRAM) != (uint32_t)Bit_RESET)
+//#else
+//  if (reprogram)
+//#endif
   {
     _SET_BIT(set_diagnostyka, WARNING_REPROGRAM);
     timerWaitReprogram = -1;
@@ -9293,10 +9297,6 @@ do{
   /***********************************************************/
   calc_measurement(number_group_stp);
   
-#ifdef DEBUG_TEST 
-  if (meas_Ia != 0) measurement[IM_IA] = meas_Ia;
-#endif
-
   //Копіюємо вимірювання для низькопріоритетних і високопріоритетних завдань
   unsigned int bank_measurement_high_tmp = (bank_measurement_high ^ 0x1) & 0x1;
   if(semaphore_measure_values_low1 == 0)
@@ -10952,8 +10952,14 @@ void TIM2_IRQHandler(void)
     while(delta_tmp < 2);
     /***/
 
-    //Ініціюємо передачу даних по каналу CANAL1_MO у комунікаційну плату
-    start_transmint_data_via_CANAL1_MO();
+    if (
+        (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+        (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+       )   
+    {
+      //Ініціюємо передачу даних по каналу CANAL1_MO у комунікаційну плату
+      start_transmint_data_via_CANAL1_MO();
+    }
 #endif
     /***********************************************************/
 

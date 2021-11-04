@@ -1046,7 +1046,7 @@ uint32_t IEC_board_uncall = 500;
 uint32_t IEC_board_address;
 uint32_t queue_mo = (1u << STATE_QUEUE_MO_READ_FW_VERSION);
 uint32_t queue_mo_irq;
-unsigned int restart_KP_irq;
+unsigned int restart_KP_irq = 5;
 uint32_t state_array_control_state;
 uint8_t fwKP[4];
 uint8_t fwDTKP[6];
@@ -1177,7 +1177,7 @@ extern unsigned int __ICFEDIT_region_RAM1_size__;
 
 #ifdef DEBUG_TEST
 
-volatile unsigned int meas_Ia = 0;
+//volatile unsigned int reprogram = 1;
 
 //unsigned int time_1 = 0xffff0000, time_2 = 0xffff0000, max_delay = 0;
 

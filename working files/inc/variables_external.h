@@ -629,7 +629,7 @@ extern unsigned int __ICFEDIT_region_RAM1_size__;
 
 #ifdef DEBUG_TEST
 
-extern volatile unsigned int meas_Ia;
+//extern volatile unsigned int reprogram;
 
 //extern unsigned int time_1, time_2, max_delay;
 
