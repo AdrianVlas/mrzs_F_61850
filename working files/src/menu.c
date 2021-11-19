@@ -2424,8 +2424,11 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= holderCmdPlusTime.shTotalFixElem) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS] = current_ekran.index_position;
-              //Формуємо екран відображення дат і часу
-              make_ekran_data_and_time_elem_stt_registrator(0);
+              //?//Формуємо екран відображення дат і часу
+              //?make_ekran_data_and_time_elem_stt_registrator(0);
+               //Формуємо екран  відображення дати
+               make_ekran_data_elem_stt_registrator();
+              
             }
             else if (current_ekran.current_level == EKRAN_TITLES_DIGITAL_REGISTRATOR)
             {
@@ -2505,15 +2508,19 @@ void main_manu_function(void)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_TITLES_STATE_CMD_REGISTRATOR] = current_ekran.index_position;
-              //Формуємо екран відображення заголовків груп для реєстратора програмних подій
-              make_ekran_list_titles_for_record_of_state_cmd_registrator();//make_ekran_list_titles_for_record_of_pr_err_registrator();
+            //?  //Формуємо екран відображення заголовків груп для реєстратора програмних подій
+            //?  make_ekran_list_titles_for_record_of_state_cmd_registrator();//make_ekran_list_titles_for_record_of_pr_err_registrator();
+                           make_ekran_changing_signals_in_data_elem_stt_reg2();
+            
             }
             else if (current_ekran.current_level == EKRAN_DATA_LABEL_STATE_CMD)
             {
               if(current_ekran.index_position >= MAX_ROW_FOR_EKRAN_DATA_LABEL) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_DATA_LABEL_STATE_CMD] = current_ekran.index_position;
-              //Формуємо екран відображення мітки часу прочитаного запису реєстратора 
-              make_ekran_data_and_time_of_records_registrator(3);
+              //?//Формуємо екран відображення мітки часу прочитаного запису реєстратора 
+              //?make_ekran_data_and_time_of_records_registrator(3);
+              make_ekran_signals_stable_one_in_data_elem_stt_reg();
+              
             }
             else if (current_ekran.current_level == EKRAN_CHANGES_DIAGNOSTICS_PR_ERR)
             {
@@ -2524,6 +2531,8 @@ void main_manu_function(void)
             {
               //Формуємо екран відображення змін діагностик - записаних у реєстраторі програмних подій
               make_ekran_changing_signals_statistica_registrator();
+            
+            
             }
             
             //Очищаємо біт обновлення екрану
@@ -4077,29 +4086,30 @@ void main_manu_function(void)
                 //Виставляємо повідомлення, що поки дані не будуть зчитані, то екран треба перерисовувати кожну секунду
                 //.rewrite_ekran_once_more = 1;
                 //Виставляємо новий екран, який треба відобразити на РКІ
-                current_ekran.current_level = EKRAN_STATE_CMD_REG;//..current_ekran.current_level = EKRAN_TITLES_STATE_CMD_REGISTRATOR; prev code
+                current_ekran.current_level = EKRAN_TITLES_STATE_CMD_REGISTRATOR;//.current_ekran.current_level = EKRAN_STATE_CMD_REG;. prev code
+                
+                ekr2LineIndexPos = current_ekran.index_position;//?
+                if(selectorOneDateElem > 0)
+                    current_ekran.index_position = Calc2lineIndexPosUsingBitCmdValuesAttachedToOneDateElem(selectorOneDateElem);
+                else{
                 current_ekran.index_position = 0; //При відкриванні цих вікон з старших розділів меню завжди треба попадати на найновіший запис
+                }
+                
                 current_ekran.edition = 0;
               }
                
-             else if (current_ekran.current_level == EKRAN_TITLES_STATE_CMD_REGISTRATOR)
+             else if (
+                       (current_ekran.current_level == EKRAN_TITLES_STATE_CMD_REGISTRATOR) 
+                       &&(holderCmdPlusTime.shTotalFixElem > 0)//
+                       //((clean_rejestrators & CLEAN_PR_ERR) == 0)
+                      )
               {
-                //Натисну кнопка Enter у вікні вибору груп інформації по запису дискретного реєстра
-                if (rewrite_ekran_once_more == 0)
-                {
-                  if(current_ekran.index_position == INDEX_ML_TITLE_STATE_CMD_REG_DATA_AND_TIME)
-                  {
-                    //Переходимо на меню відображення мітки часу запису реєстратора програмних подій
-                    current_ekran.current_level = EKRAN_DATA_LABEL_STATE_CMD;
-                  }
-                  else if(current_ekran.index_position == INDEX_ML_TITLE_STATE_CMD_REG_CHANGES_DAT)
-                  {
-                    //Переходимо на меню відображення зафіксованих змін діагностик у запису реєстратора програмних подій
-                    current_ekran.current_level = EKRAN_STATE_CMD_REG;//EKRAN_CHANGES_DIAGNOSTICS_PR_ERR;//?
-                  }
-                  current_ekran.index_position = 0;
-                  current_ekran.edition = 0;
-                }
+                //Натисну кнопка Enter у вікні вибору запису реєстратора статистики і реально є записи для відображення
+                //Виставляємо новий екран, який треба відобразити на РКІ
+                current_ekran.current_level = EKRAN_DATA_LABEL_STATE_CMD;//
+                
+                current_ekran.index_position = 0;
+                current_ekran.edition = 0;
               }
              
               //У разі, якщо текучий екран змінився, то запам'ятовуємо екран в який требе буде повернутися
@@ -4961,10 +4971,13 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_TITLES_STATE_CMD_REGISTRATOR)
               {
-                if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR - 1;
-                position_in_current_level_menu[EKRAN_TITLES_STATE_CMD_REGISTRATOR] = current_ekran.index_position;
-                //Формуємо екран відображення заголовків груп для дискретного реєстратора
-                make_ekran_list_titles_for_record_of_state_cmd_registrator();
+                //?if(--current_ekran.index_position < 0) current_ekran.index_position = MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR - 1;
+                //?position_in_current_level_menu[EKRAN_TITLES_STATE_CMD_REGISTRATOR] = current_ekran.index_position;
+                //?//Формуємо екран відображення заголовків груп для дискретного реєстратора
+                //?make_ekran_list_titles_for_record_of_state_cmd_registrator();
+                current_ekran.index_position--;
+                make_ekran_changing_signals_in_data_elem_stt_reg2();
+              
               }
               else if (current_ekran.current_level == EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS)
               {
@@ -4986,6 +4999,16 @@ void main_manu_function(void)
                 make_ekran_changing_signals_statistica_registrator();
               }
               
+              else if (current_ekran.current_level == EKRAN_DATA_LABEL_STATE_CMD)
+              {
+                current_ekran.index_position -= (MAX_ROW_LCD );
+                //asm volatile(
+                //     "bkpt 1"
+                // );
+                
+                //Формуємо екран відображення змін сигналів - записаних у  реєстраторі
+                make_ekran_signals_stable_one_in_data_elem_stt_reg();
+              }
               //Очистити сигналізацію, що натиснута кнопка 
               new_state_keyboard &= (unsigned int)(~(1<<BIT_KEY_UP));
             }
@@ -5797,7 +5820,8 @@ void main_manu_function(void)
                 if(++current_ekran.index_position >= holderCmdPlusTime.shTotalFixElem) current_ekran.index_position = 0;
                 position_in_current_level_menu[EKRAN_LIST_STATE_CMD_REGISTRATOR_RECORDS] = current_ekran.index_position;
                 //Формуємо екран відображення дат і часу         
-                make_ekran_data_and_time_elem_stt_registrator(0);
+                //?make_ekran_data_and_time_elem_stt_registrator(0);
+                make_ekran_data_elem_stt_registrator();
               }
               else if (current_ekran.current_level == EKRAN_CHANGES_DIAGNOSTICS_PR_ERR)
               {
@@ -5807,16 +5831,26 @@ void main_manu_function(void)
               }
               else if (current_ekran.current_level == EKRAN_DATA_LABEL_STATE_CMD)
               {
-                if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_DATA_LABEL) current_ekran.index_position =  0;
-                position_in_current_level_menu[EKRAN_DATA_LABEL_STATE_CMD] = current_ekran.index_position;
-                //Формуємо екран відображення мітки часу прочитаного запису аналогового реєстратора
-                make_ekran_data_and_time_of_records_registrator(2);
-              }
+                //?if(++current_ekran.index_position >= MAX_ROW_FOR_EKRAN_DATA_LABEL) current_ekran.index_position =  0;
+                //?position_in_current_level_menu[EKRAN_DATA_LABEL_STATE_CMD] = current_ekran.index_position;
+                //?//Формуємо екран відображення мітки часу прочитаного запису аналогового реєстратора
+                //?make_ekran_data_and_time_of_records_registrator(2);
+                current_ekran.index_position += (MAX_ROW_LCD );
+                make_ekran_signals_stable_one_in_data_elem_stt_reg();
+                
+			  } 
               else if (current_ekran.current_level == EKRAN_STATE_CMD_REG)
               {
                 current_ekran.index_position += (MAX_ROW_LCD >> 1);
                 //Формуємо екран відображення змін сигналів - записаних у дискретному реєстраторі
                 make_ekran_changing_signals_statistica_registrator();
+              }
+              
+              else if (current_ekran.current_level == EKRAN_TITLES_STATE_CMD_REGISTRATOR)
+              {
+                current_ekran.index_position++; //+= (MAX_ROW_LCD >> 1);
+			  
+                make_ekran_changing_signals_in_data_elem_stt_reg2();
               }
               
             

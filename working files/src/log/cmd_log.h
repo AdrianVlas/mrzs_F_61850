@@ -124,6 +124,84 @@ extern int enQueue(int value);
 extern int deQueue(void);
 int getFromRear(int distance);
 int getFromFront(int distance);
+//~~~ SREC  Part for change 
+//==============+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//--------------  15:49 2021-10-28  !!!!!!!!!!!!!!      --------------
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+typedef struct tag_Date_holder{
+    long int mday;
+    long int mon; 
+    long int year;
+}DateHolder;
+typedef struct tag_one_date_elements_dsc{
+    DateHolder dateHolder;
+    short amountElemForThisDate;
+    short numFierstElemForThisDate;//or Index 1st elem  in arrCmdPlusTimeHolder
+}OneDateElmsDsc;
+
+typedef struct tag_DifferDatePlRefTagsInfoDsc{
+   OneDateElmsDsc arrDatePlRefTags[AMOUNT_CMD_PLUS_TIME_RECORD];
+
+short amountDifferentOneDateElms;
+short indexBaseDatein_arrCmdPlusTimeHolder;
+
+}DiffInfoDsc;
+extern DiffInfoDsc hldDiffInfo;
+void FillDiffInfo(void);
+//..................................................................................
+//``````````````````````````````````````````````````````````````````````````````````
+extern void FillTwoLineElemInfoForCurrEkrIndexPos(long ekrIndexPos);
+extern void FillTwoLineElemInfoForCurrEkrIndexPos1(long ekrIndexPos);
+extern void Put2LineElemInfoUsingEkrIndexPos(void*pv2LnCalcInfo,long ekrIndexPos);
+typedef struct tag_TwoLnCalcInfo{
+    short selectorOneDateElm;            
+    short selectorCmdPlusTimeStateElem;
+    short selIdxBitCmdPlusTimeStateElem;
+    long  calculatedScrIndexPos;         
+    long  calculatedMaxScrIndexPos;
+    union Scr2LnCalcInfoEvt{
+          struct {//.TNV - take new Value
+              unsigned int selectorOneDateElemTNV      :1; //0 -selectorOneDateElem take new val 
+              unsigned int b1                          :1; //1
+              unsigned int bFierstOneDateElem          :1; //2
+              unsigned int bLastOneDateElem            :1; //3
+              unsigned int b4      :1; //4
+              unsigned int b5      :1; //5
+              unsigned int b6      :1; //6
+              unsigned int b7      :1; //7
+          } boolEvtScr;
+          unsigned char u8EvtScr;
+    };
+    char  activeScr;  
+}TwoLnCalcInfo;
+extern TwoLnCalcInfo scrTwoLnCalcInfo;
+extern unsigned int maxAmountTwoLineSttLogElem;
+extern char fierstViewAfterEnterKeyPressed;
+extern short selectorOneDateElem,fierstSelectedOneDateElem;
+extern long  ekr2LineIndexPos;
+
+enum TWO_LINE_SCREEN_INDICATOR_WHAT_TYPE_INFO_SHOWED{
+//_SLOG_VALUE_LIST
+//SR - statistical REG or SLOG - statistical LOGGER
+  SHOW_DATE_PLUS_SPACE = 0,
+  SHOW_TIME_MS_STATE_NAME_COMAND,
+  TOTAL_SHOWING_TYPES_INFORMATION          //??
+
+};
+typedef struct tag_make_ekran_func_Var{
+
+
+            uint8_t *name_string_tmp;
+            unsigned char *pvStrBuf;
+            long index_of_ekran;
+}Func_make_ekran_variables;
+long Calc2LineIndexPos_for_selOneDateElem(long idxOneDateElem);
+//?long Calc2LineIndexPos_for_selOneDateElem1(long idxOneDateElem);
+void Put2LineElemInfoUsingEkrIndexPos(void*pv2LnCalcInfo,long ekrIndexPos);//TwoLnCalcInfo *pTwoLnCalcInfo
+long Calc2lineIndexPosUsingBitCmdValuesAttachedToOneDateElem(long idxOneDateElem);
+//,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+//""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 typedef union U32_cmd1_Unn{ 

@@ -3121,4 +3121,1060 @@ void make_ekran_data_and_time_elem_d_p_a_registrator(unsigned int type_of_regist
     
 }
 /*****************************************************/
+void make_ekran_data_elem_stt_registrator(void)
+{
+  int index_language = index_language_in_array(current_settings.language);
+    
+//    struct{
+//        char compare_res_time_dat,compare_res_time_ms,counter_reading,compare_res;
+//        char data_correct; 
+//        //?time_t time_dat_tmp,copy_time_dat_tmp ; 
+//        //?int32_t time_ms_tmp,copy_time_ms_tmp ;
+//        }sLV;
+        DiffInfoDsc *pDiffInfo = &hldDiffInfo;
+        DateHolder baseDate;
+    // asm volatile(
+    //           "bkpt 1"
+    //           );
+    FillDiffInfo();
+    // asm volatile(
+    //           "bkpt 1"
+    //           );
+    //?sLV.data_correct = 0;
+    if(current_ekran.index_position != selectorOneDateElem)
+    current_ekran.index_position = selectorOneDateElem;
+    unsigned int position_temp = current_ekran.index_position;
+    unsigned int index_of_ekran;
+    if ( (pDiffInfo->amountDifferentOneDateElms > 0) )//?holderCmdPlusTime.shTotalFixElem
+    {  
+        unsigned char name_string[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
+        {
+          "   XX-XX-20XX   ",
+        };
+        //
+        index_of_ekran = ((position_temp) >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+        //?time_t time_dat_tmp; 
+        
+        
+        for (unsigned int i = 0; i< MAX_ROW_LCD; i++)
+        {
+            if ( (index_of_ekran) < (unsigned int)(pDiffInfo->amountDifferentOneDateElms))//holderCmdPlusTime.shTotalFixElem
+            {
+                    // sLV.data_correct = 1;time_ms_tmp = sLV.time_ms_tmp;time_dat_tmp = sLV.time_dat_tmp;
+                    //struct tm *p = localtime(&time_dat_tmp);
+                    baseDate = pDiffInfo->arrDatePlRefTags[index_of_ekran].dateHolder;
+                    int field;
+                    //День
+                    field = baseDate.mday;//!@p->tm_mday;
+                    name_string[0][3] = (field / 10) + 0x30;
+                    name_string[0][4] = (field % 10) + 0x30;
+                
+                    //Місяць
+                    field = baseDate.mon + 1;//!@p->tm_mon + 1;
+                    name_string[0][6] = (field / 10) + 0x30;
+                    name_string[0][7] = (field % 10) + 0x30;
+                
+                    //Рік
+                    field = baseDate.year - 100;//!@p->tm_year - 100;
+                    name_string[0][11] = (field / 10) + 0x30;
+                    name_string[0][12] = (field % 10) + 0x30;
+
+                   
+                for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+                   working_ekran[i][j] = name_string[(0) ][j];//
+                  
+            }
+            else
+                for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+                    working_ekran[i][j] = ' ';
+        
+          index_of_ekran++;
+        }
+        
+         //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням
+         current_ekran.position_cursor_x =  2;
+         current_ekran.position_cursor_y = ((position_temp) ) & (MAX_ROW_LCD - 1);
+         selectorOneDateElem = position_temp;
+         if(fierstViewAfterEnterKeyPressed != 0){
+              fierstSelectedOneDateElem = selectorOneDateElem;
+              
+        }
+         //?//Курсор мигає
+         //?current_ekran.cursor_blinking_on = 1;
+        //Курсор видимий
+        current_ekran.cursor_on = 1;
+    }
+    else{
+          
+        //Немає записів
+        static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        {
+          {
+            "      Нет       ",
+            "    записей     "
+          },
+          {
+            "     Нема       ",
+            "    записів     "
+          },
+          {
+            "    Records     ",
+            "   are absent   "
+          },
+          {
+            "      Нет       ",
+            "    записей     "
+          }
+        };
+        unsigned int position = current_ekran.index_position;
+        position_temp = position;
+        
+        index_of_ekran = (position_temp >> POWER_MAX_ROW_LCD) << POWER_MAX_ROW_LCD;
+    
+            //Копіюємо  рядки у робочий екран
+            for (size_t i = 0; i < MAX_ROW_LCD; ++i)
+            {
+              unsigned int const real_index = index_of_ekran;
+              //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+              if (real_index < 2)
+                for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = information[index_language][real_index][j];
+              else
+                for (size_t j = 0; j < MAX_COL_LCD; ++j) working_ekran[i][j] = ' ';
+            
+              index_of_ekran++;
+            }
+        
+        //? //Курсор видимий
+        //? current_ekran.cursor_on = 1;
+        //? //Відображення курору по вертикалі
+        //? current_ekran.position_cursor_y = position_temp & (MAX_ROW_LCD - 1);
+           //Відображення курору по вертикалі
+        current_ekran.position_cursor_y = 0;
+        //Курсор не видимий
+        current_ekran.cursor_on = 0;
+        
+        current_ekran.index_position = 0;
+        
+    }    
+//..    if(sLV.data_correct == 0){  
+//..            //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
+//..         static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+//..         {
+//..           {
+//..             " Недостоверные  ",
+//..             "     данные     "
+//..           },
+//..           {
+//..             "  Недостовірні  ",
+//..             "      дані      "
+//..           },
+//..           {
+//..             "    Invalid     ",
+//..             "      data      "
+//..           },
+//..           {
+//..             " Недостоверные  ",
+//..             "     данные     "
+//..           }
+//..         };
+//..        
+//..         //Копіюємо  рядки у робочий екран
+//..         for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+//..         {
+//..           //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+//..           if (i < 2)
+//..             for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+//..           else
+//..             for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+//..         }
+//..        
+//..        //Відображення курору по вертикалі
+//..        current_ekran.position_cursor_y = 0;
+//..        //Курсор не видимий
+//..        current_ekran.cursor_on = 0;
+//..        
+//..        current_ekran.index_position = 0;
+//..    
+//..    }
+
+
+    
+
+ //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+
+}
+/*****************************************************/
+//=====================================================================================================
+//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+//                  
+//....................................................................................................
+//=====================================================================================================
+long Fill2LineDateWhithBlankStr(void*pv);
+// ----------------    -------------------------
+long Fill2LineDateWhithBlankStr(void*pv){
+//
+    DateHolder baseDate;
+    long i = scrTwoLnCalcInfo.selectorOneDateElm;//((Fun_make_ekran_Vars*)pv)->selectorOneDateElm;
+    unsigned char *p2LineStr = ((Func_make_ekran_variables*)pv)->pvStrBuf;
+  //  unsigned char name_string[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
+  //        {
+  //          "   XX-XX-20XX   ",
+  //        };
+    baseDate = hldDiffInfo.arrDatePlRefTags[i].dateHolder;
+    int field;
+    //День
+    field = baseDate.mday;//!@p->tm_mday;
+    p2LineStr[3] = (field / 10) + 0x30;//.name_string[ROW_R_Y_][COL_DY1_R] = (field / 10) + 0x30;
+    p2LineStr[4] = (field % 10) + 0x30;//.name_string[ROW_R_Y_][COL_DY2_R] = (field % 10) + 0x30;
+    
+    //Місяць
+    field = baseDate.mon + 1;;//!@p->tm_mon + 1;
+    p2LineStr[6] = (field / 10) + 0x30;//.name_string[ROW_R_Y_][COL_MY1_R] = (field / 10) + 0x30;
+    p2LineStr[7] = (field % 10) + 0x30;//.name_string[ROW_R_Y_][COL_MY2_R] = (field % 10) + 0x30;
+    
+    //Рік
+    field = baseDate.year - 100;;//!@p->tm_year - 100;
+    p2LineStr[11] = (field / 10) + 0x30;//.name_string[ROW_R_Y_][COL_SY1_R] = (field / 10) + 0x30;
+    p2LineStr[12] = (field % 10) + 0x30;//.name_string[ROW_R_Y_][COL_SY2_R] = (field % 10) + 0x30;
+    //Fill ret buf with blank
+    return 0;
+}
+//
+//--------------------------------------------------------------------------------------------------------
+//````````````````````````````````````````````````````````````````````````````````````````````````````````
+//=====================================================================================================
+//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+//                  
+//....................................................................................................
+//=====================================================================================================
+long Fill2LineTimeMsCmdValCmdNameStr(void*pv);
+// ----------------    -------------------------
+long Fill2LineTimeMsCmdValCmdNameStr(void*pv){
+    uint8_t *name_string_tmp;//[NUMBER_TOTAL_SIGNAL_FOR_RANG][MAX_COL_LCD];
+    long error = 0;
+    name_string_tmp = ((Func_make_ekran_variables*)pv)->name_string_tmp;
+    unsigned char *p2LineStr = ((Func_make_ekran_variables*)pv)->pvStrBuf;
+    //?DiffInfoDsc *pDiffInfo = &hldDiffInfo;
+    TwoLnCalcInfo *pTwoLnCalcInfo = &scrTwoLnCalcInfo;
+    register unsigned long *pU32;
+static const unsigned char passive_active[MAX_NAMBER_LANGUAGE][2][3] = 
+    {
+      {"OFF", "ON "},//
+      {"OFF", "ON "},//
+      {"OFF", "ON "},//
+      {"OFF", "ON "} //
+    };
+                    
+    //?. unsigned char time_string[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
+    //?. {
+    //?.   "XX:XX:XX.XXX    ",
+    //?.   "   XX-XX-20XX   "//."   XX-XX-20XX   "
+    //?. };
+	  //?unsigned int max_number_changers_in_record = buffer_for_manu_read_record[FIRST_INDEX_NUMBER_CHANGES_DR] | (buffer_for_manu_read_record[FIRST_INDEX_NUMBER_CHANGES_DR + 1]<<8);
+    //.unsigned int max_number_changers_in_record = current_number_changes_of_stt_cmd_into_menu;
+    
+    //..unsigned int position_temp;
+    //..unsigned int index_of_ekran,ms_time;
+    unsigned int array_old[N_BIG], array_new[N_BIG], array_changing[N_BIG];
+    //.long  idx_record_of_stt_cmd_prev = 0;
+    
+    struct{
+        char compare_res_time_dat,compare_res_time_ms,counter_reading,compare_res;
+        char data_correct; 
+        time_t time_dat_tmp,copy_time_dat_tmp ; 
+        int32_t time_ms_tmp,copy_time_ms_tmp ; 
+		
+    }sLV; 
+    sLV.data_correct = 0;
+    sLV.counter_reading = 3;sLV.data_correct = 0;
+                        
+    register long l = pTwoLnCalcInfo->selectorCmdPlusTimeStateElem;
+    do{
+        //?GetDateTimeLogElem((unsigned int *)&(sLV.time_dat_tmp),pTwoLnCalcInfo->selectorCmdPlusTimeStateElem);//>>1
+        //?GetMsLogElem      ((unsigned int *)&(sLV.time_ms_tmp ),pTwoLnCalcInfo->selectorCmdPlusTimeStateElem);//>>1
+        pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].unix_time.arU32MkTime[0]);
+        memcpy((void *)&(sLV.time_dat_tmp),(const void*)pU32,    sizeof(UNN_UnixTime));
+ 
+        pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].mksec.uLMkTime);
+        memcpy((void *)&(sLV.time_ms_tmp ),(const void*)pU32,    sizeof(UNN_MicroSec));
+         
+            //?register long lIdx = pTwoLnCalcInfo->selectorCmdPlusTimeStateElem;//
+            //?GetCmdPlusTimeLogElem(array_new ,lIdx);
+            //?lIdx++;//Next elem on menu older
+            //?if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
+            //?    lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
+            //?GetCmdPlusTimeLogElem(array_old ,lIdx);
+            pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].cmd.uLCmd[0]);
+            memcpy((void *)array_new,(const void*)pU32,  sizeof(UNN_CmdState));
+            long k  = l; 
+            if (l == 0)
+                 l = AMOUNT_CMD_PLUS_TIME_RECORD - 1;
+            else 
+                l--;
+            pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].cmd.uLCmd[0]);
+            memcpy((void *)array_old,(const void*)pU32,  sizeof(UNN_CmdState));
+
+        
+        //?GetDateTimeLogElem((unsigned int *)&(sLV.copy_time_dat_tmp),pTwoLnCalcInfo->selectorCmdPlusTimeStateElem);//>>1
+        //?GetMsLogElem      ((unsigned int *)&(sLV.copy_time_ms_tmp ),pTwoLnCalcInfo->selectorCmdPlusTimeStateElem);//1
+        pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[k].unix_time.arU32MkTime[0]);
+        memcpy((void *)&(sLV.copy_time_dat_tmp),(const void*)pU32,    sizeof(UNN_UnixTime));
+ 
+        pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[k].mksec.uLMkTime);
+        memcpy((void *)&(sLV.copy_time_ms_tmp ),(const void*)pU32,    sizeof(UNN_MicroSec));
+         
+        if(sLV.time_dat_tmp == sLV.copy_time_dat_tmp){
+            
+            sLV.compare_res_time_dat = 1;
+        }
+        else 
+             sLV.compare_res_time_dat = 0;
+        if(sLV.time_ms_tmp == sLV.copy_time_ms_tmp){
+            
+            sLV.compare_res_time_ms = 1;
+        }
+        else 
+             sLV.compare_res_time_ms = 0;
+        sLV.compare_res = sLV.compare_res_time_ms + sLV.compare_res_time_dat;
+    }while( (--sLV.counter_reading > 0) && (sLV.compare_res != 2));
+                    
+    if (sLV.compare_res == 2)
+    {
+        struct tm *p = localtime(&sLV.time_dat_tmp);//?time_dat_tmp
+        int field;
+        //Година
+        field = p->tm_hour;
+        p2LineStr[0] = (field / 10) + 0x30;
+        p2LineStr[1] = (field % 10) + 0x30;
+        
+        //Хвилини
+        field = p->tm_min;
+        p2LineStr[3] = (field / 10) + 0x30;
+        p2LineStr[4] = (field % 10) + 0x30;
+        
+        //Секунди
+        field = p->tm_sec;
+        p2LineStr[6] = (field / 10) + 0x30;
+        p2LineStr[7] = (field % 10) + 0x30;
+        
+        //Тисячні секунд
+        field = sLV.time_ms_tmp;//?time_ms_tmp;
+        p2LineStr[9] = (field / 100) + 0x30;
+        field %= 100;
+        
+        p2LineStr[10] = (field / 10) + 0x30;
+        field %= 10;
+        
+        p2LineStr[11] = field + 0x30;
+        
+        //Шукаємо масиви зрізів: попередній до вибраної зміни і у момент даної зміни
+        //?unsigned int index_of_the_slice = 0; //починаємо з першого зрізу
+        short current_number_changes = 0;
+        //Визначаємо, які сигнали змінилися
+        for (unsigned int j = 0; j < N_BIG; j++) array_changing[j] = array_new[j] ^ array_old[j];
+
+        //Шукаємо функцію, яку треба зараз відобразити
+        int index_of_function_in_the_slice = 0; //починаємо з першого зрізу
+        do
+        {
+          if ((array_changing[index_of_function_in_the_slice >> 5] & (1 << (index_of_function_in_the_slice & ((1<<5)-1)))) != 0)
+            current_number_changes++;
+          if (current_number_changes  < (pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem + 1)) index_of_function_in_the_slice++;
+        }
+        while (
+               (current_number_changes  < (pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem + 1)) &&
+               (index_of_function_in_the_slice < NUMBER_TOTAL_SIGNAL_FOR_RANG)  
+              );
+        int index_language = index_language_in_array(current_settings.language);
+ 
+        unsigned int local_index1 = 0;
+        //Визначаємо стан даного дискретного сигналу
+        if ((array_new[index_of_function_in_the_slice >> 5] & (1 << (index_of_function_in_the_slice & ((1<<5)-1)))) != 0)
+        {
+          //Сигнал перейшов у активний стан
+            for (local_index1 = 13; local_index1 < MAX_COL_LCD; local_index1++)
+                p2LineStr[local_index1] = passive_active[index_language][1][local_index1 - 13];
+        }
+        else
+        {
+          //Сигнал перейшов у пасивний стан
+            for (local_index1 = 13; local_index1 < MAX_COL_LCD; local_index1++)
+                p2LineStr[local_index1] = passive_active[index_language][0][local_index1 - 13];
+        }
+        //Name Comand
+        //У першому рядку відображаємо назву сигналу, який змінився
+        //!for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+		//!	working_ekran[(i<<1)+k][j] = name_string_tmp[index_of_function_in_the_slice][j];
+        for (unsigned int j = 0; j<MAX_COL_LCD; j++)                    
+            p2LineStr[MAX_COL_LCD+j] = name_string_tmp[index_of_function_in_the_slice*MAX_COL_LCD+j];              
+                
+    }//Інакше вивести невизначену помилку відображення
+    else 
+        error = -4;
+     return error;
+
+}
+//
+//--------------------------------------------------------------------------------------------------------
+//````````````````````````````````````````````````````````````````````````````````````````````````````````
+//=====================================================================================================
+//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+//                  
+//....................................................................................................
+//=====================================================================================================
+void make_ekran_changing_signals_in_data_elem_stt_reg2(void);
+void make_ekran_changing_signals_stt_reg(void);
+//?long Fill2LineTimeMsCmdValCmdNameStr(void*pv);
+//?long Fill2LineDateWhithBlankStr(void*pv);
+// ----------------    -------------------------
+void make_ekran_changing_signals_in_data_elem_stt_reg2(void){
+    int index_language = index_language_in_array(current_settings.language);
+    // asm volatile(
+    //           "bkpt 1"
+    //           );    
+    long errorIndicator = 0;
+    if ( (hldDiffInfo.amountDifferentOneDateElms > 0) ){//&& ( < (uint32_t))
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+        static const unsigned char name_string[MAX_NAMBER_LANGUAGE][ NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+#else
+        static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+#endif
+        {
+          {NAME_RANG_RU},
+          {NAME_RANG_UA},
+          {NAME_RANG_EN},
+          {NAME_RANG_KZ}
+        };
+    //?#ifndef cmt3_off    
+        uint8_t name_string_tmp[NUMBER_TOTAL_SIGNAL_FOR_RANG][MAX_COL_LCD];
+        for(int index_1 = 0; index_1 < NUMBER_TOTAL_SIGNAL_FOR_RANG; index_1++)
+        {
+          size_t index_row;
+          if (index_1 < NUMBER_GENERAL_SIGNAL_FOR_RANG) 
+          {
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+            if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
+            {
+              index_row = index_1;
+            }
+            else if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) 
+            {
+              index_row = RANG_BLOCK_IN_GOOSE1 + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) % 1);
+            }
+            else if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) 
+            {
+              index_row = RANG_BLOCK_IN_MMS1 + (1 - N_IN_GOOSE) + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) % 1);
+            }
+            else
+            {
+              index_row = RANG_BLOCK_OUT_LAN1 + (1 - N_IN_GOOSE) + (1 - N_IN_MMS) + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) % 1);
+            }
+#else
+            index_row = index_1;
+#endif        
+          }
+          else if (index_1 < RANG_BLOCK_UP1) 
+          {
+            index_row = index_1
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+                     + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                     ;
+          }
+          else if (index_1 < (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
+          {
+            index_row = RANG_BLOCK_UP1
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+                     + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif
+                     + ((index_1 - RANG_BLOCK_UP1) % 3);
+          }
+          else
+          {
+            index_row = index_1 
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                    + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
+          }
+          
+          for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+          {
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+            if (
+                (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
+                (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&
+                (index_2 >=  index_n_In_GOOSE[index_language][(index_1 - RANG_BLOCK_IN_GOOSE1) % 1]) &&
+                (index_2 <= (index_n_In_GOOSE[index_language][(index_1 - RANG_BLOCK_IN_GOOSE1) % 1] + 1)) 
+               )   
+            {
+                unsigned int n = index_1 - RANG_BLOCK_IN_GOOSE1;
+                if ((n + 1) < 10)
+                {
+                  if (index_2 == index_n_In_GOOSE[index_language][n % 1])
+                    name_string_tmp[index_1][index_2] = 0x30 + (n + 1);
+                  else
+                    name_string_tmp[index_1][index_2] = ' ';
+                }
+                else
+                {
+                  if (index_2 == index_n_In_GOOSE[index_language][n % 1])
+                    name_string_tmp[index_1][index_2] = 0x30 + (n / 1 + 1) / 10;
+                  else
+                    name_string_tmp[index_1][index_2] = 0x30 + (n / 1 + 1) % 10;
+                }
+            }
+            else if (
+                     (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN)))  &&
+                     (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) &&
+                     (index_2 == index_n_In_MMS[index_language][(index_1 - RANG_BLOCK_IN_MMS1) % 1]) 
+                    )   
+            {
+                name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_IN_MMS1) / 1 + 1);
+            }
+            else if (
+                     (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN)))  &&
+                     (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG)) &&
+                     (index_2 == index_n_Out_LAN[index_language][(index_1 - RANG_BLOCK_OUT_LAN1) % 1]) 
+                    )   
+            {
+                name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_OUT_LAN1) / 1 + 1);
+            }
+            else 
+#endif
+            {
+              if (
+                  (index_1 >=  RANG_BLOCK_UP1)  &&
+                  (index_1 <  (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG)) &&
+                  (index_2 == index_number_UP[index_language][(index_1 - RANG_BLOCK_UP1) % 3]) 
+                 )   
+              {
+                name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_UP1) / 3 + 1);
+              }
+              else name_string_tmp[index_1][index_2] = name_string[index_language][index_row][index_2];
+            }
+          }
+        }
+    //?#endif   
+    //?#ifndef cmt3_off  
+    
+     //asm volatile(
+     //          "bkpt 1"
+     //          );  
+        FillTwoLineElemInfoForCurrEkrIndexPos1(0xffff);
+        maxAmountTwoLineSttLogElem = scrTwoLnCalcInfo.calculatedScrIndexPos;
+        //Перевіряємо, чи ми не вийшли за границі
+        if (current_ekran.index_position < 0){
+            current_ekran.index_position = maxAmountTwoLineSttLogElem - 1;
+            fierstViewAfterEnterKeyPressed = 0;
+        }
+        else if (current_ekran.index_position >= ((int)maxAmountTwoLineSttLogElem))
+                {
+                    current_ekran.index_position = 0;
+                    fierstViewAfterEnterKeyPressed = 0;
+                }
+        //
+        position_in_current_level_menu[EKRAN_CHANGES_SIGNALS_DR] = current_ekran.index_position;
+        
+        unsigned int position_temp = current_ekran.index_position;//
+        
+        unsigned int index_of_ekran = position_temp & (unsigned int)(~((1<<(POWER_MAX_ROW_LCD>>1)) - 1));
+        //!  index_of_ekran serve for view info started from  current_ekran.index_position
+        //!  index_of_ekran всеодно будемо вирівнювати для зрчності поки index_of_ekran Це індекс 2LineElem фактично
+        FillTwoLineElemInfoForCurrEkrIndexPos1(position_temp);//position_temp serveed mainly for debug purposes
+        unsigned char two_line_string[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
+        {
+          "XX:XX:XX.XXX    ",
+          "   XX-XX-20XX   "
+        };
+        unsigned char date_str[MAX_ROW_FOR_EKRAN_DATA_LABEL][MAX_COL_LCD] = 
+        {
+          "   XX-XX-20XX   ",
+          "                ",
+        };
+        Func_make_ekran_variables funcVars = {
+            //?&scrTwoLnCalcInfo,
+            //?&hldDiffInfo,
+            (uint8_t *)name_string_tmp,
+            (unsigned char*) two_line_string,
+            0
+        };
+
+        struct{
+            char clrRowScr;
+            char data_correct; 
+            unsigned short scrIndexPos,mnuIndexPos;
+            long counter2LineTimeMsNameCmdElm;
+        
+        }sLV; 
+
+        //.sLV.data_correct = 0; sLV.pTwoLnCalcInfo = &scrTwoLnCalcInfo;sLV.pDiffInfo       = &hldDiffInfo;
+        sLV.clrRowScr = 0;sLV.counter2LineTimeMsNameCmdElm = 0;  
+        sLV.mnuIndexPos = position_temp; sLV.scrIndexPos = index_of_ekran;
+        TwoLnCalcInfo *pTwoLnCalcInfo = &scrTwoLnCalcInfo;
+        //TwoLnCalcInfo arTwoLnCalcInfo[2];WhatToDo arWhatToDo[2];
+        //for (unsigned int i_row = 0,copy_index_of_ekran = index_of_ekran; i_row< (MAX_ROW_LCD>>1); i_row++)
+        //    FillTwoLineElemInfoForCurrEkrIndexPos(copy_index_of_ekran);
+        //    arTwoLnCalcInfo[i_row] = scrTwoLnCalcInfo;
+        //    copy_index_of_ekran++;
+        //}
+        long idxInArrDatePlRefTags = pTwoLnCalcInfo->selectorOneDateElm;
+        OneDateElmsDsc selectedOneDateElms = hldDiffInfo.arrDatePlRefTags[idxInArrDatePlRefTags];
+        if((selectedOneDateElms.numFierstElemForThisDate == pTwoLnCalcInfo->selectorCmdPlusTimeStateElem)
+            && (pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem == 0) )
+            pTwoLnCalcInfo->boolEvtScr.bFierstOneDateElem = 1;//headList 
+        else if( ( (selectedOneDateElms.numFierstElemForThisDate + (selectedOneDateElms.amountElemForThisDate - 1))
+             ==  pTwoLnCalcInfo->selectorCmdPlusTimeStateElem )
+                && ( pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem == 
+                (pTwoLnCalcInfo->calculatedMaxScrIndexPos - pTwoLnCalcInfo->calculatedScrIndexPos - 1)) )
+                pTwoLnCalcInfo->boolEvtScr.bLastOneDateElem = 1;//check End of List 
+        
+        
+        
+        //?FillTwoLineElemInfoForCurrEkrIndexPos(sLV.mnuIndexPos);//?position_tempScr2LnCalcInfoEvt.
+        if(pTwoLnCalcInfo->boolEvtScr.bFierstOneDateElem != 0){//need SHOW_DATE_PLUS_SPACE
+            //put 2line date
+            memcpy((void *)&working_ekran[0][0],(const void*)date_str,sizeof(date_str));
+            funcVars.pvStrBuf = (unsigned char*)&working_ekran[0][0];     
+            Fill2LineDateWhithBlankStr((void*)&funcVars);     
+            
+            
+            
+            funcVars.index_of_ekran = sLV.mnuIndexPos;//index_of_ekran
+            funcVars.pvStrBuf = (unsigned char*)&working_ekran[2][0];
+            memcpy((void *)&working_ekran[2][0],(const void*)two_line_string,sizeof(two_line_string));
+            //Bield 2line time  ms Name
+            Fill2LineTimeMsCmdValCmdNameStr((void*)&funcVars);
+            position_temp |= 1;
+        }
+        else  if(pTwoLnCalcInfo->boolEvtScr.bLastOneDateElem != 0){
+            funcVars.index_of_ekran = sLV.mnuIndexPos;//index_of_ekran;//
+            funcVars.pvStrBuf = (unsigned char*)&working_ekran[0][0];
+            memcpy((void *)&working_ekran[0][0],(const void*)two_line_string,sizeof(two_line_string));
+            //Bield 2line time  ms Name
+            Fill2LineTimeMsCmdValCmdNameStr((void*)&funcVars);
+            memset((void *)&working_ekran[2][0],0x20,sizeof(two_line_string));
+            position_temp &= (unsigned int)~1;
+        }
+        else
+        //Копіюємо  рядки у робочий екран
+        for (unsigned int i_row = 0; i_row< (MAX_ROW_LCD>>1); i_row++)
+        {
+            //Наступні рядки треба перевірити, чи їх требе відображати у текучій кофігурації
+            //!if ( index_of_ekran < maxAmountTwoLineSttLogElem)
+            if ( sLV.mnuIndexPos < maxAmountTwoLineSttLogElem)//???
+            {
+                //!FillTwoLineElemInfoForCurrEkrIndexPos(index_of_ekran);//?position_temp
+                FillTwoLineElemInfoForCurrEkrIndexPos1(sLV.mnuIndexPos++);
+                {
+                    funcVars.index_of_ekran = sLV.mnuIndexPos;
+                    funcVars.pvStrBuf = (unsigned char*)&working_ekran[2*i_row][0];
+                    memcpy((void *)&working_ekran[i_row<<1][0],(const void*)two_line_string,sizeof(two_line_string));
+                    //Bield 2line time  ms Name
+                    Fill2LineTimeMsCmdValCmdNameStr((void*)&funcVars);
+                    //?counter2LineTimeMsNameCmdElm++;
+                }
+            }
+            else
+            {
+                for (unsigned int k = 0; k < 2; k++)
+                {
+                    if (((i_row<<1)+k) < MAX_ROW_LCD){
+                      for (unsigned int j_col = 0; j_col < MAX_COL_LCD; j_col++)
+                          working_ekran[(i_row<<1)+k][j_col] = ' ';
+                    }
+                }
+            }
+            //if(index_of_ekran == position_temp)
+            //    selectorOneDateElem  = pTwoLnCalcInfo->selectorOneDateElm;
+            //index_of_ekran++;
+        }
+    selectorOneDateElem  = pTwoLnCalcInfo->selectorOneDateElm;
+    pTwoLnCalcInfo-> u8EvtScr &= ~((1<<2)|(1<<3));
+     //Відображення курору по вертикалі
+    current_ekran.position_cursor_y = (position_temp<<1) & (MAX_ROW_LCD - 1);
+    //Курсор видимий
+    current_ekran.cursor_on = 1;
+    }
+    else
+        errorIndicator = -2;
+    if(errorIndicator < 0)
+    {
+        //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
+        static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        {
+          {
+            " Недостоверные  ",
+            "     данные     "
+          },
+          {
+            "  Недостовірні  ",
+            "      дані      "
+          },
+          {
+            "    Invalid     ",
+            "      data      "
+          },
+          {
+            " Недостоверные  ",
+            "     данные     "
+          }
+        };
+  
+        //Копіюємо  рядки у робочий екран
+        for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+        {
+          //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+          if (i < 2)
+            for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+          else
+            for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+        }
+  
+        //Відображення курору по вертикалі
+        current_ekran.position_cursor_y = 0;
+        //Курсор не видимий
+        current_ekran.cursor_on = 0;
+        
+        current_ekran.index_position = 0;
+    }
+
+
+  //Курсор по горизонталі відображається на першій позиції
+  current_ekran.position_cursor_x = 0;
+  //Курсор не мигає
+  current_ekran.cursor_blinking_on = 0;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+}
+//
+//,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+//""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+/*****************************************************/
+//=====================================================================================================
+//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+//                  
+//....................................................................................................
+//=====================================================================================================
+
+// ----------------    -------------------------
+void make_ekran_signals_stable_one_in_data_elem_stt_reg(void){
+    int index_language = index_language_in_array(current_settings.language);
+    // asm volatile(
+    //           "bkpt 1"
+    //           );    
+    long errorIndicator = 0;
+
+    if ( (hldDiffInfo.amountDifferentOneDateElms > 0) ){//&& ( < (uint32_t))
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+        static const unsigned char name_string[MAX_NAMBER_LANGUAGE][ NUMBER_TOTAL_SIGNAL_FOR_RANG + (1 - N_IN_GOOSE)  + (1 - N_IN_MMS) + (1 - N_OUT_LAN) + (3  - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+#else
+        static const unsigned char name_string[MAX_NAMBER_LANGUAGE][NUMBER_TOTAL_SIGNAL_FOR_RANG + (3 - NUMBER_UP_SIGNAL_FOR_RANG)][MAX_COL_LCD] = 
+#endif
+        {
+          {NAME_RANG_RU},
+          {NAME_RANG_UA},
+          {NAME_RANG_EN},
+          {NAME_RANG_KZ}
+        };
+//?#ifndef cmt3_off    
+        uint8_t name_string_tmp[NUMBER_TOTAL_SIGNAL_FOR_RANG][MAX_COL_LCD];
+        for(int index_1 = 0; index_1 < NUMBER_TOTAL_SIGNAL_FOR_RANG; index_1++)
+        {
+          size_t index_row;
+          if (index_1 < NUMBER_GENERAL_SIGNAL_FOR_RANG) 
+          {
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+            if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) 
+            {
+              index_row = index_1;
+            }
+            else if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) 
+            {
+              index_row = RANG_BLOCK_IN_GOOSE1 + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN))) % 1);
+            }
+            else if (index_1 < (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) 
+            {
+              index_row = RANG_BLOCK_IN_MMS1 + (1 - N_IN_GOOSE) + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) % 1);
+            }
+            else
+            {
+              index_row = RANG_BLOCK_OUT_LAN1 + (1 - N_IN_GOOSE) + (1 - N_IN_MMS) + ((index_1 - (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) % 1);
+            }
+#else
+            index_row = index_1;
+#endif        
+          }
+          else if (index_1 < RANG_BLOCK_UP1) 
+          {
+            index_row = index_1
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+                     + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                     ;
+          }
+          else if (index_1 < (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG))
+          {
+            index_row = RANG_BLOCK_UP1
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+                     + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif
+                     + ((index_1 - RANG_BLOCK_UP1) % 3);
+          }
+          else
+          {
+            index_row = index_1 
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+                    + 1 - N_IN_GOOSE + 1 - N_IN_MMS + 1 - N_OUT_LAN
+#endif        
+                    + 3 - NUMBER_UP_SIGNAL_FOR_RANG;
+          }
+          
+          for(size_t index_2 = 0; index_2 < MAX_COL_LCD; index_2++)
+          {
+#if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
+            if (
+                (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_GOOSE + N_IN_MMS + N_OUT_LAN)))  &&
+                (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN))) &&
+                (index_2 >=  index_n_In_GOOSE[index_language][(index_1 - RANG_BLOCK_IN_GOOSE1) % 1]) &&
+                (index_2 <= (index_n_In_GOOSE[index_language][(index_1 - RANG_BLOCK_IN_GOOSE1) % 1] + 1)) 
+               )   
+            {
+                unsigned int n = index_1 - RANG_BLOCK_IN_GOOSE1;
+                if ((n + 1) < 10)
+                {
+                  if (index_2 == index_n_In_GOOSE[index_language][n % 1])
+                    name_string_tmp[index_1][index_2] = 0x30 + (n + 1);
+                  else
+                    name_string_tmp[index_1][index_2] = ' ';
+                }
+                else
+                {
+                  if (index_2 == index_n_In_GOOSE[index_language][n % 1])
+                    name_string_tmp[index_1][index_2] = 0x30 + (n / 1 + 1) / 10;
+                  else
+                    name_string_tmp[index_1][index_2] = 0x30 + (n / 1 + 1) % 10;
+                }
+            }
+            else if (
+                     (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_IN_MMS + N_OUT_LAN)))  &&
+                     (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN))) &&
+                     (index_2 == index_n_In_MMS[index_language][(index_1 - RANG_BLOCK_IN_MMS1) % 1]) 
+                    )   
+            {
+                name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_IN_MMS1) / 1 + 1);
+            }
+            else if (
+                     (index_1 >= (NUMBER_GENERAL_SIGNAL_FOR_RANG - (N_OUT_LAN)))  &&
+                     (index_1 <  (NUMBER_GENERAL_SIGNAL_FOR_RANG)) &&
+                     (index_2 == index_n_Out_LAN[index_language][(index_1 - RANG_BLOCK_OUT_LAN1) % 1]) 
+                    )   
+            {
+                name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_OUT_LAN1) / 1 + 1);
+            }
+            else 
+#endif
+            {
+              if (
+                  (index_1 >=  RANG_BLOCK_UP1)  &&
+                  (index_1 <  (RANG_BLOCK_UP1 + NUMBER_UP_SIGNAL_FOR_RANG)) &&
+                  (index_2 == index_number_UP[index_language][(index_1 - RANG_BLOCK_UP1) % 3]) 
+                 )   
+              {
+                name_string_tmp[index_1][index_2] = 0x30 + ((index_1 - RANG_BLOCK_UP1) / 3 + 1);
+              }
+              else name_string_tmp[index_1][index_2] = name_string[index_language][index_row][index_2];
+            }
+          }
+        }
+//?#endif   
+//?#ifndef cmt3_off  
+        register unsigned long *pU32;
+        unsigned int array_new[N_BIG];
+        //.long  idx_record_of_stt_cmd_prev = 0;
+        TwoLnCalcInfo *pTwoLnCalcInfo = &scrTwoLnCalcInfo;
+        struct{
+            char compare_res_time_dat,compare_res_time_ms,counter_reading,compare_res;
+            char data_correct; 
+            time_t time_dat_tmp,copy_time_dat_tmp ; 
+            int32_t time_ms_tmp,copy_time_ms_tmp ; 
+	    	
+        }sLV; 
+        sLV.data_correct = 0;
+        sLV.counter_reading = 3;sLV.data_correct = 0;
+        register long l = pTwoLnCalcInfo->selectorCmdPlusTimeStateElem;
+                        
+        do{
+            GetDateTimeLogElem((unsigned int *)&(sLV.time_dat_tmp),pTwoLnCalcInfo->selectorCmdPlusTimeStateElem);
+            GetMsLogElem      ((unsigned int *)&(sLV.time_ms_tmp ),pTwoLnCalcInfo->selectorCmdPlusTimeStateElem);
+            //.pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].unix_time.arU32MkTime[0]);
+            //.memcpy((void *)&(sLV.time_dat_tmp),(const void*)pU32,    sizeof(UNN_UnixTime));
+            //.pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].mksec.uLMkTime);
+            //.memcpy((void *)&(sLV.time_ms_tmp ),(const void*)pU32,    sizeof(UNN_MicroSec));
+         
+             
+            //    register long lIdx = pTwoLnCalcInfo->selectorCmdPlusTimeStateElem;//
+                pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].cmd.uLCmd[0]);
+                memcpy((void *)array_new,(const void*)pU32,  sizeof(UNN_CmdState));
+             
+                //GetCmdPlusTimeLogElem(array_new ,lIdx);
+                //?lIdx++;//Next elem on menu older
+                //?if (lIdx >= AMOUNT_CMD_PLUS_TIME_RECORD)
+                //?    lIdx -= AMOUNT_CMD_PLUS_TIME_RECORD;
+                //?GetCmdPlusTimeLogElem(array_old ,lIdx);
+            GetDateTimeLogElem((unsigned int *)&(sLV.copy_time_dat_tmp),pTwoLnCalcInfo->selectorCmdPlusTimeStateElem);
+            GetMsLogElem      ((unsigned int *)&(sLV.copy_time_ms_tmp ),pTwoLnCalcInfo->selectorCmdPlusTimeStateElem);
+               //.pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].unix_time.arU32MkTime[0]);
+               //.memcpy((void *)&(sLV.copy_time_dat_tmp),(const void*)pU32,    sizeof(UNN_UnixTime));
+               //.pU32 = &(holderCmdPlusTime.arrCmdPlusTimeHolder[l].mksec.uLMkTime);
+               //.memcpy((void *)&(sLV.copy_time_ms_tmp ),(const void*)pU32,    sizeof(UNN_MicroSec));
+         
+            if(sLV.time_dat_tmp == sLV.copy_time_dat_tmp){
+                
+                sLV.compare_res_time_dat = 1;
+            }
+            else 
+                 sLV.compare_res_time_dat = 0;
+            if(sLV.time_ms_tmp == sLV.copy_time_ms_tmp){
+                
+                sLV.compare_res_time_ms = 1;
+            }
+            else 
+                 sLV.compare_res_time_ms = 0;
+            sLV.compare_res = sLV.compare_res_time_ms + sLV.compare_res_time_dat;
+        }while( (--sLV.counter_reading > 0) && (sLV.compare_res != 2));
+                    
+        if (sLV.compare_res == 2)
+        {
+         //asm volatile(
+         //          "bkpt 1"
+         //          );  
+                     //Перевіряємо, чи ми не вийшли за границі
+            long lOrderNumCmd = 0,counterActiveComand = 0;
+            
+            do{
+                if ((array_new[lOrderNumCmd >> 5] & (1 << (lOrderNumCmd & ((1<<5)-1)))) != 0)
+                    counterActiveComand++;
+            
+            }while(++lOrderNumCmd < NUMBER_TOTAL_SIGNAL_FOR_RANG);
+            unsigned  max_number_changers_in_record = counterActiveComand;
+            if (current_ekran.index_position < 0) current_ekran.index_position = max_number_changers_in_record - 1;
+            else if (current_ekran.index_position >= ((int)max_number_changers_in_record)) current_ekran.index_position = 0;
+            current_ekran.index_position = (current_ekran.index_position >> (POWER_MAX_ROW_LCD )) << (POWER_MAX_ROW_LCD );
+            position_in_current_level_menu[EKRAN_CHANGES_SIGNALS_DR] = current_ekran.index_position;
+            
+            unsigned int position_temp = current_ekran.index_position;//?position_temp = current_ekran.index_position;
+            unsigned int index_of_ekran = position_temp & (unsigned int)(~((1<<(POWER_MAX_ROW_LCD)) - 1));
+            
+
+        //Копіюємо  рядки у робочий екран
+            for (unsigned int i=0; i< (MAX_ROW_LCD); i++)
+            {
+              //Наступні рядки треба перевірити, чи їх требе відображати у текучій кофігурації
+              if (index_of_ekran < max_number_changers_in_record)
+              {
+                //Шукаємо масиви зрізів: попередній до вибраної зміни і у момент даної зміни
+                unsigned int current_number_changes = 0;
+                //Визначаємо, які сигнали 1
+                //Шукаємо функцію, яку треба зараз відобразити
+                int index_of_function_in_the_slice = 0; //починаємо з першого зрізу
+                do
+                {
+                  if ((array_new[index_of_function_in_the_slice >> 5] & (1 << (index_of_function_in_the_slice & ((1<<5)-1)))) != 0)
+                    current_number_changes++;
+                  if (current_number_changes  < (index_of_ekran + 1)) index_of_function_in_the_slice++;
+                }
+                while (
+                       (current_number_changes  < (index_of_ekran + 1)) &&
+                       (index_of_function_in_the_slice < NUMBER_TOTAL_SIGNAL_FOR_RANG)  
+                      );
+                if (index_of_function_in_the_slice < NUMBER_TOTAL_SIGNAL_FOR_RANG)
+                 {
+                 
+                    //У першому рядку відображаємо назву сигналу, який змінився
+                    for (unsigned int j = 0; j<MAX_COL_LCD; j++)
+                      working_ekran[i][j] = name_string_tmp[index_of_function_in_the_slice][j];
+                      
+                  //#endif
+                 }
+                
+              }
+              else
+              {
+                //for (unsigned int k = 0; k < 2; k++)
+                //{
+                //  if (((i<<1)+k) < MAX_ROW_LCD)
+                //    for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[(i<<1)+k][j] = ' ';
+                //}
+                for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+              }
+            
+              index_of_ekran++;
+            }
+        //Відображення курору по вертикалі
+        current_ekran.position_cursor_y = (position_temp<<1) & (MAX_ROW_LCD - 1);
+        //Курсор невидимий
+        current_ekran.cursor_on = 0;
+	    
+        }
+        else{
+            errorIndicator = -3;//Error
+        }
+    }
+    else 
+        errorIndicator = -2;
+    if(errorIndicator < 0)
+    {
+        //Пеший байт не сходиться із міткою початку запису - робимо висновок, що у біфері не достовірні дані
+        static const unsigned char name_string[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
+        {
+          {
+            " Недостоверные  ",
+            "     данные     "
+          },
+          {
+            "  Недостовірні  ",
+            "      дані      "
+          },
+          {
+            "    Invalid     ",
+            "      data      "
+          },
+          {
+            " Недостоверные  ",
+            "     данные     "
+          }
+        };
+      
+        //Копіюємо  рядки у робочий екран
+        for (unsigned int i=0; i< MAX_ROW_LCD; i++)
+        {
+          //Наступні рядки треба перевірити, чи їх требе відображати у текучій коффігурації
+          if (i < 2)
+            for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = name_string[index_language][i][j];
+          else
+            for (unsigned int j = 0; j<MAX_COL_LCD; j++) working_ekran[i][j] = ' ';
+        }
+      
+        //Відображення курору по вертикалі
+        current_ekran.position_cursor_y = 0;
+        //Курсор не видимий
+        current_ekran.cursor_on = 0;
+        
+        current_ekran.index_position = 0;
+    }
+
+  //Курсор по горизонталі відображається на першій позиції
+  current_ekran.position_cursor_x = 0;
+  //Курсор не мигає
+  current_ekran.cursor_blinking_on = 0;
+  //Обновити повністю весь екран
+  current_ekran.current_action = ACTION_WITH_CARRENT_EKRANE_FULL_UPDATE;
+
+}
+//
+//--------------------------------------------------------------------------------------------------------
+//````````````````````````````````````````````````````````````````````````````````````````````````````````
+
 /*****************************************************/

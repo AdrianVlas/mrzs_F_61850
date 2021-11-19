@@ -290,6 +290,9 @@ long GetDateTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWo
 long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned long ulWorkNumber);
 void CleanCmdPlusTimeLog(void); 
 void PuCmdinRawBuf(unsigned int *p_active_functions);
+void make_ekran_signals_stable_one_in_data_elem_stt_reg(void);
+void make_ekran_changing_signals_in_data_elem_stt_reg2(void);
+void make_ekran_data_elem_stt_registrator(void);
 
 extern void CmdPlusTimeStampLogHundler(unsigned int *p_active_functions);
 void Usb_routines_irq(void);
