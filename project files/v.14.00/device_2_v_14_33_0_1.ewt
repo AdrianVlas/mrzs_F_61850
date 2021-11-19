@@ -1493,6 +1493,30 @@
         </group>
     </group>
     <group>
+        <name>lib</name>
+        <group>
+            <name>runtime</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\lib\runtime\stack_protection.c</name>
+            </file>
+        </group>
+        <group>
+            <name>time</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\clock.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\getzone.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\time.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\working files\time\time64.c</name>
+            </file>
+        </group>
+    </group>
+    <group>
         <name>Linker</name>
         <group>
             <name>with iec61850</name>
@@ -2158,6 +2182,9 @@
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RAISmallComponent.c</name>
                     </file>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\RDSBigComponent.c</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\component\REGBigComponent.c</name>
                     </file>
                     <file>
@@ -2215,6 +2242,9 @@
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_m.c</name>
                     </file>
                     <file>
+                        <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\procedures_rdsguest.c</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\working files\src\modbusroutine\start_settings_m.c</name>
                     </file>
                     <file>
@@ -2238,10 +2268,10 @@
                 <name>Log</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\working files\src\log\log.c</name>
-                    <configuration>
-                        <name>Flash-Debug</name>
-                    </configuration>
                 </file>
+                <configuration>
+                    <name>Flash-Debug</name>
+                </configuration>
             </group>
             <group>
                 <name>menu</name>
@@ -2423,21 +2453,6 @@
                     <name>$PROJ_DIR$\..\..\working files\src\driver_serial_dataflash.c</name>
                 </file>
             </group>
-        </group>
-        <group>
-            <name>time</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\clock.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\getzone.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\time.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\working files\time\time64.c</name>
-            </file>
         </group>
         <group>
             <name>usb</name>

@@ -980,7 +980,7 @@
             <name>LMIFTDI_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>2</version>
+                <version>3</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1005,6 +1005,19 @@
                 </option>
                 <option>
                     <name>CCLmiFtdiInterfaceCmdLine</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCLmiftdiUsbSerialNo</name>
+                    <state></state>
+                </option>
+                <option>
+                    <name>CCLmiftdiUsbSerialNoSelect</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCLmiftdiResetList</name>
+                    <version>0</version>
                     <state>0</state>
                 </option>
             </data>
@@ -1279,7 +1292,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>8</version>
+                <version>9</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1451,6 +1464,10 @@
                 </option>
                 <option>
                     <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>OCSelectedCoreName</name>
                     <state>1</state>
                 </option>
             </data>
