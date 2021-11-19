@@ -464,6 +464,7 @@ extern unsigned int etap_writing_pr_err_into_dataflash;
 extern unsigned int number_recods_writing_into_dataflash_now;
 extern unsigned int number_record_of_stt_cmd_into_menu;
 extern unsigned int current_number_changes_of_stt_cmd_into_menu;
+
 extern unsigned int number_record_of_pr_err_into_menu;
 extern unsigned int number_record_of_pr_err_into_USB;
 extern unsigned int number_record_of_pr_err_into_RS485;
