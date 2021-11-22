@@ -498,7 +498,26 @@ void make_ekran_type_led_uvv(void)
         //У непарному номері рядку виводимо заголовок
         for (unsigned int j = 0; j<MAX_COL_LCD; j++)
         {
-          if ((j < first_index_number_1) || (j > (first_index_number_1 + 1)))
+          if (number > (NUMBER_LEDS - 2))
+          {
+            static const unsigned char leds_fix[2][MAX_NAMBER_LANGUAGE][MAX_COL_LCD] = 
+            {
+              {
+                "    Cв-Start    ",
+                "    Cв-Start    ",
+                "    LED-Start   ",
+                "    Cв-Start    "
+              },
+              {
+                "    Cв-Trip     ",
+                "    Cв-Trip     ",
+                "    LED-Trip    ",
+                "    Cв-Trip     "
+              }
+            };
+            working_ekran[i][j] = leds_fix[(number == NUMBER_LEDS)][index_language][j];
+          }
+          else if ((j < first_index_number_1) || (j > (first_index_number_1 + 1)))
             working_ekran[i][j] = name_string[index_language][j];
           else if (j == first_index_number_1)
           {

@@ -217,7 +217,22 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
       
         for (size_t j = 0; j < MAX_COL_LCD; ++j)
         {
-          if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3)))
+          if (
+              (type_of_window == ID_LED) && 
+              (number > (NUMBER_LEDS - 2)) && 
+              (j >= first_index_number_1) &&
+              (j <  (first_index_number_1 + 6))
+             )
+          {
+           char const leds_fix[2][6] = 
+           {
+             "-Start",
+             "-Trip "
+           };
+           working_ekran[i][j] = leds_fix[(number == NUMBER_LEDS)][j - first_index_number_1];
+           
+          }
+          else if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3)))
             working_ekran[i][j] = information[index_language][type_of_window][j];
           else
           {
