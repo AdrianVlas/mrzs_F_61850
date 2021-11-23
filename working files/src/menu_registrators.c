@@ -1095,7 +1095,7 @@ void make_ekran_title_analog_value_records_digital_registrator(void)
 /*****************************************************/
 //Формуємо екран відображення діючих значень при фіксації максимального струму 3I0/фази/ЗОП(КОФ) запису дискретного реєстратора
 /*****************************************************/
-void make_ekran_analog_value_records_digital_registrator(void)
+void make_ekran_analog_value_records_digital_registrator(unsigned int pervynna_vtorynna)
 {
   int index_language = index_language_in_array(current_settings.language);
 
@@ -1133,6 +1133,34 @@ void make_ekran_analog_value_records_digital_registrator(void)
     };
     unsigned char *point_unsigned_char = (unsigned char *)(buffer_for_manu_read_record + index_cell_into_array_for_min_max_measurement_dr);
     unsigned int *point_unsigned_int = (unsigned int*)point_unsigned_char;
+    
+    unsigned int T0 = 1;
+    unsigned int TCurrent = 1;
+    unsigned int TCurrent04 = 1;
+    unsigned int TVoltage = 1;
+    if (pervynna_vtorynna != 0)
+    {
+      unsigned char *ptr_target = (unsigned char *)&T0;
+      unsigned char *ptr_source = (unsigned char *)(buffer_for_manu_read_record + FIRST_INDEX_T0);
+      for(size_t i = 0; i < sizeof(T0); ++i) 
+      *ptr_target++ = *ptr_source++;
+
+      ptr_target = (unsigned char *)&TCurrent;
+      ptr_source = (unsigned char *)(buffer_for_manu_read_record + FIRST_INDEX_TC);
+      for(size_t i = 0; i < sizeof(TCurrent); ++i) 
+      *ptr_target++ = *ptr_source++;
+
+      ptr_target = (unsigned char *)&TCurrent04;
+      ptr_source = (unsigned char *)(buffer_for_manu_read_record + FIRST_INDEX_TC04);
+      for(size_t i = 0; i < sizeof(TCurrent04); ++i) 
+      *ptr_target++ = *ptr_source++;
+
+      ptr_target = (unsigned char *)&TVoltage;
+      ptr_source = (unsigned char *)(buffer_for_manu_read_record + FIRST_INDEX_TV);
+      for(size_t i = 0; i < sizeof(TVoltage); ++i) 
+      *ptr_target++ = *ptr_source++;
+    }
+    
 
     for (unsigned int i = 0; i < MAX_ROW_FOR_EKRAN_ANALOG_VALUES_DR; i++)
     {
@@ -1144,12 +1172,18 @@ void make_ekran_analog_value_records_digital_registrator(void)
 //         if (index_language == INDEX_LANGUAGE_EN) name_string[i][4] = 'c';
 //         else name_string[i][4] = 'р';
 //       }
+        
+        unsigned int koef_mul = 1;
+        if (i <= 1) koef_mul = T0;
+        else if ( i <= 7) koef_mul = TCurrent;
+        else if (i == 8) koef_mul = TCurrent04;
+        else koef_mul = TVoltage;
 
         unsigned int temp_measurement = *(point_unsigned_int + i);
         unsigned int start_number_digit_after_point;
         if ((i == 0) || (i == 1)) start_number_digit_after_point = 2;
         else start_number_digit_after_point = 3;
-        convert_and_insert_char_for_measurement(start_number_digit_after_point, temp_measurement, 1, 1, name_string[i], 7);
+        convert_and_insert_char_for_measurement(start_number_digit_after_point, temp_measurement, koef_mul, 1, name_string[i], 7);
       }
       else if (i == 18)
       {
@@ -1203,7 +1237,7 @@ void make_ekran_analog_value_records_digital_registrator(void)
             temp_measurement = -temp_measurement;
             name_string[i][start_position] = '-';
           }
-          convert_and_insert_char_for_measurement(3, temp_measurement, 1, 1, name_string[i], (start_position + 1));
+          convert_and_insert_char_for_measurement(3, temp_measurement, TVoltage, TCurrent, name_string[i], (start_position + 1));
 
           unsigned int shift = 0;
           unsigned int start_position_to_shift = start_position + 1;

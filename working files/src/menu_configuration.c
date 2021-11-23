@@ -93,7 +93,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
   static const unsigned char name_nzz[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD_PART1] = 
   {
     {"ÍÇÇ       ", "ÇÇ        "},
-    {"ÍÇÇ       ", "ÇÇ        "},
+    {"ÑÇÇ       ", "ÇÇ        "},
     {"SDEFP     ", "SEFP      "},
     {"ÍÇÇ       ", "ÇÇ        "}
   };
@@ -101,7 +101,7 @@ void make_ekran_configuration(unsigned int configuration_edit_temp)
   static const unsigned char information_on[MAX_NAMBER_LANGUAGE][MAX_COL_LCD - MAX_COL_LCD_PART1] = 
   {
     "Âêë.  ",
-    "Ââ³ìê.",
+    "Óâ³ìê.",
     "On    ",
     "Êîñó. "
   };

@@ -217,7 +217,22 @@ void make_ekran_chose_of_list_for_ranguvannja(__id_input_output type_of_window)
       
         for (size_t j = 0; j < MAX_COL_LCD; ++j)
         {
-          if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3)))
+          if (
+              (type_of_window == ID_LED) && 
+              (number > (NUMBER_LEDS - 2)) && 
+              (j >= first_index_number_1) &&
+              (j <  (first_index_number_1 + 6))
+             )
+          {
+           char const leds_fix[2][6] = 
+           {
+             "-Start",
+             "-Trip "
+           };
+           working_ekran[i][j] = leds_fix[(number == NUMBER_LEDS)][j - first_index_number_1];
+           
+          }
+          else if ((j < first_index_number_1) || (j >= (first_index_number_1 + 3)))
             working_ekran[i][j] = information[index_language][type_of_window][j];
           else
           {
@@ -919,7 +934,7 @@ void make_ekran_set_function_in_bi(unsigned int number_ekran, unsigned int type_
          static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
            {"      ОТКЛ      ", "      ВКЛ       "},
-           {"      ВИМК      ", "     ВВІМК      "},
+           {"      ВИМК      ", "     УВІМК      "},
            {"      OFF       ", "       ON       "},
            {"      СЉНД      ", "      КОСУ      "}
         };
@@ -1392,7 +1407,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
              )
           {
             /*
-            Випадок коли сигнали, які відповідають за НЗЗ треба відфільтрувати
+            Випадок коли сигнали, які відповідають за СЗЗ треба відфільтрувати
             */
 
             //Відкидати імена функцій і зміщати біти треба тільки у тому випадку, якщо функції пристні у списку для ранжування для даного захисту
@@ -1703,7 +1718,7 @@ void make_ekran_set_function_in_output_led_df_dt_reg(unsigned int number_ekran, 
          static const unsigned char information[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
          {
            {"      ОТКЛ      ", "      ВКЛ       "},
-           {"      ВИМК      ", "     ВВІМК      "},
+           {"      ВИМК      ", "     УВІМК      "},
            {"      OFF       ", "       ON       "},
            {"      СЉНД      ", "      КОСУ      "}
          };

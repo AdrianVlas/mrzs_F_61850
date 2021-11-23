@@ -111,7 +111,7 @@ void make_ekran_main(void)
   static const unsigned char name_nzz[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
   {
     {" ÍÇÇ            ", " ÇÇ             "},
-    {" ÍÇÇ            ", " ÇÇ             "},
+    {" ÑÇÇ            ", " ÇÇ             "},
     {" SDEFP          ", " SEFP           "},
     {" ÍÇÇ            ", " ÇÇ             "}
   };

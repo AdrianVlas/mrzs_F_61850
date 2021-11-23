@@ -1105,7 +1105,7 @@ m1:
                   }
                 case 6:
                   {
-                    temp_data = (time_ms_tmp % 10) * 10000;
+                    temp_data = (time_ms_tmp % 10) * 1000;
                     break;
                   }
                 default:
@@ -1184,7 +1184,7 @@ m1:
                   }
                 case 6:
                   {
-                    temp_data = (time_ms_tmp % 10) * 10000;
+                    temp_data = (time_ms_tmp % 10) * 1000;
                     break;
                   }
                 default:

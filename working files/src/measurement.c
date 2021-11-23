@@ -3452,7 +3452,7 @@ void calc_measurement(unsigned int number_group_stp)
     if ((current_settings_prt.control_zz & CTR_ZZ1_TYPE) == 0)
     {
       /***/
-      //Фазочутливий елемент для НЗЗ
+      //Фазочутливий елемент для СЗЗ
       /***/
       detector_kuta_nzz(ortogonal_calc);
       /***/

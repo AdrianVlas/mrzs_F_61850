@@ -1,5 +1,9 @@
 #include "header.h"
 
+static int32_t p_rele_reprogram_command = -1;
+static int32_t p_rele_staff_command = -1;
+static int32_t timerWaitReprogram = -1;
+
 /*****************************************************/
 //Модуль обробки дискретних входів
 /*****************************************************/
@@ -189,6 +193,68 @@ inline void clocking_global_timers(void)
   {
     timer_prt_signal_output_mode_2 = 0;
     output_timer_prt_signal_output_mode_2 ^= true;
+  }
+  
+  //Управління поляризованим реле для перепрограмування
+  if (
+      (p_rele_reprogram_command < 0) && 
+      (p_rele_staff_command < 0)  
+     )
+  {
+    if (_GET_STATE(reprogram_device, REPROGRAM_COMMAND))
+    {
+      p_rele_reprogram_command = 0;
+      GPIO_REPROGRAM->BSRRL = GPIO_PIN_REPROGRAM;
+    }
+
+    if (_GET_STATE(reprogram_device, STAFF_COMMAND))
+    {
+      p_rele_staff_command = 0;
+      GPIO_STAFF->BSRRL = GPIO_PIN_STAFF;
+    }
+  }
+  else
+  {
+    int32_t * point_p_rele = NULL;
+    if (p_rele_reprogram_command >= 0) point_p_rele = &p_rele_reprogram_command;
+    else point_p_rele = &p_rele_staff_command;
+
+    if (*point_p_rele < (0x7fffffff - DELTA_TIME_FOR_TIMERS)) *point_p_rele += DELTA_TIME_FOR_TIMERS;
+    if (*point_p_rele >= TIMEOUT_IMPULSE_P_RELE_REPROGRAM_STAFF)
+    {
+      *point_p_rele = -1;
+      
+      if (point_p_rele == &p_rele_reprogram_command) 
+      {
+        _CLEAR_STATE(reprogram_device, REPROGRAM_COMMAND);
+        GPIO_REPROGRAM->BSRRH = GPIO_PIN_REPROGRAM;
+      }
+      else if (point_p_rele == &p_rele_staff_command) 
+      {
+        _CLEAR_STATE(reprogram_device, STAFF_COMMAND);
+        GPIO_STAFF->BSRRH = GPIO_PIN_STAFF;
+      }
+      else
+      {
+        //Теоретично цього ніколи не мало б бути
+        total_error_sw_fixed();
+      }
+    }
+  }
+  
+  if (p_rele_reprogram_command == 0) timerWaitReprogram = 0;
+  else
+  {
+    if (timerWaitReprogram >= 0) 
+    {
+      if (++timerWaitReprogram > (2*TIMEOUT_IMPULSE_P_RELE_REPROGRAM_STAFF))
+      {
+        //Режим перепрограмування не підтримується
+        timerWaitReprogram = -1;
+        _SET_STATE(reprogram_device, UNSUPPORT_REPROGRAM);
+          
+      }
+    }
   }
 }
 /*****************************************************/
@@ -2007,9 +2073,9 @@ inline void zdz_handler(unsigned int *p_active_functions, unsigned int number_gr
 inline void zz_handler(unsigned int *p_active_functions, unsigned int number_group_stp)
 {
   /********************************
-  Сектор НЗЗ
+  Сектор СЗЗ
 
-  "Сектор НЗЗ" визначається при порогах:
+  "Сектор СЗЗ" визначається при порогах:
   
   Струм 3I0 (вимірюється у десятих міліамперів) > 5 (мА)
   Струм 3U0 (вимірюється у         мілівольтах) > 6 (В)
@@ -2034,12 +2100,12 @@ inline void zz_handler(unsigned int *p_active_functions, unsigned int number_gro
     unsigned int sector_i_minus_u;
     if (sector_NZZ == 0)
     {
-      //Працюємо по сектору спрацювання для НЗЗ
+      //Працюємо по сектору спрацювання для СЗЗ
       sector_i_minus_u = sector_i_minus_u_1;
     }
     else
     {
-      //Працюємо по сектору відпускання для НЗЗ
+      //Працюємо по сектору відпускання для СЗЗ
       sector_i_minus_u = sector_i_minus_u_2;
     }
   
@@ -2083,7 +2149,7 @@ inline void zz_handler(unsigned int *p_active_functions, unsigned int number_gro
   else sector_NZZ = 0;
 
   
-  //Встановлюємо сигнал "Сектор НЗЗ",якщо він потрібний - у іншому випадку він скинутий
+  //Встановлюємо сигнал "Сектор СЗЗ",якщо він потрібний - у іншому випадку він скинутий
   if (sector_NZZ != 0)
     _SET_BIT(p_active_functions, RANG_SECTOR_NZZ);
   else
@@ -2178,9 +2244,9 @@ inline void zz_handler(unsigned int *p_active_functions, unsigned int number_gro
   
   if (_CHECK_SET_BIT(p_active_functions, RANG_BLOCK_NZZ) == 0)
   {
-    //НЗЗ, ЗЗ/3I0 і ЗЗ/3U0 не блокується з дискретного входу
+    //СЗЗ, ЗЗ/3I0 і ЗЗ/3U0 не блокується з дискретного входу
     /*******************************/
-    //НЗЗ
+    //СЗЗ
     /*******************************/
     if (
         ((current_settings_prt.control_zz & CTR_ZZ1_NZZ_STATE) != 0) &&
@@ -2198,24 +2264,24 @@ inline void zz_handler(unsigned int *p_active_functions, unsigned int number_gro
           (sector_NZZ != 0)
          )
       {
-        //Існує умова роботи ПО НЗЗ
+        //Існує умова роботи ПО СЗЗ
         if(previous_state_po_nzz == 0)
         {
           //Встановлюємо сигнал "ПО NZZ"
           _SET_BIT(p_active_functions, RANG_PO_NZZ);
       
-          //Запускаємо таймер НЗЗ, якщо він ще не запущений
+          //Запускаємо таймер СЗЗ, якщо він ще не запущений
           global_timers[INDEX_TIMER_NZZ] = 0;
         }
       }
       else 
       {
-        //Не існує умова роботи ПО НЗЗ
+        //Не існує умова роботи ПО СЗЗ
         if(previous_state_po_nzz != 0)
         {
-          //Скидаємо сигнал "ПО НЗЗ"
+          //Скидаємо сигнал "ПО СЗЗ"
           _CLEAR_BIT(p_active_functions, RANG_PO_NZZ);
-          //Це є умовою також скидання сигналу "Сраб. НЗЗ"
+          //Це є умовою також скидання сигналу "Сраб. СЗЗ"
           _CLEAR_BIT(p_active_functions, RANG_NZZ);
           //Якщо таймер ще не скинутий, то скидаємо його
           if ( global_timers[INDEX_TIMER_NZZ] >=0) global_timers[INDEX_TIMER_NZZ] = -1;
@@ -2224,16 +2290,16 @@ inline void zz_handler(unsigned int *p_active_functions, unsigned int number_gro
     
       if(global_timers[INDEX_TIMER_NZZ] >= current_settings_prt.timeout_nzz[number_group_stp])
       {
-        //Якщо витримана "Витримка НЗЗ" то встановлюємо сигнал "Сраб. НЗЗ"
+        //Якщо витримана "Витримка СЗЗ" то встановлюємо сигнал "Сраб. СЗЗ"
         _SET_BIT(p_active_functions, RANG_NZZ);
 
-        //Скидаємо таймер ПО НЗЗ
+        //Скидаємо таймер ПО СЗЗ
         global_timers[INDEX_TIMER_NZZ] = -1;
       }
     }
     else
     {
-      //Якщо НЗЗ не встановлена, то треба скинути всі таймери і сигнали, які за неї відповідають
+      //Якщо СЗЗ не встановлена, то треба скинути всі таймери і сигнали, які за неї відповідають
       _CLEAR_BIT(p_active_functions, RANG_PO_NZZ);
       _CLEAR_BIT(p_active_functions, RANG_NZZ);
       global_timers[INDEX_TIMER_NZZ] = -1;
@@ -2350,7 +2416,7 @@ inline void zz_handler(unsigned int *p_active_functions, unsigned int number_gro
   }
   else
   {
-    //Захисти ЗЗ/НЗЗ блокується з дискретного входу, то треба скинути всі таймери і сигнали, які за них відповідають
+    //Захисти ЗЗ/СЗЗ блокується з дискретного входу, то треба скинути всі таймери і сигнали, які за них відповідають
     _CLEAR_BIT(p_active_functions, RANG_PO_NZZ);
     _CLEAR_BIT(p_active_functions, RANG_NZZ);
     _CLEAR_BIT(p_active_functions, RANG_PO_3I0);
@@ -4521,7 +4587,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
     global_timers[INDEX_TIMER_VIDKL_VV  ] = 0;
     global_timers[INDEX_TIMER_BLK_VKL_VV] = 0;
     
-    //Скидаємо активацію блоку ввімкнення
+    //Скидаємо активацію блоку увімкнення
     _CLEAR_BIT(p_active_functions, RANG_WORK_BV);
     //Скидаємо таймер блку вимкнення
     global_timers[INDEX_TIMER_VKL_VV] = -1;  
@@ -4658,7 +4724,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
         _CLEAR_BIT(off_cb_tmp, RANG_3U0);
       }
           
-      //НЗЗ
+      //СЗЗ
       if(
          (_CHECK_SET_BIT(off_cb_tmp, RANG_NZZ) != 0) &&
          (_CHECK_SET_BIT(previous_active_functions, RANG_NZZ) == 0) /*умова, що сигнал тільки активується (щоб зафіксувати час старту)*/
@@ -4924,7 +4990,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
   /*********************/
 
   /*********************/
-  //Формуємо попереденій стан сигналів для функції ввімкнення/вимкнення
+  //Формуємо попереденій стан сигналів для функції увімкнення/вимкнення
   /*********************/
   for (unsigned int i = 0; i < N_BIG; i++) previous_active_functions[i] = p_active_functions[i];
   /*********************/
@@ -5064,7 +5130,7 @@ inline void on_off_handler(unsigned int *p_active_functions)
     if(
        (vymknennja_vid_KZ_prt != 0) &&  /*Умова, що відбувалося вимкнення під час останнього КЗ*/
        ((number_of_phases_last_KZ = number_of_phases_KZ_prt) > 1) && /*Умова, що КЗ є міжфазним*/
-       ((current_settings_prt.control_vmp & CTR_VMP_STATE) != 0) && /*ВМП ввімкнено*/ 
+       ((current_settings_prt.control_vmp & CTR_VMP_STATE) != 0) && /*ВМП увімкнено*/ 
        (X_min_KZ_prt != ((unsigned int)UNDEF_RESISTANCE)) /*Умова, що хоча б один міжфазний опір був визначений, а тому і є зафіксований мінімальний реактивний міжфазний опір*/
       )
     {
@@ -5301,7 +5367,7 @@ inline void resurs_vymykacha_handler(unsigned int *p_active_functions)
  
 
   /*********************/
-  //Формуємо попереденій стан сигналів для функції ввімкнення/вимкнення
+  //Формуємо попереденій стан сигналів для функції увімкнення/вимкнення
   /*********************/
   for (unsigned int i = 0; i < N_BIG; i++) previous_active_functions[i] = p_active_functions[i];
   /*********************/
@@ -7041,6 +7107,30 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
            //І'мя комірки
           for(unsigned int i=0; i< MAX_CHAR_IN_NAME_OF_CELL; i++) 
             buffer_for_save_dr_record[FIRST_INDEX_NAME_OF_CELL_DR + i] = current_settings_prt.name_of_cell[i] & 0xff;
+          
+          //Коефіцієнти трансформації
+          {
+            unsigned char *ptr_target = buffer_for_save_dr_record + FIRST_INDEX_T0;
+            unsigned char *ptr_source = (unsigned char *)(&current_settings_prt.T0);
+            for(size_t i = 0; i < sizeof(current_settings_prt.T0); ++i) 
+              *ptr_target++ = *ptr_source++;
+
+            ptr_target = buffer_for_save_dr_record + FIRST_INDEX_TC;
+            ptr_source = (unsigned char *)(&current_settings_prt.TCurrent);
+            for(size_t i = 0; i < sizeof(current_settings_prt.TCurrent); ++i) 
+              *ptr_target++ = *ptr_source++;
+
+            ptr_target = buffer_for_save_dr_record + FIRST_INDEX_TC04;
+            ptr_source = (unsigned char *)(&current_settings_prt.TCurrent04);
+            for(size_t i = 0; i < sizeof(current_settings_prt.TCurrent04); ++i) 
+              *ptr_target++ = *ptr_source++;
+
+            ptr_target = buffer_for_save_dr_record + FIRST_INDEX_TV;
+            ptr_source = (unsigned char *)(&current_settings_prt.TVoltage);
+            for(size_t i = 0; i < sizeof(current_settings_prt.TVoltage); ++i) 
+              *ptr_target++ = *ptr_source++;
+          }
+          
 
            //Джерела запуску
           for(unsigned int i = 0; i < NUMBER_BYTES_SAMPLE_DR; i++) 
@@ -7048,10 +7138,10 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
 /*
           //Записуємо попередній cтан сигналів перед аварією
           //Мітка часу попереднього стану сигналів до моменту початку запису
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  1] = 0xff;
-          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  2] = 0xff;
-
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  0] = 0x00;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  1] = 0x00;
+          buffer_for_save_dr_record[FIRST_INDEX_FIRST_DATA_DR +  2] = 0x80;
+          
           //Помічаємо скільки часу пройшло з початку запуску запису
           time_from_start_record_dr = 0;
           
@@ -7568,7 +7658,7 @@ inline void digital_registrator(unsigned int* carrent_active_functions)
   routine_for_queue_dr();
   PuCmdinRawBuf(carrent_active_functions);
   /*********************/
-  //Формуємо попереденій стан сигналів для функції ввімкнення/вимкнення
+  //Формуємо попереденій стан сигналів для функції увімкнення/вимкнення
   /*********************/
   for (unsigned int i = 0; i < N_BIG; i++) previous_active_functions[i] = carrent_active_functions[i];
   /*********************/
@@ -7687,7 +7777,6 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
           {
             //запис на рівні FATFs зараз не проводиться, тому треба підготувати інформацію про умову старту нового запису
           
-//             global_timers[INDEX_TIMER_FULL_AR_RECORD] = 20*current_settings_prt.prefault_number_periods; //Запускаємо таймер цілого запису  з врахуванням щбуде доданий доаварійний масив
             prefault_number_periods_tmp = ((POWER_CTRL->IDR & POWER_CTRL_PIN) != (uint32_t)Bit_RESET) ? current_settings_prt.prefault_number_periods : AR_TAIL_MIN_NUMBER_PERIOD;
             global_timers[INDEX_TIMER_FULL_AR_RECORD] =  20*prefault_number_periods_tmp; //Запускаємо таймер цілого запису  з врахуванням що буде доданий доаварійний масив
 
@@ -7765,7 +7854,7 @@ inline void analog_registrator(unsigned int* carrent_active_functions)
         state_ar_record_prt = STATE_AR_NONE_PRT;
         
         if (
-            /*перевірку на те, що режим "Власнеаварійний процес" ввімкнутий не треба, бо при умові активних джерел ми б попали у попередню умову де з післяаваріного процесу йде поворот до аварійного процесу*/
+            /*перевірку на те, що режим "Власнеаварійний процес" увімкнутий не треба, бо при умові активних джерел ми б попали у попередню умову де з післяаваріного процесу йде поворот до аварійного процесу*/
             (comp)
            )
         {
@@ -8868,7 +8957,7 @@ do{
     active_inputs_grupa_ustavok |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_3_GRUPA_USTAVOK    ) != 0) << (RANG_SMALL_3_GRUPA_USTAVOK - RANG_SMALL_1_GRUPA_USTAVOK);
     active_inputs_grupa_ustavok |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_4_GRUPA_USTAVOK    ) != 0) << (RANG_SMALL_4_GRUPA_USTAVOK - RANG_SMALL_1_GRUPA_USTAVOK);
       
-    //Ввімкнення ВВ
+    //Увімкнення ВВ
     active_functions[RANG_VKL_VV >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_VKL_VV) != 0) << (RANG_VKL_VV & 0x1f);
 
     //Вимкнення ВВ
@@ -8890,7 +8979,7 @@ do{
     active_functions[RANG_BLOCK_ZDZ       >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_ZDZ      ) != 0) << (RANG_BLOCK_ZDZ       & 0x1f);
     active_functions[RANG_PUSK_ZDZ_VID_DV >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_PUSK_ZDZ_VID_DV) != 0) << (RANG_PUSK_ZDZ_VID_DV & 0x1f);
 
-    //НЗЗ
+    //СЗЗ
     active_functions[RANG_BLOCK_NZZ >> 5] |= (_CHECK_SET_BIT(temp_value_for_activated_function, RANG_SMALL_BLOCK_NZZ) != 0) << (RANG_BLOCK_NZZ & 0x1f);
 
     //Блок ТЗНП
@@ -9015,6 +9104,21 @@ do{
       state_leds_ctrl &=  (uint32_t)(~(((1 << LED_COLOR_GREEN_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_O)) | ((1 << LED_COLOR_RED_BIT) << ((uint32_t)NUMBER_LED_COLOR*(uint32_t)LED_CTRL_I))));
     }
   }
+  /**************************/
+
+  /**************************/
+  /*Режим перепрограмування*/
+  /**************************/
+//#ifndef DEBUG_TEST  
+  if ((GPIO_STAFF_REPROGRAM->IDR & GPIO_PIN_STAFF_REPROGRAM) != (uint32_t)Bit_RESET)
+//#else
+//  if (reprogram)
+//#endif
+  {
+    _SET_BIT(set_diagnostyka, WARNING_REPROGRAM);
+    timerWaitReprogram = -1;
+  }
+  else _SET_BIT(clear_diagnostyka, WARNING_REPROGRAM);
   /**************************/
 
 //  //Діагностика справності раз на період
@@ -9192,7 +9296,7 @@ do{
   //Розрахунок вимірювань
   /***********************************************************/
   calc_measurement(number_group_stp);
-
+  
   //Копіюємо вимірювання для низькопріоритетних і високопріоритетних завдань
   unsigned int bank_measurement_high_tmp = (bank_measurement_high ^ 0x1) & 0x1;
   if(semaphore_measure_values_low1 == 0)
@@ -9330,26 +9434,13 @@ do{
       for (int *p = (global_timers + _INDEX_NZZ_BEGIN); p <= (global_timers + _INDEX_NZZ_END); ++p) *p = -1;
     }
     /**************************/
-//?static int dbg_val = 0, dbg_porch = 40;
+
     /**************************/
     //ТЗНП
     /**************************/
     if ((current_settings_prt.configuration & (1 << TZNP_BIT_CONFIGURATION)) != 0)
     {
       tznp_handler(active_functions, number_group_stp);
-//?      if(dbg_val++ >= dbg_porch){
-//?          dbg_val = 0;
-//?           _SET_BIT(active_functions,  RANG_SECTOR_TZNP1_VPERED);
-//?           _SET_BIT(active_functions,  RANG_SECTOR_TZNP1_NAZAD );
-//?           _SET_BIT(active_functions,  RANG_PO_3I0_TZNP1_VPERED);
-//?           _SET_BIT(active_functions,  RANG_PO_3I0_TZNP1_NAZAD );
-//?      }
-//?      else{
-//?          _CLEAR_BIT(active_functions, RANG_SECTOR_TZNP1_VPERED);
-//?          _CLEAR_BIT(active_functions, RANG_SECTOR_TZNP1_NAZAD );
-//?          _CLEAR_BIT(active_functions, RANG_PO_3I0_TZNP1_VPERED);
-//?          _CLEAR_BIT(active_functions, RANG_PO_3I0_TZNP1_NAZAD );
-//?      }   
     }
     else
     {
@@ -10861,8 +10952,14 @@ void TIM2_IRQHandler(void)
     while(delta_tmp < 2);
     /***/
 
-    //Ініціюємо передачу даних по каналу CANAL1_MO у комунікаційну плату
-    start_transmint_data_via_CANAL1_MO();
+    if (
+        (_CHECK_SET_BIT(    diagnostyka, WARNING_REPROGRAM) == 0) &&
+        (_CHECK_SET_BIT(set_diagnostyka, WARNING_REPROGRAM) == 0)
+       )   
+    {
+      //Ініціюємо передачу даних по каналу CANAL1_MO у комунікаційну плату
+      start_transmint_data_via_CANAL1_MO();
+    }
 #endif
     /***********************************************************/
 
@@ -11311,3 +11408,8 @@ void proc_Lan_blk_out(unsigned short *p_rang_Out_LAN,unsigned int *p_active_func
 
 #endif
 /*****************************************************/
+
+#ifdef DEBUG_TEST
+#warning "TEST VARIABLES IS PRESENT"
+#endif
+

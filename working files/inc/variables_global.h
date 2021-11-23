@@ -384,7 +384,7 @@ uint32_t delta_time_test = PERIOD_ZDZ_TEST;
 uint32_t zdz_ovd_diagnostyka;
 #endif
 
-//НЗЗ
+//СЗЗ
 int sector_1[8];
 int sector_2[8];
 unsigned int sector_i_minus_u_1;
@@ -941,6 +941,9 @@ unsigned int number_of_phases_last_KZ;
 int VMP_last_KZ = UNDEF_VMP;
 unsigned int equal_more_KZ;
 
+//Перепрограмування приладу
+unsigned int reprogram_device;
+
 //RS-485
 SRAM1 unsigned char TxBuffer_RS485[BUFFER_RS485];
 SRAM1 unsigned char RxBuffer_RS485[BUFFER_RS485];
@@ -1046,7 +1049,7 @@ uint32_t IEC_board_uncall = 500;
 uint32_t IEC_board_address;
 uint32_t queue_mo = (1u << STATE_QUEUE_MO_READ_FW_VERSION);
 uint32_t queue_mo_irq;
-unsigned int restart_KP_irq;
+unsigned int restart_KP_irq = 5;
 uint32_t state_array_control_state;
 uint8_t fwKP[4];
 uint8_t fwDTKP[6];
@@ -1156,7 +1159,7 @@ int current_language = LANGUAGE_ABSENT;
 const uint8_t information_off_on[MAX_NAMBER_LANGUAGE][2][MAX_COL_LCD] = 
 {
   {"     Откл.      ", "      Вкл.      "},
-  {"     Вимк.      ", "     Ввімк.     "},
+  {"     Вимк.      ", "     Увімк.     "},
   {"      Off       ", "       On       "},
   {"     Сљнд.      ", "     Косу.      "}
 };
@@ -1176,6 +1179,9 @@ extern unsigned int __ICFEDIT_region_RAM1_start__;
 extern unsigned int __ICFEDIT_region_RAM1_size__;
 
 #ifdef DEBUG_TEST
+
+//volatile unsigned int reprogram = 1;
+
 //unsigned int time_1 = 0xffff0000, time_2 = 0xffff0000, max_delay = 0;
 
 //Тимчасові змінні

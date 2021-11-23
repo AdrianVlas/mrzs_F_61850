@@ -848,7 +848,7 @@ unsigned int action_after_changing_of_configuration(unsigned int new_configurati
          )
         target_label->ctrl_zdz_type = ZDZ_CTRL_NONE;
 
-      //Виводим захисти 3I0, 3U0 і НЗЗ з УРОВ
+      //Виводим захисти 3I0, 3U0 і СЗЗ з УРОВ
       target_label->control_urov &= (unsigned int)(
                                                    ~(
                                                      MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_3I0) | 
@@ -2702,10 +2702,10 @@ void action_after_changing_zz1_type(__SETTINGS *target_label)
 {
   if ((target_label->control_zz & CTR_ZZ1_TYPE) != 0)
   {
-    //Виводим НЗЗ і Сектор НЗЗ
+    //Виводим СЗЗ і Сектор СЗЗ
     target_label->control_zz &= (unsigned int)(~(CTR_ZZ1_NZZ_STATE/* | CTR_ZZ1_SECTOR*/));
     
-    //Виводим НЗЗ з УРОВ
+    //Виводим СЗЗ з УРОВ
     target_label->control_urov &= (unsigned int)(~MASKA_FOR_BIT(INDEX_ML_CTRUROV_STARTED_FROM_NZZ));
       
     unsigned int maska_1[N_BIG];
@@ -3260,7 +3260,15 @@ unsigned int set_new_settings_from_interface(unsigned int source)
       //Переводимо меню у висхідний стан
       for(unsigned int i=0; i<MAX_LEVEL_MENU; i++)
       {
-        if ((i == EKRAN_LEVEL_PASSWORD) || (i == EKRAN_LEVEL_SET_NEW_PASSWORD1) || (i == EKRAN_LEVEL_SET_NEW_PASSWORD2)) position_in_current_level_menu[i] = INDEX_LINE_NUMBER_1_FOR_LEVEL_PASSWORD;
+        if (
+            (i == EKRAN_LEVEL_PASSWORD) || 
+            (i == EKRAN_LEVEL_SET_NEW_PASSWORD1) ||
+            (i == EKRAN_LEVEL_SET_NEW_PASSWORD2) ||
+            (i == EKRAN_LEVEL_SET_NEW_PASSWORD3)
+           )
+        {
+          position_in_current_level_menu[i] = INDEX_LINE_NUMBER_1_FOR_LEVEL_PASSWORD;
+        }
         else  position_in_current_level_menu[i] = 0;
         previous_level_in_current_level_menu[i] = -1;
       }

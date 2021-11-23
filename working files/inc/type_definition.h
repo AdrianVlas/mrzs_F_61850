@@ -55,9 +55,9 @@ typedef struct
   
   int timeout_prolongation_work_digital_registrator;        //Час продолвження роботи  дискретного реєстратора
   
-  //Блок ввімкнення-вимкнення вимикача
+  //Блок увімкнення-вимкнення вимикача
   unsigned int ranguvannja_off_cb[N_BIG];                 //Ранжування блоку вимкнення силового вимикача
-  unsigned int ranguvannja_on_cb[N_BIG];                  //Ранжування блоку ввімкнення силового вимикача
+  unsigned int ranguvannja_on_cb[N_BIG];                  //Ранжування блоку увімкнення силового вимикача
   
   //Тип дискретних виходів
   unsigned int type_of_output;                        //Тип дискретних виходів
@@ -225,7 +225,7 @@ typedef struct
 
   int timeout_zz_3I0[NUMBER_GROUP_USTAVOK];                 //Витримка ЗЗ/3I0
   int timeout_zz_3U0[NUMBER_GROUP_USTAVOK];                 //Витримка ЗЗ/3I0
-  int timeout_nzz[NUMBER_GROUP_USTAVOK];                    //Витримка НЗЗ
+  int timeout_nzz[NUMBER_GROUP_USTAVOK];                    //Витримка СЗЗ
 
    unsigned int control_zz;                                 //Поле для управління ЗЗ
 
@@ -330,6 +330,7 @@ typedef struct
   
   unsigned int password1;                                       //Пароль для редагування з меню
   unsigned int password2;                                       //Пароль для очистки лічилчників енегії і ресурсу вимикача
+  unsigned int password3;                                       //Пароль для переходу у режим програмування
   unsigned int timeout_deactivation_password_interface_USB;     //Час деактивації паролю для редагування з інтерфейсу USB
   unsigned int password_interface_USB;                          //Пароль для редагування з інтерфейсу USB
   unsigned int timeout_deactivation_password_interface_RS485;   //Час деактивації паролю для редагування з інтерфейсу RS485

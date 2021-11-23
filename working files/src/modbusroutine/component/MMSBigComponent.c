@@ -78,7 +78,7 @@ int setMMSBigModbusRegister(int adrReg, int dataReg)
 
   switch((unsigned short)dataReg)
   {
-   case 50528://- Ввімк.ВВ      *
+   case 50528://- Увімк.ВВ      *
    case 50529://- Вимк.ВВ       *
    case 50562://- Сброс индикации
    case 50563://- Сброс реле

@@ -57,13 +57,16 @@ void Usb_routines_irq(void)
   
     if (usb_transmiting_count_tmp != 0)
     {
-      if (from_USB_ptr_in_irq == from_USB_ptr_out_irq)
+      if (USB_OTG_dev.dev.device_state == USB_OTG_EP0_STATUS_OUT)
       {
-        int32_t delta = time_local - time_receive;
-        if (delta < 0) delta += (1u << 31);
-        if (delta < MAX_TIMEOUT_PACKET_USB)
+        if (from_USB_ptr_in_irq == from_USB_ptr_out_irq)
         {
-          APP_FOPS.pIf_DataTx(buffer_USB_tmp, usb_transmiting_count_tmp);
+          int32_t delta = time_local - time_receive;
+          if (delta < 0) delta += (1u << 31);
+          if (delta < MAX_TIMEOUT_PACKET_USB)
+          {
+            APP_FOPS.pIf_DataTx(buffer_USB_tmp, usb_transmiting_count_tmp);
+          }
         }
       }
     }

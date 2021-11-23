@@ -951,7 +951,7 @@ NUMBER_TOTAL_SIGNAL_FOR_RANG
 /*****************************************/
      
 /*****************************************/
-//Макски всіх сигналів НЗЗ
+//Макски всіх сигналів СЗЗ
 /*****************************************/
 #define MASKA_NZZ_SIGNALS_0                  0
 #define MASKA_NZZ_SIGNALS_1                  0
@@ -1867,7 +1867,7 @@ NUMBER_ODYNYCI_VYMIRJUVANNJA
 #define VERSIA_PZ                                             14
 #define MODYFIKACIA_VERSII_PZ                                 10
 #define ZBIRKA_VERSII_PZ                                      2
-#define ZBIRKA_PIDVERSII_PZ                                   0
+#define ZBIRKA_PIDVERSII_PZ                                   1
 /*****************************************/
 
 /*****************************************/

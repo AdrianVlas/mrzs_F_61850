@@ -809,7 +809,7 @@ void TIM4_IRQHandler(void)
                                          );
     if ((LCD_BL->ODR & LCD_BL_PIN) != (uint32_t)Bit_RESET)
     {
-      //Підсвітка ввімкнута
+      //Підсвітка увімкнута
       if ((new_state_keyboard & maska_all_keys) != 0) time_backlighting = BACKLIGHTING_OFF*100;
       if (
            (time_backlighting > 0) && /*випадок старту з викнутою підсвіткою*/
@@ -825,7 +825,7 @@ void TIM4_IRQHandler(void)
     {
       //Підсвітка вимкнута
       if (
-          ((new_state_keyboard & maska_all_keys) != 0) /*умова ввімкнення підсвітки по натискуванні кнопки*/
+          ((new_state_keyboard & maska_all_keys) != 0) /*умова увімкнення підсвітки по натискуванні кнопки*/
           ||  
           (
            (time_backlighting > 0)  && /*випадок старту з викнутою підсвіткою*/
@@ -834,7 +834,7 @@ void TIM4_IRQHandler(void)
           )   
          )
       {
-        //Умова ввімкнення підсвітки після старту приладу
+        //Умова увімкнення підсвітки після старту приладу
         LCD_BL->BSRRL = LCD_BL_PIN;
         time_backlighting = BACKLIGHTING_OFF*100;
 
@@ -1437,23 +1437,6 @@ void TIM4_IRQHandler(void)
       }
     }
     while (repeat != 0);
-    
-    /*Vidladka*/
-#ifdef DEBUG_TEST
-//    static unsigned int t_1, t_2, delta_tmp;
-//    t_1 = TIM4->CCR2;
-//    t_2 = TIM4->CNT;
-//    if (t_1 >= t_2) delta_tmp = t_1 - t_2;
-//    else delta_tmp = t_1 + 0xffff - t_2;
-//    
-//    if (
-//        (delta_tmp > TIM4_CCR2_VAL) &&
-//        (TIM_GetITStatus(TIM4, TIM_IT_CC2) == RESET)  
-//       )   
-//    {
-//      while(delta_tmp > 0);
-//    }
-#endif
     /***/
     /***********************************************************/
 

@@ -13,11 +13,11 @@ void make_ekran_info()
       " Версия ПО(КП)  ",
 #endif
       "   Версия КП    ",
-      " Серийный номер "
+      " Серийный номер ",
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-                        ,
-      "   MAC-адрес    "
+      "   MAC-адрес    ",
 #endif
+      "Режим перепрогр."
     },
     {
       "   Версія ПЗ    ",
@@ -25,11 +25,11 @@ void make_ekran_info()
       " Версія ПЗ(КП)  ",
 #endif
       "   Версія КП    ",
-      " Серійний номер "
+      " Серійний номер ",
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-                        ,
-      "   MAC-адреса   "
+      "   MAC-адреса   ",
 #endif
+      "Режим перепрогр."
     },
     {
       "  Firmware ver  ",
@@ -37,11 +37,11 @@ void make_ekran_info()
       "Firmware ver(CU)",
 #endif
       "  Mem Card ver  ",
-      " Serial number  "
+      " Serial number  ",
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-                        ,
-      "  MAC address   "
+      "  MAC address   ",
 #endif
+      " Reprogram Mode "
     },
     {
       "   Версия ПО    ",
@@ -49,11 +49,11 @@ void make_ekran_info()
       " Версия ПО(КП)  ",
 #endif
       "   Версия КП    ",
-      " Серийный номер "
+      " Серийный номер ",
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
-                        ,
-      "   MAC-адрес    "
+      "   MAC-адрес    ",
 #endif
+      "Режим перепрогр."
     }
   };
   int index_language = index_language_in_array(current_settings.language);
@@ -165,6 +165,10 @@ void make_ekran_info()
             value /= 10;
           }
         }
+        else if ((index_of_ekran>>1) == INDEX_ML_REPROGRAM)
+        {
+          for (size_t j = 0; j < MAX_COL_LCD; ++j) value_str[j] = ' ';
+        }
 #if (((MODYFIKACIA_VERSII_PZ / 10) & 0x1) != 0)
         else if ((index_of_ekran_tmp) == INDEX_ML_INFO_MAC_ADDRESS)
         {
@@ -197,8 +201,8 @@ void make_ekran_info()
     index_of_ekran++;
   }
 
-  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням устаки
-  current_ekran.position_cursor_y = ((position_temp<<1) + 1) & (MAX_ROW_LCD - 1);
+  //Відображення курору по вертикалі і курсор завжди має бути у полі із значенням (крім як у останньому радку, де є вибір переходу у режим перепрограмування)
+  current_ekran.position_cursor_y = ((position_temp<<1) + ((position_temp != INDEX_ML_REPROGRAM) ? 1 : 0)) & (MAX_ROW_LCD - 1);
   int last_position_cursor_x = MAX_COL_LCD;
 
   //Курсор по горизонталі відображається на першому символі у випадку, коли ми не в режимі редагування, інакше позиція буде визначена у функцї main_manu_function
@@ -223,14 +227,17 @@ void make_ekran_info()
     current_ekran.position_cursor_x = 0;
     last_position_cursor_x = MAX_COL_LCD;
   }
+  
+  if (current_ekran.index_position != INDEX_ML_REPROGRAM)
+  {
+    //Підтягуємо курсор до першого символу
+    while (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1]) == ' ') && 
+           (current_ekran.position_cursor_x < (last_position_cursor_x -1))) current_ekran.position_cursor_x++;
 
-  //Підтягуємо курсор до першого символу
-  while (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x + 1]) == ' ') && 
-         (current_ekran.position_cursor_x < (last_position_cursor_x -1))) current_ekran.position_cursor_x++;
-
-  //Курсор ставимо так, щоб він був перед числом
-  if (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x]) != ' ') && 
-      (current_ekran.position_cursor_x > 0)) current_ekran.position_cursor_x--;
+    //Курсор ставимо так, щоб він був перед числом
+    if (((working_ekran[current_ekran.position_cursor_y][current_ekran.position_cursor_x]) != ' ') && 
+        (current_ekran.position_cursor_x > 0)) current_ekran.position_cursor_x--;
+  }
 
   //Курсор видимий
   current_ekran.cursor_on = 1;
