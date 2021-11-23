@@ -292,7 +292,7 @@ extern long GetCmdPlusTimeLogElemPlWnum(unsigned int *p_elem, long lIdx,unsigned
 extern void CleanCmdPlusTimeLog(void);
 extern void PuCmdinRawBuf(unsigned int *p_active_functions);
 extern void make_ekran_signals_stable_one_in_data_elem_stt_reg(void);
-extern void make_ekran_changing_signals_in_data_elem_stt_reg2(void);
+extern void make_ekran_time_ms_c_val_c_name_sr_format_changing_signals(void);
 extern void make_ekran_data_elem_stt_registrator(void);
 
 extern void Usb_routines_irq(void);

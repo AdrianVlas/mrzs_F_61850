@@ -152,7 +152,7 @@ void FillDiffInfo(void);
 //..................................................................................
 //``````````````````````````````````````````````````````````````````````````````````
 extern void FillTwoLineElemInfoForCurrEkrIndexPos(long ekrIndexPos);
-extern void FillTwoLineElemInfoForCurrEkrIndexPos1(long ekrIndexPos);
+extern void Fill2LnScrElemCalcInfo(void* pv2LnCalcInfo ,long ekrIndexPos);//?void FillTwoLineElemInfoForCurrEkrIndexPos1(long ekrIndexPos);
 extern void Put2LineElemInfoUsingEkrIndexPos(void*pv2LnCalcInfo,long ekrIndexPos);
 typedef struct tag_TwoLnCalcInfo{
     short selectorOneDateElm;            

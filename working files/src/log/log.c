@@ -1471,23 +1471,27 @@ short selectorOneDateElem, fierstSelectedOneDateElem;
 char fierstViewAfterEnterKeyPressed = 0;
 //=====================================================================================================
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-//      This func was design for fill hldDiffInfo field
+//  This func was design for fill hldDiffInfo field
+// void FillTwoLineElemInfoForCurrEkrIndexPos1(long ekrIndexPos) was 1-st edition
+// used param TwoLnCalcInfo conv to void* = )(void*) scrTwoLnCalcInfo  
+// ekrIndexPos - as usual current_ekran.index_position value inserted
+// func fill on addr pv2LnCalcInfo TwoLnCalcInfo calculaned for value ekrIndexPos param
 //....................................................................................................
 //=====================================================================================================
 
 // ----------------    -------------------------
-void FillTwoLineElemInfoForCurrEkrIndexPos(long ekrIndexPos){
+void Fill2LnScrElemCalcInfo(void* pv2LnCalcInfo ,long ekrIndexPos){
 
     // asm volatile(
     //           "bkpt 1"
     //           );  
-    short calcScrIndexPos = 0;               //!'може додати завантаження з pTwoLnCalcInfo цих змінних?'
-    short selectorOneDateElm = 0;            //!'може додати завантаження з pTwoLnCalcInfo цих змінних?'
-    short selectorCmdPlusTimeStateElem  = 0;//!'може додати завантаження з pTwoLnCalcInfo цих змінних?'
-    short selIdxBitCmdPlusTimeStateElem = 0;//!'може додати завантаження з pTwoLnCalcInfo цих змінних?'
-    short calcMaxScrIndexPos = 0;
+    long calcScrIndexPos = 0,calcMaxScrIndexPos = 0;               //
+    short selectorOneDateElm = 0;            //
+    short selectorCmdPlusTimeStateElem  = 0;//
+    short selIdxBitCmdPlusTimeStateElem = 0;//
+    
     DiffInfoDsc *pDiffInfo = &hldDiffInfo;
-    TwoLnCalcInfo *pTwoLnCalcInfo = &scrTwoLnCalcInfo;
+    //..TwoLnCalcInfo *pTwoLnCalcInfo = &scrTwoLnCalcInfo;
     short counterOneDateElms = 0;
     char confirmContinuewhile = 1;
     selectorCmdPlusTimeStateElem =
@@ -1495,26 +1499,6 @@ void FillTwoLineElemInfoForCurrEkrIndexPos(long ekrIndexPos){
     
     do{
 
-         
-        //!@OLDCODE.if(fierstViewAfterEnterKeyPressed != 0 && counterOneDateElms == 0){
-        if(fierstViewAfterEnterKeyPressed != 0 && selectorOneDateElm == fierstSelectedOneDateElem){//?selectorOneDateElem
-            if((calcScrIndexPos) == ekrIndexPos){//+1
-                confirmContinuewhile = 1;//This is the situation were 1)Fix present;2)skip count becouse not need show info
-                                           //in calcScrIndexPos you count not all what present but only that show
-                //!@Deactivate fierstViewAfterEnterKeyPressed;
-            }
-           //!@'return data' goto Exit
-        }
-        else{ //if(counterOneDateElms == 0 && fierstViewAfterEnterKeyPressed == 0){
-            if( (calcScrIndexPos) == ekrIndexPos){
-                    //!selectorCmdPlusTimeStateElem = idxCmdPlusTimeElem;//!@FixSelector
-                    //!selIdxBitCmdPlusTimeStateElem = ekrIndexPos - calcScrIndexPos;
-                pTwoLnCalcInfo->activeScr = SHOW_DATE_PLUS_SPACE;
-                confirmContinuewhile = 0;
-            } 
-            //?else 
-			{   calcScrIndexPos++;calcMaxScrIndexPos++;}
-        }
         if(confirmContinuewhile == 1) {
             short amountCmdPlusTimeElem = pDiffInfo->arrDatePlRefTags[selectorOneDateElm].amountElemForThisDate;
             short idxCmdPlusTimeElem = pDiffInfo->arrDatePlRefTags[selectorOneDateElm].numFierstElemForThisDate;
@@ -1526,7 +1510,7 @@ void FillTwoLineElemInfoForCurrEkrIndexPos(long ekrIndexPos){
                 if(amountChangesInCmd+calcScrIndexPos >= (ekrIndexPos+1)){
                     selectorCmdPlusTimeStateElem = idxCmdPlusTimeElem;//!@FixSelector
                     selIdxBitCmdPlusTimeStateElem = ekrIndexPos - calcScrIndexPos;
-                    pTwoLnCalcInfo->activeScr = SHOW_TIME_MS_STATE_NAME_COMAND;
+                    //pTwoLnCalcInfo->activeScr = SHOW_TIME_MS_STATE_NAME_COMAND;
                     confirmContinueFor = 0; calcMaxScrIndexPos = amountChangesInCmd+calcScrIndexPos;
                     confirmContinuewhile = 0;
                     break;
@@ -1548,11 +1532,11 @@ void FillTwoLineElemInfoForCurrEkrIndexPos(long ekrIndexPos){
     }while( confirmContinuewhile == 1);
 
 
-    pTwoLnCalcInfo->selectorOneDateElm             = selectorOneDateElm            ;
-    pTwoLnCalcInfo->selectorCmdPlusTimeStateElem  = selectorCmdPlusTimeStateElem ;
-    pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem = selIdxBitCmdPlusTimeStateElem;
-    pTwoLnCalcInfo->calculatedScrIndexPos          = calcScrIndexPos;
-    pTwoLnCalcInfo->calculatedMaxScrIndexPos       = calcMaxScrIndexPos;
+    ((TwoLnCalcInfo *)pv2LnCalcInfo)->selectorOneDateElm             = selectorOneDateElm            ;
+    ((TwoLnCalcInfo *)pv2LnCalcInfo)->selectorCmdPlusTimeStateElem  = selectorCmdPlusTimeStateElem ;
+    ((TwoLnCalcInfo *)pv2LnCalcInfo)->selIdxBitCmdPlusTimeStateElem = selIdxBitCmdPlusTimeStateElem;
+    ((TwoLnCalcInfo *)pv2LnCalcInfo)->calculatedScrIndexPos          = calcScrIndexPos;
+    ((TwoLnCalcInfo *)pv2LnCalcInfo)->calculatedMaxScrIndexPos       = calcMaxScrIndexPos;
 }
 //,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 //""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1563,21 +1547,21 @@ void FillTwoLineElemInfoForCurrEkrIndexPos(long ekrIndexPos){
 //=====================================================================================================
 
 // ----------------    -------------------------
-long Calc2LineIndexPos_for_selOneDateElem(long idxOneDateElem){
-
-    short findedScrIndexPos = 0;
+long Calc2lineIndexPosUsingBitCmdValuesAttachedToOneDateElem(long idxOneDateElem){
+    long findedScrIndexPos = 0;
     long amountDifferentOneDateElms = hldDiffInfo.amountDifferentOneDateElms;
     TwoLnCalcInfo *pTwoLnCalcInfo = &scrTwoLnCalcInfo;
     if(idxOneDateElem > amountDifferentOneDateElms)
         return -1;
     do{
-        FillTwoLineElemInfoForCurrEkrIndexPos(findedScrIndexPos++);
+        Fill2LnScrElemCalcInfo(pTwoLnCalcInfo,findedScrIndexPos);//FillTwoLineElemInfoForCurrEkrIndexPos1(findedScrIndexPos);
         findedScrIndexPos += pTwoLnCalcInfo->calculatedMaxScrIndexPos;
     }while( ((pTwoLnCalcInfo->selectorOneDateElm) != idxOneDateElem) 
 		&& ((pTwoLnCalcInfo->selectorOneDateElm) <= amountDifferentOneDateElms)
 	);
-    return pTwoLnCalcInfo->calculatedScrIndexPos+pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem;
+    return pTwoLnCalcInfo->calculatedScrIndexPos;//?..+pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem;
 }
+  
 
         
     
@@ -1664,100 +1648,6 @@ struct{
 
 //,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 //""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-//=====================================================================================================
-//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-//      This func was design for fill hldDiffInfo field
-//....................................................................................................
-//=====================================================================================================
-
-// ----------------    -------------------------
-void FillTwoLineElemInfoForCurrEkrIndexPos1(long ekrIndexPos){
-
-    // asm volatile(
-    //           "bkpt 1"
-    //           );  
-    short calcScrIndexPos = 0;               //
-    short selectorOneDateElm = 0;            //
-    short selectorCmdPlusTimeStateElem  = 0;//
-    short selIdxBitCmdPlusTimeStateElem = 0;//
-    short calcMaxScrIndexPos = 0;
-    DiffInfoDsc *pDiffInfo = &hldDiffInfo;
-    TwoLnCalcInfo *pTwoLnCalcInfo = &scrTwoLnCalcInfo;
-    short counterOneDateElms = 0;
-    char confirmContinuewhile = 1;
-    selectorCmdPlusTimeStateElem =
-    pDiffInfo->arrDatePlRefTags[0].numFierstElemForThisDate;
-    
-    do{
-
-        if(confirmContinuewhile == 1) {
-            short amountCmdPlusTimeElem = pDiffInfo->arrDatePlRefTags[selectorOneDateElm].amountElemForThisDate;
-            short idxCmdPlusTimeElem = pDiffInfo->arrDatePlRefTags[selectorOneDateElm].numFierstElemForThisDate;
-            
-            for(long ctrCmdPlusTimeElem = 0, amountChangesInCmd = 0, confirmContinueFor = 1;//differ type here not allowed
-              (ctrCmdPlusTimeElem < amountCmdPlusTimeElem)&& confirmContinueFor == 1; ctrCmdPlusTimeElem++)
-            {
-                amountChangesInCmd = GetNumberChangingInLogElemUseLocal(idxCmdPlusTimeElem);
-                if(amountChangesInCmd+calcScrIndexPos >= (ekrIndexPos+1)){
-                    selectorCmdPlusTimeStateElem = idxCmdPlusTimeElem;//!@FixSelector
-                    selIdxBitCmdPlusTimeStateElem = ekrIndexPos - calcScrIndexPos;
-                    //pTwoLnCalcInfo->activeScr = SHOW_TIME_MS_STATE_NAME_COMAND;
-                    confirmContinueFor = 0; calcMaxScrIndexPos = amountChangesInCmd+calcScrIndexPos;
-                    confirmContinuewhile = 0;
-                    break;
-                }
-                else{
-                    calcScrIndexPos += amountChangesInCmd;
-                    if (idxCmdPlusTimeElem == 0)
-                        idxCmdPlusTimeElem = AMOUNT_CMD_PLUS_TIME_RECORD - 1;
-                    else 
-                        idxCmdPlusTimeElem--;
-                }
-            }
-            if((++counterOneDateElms < pDiffInfo->amountDifferentOneDateElms)&& confirmContinuewhile != 0){
-            selectorOneDateElm++;
-            }
-            else
-                confirmContinuewhile = 0;
-        }
-    }while( confirmContinuewhile == 1);
-
-
-    pTwoLnCalcInfo->selectorOneDateElm             = selectorOneDateElm            ;
-    pTwoLnCalcInfo->selectorCmdPlusTimeStateElem  = selectorCmdPlusTimeStateElem ;
-    pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem = selIdxBitCmdPlusTimeStateElem;
-    pTwoLnCalcInfo->calculatedScrIndexPos          = calcScrIndexPos;
-    pTwoLnCalcInfo->calculatedMaxScrIndexPos       = calcMaxScrIndexPos;
-}
-//,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-//""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-//=====================================================================================================
-//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-//                  
-//....................................................................................................
-//=====================================================================================================
-
-// ----------------    -------------------------
-//?long Calc2LineIndexPos_for_selOneDateElem1(long idxOneDateElem){
-long Calc2lineIndexPosUsingBitCmdValuesAttachedToOneDateElem(long idxOneDateElem){
-    long findedScrIndexPos = 0;
-    long amountDifferentOneDateElms = hldDiffInfo.amountDifferentOneDateElms;
-    TwoLnCalcInfo *pTwoLnCalcInfo = &scrTwoLnCalcInfo;
-    if(idxOneDateElem > amountDifferentOneDateElms)
-        return -1;
-    do{
-        FillTwoLineElemInfoForCurrEkrIndexPos1(findedScrIndexPos);
-        findedScrIndexPos += pTwoLnCalcInfo->calculatedMaxScrIndexPos;
-    }while( ((pTwoLnCalcInfo->selectorOneDateElm) != idxOneDateElem) 
-		&& ((pTwoLnCalcInfo->selectorOneDateElm) <= amountDifferentOneDateElms)
-	);
-    return pTwoLnCalcInfo->calculatedScrIndexPos;//?..+pTwoLnCalcInfo->selIdxBitCmdPlusTimeStateElem;
-}
-  
-//
-//--------------------------------------------------------------------------------------------------------
-//````````````````````````````````````````````````````````````````````````````````````````````````````````
-
 
 
 
