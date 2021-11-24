@@ -2593,7 +2593,7 @@ void main_manu_function(void)
             }
             else if (current_ekran.current_level == EKRAN_TITLES_STATE_CMD_REGISTRATOR)
             {
-              if(current_ekran.index_position >= MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR) current_ekran.index_position = 0;
+              //!if(current_ekran.index_position >= MAX_ROW_FOR_TITLES_PR_ERR_REGISTRATOR) current_ekran.index_position = 0;
               position_in_current_level_menu[EKRAN_TITLES_STATE_CMD_REGISTRATOR] = current_ekran.index_position;
             //?  //Формуємо екран відображення заголовків груп для реєстратора програмних подій
             //?  make_ekran_list_titles_for_record_of_state_cmd_registrator();//make_ekran_list_titles_for_record_of_pr_err_registrator();
